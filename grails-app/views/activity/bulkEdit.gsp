@@ -565,12 +565,12 @@
                     showAlert("Successfully populated the table with xlsx template data.","alert-success","load-xlsx-result-placeholder");
                 }
                 else if(data.result.status == 400) {
-                    showAlert("Error: " + data.result.status.error, "alert-error","load-xlsx-result-placeholder");
+                    showAlert("Error: " + data.result.status.error, "alert-danger","load-xlsx-result-placeholder");
                 }
             },
             fail: function (e, data) {
                 var message = 'Please contact MERIT support and attach your spreadsheet to help us resolve the problem';
-                showAlert(message, "alert-error","load-xlsx-result-placeholder");
+                showAlert(message, "alert-danger","load-xlsx-result-placeholder");
             },
             formData: {type:"${type}"}
         });

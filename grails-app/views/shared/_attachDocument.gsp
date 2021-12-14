@@ -143,7 +143,7 @@
                             </div>
 
                             <div class="col-sm-9" id="message" data-bind="visible:error()">
-                                <span class="alert alert-error" data-bind="text:error"></span>
+                                <span class="alert alert-danger" data-bind="text:error"></span>
                             </div>
                         </div>
                     </div>

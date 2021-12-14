@@ -283,9 +283,9 @@ class FCTagLib {
         def current = pageProperty(name:'page.pageTitle')?.toString()
 
         def mb = new MarkupBuilder(out)
-        mb.li(class: active == current ? 'active' : '') {
-            a(href:attrs.href) {
-                i(class:'icon-chevron-right') { mkp.yieldUnescaped('&nbsp;')}
+        mb.li(class: 'nav-item') {
+            a(href:attrs.href, role: "tab", "class": active == current ? 'nav-link active' : 'nav-link') {
+                i(class:'fas fa-chevron-right') { mkp.yieldUnescaped('&nbsp;')}
                 mkp.yield(attrs.title)
             }
         }
@@ -723,7 +723,7 @@ class FCTagLib {
         } else {
             mb.span() {
                 mb.strong() {
-                    mkp.yield(object?.toString())
+                    mkp.yield(object?.toString()?:"")
                 }
             }
 

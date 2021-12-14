@@ -5,6 +5,7 @@
 		<title>Admin - Audit Project | Data capture | Atlas of Living Australia</title>
 		<style type="text/css" media="screen">
 		</style>
+		<content tag="pageTitle">Audit</content>
 	</head>
 	<body>
 	<asset:stylesheet src="datatables-manifest.css"/>

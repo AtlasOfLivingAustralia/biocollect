@@ -1,7 +1,7 @@
 <!-- ko stopBinding: true -->
 <div id="edit${attributeName}Content">
 <h3>${header}</h3>
-<div class="row-">
+<div class="row">
     <div class="col-sm-5 alert">This functionality is now deprecated, please create any new ${header} using
         <a href="#" onclick="$('#editProjectBlog-tab').click()" >Edit Blog</a></li>
     </div>
@@ -12,7 +12,7 @@
         <span data-bind="text:message"></span>
     </div>
 </div>
-<div class="row space-after card">
+<div class="row-fluid space-after well well-small">
 
         <h4>Update project "${header}"</h4>
         <div id="${attributeName}-button-bar" style="width:100%;background-color: white;"></div>

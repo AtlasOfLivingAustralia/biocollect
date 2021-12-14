@@ -8,8 +8,8 @@
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},Project"/>
     <meta name="breadcrumb" content="New blog entry"/>
-    <asset:stylesheet src="fileupload-ui-manifest.css"/>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <asset:stylesheet src="blog-manifest.css"/>
+%{--    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>--}%
     <asset:script type="text/javascript">
         var fcConfig = {
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -24,21 +24,17 @@
             returnTo: "${params.returnTo?:g.createLink(controller:'project', id:params.projectId)}"
             };
     </asset:script>
-    <asset:javascript src="common-bs4.js"/>
-    <asset:javascript src="fileupload-manifest.js"/>
-    %{-- Todo: cors/jquery.xdr-transport.js needed? --}%
-    <asset:javascript src="cors/jquery.xdr-transport.js"/>
-    <asset:javascript src="document.js"/>
+    <asset:javascript src="blog-manifest.js"/>
 </head>
 <body>
-<div class="container-fluid ml-4">
-    <div class="row">
-        <g:render template="editBlogEntry"/>
-    </div>
+<div class="container">
+    <g:render template="editBlogEntry"/>
 
-    <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Create</button>
-        <button type="button" id="cancel" data-bind="click:cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
+    <div class="row">
+        <div class="col-12 btn-space">
+            <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark"><i class="fas fa-plus"></i> Create</button>
+            <button type="button" id="cancel" data-bind="click:cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
+        </div>
     </div>
 </div>
 

@@ -9,7 +9,7 @@
         };
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
 </head>
 <body>
 

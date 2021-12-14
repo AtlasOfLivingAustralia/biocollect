@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><g:layoutTitle/></title>
     <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
+    <link href="${g.createLink(controller: 'hub', action: 'generateStylesheet')}?ver=${hubConfig.lastUpdated}" rel="stylesheet"/>
     <asset:stylesheet src="base-bs4.css"/>
     <asset:javascript src="base-bs4.js"/>
     <g:layoutHead/>
@@ -68,11 +69,16 @@
             <article class="page">
                 <g:set var="bannerURL" value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images[0]?.url}"/>
                 <g:set var="banner" value="${pageProperty(name: 'page.banner')}"/>
-                <g:if test="${bannerURL || banner}">
-                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
+                <g:if test="${pageProperty(name: 'page.slider')}">
+                    <g:pageProperty name="page.slider"></g:pageProperty>
+                </g:if>
+                <g:elseif test="${bannerURL || banner}">
+                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}"
+%{--                         style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}"--}%
+                    >
                         ${raw(banner?:"")}
                     </div>
-                </g:if>
+                </g:elseif>
                 <g:else>
                     <div id="banner" class="no-image no-content"></div>
                 </g:else>

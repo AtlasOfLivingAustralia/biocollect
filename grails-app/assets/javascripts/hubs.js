@@ -20,8 +20,8 @@ var HubSettingsViewModel = function (programsModel, options) {
 
     self.transients = {
         programNames: programNames,
-        availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1'],
-        configurableTemplates: ['configurableHubTemplate1'],
+        availableSkins: ['bs4'],
+        configurableTemplates: ['bs4'],
         defaultHomePage: '/project/citizenScience',
         hubHomePage: '/hub/index'
     };
@@ -621,6 +621,15 @@ var StyleViewModel = function (config) {
     self.bannerBackgroundColor = ko.observable(config.bannerBackgroundColor || '');
     self.insetBackgroundColor = ko.observable(config.insetBackgroundColor || '');
     self.insetTextColor = ko.observable(config.insetTextColor || '');
+    self.primaryColor = ko.observable(config.primaryColor || '');
+    self.primaryDarkColor = ko.observable(config.primaryDarkColor || '');
+    self.secondaryColor = ko.observable(config.secondaryColor || '');
+    self.successColor = ko.observable(config.successColor || '');
+    self.infoColor = ko.observable(config.infoColor || '');
+    self.warningColor = ko.observable(config.warningColor || '');
+    self.dangerColor = ko.observable(config.dangerColor || '');
+    self.lightColor = ko.observable(config.lightColor || '');
+    self.darkColor = ko.observable(config.darkColor || '');
     self.bodyBackgroundColor = ko.observable(config.bodyBackgroundColor || '');
     self.bodyTextColor = ko.observable(config.bodyTextColor || '');
     self.footerBackgroundColor = ko.observable(config.footerBackgroundColor || '');

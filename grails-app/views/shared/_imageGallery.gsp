@@ -34,7 +34,7 @@
         <!-- /ko -->
 
         <!-- ko if: error() -->
-        <div class="alert alert-error" data-bind="text: error">
+        <div class="alert alert-danger" data-bind="text: error">
         </div>
         <!-- /ko -->
     </div>

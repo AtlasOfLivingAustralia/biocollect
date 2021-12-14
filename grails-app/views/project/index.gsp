@@ -103,7 +103,7 @@
                 <h1 class="pull-left" data-bind="text:name"></h1>
                 <g:if test="${flash.errorMessage || flash.message}">
                     <div class="span5">
-                        <div class="alert alert-error">
+                        <div class="alert alert-danger">
                             <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
                             ${flash.errorMessage?:flash.message}
                         </div>

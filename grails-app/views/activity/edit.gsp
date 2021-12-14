@@ -56,7 +56,7 @@
             <div class="col-sm-12 ml-3">
                 <!-- Common activity fields -->
                 <div class="row" data-bind="visible:transients.typeWarning()" style="display:none">
-                    <div class="col-sm-12 alert alert-error">
+                    <div class="col-sm-12 alert alert-danger">
                         <strong>Warning!</strong> This activity has data recorded.  Changing the type of the activity will cause this data to be lost!
                     </div>
                 </div>
