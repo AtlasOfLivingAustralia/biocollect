@@ -28,7 +28,7 @@
                     <g:each in="${results.hits?.hits}" var="hit">
                         <tr>
                             <td>
-                                <a href="${createLink(action:'auditProject', params:[id:hit._source?.projectId, searchTerm:searchTerm])}">${hit._source?.name}</a>
+                                <a href="${raw(createLink(action:'auditProject', params:[id:hit._source?.projectId, searchTerm:searchTerm]))}">${hit._source?.name}</a>
                             </td>
                             <td>${hit._source?.description}</td>
                         </tr>

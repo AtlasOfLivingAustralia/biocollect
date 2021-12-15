@@ -55,8 +55,8 @@
 
     <g:if test="${activities}">
         <div class="project-dashboard">
-            <table class="table-bordered">
-                <thead>
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
                 <tr>
                     <th>From</th>
                     <th>To</th>

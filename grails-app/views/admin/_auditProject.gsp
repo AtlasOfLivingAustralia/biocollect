@@ -7,7 +7,7 @@
 <g:if test="${!hideBackButton}">
     <div class="row mb-2">
         <div class="col-12">
-            <a href="${createLink(action:'auditProjectSearch',params:[searchTerm: searchTerm])}" class="btn btn-sm btn-dark">
+            <a href="${raw(createLink(action:'auditProjectSearch',params:[searchTerm: searchTerm]))}" class="btn btn-sm btn-dark">
                 <i class="far fa-arrow-alt-circle-left"></i> Back
             </a>
         </div>

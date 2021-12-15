@@ -52,7 +52,7 @@
 
 <g:if test="${metaModel?.supportsSites?.toBoolean()}">
     <div >
-        <h3 class="text-center text-error card-title">Site Details</h3>
+        <h3 class="text-center text-danger card-title">Site Details</h3>
         <div class="output-block text-center card">
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
@@ -75,7 +75,7 @@
         <g:render template="/shared/termsOfUse"/>
         <br>
         <g:if test="${!preview}">
-            <button type="button" id="save" class="btn btn-primary btn-lg"><i class="fas fa-upload"></i> Submit</button>
+            <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> Submit</button>
         </g:if>
         <g:if test="${showCreate && !mobile}">
             <g:if test="${!preview}">
@@ -116,7 +116,7 @@
 
 <div id="timeoutMessage" class="hide">
 
-    <span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>
+    <span class='badge badge-danger'>Important</span><h4>There was an error while trying to save your changes.</h4>
 
     <p>This could be because your login has timed out or the internet is unavailable.</p>
 

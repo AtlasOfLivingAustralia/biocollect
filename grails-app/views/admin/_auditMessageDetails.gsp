@@ -32,27 +32,24 @@
     </div>
 </div>
 
-<div class="row float-right">
-    <table>
-        <tr>
-            <td style="background: #c6ffc6;"></td><td>Inserted</td>
-            <td style="background: #ffc6c6;"></td><td>Deleted</td>
-        </tr>
-    </table>
-</div>
-
-
-<div class="bg-light">
-
+<div class="bg-light mt-3">
+    <div class="row float-right mr-1">
+        <table>
+            <tr>
+                <td style="background: #c6ffc6;"></td><td>Inserted</td>
+                <td style="background: #ffc6c6;"></td><td>Deleted</td>
+            </tr>
+        </table>
+    </div>
     <div id="content">
-        <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-            <li class="nav-item"><a class="nav-link active" href="#minimal" data-toggle="tab">Overview</a></li>
+        <ul id="tabSection" class="nav nav-tabs" data-tabs="tabs">
+            <li class="nav-item active"><a class="nav-link active" href="#minimal" data-toggle="tab">Overview</a></li>
             <li class="nav-item"><a class="nav-link" href="#detailed" data-toggle="tab">Detailed</a></li>
         </ul>
         <div id="my-tab-content" class="tab-content">
             <div class="tab-pane active" id="minimal">
-                <table id="formatedJSON" class="table table-bordered table-hover">
-                    <thead>
+                <table id="formatedJSON" class="table table-bordered table-hover table-striped">
+                    <thead class="bg-primary">
                     <tr>
                         <th><h4>Fields</h4></th>
                         <th><h4>What's changed?</h4></th>
@@ -74,19 +71,19 @@
             <div class="tab-pane" id="detailed">
                 <table id="wrapper" class="table table-striped table-bordered table-hover">
                     <thead>
-                    <tr>
-                        <th width="30%"><h4>Before</h4></th>
-                        <th width="30%"><h4>After</h4></th>
-                        <th width="40%"><h4>What's changed? </h4>
+                    <tr class="bg-primary row ml-0 mr-0">
+                        <th class="col-4"><h4>Before</h4></th>
+                        <th class="col-4"><h4>After</h4></th>
+                        <th class="col-4"><h4>What's changed? </h4>
                         </th>
                     </tr>
                     </thead>
                     <tbody>
 
-                    <tr>
-                        <td class="original"><fc:renderJsonObject object="${compare?.entity}" /></td>
-                        <td class="changed"><fc:renderJsonObject object="${message?.entity}" /></td>
-                        <td style="line-height:1;" class="diff1"></td>
+                    <tr class="row ml-0 mr-0">
+                        <td class="original col-4" style="overflow: scroll"><fc:renderJsonObject object="${compare?.entity}" /></td>
+                        <td class="changed col-4" style="overflow: scroll"><fc:renderJsonObject object="${message?.entity}" /></td>
+                        <td style="line-height:1;" class="diff1 col-4" style="overflow: scroll"></td>
                     </tr>
                     </tbody>
                 </table>

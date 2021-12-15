@@ -20,6 +20,7 @@
         if (!useExistingModel) {
 
             var docListViewModel = new DocListViewModel(${documents ?: []});
+            ko.cleanNode(document.getElementById('${containerId}'));
             ko.applyBindings(docListViewModel, document.getElementById('${containerId}'));
         }
     });
