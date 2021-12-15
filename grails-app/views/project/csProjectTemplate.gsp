@@ -103,7 +103,7 @@
         flimit: ${grailsApplication.config.facets.flimit},
         commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
         defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.lists.commonFields}"/>,
-        occurrenceUrl: "${occurrenceUrl}",
+        occurrenceUrl: "${raw(occurrenceUrl)}",
         spatialUrl: "${spatialUrl}",
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
         getProjectMembersURL: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}/${project.projectId}",

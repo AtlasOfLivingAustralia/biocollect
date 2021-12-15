@@ -53,10 +53,10 @@
 
             <select class="form-control" data-bind="visible:!image(), value:stockIcon">
                 <option/>
-                <option value="fas fa-exclamation-triangle">Important<i class="fas fa-exclamation-triangle fa-3x"></i></option>
-                <option value="far fa-newspaper">News<i class="far fa-newspaper fa-3x"></i></option>
-                <option value="fas fa-star">Star<i class="fas fa-star fa-3x"></i></option>
-                <option value="fas fa-info-circle">Information<i class="fas fa-info-circle fa-3x"></i></option>
+                <option value="fa-warning">Important<i class="fa fa-warning fa-3x"></i></option>
+                <option value="fa-newspaper-o">News<i class="fa fa-newspaper-o fa-3x"></i></option>
+                <option value="fa-star">Star<i class="fa fa-star-o fa-3x"></i></option>
+                <option value="fa-info-circle">Information<i class="fa fa-info-circle fa-3x"></i></option>
             </select>
             <p></p>
             <!-- /ko -->
