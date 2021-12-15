@@ -6,6 +6,7 @@ import asset.pipeline.jsass.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
+import grails.util.Environment
 import groovy.text.GStringTemplateEngine
 import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -49,16 +50,22 @@ class SettingService {
         FileUtils.deleteDirectory(target)
         FileUtils.forceMkdir(target)
         // load resource from classpath when code is run in production environment
-        String sourceDir = "classpath:/data/${grailsApplication.config.bootstrap4.copyFromDir}"
-        URL resource = getClass().getResource(sourceDir)
+        String sourceDir
 
-        if(resource == null) {
-            // load resource from filesystem when code is run in development environment
-            sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
-            resource = getClass().getResource(sourceDir)
-            targetDir = "${grailsApplication.config.temp.dir}"
-            target = new File(targetDir)
+        switch (Environment.current) {
+            case Environment.PRODUCTION:
+            case Environment.TEST:
+                sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
+                targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
+                break
+            case Environment.DEVELOPMENT:
+                sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
+                targetDir = "${grailsApplication.config.temp.dir}"
+                break
         }
+
+        URL resource = getClass().getResource(sourceDir)
+        target = new File(targetDir)
 
         // copy bootstrap4 directory
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
