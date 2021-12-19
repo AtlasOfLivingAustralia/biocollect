@@ -1,0 +1,69 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Voucher Sample Collection - Quadrat",
+  "projectId": "665b17e8-c950-4785-b0c3-e7cc89def22b",
+  "siteId": null,
+  "outputs": [
+    {
+      "name": "Voucher Sample Collection - Quadrat",
+      "outputId": null,
+      "data": {
+        "quadratId": null,
+        "voucherNumber": null,
+        "recordedBy": null,
+        "eventDate": null,
+        "minimumElevationInMetres": null,
+        "endemicity": null,
+        "individualCount": "1",
+        "countAccuracy": null,
+        "taxonFamily": {
+          "guid": "",
+          "name": "",
+          "scientificName": "",
+          "commonName": "",
+          "listId": ""
+        },
+        "taxonGenus": {
+          "guid": "",
+          "name": "",
+          "scientificName": "",
+          "commonName": "",
+          "listId": ""
+        },
+        "scientificName": {
+          "guid": "",
+          "name": "",
+          "scientificName": "",
+          "commonName": "",
+          "listId": ""
+        },
+        "taxonSubspecies": null,
+        "commonName": null,
+        "lifeForm": null,
+        "lifeStage": [],
+        "heightInMetres": null,
+        "voucherImage": [],
+        "eventRemarks": null,
+        "locationAccuracy": null,
+        "locationSource": null,
+        "location": null,
+        "locationLatitude": null,
+        "locationLongitude": null,
+        "locationHiddenLatitude": null,
+        "locationHiddenLongitude": null,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null
+      },
+      "outputNotCompleted": false,
+      "selectFromSitesOnly": false,
+      "mapElementId": "locationMap",
+      "_callbacks": {
+        "sitechanged": [
+          null
+        ]
+      }
+    }
+  ]
+}
