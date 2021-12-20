@@ -137,19 +137,11 @@ for(var i = 1; i < csvRows.length; i++) {
         project.name = fields[projectName]
     }
 
-    if(fields[associatedProgram].indexOf(',') != -1){
-        var tempAssociatedProgram = fields[associatedProgram].replace(/""/g, '"');;
-        project.associatedProgram = tempAssociatedProgram.substring(1, tempAssociatedProgram.length-1);
-    }
-    else {
+    if(fields[associatedProgram]){
         project.associatedProgram = fields[associatedProgram]
     }
 
-    if(fields[associatedSubProgram].indexOf(',') != -1){
-        var tempAssociatedSubProgram = fields[associatedSubProgram].replace(/""/g, '"');;
-        project.associatedSubProgram = tempAssociatedSubProgram.substring(1, tempAssociatedSubProgram.length-1);
-    }
-    else {
+    if(fields[associatedSubProgram]){
         project.associatedSubProgram = fields[associatedSubProgram]
     }
 
