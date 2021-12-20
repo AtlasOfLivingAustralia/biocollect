@@ -8,7 +8,7 @@ var document =
       "filepath" : "2021-12",
       "thirdPartyConsentDeclarationMade" : false,
       "projectActivityId" : "",
-      "role" : "mainImage",
+      "role" : "logo",
       "name" : "",
       "type" : "image",
       "status" : "active",
