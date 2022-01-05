@@ -404,7 +404,7 @@ section#breadcrumb {
 #main-content #headerBannerSpace {
   background-color: ${headerbannerspacebackgroundcolor};
 }
-#main-content .output-section {
+#main-content .output-section,  #content .output-section{
   position: relative;
   margin: 15px 0;
   padding: 50px 15px 14px;
@@ -432,7 +432,7 @@ section#breadcrumb {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-#main-content .boxed-heading {
+#main-content .boxed-heading, #content .boxed-heading {
   position: relative;
   margin: 15px 0;
   padding: 50px 15px 14px;
@@ -440,7 +440,7 @@ section#breadcrumb {
   border: 1px solid #ddd;
   box-sizing: border-box;
 }
-#main-content .boxed-heading:after {
+#main-content .boxed-heading:after, #content .boxed-heading:after {
   content: attr(data-content);
   position: absolute;
   top: -1px;
@@ -475,7 +475,7 @@ section#breadcrumb {
   color: #fff;
   background-color: #c44d34;
 }
-#main-content .dropzone {
+#main-content .dropzone, #content .dropzone  {
   width: 205px;
   font-weight: 500;
   font-size: 20px;

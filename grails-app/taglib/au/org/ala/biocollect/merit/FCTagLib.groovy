@@ -31,7 +31,7 @@ class FCTagLib {
         def forAttr = id ? " for='${id}'" : ''
         def label = attrs.remove 'label'
         if (label) {
-            out << """<label class="${labelClass ?: 'control-label'}" ${forAttr}>${label}</label>"""
+            out << """<label class="${labelClass ?: ''}" ${forAttr}>${label}</label>"""
         }
         def value = attrs.remove 'value'
         //println "${id}: ${value?.toString()}: ${value?.getClass()}"
@@ -39,9 +39,9 @@ class FCTagLib {
         def classes = attrs.remove('class')
         if (outerClass) {
             if (classes) {
-                classes += ' span12'
+                classes += ' form-control'
             } else {
-                classes = 'span12'
+                classes = 'form-control'
             }
         }
         log.trace "data-bind = " + attrs['data-bind']
@@ -72,14 +72,14 @@ class FCTagLib {
         def id = attrs.id ?: attrs.name
         def label = attrs.remove 'label'
         if (label) {
-            out << """<label class="control-label" for="${id}">${label}</label>"""
+            out << """<label for="${id}">${label}</label>"""
         }
         def rows = attrs.rows ?: 3
         def value = attrs.remove 'value'
         if (!value || value == 'null' || value?.toString() == 'null') { value = ""}
 
         //out << "<div class='controls'>"
-        out << "<textarea name='${id}' rows='${rows}' " << org.github.bootstrap.Attribute.outputAttributes(attrs, out) << ">${value}</textarea>"
+        out << "<textarea class=\"form-control\" name='${id}' rows='${rows}' " << org.github.bootstrap.Attribute.outputAttributes(attrs, out) << ">${value}</textarea>"
         //out << "</div>"
 
         if (outerClass) {
@@ -112,34 +112,30 @@ class FCTagLib {
      * @attr name
      * @attr targetField
      * @attr printable
+     * @attr required
+     * @attr bs4
      * @attr size optionally overrides the bootstrap size class for the input
      */
     def datePicker = { attrs ->
         /**
-            <div class="input-append">
-                <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
-                    data-validation-engine="validate[required]" class="input-xlarge"/>
-                <span class="add-on open-datepicker"><i class="icon-calendar"></i></span>
-            <div>
+         <input data-bind="datepicker:startDate.date" name="startDate" id="startDate" type="text" size="16"
+         data-validation-engine="validate[required]" class="input-xlarge"/>
+         <span class="add-on open-datepicker"><i class="fa fa-th"></i></span>
          */
 
         def mb = new MarkupBuilder(out)
 
         if (!attrs.printable) {
-            Map inputAppend = [
-                class: 'input-append datepicker'
-            ]
-
             def inputAttrs = [
-                "data-bind":"datepicker:${attrs.targetField}",
-                name:"${attrs.name}",
-                id:"${attrs.id ?: attrs.name}",
-                type:'text',
-                size:'16',
-                class: attrs.size ?: 'input-xlarge'
+                    "data-bind":"datepicker:${attrs.targetField}",
+                    name:"${attrs.name}",
+                    id:"${attrs.id ?: attrs.name}",
+                    type:'text',
+                    size:'16',
+                    class: attrs.size ?: 'input-xlarge'
             ]
 
-            def ignoreList = ['name', 'id']
+            def ignoreList = ['name', 'id', 'theme', 'bs4']
             attrs.each {
                 if (!ignoreList.contains(it.key)) {
                     inputAttrs[it.key] = it.value
@@ -149,25 +145,41 @@ class FCTagLib {
             if (attrs.required) {
                 inputAttrs["data-validation-engine"] = "validate[required]"
             }
-            mb.div(inputAppend){
+
+            def content = {
                 mb.input(inputAttrs) {
                 }
-
-                mb.span(class:'add-on open-datepicker') {
-                    mb.i(class:'icon-calendar') {
-                        mkp.yieldUnescaped("&nbsp;")
-                    }
-                }
-
-                if (attrs.clearBtn?.toBoolean()){
-                    mb.span(class:'add-on clear-date') {
-                        mb.i(class: 'icon-remove') {
+                String addOnClass = attrs.bs4 ? "btn ${attrs.theme ?: ''}" : "input-group-text add-on"
+                String buttonClass = "fa fa-th "
+                def spanDateWrapper = {
+                    mb.span(class: "${addOnClass} open-datepicker") {
+                        mb.i(class: buttonClass) {
                             mkp.yieldUnescaped("&nbsp;")
                         }
                     }
                 }
+                def clearDateWrapper = {
+                    if (attrs.clearBtn?.toBoolean()){
+                        mb.span(class:"${addOnClass} clear-date") {
+                            mb.i(class: 'far fa-times-circle') {
+                                mkp.yieldUnescaped("&nbsp;")
+                            }
+                        }
+                    }
+                }
 
-            };
+                //  Bootstrap 4 needs the control to be wrapped in an input-group class
+                if (attrs.bs4){
+                    mb.div(class: "input-group-append") {
+                        spanDateWrapper()
+                        clearDateWrapper()
+                    }
+                } else {
+                    spanDateWrapper()
+                    clearDateWrapper()
+                }
+            }
+            content()
         } else {
             def inputAttrs = [
                 name:"${attrs.name}",
@@ -195,12 +207,12 @@ class FCTagLib {
     def iconHelp = { attrs, body ->
         if (!attrs.printable) {
             def mb = new MarkupBuilder(out)
-            def anchorAttrs = [href:'#', tabindex: '-1', class:'helphover', 'data-original-title':attrs.title, 'data-placement':'top', 'data-content':body()]
+            def spanAttrs = [tabindex: '-1', 'data-original-title':attrs.title, 'data-placement':'top', 'title':body(), 'data-toggle': 'tooltip']
             if (attrs.container) {
-                anchorAttrs << ['data-container':attrs.container]
+                spanAttrs << ['data-container':attrs.container]
             }
-            mb.a(anchorAttrs) {
-                i(class:'icon-question-sign') {
+            mb.span(spanAttrs) {
+                i(class:'fas fa-question-circle') {
                     mkp.yieldUnescaped("&nbsp;")
                 }
             }
@@ -271,9 +283,9 @@ class FCTagLib {
         def current = pageProperty(name:'page.pageTitle')?.toString()
 
         def mb = new MarkupBuilder(out)
-        mb.li(class: active == current ? 'active' : '') {
-            a(href:attrs.href) {
-                i(class:'icon-chevron-right') { mkp.yieldUnescaped('&nbsp;')}
+        mb.li(class: 'nav-item') {
+            a(href:attrs.href, role: "tab", "class": active == current ? 'nav-link active' : 'nav-link') {
+                i(class:'fas fa-chevron-right') { mkp.yieldUnescaped('&nbsp;')}
                 mkp.yield(attrs.title)
             }
         }
@@ -650,8 +662,8 @@ class FCTagLib {
         attrs.tabs.each { name, details ->
 
             if (details.type == 'tab' && details.visible) {
-                def liClass = details.default ? 'active':''
-                def linkAttributes = [href:'#'+name, id:name+'-tab']
+                def liClass = 'nav-item'
+                def linkAttributes = [href:'#'+name, id:name+'-tab', class: details.default ? 'active nav-link':"nav-link"]
                 if (!details.disabled) {
                     linkAttributes << ["data-toggle":"tab"]
                 }
@@ -711,7 +723,7 @@ class FCTagLib {
         } else {
             mb.span() {
                 mb.strong() {
-                    mkp.yield(object?.toString())
+                    mkp.yield(object?.toString()?:"")
                 }
             }
 
@@ -738,7 +750,7 @@ class FCTagLib {
         Object facetValue = geom[facetName]
         if (facetValue) {
             String label = attrs.label ?: g.message(code:'label.'+facetName+'Facet', default:facetName)
-            mb.dt(label)
+            mb.dt(class: 'col-3', label)
 
             if (!(facetValue instanceof List)) {
                 facetValue = [facetValue]
@@ -760,7 +772,7 @@ class FCTagLib {
                     def idName =  "${facetName}Facet"
                     preview = details.substring(0, trimSize - 1) + " ..."
 
-                    mb.dd() {
+                    mb.dd(class: 'col-9') {
                         mb.div(id: idName) {
                             mb.div(class: "facet-data collapse in") {
                                 mkp.yield(preview)
@@ -780,10 +792,10 @@ class FCTagLib {
                     }
                 }
                 else
-                    mb.dd(details)
+                    mb.dd(class: 'col-9', details )
             }
             else
-                mb.dd(details)
+                mb.dd(class: 'col-9', details)
         }
 
         mb

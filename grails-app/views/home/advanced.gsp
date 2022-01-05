@@ -36,7 +36,7 @@
 
     <g:if test="${flash.error}">
         <div class="row-fluid">
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <span>${flash.error}</span>
             </div>
@@ -169,7 +169,7 @@
 </div>
 
 <asset:script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load',function () {
 
         // bind filters
         $('.filterinput').keyup(function() {

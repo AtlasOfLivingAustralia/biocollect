@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Add existing site | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
         var fcConfig = {
@@ -21,13 +21,15 @@
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            <g:applyCodec encodeAs="none">
+                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            </g:applyCodec>
             sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
         },
         returnTo = "${params.returnTo}";
     </asset:script>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="siteSelection.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -37,29 +39,31 @@
 <div class="container-fluid">
     <h1>Add sites to <a href="${params.returnTo}">${project.name}</a></h1>
 
-    <div class="row-fluid">
-        <bc:koLoading>
-            <div class="span6">
-                <div class="row-fluid">
+    <div class="row">
+        <div class="col-12 order-1 col-md-6 order-md-0">
+            <bc:koLoading>
+                <div class="row">
                     <!-- ko if: !loading() -->
-                    <div class="span5">
+                    <div class="col-12 col-md-5 order-1 order-md-0 mt-2 mt-md-0">
                         <span data-bind="text: matchingSiteCount()"
-                                                                   class=""></span> matching sites.
+                              class=""></span> matching sites.
                     </div>
                     <!-- /ko -->
                     <!-- ko if: loading -->
-                    <div class="span5">
+                    <div class="col-12 col-md-5 order-1 order-md-0 mt-2 mt-md-0">
                         <div>
                             <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
                         </div>
                     </div>
                     <!-- /ko -->
-                    <div class="span7">
-                        <form class="form-search  pull-right" data-bind="submit: searchSites">
-                            <div class="input-append">
-                                <input type="text" class="search-query" data-bind="value: currentSearch"
-                                       placeholder="Search by keyword"/>
-                                <button type="submit" class="btn btn-primary">Search</button>
+                    <div class="col-12 col-md-7 order-0 order-md-1 mt-2 mt-md-0">
+                        <form class="text-md-right" data-bind="submit: searchSites">
+                            <div class="input-group">
+                                <input class="form-control" type="text" data-bind="value: currentSearch"
+                                       placeholder="Search by keyword" aria-label="Search by keyword" aria-describedby="search-site-button"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary-dark" id="search-site-button" type="submit">Search</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -77,55 +81,54 @@
                     </thead>
                     <tbody>
                     <!-- ko foreach: sites -->
-                        <tr data-bind="attr: {id: siteId}">
-                            <td>
-                                <h4 data-bind="text:name"></h4>
-                            </td>
-                            <td>
-                                <button class="viewOnMap btn btn-small margin-top-5"
-                                        data-bind="click: $parent.mapSite, disable:$data.extent === undefined">
-                                    <i class="icon-eye-open"></i>
-                                    Preview
-                                </button>
-                                <button class="addSite btn btn-success btn-small margin-top-5"
-                                        data-bind="click: $parent.addSite, visible: !isProjectSite()">
-                                    <i class="icon-plus icon-white"></i>
-                                    Select
-                                </button>
-                                <button class="removeSite btn btn-danger btn-small margin-top-5"
-                                        data-bind="click: $parent.removeSite, visible: isProjectSite() ">
-                                    <i class="icon-minus  icon-white"></i>
-                                    Remove
-                                </button>
-                            </td>
-                        </tr>
+                    <tr data-bind="attr: {id: siteId}">
+                        <td>
+                            <h4 data-bind="text:name"></h4>
+                        </td>
+                        <td>
+                            <button class="viewOnMap btn btn-sm btn-info mt-2"
+                                    data-bind="click: $parent.mapSite, disable:$data.extent === undefined">
+                                <i class="far fa-eye"></i>
+                                Preview
+                            </button>
+                            <button class="addSite btn btn-sm btn-primary-dark mt-2"
+                                    data-bind="click: $parent.addSite, visible: !isProjectSite()">
+                                <i class="fas fa-plus"></i>
+                                Select
+                            </button>
+                            <button class="removeSite btn btn-sm btn-danger mt-2"
+                                    data-bind="click: $parent.removeSite, visible: isProjectSite() ">
+                                <i class="fas fa-minus"></i>
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
                     <!-- /ko -->
-                        <tr data-bind="if: (sites().length == 0) && !loading() ">
-                            <td colspan="2"><g:message code="site.details.nosites"/></td>
-                        </tr>
+                    <tr data-bind="if: (sites().length == 0) && !loading() ">
+                        <td colspan="2"><g:message code="site.details.nosites"/></td>
+                    </tr>
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <td colspan="2">
-                                <div class="row-fluid">
-                                    <div class="span12">
-                                        <g:render template="/shared/pagination"/>
-                                    </div>
+                    <tr>
+                        <td colspan="2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <g:render template="/shared/pagination" model="${[bs: 4]}"/>
                                 </div>
-                                <div class="row-fluid">
-                                    <div class="span12 text-right">
-                                        <button class="btn btn-primary margin-top-5" data-bind="click: useSelectedSites">Add selected sites</button>
-                                        <button class="btn margin-top-5" data-bind="click: cancelUpdate">Cancel</button>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button class="btn btn-primary-dark mt-2" data-bind="click: useSelectedSites">Add selected sites</button>
+                                    <button class="btn btn-dark mt-2" data-bind="click: cancelUpdate">Cancel</button>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                        </td>
+                    </tr>
                     </tfoot>
                 </table>
-            </div>
-        </bc:koLoading>
-
-        <div class="span6">
+            </bc:koLoading>
+        </div>
+        <div class="col-12 order-0 col-md-6 order-md-1">
             <m:map id="siteMap" width="100%"/>
         </div>
     </div>

@@ -237,8 +237,8 @@ function stringToDate(date) {
                 $element.datepicker('show');
             });
             $element.parent().find('.clear-date').click(function () {
-                $(this).siblings('input').val('');
-                $(this).siblings('input').change();
+                $element.val('');
+                $element.change();
             });
 
 

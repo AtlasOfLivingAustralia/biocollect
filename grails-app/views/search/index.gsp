@@ -28,7 +28,7 @@
     <g:if test="${flash.error || results.error}">
         <g:set var="error" value="${flash.error?:results.error}"/>
         <div class="row-fluid">
-            <div class="alert alert-error large-space-before">
+            <div class="alert alert-danger large-space-before">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <span>Error: ${error}</span>
             </div>
@@ -183,7 +183,7 @@
 
 </div>
 <asset:script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load',function () {
         $('.tooltips').tooltip({placement: "right"});
     });
 </asset:script>

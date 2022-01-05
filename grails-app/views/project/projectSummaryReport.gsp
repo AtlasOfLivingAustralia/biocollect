@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Project Summary | ${project.name}</title>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
@@ -18,36 +18,36 @@
 
 
     <div class="overview">
-        <div class="row-fluid">
-            <div class="span3 title">Project Name</div>
+        <div class="row">
+            <div class="col-sm-3 title">Project Name</div>
 
-            <div class="span9">${project.name}</div>
+            <div class="col-sm-9">${project.name}</div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span3 title">Recipient</div>
+        <div class="row">
+            <div class="col-sm-3 title">Recipient</div>
 
-            <div class="span9">${project.organisationName}</div>
+            <div class="col-sm-9">${project.organisationName}</div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span3 title">Project start</div>
+        <div class="row">
+            <div class="col-sm-3 title">Project start</div>
 
-            <div class="span9"><g:formatDate format="dd MMM yyyy"
+            <div class="col-sm-9"><g:formatDate format="dd MMM yyyy"
                                              date="${au.org.ala.biocollect.DateUtils.parse(project.plannedStartDate).toDate()}"/></div>
         </div>
 
         <g:if test="${project.plannedEndDate}">
-            <div class="row-fluid">
-                <div class="span3 title">Project finish</div>
+            <div class="row">
+                <div class="col-sm-3 title">Project finish</div>
 
-                <div class="span9"><g:formatDate format="dd MMM yyyy"
+                <div class="col-sm-9"><g:formatDate format="dd MMM yyyy"
                                                  date="${au.org.ala.biocollect.DateUtils.parse(project.plannedEndDate).toDate()}"/></div>
             </div>
         </g:if>
     </div>
 
-    <h3>Project Overview</h3>
+    <h3 class="mt-3">Project Overview</h3>
 
     <p>${project.description}</p>
 
@@ -55,8 +55,8 @@
 
     <g:if test="${activities}">
         <div class="project-dashboard">
-            <table class="table-striped">
-                <thead>
+            <table class="table table-bordered table-striped">
+                <thead class="thead-dark">
                 <tr>
                     <th>From</th>
                     <th>To</th>
@@ -86,7 +86,9 @@
         No activities have been defined for this project.
     </g:else>
 
-    <g:render template="dashboard"/>
+    <div class="mt-3">
+        <g:render template="dashboard"/>
+    </div>
 
 </div>
 

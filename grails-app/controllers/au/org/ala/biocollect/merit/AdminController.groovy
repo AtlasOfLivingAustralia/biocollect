@@ -8,6 +8,7 @@ import grails.util.Environment
 import grails.util.GrailsNameUtils
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.web.multipart.MultipartHttpServletRequest
+import static grails.async.Promises.task
 
 @PreAuthorise(accessLevel = 'officer', redirectController = "home")
 class AdminController {
@@ -472,6 +473,9 @@ class AdminController {
         settingService.updateHubSettings(settings)
         if ( settings.hubId ) {
             searchService.clearCachedProjectsInHub(settings.hubId)
+            task {
+                settingService.generateStyleSheetForHub(settings)
+            }
         }
 
         def message = [status:'ok']

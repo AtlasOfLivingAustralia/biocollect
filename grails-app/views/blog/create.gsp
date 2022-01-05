@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Create | Blog Entry | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},Project"/>
     <meta name="breadcrumb" content="New blog entry"/>
-    <asset:stylesheet src="fileupload-ui-manifest.css"/>
-    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <asset:stylesheet src="blog-manifest.css"/>
+%{--    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>--}%
     <asset:script type="text/javascript">
         var fcConfig = {
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -24,17 +24,17 @@
             returnTo: "${params.returnTo?:g.createLink(controller:'project', id:params.projectId)}"
             };
     </asset:script>
-    <asset:javascript src="common.js"/>
-    <asset:javascript src="fileupload-manifest.js"/>
-    <asset:javascript src="document.js"/>
+    <asset:javascript src="blog-manifest.js"/>
 </head>
 <body>
-<div class="${containerType}">
+<div class="container">
     <g:render template="editBlogEntry"/>
 
-    <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Create</button>
-        <button type="button" id="cancel" data-bind="click:cancel" class="btn">Cancel</button>
+    <div class="row">
+        <div class="col-12 btn-space">
+            <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark"><i class="fas fa-plus"></i> Create</button>
+            <button type="button" id="cancel" data-bind="click:cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
+        </div>
     </div>
 </div>
 
@@ -56,7 +56,7 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
     self.title = ko.observable(blogEntry.title || '');
     self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
     self.content = ko.observable(blogEntry.content);
-    self.stockIcon = ko.observable(blogEntry.stockImageName);
+    self.stockIcon = ko.observable(blogEntry.stockIcon);
     self.documents = ko.observableArray();
     self.image = ko.observable();
     self.type = ko.observable(blogEntry.type);

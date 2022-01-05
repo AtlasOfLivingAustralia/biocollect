@@ -122,9 +122,8 @@ class DashboardTagLib {
 
         out << """
             <strong>${score.label}${helpText(score, attrs)}</strong>
-            <div class="progress progress-info active " style="position:relative">
-                <div class="bar" style="width: ${percentComplete}%;"></div>
-                <span class="pull-right progress-label ${percentComplete >= 99 ? 'progress-100':''}" style="position:absolute; top:0; right:0;"> ${g.formatNumber(type:'number',number:result, maxFractionDigits: 2, groupingUsed:true)}/${score.target}</span>
+            <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="width: ${percentComplete}%;">${g.formatNumber(type:'number',number:result, maxFractionDigits: 2, groupingUsed:true)}/${score.target}</div>
             </div>"""
     }
 
@@ -205,7 +204,7 @@ class DashboardTagLib {
         switch (type) {
 
             case 'piechart':
-                out << "<div id=\"${chartId}\" class=\"chart\" style=\" width:100%;\"></div>"
+                out << "<div id=\"${chartId}\" class=\"chart w-100\"></div>"
                 Map options = [elementId: chartId, chartArea:[left:20, top:5, right:20, width:'430', height:'300'], dynamicLoading: true, title: title, columns: columns, data: data, width:'450', height:'300', backgroundColor: 'transparent']
                 if (attrs.sliceColoursByTitle) {
                     Map slices = [:]
@@ -230,7 +229,7 @@ class DashboardTagLib {
                 def height = Math.max(300, data.size()*20+topMargin+bottomMargin)
                 if (!attrs.printable && height > 500) {
                     topMargin = 0
-                    out << "<div id=\"${chartId}\" class=\"chart\" style=\"height:500px; overflow-y:scroll; margin-bottom:20px;\"></div>"
+                    out << "<div id=\"${chartId}\" class=\"chart mb-4\" style=\"height:500px; overflow-y:scroll;\"></div>"
                 }
                 else {
                     out << "<div id=\"${chartId}\" class=\"chart\"></div>"

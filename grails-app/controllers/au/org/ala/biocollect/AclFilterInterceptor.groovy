@@ -5,9 +5,6 @@ import au.org.ala.biocollect.merit.ProjectController
 import grails.converters.JSON
 import org.springframework.http.HttpStatus
 
-
-
-
 class AclFilterInterceptor {
     int order = 3
     def userService, projectService, roleService

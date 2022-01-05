@@ -8,22 +8,22 @@
 
     <body>
     <asset:stylesheet src="datatables-manifest.css"/>
-    <asset:stylesheet src="validationEngine.jquery.css"/>
-    <asset:javascript src="jquery.validationEngine/jquery.validationEngine.js"/>
-    <asset:javascript src="jquery.validationEngine/jquery.validationEngine-en.js"/>
+    <asset:stylesheet src="jquery.validationEngine/3.1.0/validationEngine.jquery.css"/>
+    <asset:javascript src="jquery.validationEngine/3.1.0/jquery.validationEngine.js"/>
+    <asset:javascript src="jquery.validationEngine/3.1.0/jquery.validationEngine-en.js"/>
     <asset:javascript src="permissionTable.js"/>
     <asset:javascript src="datatables-manifest.js"/>
     <content tag="pageTitle">Users</content>
 
-    <div class="container-fluid padding20">
+    <div class="container-fluid pt-4">
         <div class="well">Logged in user is <b class="tooltips" title="${user}">${user.getDisplayName()}</b></div>
 
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-12">
                 <g:render template="addPermissions" model="[projects:projects]"/>
             </div>
         </div>
-        <div class='hide'>
+        <div class='d-none'>
             <h4>View Permissions for user</h4>
             <form class="form-horizontal">
                 <div class="control-group">
@@ -34,12 +34,12 @@
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <button id="viewUserPermissionsButton" class="btn btn-primary">View</button>
-                        <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner2" class="hide spinner" alt="spinner icon"/>
+                        <button id="viewUserPermissionsButton" class="btn btn-primary-dark"><i class="far fa-eye"></i> View</button>
+                        <div id="spinner2" class="d-none spinner"><i class="fa fa-spin fa-spinner"></i></div>
                     </div>
                 </div>
             </form>
-            <div class="span8" id="userPermissionsOutput">
+            <div class="col-8" id="userPermissionsOutput">
 
             </div>
         </div>
@@ -54,7 +54,7 @@
         $("#viewUserPermissionsButton").click(function(e) {
             e.preventDefault();
             if ($('#userId2').val()) {
-                $("#spinner2").show();
+                $("#spinner2").removeClass('d-none');
                 $.ajax( {
                     url: "${createLink(controller: 'user', action: 'viewPermissionsForUserId')}",
                     data: {userId: $("#userId2").val() }
@@ -62,7 +62,7 @@
                     //console.log("result",result);
                     $("#userPermissionsOutput").html(formatPermissionData(result)); // "<pre>" + JSON.stringify(result, null, 4) + "</pre>"
                 }).fail(function(jqXHR, textStatus, errorThrown) { alert(jqXHR.responseText); })
-                .always(function(result) { $("#spinner2").hide(); });
+                .always(function(result) { $("#spinner2").addClass('d-none'); });
             } else {
                 alert("No user selected - please check and try again.");
                 $("#userPermissionsOutput").html("");

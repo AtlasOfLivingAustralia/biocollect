@@ -19,9 +19,11 @@
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
+        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        </g:applyCodec>
     }
     </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
@@ -36,7 +38,7 @@
 <div class="row-fluid">
     <g:if test="${flash.errorMessage}">
         <div class="container-fluid">
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 ${flash.errorMessage}
             </div>
         </div>
@@ -66,7 +68,7 @@
 <g:if test="${flash.error || results.error}">
     <g:set var="error" value="${flash.error?:results.error}"/>
     <div class="row-fluid">
-        <div class="alert alert-error large-space-before">
+        <div class="alert alert-danger large-space-before">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <span>Error: ${error}</span>
         </div>
@@ -299,7 +301,7 @@
 <g:else>
     <div class="row-fluid ">
         <div class="span12">
-            <div class="alert alert-error large-space-before">
+            <div class="alert alert-danger large-space-before">
                 Error: search index returned 0 results
             </div>
         </div>
@@ -311,7 +313,7 @@
 <asset:script type="text/javascript">
     var projectListIds = [], facetList = [], mapDataHasChanged = false, mapBounds, projectSites, siteDisplay; // globals
 
-    $(window).load(function () {
+    $(window).on('load',function () {
         $.fn.clicktoggle = function(a, b) {
             return this.each(function() {
                 var clicked = false;

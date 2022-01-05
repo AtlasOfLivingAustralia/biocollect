@@ -9,6 +9,8 @@
     position: absolute;
     /* hide checkbox behind large checkbox. this is done so that the form validation is triggered correctly.*/
     z-index: -1;
+    top: 8px;
+    left: 4px;
 }
 
 .large-checkbox label {

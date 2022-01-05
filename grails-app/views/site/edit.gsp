@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="layout" content="${hubConfig.skin}"/>
+  <meta name="layout" content="bs4"/>
   <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2"
@@ -20,23 +20,6 @@
         <meta name="breadcrumb" content="Edit"/>
     </g:else>
 
-    <style type="text/css">
-    legend {
-        border: none;
-        margin-bottom: 5px;
-    }
-    h1 input[type="text"] {
-        color: #333a3f;
-        font-size: 28px;
-        /*line-height: 40px;*/
-        font-weight: bold;
-        font-family: Arial, Helvetica, sans-serif;
-        height: 42px;
-    }
-    .no-border { border-top: none !important; }
-  </style>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -64,7 +47,9 @@
         sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
         ajaxUpdateUrl: "${createLink(action: 'ajaxUpdate', id: site?.siteId)}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        </g:applyCodec>
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
         },
         here = window.location.href;
@@ -72,7 +57,7 @@
     </asset:script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -81,10 +66,10 @@
     <div class="container-fluid validationEngineContainer" id="validation-container">
         <bs:form action="update" inline="true">
             <g:render template="siteDetails" model="${[showLine: true]}"/>
-            <div class="row-fluid">
-                <div class="form-actions span12">
-                    <button type="button" id="save" class="btn btn-primary">Save changes</button>
-                    <button type="button" id="cancel" class="btn">Cancel</button>
+            <div class="row mt-3">
+                <div class="form-actions col-12">
+                    <button type="button" id="save" class="btn btn-primary-dark">Save changes</button>
+                    <button type="button" id="cancel" class="btn btn-dark">Cancel</button>
                 </div>
             </div>
         </bs:form>
