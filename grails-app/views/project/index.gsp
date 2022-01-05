@@ -36,9 +36,9 @@
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
-        siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
-        siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
-        siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        siteCreateUrl: "${raw(createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId]))}",
+        siteSelectUrl: "${raw(createLink(controller: 'site', action: 'select', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         starProjectUrl: "${createLink(controller: 'project', action: 'starProject')}",
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",
@@ -59,14 +59,16 @@
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         errorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
-        auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
-        createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
-        editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
-        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
+        auditMessageUrl: "${raw(createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId]))}",
+        createBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
+        editBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
+        deleteBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId]))}",
         flimit: ${grailsApplication.config.facets.flimit},
-        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        <g:applyCodec encodeAs="none">
+            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        </g:applyCodec>
         leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         },
         here = window.location.href;
@@ -101,7 +103,7 @@
                 <h1 class="pull-left" data-bind="text:name"></h1>
                 <g:if test="${flash.errorMessage || flash.message}">
                     <div class="span5">
-                        <div class="alert alert-error">
+                        <div class="alert alert-danger">
                             <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
                             ${flash.errorMessage?:flash.message}
                         </div>
@@ -346,7 +348,7 @@
     </g:if>
 </div>
     <asset:script type="text/javascript">
-        $(window).load(function () {
+        $(window).on('load',function () {
             var map;
             // setup 'read more' for long text
             $('.more').shorten({
@@ -513,7 +515,7 @@
     <g:if test="${user?.isAdmin || user?.isCaseManager}">
         <asset:script type="text/javascript">
             // Admin JS code only exposed to admin users
-            $(window).load(function () {
+            $(window).on('load',function () {
 
                 // remember state of admin nav (vertical tabs)
                 $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {

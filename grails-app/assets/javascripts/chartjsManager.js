@@ -13,10 +13,10 @@ function ChartjsManagerViewModel() {
     self.chartjsListShow = ko.computed(function () {
         var ifChartjsListShow = self.chartjsList().length > 0
         if(ifChartjsListShow){
-            $('#chartGraphTab').show()
+            $('#data-chart-tab').show()
         }
         else {
-            $('#chartGraphTab').hide()
+            $('#data-chart-tab').hide()
         }
         return ifChartjsListShow;
     });
@@ -55,7 +55,7 @@ function ChartjsManagerViewModel() {
     self.chartjsPerRowSpan = ko.pureComputed(function () {
         const selected = self.chartjsPerRowSelected();
         const perRow = 12 / parseInt(selected || '2');
-        return 'span' + perRow.toString();
+        return 'col-sm-' + perRow.toString();
     });
 
     /**

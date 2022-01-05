@@ -1,12 +1,21 @@
 package au.org.ala.biocollect.merit
 
+
+import asset.pipeline.jsass.SassAssetFile
+import asset.pipeline.jsass.SassProcessor
+import asset.pipeline.processors.CssMinifyPostProcessor
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
-//import grails.plugin.cache.Cacheable
-import org.springframework.cache.annotation.Cacheable
+import grails.util.Environment
 import groovy.text.GStringTemplateEngine
+import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.context.request.RequestAttributes
+
+import static grails.async.Promises.task
+
+//import grails.plugin.cache.Cacheable
 
 class SettingService {
 
@@ -32,6 +41,36 @@ class SettingService {
 
     def webService, cacheService, cookieService
     def grailsApplication
+
+    def initService () {
+//        temp directory to copy files
+        String targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
+        File target = new File(targetDir)
+        // clean styles created previously
+        FileUtils.deleteDirectory(target)
+        FileUtils.forceMkdir(target)
+        // load resource from classpath when code is run in production environment
+        String sourceDir
+
+        switch (Environment.current) {
+            case Environment.PRODUCTION:
+            case Environment.TEST:
+                sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
+                targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
+                break
+            case Environment.DEVELOPMENT:
+                sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
+                targetDir = "${grailsApplication.config.temp.dir}"
+                break
+        }
+
+        URL resource = getClass().getResource(sourceDir)
+        target = new File(targetDir)
+
+        // copy bootstrap4 directory
+        au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
+        generateStyleSheetForHubs()
+    }
 
     /**
      * Checks if there is a configuration defined for the specified hub.
@@ -184,7 +223,7 @@ class SettingService {
     List listHubs() {
         cacheService.get(HUB_LIST_CACHE_KEY, {
             String url = grailsApplication.config.ecodata.service.url+'/hub/'
-            Map resp = webService.getJson(url, null, true)
+            Map resp = webService.getJson(url, null, true, false)
             resp.list ?: []
         })
     }
@@ -279,5 +318,124 @@ class SettingService {
         }
 
         item?.breadCrumbs
+    }
+
+    void generateStyleSheetForHubs() {
+        List hubs = listHubs()
+        task {
+            hubs?.each {  hubMap ->
+                HubSettings hub = new HubSettings(new HashMap(hubMap))
+                generateStyleSheetForHub(hub)
+            }
+        }
+    }
+
+    Map generateStyleSheetForHub(HubSettings hub) {
+        String scssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${grailsApplication.config.bootstrap4.themeExtension}"
+        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${scssFileName}"
+        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}"
+        SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileURI )
+        String output
+
+        if (hub && hub.templateConfiguration?.styles ) {
+            Map styles = hub.templateConfiguration?.styles
+            String urlPath = hub.urlPath
+            Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
+            String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss"
+
+            String cssFileURI = "${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}"
+            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}.css"
+            String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
+
+            if(!new File(cssFileFullPath).exists()){
+                String contentScss = """
+                ${styles?.primaryColor ? "\$primary: ${styles?.primaryColor};" : '' }
+                ${styles?.primaryDarkColor ? "\$primary-dark: ${styles?.primaryDarkColor};" : ''}
+                ${styles?.secondaryColor ? "\$secondary: ${styles?.secondaryColor};" : ''}
+                ${styles?.successColor ? "\$success: ${styles?.successColor};" : ''}
+                ${styles?.infoColor ? "\$info: ${styles?.infoColor} ;" : ''}
+                ${styles?.warningColor ? "\$warning: ${styles?.warningColor} ;" : ''}
+                ${styles?.dangerColor ? "\$danger: ${styles?.dangerColor} ;" : ''}
+                ${styles?.lightColor ? "\$light: ${styles?.lightColor} ;" : ''}
+                ${styles?.darkColor ? "\$dark: ${styles?.darkColor};" : ''}
+                ${styles?.bodyBackgroundColor ? "\$body-bg: ${styles?.bodyBackgroundColor};" : ''}
+                ${styles?.bodyTextColor ? "\$body-color: ${styles?.bodyTextColor};" : ''}
+                ${styles?.titleTextColor ? "\$headings-color: ${styles?.titleTextColor};" : ''}
+                ${styles?.breadCrumbBackGroundColour ? "\$breadcrumb-bg: ${styles?.breadCrumbBackGroundColour};" : ''}
+                ${styles?.hrefColor ? "\$link-color: ${styles?.hrefColor};" : ''}
+                ${styles?.navbackgroundcolor ? "\$nav-background-color: ${styles?.navbackgroundcolor};" : ''}
+                ${styles?.navtextcolor ? "\$nav-text-color: ${styles?.navtextcolor};" : ''}
+                ${styles?.facetBackgroundColor ? "\$facet-background-color: ${styles?.facetBackgroundColor};" : ''}
+                ${styles?.tileBackgroundColor ? "\$tile-background-color: ${styles?.tileBackgroundColor};" : ''}
+                ${styles?.tagBackgroundColor ? "\$tag-background-color: ${styles?.tagBackgroundColor};" : ''}
+                ${styles?.tagTextColor ? "\$tag-text-color: ${styles?.tagTextColor};" : ''}
+                ${styles?.footerBackgroundColor ? "\$footer-background-color: ${styles?.footerBackgroundColor};" : ''}
+                ${styles?.footerTextColor ? "\$footer-text-color: ${styles?.footerTextColor};" : ''}
+                ${styles?.socialTextColor ? "\$social-text-color: ${styles?.socialTextColor};" : ''}
+                ${styles?.insetTextColor ? "\$inset-text-color: ${styles?.insetTextColor};" : ''}
+                ${styles?.menuBackgroundColor ? "\$menu-background-color: ${styles?.menuBackgroundColor};" : ''}
+                ${styles?.menuTextColor ? "\$menu-text-color: ${styles?.menuTextColor};" : ''}
+                ${styles?.whatIsThisButtonBackgroundColor ? "\$what-is-btn: true;\$what-is-this-button-background-color: ${styles?.whatIsThisButtonBackgroundColor};" : "\$what-is-btn: false;"}
+                ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : "\$getting-started-btn: false;"}
+                ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : "\$add-a-record-btn: false;"}
+                ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : "\$view-records-btn: false;"}
+                ${styles?.makePrimaryButtonAnOutlineButton ? "\$make-primary-btn: true;\$primary-button-outline-text-color: ${styles?.primaryButtonOutlineTextColor};" : "\$make-primary-btn: false;"}
+                ${styles?.makeDefaultButtonAnOutlineButton ? "\$make-default-btn: true;\$default-button-outline-text-color: ${styles?.defaultButtonOutlineTextColor};" : "\$make-default-btn: false;"}
+                ${input.getInputStream().text}
+                """
+
+                output = processScssContent(contentScss, input, cssFileFullPath)
+            } else {
+                FileReader cssFileReader = new FileReader (cssFileFullPath)
+                try {
+                    output = cssFileReader.text
+                } catch(Exception e) {
+                    log.error("Error reading css file ${cssFileFullPath} - ${e.message}", e)
+                } finally {
+                    cssFileReader.close()
+                }
+            }
+        } else {
+            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.css"
+            String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
+
+            if(!new File(cssFileFullPath).exists()) {
+                String contentScss = input.getInputStream().text
+                output = processScssContent(contentScss, input, cssFileFullPath)
+            } else {
+                FileReader cssFileReader = new FileReader (cssFileFullPath)
+                try {
+                    output = cssFileReader.text
+                } catch (Exception e) {
+                    log.error("An error reading css file", e)
+                } finally {
+                    cssFileReader.close()
+                }
+            }
+        }
+
+
+        if (output != null) {
+            return  [css: output, status: 200]
+        } else {
+            return  [css: "An error occurred during compilation of SCSS file", status: 500]
+        }
+    }
+
+    String processScssContent(String contentScss, SassAssetFile input, String cssFileFullPath) {
+        String output
+        SassProcessor processor = new SassProcessor()
+        output = processor.process(contentScss, input)
+        def minifyCssProcessor = new CssMinifyPostProcessor()
+        try {
+            output = minifyCssProcessor.process(output)
+            FileWriter cssFile = new FileWriter(cssFileFullPath)
+            cssFile.write(output)
+            cssFile.close()
+        } catch (Exception e) {
+            log.error("Error minifying CSS - ${e.message}", e)
+        }
+
+        output
     }
 }

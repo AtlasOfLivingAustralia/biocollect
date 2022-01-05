@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Create | Activity | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <g:if test="${project}">
@@ -27,21 +27,23 @@
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         createUrl: "${createLink(action: 'create')}/",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        </g:applyCodec>
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/"
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
 </head>
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <div class="row-fluid">
-            <div class="span6">
+        <div class="row">
+            <div class="col-sm-6">
                 <label for="type">Type of activity</label>
                 <select data-bind="value: type, popover:{title:'', content:transients.activityDescription, trigger:'manual', autoShow:true}"
                         id="type" data-validation-engine="validate[required]" class="input-xlarge">
@@ -60,8 +62,8 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" data-bind="click: next" class="btn btn-primary">Next</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
+            <button type="button" data-bind="click: next" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Next</button>
+            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
         </div>
     </div>
 
@@ -117,9 +119,10 @@
 
         }
 
-        var viewModel = new ViewModel(${(activityTypes as JSON).toString()}, '${project?.projectId}');
-        ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
-
+        <g:applyCodec encodeAs="none">
+            var viewModel = new ViewModel(${(activityTypes as JSON).toString()}, '${project?.projectId}');
+            ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
+        </g:applyCodec>
     });
 
 </asset:script>

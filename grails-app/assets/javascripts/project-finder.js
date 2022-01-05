@@ -2,13 +2,13 @@
  * Created by Temi Varghese on 22/10/15.
  */
 //= require lz-string-1.4.4/lz-string.min.js
-//= require button-toggle-events.js
 //= require facets.js
 // leaflet
 //= require leaflet-manifest.js
 //= require_self
 // responsive table
 //= require responsive-table-stacked/stacked.js
+//= require pagination.js
 
 function ProjectFinder(config) {
 
@@ -24,6 +24,7 @@ function ProjectFinder(config) {
 
     /* size of current filtered list */
     var total = 0;
+    var projectsPerPage = 20;
 
     /* The map must only be initialised once, so keep track of when that has happened */
     var mapInitialised = false;
@@ -49,15 +50,26 @@ function ProjectFinder(config) {
     ];
 
     var alaMap;
+    var pfMapId = "#map-tab";
 
     /* window into current page */
     function PageVM(config) {
         this.self = this;
+        this.sortBy = ko.observable("dateCreatedSort");
+        this.isWorldWide = ko.observable("false");
         this.pageProjects = ko.observableArray();
         this.facets = ko.observableArray();
+        this.isGeoSearchEnabled = ko.observable(false);
         this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
+        this.pagination = new PaginationViewModel({
+            numberPerPage: projectsPerPage
+        }, this);
         self.columns = this.columns
+        this.clearGeoSearch = function () {
+            this.isGeoSearchEnabled(false);
+            clearGeoSearch();
+        };
         this.doSearch = function () {
 
             self.doSearch();
@@ -73,6 +85,9 @@ function ProjectFinder(config) {
             self.reset();
         }
 
+        this.sortBy.subscribe(this.doSearch);
+        this.isWorldWide.subscribe(this.doSearch);
+
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
         this.sortKeys = ko.observableArray(self.sortKeys);
@@ -82,6 +97,11 @@ function ProjectFinder(config) {
                 bootbox.alert("There was an error attempting your download.  Please try again or contact support.");
             });
             return false;
+        };
+
+        this.refreshPage = function(newOffset){
+            offset = newOffset;
+            self.doSearch();
         };
 
         self.resizeGrid = function () {
@@ -181,31 +201,6 @@ function ProjectFinder(config) {
         return result
     }
 
-    function setActiveButtonValues($button, values) {
-        $button.children('button').each(function (index, child) {
-            if (values && values.indexOf($(child).attr('data-value')) > -1) {
-                $(child).addClass('active');
-            } else {
-                $(child).removeClass('active');
-            }
-        });
-    }
-
-    function uncheckButton($button) {
-        $button.removeClass('active');
-        // if button group
-        $button.find('.active').removeClass('active');
-        return $button;
-    }
-
-    function toggleButton($button, on) {
-        if (on) {
-            checkButton($button, 'button', 'data-toggle');
-        } else {
-            $button.removeClass('active');
-        }
-    }
-
     function initialiseMap() {
         if (!mapInitialised) {
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
@@ -228,6 +223,8 @@ function ProjectFinder(config) {
             spatialFilter.addControl(regionSelector);
             spatialFilter.subscribe(geoSearchChanged);
             mapInitialised = true;
+        } else {
+            spatialFilter.getMapImpl().invalidateSize();
         }
     }
 
@@ -276,16 +273,10 @@ function ProjectFinder(config) {
         var isMERIT = fcConfig.isMERIT || false;
         var isWorldWide, hideWorldWideBtn = fcConfig.hideWorldWideBtn || false;
         if(!hideWorldWideBtn){
-            isWorldWide= getActiveButtonValues($('#pt-aus-world'));
-            isWorldWide = isWorldWide.length? isWorldWide[0] : false
+            isWorldWide= pageWindow.isWorldWide() === "true";
         }
 
-        var sortBy = getActiveButtonValues($("#pt-sort"));
-        perPage = parseInt(getActiveButtonValues($("#pt-per-page"))[0]);
-
         var queryString = '';
-
-      //  if (pageWindow.filterViewModel.redefineFacet()) {
 
             var selectedList = pageWindow.filterViewModel.selectedFacets();
             var origFacetList = pageWindow.filterViewModel.origSelectedFacet();
@@ -361,12 +352,6 @@ function ProjectFinder(config) {
                 fq.push(facet.getQueryText())
             });
 
-      /*  } else {
-            pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
-                fq.push(facet.getQueryText())
-            });
-        }*/
-
         var query = this.getQuery(true);
         if (query.length > 0) {
             query = query + ((queryString.length > 0)? ' AND ' + queryString: "");
@@ -402,11 +387,8 @@ function ProjectFinder(config) {
             queryText: this.getQuery(true)
         };
 
-        map.max =  perPage // Page size
-
-        if(sortBy .length == 1) {
-            map.sort = sortBy[0]
-        }
+        map.max =  pageWindow.pagination.resultsPerPage() // Page size
+        map.sort = pageWindow.sortBy();
 
         if (fcConfig.associatedPrograms) {
             $.each(fcConfig.associatedPrograms, function (i, program) {
@@ -454,8 +436,7 @@ function ProjectFinder(config) {
             data: params,
             traditional: true,
             beforeSend: function () {
-                $('#pt-result-heading').hide();
-                $('.search-spinner').show();
+                $('.search-spinner').removeClass('d-none');
 
             },
             success: function (data) {
@@ -465,10 +446,12 @@ function ProjectFinder(config) {
                     bootbox.alert ("There are no projects that fulfil the filter condition. Please click 'Clear all' to redefine the search criteria. ")
                 }
                 $.each(data.projects, function (i, project) {
-                    projectVMs.push(new ProjectViewModel(project, false));
+                    projectVMs.push(self.augmentVM(new ProjectViewModel(project, false)));
                 });
-                self.pago.init(projectVMs);
+                pageWindow.pagination.loadOffset(offset, total);
+                pageWindow.pageProjects(projectVMs);
                 pageWindow.filterViewModel.setFacets(data.facets || []);
+                self.updateTotal();
                 updateLazyLoad();
                 setTimeout(scrollToProject, 500);
                 // Issue map search in parallel to 'standard' search
@@ -480,8 +463,7 @@ function ProjectFinder(config) {
                 console.error(arguments)
             },
             complete: function () {
-                $('.search-spinner').hide();
-                $('#pt-result-heading').fadeIn();
+                $('.search-spinner').addClass('d-none');
             }
         })
     };
@@ -528,26 +510,16 @@ function ProjectFinder(config) {
 
 
     this.reset = function () {
-        checkButton($('#pt-sort'), 'nameSort');
-        checkButton($('#pt-per-page'), '20');
         $('#pt-search').val('');
         if (spatialFilter) {
             spatialFilter.resetMap();
         }
         geoSearch = {};
-        refreshGeofilterButtons();
+        pageWindow.isGeoSearchEnabled(false);
         pageWindow.filterViewModel.selectedFacets.removeAll();
         pageWindow.filterViewModel.origSelectedFacet.removeAll();
         pageWindow.filterViewModel.redefineFacet(false);
     }
-    /*************************************************\
-     *  Show filtered projects on current page
-     \*************************************************/
-    this.populateTable = function () {
-        pageWindow.pageProjects(projects);
-        pageWindow.pageProjects.valueHasMutated();
-        self.showPaginator();
-    };
 
     /** display the current size of the filtered list **/
     this.updateTotal = function () {
@@ -555,44 +527,10 @@ function ProjectFinder(config) {
         $('#pt-resultsReturned').html(this.paginationInfo());
     };
 
-    /*************************************************\
-     *  Pagination
-     \*************************************************/
-    /** build and append the pagination widget **/
-    this.showPaginator = function () {
-        if (total <= perPage) {
-            // no pagination required
-            $('div#pt-navLinks').html("");
-            return;
-        }
-        var currentPage = Math.floor(offset / perPage) + 1;
-        var maxPage = Math.ceil(total / perPage);
-        var $ul = $("<ul></ul>");
-        // add prev
-        if (offset > 0)
-            $ul.append('<li><a href="javascript:pago.prevPage();">&lt;</a></li>');
-        for (var i = currentPage - 3, n = 0; i <= maxPage && n < 7; i++) {
-            if (i < 1) continue;
-            n++;
-            if (i == currentPage)
-                $ul.append('<li><a href="#" class="currentStep">' + i + '</a></li>');
-            else
-                $ul.append('<li><a href="javascript:pago.gotoPage(' + i + ');">' + i + '</a></li>');
-        }
-        // add next
-        if ((offset + perPage) < total)
-            $ul.append('<li><a href="javascript:pago.nextPage();">&gt;</a></li>');
-
-        var $pago = $("<div class='pagination margin-bottom-5 margin-top-5'></div>");
-        $pago.append($ul);
-        $('div#pt-navLinks').html($pago);
-    };
-
-
     this.paginationInfo = function () {
         if (total > 0) {
             var start = parseInt(offset) + 1;
-            var end = Math.min(total, start + perPage - 1);
+            var end = Math.min(total, start + pageWindow.pagination.resultsPerPage() - 1);
             var message = fcConfig.paginationMessage || 'Showing XXXX to YYYY of ZZZZ projects';
             return message.replace('XXXX', start).replace('YYYY', end).replace('ZZZZ', total);
         } else {
@@ -601,15 +539,7 @@ function ProjectFinder(config) {
     };
 
     this.augmentVM = function (vm) {
-        var x, urls = [];
-        if (vm.urlWeb()) urls.push('<a href="' + vm.urlWeb() + '">Website</a>');
-        for (x = "", docs = vm.transients.mobileApps(), i = 0; i < docs.length; i++)
-            x += '&nbsp;<a href="' + docs[i].link.url + '" class="do-not-mark-external"><img class="logo-small" src="' + docs[i].logo(fcConfig.logoLocation) + '"/></a>';
-        if (x) urls.push("Mobile Apps&nbsp;" + x);
-        for (x = "", docs = vm.transients.socialMedia(), i = 0; i < docs.length; i++)
-            x += '&nbsp;<a href="' + docs[i].link.url + '" class="do-not-mark-external"><img class="logo-small" src="' + docs[i].logo(fcConfig.logoLocation) + '"/></a>';
-        if (x) urls.push("Social Media&nbsp;" + x);
-        vm.transients.links = urls.join('&nbsp;&nbsp;|&nbsp;&nbsp;') || '';
+        var x;
         vm.transients.searchText = (vm.name() + ' ' + vm.aim() + ' ' + vm.description() + ' ' + vm.keywords() + ' ' + vm.transients.scienceTypeDisplay() + ' ' + vm.transients.locality + ' ' + vm.transients.state + ' ' + vm.organisationName()).toLowerCase();
         vm.transients.indexUrl = vm.isMERIT() ? fcConfig.meritProjectUrl + '/' + vm.transients.projectId : fcConfig.projectIndexBaseUrl + vm.transients.projectId;
         vm.transients.orgUrl = vm.organisationId() && (fcConfig.organisationBaseUrl + vm.organisationId());
@@ -631,15 +561,13 @@ function ProjectFinder(config) {
 
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
-        savedViewMode = savedViewMode || "tileView"; //Default is the new map-popup view
-        checkButton($("#pt-view"), savedViewMode);
-        var viewMode = getActiveButtonValues($("#pt-view"));
-        pageWindow.viewMode(viewMode[0]);
+        savedViewMode = savedViewMode || "#grid-tab"; //Default is the new map-popup view
+        $('.project-finder-tab a#'+savedViewMode).tab('show');
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
-        showPanel = showPanel === undefined ? true : showPanel;
-        toggleFilterPanel(showPanel);
+        // hide filter since by default it is shown
+        !showPanel && $('.project-finder-filters-expander').trigger('click');
     };
 
 
@@ -816,21 +744,6 @@ function ProjectFinder(config) {
         return !isNaN(point.lat) && !isNaN(point.lng) && point.lat >= -90 && point.lat <= 90 && point.lng >= -180 && point.lng <= 180
     }
 
-    function toggleFilterPanel(showPanel) {
-        if(showPanel) {
-
-            $('#pt-table').removeClass('span11 no-sidebar');
-            $('#pt-table').addClass('span9');
-            $('#filterPanel').show();
-            $('#pt-filter').addClass('active');
-
-        } else {
-            $('#filterPanel').hide();
-            $('#pt-table').removeClass('span9');
-            $('#pt-table').addClass('span11 no-sidebar');
-        }
-    }
-
     /* comparator for data projects */
     function comparator(a, b) {
         var va = a[sortBy](), vb = b[sortBy]();
@@ -847,23 +760,20 @@ function ProjectFinder(config) {
         checkButton($('#pt-sort '), '_score')
     };
 
-    $("#pt-filter").on('statechange', function () {
-        var active = isButtonChecked($("#pt-filter"));
+    $(".project-finder-filters").on('shown.bs.collapse hidden.bs.collapse', function (event) {
+        var active = event.target.classList.contains('show');
         amplify.store('pt-filter', active);
-        toggleFilterPanel(active);
-        //toggleFilterPanel();
-
     });
 
-    $("#pt-view").on('statechange', function () {
-        var viewMode = getActiveButtonValues($("#pt-view"));
+    $(".project-finder-tab a[data-toggle='tab']").on('shown.bs.tab', function (event) {
+        // var viewMode = getActiveButtonValues($("#pt-view"));
         // pageWindow.listView(viewMode[0] == "listView");
-        pageWindow.viewMode(viewMode[0])
-        amplify.store('pt-view-state', viewMode[0]);
+        // pageWindow.viewMode(viewMode[0])
+        amplify.store('pt-view-state', event.target.id);
 
-        if(pageWindow.viewMode() == 'mapView') {
-            self.pfMap.redraw()
-        }
+        // if(pageWindow.viewMode() == 'mapView') {
+        //     self.pfMap.redraw()
+        // }
 
     });
     
@@ -872,22 +782,24 @@ function ProjectFinder(config) {
     })
 
 
-    $("#mapModal").on('shown', function () {
+    $("#mapModal").on('shown.bs.modal', function () {
         initialiseMap();
     });
 
-    $("#mapModal").on('hide', function () {
+    $("#mapModal").on('hide.bs.modal', function () {
         geoSearchChanged();
         if(refreshSearch) {
             self.doSearch();
         }
     });
 
-    $("#clearFilterByRegionButton").click(function () {
+    function clearGeoSearch() {
         geoSearch = {};
+        pageWindow.isGeoSearchEnabled(false);
         spatialFilter.resetMap();
-        refreshGeofilterButtons();
-    });
+    }
+
+    $("#clearFilterByRegionButton").click(clearGeoSearch);
 
 
     $('#pt-search-link').click(function () {
@@ -929,46 +841,6 @@ function ProjectFinder(config) {
         });
 
     $('#pt-aus-world').on('statechange', self.searchAndShowFirstPage);
-
-
-
-
-    pago = this.pago = {
-        init: function (projs) {
-            var hasPrograms = false;
-            projects = allProjects = [];
-            $.each(projs, function (i, project) {
-                allProjects.push(self.augmentVM(project));
-                if (project.associatedProgram()) hasPrograms = true;
-            });
-
-            self.populateTable();
-            self.updateTotal();
-            self.showPaginator();
-        },
-        gotoPage: function (pageNum) {
-            offset = (pageNum - 1) * perPage;
-            self.doSearch().done(function () {
-                scrollToView("#heading");
-            });
-        },
-        prevPage: function () {
-            offset -= perPage;
-            self.doSearch().done(function () {
-                scrollToView("#heading");
-            });
-        },
-        nextPage: function () {
-            offset += perPage;
-            self.doSearch().done(function () {
-                scrollToView("#heading");
-            });
-        },
-        firstPage: function () {
-            offset = 0;
-            self.doSearch();
-        }
-    };
 
     function constructHash() {
         var params = self.getParams();
@@ -1030,9 +902,8 @@ function ProjectFinder(config) {
 
         params.q = self.santitizeQuery(params.q);
         setGeoSearch(params.geoSearch);
-      //  pageWindow.filterViewModel.setFilterQuery(params.fq);
         pageWindow.filterViewModel.setFilterQuery(params.queryList);
-        offset = params.offset || offset;
+        offset = Number.parseInt(params.offset || offset);
         selectedProjectId = params.projectId;
 
         if (fcConfig.associatedPrograms) {
@@ -1041,9 +912,9 @@ function ProjectFinder(config) {
             });
         }
 
-        checkButton($("#pt-sort"), params.sort || 'dateCreatedSort');
-        checkButton($("#pt-per-page"), params.max || '20');
-        checkButton($("#pt-aus-world"), params.isWorldWide || 'false');
+        pageWindow.sortBy( params.sort || 'dateCreatedSort');
+        pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '20'));
+        pageWindow.isWorldWide( params.isWorldWide || 'false');
         
         $('#pt-search').val(params.queryText).focus();
         pageWindow.filterViewModel.switchOffSearch(false);
@@ -1058,7 +929,6 @@ function ProjectFinder(config) {
         if (geoSearchHash && typeof geoSearchHash !== 'undefined') {
             geoSearch = JSON.parse(LZString.decompressFromBase64(geoSearchHash));
 
-            toggleButton($('#pt-map-filter'), true);
 
             var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearch);
             geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
@@ -1072,7 +942,8 @@ function ProjectFinder(config) {
                 geoJson.features[0].properties.pid = geoSearch.pid;
             }
 
-            spatialFilter.setGeoJSON(geoJson);
+            spatialFilter && spatialFilter.setGeoJSON(geoJson);
+            pageWindow.isGeoSearchEnabled(true);
         }
     }
 
@@ -1080,20 +951,8 @@ function ProjectFinder(config) {
         return str && str.toLowerCase() === 'true';
     }
 
-    function refreshGeofilterButtons() {
-        if ($.isEmptyObject(geoSearch)) {
-            $('#clearFilterByRegionButton').removeClass('active');
-            $('#filterByRegionButton').removeClass('active');
-        } else {
-            $('#clearFilterByRegionButton').addClass('active');
-            $('#filterByRegionButton').addClass('active');
-        }
-    }
-
     function geoSearchChanged() {
         readUpdatedGeographicFilters();
-        refreshGeofilterButtons();
-
     }
      function readUpdatedGeographicFilters() {
 
@@ -1128,10 +987,13 @@ function ProjectFinder(config) {
             }
 
             refreshSearch = geoCriteriaChanged && validSearchGeometry(geoSearch);
-
+            if (refreshSearch) {
+                pageWindow.isGeoSearchEnabled(true);
+            }
         } else if (geoJSON.features.length == 0 && geoSearch) {
             refreshSearch = true;
             geoSearch = {};
+            pageWindow.isGeoSearchEnabled(false);
             self.doSearch();
         }
     }
@@ -1152,10 +1014,17 @@ function ProjectFinder(config) {
 
 
     if (fcConfig.hideWorldWideBtn) {
-        $('#pt-aus-world').hide();
-        $('#pt-aus-world-block').hide();
+        $('.projects-from-select').hide();
     }
 
+    $(document).on("shown.bs.tab", pfMapId, function () {
+        if (self.pfMap) {
+            self.pfMap.getMapImpl().invalidateSize();
+            self.pfMap.fitBounds();
+        }
+    });
+
+    initialiseMap();
     parseHash();
     self.doSearch();
     self.initViewMode();

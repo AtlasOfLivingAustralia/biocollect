@@ -2,13 +2,11 @@
 <g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message code="g.fieldCapture"/></title>
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
     <meta name="breadcrumb" content="Edit"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
 
     <asset:script type="text/javascript">
     var fcConfig = {
@@ -27,26 +25,26 @@
         imageLocation:"${asset.assetPath(src:'')}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
-        scienceTypes: ${scienceTypes as grails.converters.JSON},
-        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-        ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
-        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-        countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
-        uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
-        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
-        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        <g:applyCodec encodeAs="none">
+            scienceTypes: ${scienceTypes as grails.converters.JSON},
+            lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+            ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
+            lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+            countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
+            uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
+            dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
+            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        </g:applyCodec>
         },
         here = window.location.href;
 
     </asset:script>
-    <asset:stylesheet src="organisation.css"/>
     <asset:stylesheet src="project-create-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="organisation.js"/>
-    <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
@@ -55,9 +53,11 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
 <form id="projectDetails" class="form-horizontal">
     <g:render template="details" model="${pageScope.variables}"/>
-    <div class="well">
-        <button type="button" id="save" class="btn btn-primary"><g:message code="g.save"/></button>
-        <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
+    <div class="row">
+        <div class="col-12 btn-space">
+            <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
+        </div>
     </div>
 </form>
 

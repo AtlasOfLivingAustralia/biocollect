@@ -15,7 +15,7 @@
  * Created by Temi on 26/02/16.
  */
 $(document).ready(function() {
-    $('table').each(function(index, item){
+    $('table:not(.not-stacked-table)').each(function(index, item){
         $(this).addClass('responsive-table-stacked').parent().addClass('overflow-table');
         addAttributeToTd(item)
         watch(this, addAttributeToTd)

@@ -36,7 +36,7 @@
     <g:if test="${flash.error || geoPoints.error}">
         <g:set var="error" value="${flash.error?:geoPoints.error}"/>
         <div class="row-fluid">
-            <div class="alert alert-error large-space-before">
+            <div class="alert alert-danger large-space-before">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <span>Error: ${error}</span>
             </div>
@@ -133,7 +133,7 @@
     <g:else>
         <div class="row-fluid ">
             <div class="span12">
-                <div class="alert alert-error large-space-before">
+                <div class="alert alert-danger large-space-before">
                     Error: search index returned 0 results
                 </div>
             </div>
@@ -162,7 +162,7 @@
 <asset:script type="text/javascript">
     var projectListIds = []; // list of strings
 
-    $(window).load(function () {
+    $(window).on('load',function () {
         var delay = (function(){
             var timer = 0;
             return function(callback, ms){
@@ -401,7 +401,7 @@
 
             alaMap.map.fitBounds(bounds);
 
-        }).error(function (request, status, error) {
+        }).fail(function (request, status, error) {
             console.error("AJAX error", status, error);
         });
     }

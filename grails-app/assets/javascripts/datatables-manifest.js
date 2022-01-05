@@ -1,4 +1,2 @@
 // datatables
-//= require jquery.dataTables/jquery.dataTables.js
-//= require jquery.dataTables/jquery.dataTables.bootstrap.js
-//= require dataTables/dataTables.tableTools.min.js
+//= require jquery.dataTables/1.11.3/datatables.js

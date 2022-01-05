@@ -1,53 +1,53 @@
-<form class="form-horizontal" id="userAccessForm">
-    <div class="control-group">
-        <label class="control-label" for="emailAddress"><g:message code="project.admin.permissions.email"/>User's email address</label>
-        <div class="controls">
-            <input class="input-xlarge validate[required,custom[email]]" id="emailAddress" placeholder="enter a user's email address" type="text"/>
+<form id="userAccessForm">
+    <div class="row form-group">
+        <label class="col-form-label col-md-3" for="emailAddress"><g:message code="project.admin.permissions.email"/></label>
+        <div class="col-md-9">
+            <input class="form-control validate[required,custom[email]]" id="emailAddress" placeholder="enter a user's email address" type="text"/>
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label" for="addUserRole"><g:message code="project.admin.permissions.level"/></label>
-        <div class="controls" id="rolesSelect">
-            <g:render id="addUserRole" template="/admin/userRolesSelect" model="[roles:roles, includeEmptyOption: true]"/>
+    <div class="row form-group">
+        <label class="col-form-label col-md-3" for="addUserRole"><g:message code="project.admin.permissions.level"/></label>
+        <div class="col-md-9" id="rolesSelect">
+            <g:render id="addUserRole" template="/admin/userRolesSelect" model="[roles:roles, includeEmptyOption: true, selectClass: 'form-control']"/>
         </div>
     </div>
     <g:if test="${entityId}">
         <input type='hidden' id='entityId' value='${entityId}'>
     </g:if>
     <g:elseif test="${projects}">
-        <div class="control-group">
-            <label class="control-label" for="projectId"><g:message code="g.project"/></label>
-            <div class="controls nowrap">
-                <g:select name="project" id="projectId" class="input-xlarge combobox validate[required]" from="${projects}" optionValue="name" optionKey="projectId" noSelection="['':'start typing a project name']" />
+        <div class="row form-group">
+            <label class="col-form-label col-md-3" for="projectId"><g:message code="g.project"/></label>
+            <div class="col-md-9">
+                <g:select name="project" id="projectId" class="form-control combobox validate[required]" from="${projects}" optionValue="name" optionKey="projectId" noSelection="['':'start typing a project name']" />
             </div>
         </div>
     </g:elseif>
-    <g:else><div class="alert alert-error"><g:message code="project.admin.permissions.missingmodel"/></div></g:else>
-    <div class="control-group">
-        <div class="controls">
-            <button id="addUserRoleBtn" class="btn btn-primary btn-small"><g:message code="g.submit"/></button>
-            <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner1" class="hide spinner" alt="spinner icon"/>
+    <g:else><div class="alert alert-danger"><g:message code="project.admin.permissions.missingmodel"/></div></g:else>
+    <div class="row form-group">
+        <div class="col-md-9 offset-md-3">
+            <button id="addUserRoleBtn" class="btn btn-sm btn-primary-dark"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
+            <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner1" class="d-none spinner" alt="spinner icon"/>
         </div>
     </div>
 </form>
-<div id="status" class="offset2 span7 hide alert alert-success">
+<div id="status" class="offset-md-2 col-md-7 d-none alert alert-success">
     <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
     <span></span>
 </div>
-<div class="clearfix">&nbsp;</div>
-<div class="clearfix hide bbAlert1">
+%{--<div class="clearfix">&nbsp;</div>--}%
+<div class="d-none bbAlert1">
     <g:message code="project.admin.permissions.noemail"/>
     <ul>
         <li><g:message code="project.admin.permissions.incorrectemail"/></li>
         <li><g:message code="project.admin.permissions.emailnotregistered"/> <a href="${grailsApplication.config.user.registration.url}"
-                target='_blank' style='text-decoration: underline;'><g:message code="project.admin.permissions.signup"/>sign-up page</a>.
+                target='_blank'><u><g:message code="project.admin.permissions.signup"/>sign-up page</u></a>.
         </li>
     </ul>
 </div>
 <asset:script type="text/javascript">
     $(document).ready(function() {
         // combobox plugin enhanced select
-        $(".combobox").combobox();
+        // $(".combobox").combobox();
 
         // Click event on "add" button to add new user to project
         $('#addUserRoleBtn').click(function(e) {

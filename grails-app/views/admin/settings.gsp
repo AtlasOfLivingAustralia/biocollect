@@ -8,7 +8,7 @@
 
     <body>
         <content tag="pageTitle">Settings</content>
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th>Setting</th>
@@ -24,8 +24,8 @@
                         </td>
                         <td style="max-width:500px;overflow-wrap:break-word;">
                             <g:if test="${setting.editLink}">
-                                <a href="${setting.editLink}/${setting.name}" class="btn btn-small">
-                                    <i class="icon-edit"></i>&nbsp;View / Edit
+                                <a href="${setting.editLink}/${setting.name}" class="btn btn-sm btn-dark">
+                                    <i class="fas fa-pencil-alt"></i>&nbsp;View / Edit
                                 </a>
                             </g:if>
                             <g:else>
@@ -41,7 +41,7 @@
         </table>
 
         <h2>Grails properties</h2>
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th>Setting</th>

@@ -38,14 +38,14 @@
                             ${setting.key}
                         </td>
                         <td>
-                            <a href="${setting.editLink}/${setting.name}?editMode=false" class="btn btn-small">
-                                <i class="icon-file"></i>&nbsp;View
+                            <a href="${setting.editLink}/${setting.name}?editMode=false" class="btn btn-sm btn-dark">
+                                <i class="far fa-eye"></i>&nbsp;View
                             </a>
                         </td>
                         <td>
                             <g:if test="${setting.editLink}">
-                                <a href="${setting.editLink}/${setting.name}?editMode=true" class="btn btn-small">
-                                    <i class="icon-edit"></i>&nbsp;Edit
+                                <a href="${setting.editLink}/${setting.name}?editMode=true" class="btn btn-sm btn-dark">
+                                    <i class="fas fa-pencil-alt"></i>&nbsp;Edit
                                 </a>
                             </g:if>
                             <g:else>

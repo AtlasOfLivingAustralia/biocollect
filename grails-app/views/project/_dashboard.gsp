@@ -2,6 +2,7 @@
 %{-- Not using this tag as we want  a protocol-less import<gvisualization:apiImport/>--}%
 <script type="text/javascript" src="//www.google.com/jsapi"></script>
 
+<div class="container-fluid">
 <div class="project-dashboard">
     <h3>Risks and issues</h3>
     <g:if test="${project.custom?.details?.risks?.rows}">
@@ -22,7 +23,7 @@
         No issues have been identified for this project.
     </g:else>
 
-    <h3>Project Milestones</h3>
+    <h3 class="mt-3">Project Milestones</h3>
     <g:set var="milestones" value="${activities.findAll { it.typeCategory == 'Milestone' }}"/>
     <g:if test="${milestones}">
         <table class="milestones table-striped">
@@ -50,10 +51,10 @@
         No milestones have been specified for this project.
     </g:else>
 
-    <h3>Project Budget</h3>
+    <h3 class="mt-3">Project Budget</h3>
     <g:render template="budgetTableReadOnly"/>
 
-    <h3>Progress towards outcomes</h3>
+    <h3 class="mt-3">Progress towards outcomes</h3>
     <g:if test="${project?.custom?.details?.outcomeProgress}">
         <table class="outcomes-progress table-striped">
             <thead>
@@ -86,7 +87,7 @@
 
 
 
-    <div class="project-statistics">
+    <div class="project-statistics mt-3">
         <h3>Targets and metrics</h3>
         <g:set var="targets" value="${metrics.targets}"/>
         <g:set var="other" value="${metrics.other}"/>
@@ -95,17 +96,17 @@
             <g:if test="${targets}">
                 <h3 style="margin-top:0;">Output Targets</h3>
 
-                <div class="row-fluid">
-                <div class="span4">
+                <div class="row">
+                <div class="col-sm-4">
                     <g:set var="count" value="${targets.size()}"/>
                     <g:each in="${targets?.entrySet()}" var="metric" status="i">
                     %{--This is to stack the output metrics in three columns, the ceil biases uneven amounts to the left--}%
                         <g:if test="${i == Math.ceil(count / 3) || i == Math.ceil(count / 3 * 2)}">
                             </div>
-                            <div class="span4">
+                            <div class="col-sm-4">
                         </g:if>
-                        <div class="well">
-                            <h3>${metric.key}</h3>
+                        <div class="card">
+                            <h3 class="mt-3">${metric.key}</h3>
                             <g:each in="${metric.value}" var="score">
                                 <fc:renderScore score="${score}"></fc:renderScore>
                             </g:each>
@@ -117,17 +118,17 @@
 
             <g:if test="${other}">
 
-                <h3>Outputs without targets</h3>
+                <h3 class="mt-3">Outputs without targets</h3>
 
-                <div class="row-fluid outputs-without-targets">
+                <div class="row outputs-without-targets">
                     <g:each in="${other?.entrySet()}" var="metric" status="i">
 
-                        <div class="well well-small">
-                            <h3>${metric.key}</h3>
+                        <div class="card">
+                            <h3 class="mt-3">${metric.key}</h3>
                             <g:each in="${metric.value}" var="score">
                                 <fc:renderScore score="${score}"></fc:renderScore>
                             </g:each>
-                        </div><!-- /.well -->
+                        </div>
 
                     </g:each>
                 </div>
@@ -137,6 +138,7 @@
             <p>No activity or target data exists for this project.</p>
         </g:else>
     </div>
+</div>
 </div>
 <script>
 

@@ -5,8 +5,9 @@ layout:
   skin: "ala2"
 
 server:
-  session:
-    timeout: 3600
+  servlet:
+    session:
+      timeout: 3600
 
 environments:
     development:
@@ -14,6 +15,8 @@ environments:
            config:
               locations:
                  - file:///data/biocollect/config/biocollect-config-grails3.properties
+        temp:
+          dir: /data/biocollect/temp
         #system level config
         server:
            port: 8087
@@ -57,10 +60,9 @@ app:
 
 security:
    cas:
-      casProperties: "casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,uriExclusionFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath,gatewayStorageClass"
-      uriExclusionFilterPattern: "/assets/.*,/images.*,/css.*,/js.*,/less.*,/ajax/(bulkLookupQuestions|saveBookmarkLocation|getBookmarkLocations),/uploads/.*"
-      authenticateOnlyIfLoggedInPattern: ".*"
-      uriFilterPattern: ".*/user/.*,.*/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList|checkPointInsideProjectAreaAndAddress)).*,.*/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*,.*/activity/(?!index).*,.*/output/(?!index).*,.*/image/(?!index).*,.*/admin/.*,i.*/proxy/speciesListPost,.*/proxy/documentUpdate,.*/proxy/deleteDocument,.*/home/advanced,.*/organisation/(?!index).*,.*/organisation/(?!list).*,.*/bioActivity/create/.*,.*/bioActivity/edit/.*,.*/bioActivity/list,/sight/.*"
+      uriExclusionFilterPattern: ['/assets/.*','/images.*','/css.*','/js.*','/less.*','/ajax/(bulkLookupQuestions|saveBookmarkLocation|getBookmarkLocations)','/uploads/.*']
+      authenticateOnlyIfLoggedInPattern: "/*"
+      uriFilterPattern: ['/user/.*','/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList|checkPointInsideProjectAreaAndAddress)).*','/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*','/activity/(?!index).*','/output/(?!index).*','/image/(?!index).*','/admin/.*','/proxy/speciesListPost','/proxy/documentUpdate','/proxy/deleteDocument','/home/advanced','/organisation/(?!index).*','/organisation/(?!list).*','/bioActivity/create/.*','/bioActivity/edit/.*','/bioActivity/list','/sight/.*']
       readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
       alaAdminRole : "ROLE_ADMIN"
       officerRole : "ROLE_FC_OFFICER"
@@ -69,6 +71,7 @@ security:
       casServerLoginUrl: "https://auth.ala.org.au/cas/login"
       casServerUrlPrefix: "https://auth.ala.org.au/cas"
       logoutUrl: "https://auth.ala.org.au/cas/logout"
+      loginUrl: "https://auth.ala.org.au/cas/login"
 
 #External URL
 aekosEnabled: false
@@ -121,6 +124,36 @@ google:
 
 headerAndFooter:
   baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
+  header:
+    - contentType: "content"
+      displayName: "Search"
+      href: "/project/projectFinder"
+    - contentType: "allrecords"
+      displayName: "All records"
+    - contentType: "content"
+      displayName: "Sites"
+      href: "/site/list"
+    - contentType: "newproject"
+      displayName: "New Project"
+    - contentType: "admin"
+      displayName: "Admin"
+    - contentType: "login"
+      displayName: "Logout"
+  footer:
+    - contentType: "content"
+      displayName: "Search"
+      href: "/project/projectFinder"
+    - contentType: "allrecords"
+      displayName: "All records"
+    - contentType: "content"
+      displayName: "Sites"
+      href: "/site/list"
+    - contentType: "newproject"
+      displayName: "New Project"
+    - contentType: "admin"
+      displayName: "Admin"
+    - contentType: "login"
+      displayName: "Logout"
 
 images:
   baseURL: "https://images.ala.org.au"
@@ -242,7 +275,7 @@ grails:
             encoding: UTF-8
             htmlcodec: xml
             codecs:
-                expression: none  #${ } will be html encoded if set to default to html
+                expression: html  #${ } will be html encoded if set to default to html
                 scriptlets: html
                 taglib: none
                 staticparts: none
@@ -281,20 +314,23 @@ grails:
 
 
 spring:
-    main:
-        banner-mode: "off"
-    groovy:
-        template:
-            check-template-location: false
-
+  main:
+    banner-mode: "off"
+  groovy:
+    template:
+      check-template-location: false
+  devtools:
+    restart:
+      additional-exclude:
+        - '*.gsp'
+        - '**/*.gsp'
+        - '*.gson'
+        - '**/*.gson'
+        - 'logback.groovy'
+        - '*.properties'
 
 
 # Spring Actuator Endpoints are Disabled by Default
-endpoints:
-    enabled: false
-    jmx:
-        enabled: true
-
 webservice:
     connectTimeout: 6000000
     readTimeout: 6000000
@@ -330,3 +366,17 @@ userDetails:
 
 userDetailsById:
   path: "getUserDetails"
+management:
+  endpoints:
+    jmx:
+      exposure:
+        exclude:
+    enabled-by-default: false
+
+# bootstrap4 theme
+bootstrap4:
+  themeDirectory: "/bootstrap4/scss"
+  themeFileName: "styles"
+  themeExtension: "scss"
+  copyFromDir: "bootstrap4"
+  copyToDir: "bootstrap4"

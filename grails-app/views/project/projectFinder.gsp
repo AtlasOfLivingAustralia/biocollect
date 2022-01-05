@@ -22,15 +22,14 @@
 
 
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title><g:if test="${title}">${title}</g:if><g:else><g:message code="g.${label}"/></g:else> | <g:message code="g.fieldCapture"/></title>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
-    <asset:stylesheet src="projects-manifest.css" />
-    <asset:stylesheet src="project-finder.css" />
+    <meta name="layout" content="bs4"/>
+    <title><g:if test="${title}">${title}</g:if><g:else><g:message code="g.${label}"/></g:else> | <g:message
+            code="g.fieldCapture"/></title>
+    <asset:stylesheet src="project-finder-manifest.css"/>
+    %{--    <asset:stylesheet src="project-finder.css" />--}%
     <asset:script type="text/javascript">
-    var fcConfig = {
-        intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+        var fcConfig = {
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -47,10 +46,10 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
-        imageLocation:"${asset.assetPath(src:'')}",
-        logoLocation:"${asset.assetPath(src:'filetypes')}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}",
-        projectListUrl: "${createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect'])}",
+        imageLocation:"${asset.assetPath(src: '')}",
+        logoLocation:"${asset.assetPath(src: 'filetypes')}",
+        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
+        projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller: 'project', action: 'index')}/",
         organisationBaseUrl : "${createLink(controller: 'organisation', action: 'index')}/",
         isCitizenScience: true,
@@ -60,10 +59,11 @@
         noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
-        enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
-        downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-
+        enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false},
+        downloadWorksProjectsUrl: "${createLink(controller: 'project', action: 'downloadWorksProjects')}",
+        <g:applyCodec encodeAs="none">
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        </g:applyCodec>
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
                 isUserWorksPage: true,
@@ -71,10 +71,10 @@
             <g:if test="${isEcoScience}">
                 isUserEcoSciencePage: true,
             </g:if>
-                isUserPage: true,
-                hideWorldWideBtn: true,
-                isCitizenScience: false,
-                showAllProjects: true
+            isUserPage: true,
+            hideWorldWideBtn: true,
+            isCitizenScience: false,
+            showAllProjects: true
         </g:if>
         <g:else>
             <g:if test="${isEcoScience}">
@@ -90,28 +90,44 @@
             <g:elseif test="${isCitizenScience}">
                 isCitizenScience: true,
             </g:elseif>
-                showAllProjects: false
+            showAllProjects: false
         </g:else>
-    }
+        }
         <g:if test="${grailsApplication.config.merit.projectLogo}">
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
         </g:if>
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <asset:javascript src="common.js" />
-    <asset:javascript src="project-activity-manifest.js" />
-    <asset:javascript src="projects-manifest.js" />
-    <asset:javascript src="project-finder.js" />
+    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="project-activity-manifest.js"/>
+    <asset:javascript src="projects-manifest.js"/>
+    <asset:javascript src="project-finder.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>
-<div id="wrapper" class="content container-fluid padding-top-10">
-    <div id="project-finder-container">
-        <div class="row-fluid">
-            <div class="span12 padding10-small-screen" id="heading">
-                <h1 class="pull-left">
+<content tag="pagefinderbuttons">
+    <g:if test="${isUserPage}">
+        <button id="newPortal" type="button" class="btn btn-primary-dark"><g:message
+                code="project.citizenScience.portalLink"/></button>
+    </g:if>
+    <g:else>
+        <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
+            <button class="btn btn-primary-dark btn-gettingstarted"
+                    onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'">
+                <i class="fas fa-info"></i> Getting started</button>
+            <button class="btn btn-primary-dark btn-whatisthis"
+                    onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'">
+                <i class="fas fa-question"></i> What is this?</button>
+        </g:if>
+    </g:else>
+</content>
+<section class="text-center section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-0 offset-md-1" id="heading">
+                <h1>
                     <g:if test="${title}">
                         ${title}
                     </g:if>
@@ -119,49 +135,52 @@
                         <g:message code="project.${label}.heading"/>
                     </g:else>
                 </h1>
-                <g:if test="${isUserPage}">
-                    <button id="newPortal" type="button" class="pull-right btn"><g:message
-                            code="project.citizenScience.portalLink"/></button>
-                </g:if>
-                <g:else>
-                    <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
-                    <div class="pull-right">
-                        <button class="btn btn-info btn-gettingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'"><i
-                                class="icon-info-sign icon-white"></i> Getting started</button>
-                        <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'"><i
-                                class="icon-question-sign icon-white"></i> What is this?</button>
-                    </div>
-                    </g:if>
-                </g:else>
             </div>
-        </div>
-
-        <div>
-            <g:render template="/shared/projectFinderResultSummary"/>
-        </div>
-
-        <div class="row-fluid">
-            <div id="filterPanel" class="span3" style="display: none">
-                <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch: false]}"/>
-            </div>
-            <g:render template="/shared/projectFinderResultPanel"/>
         </div>
     </div>
-</div>
+</section>
+%{--<div id="wrapper" class="content container-fluid padding-top-10">--}%
+%{--    <div id="project-finder-container">--}%
+%{--        <div>--}%
+%{--            <g:render template="/shared/projectFinderResultSummary"/>--}%
+%{--        </div>--}%
+
+%{--        <div class="row-fluid">--}%
+%{--            <div id="filterPanel" class="span3">--}%
+%{--                <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch: false]}"/>--}%
+%{--            </div>--}%
+%{--            <g:render template="/shared/projectFinderResultPanel"/>--}%
+%{--        </div>--}%
+%{--    </div>--}%
+%{--</div>--}%
+
+<section id="catalogueSection">
+    <div id="project-finder-container">
+        <div class="container-fluid show expander projects-container">
+            <g:render template="/shared/projectFinderResultSummary" />
+            <g:render template="/shared/projectFinderResultPanel"/>
+        </div>
+        <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch: false]}"/>
+        <!-- /#filters -->
+    </div>
+
+</section>
 <asset:script type="text/javascript">
     $("#newPortal").on("click", function() {
     <g:if test="${isCitizenScience}">
-        document.location.href = "${createLink(controller: 'project', action: 'create', params: [citizenScience: true])}";
+        document.location.href = "${raw(createLink(controller: 'project', action: 'create', params: [citizenScience: true]))}";
     </g:if>
     <g:if test="${isWorks}">
-        document.location.href = "${createLink(controller: 'project', action: 'create', params: [works: true])}";
+        document.location.href = "${raw(createLink(controller: 'project', action: 'create', params: [works: true]))}";
     </g:if>
     <g:if test="${isEcoScience}">
-        document.location.href = "${createLink(controller: 'project', action: 'create', params: [ecoScience: true])}";
+        document.location.href = "${raw(createLink(controller: 'project', action: 'create', params: [ecoScience: true]))}";
     </g:if>
     });
-
     var projectFinder = new ProjectFinder(fcConfig);
+    // $(function() {
+    //
+    // })();
 </asset:script>
 </body>
 </html>

@@ -3,7 +3,6 @@ package au.org.ala.biocollect
 import asset.pipeline.AssetPipelineConfigHolder
 import au.org.ala.ecodata.forms.TemplateFileAssetResolver
 import grails.converters.JSON
-import grails.plugins.GrailsPlugin
 import grails.util.BuildSettings
 import grails.util.Environment
 import net.sf.json.JSONNull
@@ -11,6 +10,7 @@ import net.sf.json.JSONNull
 
 class BootStrap {
     def configService
+    def settingService
 
     def init = { servletContext ->
         JSON.createNamedConfig("nullSafe", { cfg ->
@@ -25,7 +25,7 @@ class BootStrap {
             def templateFileAssetResolver = new TemplateFileAssetResolver('templates', "${appDir}/grails-app/assets/components", false, '/compile/biocollect-templates.js', '/template')
             AssetPipelineConfigHolder.resolvers.add(0, templateFileAssetResolver)
         }
-
+        settingService.initService()
     }
     def destroy = {
     }

@@ -1068,7 +1068,7 @@ function ProjectViewModel(project, isUserEditor) {
                     type: 'DELETE',
                     success: function (data) {
                         if (data.error) {
-                            showAlert(data.error, "alert-error", self.transients.resultsHolder);
+                            showAlert(data.error, "alert-danger", self.transients.resultsHolder);
                         } else {
                             showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes. Redirecting to search page...", "alert-success", self.transients.resultsHolder);
                             setTimeout(function () {
@@ -1077,7 +1077,7 @@ function ProjectViewModel(project, isUserEditor) {
                         }
                     },
                     error: function (data) {
-                        showAlert("Error: Unhandled error", "alert-error", self.transients.resultsHolder);
+                        showAlert("Error: Unhandled error", "alert-danger", self.transients.resultsHolder);
                     }
                 });
             }
@@ -1278,7 +1278,7 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
             self.transients.associatedOrgUrl(null);
             self.transients.associatedOrgLogoUrl(null);
         } else {
-            showAlert("This organisation has already been added",  "alert-error", "orgAlreadyAddedMessage")
+            showAlert("This organisation has already been added",  "alert-danger", "orgAlreadyAddedMessage")
         }
 
     };
@@ -1344,7 +1344,7 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
     self.title = ko.observable(blogEntry.title || '');
     self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
     self.content = ko.observable(blogEntry.content);
-    self.stockIcon = ko.observable(blogEntry.stockImageName);
+    self.stockIcon = ko.observable(blogEntry.stockIcon);
     self.documents = ko.observableArray();
     self.image = ko.observable();
     self.type = ko.observable(blogEntry.type);
