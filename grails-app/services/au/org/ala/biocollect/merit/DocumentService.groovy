@@ -11,6 +11,7 @@ class DocumentService {
 
     def webService, grailsApplication
     MessageSource messageSource
+    UserService userService
 
     def get(String id) {
         def url = "${grailsApplication.config.ecodata.service.url}/document/${id}"
@@ -99,5 +100,51 @@ class DocumentService {
         }
 
         documents;
+    }
+
+    /**
+     * Returns true if the current user has permission to edit/update the
+     * supplied document.
+     * @param document the document to be edited/updated
+     */
+    boolean canEdit(Map document) {
+        if (document.documentId) {
+            document = get(document.documentId)
+        }
+        boolean canEdit = false
+
+        if (document) {
+            // Only FC_ADMINS can edit an existing read only document, but
+            // other roles can create them.
+            if (document.readOnly && document.documentId) {
+                canEdit = userService.userIsAlaOrFcAdmin()
+            }
+            else {
+                canEdit = hasEditorPermission(document)
+            }
+
+        }
+
+        canEdit
+    }
+
+    /** Returns true if the currently logged in user has permission to edit the supplied Document */
+    private boolean hasEditorPermission(Map document) {
+        boolean canEdit = userService.userIsAlaOrFcAdmin()
+        if (!canEdit) {
+            // Check the permissions that apply to the entity the document is
+            // associated with.
+            String userId = userService.getCurrentUserId()
+            if (document.projectId) {
+                canEdit = userService.canUserEditProject(userId, document.projectId)
+            } else if (document.organisationId) {
+                canEdit = userService.isUserAdminForOrganisation(userId, document.organisationId)
+            }
+        }
+        canEdit
+    }
+    /** Returns true if the currently logged in user has permission to view the supplied Document */
+    boolean canView(Map document) {
+        document.publiclyViewable || userService.userHasReadOnlyAccess() || hasEditorPermission(document)
     }
 }
