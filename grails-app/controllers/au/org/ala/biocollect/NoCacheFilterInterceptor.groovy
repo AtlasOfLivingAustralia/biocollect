@@ -9,7 +9,7 @@ class NoCacheFilterInterceptor {
 
     int order = 1
     NoCacheFilterInterceptor() {
-        matchAll()
+        matchAll().excludes(controller:'document', action:'download')
     }
 
 
