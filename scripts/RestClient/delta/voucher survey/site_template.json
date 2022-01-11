@@ -10,7 +10,9 @@
         "centre": [],
         "type": "Point",
         "areaKmSq": 0,
-        "coordinates": []
+        "coordinates": [],
+        "decimalLongitude":"",
+        "decimalLatitude": ""
       },
       "source": "Point"
     },
