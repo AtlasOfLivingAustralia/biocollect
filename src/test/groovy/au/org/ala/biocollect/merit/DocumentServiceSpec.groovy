@@ -12,11 +12,6 @@ import spock.lang.Specification
  */
 @TestFor(DocumentService)
 class DocumentServiceSpec extends Specification {
-    Closure doWithSpring() {{ ->
-        service DocumentService
-    }}
-
-    DocumentService service
 
     UserService userService = Mock(UserService)
     WebService webService = Mock(WebService)
@@ -42,6 +37,7 @@ class DocumentServiceSpec extends Specification {
         then:
         canEdit == false
         canDelete == false
+        2 * userService.userIsAlaOrFcAdmin() >> false
         2 * webService.getJson(_) >> [documentId:'d1', projectId:'p2']
         2 * userService.getCurrentUserId() >> userId
         2 * userService.canUserEditProject(userId, 'p2') >> false
@@ -53,6 +49,7 @@ class DocumentServiceSpec extends Specification {
         then:
         canEdit == true
         canDelete == true
+        2 * userService.userIsAlaOrFcAdmin() >> false
         2 * webService.getJson(_) >> [documentId:'d1', projectId:'p2']
         2 * userService.getCurrentUserId() >> userId
         2 * userService.canUserEditProject(userId, 'p2') >> true
@@ -70,6 +67,7 @@ class DocumentServiceSpec extends Specification {
         then:
         canEdit == false
         canDelete == false
+        2 * userService.userIsAlaOrFcAdmin() >> false
         2 * webService.getJson(_) >> [documentId:'d1', organisationId:'o2']
         2 * userService.getCurrentUserId() >> userId
         2 * userService.isUserAdminForOrganisation(userId, 'o2') >> false
@@ -81,6 +79,7 @@ class DocumentServiceSpec extends Specification {
         then:
         canEdit == true
         canDelete == true
+        2 * userService.userIsAlaOrFcAdmin() >> false
         2 * webService.getJson(_) >> [documentId:'d1', organisationId:'o2']
         2 * userService.getCurrentUserId() >> userId
         2 * userService.isUserAdminForOrganisation(userId, 'o2') >> true
@@ -120,45 +119,9 @@ class DocumentServiceSpec extends Specification {
 
         then:
         canEdit == true
+        1 * userService.userIsAlaOrFcAdmin() >> false
         1 * userService.getCurrentUserId() >> userId
         1 * userService.canUserEditProject(userId, document.projectId) >> true
-    }
-
-    def "logo and mainImage documents will be marked as public when creating a document from a staged image"(String role, boolean expectedPublic) {
-        setup:
-        Map document = [filename:"test.jpg", projectId:'p1', role:role, public: false]
-        File temp = File.createTempDir("documentService", "Spec")
-        grailsApplication.config.upload = [images:[path: temp.path], extensions:[blacklist:[]]]
-        grailsApplication.config.ecodata = [baseUrl: '']
-        File testStagedImage = new File(temp, document.filename)
-        FileUtils.copyInputStreamToFile(getClass().getResourceAsStream("/expectedMeriPlan.json"), testStagedImage)
-        testStagedImage.deleteOnExit()
-        Map capturedDocument = document
-
-        when:
-        service.saveStagedImageDocument(document)
-
-        then:
-
-        1 * userService.getCurrentUserId()
-        1 * userService.canUserEditProject(_, document.projectId) >> true
-        1 * webService.postMultipart({it.endsWith("document")}, {
-            JSON.parse(it.document.toString())
-            true
-        }, _, _, _) >> [resp:[:]]
-
-        and:
-        capturedDocument.filename == document.filename
-        capturedDocument.projectId == document.projectId
-        capturedDocument.role == document.role
-        capturedDocument['public'] == expectedPublic
-
-        where:
-        role                            | expectedPublic
-        DocumentService.ROLE_LOGO       | true
-        DocumentService.ROLE_MAIN_IMAGE | true
-        "information"                   | false
-        "contractAssurance"             | false
     }
 
     def "A document marked publiclyViewable can be viewed by anyone"() {

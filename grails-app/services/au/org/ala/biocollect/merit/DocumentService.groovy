@@ -14,12 +14,12 @@ class DocumentService {
     UserService userService
 
     def get(String id) {
-        def url = "${grailsApplication.config.ecodata.service.url}/document/${id}"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${id}"
         return webService.getJson(url)
     }
 
     def delete(String id) {
-        def url = "${grailsApplication.config.ecodata.service.url}document/${id}"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}document/${id}"
         return webService.doDelete(url)
     }
 
@@ -29,21 +29,21 @@ class DocumentService {
     }
 
     def updateDocument(doc) {
-        def url = "${grailsApplication.config.ecodata.service.url}/document/${doc.documentId?:''}"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${doc.documentId?:''}"
 
         return webService.doPost(url, doc)
     }
 
     def createDocument(doc, contentType, inputStream) {
 
-        def url = grailsApplication.config.ecodata.service.url + "/document"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/document"
 
         def params = [document:doc as JSON]
         return webService.postMultipart(url, params, inputStream, contentType, doc.filename)
     }
 
     def getDocumentsForSite(id) {
-        def url = "${grailsApplication.config.ecodata.service.url}/site/${id}/documents"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/site/${id}/documents"
         return webService.doPost(url, [:])
     }
 
@@ -146,5 +146,14 @@ class DocumentService {
     /** Returns true if the currently logged in user has permission to view the supplied Document */
     boolean canView(Map document) {
         document.publiclyViewable || userService.userHasReadOnlyAccess() || hasEditorPermission(document)
+    }
+
+    /**
+     * Returns true if the current user has permission to delete the
+     * supplied document.
+     * @param documentId the id of the document to be deleted
+     */
+    boolean canDelete(String documentId) {
+        canEdit([documentId:documentId])
     }
 }
