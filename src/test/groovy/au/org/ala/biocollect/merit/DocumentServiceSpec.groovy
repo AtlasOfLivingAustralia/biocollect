@@ -2,7 +2,6 @@ package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
 import grails.test.mixin.TestFor
-import org.apache.commons.io.FileUtils
 import org.grails.web.converters.marshaller.json.CollectionMarshaller
 import org.grails.web.converters.marshaller.json.MapMarshaller
 import spock.lang.Specification
@@ -15,12 +14,14 @@ class DocumentServiceSpec extends Specification {
 
     UserService userService = Mock(UserService)
     WebService webService = Mock(WebService)
+    ActivityService activityService = Mock(ActivityService)
 
     def setup() {
         JSON.registerObjectMarshaller(new MapMarshaller())
         JSON.registerObjectMarshaller(new CollectionMarshaller())
         service.userService = userService
         service.webService = webService
+        service.activityService = activityService
         service.grailsApplication = grailsApplication
     }
 
@@ -142,5 +143,30 @@ class DocumentServiceSpec extends Specification {
         then:
         1 * userService.userHasReadOnlyAccess() >> true
         canView
+    }
+
+    def "users can edit an activity document if they can edit the project associated with the activity"(boolean canEditActivity) {
+        setup:
+        Map document = [documentId:'d1', activityId:'a1']
+        String userId = 'u1'
+
+        when:
+        boolean canEdit = service.canEdit(document)
+        boolean canDelete = service.canDelete(document.documentId)
+
+        then:
+        canEdit == canEditActivity
+        canDelete == canEditActivity
+        2 * userService.userIsAlaOrFcAdmin() >> false
+        2 * webService.getJson(_) >> [documentId:'d1', activityId:document.activityId]
+        2 * activityService.get(document.activityId) >> [projectId:'p1', activityId:document.activityId]
+        2 * userService.getCurrentUserId() >> userId
+        2 * userService.canUserEditProject(userId, 'p1') >> canEditActivity
+
+        where:
+        canEditActivity | _
+        true | _
+        false | _
+
     }
 }

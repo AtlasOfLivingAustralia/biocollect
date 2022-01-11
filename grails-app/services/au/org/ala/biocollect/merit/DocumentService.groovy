@@ -12,6 +12,7 @@ class DocumentService {
     def webService, grailsApplication
     MessageSource messageSource
     UserService userService
+    ActivityService activityService
 
     def get(String id) {
         def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${id}"
@@ -139,6 +140,12 @@ class DocumentService {
                 canEdit = userService.canUserEditProject(userId, document.projectId)
             } else if (document.organisationId) {
                 canEdit = userService.isUserAdminForOrganisation(userId, document.organisationId)
+            }
+            else if (document.activityId) {
+                Map activity = activityService.get(document.activityId)
+                if (activity?.projectId) {
+                    canEdit = userService.canUserEditProject(userId, activity.projectId)
+                }
             }
         }
         canEdit
