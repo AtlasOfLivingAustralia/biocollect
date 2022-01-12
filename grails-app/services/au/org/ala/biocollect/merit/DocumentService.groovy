@@ -152,7 +152,7 @@ class DocumentService {
     }
     /** Returns true if the currently logged in user has permission to view the supplied Document */
     boolean canView(Map document) {
-        document.publiclyViewable || userService.userHasReadOnlyAccess() || hasEditorPermission(document)
+        document.publiclyViewable || document.activityId || userService.userHasReadOnlyAccess() || hasEditorPermission(document)
     }
 
     /**
