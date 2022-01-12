@@ -145,6 +145,11 @@ class DocumentServiceSpec extends Specification {
         canView
     }
 
+    def "All documents attached to activities are publicly viewable"() {
+        expect:
+        service.canView([documentId:'d1', activityId:'a1']) == true
+    }
+
     def "users can edit an activity document if they can edit the project associated with the activity"(boolean canEditActivity) {
         setup:
         Map document = [documentId:'d1', activityId:'a1']
