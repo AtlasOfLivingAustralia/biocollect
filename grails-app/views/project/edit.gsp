@@ -56,6 +56,7 @@
     <div class="row">
         <div class="col-12 btn-space">
             <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+            <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: ((((isCitizenScience() || isEcoScience()) && isExternal()) || isWorks()) && transients.hasPublishedActivities), text:publishUnpublish()"><i class="fas fa-hdd"></i></button>
             <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
         </div>
     </div>
@@ -69,6 +70,7 @@ $(function(){
 
     var programsModel = <fc:modelAsJavascript model="${programs}"/>;
     var project = <fc:modelAsJavascript model="${project?:[:]}"/>;
+    var activities = <fc:modelAsJavascript model="${activities}"/>;
 
     <g:if test="${params.returning}">
         var storedProject = amplify.store(PROJECT_DATA_KEY);
@@ -80,6 +82,7 @@ $(function(){
 
     var viewModel =  new CreateEditProjectViewModel(project, true, {storageKey:PROJECT_DATA_KEY});
     viewModel.loadPrograms(programsModel);
+    viewModel.checkPublishedActivities(activities);
 
     $('#projectDetails').validationEngine();
     $('.helphover').popover({animation: true, trigger:'hover'});
@@ -112,6 +115,48 @@ $(function(){
         if ($('#projectDetails').validationEngine('validate')) {
             var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
+                        document.location.href = "${createLink(action: 'index')}/" + projectId;
+                    },function(data) {
+                        var responseText = data.responseText || 'An error occurred while saving project.';
+                        bootbox.alert(responseText);
+                    });
+                } else {
+                    bootbox.alert(projectErrors);
+                }
+        }
+    }
+    });
+
+    $('#publish').click(function () {
+    if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
+        bootbox.dialog({message:"Use of this system for data collection is not available for non-biodiversity related projects." +
+            " Press continue to turn data collection feature off. Otherwise, press cancel to modify the form."}, [{
+              label: "Continue",
+              className: "btn-primary",
+              callback: function() {
+                viewModel.isExternal(true);
+                $('#save').click()
+              }
+            },{
+                label: "Cancel",
+                className: "btn-alert",
+                callback: function() {
+                    $('html, body').animate({
+                        scrollTop: $("#scienceTypeControlGroup").offset().top
+                    }, 2000);
+              }
+            }]);
+    } else {
+        if ($('#projectDetails').validationEngine('validate')) {
+            var projectErrors = viewModel.transients.projectHasErrors()
+                if (!projectErrors) {
+                    if (publishUnpublish == 'Publish')
+                        viewModel.publicationStatus = true;
+                    else
+                        viewModel.publicationStatus = false;
+
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
                         document.location.href = "${createLink(action: 'index')}/" + projectId;

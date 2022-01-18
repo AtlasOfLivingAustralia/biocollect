@@ -1,7 +1,19 @@
 <%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <bc:koLoading>
     <div>
-        <h4 class="block-header">Project metadata</h4>
+        <div class="row mt-4">
+            <div class="col-12">
+                <h4 class="d-inline-block">Project metadata</h4>
+                <span class="float-right">
+                    <g:if test="${project.publicationStatus}">
+                        <span class="badge badge-success">Published</span>
+                    </g:if>
+                    <g:else>
+                        <span class="badge badge-info">Draft</span>
+                    </g:else>
+                </span>
+            </div>
+        </div>
 
         <div class="row form-group">
             <label class="col-from-label col-md-4"><g:message code="project.details.type"/><fc:iconHelp><g:message

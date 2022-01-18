@@ -302,14 +302,16 @@ class ProjectController {
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
-            [project: project,
-             siteDocuments: siteInfo.documents?:'[]',
-             site: siteInfo.site,
-             programs: metadataService.programsModel(),
-             scienceTypes: scienceTypes,
-             ecoScienceTypes: ecoScienceTypes
-            ]
+            def activities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
 
+            [project        : project,
+             siteDocuments  : siteInfo.documents ?: '[]',
+             site           : siteInfo.site,
+             programs       : metadataService.programsModel(),
+             scienceTypes   : scienceTypes,
+             ecoScienceTypes: ecoScienceTypes,
+             activities     : activities
+            ]
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
