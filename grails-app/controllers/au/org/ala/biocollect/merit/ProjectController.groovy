@@ -354,6 +354,9 @@ class ProjectController {
             project.isEcoScience = true
             project.projectType = ProjectService.PROJECT_TYPE_ECOSCIENCE
         }
+        if (!params.external) {
+            project.publicationStatus = true
+        }
 
         HubSettings hub = SettingService.getHubConfig()
         if (hub && hub.defaultProgram) {

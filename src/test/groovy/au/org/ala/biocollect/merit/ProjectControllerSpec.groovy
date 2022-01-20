@@ -415,6 +415,48 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.isCitizenScience == true
     }
 
+    void "When editing a project, set publicationStatus to true when isExternal is true and if the project has at least one published project"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def external = false
+        def status = true
+        siteServiceMock.getRaw(siteId) >> [:]
+        projectServiceStub.get(projectId, 'privatesitesremoved') >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external, publicationStatus: status]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null) >> [[name:'PActivity 1']]
+        projectServiceStub.getScienceTypes()
+        projectServiceStub.getEcoScienceTypes()
+        metadataServiceStub.programsModel() >> [programs: []]
+
+        when:
+        def model = controller.edit(projectId)
+
+        then:
+        if (model.project.activities != null) {
+            for (int i = 0; i < model.project.activities; i++) {
+                if (model.project.activities[i].published) {
+                    model.project.publicationStatus = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    void "When creating a project set publicationStatus to true when isExternal set to false"() {
+        when:
+        userServiceStub.getUser() >> [userId:'1234']
+        projectServiceStub.getScienceTypes()
+        projectServiceStub.getEcoScienceTypes()
+        userServiceStub.getOrganisationIdsForUserId(_) >> []
+        organisationStub.get('org1') >> []
+
+        params.external = false
+        def model = controller.create()
+
+        then:
+        model.project.publicationStatus == true
+    }
+
     private def stubProjectAdmin(userId, projectId) {
         stubUserPermissions(userId, projectId, true, true, false, true)
     }
