@@ -19,7 +19,7 @@ print("Loaded csv file");
 var csvRows = csvData.split('\r');
 print("Total rows "+ csvRows.length);
 
-for(var i = 3; i < 4; i++) {
+for(var i = 1; i < csvRows.length; i++) {
     print("PRINT "+csvRows.length)
 
     var row = csvRows[i];
@@ -38,7 +38,7 @@ for(var i = 3; i < 4; i++) {
 
         if (fields[title]) {
             if (fields[title].indexOf(',') != -1) {
-                var tempTitle = fields[title];
+                var tempTitle = fields[title].replace(/""/g, '"');
                 document.name = tempTitle.substring(1, tempTitle.length - 1);
             }
             else {
@@ -75,7 +75,7 @@ for(var i = 3; i < 4; i++) {
 
         if (fields[type]) {
             if (fields[type].indexOf(',') != -1) {
-                var tempType = fields[type];
+                var tempType = fields[type].replace(/""/g, '"');
                 document.type = tempType.substring(1, tempType.length - 1);
             }
             else {
@@ -85,7 +85,7 @@ for(var i = 3; i < 4; i++) {
 
         if (fields[citation]) {
             if (fields[citation].indexOf(',') != -1) {
-                var tempCitation = fields[citation];
+                var tempCitation = fields[citation].replace(/""/g, '"');
                 document.citation = tempCitation.substring(1, tempCitation.length - 1);
             }
             else {
@@ -95,7 +95,7 @@ for(var i = 3; i < 4; i++) {
 
         if (fields[keywords]) {
             if (fields[keywords].indexOf(',') != -1) {
-                var tempKeywords = fields[keywords];
+                var tempKeywords = fields[keywords].replace(/""/g, '"');
                 document.keywords = tempKeywords.substring(1, tempKeywords.length - 1);
             }
             else {
