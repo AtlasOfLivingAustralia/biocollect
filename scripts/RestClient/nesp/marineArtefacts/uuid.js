@@ -1,4 +1,4 @@
-//uuid generation script
+//uuid generation scripts
 /**
  * UUID.js: The RFC-compliant UUID generator for JavaScript.
  *
