@@ -1,4 +1,3 @@
-
 var document =
     {
       "labels" : [ ],
