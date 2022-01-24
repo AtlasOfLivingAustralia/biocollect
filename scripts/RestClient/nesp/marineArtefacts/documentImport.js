@@ -1,4 +1,4 @@
-//document upload script
+//document upload scripts
 var path = '';
 load(path + "document.js")
 load(path + 'uuid.js');
