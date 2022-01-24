@@ -1,21 +1,25 @@
 //document upload script
 var path = '';
 load(path + "document.js")
-load(path+'uuid.js');
+load(path + 'uuid.js');
 
 print("Loaded all dependent files...");
 
-var projectId = 0;
+var hub_name = 0;
+var projectId = hub_name + 1;
 var title = projectId + 1;
 var description = title + 1;
 var documentUrl = description + 1;
+var type = documentUrl + 1;
+var citation = type + 1;
+var keywords = citation + 1;
 
 var csvData = cat(path+'NESP_MARINE_ARTEFACTS_FOR_TEST.txt');
 print("Loaded csv file");
 var csvRows = csvData.split('\r');
 print("Total rows "+ csvRows.length);
 
-for(var i = 1; i < csvRows.length; i++) {
+for(var i = 3; i < 4; i++) {
     print("PRINT "+csvRows.length)
 
     var row = csvRows[i];
@@ -29,16 +33,8 @@ for(var i = 1; i < csvRows.length; i++) {
         document.filename = ""
         document.contentType = ""
 
-        if (fields[description]) {
-            if (fields[description].indexOf(',') != -1) {
-                print("CHECKING DESC" + fields[description])
-                var tempDescription = fields[description].replace(/""/g, '"');
-                document.description = tempDescription.substring(1, tempDescription.length - 1);
-            }
-            else {
-                document.description = fields[description]
-            }
-        }
+        //When there are commas, tsv adds double quotes in the beginning and end of text, following string
+        //manipulations are done to avoid that
 
         if (fields[title]) {
             if (fields[title].indexOf(',') != -1) {
@@ -47,6 +43,16 @@ for(var i = 1; i < csvRows.length; i++) {
             }
             else {
                 document.name = fields[title]
+            }
+        }
+
+        if (fields[description]) {
+            if (fields[description].indexOf(',') != -1) {
+                var tempDescription = fields[description].replace(/""/g, '"');
+                document.description = tempDescription.substring(1, tempDescription.length - 1);
+            }
+            else {
+                document.description = fields[description]
             }
         }
 
@@ -67,9 +73,35 @@ for(var i = 1; i < csvRows.length; i++) {
             document.contentType = contentType
         }
 
-        print("PROJECT ID: " + document.projectId)
-        print("DOCUMENT ID: " + document.documentId)
-        print("FILE NAME: " + document.filename)
+        if (fields[type]) {
+            if (fields[type].indexOf(',') != -1) {
+                var tempType = fields[type];
+                document.type = tempType.substring(1, tempType.length - 1);
+            }
+            else {
+                document.type = fields[type]
+            }
+        }
+
+        if (fields[citation]) {
+            if (fields[citation].indexOf(',') != -1) {
+                var tempCitation = fields[citation];
+                document.citation = tempCitation.substring(1, tempCitation.length - 1);
+            }
+            else {
+                document.citation = fields[citation]
+            }
+        }
+
+        if (fields[keywords]) {
+            if (fields[keywords].indexOf(',') != -1) {
+                var tempKeywords = fields[keywords];
+                document.keywords = tempKeywords.substring(1, tempKeywords.length - 1);
+            }
+            else {
+                document.keywords = fields[keywords]
+            }
+        }
 
         var today = new ISODate();
         var dd = today.getDate();
@@ -82,10 +114,12 @@ for(var i = 1; i < csvRows.length; i++) {
 
         var documentResult = db.document.insert(document);
 
+        print("PROJECT ID: " + document.projectId)
+        print("DOCUMENT ID: " + document.documentId)
+        print("FILE NAME: " + document.filename)
         print("documentResult " + documentResult)
     }
 }
 
-//print(">>>>>>>>>>>>>>>>>>>>")
-print("Created " + (i-1) + " projects");
+print("Created " + (i-1) + " documents");
 print("<<<<<<<<<<<<<<<<<<<")
