@@ -415,46 +415,96 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         model.isCitizenScience == true
     }
 
-    void "When editing a project, set publicationStatus to true when isExternal is true and if the project has at least one published project"() {
+    void "On edit, successfully publish a project with isExternal false and having at least one published survey"() {
         setup:
         def projectId = 'project1'
         def siteId = 'site1'
         def external = false
-        def status = true
-        siteServiceMock.getRaw(siteId) >> [:]
-        projectServiceStub.get(projectId, 'privatesitesremoved') >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external, publicationStatus: status]
-        projectActivityServiceStub.getAllByProject(projectId, "docs", null) >> [[name:'PActivity 1']]
-        projectServiceStub.getScienceTypes()
-        projectServiceStub.getEcoScienceTypes()
-        metadataServiceStub.programsModel() >> [programs: []]
+
+        projectServiceStub.get(projectId) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null, true) >> [[name:'PActivity 1', published:true]]
+        projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"OK"]]
 
         when:
-        def model = controller.edit(projectId)
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"Published"}'
+        controller.ajaxUpdate(projectId)
 
         then:
-        if (model.project.activities != null) {
-            for (int i = 0; i < model.project.activities; i++) {
-                if (model.project.activities[i].published) {
-                    model.project.publicationStatus = true;
-                    break;
-                }
-            }
-        }
+        response.status == HttpStatus.SC_OK
     }
 
-    void "When creating a project set publicationStatus to true when isExternal set to false"() {
-        when:
-        userServiceStub.getUser() >> [userId:'1234']
-        projectServiceStub.getScienceTypes()
-        projectServiceStub.getEcoScienceTypes()
-        userServiceStub.getOrganisationIdsForUserId(_) >> []
-        organisationStub.get('org1') >> []
+    void "On edit, return error when trying to publish a project with isExternal false and not having at least one published survey"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def external = false
 
-        params.external = false
-        def model = controller.create()
+        projectServiceStub.get(projectId) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null, true) >> [[name:'PActivity 1', published:false]]
+        projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"BAD_REQUEST", text:"At least one published survey should be there to publish a project."]]
+
+        when:
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"Published"}'
+        controller.ajaxUpdate(projectId)
 
         then:
-        model.project.publicationStatus == true
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "At least one published survey should be there to publish a project."
+    }
+
+    void "On edit, return error when trying to publish a project with isExternal false and not having any surveys"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def external = false
+
+        projectServiceStub.get(projectId) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null, true) >> [:]
+        projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"BAD_REQUEST", text:"At least one published survey should be there to publish a project."]]
+
+        when:
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"Published"}'
+        controller.ajaxUpdate(projectId)
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "At least one published survey should be there to publish a project."
+    }
+
+    void "On edit, when trying to save project, save project as Draft"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def external = false
+
+        projectServiceStub.get(projectId) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null, true) >> [[name:'PActivity 1', published:false]]
+        projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"OK"]]
+
+        when:
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"Draft"}'
+        controller.ajaxUpdate(projectId)
+
+        then:
+        response.status == HttpStatus.SC_OK
+    }
+
+    void "On create, successfully create a project as draft when isExternal is true"() {
+        setup:
+        def projectId = 'project1'
+        def siteId = 'site1'
+        def external = true
+
+        projectServiceStub.get(projectId) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null, true) >> [:]
+        projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"OK"]]
+
+        when:
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"Draft"}'
+        controller.ajaxUpdate(projectId)
+
+        then:
+        response.status == HttpStatus.SC_OK
     }
 
     private def stubProjectAdmin(userId, projectId) {

@@ -354,9 +354,8 @@ class ProjectController {
             project.isEcoScience = true
             project.projectType = ProjectService.PROJECT_TYPE_ECOSCIENCE
         }
-        if (!params.external) {
-            project.publicationStatus = true
-        }
+
+        project.projLifecycleStatus = 'Draft'
 
         HubSettings hub = SettingService.getHubConfig()
         if (hub && hub.defaultProgram) {
@@ -488,6 +487,30 @@ class ProjectController {
 
         String mainImageAttribution = values.remove("mainImageAttribution")
         String logoAttribution = values.remove("logoAttribution")
+
+        def hasPublishedActivities = false
+
+        if (project != null) {
+            def activities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
+
+            //checks whether there's at least one published survey
+            if (activities != null && activities.size() > 0) {
+                for (int i = 0; i < activities.size(); i++) {
+                    if (activities[i].published) {
+                        hasPublishedActivities = true;
+                        break;
+                    }
+                }
+            }
+
+            //check whether a project can be published
+            if (values.projLifecycleStatus != null) {
+                if ((values.projLifecycleStatus == 'Published') && !project.isExternal && !hasPublishedActivities) {
+                    render status: HttpStatus.SC_BAD_REQUEST, text: "At least one published survey should be there to publish a project."
+                    return
+                }
+            }
+        }
 
         def siteResult
         if (projectSite) {

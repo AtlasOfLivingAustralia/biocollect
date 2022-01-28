@@ -48,7 +48,7 @@ class ProjectActivityController {
 
         //publish the project along with the survey
         if (values.publishProject == "Yes") {
-            projectService.update(project?.projectId, [publicationStatus: true])
+            projectService.update(project?.projectId, [projLifecycleStatus: 'Published'])
         }
 
         Map result

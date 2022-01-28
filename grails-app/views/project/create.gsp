@@ -66,7 +66,7 @@
                 <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
 
                 <button type="button" id="save" class="btn btn-primary-dark" data-bind="disable: (!termsOfUseAccepted() && !isExternal())" title="<g:message code="g.save.title"/>"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
-                <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: ((((isCitizenScience() || isEcoScience()) && isExternal()) || isWorks()) && termsOfUseAccepted())"><i class="fas fa-hdd"></i> <g:message code="g.publish"/></button>
+                <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || (isWorks() && termsOfUseAccepted()))"><i class="fas fa-hdd"></i> <g:message code="g.savePublish"/></button>
                 <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
             </div>
         </div>
@@ -129,6 +129,8 @@ $(function(){
             } else {
                 var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
+                    viewModel.projLifecycleStatus = 'Draft';
+
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
 
@@ -172,7 +174,7 @@ $(function(){
             } else {
                 var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
-                    viewModel.publicationStatus = true;
+                    viewModel.projLifecycleStatus = 'Published';
 
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;

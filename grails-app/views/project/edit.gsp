@@ -56,7 +56,7 @@
     <div class="row">
         <div class="col-12 btn-space">
             <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
-            <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: ((((isCitizenScience() || isEcoScience()) && isExternal()) || isWorks()) && transients.hasPublishedActivities), text:publishUnpublish()"><i class="fas fa-hdd"></i></button>
+            <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || isWorks() || (!isExternal() && transients.hasPublishedActivities)), text:publishUnpublish()"><i class="fas fa-hdd"></i></button>
             <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
         </div>
     </div>
@@ -152,10 +152,10 @@ $(function(){
         if ($('#projectDetails').validationEngine('validate')) {
             var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
-                    if (publishUnpublish == 'Publish')
-                        viewModel.publicationStatus = true;
-                    else
-                        viewModel.publicationStatus = false;
+                    if (project.projLifecycleStatus == 'Draft')
+                        viewModel.projLifecycleStatus = 'Published';
+                    else if (project.projLifecycleStatus == 'Published')
+                        viewModel.projLifecycleStatus = 'Draft';
 
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;

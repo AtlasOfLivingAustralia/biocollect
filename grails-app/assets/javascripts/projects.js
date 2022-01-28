@@ -312,7 +312,7 @@ function ProjectViewModel(project, isUserEditor) {
         isUserEditor = false;
     }
 
-    self.publicationStatus = false;
+    self.projLifecycleStatus = 'Draft';
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
     self.description = ko.observable(project.description).extend({markdown:true});
@@ -995,7 +995,10 @@ function ProjectViewModel(project, isUserEditor) {
     };
 
     self.publishUnpublish = function () {
-        return project.publicationStatus == true ? "Unpublish" : "Publish";
+        if (project.projLifecycleStatus == 'Draft')
+            return "Publish"
+        else if (project.projLifecycleStatus == "Published")
+            return "Unpublish"
     }
 
     self.loadPrograms = function (programsModel) {
