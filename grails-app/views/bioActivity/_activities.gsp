@@ -196,7 +196,7 @@
                                                         Recorded by: <span
                                                             data-bind="text: $parents[1].ownerName"></span>
                                                     </div>
-                                                    <div data-bind="visible: $parent.coordinates && $parent.coordinates[0]">
+                                                    <div data-bind="if: $parent.coordinates && $parent.coordinates[0]">
                                                         Coordinate: <span class="display-inline-block ellipsis-50"
                                                             data-bind="text: $parent.coordinates[0], attr: {title: $parent.coordinates[0]}"></span>
                                                         <span class="display-inline-block ellipsis-50"
