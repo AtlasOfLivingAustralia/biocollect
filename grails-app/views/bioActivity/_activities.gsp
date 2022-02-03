@@ -137,7 +137,12 @@
                                                 </a>
                                                 -->
                                                 <a data-bind="attr: {href: $parents[1].transients.viewUrl}">
+                                                    <!-- ko if: $parent.multimedia[0] && $parent.multimedia[0].identifier -->
+                                                    <img class="image-logo image-window" data-bind="attr:{title:($parent.multimedia[0] && $parent.multimedia[0].title) || 'No Image', src:($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
+                                                    <!-- /ko -->
+                                                    <!-- ko ifnot: $parent.multimedia[0] && $parent.multimedia[0].identifier -->
                                                     <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150)" data-bind="attr:{src:$parent.thumbnailUrl}"/>
+                                                    <!-- /ko -->
                                                 </a>
                                             </div>
                                         </td>
@@ -196,7 +201,7 @@
                                                         Recorded by: <span
                                                             data-bind="text: $parents[1].ownerName"></span>
                                                     </div>
-                                                    <div data-bind="visible: $parent.coordinates && $parent.coordinates[0]">
+                                                    <div data-bind="if: $parent.coordinates && $parent.coordinates[0]">
                                                         Coordinate: <span class="display-inline-block ellipsis-50"
                                                             data-bind="text: $parent.coordinates[0], attr: {title: $parent.coordinates[0]}"></span>
                                                         <span class="display-inline-block ellipsis-50"

@@ -11,14 +11,16 @@ class DocumentService {
 
     def webService, grailsApplication
     MessageSource messageSource
+    UserService userService
+    ActivityService activityService
 
     def get(String id) {
-        def url = "${grailsApplication.config.ecodata.service.url}/document/${id}"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${id}"
         return webService.getJson(url)
     }
 
     def delete(String id) {
-        def url = "${grailsApplication.config.ecodata.service.url}document/${id}"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}document/${id}"
         return webService.doDelete(url)
     }
 
@@ -28,21 +30,21 @@ class DocumentService {
     }
 
     def updateDocument(doc) {
-        def url = "${grailsApplication.config.ecodata.service.url}/document/${doc.documentId?:''}"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${doc.documentId?:''}"
 
         return webService.doPost(url, doc)
     }
 
     def createDocument(doc, contentType, inputStream) {
 
-        def url = grailsApplication.config.ecodata.service.url + "/document"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/document"
 
         def params = [document:doc as JSON]
         return webService.postMultipart(url, params, inputStream, contentType, doc.filename)
     }
 
     def getDocumentsForSite(id) {
-        def url = "${grailsApplication.config.ecodata.service.url}/site/${id}/documents"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/site/${id}/documents"
         return webService.doPost(url, [:])
     }
 
@@ -99,5 +101,66 @@ class DocumentService {
         }
 
         documents;
+    }
+
+    /**
+     * Returns true if the current user has permission to edit/update the
+     * supplied document.
+     * @param document the document to be edited/updated
+     */
+    boolean canEdit(Map document) {
+        if (document.documentId) {
+            document = get(document.documentId)
+        }
+        boolean canEdit = false
+
+        if (document) {
+            // Only FC_ADMINS can edit an existing read only document, but
+            // other roles can create them.
+            if (document.readOnly && document.documentId) {
+                canEdit = userService.userIsAlaOrFcAdmin()
+            }
+            else {
+                canEdit = hasEditorPermission(document)
+            }
+
+        }
+
+        canEdit
+    }
+
+    /** Returns true if the currently logged in user has permission to edit the supplied Document */
+    private boolean hasEditorPermission(Map document) {
+        boolean canEdit = userService.userIsAlaOrFcAdmin()
+        if (!canEdit) {
+            // Check the permissions that apply to the entity the document is
+            // associated with.
+            String userId = userService.getCurrentUserId()
+            if (document.projectId) {
+                canEdit = userService.canUserEditProject(userId, document.projectId)
+            } else if (document.organisationId) {
+                canEdit = userService.isUserAdminForOrganisation(userId, document.organisationId)
+            }
+            else if (document.activityId) {
+                Map activity = activityService.get(document.activityId)
+                if (activity?.projectId) {
+                    canEdit = userService.canUserEditProject(userId, activity.projectId)
+                }
+            }
+        }
+        canEdit
+    }
+    /** Returns true if the currently logged in user has permission to view the supplied Document */
+    boolean canView(Map document) {
+        document.publiclyViewable || document.activityId || userService.userHasReadOnlyAccess() || hasEditorPermission(document)
+    }
+
+    /**
+     * Returns true if the current user has permission to delete the
+     * supplied document.
+     * @param documentId the id of the document to be deleted
+     */
+    boolean canDelete(String documentId) {
+        canEdit([documentId:documentId])
     }
 }
