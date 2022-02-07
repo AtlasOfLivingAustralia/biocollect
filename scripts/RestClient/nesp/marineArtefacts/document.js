@@ -6,7 +6,7 @@ var document =
       "lastUpdated" : "",
       "isPrimaryProjectImage" : true,
       "documentId" : "",
-      "filepath" : "2021-11",
+      "filepath" : "2022-02",
       "thirdPartyConsentDeclarationMade" : false,
       "projectActivityId" : "",
       "role" : "information",
@@ -16,10 +16,12 @@ var document =
       "filename" : "",
       "isSciStarter" : false,
       "projectId" : "",
-          "description" : "",
+      "description" : "",
       "readOnly" : false,
       "filesize" : "",
-      "contentType" : ""
+      "contentType" : "",
+      "citation" : "",
+      "keywords" : ""
 }
 
 
