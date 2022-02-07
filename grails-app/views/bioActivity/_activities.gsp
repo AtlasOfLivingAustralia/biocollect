@@ -308,9 +308,12 @@
                                 <td class="align-top">
                                     <div class="projectLogo">
                                         <a data-bind="attr: {href: $parents[1].transients.viewUrl}">
-                                            <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150)"
-                                                 data-bind="attr:{src:$parent.thumbnailUrl}"
-                                                 onerror="imageError(this, '${noImageUrl}');" />
+                                            <!-- ko if: $parent.multimedia[0] && $parent.multimedia[0].identifier -->
+                                            <img class="image-logo image-window" data-bind="attr:{title:($parent.multimedia[0] && $parent.multimedia[0].title) || 'No Image', src:($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
+                                            <!-- /ko -->
+                                            <!-- ko ifnot: $parent.multimedia[0] && $parent.multimedia[0].identifier -->
+                                            <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150)" data-bind="attr:{src:$parent.thumbnailUrl}"/>
+                                            <!-- /ko -->
                                         </a>
                                     </div>
                                 </td>
@@ -420,7 +423,6 @@
                                     <!-- /ko -->
                                 </td>
                                 <!-- /ko -->
-
                                 <!-- /ko -->
                             </tr>
                             <!-- /ko -->

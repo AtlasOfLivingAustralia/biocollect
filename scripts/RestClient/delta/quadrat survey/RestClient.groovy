@@ -106,6 +106,7 @@ Paths.get(xlsx).withInputStream { input ->
                             value = cellValue.getStringValue();
                             break;
                         case Cell.CELL_TYPE_BLANK:
+                            value = ""
                             break;
                         case Cell.CELL_TYPE_ERROR:
                             break;
@@ -214,6 +215,8 @@ Paths.get(xlsx).withInputStream { input ->
                         siteObject.site.extent.geometry.coordinates = [] // Long and latitudide.
                         siteObject.site.extent.geometry.coordinates << record."Long (dec)"
                         siteObject.site.extent.geometry.coordinates << record."Lat (dec)"
+                        siteObject.site.extent.geometry.decimalLongitude = record."Long (dec)"
+                        siteObject.site.extent.geometry.decimalLatitude = record."Lat (dec)"
 
                         def siteConnection = new URL("${SERVER_URL}${SITE_CREATION_URL}").openConnection() as HttpURLConnection
                         siteConnection.setRequestProperty('userName', "${USERNAME}")
@@ -265,10 +268,6 @@ Paths.get(xlsx).withInputStream { input ->
                     activity.outputs[0].data.observationRemarks = record."Vegetation and soil notes"
                     activity.outputs[0].data.weedinessClass = record."Weediness"
                     activity.outputs[0].data.location = siteId
-                    activity.outputs[0].data.locationLatitude = record."Lat (dec)"
-                    activity.outputs[0].data.locationLongitude = record."Long (dec)"
-                    activity.outputs[0].data.locationHiddenLatitude = record."Lat (dec)"
-                    activity.outputs[0].data.locationHiddenLongitude = record."Long (dec)"
 
                     activity.outputs[0].data.vegetationCover[0].vegetationType = record."Vegetation type"
                     activity.outputs[0].data.vegetationCover[0].canopyCoverInPercentClass = record."Canopy cover (%)"
@@ -391,11 +390,7 @@ Paths.get(xlsx).withInputStream { input ->
                     def speciesComposition = [speciesShortName:'', individualCount:'', scientificName:'', speciesImage:[]]
                     def species = [name: '', guid: '', scientificName: '', commonName: '', outputSpeciesId: '', listId: '']
 
-                    // Get Unique Species Id
-                    def uniqueIdResponse = new URL(SERVER_URL + "/ws/species/uniqueId")?.text
-                    def jsonResponse = new groovy.json.JsonSlurper()
-                    def outputSpeciesId = jsonResponse.parseText(uniqueIdResponse)?.outputSpeciesId
-                    species.outputSpeciesId = outputSpeciesId
+                    species.outputSpeciesId = UUID.randomUUID().toString()
 
                     // Get species name
                     def speciesResponse = new URL(SERVER_URL + SPECIES_URL + "&q=${it.trim().replace(" ", "+")}").text

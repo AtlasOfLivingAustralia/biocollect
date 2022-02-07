@@ -27,7 +27,7 @@ def AUTH_KEY = ""
 def xlsx = "data.xlsx"
 
 SERVER_URL = "http://devt.ala.org.au:8087"
-SPECIES_URL = "/search/searchSpecies/${PROJECT_ACTIVITY_ID}?limit=1&hub=ecoscience&dataFieldName=taxonFamily&output=Voucher%20Sample%20Collection%20-%20Quadrat"
+SPECIES_URL = "/search/searchSpecies/${PROJECT_ACTIVITY_ID}?limit=1&hub=ecoscience&output=Voucher%20Sample%20Collection%20-%20Quadrat&dataFieldName="
 def ADD_NEW_ACTIVITY_URL = "/ws/bioactivity/save?pActivityId=${PROJECT_ACTIVITY_ID}&hub=ecoscience"
 def SITE_TEMPLATE_FILE = "site_template.json"
 def SITE_CREATION_URL = '/site/ajaxUpdate'
@@ -96,6 +96,7 @@ Paths.get(xlsx).withInputStream { input ->
                             value = cellValue.getStringValue();
                             break;
                         case Cell.CELL_TYPE_BLANK:
+                            value = ""
                             break;
                         case Cell.CELL_TYPE_ERROR:
                             break;
@@ -205,6 +206,8 @@ Paths.get(xlsx).withInputStream { input ->
                         siteObject.site.extent.geometry.coordinates = [] // Long and latitudide.
                         siteObject.site.extent.geometry.coordinates << record."Long (dec)"
                         siteObject.site.extent.geometry.coordinates << record."Lat (dec)"
+                        siteObject.site.extent.geometry.decimalLongitude = record."Long (dec)"
+                        siteObject.site.extent.geometry.decimalLatitude = record."Lat (dec)"
 
                         def siteConnection = new URL("${SERVER_URL}${SITE_CREATION_URL}").openConnection() as HttpURLConnection
                         siteConnection.setRequestProperty('userName', "${USERNAME}")
@@ -267,14 +270,15 @@ Paths.get(xlsx).withInputStream { input ->
                     }
 
                     activity.outputs[0].data.location = siteId
-                    activity.outputs[0].data.locationLatitude = record."Lat (dec)"
-                    activity.outputs[0].data.locationLongitude = record."Long (dec)"
-                    activity.outputs[0].data.locationHiddenLatitude = record."Lat (dec)"
-                    activity.outputs[0].data.locationHiddenLongitude = record."Long (dec)"
 
-                    activity.outputs[0].data.taxonFamily = getSpecies(record."Family (Scientific Name Only)")
-                    activity.outputs[0].data.taxonGenus = getSpecies(record."Genus (Scientific Name Only)")
-                    activity.outputs[0].data.scientificName = getSpecies(record."Species (Scientific Name Only)")
+                    activity.outputs[0].data.taxonFamily = getSpecies(record."Family (Scientific Name Only)", "taxonFamily")
+                    activity.outputs[0].data.taxonGenus = getSpecies(record."Genus (Scientific Name Only)", "taxonGenus")
+
+                    if(record."Species (Scientific Name Only)") {
+                        //full species name is genus + species name + sub species
+                        String speciesName = record."Genus (Scientific Name Only)" + " " + record."Species (Scientific Name Only)" + (record."Subspecies or lower" ? " subsp. " + record."Subspecies or lower" : "")
+                        activity.outputs[0].data.scientificName = getSpecies(speciesName, "scientificName")
+                    }
                 }
             }
         }
@@ -304,17 +308,13 @@ Paths.get(xlsx).withInputStream { input ->
     println("Completed..")
 }
 
-Object getSpecies(String name){
+Object getSpecies(String name, String dataField){
     def species = [name: '', guid: '', scientificName: '', commonName: '', outputSpeciesId: '', listId: '']
 
-    // Get Unique Species Id
-    def uniqueIdResponse = new URL(SERVER_URL + "/ws/species/uniqueId")?.text
-    def jsonResponse = new groovy.json.JsonSlurper()
-    def outputSpeciesId = jsonResponse.parseText(uniqueIdResponse)?.outputSpeciesId
-    species.outputSpeciesId = outputSpeciesId
+    species.outputSpeciesId = UUID.randomUUID().toString()
 
     // Get species name
-    def speciesResponse = new URL(SERVER_URL + SPECIES_URL + "&q=${name.trim().replace(" ", "+")}").text
+    def speciesResponse = new URL(SERVER_URL + SPECIES_URL + dataField + "&q=${name.trim().replace(" ", "+")}").text
     def speciesJSON = new groovy.json.JsonSlurper()
     def autoCompleteList = speciesJSON.parseText(speciesResponse)?.autoCompleteList
 
@@ -322,6 +322,7 @@ Object getSpecies(String name){
         species.name = name
     }
 
+    //There are separate lists for family, genus and species, Therefore first match will be taken.
     autoCompleteList?.eachWithIndex { item, index ->
         if (index == 0) {
             species.name = item.name
