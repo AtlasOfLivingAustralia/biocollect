@@ -1,0 +1,94 @@
+{
+  "activityId": "",
+  "projectStage": "",
+  "mainTheme": "",
+  "type": "Simple Voucher Sample Collection",
+  "projectId": "665b17e8-c950-4785-b0c3-e7cc89def22b",
+  "siteId": "",
+  "outputs": [
+    {
+      "name": "Simple Voucher Sample Collection",
+      "outputId": "",
+      "data": {
+        "voucherNumber": "",
+        "recordedBy": "",
+        "eventDate": "",
+        "minimumElevationInMetres": "",
+        "endemicity": "",
+        "individualCount": "",
+        "countAccuracy": "",
+        "taxonFamily": {
+          "guid": "",
+          "name": "",
+          "scientificName": "",
+          "commonName": "",
+          "listId": ""
+        },
+        "taxonGenus": {
+          "guid": "",
+          "name": "",
+          "scientificName": "",
+          "commonName": "",
+          "listId": ""
+        },
+        "scientificName": {
+          "guid": "",
+          "name": "",
+          "scientificName": "",
+          "commonName": "",
+          "listId": ""
+        },
+        "taxonSubspecies": "",
+        "commonName": "",
+        "lifeForm": "",
+        "lifeStage": [],
+        "heightInMetres": "",
+        "voucherImage": [],
+        "eventRemarks": "",
+        "locationAccuracy": null,
+        "locationSource": "Google maps",
+        "location": "",
+        "locationLatitude": null,
+        "locationLongitude": null,
+        "locationCentroidLatitude": null,
+        "locationCentroidLongitude": null,
+        "vegetationCover": [
+          {
+            "vegetationType": "",
+            "canopyCoverInPercentClass": "",
+            "vegetationStructuralFormation": ""
+          }
+        ],
+        "majorVegetationGroup": "",
+        "majorVegetationSubGroup": "",
+        "vegetationSpeciesComposition": [
+          {
+            "speciesShortName": "",
+            "scientificName": {
+              "guid": "",
+              "name": "",
+              "scientificName": "",
+              "commonName": "",
+              "listId": ""
+            },
+            "individualCount": "",
+            "speciesImage": []
+          }
+        ],
+        "slopeCategorical": "",
+        "aspectInDegrees": "",
+        "landscapeContext": "",
+        "geologyCategorical": "",
+        "observationRemarks": ""
+      },
+      "outputNotCompleted": false,
+      "selectFromSitesOnly": false,
+      "mapElementId": "locationMap",
+      "_callbacks": {
+        "sitechanged": [
+          null
+        ]
+      }
+    }
+  ]
+}

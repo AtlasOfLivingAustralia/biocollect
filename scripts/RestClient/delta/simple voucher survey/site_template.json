@@ -1,7 +1,8 @@
 {
-  "pActivityId": "661aba3c-c746-480e-b1aa-13697cdb3050",
+  "pActivityId": "a87bdb6b-2c90-427a-bd48-d61797a95fb8",
   "site": {
-    "name": null,
+    "name": "Private site for survey: Simple Floristic Voucher Collection",
+    "visibility": "private",
     "projects": [
       "665b17e8-c950-4785-b0c3-e7cc89def22b"
     ],
