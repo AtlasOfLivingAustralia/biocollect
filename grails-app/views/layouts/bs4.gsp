@@ -15,6 +15,7 @@
 </head>
 
 <body class="carousel">
+<ala:systemMessage/>
 <div class="site " id="page">
     %{--    navbar start--}%
     <div id="wrapper-navbar" itemscope="" itemtype="http://schema.org/WebSite">
