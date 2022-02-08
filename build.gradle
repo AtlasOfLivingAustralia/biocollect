@@ -5,10 +5,10 @@ buildscript {
         maven { url "https://nexus.ala.org.au/content/groups/public/" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
         classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.0"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.3.1"
-        classpath 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:$assetPipelineVersion"
+        classpath "com.bertramlabs.plugins:less-asset-pipeline:$assetPipelineVersion"
         classpath 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
         classpath 'com.bmuschko:gradle-clover-plugin:3.0.1'
         classpath 'org.grails.plugins:quartz:2.0.13'
@@ -25,9 +25,10 @@ group "au.org.ala"
 apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "war"
+apply plugin: "groovy"
 apply plugin: "org.grails.grails-web"
 apply plugin:"com.github.erdi.webdriver-binaries"
-apply plugin: "asset-pipeline"
+apply plugin: "com.bertramlabs.asset-pipeline"
 apply plugin: "org.grails.grails-gsp"
 
 if (Boolean.valueOf(enableClover)) {
@@ -39,17 +40,11 @@ repositories {
     mavenLocal()
     //for missing jai_core.jar
    //maven { url "https://mvnrepository.com" }
-    maven { url "http://maven.geotoolkit.org" }
+    maven { url "https://repo.osgeo.org/repository/release/" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
     mavenCentral()
 }
-
-def metadataExtractorVersion = "2.6.2"
-def imgscalrVersion = "4.2"
-def httpmimeVersion = "4.2.1"
-def jtsVersion = "1.8"
-def geoToolsVersion = "11.2"
 
 configurations {
     developmentOnly
@@ -59,81 +54,93 @@ configurations {
 }
 
 dependencies {
+//    implementation "org.grails:grails-plugin-rest"
+//    implementation "org.grails:grails-plugin-databinding"
+//    implementation "org.grails.plugins:async"
+//    implementation "org.grails.plugins:events"
+//    implementation "org.grails.plugins:gsp"
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.grails:grails-core"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-dependencies"
-    compile "org.grails:grails-logging"
-    compile "org.grails:grails-web-boot"
-    compile "org.grails:grails-plugin-i18n"
-    compile "org.grails:grails-plugin-services"
-    compile "org.grails:grails-plugin-url-mappings"
-    compile "org.grails:grails-plugin-interceptors"
-    compile "org.grails.plugins:cache"
-    compile "org.grails.plugins:scaffolding"
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.grails:grails-core"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.grails:grails-dependencies"
+    implementation "org.grails:grails-logging"
+    implementation "org.grails:grails-web-boot"
+    implementation "org.grails:grails-plugin-i18n"
+    implementation "org.grails:grails-plugin-services"
+    implementation "org.grails:grails-plugin-url-mappings"
+    implementation "org.grails:grails-plugin-interceptors"
+    implementation "org.grails.plugins:cache"
+    implementation "org.grails.plugins:scaffolding"
     console "org.grails:grails-console"
     profile "org.grails.profiles:web"
-    compile 'com.bertramlabs.plugins:asset-pipeline-grails:3.3.1'
-    //testCompile "org.grails:grails-plugin-testing"
-    testCompile "org.grails:grails-gorm-testing-support"
-    testCompile "org.grails:grails-web-testing-support"
-    testCompile "org.grails.plugins:geb"
-    testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
-    compile "commons-io:commons-io:2.6"
-    compile "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
-    compile "org.imgscalr:imgscalr-lib:${imgscalrVersion}"
-    compile "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
-    compile "com.vividsolutions:jts:${jtsVersion}"
+    implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
+    implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
+    //testImplementation "org.grails:grails-plugin-testing"
+    testImplementation "org.grails:grails-gorm-testing-support"
+    testImplementation "org.grails:grails-web-testing-support"
+    testImplementation "org.grails.plugins:geb"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
+    testRuntimeOnly "net.sourceforge.htmlunit:htmlunit:2.18"
+    implementation "commons-io:commons-io:2.6"
+    implementation "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
+    implementation "org.imgscalr:imgscalr-lib:${imgscalrVersion}"
+    implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
+    implementation "com.vividsolutions:jts:${jtsVersion}"
 
-    compile "org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}"
-    compile "org.geotools:gt-shapefile:${geoToolsVersion}"
-    compile "org.geotools:gt-geojson:${geoToolsVersion}"
-    compile "org.geotools:gt-epsg-hsql:${geoToolsVersion}"
+    implementation "org.geotools.xsd:gt-xsd-kml:${geoToolsVersion}"
+    implementation "org.geotools:gt-shapefile:${geoToolsVersion}"
+    implementation "org.geotools:gt-geojson:${geoToolsVersion}"
+    implementation "org.geotools:gt-epsg-hsql:${geoToolsVersion}"
 
-    compile "joda-time:joda-time:2.3"
+    implementation "joda-time:joda-time:2.3"
     // Used by the scripts
-    compile('org.grails.plugins:http-builder-helper:1.1.0') {
+    implementation('org.grails.plugins:http-builder-helper:1.1.0') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
-    compile "org.apache.httpcomponents:httpclient:4.5.7"
-    testCompile "org.grails:grails-test-mixins:3.3.0"
-    testRuntime 'com.github.detro:phantomjsdriver:1.2.0'
-    runtime 'org.webjars:jquery:1.12.4'
-    compile 'org.grails.plugins:external-config:2.0.0'
-    compile "org.grails.plugins:excel-import:3.0.2"
-    compile "org.grails.plugins:excel-export:0.2.1"
-    compile 'org.grails.plugins:grails-google-visualization:2.2.1'
-    compile group: 'org.apache.poi', name: 'poi', version: '3.17'
-    compile 'org.grails.plugins:mail:2.0.0.RC6'
+    implementation "org.apache.httpcomponents:httpclient:4.5.7"
+    testImplementation "org.grails:grails-test-mixins:3.3.0"
+    testRuntimeOnly 'com.github.detro:phantomjsdriver:1.2.0'
+    runtimeOnly 'org.webjars:jquery:1.12.4'
+    implementation 'dk.glasius:external-config:3.0.0'
+    implementation "org.grails.plugins:excel-import:3.0.2"
+    implementation "org.grails.plugins:excel-export:0.2.1"
+    implementation 'org.grails.plugins:grails-google-visualization:2.2.1'
+    implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
+    implementation 'org.grails.plugins:mail:2.0.0.RC6'
 
-    compile 'org.grails.plugins:grails-markdown:3.0.0'
-    compile 'org.grails.plugins:grails-cookie:2.0.3'
-    compile 'org.grails.plugins:cache:5.0.0.RC1'
+    implementation 'org.grails.plugins:grails-markdown:3.0.0'
+    implementation 'org.grails.plugins:grails-cookie:2.0.3'
+//    implementation 'org.grails.plugins:cache:5.0.0.RC1'
 
     //ALA plugins
-    compile("au.org.ala.plugins.grails:images-client-plugin:1.2") {
+    implementation("au.org.ala.plugins.grails:images-client-plugin:1.4-SNAPSHOT") {
         exclude group: 'commons-httpclient', module: 'commons-httpclient'
     }
-    compile "org.grails.plugins:ala-auth:3.2.3"
-    runtime "org.grails.plugins:ala-bootstrap3:3.2.3"
-    compile "org.grails.plugins:ala-admin-plugin:2.1"
+    implementation "org.grails.plugins:ala-auth:3.2.3"
+    runtimeOnly "org.grails.plugins:ala-bootstrap3:3.2.3"
+    implementation "org.grails.plugins:ala-admin-plugin:2.1"
 
-    compile "au.org.ala:userdetails-service-client:1.5.0"
-    compile "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
-    compile 'au.org.ala:ala-cas-client:2.5'
-    runtime("org.springframework.boot:spring-boot-properties-migrator")
-    runtime 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
-    compile 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
-    compile 'org.codehaus.groovy:groovy-dateutil:2.5.0'
+    implementation "au.org.ala:userdetails-service-client:1.5.0"
+    implementation "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
+    implementation 'au.org.ala:ala-cas-client:2.5'
+    runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
+    runtimeOnly 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
+    implementation 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
+    implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
 
     if (!Boolean.valueOf(inplace)) {
-        compile "org.grails.plugins:ala-map-plugin:3.0"
-        compile "org.grails.plugins:ecodata-client-plugin:4.0.1"
+        implementation "org.grails.plugins:ala-map-plugin:3.0"
+        implementation "org.grails.plugins:ecodata-client-plugin:4.0.1"
     }
+
+    testImplementation "org.seleniumhq.selenium:selenium-remote-driver:4.0.0"
+    testImplementation "org.seleniumhq.selenium:selenium-api:4.0.0"
+    testImplementation "org.seleniumhq.selenium:selenium-support:4.0.0"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:4.0.0"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:4.0.0"
 }
 
 springBoot {
@@ -174,8 +181,8 @@ if (Boolean.valueOf(inplace)) {
     grails {
         exploded = true
         plugins {
-            compile(project(':ecodata-client-plugin'))
-            compile(project(':ala-map-plugin'))
+            implementation(project(':ecodata-client-plugin'))
+            implementation(project(':ala-map-plugin'))
         }
     }
 
