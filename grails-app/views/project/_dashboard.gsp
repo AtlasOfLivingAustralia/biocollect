@@ -4,6 +4,12 @@
 
 <div class="container-fluid">
 <div class="project-dashboard">
+
+    <h2>Dashboard</h2>
+
+    <g:render template="dateLastUpdatedDateCurrent"
+              model="[canEditDateCurrent: false, dateCurrentProp: 'details.dateCurrent']"/>
+
     <h3>Risks and issues</h3>
     <g:if test="${project.custom?.details?.risks?.rows}">
         <!-- ko with: details -->
@@ -50,9 +56,6 @@
     <g:else>
         No milestones have been specified for this project.
     </g:else>
-
-    <h3 class="mt-3">Project Budget</h3>
-    <g:render template="budgetTableReadOnly"/>
 
     <h3 class="mt-3">Progress towards outcomes</h3>
     <g:if test="${project?.custom?.details?.outcomeProgress}">

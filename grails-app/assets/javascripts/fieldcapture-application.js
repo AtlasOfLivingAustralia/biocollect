@@ -1048,35 +1048,62 @@ if (!String.prototype.startsWith) {
 /**
  * Sets up the floating save appear / disappear based on a supplied dirtyFlag and some selectors.
  * Note this method requires the floating save to have been rendered into page html.
- * @param dirtyFlag needs to be an object containing a knockout observable "isDirty".
- * @param options selectors for page elements.
+ * @param {object} options selectors for page elements.
+ * @param {string?} options.floatingSaveSelector - The selector for the floating save container.
+ * @param options.changeFlag - needs to be an object containing a knockout observable "isDirty".
  */
-function configureFloatingSave(dirtyFlag, options) {
-    var defaults = {
+function configureFloatingSave(options) {
+    const defaults = {
         floatingSaveSelector: '#floating-save',
-        saveButtonSelector: '#save-button'
+        changeFlag: null,
     };
-    var config = $.extend(defaults, options);
+    const config = $.extend(defaults, options);
 
-    var $floatingSave = $(config.floatingSaveSelector);
-    $(config.saveButtonSelector).appear().on('appear', function() {
+    // check config
+    const $floatingSave = $(config.floatingSaveSelector);
+    if ($floatingSave.length !== 1) {
+        console.warn("Cannot set up floating save due to selector not matching an element '" + config.floatingSaveSelector + "'.");
+        return;
+    }
+
+    if (!config.changeFlag.isDirty) {
+        console.warn("Cannot set up floating save due to invalid change flag.");
+        return;
+    }
+
+    const showFloatingSave = function () {
+        $floatingSave.slideDown(400);
+    };
+
+    const hideFloatingSave = function () {
         $floatingSave.slideUp(400);
-    }).on('disappear', function() {
-        if (dirtyFlag.isDirty()) {
-            $floatingSave.slideDown(400);
+    };
+
+    const setFloatingSaveState = function (hasChanges, isEnabled) {
+        const isVisible = $floatingSave.is(':visible');
+        if (isVisible && (!isEnabled || !hasChanges)) {
+            // hide the floating change if shown and not enabled or no changes
+            hideFloatingSave();
+        } else if (!isVisible && isEnabled && hasChanges) {
+            // show the floating save if hidden and enabled and has changes
+            showFloatingSave();
         }
-        else {
-            $floatingSave.slideUp(400);
-        }
+    };
+
+    // update the floating save buttons when the change flag is updated
+    config.changeFlag.isDirty.subscribe(function (hasChanges) {
+        setFloatingSaveState(hasChanges, true);
     });
-    dirtyFlag.isDirty.subscribe(function(dirty) {
-        if (dirty && !$floatingSave.is(':appeared')) {
-            $floatingSave.slideDown(400);
-        }
-        else {
-            $floatingSave.slideUp(400);
-        }
+
+    // show the floating save buttons if needed on tabs that have enabled the floating save feature
+    $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {
+        const activatedTab = $(e.target);
+        const isEnabled = activatedTab.attr('data-meri-feature') === "floating-save";
+        setFloatingSaveState(config.changeFlag.isDirty(), isEnabled);
     });
+
+    // set the initial floating save state
+    setFloatingSaveState(config.changeFlag.isDirty(), true);
 }
 
 /**
@@ -1107,4 +1134,135 @@ function stageNumberFromStage(stage) {
         stage = '';
     }
     return stage
+}
+
+/**
+ * Compare two objects and find the differences.
+ * @param a The first (original) object.
+ * @param b The second (potentially changed) object.
+ * @param prefix The current object's prefix.
+ * @returns {{total: number, differences: {}, matches: {}, matched: number, different: number}} The results.
+ */
+function compareDataObjects(a, b, prefix) {
+    if (!a) a = {};
+    if (!b) b = {};
+    if (!prefix) prefix = '';
+
+    // Note that Object.keys "returns an array of a given object's own enumerable property names".
+    // This means it does not include some properties e.g. Functions, properties defined on a parent prototype.
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+
+    // Get an array of unique property (key) names.
+    const allKeys = [].concat(aKeys).concat(bKeys).filter(function (value, index, self) {
+        return self.indexOf(value) === index;
+    }).sort();
+
+    const result = {
+        total: 0,
+        matched: 0,
+        different: 0,
+        differences: {},
+        matches: {}
+    };
+
+    const buildKey = function buildKey(prefix, key) {
+        const diffKeys = [prefix, key].filter(function (item) {
+            return item && item.trim();
+        });
+        return diffKeys.join('.');
+    };
+
+    const addMatch = function addMatch(r, key, a, b, msg) {
+        r.total += 1;
+        r.matched += 1;
+        // for debugging: r.matches[key] = {original: a, changed: b, comparison: msg};
+    }
+    const addDifferent = function addDifferent(r, key, a, b, msg) {
+        r.total += 1;
+        r.different += 1;
+        r.differences[key] = {original: a, changed: b, comparison: msg};
+    }
+
+    allKeys.forEach(function (key) {
+        const aValue = a[key];
+        const bValue = b[key];
+        const currentKey = buildKey(prefix, key);
+
+        // If strictly equal, they match
+        if (aValue === bValue) {
+            addMatch(result, currentKey, aValue, bValue, "same reference");
+            return;
+        }
+
+        // If aren't the same type, they don't match
+        if (typeof aValue !== typeof bValue) {
+            addDifferent(result, currentKey, aValue, bValue, "different types");
+            return;
+        }
+
+        // Already know types are the same, so if type is number
+        // and both NaN, they match
+        if (typeof aValue == 'number' && isNaN(aValue) && isNaN(bValue)) {
+            addMatch(result, currentKey, aValue, bValue, "number NaN");
+            return;
+        }
+
+        // Get internal [[Class]]
+        const aClass = Object.prototype.toString.call(aValue);
+        const bClass = Object.prototype.toString.call(bValue);
+
+        // If not same class, they don't match
+        if (aClass !== bClass) {
+            addDifferent(result, currentKey, aValue, bValue, "different classes");
+            return;
+        }
+
+        // If they're Boolean, String or Number objects, check values
+        if (aClass === '[object Boolean]' || aClass === '[object String]' || aClass === '[object Number]') {
+            if (aValue.valueOf() === bValue.valueOf()) {
+                addMatch(result, currentKey, aValue, bValue, "bool or string or number valueOf");
+                return;
+            } else {
+                addDifferent(result, currentKey, aValue, bValue, "bool or string or number valueOf");
+                return;
+            }
+        }
+
+        // If they're RegExps, Dates or Error objects, check stringified values
+        if (aClass === '[object RegExp]' || aClass === '[object Date]' || aClass === '[object Error]') {
+            if (aValue.toString() === bValue.toString()) {
+                addMatch(result, currentKey, aValue, bValue, "regexp or date or error toString");
+                return;
+            } else {
+                addDifferent(result, currentKey, aValue, bValue, "regexp or date or error toString");
+                return;
+            }
+        }
+
+        // For functions, check 'stringified values' are the same.
+        // Note that comparing stringified functions is 'good enough'.
+        // Trivial functions might compare equal even if they aren't the exact same function.
+        // 'Built-in' / 'native' functions can have surprising or unexpected comparisons, depending on the browser and function.
+        if (aClass === '[object Function]') {
+            if (aValue.toString() === bValue.toString()) {
+                addMatch(result, currentKey, aValue, bValue, "same functions");
+                return;
+            } else {
+                addDifferent(result, currentKey, aValue, bValue, "different functions");
+                return;
+            }
+        }
+
+        // All other types are assumed to be objects, including Object, Array and host / window / browser objects.
+        // For these, recuse to compare the properties.
+        const compareValues = compareDataObjects(aValue, bValue, currentKey);
+
+        result.total += compareValues.total;
+        result.matched += compareValues.matched;
+        result.different += compareValues.different;
+        Object.assign(result.differences, compareValues.differences);
+        // for debugging: Object.assign(result.matches, compareValues.matches);
+    })
+    return result;
 }

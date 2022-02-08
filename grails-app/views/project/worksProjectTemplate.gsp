@@ -125,7 +125,10 @@
             allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         </g:applyCodec>
-        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
+        sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}",
+        <g:applyCodec encodeAs="none">
+        financeDataDisplay: ${financeDataDisplay as JSON}
+        </g:applyCodec>
         },
         here = window.location.href;
 
@@ -189,6 +192,8 @@
             </div>
         </div>
    </div>
+
+    <g:render template="/shared/markdownEditorModal"/>
 </bc:koLoading>
 
 <asset:script type="text/javascript" asset-defer="true">
@@ -423,6 +428,5 @@
     }
 
 </asset:script>
-<asset:deferredScripts/>
 </body>
 </html>

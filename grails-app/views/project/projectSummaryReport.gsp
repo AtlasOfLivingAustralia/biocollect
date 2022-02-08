@@ -94,7 +94,7 @@
 
 <asset:script type="text/javascript">
 var project = <fc:modelAsJavascript model="${project}"/>;
-var viewModel = new MERIPlan(project, [], '');
+var viewModel = new MERIPlan(project, '');
 ko.applyBindings(viewModel);
 
 </asset:script>

@@ -1,7 +1,18 @@
 describe("ProjectViewModel Spec", function () {
+    const koToJSON = function koToJSON(obj) {
+        return ko.mapping.toJS(obj, {'ignore': ['transients']});
+    };
+
     beforeAll(function() {
         window.fcConfig = {
-            imageLocation:'/'
+            imageLocation: '/',
+            financeDataDisplay: {
+                funding: {options: {fundingType: [], fundClass: []}},
+                budget:{
+                    options:{budgetCategory:[],budgetClass:[],budgetPaymentStatus:[], budgetRiskStatus:[] },
+                    optionsByName:{budgetCategory:{'Others': 'Others'},budgetClass:{},budgetPaymentStatus:{}, budgetRiskStatus:{}}
+                }
+            }
         }
     });
     afterAll(function() {
@@ -103,6 +114,55 @@ describe("ProjectViewModel Spec", function () {
             }
         });
 
+    });
+
+    it("should create an empty work project", function () {
+        // arrange
+        const projectData = {
+            projectId: 'works-project-id',
+            projectType: 'works',
+            plannedStartDate: '2020-07-05',
+            plannedEndDate: '2022-05-10',
+            custom: {
+                details: {
+                    budget: {
+                        headers: [{data: '2020/2021'}, {data: '2021/2022'}],
+                        rows: [{
+                            shortLabel: 'Others',
+                            description: 'description 1',
+                            fundingSource: 'funding source 1',
+                            dueDate: '',
+                            paymentStatus: undefined,
+                            paymentNumber: undefined,
+                            fundClass: undefined,
+                            riskStatus: undefined,
+                            rowTotal: 3,
+                            costs: [{dollar: 1}, {dollar: 2}]
+                        }, {
+                            shortLabel: 'Others',
+                            description: 'description 2',
+                            fundingSource: 'funding source 2',
+                            dueDate: '',
+                            paymentStatus: undefined,
+                            paymentNumber: undefined,
+                            fundClass: undefined,
+                            riskStatus: undefined,
+                            rowTotal: 7,
+                            costs: [{dollar: 3}, {dollar: 4}]
+                        }]
+                    }
+                }
+            }
+        };
+
+        // act
+        const project = new WorksProjectViewModel(projectData, false, [], {});
+
+        // assert
+        expect(koToJSON(project.details.budget.headers)).toEqual(projectData.custom.details.budget.headers);
+        expect(koToJSON(project.details.budget.rows)).toEqual(projectData.custom.details.budget.rows);
+        expect(koToJSON(project.details.budget.columnTotal())).toEqual([{data: 4}, {data: 6}]);
+        expect(project.details.budget.overallTotal()).toEqual(10);
     });
 
 });

@@ -17,6 +17,8 @@
 //= require projectSpeciesFieldsConfiguration.js
 
 // projects
+//= require editable-table.js
+//= require fundingBudget.js
 //= require projects.js
 //= require sites.js
 //= require map-configuration.js

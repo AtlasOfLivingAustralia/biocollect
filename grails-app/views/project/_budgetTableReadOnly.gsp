@@ -1,55 +1,68 @@
-<div class="budget-table-read-only margin-bottom-10 margin-right-20">
-    <label><b>Project Budget</b></label>
-    <table class="budget table table-bordered">
-        <thead class="thead-dark">
-        <tr>
-            <th class="index"></th>
-            <th class="category">Investment/Priority Area</th>
-            <th class="payment-number">Payment number</th>
-            <th class="funding-source">Funding source</th>
-            <th class="payment-status">Status <fc:iconHelp title="Payment Status">(P) Processing, (C) Complete</fc:iconHelp></th>
-            <th class="description">Description</th>
-            <th class="due-date">Date due</th>
-            <!-- ko foreach: details.budget.headers -->
-            <th style="text-align: center;" width="10%" ><div style="text-align: center;" data-bind="text:data"></div>$</th>
-            <!-- /ko -->
-            <th  style="text-align: center;" width="10%">Total</th>
+<div class="margin-bottom-10 margin-right-20">
+    <label>
+        <b><g:message code="project.plan.budget"/></b>
+        <fc:iconHelp>
+            <g:message code="project.plan.budget.help"/>
+        </fc:iconHelp>
+    </label>
 
-        </tr>
-        </thead>
-        <tbody data-bind="foreach : details.budget.rows">
-        <tr>
-            <td class="index"><span data-bind="text:$index()+1"></span></td>
-            <td class="category"><span data-bind="text:shortLabel"> </span></td>
-            <td class="payment-number"><span data-bind="text:paymentNumber"></span></td>
-            <td class="funding-source"><span data-bind="text:fundingSource"></span></td>
-            <td class="payment-status"><span data-bind="text:paymentStatus"></span></td>
+    <!-- ko with: transients.viewRows -->
+    <g:render template="/shared/editableTableHeader"/>
+    <!-- /ko -->
 
-            <td class="description"><div style="text-align: left;"><span data-bind="text: description"></span></div></td>
-            <td class="due-date"><span data-bind="text:dueDate.formattedDate()"></span></td>
+    <table class="table table-bordered project-budget-table">
+
+        <g:render template="budgetTableHeader" model="[showActions: false]"/>
+
+        <!-- ko with: transients.viewRows -->
+        <tbody data-bind="foreach: displayedRows">
+        <tr>
+            <td class="project-budget-item-number">
+                <span data-bind="text:transients.displayedRowNumber"></span>
+            </td>
+            <td class="project-budget-item-category">
+                <span data-bind="text:transients.displayedCategory"></span>
+            </td>
+            <td class="project-budget-item-payment-number">
+                <span data-bind="text:paymentNumber"></span>
+            </td>
+            <td class="project-budget-item-fund-class">
+                <span data-bind="text:transients.displayedClass"></span>
+            </td>
+            <td class="project-budget-item-funding-source">
+                <span data-bind="text:fundingSource"></span>
+            </td>
+            <td class="project-budget-item-payment-status">
+                <span data-bind="text:transients.displayedPaymentStatus"></span>
+            </td>
+            <td class="project-budget-item-risk-status">
+                <span data-bind="text: transients.displayedRiskStatus,css: transients.displayedRiskStatusHighlight"></span>
+            </td>
+            <td class="project-budget-item-due-date">
+                <span data-bind="text:dueDate.formattedDate"></span>
+            </td>
+            <td class="project-budget-item-description">
+                <span data-bind="text: description"></span>
+            </td>
 
             <!-- ko foreach: costs -->
-            <td><div style="text-align: center;"><span style="width: 90%;" data-bind="text: dollar.formattedCurrency"></span></div></td>
+            <td class="project-budget-item-year">
+                <span data-bind="text: dollar.formattedCurrency"></span>
+            </td>
             <!-- /ko -->
 
-            <td style="text-align: center;" ><span style="width: 90%;" data-bind="text: rowTotal.formattedCurrency"></span></td>
-
+            <td class="project-budget-item-total">
+                <span data-bind="text: rowTotal.formattedCurrency"></span>
+            </td>
         </tr>
         </tbody>
-        <tfoot>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td style="text-align: right;" ><b>Total </b></td>
-            <!-- ko foreach: details.budget.columnTotal -->
-            <td style="text-align: center;" width="10%"><span data-bind="text:data.formattedCurrency"></span></td>
-            <!-- /ko -->
-            <td style="text-align: center;"><b><span data-bind="text:details.budget.overallTotal.formattedCurrency"></span></b></td>
-        </tr>
-        </tfoot>
+        <!-- /ko -->
+
+        <g:render template="budgetTableFooter" model="[showActions: false]"/>
     </table>
+
+    <!-- ko with: transients.viewRows -->
+    <g:render template="/shared/editableTableFooter"/>
+    <!-- /ko -->
+
 </div>

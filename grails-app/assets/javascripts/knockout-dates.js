@@ -266,12 +266,13 @@ function stringToDate(date) {
             var widget = $(element).data("datepicker");
             //when the view model is updated, update the widget
             if (widget) {
-                var date = ko.utils.unwrapObservable(valueAccessor());
-                widget.date = date;
+                const value = valueAccessor();
+                const valueUnwrapped = ko.utils.unwrapObservable(value);
+                widget.date = valueUnwrapped;
                 if (!isNaN(widget.date)) {
                     widget.setDate(widget.date);
                 } else {
-                    console.log('reset')
+                    console.warn(`[DatePicker] Invalid value '${valueUnwrapped}' (${typeof valueUnwrapped}).`)
                 }
             }
         },
@@ -351,7 +352,6 @@ ko.bindingHandlers.clickToPickDate = {
 };
 
 
-
 /**
  * Creates a flag that indicates whether the model has been modified.
  *
@@ -362,25 +362,40 @@ ko.bindingHandlers.clickToPickDate = {
  * @param isInitiallyDirty
  * @returns an object (function) with the methods 'isDirty' and 'reset'
  */
-ko.dirtyFlag = function(root, isInitiallyDirty) {
-    var result = function() {};
-    var _isInitiallyDirty = ko.observable(isInitiallyDirty || false);
+ko.dirtyFlag = function (root, isInitiallyDirty) {
+    const result = function () {
+    };
+    const _isInitiallyDirty = ko.observable(isInitiallyDirty || false);
     // this allows for models that do not have a modelAsJSON method
-    var getRepresentation = function () {
+    const getRepresentation = function () {
         return (typeof root.modelAsJSON === 'function') ? root.modelAsJSON() : ko.toJSON(root);
     };
-    var _initialState = ko.observable(getRepresentation());
+    const _initialState = ko.observable(getRepresentation());
 
-    result.isDirty = ko.dependentObservable(function() {
-        var dirty = _isInitiallyDirty() || _initialState() !== getRepresentation();
-        /*if (dirty) {
-            console.log('Initial: ' + _initialState());
-            console.log('Actual: ' + getRepresentation());
-        }*/
+    result.isDirty = ko.dependentObservable(function () {
+        const initialState = _initialState();
+        const currentState = getRepresentation();
+
+        const areEqual = initialState === currentState;
+        const isInitDirty = _isInitiallyDirty();
+        const dirty = isInitDirty || !areEqual;
+
+        if (!areEqual) {
+            const initialStateObj = JSON.parse(initialState);
+            const currentStateObj = JSON.parse(currentState);
+            const compareObjs = compareDataObjects(initialStateObj, currentStateObj, null);
+
+            console.warn('[ViewModel] Comparison of objects in ko.dirtyFlag', {
+                'isInitDirty': isInitDirty,
+                'areEqual': areEqual,
+                'dirty': dirty,
+                'compareObjs': compareObjs,
+            });
+        }
         return dirty;
     });
 
-    result.reset = function() {
+    result.reset = function () {
         _initialState(getRepresentation());
         _isInitiallyDirty(false);
     };

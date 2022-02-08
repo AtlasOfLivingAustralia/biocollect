@@ -295,18 +295,8 @@ function isValid(p, a) {
 	 return p;
 }
 
-
-
-function FundingViewModel(funding){
-    var self = this;
-    self.fundingSource=ko.observable(funding.fundingSource)
-    self.fundingType=ko.observable(funding.fundingType)
-    self.fundingSourceAmount=ko.observable(funding.fundingSourceAmount).extend({currency:{currencySymbol:"AUD $ "}})
-
-}
-
 function ProjectViewModel(project, isUserEditor) {
-    var self = $.extend(this, new Documents());
+    const self = $.extend(this, new Documents());
 
     if (isUserEditor === undefined) {
         isUserEditor = false;
@@ -321,47 +311,32 @@ function ProjectViewModel(project, isUserEditor) {
     self.managerEmail = ko.observable(project.managerEmail);
     self.plannedStartDate = ko.observable(project.plannedStartDate).extend({simpleDate: false});
     self.plannedEndDate = ko.observable(project.plannedEndDate).extend({simpleDate: false});
-    var fundings = $.map(project.fundings || [], function(funding){
-        return new FundingViewModel(funding)})
-    self.fundings = ko.observableArray(fundings);
 
-    self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
-    self.funding = ko.computed(function(){
-        var total = 0;
-        ko.utils.arrayForEach(self.fundings() ,function(funding){
-            total += parseInt(funding.fundingSourceAmount());
-        })
-        return total;
-    }).extend({currency:{currencySymbol:"AUD $ "}})
+    // extend ProjectViewModel to add the attributes from FundingViewModel
+    // Do a deep (recursive) merge by supplying 'true' as the first argument.
+    // https://api.jquery.com/jquery.extend/
+    $.extend(true, self, new FundingViewModel(project));
 
-    self.removeFunding = function(){
-        self.fundings.remove(this);
-    }
-    self.addFunding = function(){
-        self.fundings.push(new FundingViewModel({fundingSournce : "",fundingType : "", fundingSourceAmount : 0}))
-    }
+    const initialCountries = project.countries && $.isArray(project.countries) && project.countries.length > 0 ? project.countries : ['Australia']
+    self.countries = ko.observableArray(initialCountries);
 
+    const initialUNRegions = project.uNRegions && $.isArray(project.uNRegions) && project.uNRegions.length > 0 ? project.uNRegions : ['Oceania']
+    self.uNRegions = ko.observableArray(initialUNRegions);
 
-    var initialCountries = project.countries && $.isArray(project.countries) && project.countries.length > 0 ? project.countries : ['Australia']
-    self.countries = ko.observableArray(initialCountries)
-    var initialUNRegions = project.uNRegions && $.isArray(project.uNRegions) && project.uNRegions.length > 0 ? project.uNRegions : ['Oceania']
-    self.uNRegions = ko.observableArray(initialUNRegions)
     self.origin = ko.observable(project.origin)
-
     self.facets = ko.observableArray();
 
     self.coverage = project.coverage
 
     self.regenerateProjectTimeline = ko.observable(false);
-    self.projectDatesChanged = ko.computed(function() {
-        return project.plannedStartDate != self.plannedStartDate() ||
-            project.plannedEndDate != self.plannedEndDate();
+    self.projectDatesChanged = ko.computed(function () {
+        return project.plannedStartDate !== self.plannedStartDate() ||
+            project.plannedEndDate !== self.plannedEndDate();
     });
-    var projectDefault = "active";
-    if(project.status){
-        projectDefault = project.status;
-    }
+
+    const projectDefault = project.status ? project.status : "active";
     self.status = ko.observable(projectDefault.toLowerCase());
+
     self.projectStatus = [{id: 'active', name:'Active'},{id:'completed',name:'Completed'},{id:'deleted', name:'Deleted'}];
 
     self.organisationId = ko.observable(project.organisationId);
@@ -418,7 +393,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.orgIdSvcProvider = ko.observable(project.orgIdSvcProvider);
 
     self.serviceProviderName = ko.observable(project.serviceProviderName);
-    self.associatedProgram = ko.observable(); // don't initialise yet - we want the change to trigger dependents
+    self.associatedProgram = ko.observable(project.associatedProgram);
     self.associatedSubProgram = ko.observable(project.associatedSubProgram);
     self.newsAndEvents = ko.observable(project.newsAndEvents).extend({markdown:true});
     self.projectStories = ko.observable(project.projectStories).extend({markdown:true});
@@ -706,9 +681,11 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.transients.projectId = project.projectId;
     self.transients.programs = [];
-    self.transients.subprograms = {};
+    self.transients.subprograms = ko.observable({});
     self.transients.subprogramsToDisplay = ko.computed(function () {
-        return self.transients.subprograms[self.associatedProgram()];
+        const subPrograms = self.transients.subprograms();
+        const projectProgram = self.associatedProgram();
+        return subPrograms[projectProgram];
     });
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
 
@@ -981,14 +958,20 @@ function ProjectViewModel(project, isUserEditor) {
     ];
 
     self.loadPrograms = function (programsModel) {
-        $.each(programsModel.programs, function (i, program) {
-            if (program.readOnly && project.associatedProgram != program.name) {
+        const projectAssociatedProgram = self.associatedProgram();
+        const subPrograms = self.transients.subprograms();
+
+        programsModel.programs.forEach(function (program) {
+            const programName = program.name;
+            if (program.readOnly && projectAssociatedProgram !== programName) {
                 return;
             }
-            self.transients.programs.push(program.name);
-            self.transients.subprograms[program.name] = $.map(program.subprograms,function (obj, i){return obj.name});
+            self.transients.programs.push(programName);
+            subPrograms[programName] = program.subprograms.map(function (subProgram) {
+                return subProgram.name
+            });
         });
-        self.associatedProgram(project.associatedProgram); // to trigger the computation of sub-programs
+        self.transients.subprograms(subPrograms);
     };
 
     self.toJS = function() {

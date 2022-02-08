@@ -502,10 +502,13 @@
         <div>
             <h4 class="block-header"><g:message code="project.details.associations"/></h4>
 
+            <p class="text-info" style="font-weight: bold;"><g:message code="project.details.associationsMessage" /></p>
+
             <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row form-group">
-                <label class="col-from-label col-md-4" for="externalId"><g:message
-                        code="project.details.externalId"/><fc:iconHelp><g:message
-                        code="project.details.externalId.help"/></fc:iconHelp></label>
+                <label class="col-from-label col-md-4" for="externalId">
+                    <g:message code="project.details.externalId"/>
+                    <fc:iconHelp><g:message code="project.details.externalId.help"/></fc:iconHelp>
+                </label>
 
                 <div class="col-md-8">
                     <g:textField class="form-control" name="externalId" data-bind="value:externalId"/>
@@ -522,59 +525,12 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row form-group">
-                <label class="col-from-label col-md-4" for="fundingSourceAmount"><g:message
-                        code="project.details.funding"/><fc:iconHelp><g:message
-                        code="project.details.funding.help"/></fc:iconHelp></label>
-
-                <div class="col-md-8 table-responsive" name="fundings">
-                    <table class="table borderless not-stacked-table">
-                        <thead>
-                        <td>Funding Source<fc:iconHelp><g:message
-                                code="project.details.funding.fundingSource.help"/></fc:iconHelp><i
-                                class="req-field"></i></td>
-                        <td>Funding Type<fc:iconHelp><g:message
-                                code="project.details.funding.fundingType.help"/></fc:iconHelp></td>
-                        <td>Funding Amount<fc:iconHelp><g:message
-                                code="project.details.funding.fundingSourceAmount.help"/></fc:iconHelp></td>
-                        <td>Action</td>
-                        </thead>
-                        <tbody>
-                        <!-- ko foreach: fundings -->
-                        <tr>
-                            <td><g:textField class="form-control" name="fundingSource" data-bind="value:fundingSource"
-                                             data-validation-engine="validate[required]"></g:textField></td>
-                            <td><select class="form-control" name="fundingType"
-                                        data-bind="options:$parent.fundingTypes,value:fundingType"></select></td>
-                            <td><g:field class="form-control"  type="number" step="any" min="0" name="fundingSourceAmount"
-                                         data-bind="value:fundingSourceAmount"
-                                         data-validation-engine="validate[custom[number]]"></g:field></td>
-                            <td><button class="btn btn-danger btn-sm main-image-button" data-bind="click:$parent.removeFunding">
-                                <i class="far fa-trash-alt"></i> Remove</button></td>
-                        </tr>
-                        <!-- /ko -->
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="1">
-                                <fc:iconHelp><g:message
-                                        code="project.details.funding.fundingTotal.help"/></fc:iconHelp><b>Total amount: <span
-                                    name="totalFundingsAmount" data-bind="text:funding.formattedCurrency"/></b>
-                            </td>
-                        </tr>
-                        <tr><td colspan="3"></td>
-                            <td colspan="1"><button class="btn btn-primary-dark btn-sm main-image-button" data-bind="click:addFunding">
-                                <i class="fas fa-plus"></i> Add funding</button></td></tr>
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-
-
             <div class="row form-group">
-                <label class="col-from-label col-md-4" for="program"><g:message
-                        code="project.details.program"/><fc:iconHelp><g:message
-                        code="project.details.program.help"/></fc:iconHelp><i class="req-field"></i></label>
+                <label class="col-from-label col-md-4" for="program">
+                    <g:message code="project.details.program"/>
+                    <fc:iconHelp><g:message code="project.details.program.help"/></fc:iconHelp>
+                    <i class="req-field"></i>
+                </label>
 
                 <div class="col-md-8">
                     <select class="form-control" id="program"

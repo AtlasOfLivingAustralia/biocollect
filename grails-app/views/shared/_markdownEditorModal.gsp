@@ -15,6 +15,8 @@
           <g:textArea name="editorInput" id="editorInput" data-bind="value:initialValue" rows="16"
                       cols="120" style="width:100%;margin:0;"></g:textArea>
         </div>
+        <h5>Preview</h5>
+        <div style="border:1px solid grey;padding:3px;" id="editorPreview"></div>
         <div class="d-none"><input type="text" name="editorOutput" id="editorOutput" class="hide"></div>
 
       </div>
@@ -38,7 +40,7 @@
             input: "editorInput",
             output: "editorOutput",
             button_bar: "editor-button-bar",
-            preview: "",
+            preview: "editorPreview",
             helpLink: "${asset.assetPath(src:"/wmd/markdownhelp.html")}"
         });
 

@@ -508,32 +508,45 @@ input.padding-14, .padding-14{
     max-height: 50px;
 }
 
+/* Start floating save */
 
 #floating-save {
     position: fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    height:40px;
-}
-#floating-save .transparent-background {
-    background-color:#000000;
-    opacity: 0.2;
-}
-#floating-save div {
+    bottom: 0;
+    left: 0;
     width: 100%;
-    height:30px;
+    height: 60px;
 
+    border-top: 2px solid black;
+    background-color: #FFFFFF;
+    opacity: 0.8;
+}
+
+#floating-save .form-actions {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 100%;
+    height: 25px;
+
+    padding: 0 5px;
+    margin: 0;
+    text-align: center;
+}
+
+#floating-save p {
     position: absolute;
     top: 0;
-    left:0;
-    padding-top: 5px;
-    padding-bottom:5px;
-    text-align:center;
+    left: 0;
+    height: 16px;
+    width: 100%;
+
+    text-align: center;
+    font-size: 16px;
+    margin: 0;
 }
-#floating-save button {
-    top:5px;
-}
+
+/* End floating save */
 
 .bg-black-color{
     background-color: black;
@@ -827,3 +840,59 @@ input.full-width-input {
 dd {
     margin-bottom: 10px;
 }
+
+/* Start extra bootstrap label / badge colours */
+
+.label-spend-low, .badge-spend-low {
+    background-color: #468847;
+}
+
+.label-spend-low[href], .badge-spend-low[href] {
+    background-color: #356635;
+}
+
+.label-spend-medium, .badge-spend-medium {
+    background-color: #f8c406;
+}
+
+.label-spend-medium[href], .badge-spend-medium[href] {
+    background-color: #c69c05;
+}
+
+.alert-spend-medium {
+    background-color: #f2efde;
+    border-color: #eeead3;
+    color: #f8c406;
+}
+
+.label-spend-high, .badge-spend-high {
+    background-color: #f89406;
+}
+
+.label-spend-high[href], .badge-spend-high[href] {
+    background-color: #c67605;
+}
+
+.alert-spend-high {
+    background-color: #f2e9de;
+    border-color: #eee2d3;
+    color: #c67605;
+}
+
+.label-spend-critical, .badge-spend-critical {
+    background-color: #b94a48;
+}
+
+.label-spend-critical[href], .badge-spend-critical[href] {
+    background-color: #953b39;
+}
+
+.label-spend-operational, .badge-spend-operational {
+    background-color: #3a87ad;
+}
+
+.label-spend-operational[href], .badge-spend-operational[href] {
+    background-color: #2d6987;
+}
+
+/* End extra bootstrap label / badge colours */
