@@ -9,7 +9,7 @@ var document =
       "filepath" : "2022-02",
       "thirdPartyConsentDeclarationMade" : false,
       "projectActivityId" : "",
-      "role" : "information",
+      "role" : "",
       "name" : "",
       "type" : "application",
       "status" : "active",
