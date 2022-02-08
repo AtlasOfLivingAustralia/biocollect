@@ -10,8 +10,8 @@ var projectId = hub_name + 1;
 var title = projectId + 1;
 var description = title + 1;
 var documentUrl = description + 1;
-var type = documentUrl + 1;
-var citation = type + 1;
+var role = documentUrl + 1;
+var citation = role + 1;
 var keywords = citation + 1;
 
 var csvData = cat(path+'NESP_MARINE_ARTEFACTS_FOR_TEST.txt');
@@ -73,13 +73,13 @@ for(var i = 1; i < csvRows.length; i++) {
             document.contentType = contentType
         }
 
-        if (fields[type]) {
-            if (fields[type].indexOf(',') != -1) {
-                var tempType = fields[type].replace(/""/g, '"');
-                document.type = tempType.substring(1, tempType.length - 1);
+        if (fields[role]) {
+            if (fields[role].indexOf(',') != -1) {
+                var tempType = fields[role].replace(/""/g, '"');
+                document.role = tempType.substring(1, tempType.length - 1);
             }
             else {
-                document.type = fields[type]
+                document.role = fields[role]
             }
         }
 
