@@ -1,16 +1,11 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.web.AuthService
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
 import spock.lang.Specification
 
-/**
- * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
- */
 class SiteControllerSpec extends Specification implements ControllerUnitTest<SiteController> {
 
     SiteService siteService = Stub(SiteService)

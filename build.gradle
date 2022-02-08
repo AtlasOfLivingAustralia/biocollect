@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.0"
+        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.6"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:$assetPipelineVersion"
         classpath "com.bertramlabs.plugins:less-asset-pipeline:$assetPipelineVersion"
         classpath 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
@@ -15,11 +15,7 @@ buildscript {
     }
 }
 
-plugins {
-    id 'war'
-}
 version "6.0-SNAPSHOT"
-
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -60,7 +56,10 @@ dependencies {
 //    implementation "org.grails.plugins:events"
 //    implementation "org.grails.plugins:gsp"
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    compileOnly "io.micronaut:micronaut-inject-groovy"
+    console "org.grails:grails-console"
     implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     implementation "org.grails:grails-core"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
@@ -68,22 +67,18 @@ dependencies {
     implementation "org.grails:grails-dependencies"
     implementation "org.grails:grails-logging"
     implementation "org.grails:grails-web-boot"
+    implementation "org.grails:grails-logging"
+    implementation "org.grails:grails-plugin-rest"
     implementation "org.grails:grails-plugin-i18n"
     implementation "org.grails:grails-plugin-services"
     implementation "org.grails:grails-plugin-url-mappings"
     implementation "org.grails:grails-plugin-interceptors"
     implementation "org.grails.plugins:cache"
+    implementation "org.grails.plugins:async"
     implementation "org.grails.plugins:scaffolding"
-    console "org.grails:grails-console"
     profile "org.grails.profiles:web"
     implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
-    //testImplementation "org.grails:grails-plugin-testing"
-    testImplementation "org.grails:grails-gorm-testing-support"
-    testImplementation "org.grails:grails-web-testing-support"
-    testImplementation "org.grails.plugins:geb"
-    testRuntimeOnly "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntimeOnly "net.sourceforge.htmlunit:htmlunit:2.18"
     implementation "commons-io:commons-io:2.6"
     implementation "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
     implementation "org.imgscalr:imgscalr-lib:${imgscalrVersion}"
@@ -101,8 +96,6 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
     implementation "org.apache.httpcomponents:httpclient:4.5.7"
-    testImplementation "org.grails:grails-test-mixins:3.3.0"
-    testRuntimeOnly 'com.github.detro:phantomjsdriver:1.2.0'
     runtimeOnly 'org.webjars:jquery:1.12.4'
     implementation 'dk.glasius:external-config:3.0.0'
     implementation "org.grails.plugins:excel-import:3.0.2"
@@ -136,6 +129,11 @@ dependencies {
         implementation "org.grails.plugins:ecodata-client-plugin:4.0.1"
     }
 
+    testCompileOnly "org.grails:grails-test-mixins:3.3.0"
+    testImplementation "org.grails:grails-gorm-testing-support"
+    testImplementation "org.mockito:mockito-core"
+    testImplementation "org.grails:grails-web-testing-support"
+    testImplementation "org.grails.plugins:geb"
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:4.0.0"
     testImplementation "org.seleniumhq.selenium:selenium-api:4.0.0"
     testImplementation "org.seleniumhq.selenium:selenium-support:4.0.0"
@@ -204,3 +202,26 @@ task _Events {
 assetCompile.dependsOn(_Events)
 compileGroovy.dependsOn(_Events)
 bootRun.dependsOn(_Events)
+
+
+tasks.withType(GroovyCompile) {
+    configure(groovyOptions) {
+        forkOptions.jvmArgs = ['-Xmx1024m']
+    }
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
+webdriverBinaries {
+    chromedriver '2.45.0'
+    geckodriver '0.30.0'
+}
+
+tasks.withType(Test) {
+    systemProperty "geb.env", System.getProperty('geb.env')
+    systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
+    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
+    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
+}

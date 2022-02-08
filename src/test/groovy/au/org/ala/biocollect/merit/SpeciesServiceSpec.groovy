@@ -1,7 +1,5 @@
 package au.org.ala.biocollect.merit
 
-import grails.test.mixin.TestMixin
-import grails.test.mixin.services.ServiceUnitTestMixin
 import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 
