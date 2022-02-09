@@ -5,6 +5,7 @@ import au.org.ala.ecodata.forms.ActivityFormService
 class FormSpeciesFieldParserService {
     MetadataService metadataService
     ActivityFormService activityFormService
+    CacheService cacheService
 
     /**
      * Get the list of species fields, for the specified survey, grouped by outputs
@@ -16,14 +17,24 @@ class FormSpeciesFieldParserService {
      * @return the list of species fields
      */
     Map getSpeciesFieldsForSurvey(String id) {
-        def model = activityFormService.getActivityAndOutputMetadata(id)
+        def cacheKey = "activityFormService-getActivityAndOutputMetadata-${id}"
+        def cachedValue = cacheService.get(cacheKey, {
+            try {
+                return activityFormService.getActivityAndOutputMetadata(id) ?: [:]
+            } catch (Exception e) {
+                log.error("Could not get activity and output metadata from activity form service.", e)
+            }
+            return [:]
+        })
+
+        def model = cachedValue
 
         def fields = []
 
         def attr = [fields: fields]
 
         // Find the species fields in the data model for each output model
-        model.outputModels.each { outputName, outputModel ->
+        model.outputModels?.each { outputName, outputModel ->
             if(outputModel) { // Yes there are a few instances were the output is null
                 attr.model = outputModel
                 attr.outputName = outputName
