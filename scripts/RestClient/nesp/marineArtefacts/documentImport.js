@@ -10,7 +10,8 @@ var projectId = hub_name + 1;
 var title = projectId + 1;
 var description = title + 1;
 var documentUrl = description + 1;
-var role = documentUrl + 1;
+var doiLink = documentUrl + 1;
+var role = doiLink + 1;
 var citation = role + 1;
 var keywords = citation + 1;
 
@@ -71,6 +72,16 @@ for(var i = 1; i < csvRows.length; i++) {
 
             document.filename = fileName
             document.contentType = contentType
+        }
+
+        if (fields[doiLink]) {
+            if (fields[doiLink].indexOf(',') != -1) {
+                var tempDoi = fields[doiLink].replace(/""/g, '"');
+                document.doiLink = tempDoi.substring(1, tempDoi.length - 1);
+            }
+            else {
+                document.doiLink = fields[doiLink]
+            }
         }
 
         if (fields[role]) {
