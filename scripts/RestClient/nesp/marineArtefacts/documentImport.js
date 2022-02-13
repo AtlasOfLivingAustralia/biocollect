@@ -33,6 +33,10 @@ for(var i = 1; i < csvRows.length; i++) {
         document.name = ""
         document.filename = ""
         document.contentType = ""
+        document.doiLink = ""
+        document.role = ""
+        document.citation = ""
+        document.keywords = ""
 
         //When there are commas, tsv adds double quotes in the beginning and end of text, following string
         //manipulations are done to avoid that
