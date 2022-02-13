@@ -152,6 +152,9 @@ $(function(){
         if ($('#projectDetails').validationEngine('validate')) {
             var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
+                    <!-- In the edit mode first check the current projLifecycleStatus of the project and set the new
+                    status accordingly. Also there is only one button for publish/ unpublish and the button label is set
+                    accordingly in javascript -->
                     if (project.projLifecycleStatus == 'Draft')
                         viewModel.projLifecycleStatus = 'Published';
                     else if (project.projLifecycleStatus == 'Published')
