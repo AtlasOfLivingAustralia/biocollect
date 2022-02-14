@@ -46,11 +46,6 @@ class ProjectActivityController {
         def project = projectService.get(pActivity?.projectId)
         String userId = userService.getCurrentUserId()
 
-        //publish the project along with the survey
-        if (values.publishProject == "Yes") {
-            projectService.update(project?.projectId, [projLifecycleStatus: 'Published'])
-        }
-
         Map result
         if (!userId) {
             response.status = 401
@@ -62,6 +57,11 @@ class ProjectActivityController {
             def documents = values.remove('documents')
             result = projectActivityService.update(id, values)
             if ((!result.statusCode || result.statusCode == HttpStatus.SC_OK)) {
+                //publish the project along with the survey
+                if (values.publishProject == "Yes") {
+                    projectService.update(project?.projectId, [projLifecycleStatus: 'published'])
+                }
+
                 documents?.each { doc ->
                     if (doc.status == "deleted") {
                         result.doc = documentService.updateDocument(doc)

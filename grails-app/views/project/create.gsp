@@ -66,6 +66,9 @@
                 <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
 
                 <button type="button" id="save" class="btn btn-primary-dark" data-bind="disable: (!termsOfUseAccepted() && !isExternal())" title="<g:message code="g.save.title"/>"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+
+                <!-- Publish workflow applies to all citizen science, eco science and works projects. When either citizen
+                science or eco science, if isExternal is true, then enable the Publish button else disable the Publish button -->
                 <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || (isWorks() && termsOfUseAccepted()))"><i class="fas fa-hdd"></i> <g:message code="g.savePublish"/></button>
                 <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
             </div>
@@ -129,7 +132,7 @@ $(function(){
             } else {
                 var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
-                    viewModel.projLifecycleStatus = 'Draft';
+                    viewModel.projLifecycleStatus = 'unpublished';
 
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
@@ -174,7 +177,7 @@ $(function(){
             } else {
                 var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
-                    viewModel.projLifecycleStatus = 'Published';
+                    viewModel.projLifecycleStatus = 'published';
 
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;

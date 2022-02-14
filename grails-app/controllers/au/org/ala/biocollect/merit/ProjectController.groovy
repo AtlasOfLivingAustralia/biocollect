@@ -302,7 +302,7 @@ class ProjectController {
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
-            def activities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
+            def projectActivities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
 
             [project        : project,
              siteDocuments  : siteInfo.documents ?: '[]',
@@ -310,7 +310,7 @@ class ProjectController {
              programs       : metadataService.programsModel(),
              scienceTypes   : scienceTypes,
              ecoScienceTypes: ecoScienceTypes,
-             activities     : activities
+             activities     : projectActivities
             ]
         } else {
             forward(action: 'list', model: [error: 'no such id'])
@@ -355,7 +355,7 @@ class ProjectController {
             project.projectType = ProjectService.PROJECT_TYPE_ECOSCIENCE
         }
 
-        project.projLifecycleStatus = 'Draft'
+        project.projLifecycleStatus = 'unpublished'
 
         HubSettings hub = SettingService.getHubConfig()
         if (hub && hub.defaultProgram) {
@@ -488,16 +488,16 @@ class ProjectController {
         String mainImageAttribution = values.remove("mainImageAttribution")
         String logoAttribution = values.remove("logoAttribution")
 
-        def hasPublishedActivities = false
+        def hasPublishedProjectActivities = false
 
         if (project != null) {
-            def activities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
+            def projectActivities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
 
             //checks whether there's at least one published survey
-            if (activities != null && activities.size() > 0) {
-                for (int i = 0; i < activities.size(); i++) {
-                    if (activities[i].published) {
-                        hasPublishedActivities = true;
+            if (projectActivities != null && projectActivities.size() > 0) {
+                for (int i = 0; i < projectActivities.size(); i++) {
+                    if (projectActivities[i].published) {
+                        hasPublishedProjectActivities = true;
                         break;
                     }
                 }
@@ -505,7 +505,7 @@ class ProjectController {
 
             //check whether a project can be published
             if (values.projLifecycleStatus != null) {
-                if ((values.projLifecycleStatus == 'Published') && !project.isExternal && !hasPublishedActivities) {
+                if ((values.projLifecycleStatus == 'published') && !project.isExternal && !hasPublishedProjectActivities) {
                     render status: HttpStatus.SC_BAD_REQUEST, text: "At least one published survey should be there to publish a project."
                     return
                 }

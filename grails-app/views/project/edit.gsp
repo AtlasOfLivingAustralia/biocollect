@@ -56,7 +56,10 @@
     <div class="row">
         <div class="col-12 btn-space">
             <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
-            <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || isWorks() || (!isExternal() && transients.hasPublishedActivities)), text:publishUnpublish()"><i class="fas fa-hdd"></i></button>
+
+            <!-- Publish workflow applies to all citizen science, eco science and works projects. When either citizen
+                science or eco science, if isExternal is true, then enable the Publish button else disable the Publish button -->
+            <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || isWorks() || (!isExternal() && transients.hasPublishedProjectActivities)), text:publishUnpublish()"><i class="fas fa-hdd"></i></button>
             <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
         </div>
     </div>
@@ -82,7 +85,7 @@ $(function(){
 
     var viewModel =  new CreateEditProjectViewModel(project, true, {storageKey:PROJECT_DATA_KEY});
     viewModel.loadPrograms(programsModel);
-    viewModel.checkPublishedActivities(activities);
+    viewModel.checkPublishedProjectActivities(activities);
 
     $('#projectDetails').validationEngine();
     $('.helphover').popover({animation: true, trigger:'hover'});
@@ -137,7 +140,7 @@ $(function(){
               className: "btn-primary",
               callback: function() {
                 viewModel.isExternal(true);
-                $('#save').click()
+                $('#publish').click()
               }
             },{
                 label: "Cancel",
@@ -155,10 +158,10 @@ $(function(){
                     <!-- In the edit mode first check the current projLifecycleStatus of the project and set the new
                     status accordingly. Also there is only one button for publish/ unpublish and the button label is set
                     accordingly in javascript -->
-                    if (project.projLifecycleStatus == 'Draft')
-                        viewModel.projLifecycleStatus = 'Published';
-                    else if (project.projLifecycleStatus == 'Published')
-                        viewModel.projLifecycleStatus = 'Draft';
+                    if (project.projLifecycleStatus == 'unpublished')
+                        viewModel.projLifecycleStatus = 'published';
+                    else if (project.projLifecycleStatus == 'published')
+                        viewModel.projLifecycleStatus = 'unpublished';
 
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;

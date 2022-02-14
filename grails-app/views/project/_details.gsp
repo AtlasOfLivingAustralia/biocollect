@@ -5,10 +5,10 @@
             <div class="col-12">
                 <h4 class="d-inline-block">Project metadata</h4>
                 <span class="float-right">
-                    <g:if test="${project.projLifecycleStatus == 'Published'}">
+                    <g:if test="${project.projLifecycleStatus == 'published'}">
                         <span class="badge badge-success">Published</span>
                     </g:if>
-                    <g:elseif test="${project.projLifecycleStatus == 'Draft'}">
+                    <g:elseif test="${project.projLifecycleStatus == 'unpublished'}">
                         <span class="badge badge-info">Draft</span>
                     </g:elseif>
                 </span>

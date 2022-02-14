@@ -312,7 +312,7 @@ function ProjectViewModel(project, isUserEditor) {
         isUserEditor = false;
     }
 
-    self.projLifecycleStatus = 'Draft';
+    self.projLifecycleStatus = 'unpublished';
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
     self.description = ko.observable(project.description).extend({markdown:true});
@@ -981,13 +981,13 @@ function ProjectViewModel(project, isUserEditor) {
         'Other'
     ];
 
-    self.transients.hasPublishedActivities = false;
+    self.transients.hasPublishedProjectActivities = false;
 
-    self.checkPublishedActivities = function (activities) {
+    self.checkPublishedProjectActivities = function (activities) {
         if (activities && Object.keys(activities).length > 0) {
             for (var i = 0; i < activities.length; i++) {
                 if (activities[i].published) {
-                    self.transients.hasPublishedActivities = true;
+                    self.transients.hasPublishedProjectActivities = true;
                     break;
                 }
             }
@@ -995,9 +995,9 @@ function ProjectViewModel(project, isUserEditor) {
     };
 
     self.publishUnpublish = function () {
-        if (project.projLifecycleStatus == 'Draft')
+        if (project.projLifecycleStatus == 'unpublished')
             return "Publish"
-        else if (project.projLifecycleStatus == "Published")
+        else if (project.projLifecycleStatus == 'published')
             return "Unpublish"
     }
 
