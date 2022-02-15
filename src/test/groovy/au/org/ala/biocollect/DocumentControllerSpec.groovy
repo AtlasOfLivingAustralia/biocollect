@@ -29,7 +29,7 @@ class DocumentControllerSpec extends Specification {
         then:
         1 * documentService.search([filepath:"path", filename:"file.txt"]) >> [count: 1, documents:[document]]
         1 * documentService.canView(document) >> true
-        1 * webService.proxyGetRequest(response, {it.endsWith('document/download/path/file.txt')}, false, false)
+        1 * webService.proxyGetRequest(response, {it.endsWith('document/download/path/file.txt')}, false, true)
         resp == null
     }
 
@@ -44,7 +44,7 @@ class DocumentControllerSpec extends Specification {
         then:
         1 * documentService.search([filepath:"path", filename:"file.png"]) >> [count: 1, documents:[document]]
         1 * documentService.canView(document) >> true
-        1 * webService.proxyGetRequest(response, {it.endsWith('document/download/path/thumb_file.png')}, false, false)
+        1 * webService.proxyGetRequest(response, {it.endsWith('document/download/path/thumb_file.png')}, false, true)
         resp == null
     }
 
