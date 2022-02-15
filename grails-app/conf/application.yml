@@ -53,6 +53,7 @@ app:
   http:
     header:
       userId: "X-ALA-userId"
+      hubUrlPath: "X-ALA-hub-urlPath"
 
 
 security:
