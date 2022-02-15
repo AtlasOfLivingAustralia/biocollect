@@ -36,7 +36,7 @@ for(var i = 1; i < csvRows.length; i++) {
         document.doiLink = ""
         document.role = ""
         document.citation = ""
-        document.keywords = ""
+        document.labels = []
 
         //When there are commas, tsv adds double quotes in the beginning and end of text, following string
         //manipulations are done to avoid that
@@ -111,10 +111,10 @@ for(var i = 1; i < csvRows.length; i++) {
         if (fields[keywords]) {
             if (fields[keywords].indexOf(',') != -1) {
                 var tempKeywords = fields[keywords].replace(/""/g, '"');
-                document.keywords = tempKeywords.substring(1, tempKeywords.length - 1);
+                document.labels = tempKeywords.substring(1, tempKeywords.length - 1);
             }
             else {
-                document.keywords = fields[keywords]
+                document.labels = fields[keywords]
             }
         }
 

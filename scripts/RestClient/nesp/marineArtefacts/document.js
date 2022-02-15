@@ -21,7 +21,6 @@ var document =
       "filesize" : "",
       "contentType" : "",
       "citation" : "",
-      "keywords" : "",
       "doiLink" : ""
 }
 
