@@ -82,18 +82,18 @@ class WebService {
     }
 
     URLConnection addHubUrlPath (URLConnection conn) {
-        def hubUrlPath = SettingService.hubConfig?.urlPath
-        if (hubUrlPath) {
-            conn.setRequestProperty(grailsApplication.config.app.http.header.hubUrlPath, hubUrlPath)
+        def hostName = grailsApplication.config.getProperty('grails.serverURL', String)
+        if (hostName) {
+            conn.setRequestProperty(grailsApplication.config.app.http.header.hostName, hostName)
         }
 
         conn
     }
 
     Map  addHubUrlPath (Map headers) {
-        def hubUrlPath = SettingService.hubConfig?.urlPath
-        if (hubUrlPath) {
-            headers[grailsApplication.config.app.http.header.hubUrlPath] = hubUrlPath
+        def hostName = grailsApplication.config.getProperty('grails.serverURL', String)
+        if (hostName) {
+            headers[grailsApplication.config.app.http.header.hostName] = hostName
         }
 
         headers
