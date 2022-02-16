@@ -505,7 +505,7 @@ class ProjectController {
 
             //check whether a project can be published
             if (values.projLifecycleStatus != null) {
-                if ((values.projLifecycleStatus == 'published') && !project.isExternal && !hasPublishedProjectActivities) {
+                if ((values.projLifecycleStatus == 'published') && !values.isExternal && !hasPublishedProjectActivities) {
                     render status: HttpStatus.SC_BAD_REQUEST, text: "At least one published survey should be there to publish a project."
                     return
                 }
