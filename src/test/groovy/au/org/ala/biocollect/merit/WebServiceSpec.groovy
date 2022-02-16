@@ -1,6 +1,6 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.hub.HubSettings
+
 import grails.test.mixin.TestFor
 import grails.test.mixin.TestMixin
 import grails.test.mixin.services.ServiceUnitTestMixin
@@ -29,25 +29,25 @@ class WebServiceSpec extends Specification {
 
     def "hub header must be added to URL connection"() {
         given:
-        SettingService.hubConfig = new HubSettings(urlPath: "ala")
+        grailsApplication.config.grails.serverURL = 'http://xyz.com'
         URLConnection connection = new URL("http://example.com").openConnection()
 
         when:
         service.addHubUrlPath(connection)
 
         then:
-        connection.getRequestProperty(grailsApplication.config.app.http.header.hubUrlPath) == 'ala'
+        connection.getRequestProperty(grailsApplication.config.app.http.header.hostName) == grailsApplication.config.grails.serverURL
     }
 
     def "hub header must be added to header map"() {
         given:
+        grailsApplication.config.grails.serverURL = 'http://xyz.com'
         Map header = [:]
-        SettingService.hubConfig = new HubSettings(urlPath: "ala")
 
         when:
         service.addHubUrlPath(header)
 
         then:
-        header[grailsApplication.config.app.http.header.hubUrlPath] == 'ala'
+        header[grailsApplication.config.app.http.header.hostName] == grailsApplication.config.grails.serverURL
     }
 }
