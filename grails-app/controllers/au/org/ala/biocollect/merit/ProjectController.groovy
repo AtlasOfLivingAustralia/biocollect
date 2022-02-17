@@ -854,6 +854,11 @@ class ProjectController {
         }
 
         if (trimmedParams.isUserPage) {
+            boolean isAlaAdmin = userService.userIsAlaAdmin()
+
+            if (!isAlaAdmin)
+                fq.push('projLifecycleStatus:published')
+
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
                 String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
