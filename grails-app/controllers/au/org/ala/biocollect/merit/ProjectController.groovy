@@ -856,7 +856,7 @@ class ProjectController {
         if (trimmedParams.isUserPage) {
             boolean isAlaAdmin = userService.userIsAlaAdmin()
 
-            if (!isAlaAdmin)
+            if (isAlaAdmin)
                 fq.push('projLifecycleStatus:published')
 
             if (trimmedParams.mobile) {
