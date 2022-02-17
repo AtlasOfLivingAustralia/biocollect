@@ -111,10 +111,13 @@ for(var i = 1; i < csvRows.length; i++) {
         if (fields[keywords]) {
             if (fields[keywords].indexOf(',') != -1) {
                 var tempKeywords = fields[keywords].replace(/""/g, '"');
-                document.labels = tempKeywords.substring(1, tempKeywords.length - 1);
+                var tempKeywordsStr  = tempKeywords.substring(1, tempKeywords.length - 1);
+                var tempKeywordsArr = tempKeywordsStr.split(',');
+
+                document.labels = tempKeywordsArr;
             }
             else {
-                document.labels = fields[keywords]
+                document.labels.push(fields[keywords]);
             }
         }
 
