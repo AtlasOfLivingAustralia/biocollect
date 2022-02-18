@@ -740,7 +740,7 @@ class BioActivityController {
         queryParams.include = ['activityId', 'projectActivity.name',
                                'projectActivity.records.coordinates', 'projectActivity.records.individualCount',
                                'projectActivity.records.multimedia.identifier', 'projectActivity.records.name',
-                               'projectActivity.projectId', 'projectActivity.projectName', 'coordinates']
+                               'projectActivity.projectId', 'projectActivity.projectName', 'coordinates', 'sites', 'type', 'projectActivityId']
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits
