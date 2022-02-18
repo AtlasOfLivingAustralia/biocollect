@@ -72,11 +72,31 @@ class WebService {
         def readTimeout = timeout?:defaultTimeout()
         conn.setConnectTimeout(grailsApplication.config.webservice.connectTimeout as int)
         conn.setReadTimeout(readTimeout)
+        addHubUrlPath(conn)
+
         def user = getUserService().getUser()
         if (includeUserId && user) {
             conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId)
         }
         conn
+    }
+
+    URLConnection addHubUrlPath (URLConnection conn) {
+        def hostName = grailsApplication.config.getProperty('grails.serverURL', String)
+        if (hostName) {
+            conn.setRequestProperty(grailsApplication.config.app.http.header.hostName, hostName)
+        }
+
+        conn
+    }
+
+    Map  addHubUrlPath (Map headers) {
+        def hostName = grailsApplication.config.getProperty('grails.serverURL', String)
+        if (hostName) {
+            headers[grailsApplication.config.app.http.header.hostName] = hostName
+        }
+
+        headers
     }
 
     /**
@@ -227,6 +247,7 @@ class WebService {
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
+            addHubUrlPath(conn)
 
             def user = getUserService().getUser()
             if (user) {
@@ -262,6 +283,7 @@ class WebService {
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}");
             conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
+            addHubUrlPath(conn)
 
             def user = getUserService().getUser()
             if (user) {
@@ -307,6 +329,7 @@ class WebService {
             conn.setRequestMethod("GET")
             conn.setRequestProperty("Content-Type", "${APPLICATION_JSON};charset=${StandardCharsets.UTF_8.toString()}");
             conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
+            addHubUrlPath(conn)
 
             def user = getUserService().getUser()
             if (user) {
@@ -335,6 +358,8 @@ class WebService {
             conn = new URL(url).openConnection()
             conn.setRequestMethod("DELETE")
             conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
+            addHubUrlPath(conn)
+
             def user = getUserService().getUser()
             if (user) {
                 conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId)
@@ -398,6 +423,8 @@ class WebService {
                     content.addPart(key, new StringBody(value.toString()))
                 }
             }
+
+            addHubUrlPath(headers)
             headers.'Authorization' = grailsApplication.config.api_key
             if (user) {
                 headers[grailsApplication.config.app.http.header.userId] = user.userId

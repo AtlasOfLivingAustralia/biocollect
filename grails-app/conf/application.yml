@@ -53,6 +53,7 @@ app:
   http:
     header:
       userId: "X-ALA-userId"
+      hostName: "X-ALA-hostname"
 
 
 security:
