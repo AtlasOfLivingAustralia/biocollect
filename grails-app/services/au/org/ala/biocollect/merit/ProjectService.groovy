@@ -909,7 +909,8 @@ class ProjectService {
                         index = facets.size()
                         facets.add(index, specialFacet.clone())
                     } else {
-                        facets.putAt(index, specialFacet.clone())
+                        int facetIndex = facets.size()
+                        facets.putAt(facetIndex, specialFacet.clone())
                     }
                 }
             }
