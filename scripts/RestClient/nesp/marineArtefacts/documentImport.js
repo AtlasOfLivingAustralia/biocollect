@@ -89,13 +89,7 @@ for(var i = 1; i < csvRows.length; i++) {
         }
 
         if (fields[role]) {
-            if ((fields[role].indexOf(',') != -1) || (fields[role].indexOf('"') != -1)) {
-                var tempType = fields[role].replace(/""/g, '"');
-                document.role = tempType.substring(1, tempType.length - 1);
-            }
-            else {
-                document.role = fields[role]
-            }
+            document.role = fields[role]
         }
 
         if (fields[citation]) {
