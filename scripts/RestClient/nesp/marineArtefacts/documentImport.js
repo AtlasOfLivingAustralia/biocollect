@@ -79,7 +79,7 @@ for(var i = 1; i < csvRows.length; i++) {
         }
 
         if (fields[doiLink]) {
-            if (fields[doiLink].indexOf(',') != -1) {
+            if ((fields[doiLink].indexOf(',') != -1) || (fields[doiLink].indexOf('"') != -1)) {
                 var tempDoi = fields[doiLink].replace(/""/g, '"');
                 document.doiLink = tempDoi.substring(1, tempDoi.length - 1);
             }
@@ -89,7 +89,7 @@ for(var i = 1; i < csvRows.length; i++) {
         }
 
         if (fields[role]) {
-            if (fields[role].indexOf(',') != -1) {
+            if ((fields[role].indexOf(',') != -1) || (fields[role].indexOf('"') != -1)) {
                 var tempType = fields[role].replace(/""/g, '"');
                 document.role = tempType.substring(1, tempType.length - 1);
             }
