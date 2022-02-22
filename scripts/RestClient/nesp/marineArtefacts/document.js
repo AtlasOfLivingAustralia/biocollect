@@ -4,7 +4,7 @@ var document =
       "labels" : [ ],
       "dateCreated" : "",
       "lastUpdated" : "",
-      "isPrimaryProjectImage" : true,
+      "isPrimaryProjectImage" : false,
       "documentId" : "",
       "filepath" : "2022-02",
       "thirdPartyConsentDeclarationMade" : false,
