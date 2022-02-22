@@ -38,11 +38,11 @@ for(var i = 1; i < csvRows.length; i++) {
         document.citation = ""
         document.labels = []
 
-        //When there are commas, tsv adds double quotes in the beginning and end of text, following string
+        //When there are commas/ double quotations, tsv adds double quotes in the beginning and end of text, following string
         //manipulations are done to avoid that
 
         if (fields[title]) {
-            if (fields[title].indexOf(',') != -1) {
+            if ((fields[title].indexOf(',') != -1) || (fields[title].indexOf('"') != -1)) {
                 var tempTitle = fields[title].replace(/""/g, '"');
                 document.name = tempTitle.substring(1, tempTitle.length - 1);
             }
@@ -52,7 +52,7 @@ for(var i = 1; i < csvRows.length; i++) {
         }
 
         if (fields[description]) {
-            if (fields[description].indexOf(',') != -1) {
+            if ((fields[description].indexOf(',') != -1) || (fields[description].indexOf('"') != -1)) {
                 var tempDescription = fields[description].replace(/""/g, '"');
                 document.description = tempDescription.substring(1, tempDescription.length - 1);
             }
@@ -99,7 +99,7 @@ for(var i = 1; i < csvRows.length; i++) {
         }
 
         if (fields[citation]) {
-            if (fields[citation].indexOf(',') != -1) {
+            if ((fields[citation].indexOf(',') != -1) || (fields[citation].indexOf('"') != -1)) {
                 var tempCitation = fields[citation].replace(/""/g, '"');
                 document.citation = tempCitation.substring(1, tempCitation.length - 1);
             }
@@ -109,7 +109,7 @@ for(var i = 1; i < csvRows.length; i++) {
         }
 
         if (fields[keywords]) {
-            if (fields[keywords].indexOf(',') != -1) {
+            if ((fields[keywords].indexOf(',') != -1) || (fields[keywords].indexOf('"') != -1)) {
                 var tempKeywords = fields[keywords].replace(/""/g, '"');
                 var tempKeywordsStr  = tempKeywords.substring(1, tempKeywords.length - 1);
                 var tempKeywordsArr = tempKeywordsStr.split(',');
