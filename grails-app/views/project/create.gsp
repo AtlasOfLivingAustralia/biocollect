@@ -69,7 +69,7 @@
 
                 <!-- Publish workflow applies to all citizen science, eco science and works projects. When either citizen
                 science or eco science, if isExternal is true, then enable the Publish button else disable the Publish button -->
-                <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || (isWorks() && termsOfUseAccepted()))"><i class="fas fa-hdd"></i> <g:message code="g.savePublish"/></button>
+                <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || (isWorks() && termsOfUseAccepted()))" title="<g:message code="g.savePublish"/>"><i class="fas fa-hdd"></i> <g:message code="g.savePublish.title"/></button>
                 <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
             </div>
         </div>

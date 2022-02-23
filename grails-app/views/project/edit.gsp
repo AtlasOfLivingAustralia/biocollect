@@ -59,7 +59,7 @@
 
             <!-- Publish workflow applies to all citizen science, eco science and works projects. When either citizen
                 science or eco science, if isExternal is true, then enable the Publish button else disable the Publish button -->
-            <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || isWorks() || (!isExternal() && transients.hasPublishedProjectActivities)), text:publishUnpublish()"><i class="fas fa-hdd"></i></button>
+            <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || isWorks() || (!isExternal() && transients.hasPublishedProjectActivities)), text:publishUnpublish()" title="<g:message code="g.publishUnpublish"/>"><i class="fas fa-hdd"></i></button>
             <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
         </div>
     </div>
@@ -73,7 +73,7 @@ $(function(){
 
     var programsModel = <fc:modelAsJavascript model="${programs}"/>;
     var project = <fc:modelAsJavascript model="${project?:[:]}"/>;
-    var activities = <fc:modelAsJavascript model="${activities}"/>;
+    var projectActivities = <fc:modelAsJavascript model="${projectActivities}"/>;
 
     <g:if test="${params.returning}">
         var storedProject = amplify.store(PROJECT_DATA_KEY);
@@ -85,7 +85,7 @@ $(function(){
 
     var viewModel =  new CreateEditProjectViewModel(project, true, {storageKey:PROJECT_DATA_KEY});
     viewModel.loadPrograms(programsModel);
-    viewModel.checkPublishedProjectActivities(activities);
+    viewModel.checkPublishedProjectActivities(projectActivities);
 
     $('#projectDetails').validationEngine();
     $('.helphover').popover({animation: true, trigger:'hover'});

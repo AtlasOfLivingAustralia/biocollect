@@ -310,7 +310,7 @@ class ProjectController {
              programs       : metadataService.programsModel(),
              scienceTypes   : scienceTypes,
              ecoScienceTypes: ecoScienceTypes,
-             activities     : projectActivities
+             projectActivities     : projectActivities
             ]
         } else {
             forward(action: 'list', model: [error: 'no such id'])
@@ -853,11 +853,14 @@ class ProjectController {
             trimmedParams.status = null
         }
 
-        if (trimmedParams.isUserPage) {
-            boolean isAlaAdmin = userService.userIsAlaAdmin()
+        boolean isAlaAdmin = userService.userIsAlaAdmin()
 
-            if (isAlaAdmin)
-                fq.push('projLifecycleStatus:published')
+        if (!isAlaAdmin)
+            fq.push('projLifecycleStatus:published')
+
+        if (trimmedParams.isUserPage) {
+            if (fq.contains('projLifecycleStatus:published'))
+                fq.remove('projLifecycleStatus:published')
 
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)

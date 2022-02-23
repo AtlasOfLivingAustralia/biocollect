@@ -908,9 +908,13 @@ class ProjectService {
                     if(index >= facets?.size()){
                         index = facets.size()
                         facets.add(index, specialFacet.clone())
-                    } else {
-                        int facetIndex = facets.size()
-                        facets.putAt(facetIndex, specialFacet.clone())
+                    }
+                    else {
+                        def item =  hubFacets[index - 1]
+                        int facetIndex = facets.findIndexOf { it.name== item.name}
+
+                        if (facetIndex >= 0)
+                            facets.add(facetIndex+1, specialFacet.clone())
                     }
                 }
             }
