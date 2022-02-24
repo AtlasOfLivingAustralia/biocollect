@@ -51,7 +51,7 @@ class ProjectController {
 
     def index(String id) {
         def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
-        def roles = roleService.getRoles()
+        def roles = roleService.getEcodataRolesForBiocollect()
 
         if (!project || project.error) {
             flash.message = "Project not found with id: ${id}"
@@ -936,7 +936,7 @@ class ProjectController {
     }
 
     def getUserProjects(){
-        UserDetails user = userService.user;
+        def user = userService.user;
         JSON projects = projectService.userProjects(user);
         render(text: projects);
     }

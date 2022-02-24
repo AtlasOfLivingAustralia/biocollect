@@ -13,31 +13,34 @@
  * rights and limitations under the License.
  */
 
-package au.org.ala.biocollect.merit
+package au.org.ala.biocollect.permissions
+
+import groovy.transform.Immutable
 
 /**
- * Created with IntelliJ IDEA.
- *
- * @author "Nick dos Remedios <Nick.dosRemedios@csiro.au>"
+ * Biocollect-specific user details object.
  */
-class UserDetails {
-
-    public static final String REQUEST_USER_DETAILS_KEY = 'ecodata.request.user.details'
-
+@Immutable
+class AppUserDetails {
+    String firstName
+    String lastName
     String displayName
     String userName
     String userId
+    Set<String> roles
 
-    public UserDetails(String displayName, String userName, String userId) {
-        this.displayName = displayName
-        this.userName = userName
-        this.userId = userId
+    /**
+     * Returns true if this user has the supplied role.
+     * @param role the role to check.
+     * @return true if this user has the supplied role.
+     */
+    boolean hasRole(String role) {
+        return roles.contains(role)
     }
 
-    public UserDetails() {}
-
     @Override
-    public String toString() {
-        "[ userId: ${userId}, userName: ${userName}, displayName: ${displayName} ]"
+    String toString() {
+        "[ userId: ${userId}, userName: ${userName}, displayName: ${displayName}, " +
+                "roles: ${roles}, firstName: ${firstName}, lastName: ${lastName} ]"
     }
 }

@@ -22,7 +22,7 @@ class OrganisationController {
         if (!organisation || organisation.error) {
             organisationNotFound(id, organisation)
         } else {
-            def roles = roleService.getRoles()
+            def roles = roleService.getEcodataRolesForBiocollect()
             // Get dashboard information for the response.
             def dashboard = searchService.dashboardReport([fq: 'organisationFacet:' + organisation.name])
             def members = organisationService.getMembersOfOrganisation(id)
