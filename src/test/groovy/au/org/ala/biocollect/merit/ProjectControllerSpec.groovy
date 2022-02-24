@@ -478,7 +478,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         def external = false
 
         projectServiceStub.get(projectId) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId, isExternal:external]
-        projectActivityServiceStub.getAllByProject(projectId, "docs", null, true) >> [[name:'PActivity 1', published:false]]
+        projectActivityServiceStub.getAllByProject(projectId, "docs", null, true) >> [:]
         projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"OK"]]
 
         when:
