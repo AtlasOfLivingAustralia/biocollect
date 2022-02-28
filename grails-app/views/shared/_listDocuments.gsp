@@ -35,6 +35,12 @@
 
 </div>
 
+<script id="htmlViewer" type="text/html">
+<div class="w-100 h-100">
+    <p>Test</p>
+</div>
+</script>
+
 <script id="iframeViewer" type="text/html">
 <div class="w-100 h-100">
     <iframe class="w-100 h-100 border-0 fc-resource-preview" data-bind="attr: {src: selectedDocumentFrameUrl}">

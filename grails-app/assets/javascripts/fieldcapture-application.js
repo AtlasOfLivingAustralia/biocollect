@@ -534,6 +534,11 @@ function Documents() {
         return true;
     };
 
+    self.isHtmlViewer = function(data) {
+        self.transients.isHtmlViewer = true;
+        return true;
+    };
+
     self.previewTemplate = ko.pureComputed(function() {
         var selectedDoc = self.selectedDocument();
 
@@ -543,14 +548,18 @@ function Documents() {
             var embeddedVideo = selectedDoc.embeddedVideo();
             if (embeddedVideo) {
                 val = "xssViewer";
-            } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType)) {
+            } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType) && !self.transients.isHtmlViewer) {
                 val = "iframeViewer";
+            } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType) && self.transients.isHtmlViewer) {
+                val = "htmlViewer";
             } else {
                 val = "noPreviewViewer";
             }
         } else {
             val = "noViewer";
         }
+
+        self.transients.isHtmlViewer = false;
         return val;
     });
 
@@ -728,6 +737,8 @@ function Documents() {
     }
 
     self.transients = {};
+
+    self.transients.isHtmlViewer = false;
 
     self.transients.mobileApps = ko.pureComputed(function() {
         var urls = [], links = self.links();

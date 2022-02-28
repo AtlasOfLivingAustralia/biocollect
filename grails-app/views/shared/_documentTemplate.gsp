@@ -26,6 +26,7 @@
     <div>
         <div class="author" data-bind="if:$data.attribution">Author Name: <!-- ko text:attribution --> <!-- /ko --></div>
         <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="attr:{href:url}, clickBubble: false"><i class="fas fa-download"></i> Download</a>
+        <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="click:$parent.isHtmlViewer"><i class="far fa-eye fa-1x"></i> View Metadata</a>
     </div>
 </div>
 </script>
