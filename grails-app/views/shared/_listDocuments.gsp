@@ -36,8 +36,32 @@
 </div>
 
 <script id="htmlViewer" type="text/html">
-<div class="w-100 h-100">
-    <p>Test</p>
+
+<div class="w-100 h-200">
+    <div><h4 data-bind="text:selectedDocument().name"></h4>
+    </div>
+
+    <div class="span12 text-left">
+        <label for="documentType"><h6>Document type: </h6></label>
+        <label id="documentType" data-bind="text:selectedDocument().role"/>
+    </div>
+    <div class="span12 text-left">
+        <label for="labels"><h6>Keywords: </h6></label>
+        <label id="labels" data-bind="text:selectedDocument().labels"/>
+    </div>
+    <div class="span12 text-left">
+        <label for="doiLink"><h6>DOI: </h6></label>
+        <label id="doiLink" data-bind="text:selectedDocument().doiLink"/>
+    </div>
+
+    <div class="span12 text-left">
+        <h6>Citation:</h6>
+        <p data-bind="text:selectedDocument().citation"/>
+    </div>
+    <div class="span12 text-left">
+        <h6>Description:</h6>
+        <p data-bind="text:selectedDocument().description"/>
+    </div>
 </div>
 </script>
 

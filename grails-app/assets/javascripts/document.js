@@ -20,16 +20,13 @@ function DocumentViewModel (doc, owner, settings) {
             {id:'bookChapters', name: 'Book Chapters'},
             {id:'brochures', name: 'Brochures'},
             {id:'caseStudies', name: 'Case Studies'},
-            {id:'citation', name: 'Citation'},
             {id:'datasets', name: 'Datasets'},
             {id:'documents', name: 'Documents'},
-            {id:'doiLink', name: 'DOI'},
             {id:'embeddedVideo', name:'Embedded Video'},
             //{id:'exceedanceReport', name:'Exceedance Report'},
             {id:'factsheets', name: 'Fact sheets'},
             {id:'information', name: 'Information'},
             {id:'journalArticles', name: 'Journal Articles'},
-            {id:'keywords', name: 'Keywords'},
             {id:'magazines', name: 'Magazines'},
             {id:'maps', name: 'Maps'},
             {id:'models', name: 'Models'},
@@ -53,7 +50,10 @@ function DocumentViewModel (doc, owner, settings) {
 
     // NOTE that attaching a file is optional, ie you can have a document record without a physical file
     this.filename = ko.observable(doc ? doc.filename : '');
+    this.citation = ko.observable(doc ? doc.citation : '');
+    this.doiLink = ko.observable(doc ? doc.doiLink : '');
     this.description = ko.observable(doc ? doc.description : '');
+    this.labels = ko.observable(doc ? doc.labels : '');
     this.filesize = ko.observable(doc ? doc.filesize : '');
     this.name = ko.observable(doc.name);
     // the notes field can be used as a pseudo-document (eg a deferral reason) or just for additional metadata
