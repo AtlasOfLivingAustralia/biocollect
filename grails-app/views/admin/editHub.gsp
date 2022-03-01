@@ -857,11 +857,6 @@
             <td>Menu text colour</td>
             <td><input class="form-control" type="color" data-bind="value: menuTextColor"/></td>
         </tr>
-%{--        <tr data-bind="visible: transients.showHeader">--}%
-%{--            <td>Header banner space background colour</td>--}%
-%{--            <td><input class="form-control" type="color" data-bind="value: headerBannerBackgroundColor"/></td>--}%
-%{--            <td><div class="previewColor" data-bind="style:{'background-color':headerBannerBackgroundColor}"></div></td>--}%
-%{--        </tr>--}%
         <tr>
             <td colspan="2">
                 <strong>Banner</strong>
@@ -869,11 +864,6 @@
                 <!-- /ko -->
             </td>
             <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
-        </tr>
-        <tr data-bind="visible: transients.showBanner">
-            <td>Banner background colour</td>
-            <td><input class="form-control" type="color" data-bind="value: bannerBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':bannerBackgroundColor}"></div></td>
         </tr>
         <tr data-bind="visible: transients.showBanner">
             <td>Inset panel background colour</td>
@@ -971,58 +961,24 @@
             <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
-            <td>Primary button colour</td>
-            <td><input class="form-control" type="color" data-bind="value: primaryButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: primaryButtonBackgroundColor, textColor: primaryButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Primary button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: primaryButtonTextColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button colour</td>
-            <td><input class="form-control" type="color" data-bind="value: defaultButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: defaultButtonBackgroundColor, textColor: defaultButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: defaultButtonTextColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
             <td>'Getting started' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: gettingStartedButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: gettingStartedButtonBackgroundColor, textColor: gettingStartedButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'Getting started' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: gettingStartedButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: gettingStartedButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'What is this' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: whatIsThisButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: whatIsThisButtonBackgroundColor, textColor: whatIsThisButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'What is this' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: whatIsThisButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: whatIsThisButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'Add a record' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: addARecordButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: addARecordButtonBackgroundColor, textColor: addARecordButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'Add a record' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: addARecordButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: addARecordButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'View records' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: viewRecordsButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'View records' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: viewRecordsButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -1231,7 +1187,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="previewBanner row mb-4"  data-bind="style:{'background-color': bannerBackgroundColor}">
+                <div class="previewBanner row mb-4"  >
                     <div class="offset-2 col-8 previewBannerImage">
                         <div class="previewLogo text-center"><p>Logo</p></div>
                         <div class="previewInset" data-bind="style:{'background-color': insetBackgroundColor}">
@@ -1252,21 +1208,11 @@
                         </div>
                         <div class="row">
                             <div class="offset-4 col-2">
-                                <!-- ko template: {name: 'buttonPreview', data: {textColor: primaryButtonTextColor, backgroundColor: primaryButtonBackgroundColor}} -->
+                                <!-- ko template: {name: 'buttonPreview', data: {textColor: '#fff', backgroundColor: primaryDarkColor}} -->
                                 <!-- /ko -->
                             </div>
                             <div class="col-2">
-                                <!-- ko template: {name: 'buttonPreview', data: {textColor: defaultButtonTextColor, backgroundColor: defaultButtonBackgroundColor}} -->
-                                <!-- /ko -->
-                            </div>
-                        </div>
-                        <div class="row" data-bind="visible: makeDefaultButtonAnOutlineButton() || makePrimaryButtonAnOutlineButton()">
-                            <div class="offset-4 col-2">
-                                <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: primaryButtonOutlineTextColor, hoverTextColor: primaryButtonOutlineTextHoverColor}} -->
-                                <!-- /ko -->
-                            </div>
-                            <div class="col-2">
-                                <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: defaultButtonOutlineTextColor, hoverTextColor: defaultButtonOutlineTextHoverColor}} -->
+                                <!-- ko template: {name: 'buttonPreview', data: {textColor: '#fff', backgroundColor: darkColor}} -->
                                 <!-- /ko -->
                             </div>
                         </div>

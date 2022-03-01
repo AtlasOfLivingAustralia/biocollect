@@ -61,14 +61,16 @@
                 <div class="filter-bar d-flex align-items-center">
                     <h4>Applied Filters: </h4>
                     <!-- ko foreach: filterViewModel.selectedFacets -->
-                    <span class="filter-item">
+                    <button class="filter-item btn btn-sm btn-outline-dark">
                         <strong data-bind="visible: exclude " title="Exclude">[EXCLUDE]</strong>
                         <!-- ko text: displayNameWithoutCount() --> <!-- /ko -->
-                        <button class="remove" data-bind="click: remove"><i class="far fa-times-circle"></i></button>
-                    </span>
+                        <span class="remove" data-bind="click: remove"><i class="far fa-times-circle"></i></span>
+                    </button>
                     <!-- /ko -->
+                    <!-- ko if: (filterViewModel.selectedFacets() && (filterViewModel.selectedFacets().length > 0)) -->
                     <button type="button" class="btn btn-sm btn-dark clear-filters" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
                     </button>
+                    <!-- /ko -->
                 </div>
 
                 <div class="records-found">
