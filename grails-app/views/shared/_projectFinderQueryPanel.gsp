@@ -46,6 +46,7 @@
     </div>
 </div>
 <g:render template="/shared/facetModalChooseMore"/>
+<!-- ko stopBinding: true -->
 <div id="mapModal" class="modal" role="dialog">
     <div class="modal-dialog ">
 
@@ -59,7 +60,7 @@
             </div>
 
             <div class="modal-body">
-                <m:map id="mapFilter" width="100%"/>
+                <m:map id="mapFilter" width="100%" imageLocation="${assetPath(src:"/leaflet/images")}"/>
             </div>
 
             <div class="modal-footer">
@@ -80,4 +81,5 @@
 
     </div>
 </div>
+<!-- /ko -->
 <!-- /ko -->

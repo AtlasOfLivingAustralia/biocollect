@@ -1,4 +1,4 @@
-<g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
+<g:render template="/shared/pagination" model="[bs:4, classes:'my-2']"/>
 <div id="pt-table">
     <bc:koLoading>
         <div class="tab-content" data-bind="visible: pageProjects().length > 0">

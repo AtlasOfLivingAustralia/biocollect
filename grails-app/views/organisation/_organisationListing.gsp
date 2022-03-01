@@ -43,7 +43,7 @@
 
     <div class="row">
         <!-- ko foreach : organisations -->
-        <div class="col-12 col-md-6 col-xl-4 organisation project-item">
+        <div class="col-12 col-md-6 col-xl-4 organisation project-item mb-1">
 %{--            <div class="organisation-logo"><img class="logo"--}%
 %{--                                                data-bind="attr:{'src': logoUrl() ? logoUrl():fcConfig.noLogoImageUrl}">--}%
 %{--            </div>--}%
