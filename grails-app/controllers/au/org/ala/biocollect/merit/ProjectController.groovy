@@ -859,8 +859,10 @@ class ProjectController {
             fq.push('projLifecycleStatus:published')
 
         if (trimmedParams.isUserPage) {
-            if (fq.contains('projLifecycleStatus:published'))
-                fq.remove('projLifecycleStatus:published')
+            if (!fq.contains('projLifecycleStatus:published'))
+                fq.add('projLifecycleStatus:published')
+            if (!fq.contains('projLifecycleStatus:unpublished'))
+                fq.add('projLifecycleStatus:unpublished')
 
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
