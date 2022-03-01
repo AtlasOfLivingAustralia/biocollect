@@ -263,3 +263,9 @@ select[name=project-list_length]{
     z-index: 1050 !important;
 }
 /** END bootstrap modifier */
+
+/* system banner message */
+.env-message.alert {
+    margin-bottom: 0px;
+}
+/* END system banner message */

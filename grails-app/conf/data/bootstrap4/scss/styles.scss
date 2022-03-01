@@ -81,21 +81,15 @@ $social-text-color: white !default;
 
 $menu-text-color: white !default;
 $menu-background-color: black !default;
-#page .wrapper-nav-bar .nav-bar {
+#page #wrapper-navbar .navbar {
   background-color: rgba($menu-background-color, 0.6);
   color: $menu-text-color;
 }
-//@if $make-primary-btn {
-//  .btn-primary-dark {
-//    //@include button-outline-variant($primary-button-outline-text-color);
-//  }
-//}
 
-//@if $make-default-btn {
-//  .btn-dark {
-//    //@include button-outline-variant($default-button-outline-text-color);
-//  }
-//}
+.homePageNav .homepage-button {
+  background-color: $menu-background-color;
+  color: $menu-text-color;
+}
 
 // carousel #hubCarouselBanner
 

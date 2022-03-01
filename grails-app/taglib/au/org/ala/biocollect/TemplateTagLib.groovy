@@ -15,20 +15,24 @@ class TemplateTagLib {
             return
         }
         if(link){
-            String classes = getSpanClassForColumnNumber(attrs.layout)?:'col-md-4';
+            String classes = attrs.classes + " "
+            classes += getSpanClassForColumnNumber(attrs.layout)?:'col-md-4'
             String url = getLinkUrl(link)
             out << """
             <div class="${classes} homePageNav">
-                <div class="w-100 h-100 border border-dark text-center bg-light" onclick="window.location = '${url}'">
-                    <button class="p-5 border-0">
+                <div class="w-100 h-100 border border-dark text-center rounded-lg homepage-button" onclick="window.location = '${url}'">
+                    <div class="p-5 border-0">
                         <h3 class="p-0 m-0">${link?.displayName}</h3>
-                    </button>
+                    </div>
                 </div>
             </div>
             """
         }
     }
 
+    boolean isUrlActivePage(String url) {
+        request.requestURI?.endsWith(url) || request.forwardURI?.endsWith(url)
+    }
 
     /**
      * Generate links for header and footer based on config options.
@@ -38,11 +42,15 @@ class TemplateTagLib {
         if(attrs.config){
             Map link = attrs.config
             String classes = attrs?.classes ?: ""
+            String activeClass = attrs?.activeClass ?: "current-menu-item"
             Boolean bs4 = Boolean.parseBoolean(attrs.bs4  ?: "false")
             if (link.role && !userService.doesUserHaveHubRole(link.role)) {
                 return
             }
             String url = getLinkUrl(link)
+            if (isUrlActivePage(url)) {
+                classes += " ${activeClass}"
+            }
 
             switch (link.contentType){
                 case 'external':

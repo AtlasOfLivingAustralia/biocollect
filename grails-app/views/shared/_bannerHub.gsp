@@ -6,11 +6,12 @@
             <g:each var="image" in="${images}" status="index">
                 <div class="swiper-slide" style="background-image: url(${image.url});">
                     <div class="slide-overlay">
-                        <g:if test="${image.caption}">
-                            <div class="container d-none d-md-block">
+                        <div class="container d-none d-md-block">
+                            <h1>${hubConfig.title}</h1>
+                            <g:if test="${image.caption}">
                                 <p>${image.caption}</p>
-                            </div>
-                        </g:if>
+                            </g:if>
+                        </div>
                     </div>
                 </div>
             </g:each>
@@ -31,7 +32,7 @@
                 loop: true,
                 slidesPerView: 1,
                 spaceBetween: 0,
-                speed: 1000,
+                speed: ${hubConfig?.templateConfiguration?.banner?.transitionSpeed ?: 1000},
                 autoplay: {
                     delay: 5000,
                     disableOnInteraction: false

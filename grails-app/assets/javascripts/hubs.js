@@ -639,24 +639,11 @@ var StyleViewModel = function (config) {
     self.headerBannerBackgroundColor = ko.observable(config.headerBannerBackgroundColor || '');
     self.navBackgroundColor = ko.observable(config.navBackgroundColor || '');
     self.navTextColor = ko.observable(config.navTextColor || '');
-    self.gettingStartedButtonTextColor = ko.observable(config.gettingStartedButtonTextColor || '');
+    self.titleOnImageTextColor = ko.observable(config.titleOnImageTextColor || '');
     self.gettingStartedButtonBackgroundColor = ko.observable(config.gettingStartedButtonBackgroundColor || '');
-    self.whatIsThisButtonTextColor= ko.observable(config.whatIsThisButtonTextColor || '');
     self.whatIsThisButtonBackgroundColor= ko.observable(config.whatIsThisButtonBackgroundColor || '');
     self.addARecordButtonBackgroundColor = ko.observable(config.addARecordButtonBackgroundColor || '');
-    self.addARecordButtonTextColor = ko.observable(config.addARecordButtonTextColor || '');
     self.viewRecordsButtonBackgroundColor= ko.observable(config.viewRecordsButtonBackgroundColor || '');
-    self.viewRecordsButtonTextColor= ko.observable(config.viewRecordsButtonTextColor || '');
-    self.primaryButtonBackgroundColor= ko.observable(config.primaryButtonBackgroundColor || '');
-    self.primaryButtonTextColor= ko.observable(config.primaryButtonTextColor || '');
-    self.primaryButtonOutlineTextColor= ko.observable(config.primaryButtonOutlineTextColor || '');
-    self.primaryButtonOutlineTextHoverColor= ko.observable(config.primaryButtonOutlineTextHoverColor || '');
-    self.makePrimaryButtonAnOutlineButton= ko.observable(config.makePrimaryButtonAnOutlineButton || false);
-    self.defaultButtonBackgroundColor= ko.observable(config.defaultButtonBackgroundColor || '');
-    self.defaultButtonTextColor= ko.observable(config.defaultButtonTextColor || '');
-    self.defaultButtonOutlineTextColor= ko.observable(config.defaultButtonOutlineTextColor || '');
-    self.defaultButtonOutlineTextHoverColor= ko.observable(config.defaultButtonOutlineTextHoverColor || '');
-    self.makeDefaultButtonAnOutlineButton= ko.observable(config.makeDefaultButtonAnOutlineButton || false);
     self.tagBackgroundColor= ko.observable(config.tagBackgroundColor || '');
     self.tagTextColor= ko.observable(config.tagTextColor || '');
     self.hrefColor= ko.observable(config.hrefColor || '');
@@ -935,18 +922,13 @@ var colorScheme = {
     headerBannerBackgroundColor: '#ffffff',
     navBackgroundColor: '#e5e6e7',
     navTextColor: '#5f5d60',
+    titleOnImageTextColor: '#fff',
     gettingStartedButtonBackgroundColor: '#009080',
-    gettingStartedButtonTextColor: '#fff',
     whatIsThisButtonBackgroundColor: '#009080',
-    whatIsThisButtonTextColor: '#fff',
     primaryButtonBackgroundColor: '#009080',
     primaryButtonTextColor: '#fff',
-    primaryButtonOutlineTextColor: '#007bff',
-    primaryButtonOutlineTextHoverColor: '#000',
     defaultButtonBackgroundColor: '#f5f5f5',
     defaultButtonTextColor: '#000',
-    defaultButtonOutlineTextColor: '#343a40',
-    defaultButtonOutlineTextHoverColor: '#000',
     tagBackgroundColor: 'orange',
     tagTextColor: 'white',
     hrefColor:'#009080',

@@ -321,7 +321,7 @@ spring:
       check-template-location: false
   devtools:
     restart:
-      additional-exclude:
+      exclude:
         - '*.gsp'
         - '**/*.gsp'
         - '*.gson'

@@ -1,8 +1,5 @@
 package au.org.ala.biocollect.merit
 
-import grails.test.mixin.TestMixin
-import grails.test.mixin.integration.Integration
-import grails.test.mixin.web.ControllerUnitTestMixin
 import grails.testing.spring.AutowiredTest
 import org.grails.plugins.converters.ConvertersGrailsPlugin
 import org.grails.web.converters.configuration.ConvertersConfigurationHolder

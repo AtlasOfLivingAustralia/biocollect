@@ -33,6 +33,9 @@ function ProjectFinder(config) {
     var selectedProjectId;
     var spatialFilter = null;
 
+    // boolean flag used to clear filter map after it is visible on a modal.
+    var clearMapFilter = false;
+
     var geoSearch = {};
 
     var refreshSearch = false;
@@ -51,6 +54,7 @@ function ProjectFinder(config) {
 
     var alaMap;
     var pfMapId = "#map-tab";
+    var mapFilterSelector = "#mapModal"
 
     /* window into current page */
     function PageVM(config) {
@@ -69,6 +73,7 @@ function ProjectFinder(config) {
         this.clearGeoSearch = function () {
             this.isGeoSearchEnabled(false);
             clearGeoSearch();
+            this.doSearch();
         };
         this.doSearch = function () {
 
@@ -212,7 +217,7 @@ function ProjectFinder(config) {
                 allowSearchRegionByAddress: false,
                 wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
                 wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
-                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location",
+                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " KM of my location",
                 baseLayer: baseLayersAndOverlays.baseLayer,
                 otherLayers: baseLayersAndOverlays.otherLayers,
                 overlays: baseLayersAndOverlays.overlays,
@@ -221,7 +226,6 @@ function ProjectFinder(config) {
 
             var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
             spatialFilter.addControl(regionSelector);
-            spatialFilter.subscribe(geoSearchChanged);
             mapInitialised = true;
         } else {
             spatialFilter.getMapImpl().invalidateSize();
@@ -511,9 +515,13 @@ function ProjectFinder(config) {
 
     this.reset = function () {
         $('#pt-search').val('');
-        if (spatialFilter) {
+        if (spatialFilter && isMapFilterVisible()) {
             spatialFilter.resetMap();
+            clearMapFilter = false;
+        } else {
+            clearMapFilter = true
         }
+
         geoSearch = {};
         pageWindow.isGeoSearchEnabled(false);
         pageWindow.filterViewModel.selectedFacets.removeAll();
@@ -782,21 +790,32 @@ function ProjectFinder(config) {
     })
 
 
-    $("#mapModal").on('shown.bs.modal', function () {
+    $(mapFilterSelector).on('shown.bs.modal', function () {
         initialiseMap();
+        spatialFilter.getMapImpl().invalidateSize();
+        clearMapFilter && spatialFilter.resetMap();
     });
 
-    $("#mapModal").on('hide.bs.modal', function () {
+    $(mapFilterSelector).on('hide.bs.modal', function () {
         geoSearchChanged();
         if(refreshSearch) {
             self.doSearch();
         }
     });
 
+    function isMapFilterVisible() {
+        return !$(mapFilterSelector).is(":hidden");
+    }
+
     function clearGeoSearch() {
         geoSearch = {};
         pageWindow.isGeoSearchEnabled(false);
-        spatialFilter.resetMap();
+        if(isMapFilterVisible()) {
+            spatialFilter.resetMap();
+            clearMapFilter = false;
+        } else {
+            clearMapFilter = true;
+        }
     }
 
     $("#clearFilterByRegionButton").click(clearGeoSearch);
@@ -927,10 +946,13 @@ function ProjectFinder(config) {
 
     function setGeoSearch(geoSearchHash) {
         if (geoSearchHash && typeof geoSearchHash !== 'undefined') {
-            geoSearch = JSON.parse(LZString.decompressFromBase64(geoSearchHash));
+            var geoSearchString = LZString.decompressFromBase64(geoSearchHash);
+            geoSearch = JSON.parse(geoSearchString);
+            // Creating a clone since ALA.MapUtils.getStandardGeoJSONForCircleGeometry modifies the geoSearch object
+            // making subsequent searches to malfunction. This only happens for Point GeoJSON type.
+            var geoSearchCloned = JSON.parse(geoSearchString);
 
-
-            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearch);
+            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearchCloned);
             geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
             if (geoSearch.pointSearch) {
                 geoJson.features[0].properties = {};
