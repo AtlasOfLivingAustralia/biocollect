@@ -1,9 +1,7 @@
 package au.org.ala.biocollect.merit
 
 
-import grails.test.mixin.TestFor
-import grails.test.mixin.TestMixin
-import grails.test.mixin.services.ServiceUnitTestMixin
+import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 
 /*
@@ -23,13 +21,17 @@ import spock.lang.Specification
  * Created by Temi on 15/2/22.
  */
 
-@TestFor(WebService)
-@TestMixin(ServiceUnitTestMixin)
-class WebServiceSpec extends Specification {
+class WebServiceSpec extends Specification implements AutowiredTest {
+    Closure doWithSpring() {{ ->
+        service WebService
+    }}
+
+    WebService service
 
     def "hub header must be added to URL connection"() {
         given:
         grailsApplication.config.grails.serverURL = 'http://xyz.com'
+        service.grailsApplication = grailsApplication
         URLConnection connection = new URL("http://example.com").openConnection()
 
         when:
@@ -42,6 +44,7 @@ class WebServiceSpec extends Specification {
     def "hub header must be added to header map"() {
         given:
         grailsApplication.config.grails.serverURL = 'http://xyz.com'
+        service.grailsApplication = grailsApplication
         Map header = [:]
 
         when:
