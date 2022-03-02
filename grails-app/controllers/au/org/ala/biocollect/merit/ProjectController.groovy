@@ -639,10 +639,27 @@ class ProjectController {
                 facets = searchService.standardiseHistogramFacets(facets, histogramFacetConfig)
             }
 
-
             // if facet is provided by client do not add special facets
             if(!params.facets){
                 facets = projectService.addSpecialFacets(facets)
+            }
+
+            def user = userService.getUser()
+            boolean isAlaAdmin = userService.userIsAlaAdmin()
+            boolean isUserPage = params.getBoolean('isUserPage', false)
+
+            // if user is not logged in or not an Admin, only Published projects will be shown in Finder by default
+            // hence removing projLifecycleStatus facet, as it does not make sense
+            if (!user) {
+                int index = facets.findIndexOf { it.name == "projLifecycleStatus" }
+                if (index >= 0)
+                    facets.remove(index)
+            }
+
+            if (!isAlaAdmin && !isUserPage) {
+                int index = facets.findIndexOf { it.name == "projLifecycleStatus" }
+                if (index >= 0)
+                    facets.remove(index)
             }
 
             facets = projectService.addFacetExpandCollapseState(facets)
