@@ -248,6 +248,14 @@
                             <br/><input type="text" name="pActivityId" id="pActivityId">Project Activity Id</g:uploadForm></p>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <a class="btn btn-info" href="/alaAdmin"><i class="fas fa-cog"></i> <g:message code="admin.alaAdmin"/></a>
+                    </td>
+                    <td>
+                        <g:message code="admin.alaAdmin.helptext"/>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </body>

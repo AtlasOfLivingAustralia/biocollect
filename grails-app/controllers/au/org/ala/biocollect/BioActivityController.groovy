@@ -736,6 +736,11 @@ class BioActivityController {
         queryParams.fq = queryParams.fq ?: ''
         queryParams.searchTerm = queryParams.searchTerm ?: ''
         queryParams.view = queryParams.view
+        // Only include the data in the response that we need to return to the client.
+        queryParams.include = ['activityId', 'projectActivity.name',
+                               'projectActivity.records.coordinates', 'projectActivity.records.individualCount',
+                               'projectActivity.records.multimedia.identifier', 'projectActivity.records.name',
+                               'projectActivity.projectId', 'projectActivity.projectName', 'coordinates', 'sites']
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits

@@ -383,7 +383,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.transients.truncatedAim = ko.computed(function () {
-        return truncate(self.aim(), 80);
+        return truncate(self.aim(), 200);
     });
 
     self.transients.truncatedName = ko.computed(function () {

@@ -64,7 +64,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.getScriptFile()
 
         then:
-        response.contentType == "text/javascript"
+        response.contentType == "text/javascript;charset=UTF-8"
         response.status == HttpStatus.SC_OK
     }
 
@@ -123,7 +123,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.getScriptFile()
 
         then:
-        response.contentType == "text/javascript"
+        response.contentType == "text/javascript;charset=UTF-8"
         response.characterEncoding == StandardCharsets.UTF_8.toString()
         response.status == HttpStatus.SC_OK
     }
