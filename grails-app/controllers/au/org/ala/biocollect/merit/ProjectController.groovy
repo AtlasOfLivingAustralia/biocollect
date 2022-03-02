@@ -649,13 +649,15 @@ class ProjectController {
             boolean isUserPage = params.getBoolean('isUserPage', false)
 
             // if user is not logged in or not an Admin, only Published projects will be shown in Finder by default
-            // hence removing projLifecycleStatus facet, as it does not make sense
+            // hence removing projLifecycleStatus facet
             if (!user) {
                 int index = facets.findIndexOf { it.name == "projLifecycleStatus" }
                 if (index >= 0)
                     facets.remove(index)
             }
 
+            // if user is not an Admin, only Published projects will be shown in Finder by default
+            // hence removing projLifecycleStatus facet
             if (!isAlaAdmin && !isUserPage) {
                 int index = facets.findIndexOf { it.name == "projLifecycleStatus" }
                 if (index >= 0)
