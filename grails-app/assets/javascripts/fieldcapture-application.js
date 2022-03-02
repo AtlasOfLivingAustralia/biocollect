@@ -539,6 +539,23 @@ function Documents() {
         return true;
     };
 
+    self.mapDocument = function (data) {
+        var selectedDoc = self.selectedDocument();
+        var roleId = ""
+
+        if (selectedDoc)
+            roleId = selectedDoc.role()
+
+        var roleName = "";
+
+        switch (roleId) {
+            case "bookChapters":
+                return roleName = "Book Chapters";
+            default:
+                return ''
+        }
+    }
+
     self.previewTemplate = ko.pureComputed(function() {
         var selectedDoc = self.selectedDocument();
 
