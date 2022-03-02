@@ -43,7 +43,7 @@
 
     <div class="span12 text-left">
         <label for="documentType"><h6>Document type: </h6></label>
-        <label id="documentType" data-bind="text:selectedDocument().role"/>
+        <label id="documentType" data-bind="text:mapDocument()"/>
     </div>
     <div class="span12 text-left">
         <label for="labels"><h6>Keywords: </h6></label>

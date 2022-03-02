@@ -23,7 +23,7 @@ function DocumentViewModel (doc, owner, settings) {
             {id:'datasets', name: 'Datasets'},
             {id:'documents', name: 'Documents'},
             {id:'embeddedVideo', name:'Embedded Video'},
-            //{id:'exceedanceReport', name:'Exceedance Report'},
+            {id:'exceedanceReport', name:'Exceedance Report'},
             {id:'factsheets', name: 'Fact sheets'},
             {id:'information', name: 'Information'},
             {id:'journalArticles', name: 'Journal Articles'},
