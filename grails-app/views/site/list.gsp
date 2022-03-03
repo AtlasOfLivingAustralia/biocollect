@@ -40,6 +40,7 @@
 </head>
 
 <body>
+<g:render template="/shared/bannerHub"/>
 <div id="projectData">
     <div id="siteSearch" class="container">
         <div class="my-4 my-md-5">
