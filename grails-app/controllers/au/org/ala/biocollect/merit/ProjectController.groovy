@@ -644,26 +644,6 @@ class ProjectController {
                 facets = projectService.addSpecialFacets(facets)
             }
 
-            def user = userService.getUser()
-            boolean isAlaAdmin = userService.userIsAlaAdmin()
-            boolean isUserPage = params.getBoolean('isUserPage', false)
-
-            // if user is not logged in or not an Admin, only Published projects will be shown in Finder by default
-            // hence removing projLifecycleStatus facet
-            if (!user) {
-                int index = facets.findIndexOf { it.name == "projLifecycleStatus" }
-                if (index >= 0)
-                    facets.remove(index)
-            }
-
-            // if user is not an Admin, only Published projects will be shown in Finder by default
-            // hence removing projLifecycleStatus facet
-            if (!isAlaAdmin && !isUserPage) {
-                int index = facets.findIndexOf { it.name == "projLifecycleStatus" }
-                if (index >= 0)
-                    facets.remove(index)
-            }
-
             facets = projectService.addFacetExpandCollapseState(facets)
             utilService.getDisplayNamesForFacets(facets, allFacetConfig)
         }
@@ -682,6 +662,38 @@ class ProjectController {
         }
         response.setCharacterEncoding('UTF-8')
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
+    }
+
+    def removeFacetsFromProjectFinderPage(List facets) {
+        List facetsToRemove = grailsApplication.config.lists.facetsToRemoveFromProjectFinderPage
+
+        def user = userService.getUser()
+        boolean isAlaAdmin = userService.userIsAlaAdmin()
+        boolean isUserPage = params.getBoolean('isUserPage', false)
+
+        // if the user is not logged in or if the user is not AlaAdmin and not in user page, remove the facets specified
+        // in config from the Project Finder Page
+        if (!user || (!isAlaAdmin && !isUserPage)) {
+            for (int i = 0; i < facetsToRemove.size(); i++) {
+                int index = facets.findIndexOf { it == facetsToRemove[i] }
+
+                if (index >= 0)
+                    facets.remove(index)
+            }
+        }
+
+        String facetStr = "";
+
+        if (facets.size() > 0) {
+            for (String facet : facets) {
+                facetStr += facet + ",";
+            }
+
+            if (facetStr.length() > 0)
+                facetStr = facetStr.substring(0, facetStr.length() - 1);
+        }
+
+        return facetStr
     }
 
     /**
@@ -775,6 +787,12 @@ class ProjectController {
         if(!trimmedParams.facets) {
             trimmedParams.facets = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)?.collect { it.name }?.join(",")
         }
+
+        List facetList = trimmedParams.facets.split(",")
+
+        //check and remove facets from Project Finder Page if there is any
+        if (facetList)
+            trimmedParams.facets = removeFacetsFromProjectFinderPage(facetList)
 
         List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
         if(presenceAbsenceFacets){

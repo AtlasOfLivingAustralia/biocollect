@@ -984,10 +984,10 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.transients.hasPublishedProjectActivities = false;
 
-    self.checkPublishedProjectActivities = function (activities) {
-        if (activities && Object.keys(activities).length > 0) {
-            for (var i = 0; i < activities.length; i++) {
-                if (activities[i].published) {
+    self.checkPublishedProjectActivities = function (projectActivities) {
+        if (projectActivities && Object.keys(projectActivities).length > 0) {
+            for (var i = 0; i < projectActivities.length; i++) {
+                if (projectActivities[i].published) {
                     self.transients.hasPublishedProjectActivities = true;
                     break;
                 }

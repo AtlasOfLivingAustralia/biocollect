@@ -910,11 +910,18 @@ class ProjectService {
                         facets.add(index, specialFacet.clone())
                     }
                     else {
-                        def item =  hubFacets[index - 1]
-                        int facetIndex = facets.findIndexOf { it.name== item.name}
+                        if (index == 0) {
+                            facets.add(0, specialFacet.clone())
+                        }
+                        else {
+                            def item = hubFacets[index - 1]
+                            int facetIndex = facets.findIndexOf { it.name == item.name }
 
-                        if (facetIndex >= 0)
-                            facets.add(facetIndex+1, specialFacet.clone())
+                            if (facetIndex >= 0)
+                                facets.add(facetIndex + 1, specialFacet.clone())
+                            else if (facetIndex == -1)
+                                facets.add(facets.size(), specialFacet.clone())
+                        }
                     }
                 }
             }
