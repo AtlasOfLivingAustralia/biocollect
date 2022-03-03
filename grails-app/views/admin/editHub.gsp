@@ -164,7 +164,6 @@
                                 <select class="form-control" data-bind="value: type">
                                     <option value="">Please choose</option>
                                     <option value="ala">ALA</option>
-                                    <option value="biocollect">Biocollect classic</option>
                                     <option value="custom">Custom header</option>
                                 </select>
                             </div>
