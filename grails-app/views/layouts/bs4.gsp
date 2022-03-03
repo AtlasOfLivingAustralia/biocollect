@@ -9,6 +9,7 @@
     <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <title><g:layoutTitle/></title>
     <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/assets/css/ala-styles.css"/>
     <link href="${g.createLink(controller: 'hub', action: 'generateStylesheet')}?ver=${hubConfig.lastUpdated}" rel="stylesheet"/>
     <asset:stylesheet src="base-bs4.css"/>
     <asset:javascript src="base-bs4.js"/>
@@ -22,13 +23,23 @@
     <div id="wrapper-navbar" itemscope="" itemtype="http://schema.org/WebSite">
         <a class="skip-link sr-only sr-only-focusable" href="#content">Skip to content</a>
 
+    <g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
+        <div id="ala-header-bootstrap2" class="do-not-mark-external hidden-print">
+            <hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}"/>
+        </div>
+        <div id="content-starting-point"></div>
+    </g:if>
+    <g:elseif test="${hubConfig.templateConfiguration.header.type == 'custom'}">
         <nav class="navbar navbar-expand-lg navbar-dark navbar-alt">
             <div class="container-fluid flex-column flex-md-row align-items-center">
-
-                <!-- Your site title as branding in the menu -->
-                <a href="/" class="custom-logo-link navbar-brand" rel="home" itemprop="url">
-                    ${hubConfig.title}
-                </a> <!-- end custom logo -->
+                <div>
+                    <g:if test="${hubConfig.logoUrl}">
+                    <!-- Your site title as branding in the menu -->
+                    <a href="${g.createLink(uri: "/")}" class="custom-logo-link navbar-brand" rel="home" itemprop="url">
+                        <img src="${hubConfig.logoUrl}" />
+                    </a> <!-- end custom logo -->
+                    </g:if>
+                </div>
 
                 <div class="outer-nav-wrapper">
 
@@ -63,19 +74,19 @@
             </div><!-- .container -->
 
         </nav><!-- .site-navigation -->
-
+    </g:elseif>
     </div>
     %{--    navbar end--}%
     <div class="wrapper" id="catalogue">
         <main class="site-main">
             <article class="page">
-                <g:set var="bannerURL" value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images[0]?.url}"/>
+                <g:set var="bannerURL" value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images?.getAt(0)?.url}"/>
                 <g:set var="banner" value="${pageProperty(name: 'page.banner')}"/>
                 <g:if test="${pageProperty(name: 'page.slider')}">
                     <g:pageProperty name="page.slider"></g:pageProperty>
                 </g:if>
                 <g:elseif test="${bannerURL || banner}">
-                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}">
+                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
                         <g:if test="${pageProperty(name: 'page.bannertitle')}">
                             <div class="banner-title">
                                 <h1><g:pageProperty name="page.bannertitle"></g:pageProperty></h1>
@@ -85,7 +96,13 @@
                     </div>
                 </g:elseif>
                 <g:else>
-                    <div id="banner" class="no-image no-content"></div>
+                    <div id="banner" class="no-image no-content">
+                        <g:if test="${pageProperty(name: 'page.bannertitle')}">
+                            <div class="banner-title">
+                                <h1><g:pageProperty name="page.bannertitle"></g:pageProperty></h1>
+                            </div>
+                        </g:if>
+                    </div>
                 </g:else>
                 <g:set var="tabList" value="${pageProperty(name: 'page.tab')}"/>
                 <g:if test="${tabList}">
@@ -129,188 +146,9 @@
         </main>
     </div>
     <g:if test="${hubConfig.templateConfiguration.footer.type == 'ala'}">
-        <footer class="site-footer footer-alt" id="footer">
-            <div class="footer-middle">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-4 col-lg-6">
-                            <!-- Footer Menu goes here -->
-                            <div class="footer-menu">
-                                <ul class="menu menu-2-col">
-                                    <li class="menu-item menu-item-has-children">
-                                        <a title="Search &amp; Analyse" href="#">Search &amp; Analyse</a>
-                                        <ul class="sub-menu">
-                                            <li class="menu-item">
-                                                <a title="Search Occurrence Records" href="#">Search Occurrence Records</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Search ALA Datasets" href="#">Search ALA Datasets</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Spatial Portal" href="#">Spatial Portal</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Download Data" href="#">Download Data</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Search Species" href="#">Search Species</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="ALA Dashboard" href="#">ALA Dashboard</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Explore Your Area" href="#">Explore Your Area</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Browse Natural History Collections"
-                                                   href="#">Browse Natural History Collections</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Explore Regions" href="#">Explore Regions</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!--col end -->
-                        <div class="col-md-4 col-lg-3">
-                            <!-- Footer Menu goes here -->
-                            <div class="footer-menu">
-                                <ul class="menu">
-                                    <li class="menu-item menu-item-has-children">
-                                        <a title="Contribute" href="#">Contribute</a>
-                                        <ul class="sub-menu">
-                                            <li class="menu-item">
-                                                <a title="Record a sighting in the ALA"
-                                                   href="#">Record a sighting in the ALA</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Submit a dataset to the ALA"
-                                                   href="#">Submit a dataset to the ALA</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Digitise a record in the DigiVol"
-                                                   href="#">Digitise a record in the DigiVol</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Mobile Apps" href="#">Mobile Apps</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Join a Citizen Science Program"
-                                                   href="#">Join a Citizen Science Program</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!--col end -->
-                        <div class="col-md-4 col-lg-3">
-                            <!-- Footer Menu goes here -->
-                            <div class="footer-menu">
-                                <ul class="menu">
-                                    <li class="menu-item menu-item-has-children">
-                                        <a title="About ALA" href="#">About ALA</a>
-                                        <ul class="sub-menu">
-                                            <li class="menu-item">
-                                                <a title="Who We Are" href="#">Who We Are</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="How to Work With Data" href="#">How to Work With Data</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Indigenous Ecological Knowledge"
-                                                   href="#">Indigenous Ecological Knowledge</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Contact Us" href="#">Contact Us</a>
-                                            </li>
-                                            <li class="menu-item">
-                                                <a title="Feedback" href="#">Feedback</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!--col end -->
-                        <div class="col-md-12">
-                            <!-- Footer Menu goes here -->
-                            <div class="footer-menu-horizontal">
-                                <ul class="menu horizontal">
-                                    <li class="menu-item">
-                                        <a title="Search" href="#">Blog</a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a title="Help" href="#">Help</a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a title="Sites &amp; Services" href="#">Sites &amp; Services</a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a title="Developer Tools &amp; Documentation"
-                                           href="#">Developer Tools &amp; Documentation</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!--col end -->
-                    </div><!-- row end -->
-                </div><!-- container end -->
-            </div>
-
-            <div class="footer-bottom">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 content-column text-center">
-                            <h4>The ALA is made possible by contributions from its partners, is supported by NCRIS and hosted by CSIRO</h4>
-
-                            <div class="partner-logos">
-                                <img src="assets/img/logo1.png" alt="Logo1">
-                                <img src="assets/img/logo2.png" alt="Logo2">
-                                <img src="assets/img/logo3.png" alt="Logo3">
-                                <img src="assets/img/logo1.png" alt="Logo1">
-                                <img src="assets/img/logo2.png" alt="Logo2">
-                                <img src="assets/img/logo3.png" alt="Logo3">
-                                <img src="assets/img/logo1.png" alt="Logo1">
-                                <img src="assets/img/logo2.png" alt="Logo2">
-                                <img src="assets/img/logo3.png" alt="Logo3">
-                            </div>
-                        </div>
-                        <!--col end -->
-                    </div><!-- row end -->
-                </div><!-- container end -->
-            </div>
-
-            <div class="footer-copyright">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 col-lg-7">
-                            <p class="alert-text text-creativecommons">
-                                This work is licensed under a <a
-                                    href="https://creativecommons.org/licenses/by/3.0/au/">Creative
-                                Commons Attribution 3.0 Australia License</a> <a rel="license"
-                                                                                 href="http://creativecommons.org/licenses/by/3.0/au/"><img
-                                        alt="Creative Commons License" style="border-width:0"
-                                        src="https://www.ala.org.au/wp-content/themes/ala-wordpress-theme/img/cc-by.png">
-                            </a>
-                            </p>
-                        </div>
-                        <!--col end -->
-                        <div class="col-md-12 col-lg-5 text-lg-right">
-                            <ul class="menu horizontal">
-                                <li><a title="copyright" href="/copyright">Copyright</a></li>
-                                <li><a title="Terms of Use" href="/terms">Terms of Use</a></li>
-                                <li><a title="System Status" href="/status">System Status</a></li>
-                            </ul>
-                        </div>
-                        <!--col end -->
-                    </div><!-- row end -->
-                </div><!-- container end -->
-            </div>
-
-        </footer>
+        <div id="ala-footer-bootstrap2 hidden-print">
+            <hf:footer/>
+        </div>
     </g:if>
     <g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
         <footer class="site-footer footer-alt" id="custom-footer">

@@ -18,24 +18,24 @@
   margin-bottom: .25rem;
 }
 
-@if $what-is-btn {
+@if variable-exists("what-is-btn") {
   .btn-whatisthis {
     @include button-variant($what-is-this-button-background-color, $what-is-this-button-background-color);
   }
 }
 
-@if $getting-started-btn {
+@if variable-exists("getting-started-btn") {
   .btn-gettingstarted {
     @include button-variant($getting-started-button-background-color, $getting-started-button-background-color);
   }
 }
 
-@if $add-a-record-btn {
+@if variable-exists("add-a-record-btn") {
   .btn-addarecord {
     @include button-variant($add-a-record-button-background-color, $add-a-record-button-background-color);
   }
 }
-@if $view-records-btn {
+@if variable-exists("view-records-btn") {
   .btn-viewrecords {
     @include button-variant($view-records-button-background-color, $view-records-button-background-color);
   }

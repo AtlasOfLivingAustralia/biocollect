@@ -1,5 +1,6 @@
+<g:set var="images" value="${hubConfig.templateConfiguration?.banner?.images}"></g:set>
+<g:if test="${images?.size() > 0}">
 <asset:javascript src="swiper/swiper.min.js"></asset:javascript>
-<g:set var="images" value="${hubConfig.templateConfiguration.banner.images}"></g:set>
 <content tag="slider">
     <section class="hero-slider swiper-container">
         <div class="swiper-wrapper">
@@ -53,3 +54,4 @@
         });
     })
 </script>
+</g:if>

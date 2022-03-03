@@ -376,10 +376,10 @@ class SettingService {
                 ${styles?.insetBackgroundColor ? "\$inset-background-color: ${styles?.insetBackgroundColor};" : ''}
                 ${styles?.menuBackgroundColor ? "\$menu-background-color: ${styles?.menuBackgroundColor};" : ''}
                 ${styles?.menuTextColor ? "\$menu-text-color: ${styles?.menuTextColor};" : ''}
-                ${styles?.whatIsThisButtonBackgroundColor ? "\$what-is-btn: true;\$what-is-this-button-background-color: ${styles?.whatIsThisButtonBackgroundColor};" : "\$what-is-btn: false;"}
-                ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : "\$getting-started-btn: false;"}
-                ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : "\$add-a-record-btn: false;"}
-                ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : "\$view-records-btn: false;"}
+                ${styles?.whatIsThisButtonBackgroundColor ? "\$what-is-btn: true;\$what-is-this-button-background-color: ${styles?.whatIsThisButtonBackgroundColor};" : ""}
+                ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : ""}
+                ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : ""}
+                ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : ""}
                 ${input.getInputStream().text}
                 """
 
@@ -395,7 +395,7 @@ class SettingService {
                 }
             }
         } else {
-            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.css"
+            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${hub.urlPath}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()) {

@@ -17,6 +17,7 @@ class HubController {
                 render view: 'buttonHomePage', model: [homepage: true]
                 break
             case 'projectfinder':
+            default:
                 Map model = [homepage:true, showProjectDownloadButton:showProjectFinderDownloadButton(hubSettings)]
                 render view: 'projectFinderHomePage', model: model
                 break
