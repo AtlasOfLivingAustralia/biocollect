@@ -207,7 +207,7 @@ $custom-select-height: 50px;
 $custom-select-height-sm: 40px;
 $custom-select-height-lg: 50px;
 
-$navbar-nav-link-padding-x: 1rem;
+$navbar-nav-link-padding-x: 0.5rem;
 
 // Tables
 //
@@ -269,3 +269,7 @@ $input-transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out ;
 // banner
 $inset-background-color: #000 !default;
 $inset-text-color: #fff !default;
+
+// footer
+$footer-background-color: black !default;
+$footer-text-color: white !default;

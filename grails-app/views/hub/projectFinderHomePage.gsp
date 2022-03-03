@@ -87,6 +87,7 @@
 <content tag="bannertitle">
     ${hubConfig.title}
 </content>
+<g:render template="/shared/bannerHub"/>
 <section id="catalogueSection">
     <div id="project-finder-container">
         <div class="container-fluid show expander projects-container">

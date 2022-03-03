@@ -25,7 +25,7 @@ class UrlMappings {
 
                 }
 
-                "/"(controller: 'home', action: 'index')
+                "/"(controller: 'hub', action: 'index')
 
 
                 "/$hub/$controller/$id?"(parseRequest:true) {
@@ -72,12 +72,12 @@ class UrlMappings {
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
 
-                "/$hub/"(controller: 'home', action: 'index') {
+                "/$hub/"(controller: 'hub', action: 'index') {
                         constraints {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
                 }
-                "/$hub"(controller: 'home', action: 'index') {
+                "/$hub"(controller: 'hub', action: 'index') {
                         constraints {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
