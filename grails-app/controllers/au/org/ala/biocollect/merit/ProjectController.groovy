@@ -664,33 +664,30 @@ class ProjectController {
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
     }
 
-    def removeFacetsFromProjectFinderPage(List facets) {
+    /**
+     *  Remove facets specified in config from the Project Finder Page, when user is not logged in or if user is not
+     *  AlaAdmin and not in user page
+     */
+    private String removeFacetsFromProjectFinderPage(List facets) {
         List facetsToRemove = grailsApplication.config.lists.facetsToRemoveFromProjectFinderPage
 
         def user = userService.getUser()
         boolean isAlaAdmin = userService.userIsAlaAdmin()
         boolean isUserPage = params.getBoolean('isUserPage', false)
 
-        // if the user is not logged in or if the user is not AlaAdmin and not in user page, remove the facets specified
-        // in config from the Project Finder Page
         if (!user || (!isAlaAdmin && !isUserPage)) {
             for (int i = 0; i < facetsToRemove.size(); i++) {
                 int index = facets.findIndexOf { it == facetsToRemove[i] }
 
                 if (index >= 0)
-                    facets.remove(index)
+                    facets.remove(facetsToRemove[i])
             }
         }
 
         String facetStr = "";
 
         if (facets.size() > 0) {
-            for (String facet : facets) {
-                facetStr += facet + ",";
-            }
-
-            if (facetStr.length() > 0)
-                facetStr = facetStr.substring(0, facetStr.length() - 1);
+            facetStr = facets.join(',')
         }
 
         return facetStr
