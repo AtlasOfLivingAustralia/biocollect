@@ -676,12 +676,7 @@ class ProjectController {
         boolean isUserPage = params.getBoolean('isUserPage', false)
 
         if (!user || (!isAlaAdmin && !isUserPage)) {
-            for (int i = 0; i < facetsToRemove.size(); i++) {
-                int index = facets.findIndexOf { it == facetsToRemove[i] }
-
-                if (index >= 0)
-                    facets.remove(facetsToRemove[i])
-            }
+            facets.removeAll(facetsToRemove)
         }
 
         String facetStr = "";
