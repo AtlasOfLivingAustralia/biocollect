@@ -17,36 +17,36 @@
 </head>
 <body>
     <div id="wrapper" class="container-fluid">
-        <div class="row-fluid">
-            <div class="span8" id="">
+        <div class="row">
+            <div class="col-md-8" id="">
                 <h1>${settingType.title?:'About the website'}
                     <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
-                        <span style="display: inline-block; margin: 0 10px;">
+                        <span class="d-inline-block my-2">
                             <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: settingType.name, params: [layout: hubConfig.skin, returnUrl: raw(g.createLink(controller: params.controller, action: params.action, id: params.id, absolute: true))]))}"
-                               class="btn btn-small"><i class="icon-edit"></i> Edit</a>
+                               class="btn btn-sm btn-dark"><i class="fas fa-pencil-alt"></i> Edit</a>
                         </span>
                     </g:if>
                 </h1>
             </div>
         </div>
-        <div class="row-fluid">
-            <div class="span7">
-                <div class="" id="aboutDescription" style="margin-top:20px;">
-                    <markdown:renderHtml>${content}</markdown:renderHtml>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="mt-3" id="aboutDescription">
+                    <markdown:renderHtml>${raw(content)}</markdown:renderHtml>
                 </div>
-            </div><!-- /.spanN  -->
+            </div>
             <g:if test="${showNews}">
             <g:set var="newsText"><fc:getSettingContent settingType="${SettingPageType.NEWS}"/></g:set>
-            <div class="span5 well well-small">
+            <div class="col-md-5">
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
                     <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: SettingPageType.NEWS.name, params: [layout: hubConfig.skin, returnUrl: raw(g.createLink(controller: params.controller, action: params.action, absolute: true))]))}"
-                       class="btn btn-small pull-right"><i class="icon-edit"></i> Edit</a>
+                       class="btn btn-sm btn-dark pull-right"><i class="fas fa-pencil-alt"></i> Edit</a>
                 </g:if>
-                ${newsText}
+                ${raw(newsText)}
             </div>
             </g:if>
 
-        </div><!-- /.row-fluid  -->
+        </div>
     </div>
 </body>
 </html>

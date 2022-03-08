@@ -91,10 +91,6 @@
         }
       }
 
-      #navbarNavDropdown {
-        border-right-color: rgba(0, 0, 0, 0.1);
-      }
-
       .search-trigger, .account-mobile {
         color: $c-text;
         cursor: pointer;
@@ -401,12 +397,6 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-}
-
-#navbarNavDropdown {
-  margin-right: 1rem;
-  padding-right: 1rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .dropdown-toggle {

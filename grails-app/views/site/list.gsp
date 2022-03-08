@@ -40,6 +40,7 @@
 </head>
 
 <body>
+<g:render template="/shared/bannerHub"/>
 <div id="projectData">
     <div id="siteSearch" class="container">
         <div class="my-4 my-md-5">
@@ -59,11 +60,9 @@
                 </g:if>
 
                 <g:if test="${myFavourites}">
-                    <div class="row">
-                        <div class="col-12" id="heading">
-                            <h1><g:message code="site.myFavouriteSites.heading"/></h1>
-                        </div>
-                    </div>
+                    <content tag="bannertitle">
+                        <g:message code="site.myFavouriteSites.heading"/>
+                    </content>
                 </g:if>
 
                 <div id="sortBar" class="row d-flex">
@@ -98,17 +97,19 @@
                 <div class="filter-bar d-flex align-items-center">
                     <h4><g:message code="label.applied.filters"/>: </h4>
                     <!-- ko foreach: selectedFacets -->
-                    <span class="filter-item" data-bind="attr:{title:facet.metadata.displayName + ' : ' + displayName()}">
+                    <btn class="filter-item btn btn-sm btn-outline-dark" data-bind="attr:{title:facet.metadata.displayName + ' : ' + displayName()}">
                         <!-- ko text: facet.metadata.displayName + ' : ' + displayName() --><!-- /ko -->
-                        <button class="remove" data-remove data-bind="click: $root.removeFacetTerm">
+                        <span class="remove" data-remove data-bind="click: $root.removeFacetTerm">
                             <i class="far fa-times-circle"></i>
-                        </button>
-                    </span>
+                        </span>
+                    </btn>
                     <!-- /ko -->
+                    <!-- ko if: (selectedFacets() && (selectedFacets().length > 0)) -->
                     <button class="btn btn-sm btn-dark clear-filters"  data-bind="click: removeAllSelectedFacets" type="button"
                             aria-label="Clear all filters">
                         <i class="far fa-times-circle"></i> Clear All
                     </button>
+                    <!-- /ko -->
                 </div>
 
                 <div class="records-found">

@@ -373,14 +373,13 @@ class SettingService {
                 ${styles?.footerTextColor ? "\$footer-text-color: ${styles?.footerTextColor};" : ''}
                 ${styles?.socialTextColor ? "\$social-text-color: ${styles?.socialTextColor};" : ''}
                 ${styles?.insetTextColor ? "\$inset-text-color: ${styles?.insetTextColor};" : ''}
+                ${styles?.insetBackgroundColor ? "\$inset-background-color: ${styles?.insetBackgroundColor};" : ''}
                 ${styles?.menuBackgroundColor ? "\$menu-background-color: ${styles?.menuBackgroundColor};" : ''}
                 ${styles?.menuTextColor ? "\$menu-text-color: ${styles?.menuTextColor};" : ''}
-                ${styles?.whatIsThisButtonBackgroundColor ? "\$what-is-btn: true;\$what-is-this-button-background-color: ${styles?.whatIsThisButtonBackgroundColor};" : "\$what-is-btn: false;"}
-                ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : "\$getting-started-btn: false;"}
-                ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : "\$add-a-record-btn: false;"}
-                ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : "\$view-records-btn: false;"}
-                ${styles?.makePrimaryButtonAnOutlineButton ? "\$make-primary-btn: true;\$primary-button-outline-text-color: ${styles?.primaryButtonOutlineTextColor};" : "\$make-primary-btn: false;"}
-                ${styles?.makeDefaultButtonAnOutlineButton ? "\$make-default-btn: true;\$default-button-outline-text-color: ${styles?.defaultButtonOutlineTextColor};" : "\$make-default-btn: false;"}
+                ${styles?.whatIsThisButtonBackgroundColor ? "\$what-is-btn: true;\$what-is-this-button-background-color: ${styles?.whatIsThisButtonBackgroundColor};" : ""}
+                ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : ""}
+                ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : ""}
+                ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : ""}
                 ${input.getInputStream().text}
                 """
 
@@ -396,7 +395,7 @@ class SettingService {
                 }
             }
         } else {
-            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.css"
+            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${hub.urlPath}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()) {
