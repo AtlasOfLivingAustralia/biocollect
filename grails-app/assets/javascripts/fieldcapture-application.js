@@ -549,10 +549,84 @@ function Documents() {
         var roleName = "";
 
         switch (roleId) {
+            case "blogArticles":
+                return roleName = "Blog Articles";
+                break;
             case "bookChapters":
                 return roleName = "Book Chapters";
-            default:
-                return ''
+                break;
+            case "brochures":
+                return roleName = "Brochures";
+                break;
+            case "caseStudies":
+                return roleName = "Case Studies";
+                break;
+            case "datasets":
+                return roleName = "Datasets";
+                break;
+            case "documents":
+                return roleName = "Documents";
+                break;
+            case "embeddedVideo":
+                return roleName = "Embedded Video";
+                break;
+            case "exceedanceReport":
+                return roleName = "Exceedance Report";
+                break;
+            case "factsheets":
+                return roleName = "Fact sheets";
+                break;
+            case "information":
+                return roleName = "Information";
+                break;
+            case "journalArticles":
+                return roleName = "Journal Articles";
+                break;
+            case "magazines":
+                return roleName = "Magazines";
+                break;
+            case "maps":
+                return roleName = "Maps";
+                break;
+            case "models":
+                return roleName = "Models";
+                break;
+            case "other":
+                return roleName = "Other Project document";
+                break;
+            case "photo":
+                return roleName = "Photo";
+                break;
+            case "postersBanners":
+                return roleName = "Posters and banners";
+                break;
+            case "presentations":
+                return roleName = "Presentations";
+                break;
+            case "projectPlan":
+                return roleName = "Project Plan / Work plan";
+                break;
+            case "projectVariation":
+                return roleName =  "Project Variation";
+                break;
+            case "projectHighlightReport":
+                return roleName = "Project Highlight Report";
+                break;
+            case "reports":
+                return roleName = "Reports";
+                break;
+            case "thesis":
+                return roleName = "Thesis";
+                break;
+            case "toolsGuides":
+                return roleName = "Tools and guides";
+                break;
+            case "webPages":
+                return roleName = "Web pages";
+                break;
+            case "webinars":
+                return roleName = "Webinars";
+                break;
         }
     }
 

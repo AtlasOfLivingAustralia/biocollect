@@ -53,7 +53,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.citation = ko.observable(doc ? doc.citation : '');
     this.doiLink = ko.observable(doc ? doc.doiLink : '');
     this.description = ko.observable(doc ? doc.description : '');
-    this.labels = ko.observable(doc ? doc.labels : '');
+    this.labels = ko.observableArray(doc ? doc.labels : []);
     this.filesize = ko.observable(doc ? doc.filesize : '');
     this.name = ko.observable(doc.name);
     // the notes field can be used as a pseudo-document (eg a deferral reason) or just for additional metadata
@@ -82,11 +82,28 @@ function DocumentViewModel (doc, owner, settings) {
         return (self.filename() ? "Change file" : "Attach file");
     });
 
+    self.transients = {};
+    self.transients.dateCreated = new Date();
+    self.transients.lastUpdated = new Date();
+
+    if (doc.dateCreated)
+        self.transients.dateCreated = moment(doc.dateCreated).format('DD MMM, YYYY');
+
+    if (doc.lastUpdated)
+        self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
+
     this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationText = null;
     this.embeddedVideo = ko.observable(doc.embeddedVideo);
     this.embeddedVideoVisible = ko.computed(function() {
         return (self.role() == 'embeddedVideo');
+    });
+
+    this.isJournalArticle = ko.computed(function() {
+        if (self.role() == 'journalArticles')
+            return true;
+        else
+            return false;
     });
 
     this.thirdPartyConsentDeclarationMade.subscribe(function(declarationMade) {
@@ -312,6 +329,8 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
             fileUploadHelper = null;
         }
         else {
+            documentViewModel.labels = documentViewModel.labels().split(',');
+
             // There is no file attachment but we can save the document anyway.
             $.post(
                 uploadUrl,

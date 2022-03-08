@@ -83,6 +83,7 @@
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
         audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
+        list: "${createLink(controller: 'resource', action: 'list')}",
         recordListUrl: "${raw(createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId]))}",
         recordDeleteUrl:"${createLink(controller: 'record', action: 'delete')}",
         projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",

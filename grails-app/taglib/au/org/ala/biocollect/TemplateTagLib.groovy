@@ -151,6 +151,17 @@ class TemplateTagLib {
                         out << "</li>";
                     }
                     break;
+                case 'resources':
+                    if (bs4) {
+                        out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Resources'}\" href=\"${url}\">${link.displayName?:'Resources'}</a>";
+                        out << "</li>";
+                    } else {
+                        out << "<li class=\"main-menu ${classes}\">";
+                        out << "<a href=\"${url}\">${link.displayName?:'Resources'}</a>";
+                        out << "</li>";
+                    }
+                    break;
                 case 'biocacheexplorer':
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
@@ -317,6 +328,9 @@ class TemplateTagLib {
                 break;
             case 'sites':
                 url = "${createLink(controller: 'site', action: 'list')}";
+                break;
+            case 'resources':
+                url = "${createLink(controller: 'document', action: 'list')}";
                 break;
             case 'biocacheexplorer':
                 String fq = ''

@@ -91,4 +91,8 @@ class DocumentController {
         result[1] = filename
         result
     }
+
+    def speciesList() {
+        render webService.get("${grailsApplication.config.lists.baseURL}/ws/speciesList?druid=${params.druid}", false)
+    }
 }

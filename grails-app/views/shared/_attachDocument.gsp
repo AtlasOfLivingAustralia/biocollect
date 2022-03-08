@@ -47,6 +47,31 @@
                     </div>
 
                     <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentDoi">DOI</label>
+
+                        <div class="col-sm-9">
+                            <input class="form-control" id="documentDoi" type="text" data-bind="value:doiLink"/>
+
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentCitation">Citation</label>
+
+                        <div class="col-sm-9">
+                            <input class="form-control" id="documentCitation" type="text" data-bind="value:citation"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentKeywords">Keywords</label>
+
+                        <div class="col-sm-9">
+                            <input class="form-control" id="documentKeywords" type="text" data-bind="value:labels"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
                         <label class="col-form-label col-sm-3" for="documentLicense">License</label>
 
                         <div class="col-sm-9">

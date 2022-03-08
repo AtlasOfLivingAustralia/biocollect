@@ -40,7 +40,6 @@
 <div class="w-100 h-200">
     <div><h4 data-bind="text:selectedDocument().name"></h4>
     </div>
-
     <div class="span12 text-left">
         <label for="documentType"><h6>Document type: </h6></label>
         <label id="documentType" data-bind="text:mapDocument()"/>
@@ -50,10 +49,13 @@
         <label id="labels" data-bind="text:selectedDocument().labels"/>
     </div>
     <div class="span12 text-left">
-        <label for="doiLink"><h6>DOI: </h6></label>
-        <label id="doiLink" data-bind="text:selectedDocument().doiLink"/>
+        <label><h6>DOI: </h6></label>
+        <a data-bind="attr: { href: selectedDocument().doiLink }, text: selectedDocument().doiLink"></a>
     </div>
-
+    <div class="span12 text-left">
+        <label for="attribution"><h6>Attribution: </h6></label>
+        <label id="attribution" data-bind="text:selectedDocument().attribution"/>
+    </div>
     <div class="span12 text-left">
         <h6>Citation:</h6>
         <p data-bind="text:selectedDocument().citation"/>
@@ -61,6 +63,14 @@
     <div class="span12 text-left">
         <h6>Description:</h6>
         <p data-bind="text:selectedDocument().description"/>
+    </div>
+    <div class="span12 text-left">
+        <label for="dateCreated"><h6>Date uploaded: </h6></label>
+        <label id="dateCreated" data-bind="text:selectedDocument().transients.dateCreated"/>
+    </div>
+    <div class="span12 text-left">
+        <label for="lastUpdated"><h6>Date last modified: </h6></label>
+        <label id="lastUpdated" data-bind="text:selectedDocument().transients.lastUpdated"/>
     </div>
 </div>
 </script>
