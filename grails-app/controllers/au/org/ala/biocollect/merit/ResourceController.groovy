@@ -25,6 +25,10 @@ class ResourceController {
 
     def error() {}
 
+    def list() {
+        render view: 'list', model: [create: true, documents: []]
+    }
+
     // proxy this request to work around browsers (firefox) that don't follow redirects properly :(
     def pdfUrl() {
         def url = params.file
