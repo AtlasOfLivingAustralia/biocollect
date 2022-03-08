@@ -45,7 +45,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         imageLocation:"${asset.assetPath(src: '')}",
         logoLocation:"${asset.assetPath(src: 'filetypes')}",
         dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
@@ -123,22 +123,14 @@
         </g:if>
     </g:else>
 </content>
-<section class="text-center section-padding">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-10 offset-0 offset-md-1" id="heading">
-                <h1>
-                    <g:if test="${title}">
-                        ${title}
-                    </g:if>
-                    <g:else>
-                        <g:message code="project.${label}.heading"/>
-                    </g:else>
-                </h1>
-            </div>
-        </div>
-    </div>
-</section>
+<content tag="bannertitle">
+    <g:if test="${title}">
+        ${title}
+    </g:if>
+    <g:else>
+        <g:message code="project.${label}.heading"/>
+    </g:else>
+</content>
 %{--<div id="wrapper" class="content container-fluid padding-top-10">--}%
 %{--    <div id="project-finder-container">--}%
 %{--        <div>--}%

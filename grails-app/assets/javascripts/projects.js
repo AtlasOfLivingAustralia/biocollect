@@ -382,7 +382,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.transients.truncatedAim = ko.computed(function () {
-        return truncate(self.aim(), 80);
+        return truncate(self.aim(), 200);
     });
 
     self.transients.truncatedName = ko.computed(function () {
@@ -449,6 +449,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
+    self.fullSizeImageUrl = ko.observable(project.fullSizeImageUrl);
     self.baseLayer = ko.observable(project.baseLayer || '');
     self.mapLayersConfig = project.mapLayersConfig || {};
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);

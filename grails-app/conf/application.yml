@@ -56,6 +56,7 @@ app:
   http:
     header:
       userId: "X-ALA-userId"
+      hostName: "X-ALA-hostname"
 
 
 security:
@@ -324,7 +325,7 @@ spring:
       check-template-location: false
   devtools:
     restart:
-      additional-exclude:
+      exclude:
         - '*.gsp'
         - '**/*.gsp'
         - '*.gson'

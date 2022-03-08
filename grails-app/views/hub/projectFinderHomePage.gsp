@@ -45,7 +45,7 @@
         projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params:[initiator:'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
@@ -76,25 +76,18 @@
     <g:else>
         <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
             <button class="btn btn-primary-dark btn-gettingstarted"
-                    onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'">
+                    onclick="window.location = '<g:createLink controller="home" action="gettingStarted" />'">
                 <i class="fas fa-info"></i> Getting started</button>
             <button class="btn btn-primary-dark btn-whatisthis"
-                    onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'">
+                    onclick="window.location = '<g:createLink controller='home' action='whatIsThis' />'">
                 <i class="fas fa-question"></i> What is this?</button>
         </g:if>
     </g:else>
 </content>
-<section class="text-center section-padding">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-10 offset-0 offset-md-1" id="heading">
-                <h1>
-                    ${hubConfig.title}
-                </h1>
-            </div>
-        </div>
-    </div>
-</section>
+<content tag="bannertitle">
+    ${hubConfig.title}
+</content>
+<g:render template="/shared/bannerHub"/>
 <section id="catalogueSection">
     <div id="project-finder-container">
         <div class="container-fluid show expander projects-container">

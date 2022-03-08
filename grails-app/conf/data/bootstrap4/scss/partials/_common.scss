@@ -548,13 +548,13 @@ ul.menu {
   }
 
   #filters & {
-    padding: 15px 20px;
+    padding: 5px 20px;
     &:after {
-      content: '\f078';
+      content: '\f077';
     }
     &.collapsed {
       &:after {
-        content: '\f077';
+        content: '\f078';
       }
     }
   }
@@ -581,7 +581,7 @@ ul.menu {
   }
 
   #filters & {
-    padding: 15px 20px 10px;
+    padding: 5px 20px 10px;
     @include media-breakpoint-down(sm) {
       padding: 18px 20px 10px;
     }

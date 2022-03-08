@@ -24,7 +24,7 @@
                             <div class="col">
                                 <h4 class="organisation" data-bind="visible:!organisationId(),text:organisationName"></h4>
                                 <a class="text-reset text-decoration-none" data-bind="visible:organisationId(),attr:{href:fcConfig.organisationLinkBaseUrl + '/' + organisationId()}">
-                                    <h4 class="organisation mb-1" data-bind="text:organisationName"></h4>
+                                    <h4 class="organisation mb-1 text-white" data-bind="text:organisationName"></h4>
                                 </a>
                             </div>
                         </div>
@@ -43,10 +43,10 @@
                     <div class="project-details">
                         <div class="status">
                             <g:if test="${hubConfig?.content?.hideProjectStatusIndicator != true}">
-                                <g:render template="dayscount"/>
+                                <g:render template="dayscount" model="[classes: 'text-white']"/>
                             </g:if>
                         </div>
-                        <div class="date">
+                        <div class="date text-white">
                             <div>
                                 <!-- ko if: plannedStartDate -->
                                     <span class="label">Start date:</span>
