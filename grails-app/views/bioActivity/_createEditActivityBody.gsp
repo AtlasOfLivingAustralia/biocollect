@@ -57,7 +57,7 @@
             <fc:select
                     data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                     printable="${printView}"/>
-            <m:map id="activitySiteMap" width="90%" height="512px"/>
+            <m:map id="activitySiteMap" width="100%" height="512px"/>
         </div>
 
     </div>

@@ -13,7 +13,8 @@
 <!-- ko stopBinding: true -->
 <div class="container-fluid">
     <div class="row" id="planContainer">
-<bc:koLoading>
+        <div class="col-12">
+            <bc:koLoading>
     <div id="status-update-error-placeholder"></div>
 
     <div id="activityContainer" class="space-before">
@@ -64,7 +65,7 @@
 
     <!-- ko with: selectedWorksActivityViewModel -->
     <div class="modal hide fade" id="createOrUpdateActivity" data-bind="dismissModal: transients.dismissModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -74,7 +75,7 @@
                     <div class="row form-group">
                         <div class="col-sm-4 required">
                             <label>Type of activity</label>
-                            <select data-bind="value: type,
+                            <select class="form-control form-control-sm" data-bind="value: type,
                                 popover:{title:'', content: transients.activityDescription,
                                 trigger:'manual', autoShow:true}, enable: canEditType"  class="full-width form-control"
                                     data-validation-engine="validate[required]">
@@ -92,7 +93,7 @@
                         <div class="col-sm-2">
                             <div data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
                                 <label>Major theme</label>
-                                <select class="full-width form-control"
+                                <select class="form-control form-control-sm"
                                         data-bind="value:mainTheme, options:fcConfig.themes,
                                                                 optionsText: 'name', optionsValue: 'name',
                                                                 optionsCaption:'Choose..'">
@@ -101,7 +102,7 @@
                         </div>
                         <div class="col-sm-6 required">
                             <fc:textArea data-bind="value: description" id="description"
-                                         label="Description" class="full-width form-control" row="5"
+                                         label="Description" class="form-control" row="5"
                                          data-validation-engine="validate[required]"/>
                         </div>
                     </div>
@@ -115,11 +116,11 @@
                         <div class="col-sm-12">
                             <button class="btn btn-primary-dark save-activity">
                                 <i class="fas "
-                                   data-bind="css: {'fa-plus': !activityId, 'fa-file-alt': activityId}">
+                                   data-bind="css: {'fa-plus': !activityId, 'fa-hdd': activityId}">
                                 </i>
                                 <!-- ko text: activityId ? '<g:message code="project.works.workschedule.activitymodal.save"/>': '<g:message code="project.works.workschedule.activitymodal.create"/>' --> <!-- /ko -->
                             </button>
-                            <button class="btn btn-dark" data-bind="click: transients.stopEditing"><i class="far fa-times-circle"></i><g:message code="project.works.workschedule.activitymodal.close"/></button>
+                            <button class="btn btn-dark" data-bind="click: transients.stopEditing"><i class="far fa-times-circle"></i> <g:message code="project.works.workschedule.activitymodal.close"/></button>
                         </div>
                     </div>
                 </div>
@@ -132,31 +133,35 @@
     <!-- Modal for getting reasons for status change -->
     <div id="activityStatusReason" class="modal hide fade"
          data-bind="showModal: displayReasonModal(), with:deferReason">
-        <form class="reasonModalForm">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                        data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="reasonModalForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                                data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
 
-                <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
+                        <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
+                        manager will use this information when assessing your report.</p>
+
+                        <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
+                        <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
+                                  class="validate[required] form-control"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-dark"
+                                data-bind="click: $parent.displayReasonModal.cancelReasonModal"
+                                data-dismiss="modal" aria-hidden="true"><i class="far fa-times-circle"></i> Discard status change</button>
+                        <button class="btn btn-primary-dark"
+                                data-bind="click:$parent.displayReasonModal.saveReasonDocument"><i class="fas fa-hdd"></i> Save reason</button>
+                    </div>
+                </form>
             </div>
-
-            <div class="modal-body">
-                <p>If you wish to defer or cancel a planned activity you must provide an explanation. Your case
-                manager will use this information when assessing your report.</p>
-
-                <p>You can simply refer to a document that has been uploaded to the project if you like.</p>
-                <textarea data-bind="value:notes,hasFocus:true" name="reason" rows=4 cols="80"
-                          class="validate[required]"></textarea>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn"
-                        data-bind="click: $parent.displayReasonModal.cancelReasonModal"
-                        data-dismiss="modal" aria-hidden="true">Discard status change</button>
-                <button class="btn btn-primary"
-                        data-bind="click:$parent.displayReasonModal.saveReasonDocument">Save reason</button>
-            </div>
-        </form>
+        </div>
     </div>
     <!-- /ko -->
 
@@ -173,9 +178,10 @@
                     <b><span data-bind="text:$parents[1].name"></span></b>
                 </td>
                 <td data-bind="attr:{rowspan:$parents[1].scores.length}">
-                    <textarea data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget"
+                    <textarea class="form-control"
+                              data-bind="visible:$root.canEditOutputTargets(),value:$parents[1].outcomeTarget"
                               rows="3"
-                              cols="80" style="width:90%"></textarea>
+                              cols="80"></textarea>
                     <span data-bind="visible:!$root.canEditOutputTargets(),text:$parents[1].outcomeTarget"></span>
                     <span class="save-indicator" data-bind="visible:$parents[1].isSaving"><img src="${asset.assetPath(src:'ajax-saver.gif')}"
                                                                                                  alt="saving icon"/> saving</span>
@@ -183,7 +189,7 @@
                 <!-- /ko -->
                 <td><span data-bind="text:scoreLabel"></span></td>
                 <td>
-                    <input type="text" class="input-mini"
+                    <input type="text" class="form-control form-control-sm"
                            data-bind="visible:$root.canEditOutputTargets(),value:target"
                            data-validation-engine="validate[required,custom[number]]"/>
                     <span data-bind="visible:!$root.canEditOutputTargets(),text:target"></span>
@@ -212,7 +218,8 @@
         </div>
     </g:if>
 </bc:koLoading>
-</div>
+        </div>
+    </div>
 </div>
 <!-- /ko -->
 
@@ -300,9 +307,9 @@
             <div class="modal-footer control-group">
                 <div class="controls">
                     <button type="button" class="btn btn-success"
-                            data-bind="enable:name() && !error(), click:save, visible:!complete()">Save</button>
-                    <button class="btn" data-bind="click:cancel, visible:!complete()">Cancel</button>
-                    <button class="btn" data-bind="click:close, visible:complete()">Close</button>
+                            data-bind="enable:name() && !error(), click:save, visible:!complete()"><i class="fas fa-hdd"></i> Save</button>
+                    <button class="btn" data-bind="click:cancel, visible:!complete()"><i class="far fa-times-circle"></i> Cancel</button>
+                    <button class="btn" data-bind="click:close, visible:complete()"><i class="fas fa-times"></i> Close</button>
 
                 </div>
             </div>
@@ -335,12 +342,12 @@
 </script>
 <script id="activityRow" type="text/html">
 
-<td>
-    <a class="btn btn-light btn-sm" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+<td class="btn-space">
+    <a class="btn btn-dark btn-sm" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
             class="fas fa-pencil-alt" title="Edit Activity"></i></a>
-    <button type="button" class="btn btn-light btn-sm" data-bind="click:viewActivity"><i
+    <button type="button" class="btn btn-dark btn-sm" data-bind="click:viewActivity"><i
             class="far fa-eye" title="View Activity"></i></button>
-    <button type="button" class="btn btn-light btn-sm"
+    <button type="button" class="btn btn-sm btn-danger"
             data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="far fa-trash-alt" title="Delete activity"></i>
     </button>
 </td>
@@ -352,7 +359,7 @@
 </td>
 <td>
     <a href="#" data-bind="text:type,click: editActivity"></a>
-    <button class="btn btn-dark btn-mini pull-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
+    <button class="btn btn-dark btn-sm float-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
         <i class="fas " data-bind="css: { 'fa-arrow-down': transients.speciesConfigurationToggle, 'fa-arrow-up': !transients.speciesConfigurationToggle() }"></i>
         <g:message code="project.survey.activity.editSpecies"/>
     </button>
@@ -360,7 +367,7 @@
 <td>
     <div class="row" data-bind="css: {'ajax-opacity': transients.isSaving}">
         <div class="col-sm-12">
-            <select data-bind="options: resolveSites(fcConfig.siteIds, true), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
+            <select class="form-control form-control-sm" data-bind="options: resolveSites(fcConfig.siteIds, true), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
             <span class="margin-left-1">
                 <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="fas fa-info-circle"></i></a>
                 <span data-bind="visible: transients.siteArea">
@@ -378,12 +385,12 @@
 </script>
 <script id="milestoneRow" type="text/html">
 
-    <td>
-        <a class="btn btn-mini" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+    <td class="btn-space">
+        <a class="btn btn-sm btn-dark" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
                 class="fas fa-pencil-alt" title="Edit Milestone"></i></a>
-        <button type="button" class="btn btn-mini" data-bind="click:viewActivity"><i
+        <button type="button" class="btn btn-sm btn-dark" data-bind="click:viewActivity"><i
                 class="far fa-eye" title="View Milestone"></i></button>
-        <button type="button" class="btn btn-mini"
+        <button type="button" class="btn btn-sm btn-danger"
                 data-bind="click:deleteActivity, visible: canDeleteActivity"><i class="far fa-trash-alt" title="Delete Milestone"></i>
         </button>
     </td>
@@ -405,7 +412,7 @@
     <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
             data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-dark':progress()=='cancelled'}"
             style="line-height:16px;min-width:86px;text-align:left;">
-        <span data-bind="text: progress"></span> <span class="caret pull-right" style="margin-top:6px;"></span>
+        <span data-bind="text: progress"></span> <span class="caret float-right" style="margin-top:6px;"></span>
     </button>
     <ul class="dropdown-menu" data-bind="foreach:$root.progressOptions" style="min-width:100px;">
         <!-- Disable item if selected -->
@@ -446,10 +453,10 @@
                  printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
     </label>
 
-    <div class="input-group-append">
-        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate"
+    <div class="input-group">
+        <fc:datePicker class="from-control" targetField="plannedStartDate.date" name="plannedStartDate"
                        data-validation-engine="validate[required,future[${formattedStartDate}]]"
-                       printable="${printView}"/>
+                       printable="${printView}" bs4="true" theme="btn-dark"/>
     </div>
 </div>
 
@@ -459,10 +466,10 @@
                  printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
     </label>
 
-    <div class="input-group-append">
-        <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate"
+    <div class="input-group">
+        <fc:datePicker class="from-control" targetField="plannedEndDate.date" name="plannedEndDate"
                        data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]"
-                       printable="${printView}"/>
+                       printable="${printView}" bs4="true" theme="btn-dark"/>
     </div>
 </div>
 </script>
@@ -528,7 +535,7 @@
                     <span data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}, disable: true, text: config().transients.inputSettingsSummary"></span>
                 </td>
                 <td>
-                    <select class="form-control full-width" data-bind="disable: config().type() == 'DEFAULT_SPECIES', options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
+                    <select class="form-control form-control-sm" data-bind="disable: config().type() == 'DEFAULT_SPECIES', options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
                     </select>
                 </td>
                 <td>
@@ -558,10 +565,10 @@
 <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
 </script>
 <script type="text/html" id="workScheduleActionButtonsTmpl">
-<div class="row">
+<div class="row no-gutters">
     <div class="col-sm-12">
-        <div class="pull-right">
-            <a class="btn btn-info" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="fas fa-question-circle"></i>
+        <div class="float-right">
+            <a class="btn btn-info my-2" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="fas fa-question-circle"></i>
                 <g:message code="project.works.workschedule.button.help"/></a>
         </div>
     </div>

@@ -11,9 +11,6 @@
     <meta name="breadcrumb" content="${project?.name}"/>
     <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
     <meta name="bannerClass" content="project-banner"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
-
     <asset:script type="text/javascript">
     var fcConfig = {
         serverUrl: "${grailsApplication.config.grails.serverURL}",
@@ -270,7 +267,7 @@
                         ],
                         "order":[3, "desc"],
                         "language": {
-                            "search":'<div class="input-prepend"><span class="add-on"><i class="fa fa-search"></i></span>_INPUT_</div>',
+                            "search": '<div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div>_INPUT_</div>',
                             "searchPlaceholder":"Search sites..."
 
                         },
@@ -423,6 +420,5 @@
     }
 
 </asset:script>
-<asset:deferredScripts/>
 </body>
 </html>

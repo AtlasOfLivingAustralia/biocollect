@@ -23,28 +23,31 @@
                 <tbody data-bind="foreach : issues">
                 <tr>
                     <td class="type">
-                        <input data-validation-engine="validate[required]" data-bind="value:type">
+                        <input class="form-control" data-validation-engine="validate[required]" data-bind="value:type">
                     </td>
-                    <td class="date input-group-append mt-5" style="border: none !important;">
-                        <fc:datePicker targetField="date.date" name="date" data-validation-engine="validate[required]"/>
+                    <td class="date mt-5" style="border: none !important;">
+                        <div class="input-group">
+                            <fc:datePicker class="form-control" targetField="date.date" name="date" data-validation-engine="validate[required]"
+                                bs4="true" theme="btn-dark"/>
+                        </div>
                     </td>
 
                     <td class="status">
-                        <select data-validation-engine="validate[required]" data-bind="value:status, options: status.options"></select>
+                        <select class="form-control" data-validation-engine="validate[required]" data-bind="value:status, options: status.options"></select>
                     </td>
                     <td class="priority">
-                        <select data-validation-engine="validate[required]" data-bind="value:priority, options: priority.options, optionsCaption:'Please select'"></select>
+                        <select class="form-control" data-validation-engine="validate[required]" data-bind="value:priority, options: priority.options, optionsCaption:'Please select'"></select>
                     </td>
                     <td class="description">
-                        <textarea data-validation-engine="validate[required]" class="input-xlarge"
+                        <textarea class="form-control" data-validation-engine="validate[required]" class="input-xlarge"
                                   data-bind="value: description" rows="5"></textarea>
                     </td>
                     <td class="actionPlan">
-                        <textarea data-validation-engine="validate[required]" class="input-xlarge"
+                        <textarea class="form-control" data-validation-engine="validate[required]" class="input-xlarge"
                                   data-bind="value: actionPlan" rows="5"></textarea>
                     </td>
                     <td class="impact">
-                        <select data-validation-engine="validate[required]"
+                        <select class="form-control" data-validation-engine="validate[required]"
                                 data-bind="options: impact.options, value: impact,  optionsCaption: 'Please select'"></select>
                     </td>
 
@@ -55,7 +58,7 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="0" style="text-align:left;">
+                    <td colspan="8" style="text-align:left;">
                         <button type="button" class="btn btn-dark btn-sm" data-bind="click: addIssue">
                             <i class="fas fa-plus"></i> Add an issue</button></td>
                 </tr>

@@ -71,7 +71,7 @@
                                 <g:set var="fqBits" value="${f?.tokenize(':')}"/>
                                 <g:set var="newUrl"><fc:formatParams params="${params}" requiredParams="${reqParams}" excludeParam="${f}"/></g:set>
                                 <li><g:message code="label.${fqBits[0]}" default="${fqBits[0]}"/>: <g:message code="label.${fqBits[1]}" default="${fqBits[1]}"/>
-                                    <a href="${newUrl?:"?"}" class="btn btn-inverse btn-mini tooltips" title="remove filter">
+                                    <a href="${newUrl?:"?"}" class="btn btn-inverse btn-sm tooltips" title="remove filter">
                                         <i class="icon-white icon-remove"></i></a>
                                 </li>
                             </g:each>

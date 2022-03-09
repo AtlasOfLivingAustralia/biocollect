@@ -193,7 +193,11 @@
  *= require jquery.validationEngine/3.1.0/validationEngine.jquery.css
 */
 /* END needed by project index, edit pages */
-
+/*search sites*/
+div.dataTables_wrapper div.dataTables_filter input{
+    margin-left: 0;
+}
+/*end search sites*/
 /** Permissions table */
 .dataTables_length > label{
     width: 100%;

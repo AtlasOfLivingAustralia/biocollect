@@ -6,12 +6,14 @@
 
         <div class="row" id="${containerId}">
             <div class="col-12 col-md-12 col-lg-4 col-xl-4">
-                <div class="form-group d-flex search-resources">
+                <div class="input-group col-12 search-resources">
                     <label for="searchResources" class="sr-only">Search Resources</label>
                     <input type="text" id="searchResources" class="form-control" name="Search Resources" data-bind="textInput: documentFilter" placeholder="Search Resources...">
-                    <label for="searchType" class="sr-only">Sort by</label>
-                    <select id="searchType" class="form-control custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Sort Order">
-                    </select>
+                    <label for="searchType" class="sr-only">Filter by</label>
+                    <div class="input-group-append">
+                        <select id="searchType" class="custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Filter">
+                        </select>
+                    </div>
                 </div>
                 <div class="search-results">
                     <!-- ko if: filteredDocuments().length == 0 -->

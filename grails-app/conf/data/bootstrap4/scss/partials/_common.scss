@@ -175,8 +175,6 @@ ul.menu {
 
   th, td {
     vertical-align: middle;
-    border-top: none !important;
-    border-bottom: none !important;
   }
 
   thead {
@@ -185,14 +183,6 @@ ul.menu {
       position: relative;
       padding-right: 35px;
       font-size: 16px;
-
-      &:first-child {
-        border-left: none;
-      }
-
-      &:last-child {
-        border-right: none;
-      }
     }
   }
 
@@ -202,14 +192,6 @@ ul.menu {
 
       p {
         margin-bottom: 8px;
-      }
-
-      &:first-child {
-        border-left: none;
-      }
-
-      &:last-child {
-        border-right: none;
       }
     }
   }
@@ -460,7 +442,8 @@ ul.menu {
       display: block;
       width: 20px;
       height: 20px;
-      //border:           1px solid $gray-400;
+      border: 1px solid $gray-400;
+      border-radius: $border-radius;
       background-color: $c-page-background;
       position: absolute;
       left: 0;

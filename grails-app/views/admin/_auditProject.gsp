@@ -31,7 +31,7 @@
     </div>
 </div>
 
-<button id="loadAuditRecords" class="btn btn-primary-dark">Load ${project.name} audit records</button>
+<button id="loadAuditRecords" class="btn btn-primary-dark"><i class="fas fa-chevron-circle-down"></i> Load ${project.name} audit records</button>
 
 <asset:script type="text/javascript">
     $(document).ready(function() {

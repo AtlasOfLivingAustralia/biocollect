@@ -50,19 +50,19 @@
                     <div id="map" style="width: 100%; height: 100%;"></div>
                 </div>
                 <div class="facetBtns">
-                    <button class="btn btn-info btn-mini facetBtn" data-facet="stateFacet" data-value="">All States (${geoPoints.hits.total})</button>
+                    <button class="btn btn-info btn-sm facetBtn" data-facet="stateFacet" data-value="">All States (${geoPoints.hits.total})</button>
                     <g:each var="t" in="${geoPoints.facets?.stateFacet?.terms}">
                         <g:if test="${t.term}">
-                            <button class="btn btn-mini facetBtn" data-facet="stateFacet"
+                            <button class="btn btn-sm facetBtn" data-facet="stateFacet"
                                     data-value="${t.term}">${t.term} (${t.count})</button>
                         </g:if>
                     </g:each>
                 </div>
                 <div class="facetBtns">
-                    <button class="btn btn-info btn-mini facetBtn" data-facet="nrmFacet" data-value="">All NRMs (${geoPoints.hits.total})</button>
+                    <button class="btn btn-info btn-sm facetBtn" data-facet="nrmFacet" data-value="">All NRMs (${geoPoints.hits.total})</button>
                     <g:each var="t" in="${geoPoints.facets?.nrmFacet?.terms}">
                         <g:if test="${t.term}">
-                            <button class="btn btn-mini facetBtn" data-facet="nrmFacet"
+                            <button class="btn btn-sm facetBtn" data-facet="nrmFacet"
                                     data-value="${t.term}">${t.term} (${t.count})</button>
                         </g:if>
                     </g:each>
@@ -110,10 +110,8 @@
                                 </div>
                                 <div class="sitesLine">
                                     <i class="icon-map-marker"></i>
-                                    Sites: <a href="#" data-id="$id" class="zoom-in btnX btn-miniX"><i
-                                        class="icon-plus-sign"></i> zoom in</a>
-                                    <a href="#" data-id="$id" class="zoom-out btnX btn-miniX"><i
-                                            class="icon-minus-sign"></i> zoom out</a>
+                                    Sites: <a href="#" data-id="$id" class="zoom-in btn btn-sm"><i class="far fa-search-plus"></i> zoom in</a>
+                                    <a href="#" data-id="$id" class="zoom-out btn btn-sm"><i class="far fa-search-minus"></i> zoom out</a>
                                 </div>
                                 <div class="orgLine">
                                     <i class="icon-user"></i>

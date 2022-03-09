@@ -15,5 +15,13 @@
  *= require jquery-gantt/css/style.css
  *= require gantt.css
  *= require izitoast/izitoast.min.css
-
+ *= require_self
  */
+
+.fn-gantt .fn-content .nav-link {
+    padding: 0;
+}
+
+.fn-gantt *, .fn-gantt *::before, .fn-gantt *::after {
+    box-sizing: content-box;
+}

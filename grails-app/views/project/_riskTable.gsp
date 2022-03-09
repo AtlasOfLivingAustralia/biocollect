@@ -26,26 +26,26 @@
 			      <tbody data-bind="foreach : risks.rows" >
 			              <tr>
 			                  <td width="18%">
-			                  	<select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.threatOptions, value: threat, optionsCaption: 'Please select'" ></select>
+			                  	<select class="form-control" data-validation-engine="validate[required]" data-bind="options: $root.threatOptions, value: threat, optionsCaption: 'Please select'" ></select>
 			                  </td>
 			                  <td width="20%">
-			                  	<textarea style="width:97%;" data-validation-engine="validate[required]" class="input-xlarge" data-bind="value: description"  rows="5"></textarea>
+			                  	<textarea class="form-control" data-validation-engine="validate[required]" class="input-xlarge" data-bind="value: description"  rows="5"></textarea>
 			                  </td>
 			                  <td width="10%">
-			                  	<select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.likelihoodOptions, value: likelihood, optionsCaption: 'Please select'" ></select>
+			                  	<select class="form-control" data-validation-engine="validate[required]" data-bind="options: $root.likelihoodOptions, value: likelihood, optionsCaption: 'Please select'" ></select>
 			                  </td>
 			                  <td width="10%">
-								<select style="width:98%;"  data-validation-engine="validate[required]" data-bind="options: $root.consequenceOptions, value: consequence,  optionsCaption: 'Please select'"></select>
+								<select class="form-control" data-validation-engine="validate[required]" data-bind="options: $root.consequenceOptions, value: consequence,  optionsCaption: 'Please select'"></select>
 			                  </td>
 			                  <td width="8%">
-								<b> <span style="width:98%;" data-bind="text:riskRating"></span></b>  
+								<b> <span data-bind="text:riskRating"></span></b>
 			                  </td>
 			                  <td width="20%">
-			                   	<textarea style="width:98%;" data-validation-engine="validate[required]"  data-bind="value : currentControl"  rows="5"></textarea>
+			                   	<textarea class="form-control" data-validation-engine="validate[required]"  data-bind="value : currentControl"  rows="5"></textarea>
 			                   </td>
 			                  <td width="10%">
 			                   <!-- Residual risk -->
-			                   <select style="width:98%;" data-validation-engine="validate[required]" data-bind="options: $root.ratingOptions, value: residualRisk, optionsCaption: 'Please select'" ></select>
+			                   <select class="form-control" data-validation-engine="validate[required]" data-bind="options: $root.ratingOptions, value: residualRisk, optionsCaption: 'Please select'" ></select>
 			                   </td>
 			                 <td width="4%">
 			                 	<span data-bind="if: $index()"><i class="fas fa-times" data-bind="click: $parent.removeRisk"></i></span>
@@ -54,7 +54,7 @@
 			       </tbody>
 							<tfoot>
              				<tr>
-             					<td colspan="0" style="text-align:left;">
+             					<td colspan="8" style="text-align:left;">
                      			<button type="button" class="btn btn-dark btn-sm" data-bind="click: addRisks">
                      			<i class="fas fa-plus"></i> Add a row</button></td>
                      		</tr>

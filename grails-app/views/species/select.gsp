@@ -46,7 +46,7 @@
                     </g:each>
                     </select>
                     </td>
-                    <td width="10%"><a class="btn btn-mini" data-bind="click:$root.removeSpeciesList" href="#" title="edit"><i class="icon-edit"></i> Remove</a></td>
+                    <td width="10%"><a class="btn btn-sm" data-bind="click:$root.removeSpeciesList" href="#" title="edit"><i class="icon-edit"></i> Remove</a></td>
                 </tr>
                 </tbody>
             </table>
