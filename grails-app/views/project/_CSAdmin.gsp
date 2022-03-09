@@ -1,4 +1,4 @@
-<div class="tab-pane" id="admin">
+<div>
     <!-- ADMIN -->
     <div class="row mt-4">
         <div class="col-12 col-lg-2">

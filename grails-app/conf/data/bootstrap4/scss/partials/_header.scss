@@ -3,11 +3,15 @@
     position: absolute;
     width: 100%;
     z-index: 1000;
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
   }
 }
 
 .navbar {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: #fff;
   padding: 20px;
   &.navbar-alt {
     padding: 15px 20px;
@@ -237,6 +241,12 @@
         }
       }
     }
+  }
+
+  .hub-logo {
+    position: static;
+    max-width: 250px;
+    max-height: 250px;
   }
 }
 

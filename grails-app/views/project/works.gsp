@@ -4,8 +4,6 @@
 <head>
     <meta name="layout" content="${hubConfig.skin}"/>
     <title><g:message code="project.works.heading"/> | <g:message code="project.works.heading"/></title>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
         baseUrl: "${grailsApplication.config.grails.serverURL}",

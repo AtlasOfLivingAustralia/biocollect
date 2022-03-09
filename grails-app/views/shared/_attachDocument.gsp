@@ -152,9 +152,9 @@
             </div>
             <div class="modal-footer ">
                 <button type="button" class="btn btn-primary-dark"
-                        data-bind="enable:saveEnabled, click:function () { save(); }, visible:!complete(), attr:{'title':saveHelp}">Save</button>
-                <button class="btn btn-dark" data-bind="click:cancel, visible:!complete()">Cancel</button>
-                <button class="btn btn-dark" data-bind="click:close, visible:complete()">Close</button>
+                        data-bind="enable:saveEnabled, click:function () { save(); }, visible:!complete(), attr:{'title':saveHelp}"><i class="fas fa-hdd"></i> Save</button>
+                <button class="btn btn-dark" data-bind="click:cancel, visible:!complete()"><i class="far fa-times-circle"></i> Cancel</button>
+                <button class="btn btn-dark" data-bind="click:close, visible:complete()"><i class="fas fa-times"></i> Close</button>
             </div>
 
         </div>

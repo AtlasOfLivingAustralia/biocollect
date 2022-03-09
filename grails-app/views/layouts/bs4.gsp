@@ -31,17 +31,17 @@
     </g:if>
     <g:elseif test="${hubConfig.templateConfiguration.header.type == 'custom'}">
         <nav class="navbar navbar-expand-lg navbar-dark navbar-alt">
-            <div class="container-fluid flex-column flex-md-row align-items-center">
-                <div>
+            <div class="container-fluid d-flex flex-lg-column flex-nowrap align-items-center">
+                <div class="align-self-lg-start">
                     <g:if test="${hubConfig.logoUrl}">
                     <!-- Your site title as branding in the menu -->
-                    <a href="${g.createLink(uri: "/")}" class="custom-logo-link navbar-brand" rel="home" itemprop="url">
-                        <img src="${hubConfig.logoUrl}" />
+                    <a href="${g.createLink(uri: "/")}" class="custom-logo-link" rel="home" itemprop="url">
+                        <img class="hub-logo col-6 col-md-4 col-lg-2" src="${hubConfig.logoUrl}" />
                     </a> <!-- end custom logo -->
                     </g:if>
                 </div>
 
-                <div class="outer-nav-wrapper">
+                <div class="outer-nav-wrapper align-self-lg-end">
 
                     <div class="main-nav-wrapper">
                         <a href="javascript:" class="navbar-toggler order-3 order-lg-2" type="button"
@@ -53,7 +53,7 @@
 
                         <!-- The Main Menu goes here -->
                         <div id="navbarNavDropdown" class="collapse navbar-collapse offcanvas-collapse">
-                            <ul class="navbar-nav ml-auto">
+                            <ul class="navbar-nav ml-auto flex-lg-wrap">
                                 <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                                     <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
                                         <config:getLinkFromConfig config="${link}"
@@ -107,7 +107,7 @@
                 <g:set var="tabList" value="${pageProperty(name: 'page.tab')}"/>
                 <g:if test="${tabList}">
                     <div class="nav-row">
-                        <div class="container">
+                        <div class="container-fluid">
                             ${raw(tabList)}
                         </div>
                     </div>
