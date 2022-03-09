@@ -11,17 +11,20 @@
     <tbody>
     <!-- ko foreach:details.outcomeProgress -->
     <tr>
-        <td class="date input-group-append">
-            <fc:datePicker class="input-small" targetField="date.date" name="date" data-validation-engine="validate[required]" printable="${printView}"/>
+        <td class="date align-top">
+            <div class="input-group">
+            <fc:datePicker class="form-control" targetField="date.date" name="date" data-validation-engine="validate[required]" printable="${printView}"
+            bs4="true" theme="btn-dark"/>
+            </div>
         </td>
-        <td class="type">
-            <select data-bind="options:type.options, value:type"></select>
+        <td class="type align-top">
+            <select class="form-control" data-bind="options:type.options, value:type"></select>
         </td>
-        <td class="outcome-progress">
-            <textarea data-bind="value:progress" rows="3"></textarea>
+        <td class="outcome-progress align-top">
+            <textarea class="form-control" data-bind="value:progress" rows="3"></textarea>
         </td>
-        <td class="controls">
-            <span><i class="icon-remove" data-bind="click: $parent.removeOutcomeProgress"></i></span>
+        <td class="controls align-top">
+            <span class="btn btn-sm btn-danger"><i class="far fa-trash-alt" data-bind="click: $parent.removeOutcomeProgress"></i></span>
         </td>
     </tr>
     <!-- /ko -->
@@ -40,7 +43,7 @@
     </tfoot>
 </table>
 
-<div class="row space-after">
+<div class="row space-after no-gutters">
     <div class="col-sm-12">
         <div class="form-actions">
 

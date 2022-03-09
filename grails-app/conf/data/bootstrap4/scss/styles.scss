@@ -81,9 +81,14 @@ $social-text-color: white !default;
 
 $menu-text-color: white !default;
 $menu-background-color: black !default;
+@include media-breakpoint-up(lg) {
+  #page #wrapper-navbar .navbar {
+    background-color: $menu-background-color;
+    color: $menu-text-color;
+  }
+}
 #page #wrapper-navbar .navbar {
   background-color: rgba($menu-background-color, 0.6);
-  color: $menu-text-color;
 }
 
 .homePageNav .homepage-button {

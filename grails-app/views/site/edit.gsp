@@ -68,8 +68,8 @@
             <g:render template="siteDetails" model="${[showLine: true]}"/>
             <div class="row mt-3">
                 <div class="form-actions col-12">
-                    <button type="button" id="save" class="btn btn-primary-dark">Save changes</button>
-                    <button type="button" id="cancel" class="btn btn-dark">Cancel</button>
+                    <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
+                    <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
                 </div>
             </div>
         </bs:form>

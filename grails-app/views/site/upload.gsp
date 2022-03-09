@@ -53,8 +53,8 @@
             <div class="mb-5"></div>
             <input id="shapefile" type="file" accept="application/zip" name="shapefile"/>
             <button class="btn btn-primary-dark" id="uploadShapeFile" type="button"
-                    onclick="$(this).parent().submit();">Upload Shapefile</button>
-            <button class="btn btn-dark" id="cancel" type="button">Cancel</button>
+                    onclick="$(this).parent().submit();"><i class="fas fa-file-upload"></i> Upload Shapefile</button>
+            <button class="btn btn-dark" id="cancel" type="button"><i class="far fa-times-circle"></i> Cancel</button>
         </g:uploadForm>
     </div>
     </g:if>

@@ -171,7 +171,7 @@
             <g:render template="/comment/comment"></g:render>
         </g:if>
         <div class="form-actions">
-            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> return</button>
+            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-arrow-alt-circle-left"></i> return</button>
         </div>
     </div>
     </div>

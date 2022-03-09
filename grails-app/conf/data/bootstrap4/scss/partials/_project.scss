@@ -115,14 +115,7 @@
 }
 
 #tabs {
-  padding-left: 310px;
-}
-
-@include media-breakpoint-down(md){
-  #tabs {
-    padding-left: 0;
-    justify-content: center;
-  }
+  justify-content: center;
 }
 
 @include media-breakpoint-down(sm){

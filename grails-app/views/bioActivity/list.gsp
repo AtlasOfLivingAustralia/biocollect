@@ -68,20 +68,20 @@
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
+<content tag="bannertitle">
+    ${title}
+</content>
+<g:if test="${hubConfig.quickLinks}">
 <div class="container-fluid">
     <div class="row">
-        %{--page title--}%
-        <div class="col-12 col-md-4">
-            <h2>${title}</h2>
-        </div>
         %{-- quick links --}%
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-8 col-md-offset-4">
             <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
         </div>
         %{--quick links END--}%
     </div>
 </div>
-
+</g:if>
 <div class="main-content">
     <g:render template="/bioActivity/activities"/>
 </div>
