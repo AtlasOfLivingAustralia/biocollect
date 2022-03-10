@@ -233,7 +233,7 @@
                     <p><g:message code="project.details.associatedOrgs.extra"/></p>
 
                     <div id="associatedOrgList">
-                        <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
+                        <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
                         <!-- ko foreach: associatedOrgs -->
                         <div class="row">
                             <div class="col-4" data-bind="text: name"></div>

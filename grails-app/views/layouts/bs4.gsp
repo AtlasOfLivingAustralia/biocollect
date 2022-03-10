@@ -31,7 +31,7 @@
     </g:if>
     <g:elseif test="${hubConfig.templateConfiguration.header.type == 'custom'}">
         <nav class="navbar navbar-expand-lg navbar-dark navbar-alt">
-            <div class="container-fluid d-flex flex-lg-column flex-nowrap align-items-center">
+            <div class="container-fluid d-flex flex-nowrap align-items-center">
                 <div class="align-self-lg-start">
                     <g:if test="${hubConfig.logoUrl}">
                     <!-- Your site title as branding in the menu -->

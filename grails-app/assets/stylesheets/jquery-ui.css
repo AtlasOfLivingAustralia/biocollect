@@ -1,0 +1,13 @@
+/**
+ *= require jquery-ui/themes/smoothness/jquery-ui.css
+ *= require jquery-ui/1.13.0/jquery-ui.structure.css
+ *= require jquery-ui/1.13.0/jquery-ui.theme.css
+ */
+
+.ui-menu-item-wrapper {
+    display: block;
+}
+
+.ui-menu .ui-menu-item {
+    padding: 3px 0;
+}

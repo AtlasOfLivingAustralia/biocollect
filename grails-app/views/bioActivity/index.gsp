@@ -49,7 +49,7 @@
         searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         <g:applyCodec encodeAs="none">
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
