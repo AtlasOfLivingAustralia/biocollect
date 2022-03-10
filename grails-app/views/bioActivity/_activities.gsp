@@ -1,5 +1,5 @@
 <%@ page import="grails.converters.JSON" %>
-<g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
+<g:set var="noImageUrl" value="${asset.assetPath([src: "biocollect-logo-dark.png"])}"/>
 <!-- ko stopBinding: true -->
 <div id="projectData" class="my-4 my-md-5">
     <div id="survey-all-activities-and-records-content">
