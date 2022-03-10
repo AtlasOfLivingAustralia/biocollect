@@ -33,7 +33,7 @@ class SpeciesController {
             webService.proxyGetRequest(response, url)
         }
         else {
-            String noImageUrl = asset.assetPath(src:'no-image-2.png', absolute:true)
+            String noImageUrl = asset.assetPath(src:'biocollect-logo-dark.png', absolute:true)
             response.sendRedirect(noImageUrl)
         }
 

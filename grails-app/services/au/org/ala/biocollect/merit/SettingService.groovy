@@ -69,7 +69,16 @@ class SettingService {
 
         // copy bootstrap4 directory
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
-        generateStyleSheetForHubs()
+        switch (Environment.current) {
+            case Environment.DEVELOPMENT:
+                // do nothing
+                break
+            case Environment.PRODUCTION:
+            case Environment.TEST:
+            default:
+                generateStyleSheetForHubs()
+                break
+        }
     }
 
     /**

@@ -56,7 +56,7 @@
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src: 'merit_project_logo.jpg')}",
         flimit: ${grailsApplication.config.facets.flimit},
-        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false},

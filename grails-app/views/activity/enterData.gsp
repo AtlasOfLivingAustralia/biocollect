@@ -36,7 +36,7 @@
         surveyName: "${metaModel.name}",
         speciesSearchUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesImageUrl:"${createLink(controller: 'species', action: 'speciesImage')}",
-        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",

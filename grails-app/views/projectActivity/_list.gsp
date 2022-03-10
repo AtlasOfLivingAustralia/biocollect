@@ -43,7 +43,7 @@
 
     %{--    </div>--}%
     <!-- /ko -->
-    <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
+    <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
 
     <!-- ko foreach: projectActivities -->
     <!-- ko if: published() -->

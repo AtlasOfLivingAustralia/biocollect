@@ -14,7 +14,7 @@
             createOrganisationUrl: "${createLink(controller: 'organisation', action: 'create')}",
             viewOrganisationUrl: "${createLink(controller: 'organisation', action: 'index')}",
             organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
-            noLogoImageUrl: "${asset.assetPath(src: 'no-image-2.png')}"
+            noLogoImageUrl: "${asset.assetPath(src: 'biocollect-logo-dark.png')}"
             };
     </asset:script>
     <asset:javascript src="common-bs4.js"/>

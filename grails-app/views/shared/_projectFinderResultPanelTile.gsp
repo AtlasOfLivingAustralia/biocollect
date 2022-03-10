@@ -1,4 +1,4 @@
-<g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
+<g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
 <div id="projects" class="row">
     <!-- ko foreach: pageProjects -->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 project-item mb-1">
