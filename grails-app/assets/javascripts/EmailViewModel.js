@@ -132,7 +132,7 @@ function EmailViewModel(options) {
         self.transients.recipients([]);
     };
 
-    $(notificationId).on('shown', function(){
+    $(notificationId).on('shown.bs.tab', function(){
         if(!initMembers){
             self.getProjectMembers();
             initMembers = true;
