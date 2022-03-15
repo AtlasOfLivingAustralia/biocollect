@@ -681,16 +681,16 @@ function Documents() {
                         icon = "fab fa-blackberry";
                         break;
                     case "facebook":
-                        icon = "fab fa-facebook-f"
+                        icon = "fab fa-facebook-square"
                         break;
                     case "flickr":
                         icon = "fab fa-flickr"
                         break;
                     case "googlePlus":
-                        icon = "fab fa-google-plus-g"
+                        icon = "fab fa-google-plus-square"
                         break;
                     case "instagram":
-                        icon = "fab fa-instagram"
+                        icon = "fab fa-instagram-square"
                         break;
                     case "itunes":
                     case "iTunes":
@@ -700,25 +700,25 @@ function Documents() {
                         icon = "fab fa-linkedin-in"
                         break;
                     case "pinterest":
-                        icon = "fab fa-pinterest-p"
+                        icon = "fab fa-pinterest-square"
                         break;
                     case "rssFeed":
-                        icon = "fas fa-rss"
+                        icon = "fas fa-rss-square"
                         break;
                     case "tumblr":
-                        icon = "fab fa-tumblr"
+                        icon = "fab fa-tumblr-square"
                         break;
                     case "twitter":
-                        icon = "fab fa-twitter"
+                        icon = "fab fa-twitter-square"
                         break;
                     case "vimeo":
-                        icon = "fab fa-vimeo-v"
+                        icon = "fab fa-vimeo-square"
                         break;
                     case "windowsPhone":
                         icon = "fab fa-windows"
                         break;
                     case "youtube":
-                        icon = "fab fa-youtube"
+                        icon = "fab fa-youtube-square"
                         break;
                 }
 

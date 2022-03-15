@@ -14,7 +14,7 @@
                     <h3>${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</h3>
                     <p data-bind="text:aim"></p>
                     <!-- /ko -->
-                    <!-- ko if: description.markdownToHtml() -->
+                    <!-- ko if: description -->
                     <h3>${hubConfig.getTextForDescription(grailsApplication.config.content.defaultOverriddenLabels)}</h3>
                     <p data-bind="html:description.markdownToHtml()"></p>
                     <!-- /ko -->
@@ -38,10 +38,15 @@
             </div>
             <div class="collapse" id="cs-about-section2">
                 <div class="card-body">
-                    <p class="mb-3" data-bind="visible:getInvolved, html:getInvolved.markdownToHtml()">
-                    </p>
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-8">
+                            <!-- ko if: getInvolved -->
+                            <h4 class="text-small-heading" data-bind="visible:projectType() == 'survey'"><g:message code="project.display.involved" /></h4>
+                            <h4 class="text-small-heading" data-bind="visible:projectType() != 'survey'">
+                                ${hubConfig.getTextForProjectInformation(grailsApplication.config.content.defaultOverriddenLabels)}
+                            </h4>
+                            <p data-bind="html:getInvolved.markdownToHtml()"></p>
+                            <!-- /ko -->
                             <!-- ko if:externalId -->
                                 <h4 class="text-small-heading"><g:message code="project.display.externalId" /></h4>
                                 <p data-bind="text:externalId"></p>
@@ -99,29 +104,17 @@
                                 <h4 class="text-small-heading"><g:message code="project.display.task" /></h4>
                                 <p data-bind="text:task"></p>
                             <!-- /ko -->
+                                <p class="mt-5" style="line-height:2.2em">
+                                    <g:render template="tags" />
+                                </p>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <!--  ko if: bushfireCategories().length -->
-                                <h4 class="text-small-heading"><g:message code="project.display.bushfireCategories"/></h4>
-                                <p data-bind="text:bushfireCategories().join(', ')"></p>
-                            <!-- /ko -->
+                        <div class="col-12 col-md-4">
                             <!-- ko if: industries().length -->
                                 <h4 class="text-small-heading"><g:message code="project.display.industries"/></h4>
                                 <p data-bind="text:industries().join(', ')"></p>
                             <!-- /ko -->
-                            <g:if test="${hubConfig?.content?.hideProjectAboutParticipateInProject != true}">
-                                <!-- ko if: countries().length -->
-                                    <h4 class="text-small-heading">
-                                        <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-                                            <g:message code="project.display.countries.ecoscience" />
-                                        </g:if>
-                                        <g:else>
-                                            <g:message code="project.display.countries.citizenscience" />
-                                        </g:else>
-                                    </h4>
-                                    <p data-bind="text:countries().join(', ')"></p>
-                                <!-- /ko -->
-                            </g:if>
+                            <g:render template="/shared/listDocumentLinks"
+                                      model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
                         %{-- TODO: swap fields. check issue - biocollect#667 --}%
                             <!-- ko if:managerEmail -->
                                 <h4 class="text-small-heading"><g:message code="project.display.contact.name" /></h4>
@@ -145,11 +138,6 @@
                                 Project sourced from SciStarter
                             </p>
                         </div>
-                    </div>
-                    <g:render template="/shared/listDocumentLinks"
-                              model="${[transients:transients,imageUrl:asset.assetPath(src:'filetypes')]}"/>
-                    <div style="line-height:2.2em">
-                        <g:render template="tags" />
                     </div>
                     <g:if test="${!mobile}">
                         <div class="row mt-3">
@@ -185,8 +173,8 @@
         <div class="card">
             <div class="card-header">
                 <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section3" aria-expanded="false" aria-controls="cs-about-section3">
-        <h2><g:message code="project.display.associatedOrgs"/></h2>
-    </button>
+                    <h2 class="p-0 mb-0"><g:message code="project.display.associatedOrgs"/></h2>
+                </button>
             </div>
             <div class="collapse" id="cs-about-section3">
                 <div class="card-body" data-bind="template:{name:'associated-orgs'}"></div>
@@ -202,48 +190,83 @@
             <div class="collapse" id="cs-about-section5">
                 <div class="card-body">
                     <div class="row">
-                        <!-- ko if:isBushfire() -->
                         <div class="col-12 col-md-6">
-                            <div class="alert alert-success">
-                                <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
-                            </div>
-                        </div>
-                        <!-- /ko -->
-                        <g:if test="${hubConfig?.content?.hideProjectAboutOriginallyRegistered != true}">
-                            <div class="col-12 col-md-6">
-                                <!-- ko if: origin -->
-                                <h4><g:message code="project.display.origin" /></h4>
-                                <p class="text-small-heading"> <!-- ko text:origin --> <!-- /ko --></p>
+                            <div class="row">
+                                <g:if test="${hubConfig?.content?.hideProjectAboutOriginallyRegistered != true}">
+                                    <div class="col-12">
+                                        <!-- ko if: origin -->
+                                        <h4><g:message code="project.display.origin" /></h4>
+                                        <p class="text-small-heading"> <!-- ko text:origin --> <!-- /ko --></p>
+                                        <!-- /ko -->
+                                    </div>
+                                </g:if>
+                                <g:if test="${hubConfig?.content?.hideProjectAboutParticipateInProject != true}">
+                                    <div class="col-12">
+                                        <!-- ko if: countries().length -->
+                                        <h4 class="text-small-heading">
+                                            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+                                                <g:message code="project.display.countries.ecoscience" />
+                                            </g:if>
+                                            <g:else>
+                                                <g:message code="project.display.countries.citizenscience" />
+                                            </g:else>
+                                        </h4>
+                                        <p data-bind="text:countries().join(', ')"></p>
+                                        <!-- /ko -->
+                                    </div>
+                                </g:if>
+                                <!-- ko if:associatedProgram -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
+                                    <p data-bind="text:associatedProgram"></p>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:associatedSubProgram -->
+                                <div class="col-12">
+                                    <div class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</div>
+                                    <span data-bind="text:associatedSubProgram"></span>
+                                </div>
                                 <!-- /ko -->
                             </div>
-                        </g:if>
-                        <div class="col-12 col-md-6">
-                            <!-- ko if:associatedProgram -->
-                            <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
-                            <p data-bind="text:associatedProgram"></p>
-                            <!-- /ko -->
-                            <!-- ko if:associatedSubProgram -->
-                            <div class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</div>
-                            <span data-bind="text:associatedSubProgram"></span>
-                            <!-- /ko -->
                         </div>
-                        <g:if test="${hubConfig?.content?.hideProjectAboutUNRegions != true}">
-                            <div class="col-12 col-md-6">
-                                <!-- ko if: uNRegions().length -->
-                                <h4 class="text-small-heading"><g:message code="project.display.unregions" /></h4>
-                                <p data-bind="text:uNRegions().join(', ')"></p>
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <!-- ko if:isBushfire() -->
+                                <div class="col-12">
+                                    <div class="alert alert-success">
+                                        <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!--  ko if: bushfireCategories().length -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading"><g:message code="project.display.bushfireCategories"/></h4>
+                                    <p data-bind="text:bushfireCategories().join(', ')"></p>
+                                </div>
+                                <!-- /ko -->
+                                <g:if test="${hubConfig?.content?.hideProjectAboutUNRegions != true}">
+                                    <!-- ko if: uNRegions().length -->
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.display.unregions" /></h4>
+                                        <p data-bind="text:uNRegions().join(', ')"></p>
+                                    </div>
+                                    <!-- /ko -->
+                                </g:if>
+                                <!-- ko if: logoAttributionText() || mainImageAttributionText() -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading">Image credits</h4>
+                                    <p class="image-attribution-panel">
+                                        <span data-bind="visible: logoAttributionText()">Logo: <span data-bind="text: logoAttributionText()"></span>;&nbsp;</span>
+                                        <span data-bind="visible: mainImageAttributionText()">Feature image: <span data-bind="text: mainImageAttributionText()"></span></span>
+                                    </p>
+                                </div>
                                 <!-- /ko -->
                             </div>
-                        </g:if>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="image-attribution-panel accordion-body show" data-bind="visible: logoAttributionText() || mainImageAttributionText()">
-        <strong>Image credits</strong>: <span data-bind="visible: logoAttributionText()">Logo: <span data-bind="text: logoAttributionText()"></span>;&nbsp;</span>
-        <span data-bind="visible: mainImageAttributionText()">Feature image: <span data-bind="text: mainImageAttributionText()"></span></span>
     </div>
 </div>
 <asset:script type="text/javascript">
@@ -318,17 +341,16 @@
 <script type="text/html" id="associated-orgs">
 <div class="row" id="associatedOrgs" data-bind="visible: associatedOrgs().length > 0">
     <!-- ko foreach: associatedOrgs -->
-    <div class="col-6 col-md-4 col-xl-3 associated-org thumbnail">
+    <div class="col-6 col-md-4 col-xl-2 associated-org thumbnail">
         <div data-bind="visible: url">
             <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
 
                 <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
 
                 %{--Use 'if' instead of 'visible' to prevent creating child elements that potentially will source non https content--}%
-                <div data-bind="if: logo && logo.startsWith('https') "><img src="" data-bind="attr: {src: logo, title: name}"
-                                                                            alt="Organisation logo" class="small-logo"></div>
-
-                <div data-bind="visible: !logo || !logo.startsWith('https')" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
+                <div data-bind="if: logo"><img src="" data-bind="attr: {src: logo, title: name}"
+                                                                            alt="Organisation logo" class="small-logo"
+                                               onerror="imageError(this, '${noImageUrl}');"></div>
             </a>
         </div>
 

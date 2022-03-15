@@ -51,7 +51,7 @@
         <div class="col-12 col-md-4 col-lg-3">
             <div class="image">
                 <img alt="No image" class="image-logo" data-bind="attr:{alt:name, src: transients.logoUrl()}" src=""
-                     onload="findLogoScalingClass(this)"/>
+                     onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
 
                 <div class="status">
                     <div class="dayscount"
@@ -62,13 +62,11 @@
 
                     <div class="dayscount"
                          data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0">
-                        <i class="far fa-check-square"></i>
                         <g:message code="g.survey"/> <g:message code="g.ended"/>
                     </div>
 
                     <div class="dayscount"
                          data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() < 0">
-                        <i class="fas fa-infinity"></i>
                         <g:message code="g.survey"/> <g:message code="g.ongoing"/>
                     </div>
 
@@ -84,7 +82,7 @@
         <div class="col-12 col-md-8 col-lg-9">
             <div class="content">
                 <!-- ko if: $parent.userCanEdit($data) -->
-                <h4 class="btn btn-link pl-0" data-bind="text:name, click: addActivity"></h4>
+                <a href="#"><h4 class="pl-0" data-bind="text:name, click: addActivity"></h4></a>
                 <!-- /ko -->
                 <!-- ko if: !$parent.userCanEdit($data) -->
                 <h4 data-bind="text:name"></h4>
@@ -123,20 +121,20 @@
                     <button class="btn btn-sm btn-primary-dark"
                             data-bind="click: addActivity"
                             title="<g:message code='project.survey.addRecord'/>">
-                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-plus mr-1"></i>
                         <g:message code="project.survey.addRecord"/>
                     </button>
                     <!-- /ko -->
                     <button class="btn btn-sm btn-dark" data-bind="click: listActivityRecords"
                             title="<g:message code='project.survey.viewRecords'/>">
-                        <i class="far fa-eye"></i>
+                        <i class="far fa-eye mr-1"></i>
                         <g:message code="project.survey.viewRecords"/>
                     </button>
                     <g:if test="${hubConfig?.content?.hideProjectSurveyDownloadXLSX != true}">
                         <a class="btn btn-sm btn-dark"
                            data-bind="attr: { href: downloadFormTemplateUrl, target: pActivityFormName }"
                            title="<g:message code="project.survey.downloadTemplate.title"/>">
-                            <i class="fas fa-download"></i>
+                            <i class="fas fa-download mr-1"></i>
                             <g:message code="project.survey.downloadTemplate"/>
                         </a>
                     </g:if>
@@ -151,12 +149,12 @@
                     <button class="btn btn-sm btn-dark"
                             type="button" data-bind="attr: {'data-target': '#showMetadata' + $index()}"
                             data-toggle="collapse" aria-expanded="false">
-                        <i class="fas fa-chevron-down"></i> Show metadata
+                        <i class="fas fa-chevron-down mr-1"></i> Show metadata
                     </button>
                 </div>
                 <div class="collapse mt-3" data-bind="attr: {id: 'showMetadata' + $index()}">
-                    <div class="row mb-2">
-                        <div class="col-12 col-sm-6 col-md-3" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
+                    <div class="row mb-2 no-gutters">
+                        <div class="col-11 col-sm-5 col-md-2 mr-1 p-2 mt-1 mt-md-0" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
                             <span>
                                 <g:message code="project.survey.info.spatialAccuracy.text"/> -
                                 <!-- ko if: spatialAccuracy() == 'low' --> <g:message
@@ -168,7 +166,7 @@
                             </span>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-3" data-bind="css: speciesIdentification, visible: speciesIdentification">
+                        <div class="col-11 col-sm-5 col-md-2 mr-1 p-2 mt-1 mt-md-0" data-bind="css: speciesIdentification, visible: speciesIdentification">
                             <span>
                                 <g:message code="project.survey.info.speciesIdentification.text"/> -
                                 <!-- ko if: speciesIdentification() == 'low' --> <g:message
@@ -182,7 +180,7 @@
                             </span>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-3" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
+                        <div class="col-11 col-sm-5 col-md-2 mr-1 p-2 mt-1 mt-md-0" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
                             <span>
                                 <g:message code="project.survey.info.temporalAccuracy.text"/> -
                                 <!-- ko if: temporalAccuracy() == 'low' --> <g:message
@@ -194,7 +192,7 @@
                             </span>
                         </div>
 
-                        <div class="col-12 col-sm-6 col-md-3" data-bind="css: nonTaxonomicAccuracy, visible: nonTaxonomicAccuracy">
+                        <div class="col-11 col-sm-5 col-md-2 p-2 mt-1 mt-md-0" data-bind="css: nonTaxonomicAccuracy, visible: nonTaxonomicAccuracy">
                             <span>
                                 <g:message code="project.survey.info.nonTaxonomicAccuracy.text"/> -
                                 <!-- ko if: nonTaxonomicAccuracy() == 'low' --> <g:message
@@ -613,6 +611,9 @@
             </div>
         </div>
     </div>
+    <!-- ko if: $parent.projectActivities() && $parent.projectActivities().length -->
+    <hr/>
+    <!-- /ko -->
     <!-- /ko -->
     <!-- /ko -->
 
