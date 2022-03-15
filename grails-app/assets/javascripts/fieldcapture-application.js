@@ -536,7 +536,6 @@ function Documents() {
 
     self.isHtmlViewer = function(data) {
         self.transients.isHtmlViewer = true;
-        return true;
     };
 
     self.mapDocument = function (data) {
