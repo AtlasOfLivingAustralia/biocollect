@@ -174,7 +174,7 @@
         </g:if>
 
         <content tag="tab">
-            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
+            <ul class="nav nav-tabs" id="ul-main-project" data-tabs="tabs" role="tablist">
                 <fc:tabList tabs="${projectContent}"/>
             </ul>
         </content>

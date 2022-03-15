@@ -79,7 +79,7 @@
                     </div>
                     <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
                         <div class="btn-group">
-                            <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
+                            <div id="siteListResultTab" class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
                                 <a type="button" class="btn btn-outline-dark active" id="list-tab" data-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
                                         class="fas fa-th-large"></i></a>
                                 <a type="button" class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i
