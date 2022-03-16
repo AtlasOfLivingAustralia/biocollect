@@ -50,6 +50,7 @@
         excelDataUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', id:projectActivityId)}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         bioActivityView: "${createLink(controller: 'bioActivity', action: 'index')}/",
         activityId: "${id}",
         returnTo: "${returnTo}",
