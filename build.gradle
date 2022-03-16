@@ -75,6 +75,7 @@ dependencies {
     implementation "org.grails:grails-plugin-interceptors"
     implementation "org.grails.plugins:cache"
     implementation "org.grails.plugins:async"
+    implementation "org.grails:grails-async-gpars"
     implementation "org.grails.plugins:scaffolding"
     profile "org.grails.profiles:web"
     implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
