@@ -7,6 +7,7 @@
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
@@ -14,6 +15,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
+        </g:applyCodec>
     }
     </asset:script>
     <asset:javascript src="common.js"/>

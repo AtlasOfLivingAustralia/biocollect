@@ -13,6 +13,7 @@
     <meta name="bannerClass" content="project-banner"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
@@ -101,9 +102,7 @@
         canAddActivity: ${user?.isAdmin ? 'true' : 'false'},
         canAddSite: ${projectContent?.site?.canEditSites? 'true' : 'false'},
         worksScheduleIntroUrl: "${raw(createLink(controller: 'staticPage', action:'index', params: [page:"workScheduleHelp"]))}",
-        <g:applyCodec encodeAs="none">
-            outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
-        </g:applyCodec>
+        outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
         activityTypes: ${raw(((activityTypes?:[]) as JSON).toString())},
         themes: ${raw(((themes?:[]) as JSON).toString())},
         sites: ${raw(((project?.sites ?: []) as JSON).toString())},
@@ -117,12 +116,11 @@
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        <g:applyCodec encodeAs="none">
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        </g:applyCodec>
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
+        </g:applyCodec>
         },
         here = window.location.href;
 

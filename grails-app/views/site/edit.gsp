@@ -22,6 +22,7 @@
 
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -47,10 +48,9 @@
         sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
         ajaxUpdateUrl: "${createLink(action: 'ajaxUpdate', id: site?.siteId)}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        </g:applyCodec>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
+        </g:applyCodec>
         },
         here = window.location.href;
 

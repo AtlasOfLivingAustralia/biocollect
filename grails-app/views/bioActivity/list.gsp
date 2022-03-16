@@ -12,6 +12,7 @@
     <asset:stylesheet src="data-manifest.css"/>
     <asset:script type="text/javascript">
         var fcConfig = {
+            <g:applyCodec encodeAs="none">
                 intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -50,11 +51,10 @@
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
             occurrenceUrl: "${raw(occurrenceUrl)}",
             spatialUrl: "${spatialUrl}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            </g:applyCodec>
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
+            </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>

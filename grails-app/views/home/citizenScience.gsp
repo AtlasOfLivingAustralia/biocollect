@@ -6,6 +6,7 @@
     <title><g:message code="g.citizenScience"/> | <g:message code="g.fieldCapture"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
@@ -13,6 +14,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}"
+        </g:applyCodec>
     }
     </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>

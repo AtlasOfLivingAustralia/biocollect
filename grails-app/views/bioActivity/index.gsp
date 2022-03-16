@@ -25,6 +25,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -51,11 +52,10 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        </g:applyCodec>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         ${(params?.version) ? ',version: ' + params?.version : ''}
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>

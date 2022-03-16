@@ -9,6 +9,7 @@
     <meta name="breadcrumb" content="Create Project"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -27,19 +28,18 @@
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         deleteSiteUrl: "${createLink(controller:'site', action:'delete')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
-        <g:applyCodec encodeAs="none">
-            scienceTypes: ${scienceTypes as grails.converters.JSON},
-            ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
-            lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-            lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-            dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
-            countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
-            hideProjectEditScienceTypes: ${!!hubConfig?.content?.hideProjectEditScienceTypes},
-            uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        scienceTypes: ${scienceTypes as grails.converters.JSON},
+        ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
+        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
+        countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
+        hideProjectEditScienceTypes: ${!!hubConfig?.content?.hideProjectEditScienceTypes},
+        uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         </g:applyCodec>
         },
         here = window.location.href;

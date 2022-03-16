@@ -11,6 +11,7 @@
 
     <asset:script type="text/javascript">
         var fcConfig = {
+                <g:applyCodec encodeAs="none">
             serverUrl: "${grailsApplication.config.grails.serverURL}",
                 spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
                 spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
@@ -19,7 +20,7 @@
                 sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
                 saveSitesUrl: "${createLink(action: 'createSitesFromShapefile')}",
                 siteUploadProgressUrl: "${createLink(action: 'siteUploadProgress')}"
-
+                </g:applyCodec>
             },
             returnTo = "${params.returnTo}";
     </asset:script>

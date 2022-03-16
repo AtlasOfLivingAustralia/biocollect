@@ -23,6 +23,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -56,8 +57,7 @@
         returnTo: "${returnTo}",
         returnToMobile: "${createLink(controller: 'mobile', action: 'status')}#successfully-posted",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         </g:applyCodec>
         },
         here = document.location.href;

@@ -6,6 +6,7 @@
     <title><g:message code="project.works.heading"/> | <g:message code="project.works.heading"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -34,6 +35,7 @@
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         associatedPrograms: ${associatedPrograms},
         flimit: ${grailsApplication.config.facets.flimit}
+        </g:applyCodec>
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
