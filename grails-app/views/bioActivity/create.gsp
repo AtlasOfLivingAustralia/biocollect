@@ -48,6 +48,7 @@
         excelDataUploadUrl: "${raw(createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', params:[pActivityId:pActivity.projectActivityId]))}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
+        imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         <g:applyCodec encodeAs="none">
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         </g:applyCodec>
