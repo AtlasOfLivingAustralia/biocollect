@@ -11,6 +11,7 @@
 
     <asset:script type="text/javascript">
         var fcConfig = {
+            <g:applyCodec encodeAs="none">
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             viewProjectUrl: "${createLink(controller: 'project', action: 'index')}",
             documentUpdateUrl: '${g.createLink(controller: "proxy", action: "documentUpdate")}',
@@ -22,7 +23,7 @@
             organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
             imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
             returnTo: "${params.returnTo ?: createLink(action: 'index', id: organisation.organisationId)}"
-
+            </g:applyCodec>
             };
     </asset:script>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>

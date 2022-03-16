@@ -12,7 +12,9 @@
 	<asset:javascript src="datatables-manifest.js"/>
 	<asset:script type="text/javascript">
 		var fcConfig = {
+		<g:applyCodec encodeAs="none">
         	auditMessageUrl: "${raw(createLink( controller: 'admin', action:'auditMessageDetails', params:[projectId: project.projectId]))}"
+		</g:applyCodec>
 		}
 	</asset:script>
         <g:render template="auditProject"></g:render>

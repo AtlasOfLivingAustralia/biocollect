@@ -9,7 +9,9 @@
     <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
-        var fcConfig = {
+    </script>
+    var fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -25,12 +27,10 @@
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            </g:applyCodec>
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             myFavourites: "${myFavourites}"
-        }
-    </script>
+            </g:applyCodec>
+    }
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
     <asset:javascript src="common-bs4.js"/>

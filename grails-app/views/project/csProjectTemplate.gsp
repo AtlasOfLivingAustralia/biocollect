@@ -14,6 +14,7 @@
     <asset:stylesheet src="project-index-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -112,11 +113,10 @@
         projectNotificationUrl: "${raw(createLink(controller: 'project', action: 'sendEmailToMembers', params: [id: project.projectId]))}",
         projectTestNotificationUrl: "${raw(createLink(controller: 'project', action: 'sendTestEmail', params: [id: project.projectId]))}",
         opportunisticDisplayName: "<g:message code="facets.methodType.opportunistic"/>",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            surveyMethods: <fc:getSurveyMethods/>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        surveyMethods: <fc:getSurveyMethods/>
         </g:applyCodec>
         },
         here = window.location.href;
