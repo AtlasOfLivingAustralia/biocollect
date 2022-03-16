@@ -12,10 +12,10 @@ import groovy.text.GStringTemplateEngine
 import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.scheduling.annotation.Async
 import org.springframework.web.context.request.RequestAttributes
 
-import static grails.async.Promises.task
-
+import static groovyx.gpars.GParsPool.withPool
 //import grails.plugin.cache.Cacheable
 
 class SettingService {
@@ -25,7 +25,7 @@ class SettingService {
     private static final String HUB_CACHE_KEY_SUFFIX = '_hub'
     public static final String HUB_CONFIG_ATTRIBUTE_NAME = 'hubConfig'
     public static final String LAST_ACCESSED_HUB = 'recentHub'
-
+    private static final int THREAD_COUNT = 4
 
     public static void setHubConfig(HubSettings hubSettings) {
         localHubConfig.set(hubSettings)
@@ -339,10 +339,11 @@ class SettingService {
         item?.breadCrumbs
     }
 
+    @Async
     void generateStyleSheetForHubs() {
         List hubs = listHubs()
-        task {
-            hubs?.each {  hubMap ->
+        withPool(THREAD_COUNT) {
+            hubs?.eachParallel {  hubMap ->
                 HubSettings hub = new HubSettings(new HashMap(hubMap))
                 generateStyleSheetForHub(hub)
             }
