@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
-
+import asset.pipeline.AssetPipelineConfigHolder
+import asset.pipeline.fs.FileSystemAssetResolver
 import asset.pipeline.jsass.SassAssetFile
 import asset.pipeline.jsass.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
@@ -69,6 +70,15 @@ class SettingService {
 
         // copy bootstrap4 directory
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
+
+        // resolve bootstrap 4 scss file from temp directory.
+        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}", true)
+        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolver)
+
+        // resolve bootstrap 4 scss file from temp directory.
+        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}/scss", true)
+        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolverChild)
+
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
                 // do nothing
