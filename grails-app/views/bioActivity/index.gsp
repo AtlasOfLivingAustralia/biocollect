@@ -69,17 +69,16 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
+    <content tag="bannertitle">
+        <g:message code="record.view.title"></g:message>
+    </content>
 
     <div id="koActivityMainBlock">
         <bc:koLoading>
         <g:if test="${!mobile}">
             <div class="row">
-                %{--page title--}%
-                <div class="col-12 col-md-4">
-                    <h2><g:message code="record.view.title"></g:message></h2>
-                </div>
                 %{-- quick links --}%
-                <div class="col-12 col-md-8">
+                <div class="col-12">
                     <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
                 </div>
                 %{--quick links END--}%
@@ -96,18 +95,26 @@
         </g:if>
 
         <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-            <h3 class="text-danger text-center card-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
-            <div data-bind="if: transients.site">
-                <div class="output-block card text-center">
-                    <m:map id="activitySiteMap" width="100%" height="300px"/>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-danger text-center card-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
+                    <div data-bind="if: transients.site">
+                        <div class="output-block text-center">
+                                <m:map id="activitySiteMap" width="100%" height="300px"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </g:if>
 
         <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
-            <h3 class="text-center text-danger card-title">Photo Points</h3>
-            <div class="output-block card" data-bind="with:transients.photoPointModel">
-                <g:render template="/site/photoPoints" model="[readOnly: true]"/>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-center text-danger card-title">Photo Points</h3>
+                    <div class="output-block" data-bind="with:transients.photoPointModel">
+                        <g:render template="/site/photoPoints" model="[readOnly: true]"/>
+                    </div>
+                </div>
             </div>
         </g:if>
 
@@ -122,7 +129,7 @@
             <g:render template="/output/outputJSModelWithGeodata" plugin="ecodata-client-plugin"
                       model="${raw([edit:false, readonly: true, model:model, outputName:outputName])}"></g:render>
 
-            <div class="output-block card" id="ko${blockId}">
+            <div class="output-block" id="ko${blockId}">
                 <div data-bind="if:outputNotCompleted">
                     <label class="checkbox" ><input type="checkbox" disabled="disabled" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
                 </div>

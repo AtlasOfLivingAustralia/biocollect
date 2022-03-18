@@ -51,8 +51,6 @@
 </head>
 
 <body>
-    <div id="main-content">
-        <g:render template="createEditActivityBody"></g:render>
-    </div>
+<g:render template="createEditActivityBody"></g:render>
 </body>
 </html>

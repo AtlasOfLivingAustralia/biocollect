@@ -88,9 +88,9 @@
     height: auto;
 }
 
-.card input[type=text], .card input[type=search], .card input[type=number], .card input[type=tel] {
-    border: 1px solid black;
-}
+/*.card input[type=text], .card input[type=search], .card input[type=number], .card input[type=tel] {*/
+/*    border: 1px solid black;*/
+/*}*/
 
 .table .table {
     background-color: #f2f2f2;
@@ -112,4 +112,13 @@
 
 input[type="checkbox"], input[type="radio"] {
     margin-right: 5px;
+}
+
+.timefield {
+    display: flex;
+}
+
+.timefield span {
+    margin-left: 15px;
+    margin-top: 5px;
 }
