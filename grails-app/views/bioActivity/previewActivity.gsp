@@ -8,10 +8,6 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:stylesheet src="common-bs4.css"/>
     <asset:stylesheet src="forms-manifest.css"/>
-    <g:if test="${hubConfig.skin == "configurableHubTemplate1"}">
-        <link rel="stylesheet" type="text/css"
-              href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
-    </g:if>
     <asset:script type="text/javascript">
     var fcConfig = {
         <g:applyCodec encodeAs="none">
