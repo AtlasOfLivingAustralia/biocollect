@@ -256,15 +256,6 @@ class TemplateTagLib {
         out << icon
     }
 
-    def getStyleSheet = { attrs ->
-        if(attrs.file){
-            def scss = grailsApplication.parentContext.getResource("css/template/${attrs.file}")
-            if(scss.exists()){
-                out << scss.inputStream.text;
-            }
-        }
-    }
-
     def optionalContent = { attrs, body ->
 
         if (settingService.getHubConfig()?.supportsOptionalContent(attrs?.key)) {

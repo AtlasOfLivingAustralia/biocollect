@@ -122,3 +122,26 @@ input[type="checkbox"], input[type="radio"] {
     margin-left: 15px;
     margin-top: 5px;
 }
+
+#content .boxed-heading {
+    position: relative;
+    margin: 15px 0;
+    padding: 50px 15px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+#content .boxed-heading:after {
+    content: attr(data-content);
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 7px 15px;
+    font-size: 125%;
+    font-weight: 300;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    color: inherit;
+    line-height: 1;
+}

@@ -60,8 +60,6 @@
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <g:set var="pActivity" value="${[commentsAllowed: false]}"/>
-    <link rel="stylesheet" type="text/css"
-          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 <body>

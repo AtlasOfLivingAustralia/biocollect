@@ -63,8 +63,6 @@
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
-    <link rel="stylesheet" type="text/css"
-          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 <body>
