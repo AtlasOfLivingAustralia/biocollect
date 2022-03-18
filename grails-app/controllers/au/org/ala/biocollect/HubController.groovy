@@ -12,15 +12,35 @@ class HubController {
     UserService userService
     def index() {
         HubSettings hubSettings = SettingService.hubConfig
-        switch (hubSettings.getHubHomePageType()){
-            case 'buttons':
-                render view: 'buttonHomePage', model: [homepage: true]
-                break
-            case 'projectfinder':
-            default:
-                Map model = [homepage:true, showProjectDownloadButton:showProjectFinderDownloadButton(hubSettings)]
-                render view: 'projectFinderHomePage', model: model
-                break
+        boolean isHubHomePage = false
+        if (hubSettings.overridesHomePage()) {
+            if(hubSettings.isHomePagePathSimple()){
+                Map result = hubSettings.getHomePageControllerAndAction()
+                if( result.controller != "hub" && result.action != "index") {
+                    forward(result)
+                    return
+                } else {
+                    isHubHomePage = true
+                }
+            } else {
+                redirect([uri: hubSettings['homePagePath'] ])
+                return
+            }
+        } else {
+            isHubHomePage = true
+        }
+
+        if (isHubHomePage) {
+            switch (hubSettings.getHubHomePageType()) {
+                case 'buttons':
+                    render view: 'buttonHomePage', model: [homepage: true]
+                    break
+                case 'projectfinder':
+                default:
+                    Map model = [homepage:true, showProjectDownloadButton:showProjectFinderDownloadButton(hubSettings)]
+                    render view: 'projectFinderHomePage', model: model
+                    break
+            }
         }
     }
 

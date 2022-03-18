@@ -75,7 +75,7 @@
 <div class="container-fluid">
     <div class="row">
         %{-- quick links --}%
-        <div class="col-12 col-md-8 col-md-offset-4">
+        <div class="col-12">
             <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
         </div>
         %{--quick links END--}%
