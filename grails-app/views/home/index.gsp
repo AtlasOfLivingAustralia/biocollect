@@ -78,7 +78,7 @@
     <div id="" class="row-fluid ">
         <div id="facetsCol" class="span4 well well-small">
             <g:set var="reqParams" value="sort,order,max,fq"/>
-            <div class="visible-phone pull-right" style="margin-top: 5px;">
+            <div class="visible-phone float-right" style="margin-top: 5px;">
                 <a href="#" id="toggleFacetDisplay" rel="facetsContent" role="button" class="btn btn-small btn-inverse" style="color:white;">
                     <span>show</span> options&nbsp;
                     <b class="caret"></b>
@@ -195,7 +195,7 @@
                                 <button class="btn btn-small next">next&nbsp;<i class="icon-chevron-right"></i></button>
                             </div>
                             <span id="project-filter-warning" class="label filter-label label-warning hide pull-left">Filtered</span>
-                            <div class="control-group pull-right dataTables_filter">
+                            <div class="control-group float-right dataTables_filter">
                                 <div class="input-append">
                                     <g:textField class="filterinput input-medium" data-target="project"
                                                  title="Type a few characters to restrict the list." name="projects"

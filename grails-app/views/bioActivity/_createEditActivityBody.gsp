@@ -10,7 +10,7 @@
             <div class="row">
                 %{-- quick links --}%
                 <div class="col-12">
-                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
                 </div>
                 %{--quick links END--}%
             </div>
