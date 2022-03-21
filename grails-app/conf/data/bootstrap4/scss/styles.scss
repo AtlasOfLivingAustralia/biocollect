@@ -1,17 +1,6 @@
 @import 'settings';
 @import "bootstrap/bootstrap";
-
-@import 'partials/swiper';
-//@import "partials/jqueryui-datepicker";
-
-@import "partials/header";
-@import "partials/footer";
-@import "partials/common";
-@import "partials/hero";
-@import "partials/modal";
-@import "partials/posts";
-@import "partials/catalogue";
-@import "partials/project";
+@import 'partials/partials';
 
 .btn-space>.btn {
   margin-top: .25rem;

@@ -42,7 +42,7 @@
             <div class="col-md-5">
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
                     <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: SettingPageType.NEWS.name, params: [layout: hubConfig.skin, returnUrl: raw(g.createLink(controller: params.controller, action: params.action, absolute: true))]))}"
-                       class="btn btn-sm btn-dark pull-right"><i class="fas fa-pencil-alt"></i> Edit</a>
+                       class="btn btn-sm btn-dark float-right"><i class="fas fa-pencil-alt"></i> Edit</a>
                 </g:if>
                 ${raw(newsText)}
             </div>
