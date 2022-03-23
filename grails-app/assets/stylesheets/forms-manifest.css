@@ -5,7 +5,7 @@
  *= require fileupload-ui-manifest.css
  *
  * datepicker
- *= require bootstrap-datepicker/css/datepicker.css
+ *= require bootstrap-datepicker/1.2.0/css/datepicker.css
  *
  * sites
  *= require sites.css

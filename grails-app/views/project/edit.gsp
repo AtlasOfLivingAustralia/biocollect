@@ -3,8 +3,8 @@
 <html>
 <head>
     <meta name="layout" content="bs4"/>
-    <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message code="g.fieldCapture"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
     <meta name="breadcrumb" content="Edit"/>
 

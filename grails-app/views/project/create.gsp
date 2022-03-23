@@ -4,8 +4,8 @@
 <html>
 <head>
     <meta name="layout" content="bs4"/>
-    <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.fieldCapture"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
     <asset:script type="text/javascript">
     var fcConfig = {
@@ -95,7 +95,7 @@ $(function(){
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
     $('#cancel').click(function () {
-        document.location.href = "${createLink(action: 'homePage')}";
+        document.location.href = "${createLink(uri: '/')}";
     });
     </g:if>
     <g:else>

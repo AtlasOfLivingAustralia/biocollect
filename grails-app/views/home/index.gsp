@@ -3,8 +3,8 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Home | Field Capture</title>
+    <meta name="layout" content="bs4"/>
+    <title>Home | <g:message code="g.biocollect"/></title>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {

@@ -105,8 +105,11 @@
                 <div id="titleBar">
                     <div class="container-fluid">
                         <div class="row d-flex title-row">
+                            <div class="col col-lg-6 d-flex align-items-center justify-content-start">
+                                <g:render template="/layouts/breadcrumb"/>
+                            </div>
                             <g:if test="${pageProperty(name: 'page.pagefinderbuttons')}">
-                                <div class="col d-flex align-items-center justify-content-center justify-content-lg-end">
+                                <div class="col col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-end">
                                     <g:pageProperty name="page.pagefinderbuttons"/>
                                 </div>
                             </g:if>
@@ -120,9 +123,7 @@
         </main>
     </div>
     <g:if test="${hubConfig.templateConfiguration.footer.type == 'ala'}">
-        <div id="ala-footer-bootstrap2 hidden-print">
-            <hf:footer/>
-        </div>
+        <hf:footer/>
     </g:if>
     <g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
         <footer class="site-footer footer-alt" id="custom-footer">
@@ -191,7 +192,7 @@
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-            ga('create', 'UA-4355440-1', 'auto');
+            ga('create', '${grailsApplication.config.googleAnalyticsID}', 'auto');
             ga('send', 'pageview');
         </script>
         <!-- End Google Analytics -->

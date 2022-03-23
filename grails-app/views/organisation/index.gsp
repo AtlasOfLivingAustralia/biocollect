@@ -6,7 +6,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
@@ -82,25 +82,8 @@
             </g:applyCodec>
         };
     </asset:script>
-%{--    <style type="text/css">--}%
-%{--    #projectList th {--}%
-%{--        white-space: normal;--}%
-%{--    }--}%
-
-%{--    .admin-action {--}%
-%{--        width: 7em;--}%
-%{--    }--}%
-
-%{--    .smallFont {--}%
-%{--        margin: 5px 0;--}%
-%{--    }--}%
-%{--    </style>--}%
     <g:render template="/shared/conditionalLazyLoad"/>
     <asset:stylesheet src="project-finder-manifest.css"/>
-%{--    <asset:stylesheet src="base.css"/>--}%
-%{--    <asset:stylesheet src="facets-filter-view.css"/>--}%
-%{--    <asset:stylesheet src="projects-manifest.css"/>--}%
-%{--    <asset:stylesheet src="project-finder.css"/>--}%
     <asset:javascript src="org-index-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>

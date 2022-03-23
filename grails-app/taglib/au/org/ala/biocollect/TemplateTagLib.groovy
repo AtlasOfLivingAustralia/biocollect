@@ -31,11 +31,13 @@ class TemplateTagLib {
     }
 
     boolean isUrlActivePage(String url) {
-        String qString = request.getQueryString()
-        qString = qString ? '?' + qString : ''
-        String rUrl = "${request.requestURI}${qString}"
-        String fUrl =  "${request.forwardURI}${qString}"
-        rUrl?.endsWith(url) || fUrl?.endsWith(url)
+        if(url) {
+            String qString = request.getQueryString()
+            qString = qString ? '?' + qString : ''
+            String rUrl = "${request.requestURI}${qString}"
+            String fUrl =  "${request.forwardURI}${qString}"
+            rUrl?.endsWith(url) || fUrl?.endsWith(url)
+        }
     }
 
     /**

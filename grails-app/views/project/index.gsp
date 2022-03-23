@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <asset:script type="text/javascript">
     var fcConfig = {
