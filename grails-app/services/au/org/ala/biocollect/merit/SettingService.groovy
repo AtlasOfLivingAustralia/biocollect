@@ -247,57 +247,6 @@ class SettingService {
         })
     }
 
-    @Cacheable("styleSheetCache")
-    public Map getConfigurableHubTemplate1(String urlPath, Map styles) {
-        Map config = [
-        "menubackgroundcolor": styles?.menuBackgroundColor,
-        "menutextcolor": styles?.menuTextColor,
-        "bannerbackgroundcolor": styles?.bannerBackgroundColor,
-        "insetbackgroundcolor": styles?.insetBackgroundColor,
-        "insettextcolor": styles?.insetTextColor,
-        "bodybackgroundcolor": styles?.bodyBackgroundColor?:'#fff',
-        "bodytextcolor": styles?.bodyTextColor?:'#637073',
-        "footerbackgroundcolor": styles?.footerBackgroundColor,
-        "footertextcolor": styles?.footerTextColor,
-        "socialtextcolor": styles?.socialTextColor,
-        "titletextcolor": styles?.titleTextColor,
-        "headerbannerspacebackgroundcolor": styles?.headerBannerBackgroundColor,
-        "navbackgroundcolor":  styles?.navBackgroundColor?:'#e5e6e7',
-        "navtextcolor":  styles?.navTextColor?:'#5f5d60',
-        "primarybackgroundcolor": styles?.primaryButtonBackgroundColor?:'#009080',
-        "primarytextcolor": styles?.primaryButtonTextColor?:'#fff',
-        "gettingStartedButtonBackgroundColor": styles?.gettingStartedButtonBackgroundColor?:'',
-        "gettingStartedButtonTextColor": styles?.gettingStartedButtonTextColor?:'',
-        "whatIsThisButtonBackgroundColor": styles?.whatIsThisButtonBackgroundColor?:'',
-        "whatIsThisButtonTextColor": styles?.whatIsThisButtonTextColor?:'',
-        "addARecordButtonBackgroundColor": styles?.addARecordButtonBackgroundColor ?: '',
-        "addARecordButtonTextColor": styles?.addARecordButtonTextColor ?: '',
-        "viewRecordsButtonBackgroundColor": styles?.viewRecordsButtonBackgroundColor ?: '',
-        "viewRecordsButtonTextColor": styles?.viewRecordsButtonTextColor ?: '',
-        "primaryButtonOutlineTextHoverColor": styles?.primaryButtonOutlineTextHoverColor?:'#fff',
-        "primaryButtonOutlineTextColor": styles?.primaryButtonOutlineTextColor?:'#000',
-        "makePrimaryButtonAnOutlineButton": styles?.makePrimaryButtonAnOutlineButton?: false,
-        "defaultbackgroundcolor": styles?.defaultButtonBackgroundColor?:'#f5f5f5',
-        "defaulttextcolor": styles?.defaultButtonTextColor?:'#000',
-        "makeDefaultButtonAnOutlineButton": styles?.makeDefaultButtonAnOutlineButton?: false,
-        "defaultButtonOutlineTextColor": styles?.defaultButtonOutlineTextColor?:'#343a40',
-        "defaultButtonOutlineTextHoverColor": styles?.defaultButtonOutlineTextHoverColor?:'#000',
-        "tagBackgroundColor": styles?.tagBackgroundColor ?: 'orange',
-        "tagTextColor": styles?.tagTextColor?: 'white',
-        "hrefcolor": styles?.hrefColor?:'#009080',
-        "facetbackgroundcolor": styles?.facetBackgroundColor?: '#f5f5f5',
-        "tilebackgroundcolor": styles?.tileBackgroundColor?: '#f5f5f5',
-        "wellbackgroundcolor": styles?.wellBackgroundColor?: '#f5f5f5',
-        "defaultbtncoloractive": styles?.defaultButtonColorActive?: '#fff',
-        "defaultbtnbackgroundcoloractive": styles?.defaultButtonBackgroundColorActive?: '#000',
-        "breadcrumbbackgroundcolour": styles?.breadCrumbBackGroundColour ?: '#E7E7E7',
-        "primarycolor": '#009080',
-        "primarycolorhover": '#007777'
-        ];
-
-        return config
-    }
-
     /**
      * Is the current hub a works hub
      * @return

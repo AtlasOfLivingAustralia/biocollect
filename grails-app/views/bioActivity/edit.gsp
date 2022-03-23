@@ -3,15 +3,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
-        <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
+    <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
     <asset:stylesheet src="common-bs4.css"/>

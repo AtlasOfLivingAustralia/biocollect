@@ -8,10 +8,6 @@
 </head>
 
 <body>
-<div class="container-fluid">
-<div class="row-fluid">
-    <h1>Page not found</h1>
-</div>
-</div>
+<content tag="bannertitle">Page not found</content>
 </body>
 </html>

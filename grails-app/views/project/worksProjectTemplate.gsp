@@ -7,7 +7,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${project?.name.encodeAsHTML()} | Project | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
     <meta name="bannerClass" content="project-banner"/>

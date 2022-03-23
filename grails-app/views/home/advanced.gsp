@@ -2,8 +2,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Advanced | Field Capture</title>
+    <meta name="layout" content="bs4"/>
+    <title>Advanced | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
         <g:applyCodec encodeAs="none">

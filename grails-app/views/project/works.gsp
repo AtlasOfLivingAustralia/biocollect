@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title><g:message code="project.works.heading"/> | <g:message code="project.works.heading"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
@@ -56,8 +56,8 @@
 </content>
 <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
     <content tag="pagefinderbuttons">
-        <button class="btn btn-info btn-getttingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</button>
-        <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</button>
+        <button class="btn btn-info btn-getttingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}"><i class="fas fa-info"></i> Getting started</button>
+        <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}"><i class="fas fa-question"></i> What is this?</button>
     </content>
 </g:if>
 <div id="wrapper" class="content container-fluid">

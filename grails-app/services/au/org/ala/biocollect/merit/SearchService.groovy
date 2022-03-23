@@ -47,20 +47,6 @@ class SearchService {
         webService.getJson(url)
     }
 
-    def allGeoPoints(params) {
-        addDefaultFacetQuery(params)
-        params.max = 9999
-        params.flimit = 999
-        params.fsort = "term"
-        params.offset = 0
-        params.query = "geo.loc.lat:*"
-        params.facets = "stateFacet,nrmFacet,lgaFacet,mvgFacet"
-        String url = "${elasticSearchBaseUrl}/elastic" + commonService.buildUrlParamsFromMap(params)
-       // def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
-        log.debug "allGeoPoints - $url with $params"
-        webService.getJson(url)
-    }
-
     def allProjects(params, String searchTerm = null) {
         addDefaultFacetQuery(params)
         //params.max = 9999

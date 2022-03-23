@@ -103,10 +103,6 @@ class HomeController {
         selectedGeographicFacets
     }
 
-    def tabbed() {
-        [geoPoints: searchService.allGeoPoints(params)]
-    }
-
     def geoService() {
         params.max = params.max?:9999
         if(params.geo){
