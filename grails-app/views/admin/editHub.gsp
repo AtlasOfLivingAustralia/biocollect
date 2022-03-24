@@ -407,17 +407,11 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
-                </div>
 
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderHelpButtons"> Hide 'Getting Started' & 'What is this?' buttons on project finder
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorTile"> Hide project status indicator (Tile view)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorList"> Hide project status indicator (List view)

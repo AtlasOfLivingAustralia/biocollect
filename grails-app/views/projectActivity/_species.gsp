@@ -24,7 +24,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="not-stacked-table" data-bind="visible: speciesFields().length > 0">
+        <table class="not-stacked-table w-100" data-bind="visible: speciesFields().length > 0">
             <thead>
                 <tr>
                 <td>

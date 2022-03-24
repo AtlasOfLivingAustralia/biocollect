@@ -223,7 +223,7 @@
                                 <!-- /ko -->
                                 <!-- ko if:associatedSubProgram -->
                                 <div class="col-12">
-                                    <div class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</div>
+                                    <h4 class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
                                     <span data-bind="text:associatedSubProgram"></span>
                                 </div>
                                 <!-- /ko -->

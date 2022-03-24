@@ -6,8 +6,8 @@
 </head>
 
 <body>
-<div class="row-fluid">
-    <div class="span9" id="page-body" role="main">
+<div class="row">
+    <div class="col-12" id="page-body" role="main">
         <bc:koLoading>
 
         </bc:koLoading>
