@@ -68,7 +68,7 @@
                     </button>
                     <!-- /ko -->
                     <!-- ko if: (filterViewModel.selectedFacets() && (filterViewModel.selectedFacets().length > 0)) -->
-                    <button type="button" class="btn btn-sm btn-dark clear-filters" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
+                    <button type="button" class="btn btn-sm btn-dark clear-filters"  data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
                     </button>
                     <!-- /ko -->
                 </div>
