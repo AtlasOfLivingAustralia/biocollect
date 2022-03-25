@@ -193,7 +193,7 @@
             }
             return false;
         });
-        $('.clearFilterBtn').click(function () {
+        $('.clearFilterBtn').on('click',function () {
             var $filterInput = $(this).prev(),
                 target = $filterInput.attr('data-target');
             $filterInput.val('');

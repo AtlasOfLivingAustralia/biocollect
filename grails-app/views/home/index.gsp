@@ -317,7 +317,7 @@
         $.fn.clicktoggle = function(a, b) {
             return this.each(function() {
                 var clicked = false;
-                $(this).click(function() {
+                $(this).on('click',function() {
                     if (clicked) {
                         clicked = false;
                         return b.apply(this, arguments);
@@ -367,7 +367,7 @@
                 if (reportType) {
                     $reportSelector.val(reportType);
                 }
-                $reportSelector.change(function() {
+                $reportSelector.on('change',function() {
                     var reportType = $reportSelector.val();
                     amplify.store('report-type-state', reportType);
                     loadReport(reportType);
@@ -410,7 +410,7 @@
             return false;
         });
 
-        $('.clearFilterBtn').click(function () {
+        $('.clearFilterBtn').on('click',function () {
             var $filterInput = $(this).prev(),
                 target = $filterInput.attr('data-target');
             //console.log("clear button");
@@ -505,7 +505,7 @@
 
 
         // sorting project table
-        $("#projectTable .header").click(function(el) {
+        $("#projectTable .header").on('click',function(el) {
             var sort = $(this).data("sort");
             var order = $(this).data("order");
             var prevSort =  $("#projectTable").data("sort");
@@ -523,7 +523,7 @@
         });
 
         // facet buttons
-        $(".facetBtn").click(function(el) {
+        $(".facetBtn").on('click',function(el) {
             facetList = []; // reset global var
             var facet = $(this).data("facet");
             var facetVal = $(this).data("value");
@@ -548,7 +548,7 @@
         });
 
         // next/prev buttons in project list table
-        $("#paginateTable .btn").not(".clearFilterBtn").click(function(el) {
+        $("#paginateTable .btn").not(".clearFilterBtn").on('click',function(el) {
             // Don't trigger if button is disabled
             if (!$(this).hasClass("disabled")) {
                  //var prevOrNext = (this).hasClass("next") ? "next" : "prev";
@@ -562,7 +562,7 @@
         });
 
         // in mobile view toggle display of facets
-        $("#toggleFacetDisplay").click(function(e) {
+        $("#toggleFacetDisplay").on('click',function(e) {
             e.preventDefault();
             $(this).find("i").toggleClass("icon-chevron-down icon-chevron-right");
             if ($("#" + $(this).attr('rel')).is(":visible")) {
@@ -587,11 +587,11 @@
             $(this).find("i").addClass("icon-flipped180");
         });
         
-        $(".clearFacet").click(function(e){
+        $(".clearFacet").on('click',function(e){
        	 window.location.href ="${grailsApplication.config.grails.serverURL}";
         });
         
-        $(".facetSearch").click(function(e){
+        $(".facetSearch").on('click',function(e){
         	var data = [];
         	$('input[type="checkbox"][name="facetSelection"]').each(function(i){
 		        if(this.checked){

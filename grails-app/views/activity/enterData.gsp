@@ -377,11 +377,11 @@
 
         $('.helphover').popover({animation: true, trigger: 'hover'});
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             master.save(activityNavigationModel.afterSave);
         });
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             activityNavigationModel.cancel();
         });
 

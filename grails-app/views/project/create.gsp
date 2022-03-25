@@ -94,16 +94,16 @@ $(function(){
 
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
-    $('#cancel').click(function () {
+    $('#cancel').on('click',function () {
         document.location.href = "${createLink(uri: '/')}";
     });
     </g:if>
     <g:else>
-    $('#cancel').click(function () {
+    $('#cancel').on('click',function () {
         document.location.href = "${createLink(action: 'index', id: project?.projectId)}";
     });
     </g:else>
-    $('#save').click(function () {
+    $('#save').on('click',function () {
         if ($('#projectDetails').validationEngine('validate')) {
             if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
                 bootbox.dialog({message:"${message(code:'project.create.warningdatacollection')}"},

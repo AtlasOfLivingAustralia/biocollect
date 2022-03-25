@@ -51,7 +51,7 @@
 
     $(document).ready(function() {
 
-        $("#viewUserPermissionsButton").click(function(e) {
+        $("#viewUserPermissionsButton").on('click',function(e) {
             e.preventDefault();
             if ($('#userId2').val()) {
                 $("#spinner2").removeClass('d-none');

@@ -1,7 +1,7 @@
 <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
 <div id="projects" class="row">
     <!-- ko foreach: pageProjects -->
-    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 project-item mb-1">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 project-item mb-1" data-bind="attr:{id: transients.projectId}">
         <a class="project-image" title="Project Title"
            data-bind="visible: !(${hubConfig?.content?.hideProjectFinderNoImagePlaceholderTile == true}), attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
             <div class="project-image-inner">

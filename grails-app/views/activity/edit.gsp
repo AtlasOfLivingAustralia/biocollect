@@ -257,16 +257,16 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             master.save();
 
         });
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             document.location.href = returnTo;
         });
 
-        $('#reset').click(function () {
+        $('#reset').on('click',function () {
             master.reset();
         });
 

@@ -11,14 +11,14 @@
 
             $(document).ready(function() {
 
-                $("#btnReloadConfig").click(function(e) {
+                $("#btnReloadConfig").on('click',function(e) {
                     e.preventDefault();
                     $.ajax("${createLink(controller: 'admin', action:'reloadConfig')}").done(function(result) {
                         document.location.reload();
                     });
                 });
 
-                $("#btnClearMetadataCache").click(function(e) {
+                $("#btnClearMetadataCache").on('click',function(e) {
                     e.preventDefault();
                     var clearEcodataCache = $('#clearEcodataCache').is(':checked'),
                         url = "${createLink(controller: 'admin', action:'clearMetadataCache')}" +
@@ -30,7 +30,7 @@
                     });
                 });
 
-                $("#btnLoadProjectData").click(function(e) {
+                $("#btnLoadProjectData").on('click',function(e) {
                     e.preventDefault();
 
                     // HTML 5 only...
@@ -55,7 +55,7 @@
                     $('form.loadProjectData').submit();
                 });
 
-                $("#projectData").change(function() {
+                $("#projectData").on('change',function() {
                     if ($("#projectData").val()) {
                         $("#btnLoadProjectData").removeAttr("disabled");
                     }
@@ -65,12 +65,12 @@
 
                 }).trigger('change');
 
-                $("#btnLoadPlanData").click(function(e) {
+                $("#btnLoadPlanData").on('click',function(e) {
                     e.preventDefault();
                     $('form.loadPlanData').submit();
                 });
 
-                $("#planData").change(function() {
+                $("#planData").on('change',function() {
                     if ($("#planData").val()) {
                         $("#btnLoadPlanData").removeAttr("disabled");
                     }
@@ -80,7 +80,7 @@
 
                 }).trigger('change');
 
-                $("#btnReindexAll").click(function(e) {
+                $("#btnReindexAll").on('click',function(e) {
                     e.preventDefault();
                     var url = "${createLink(controller: 'admin', action:'reIndexAll')}";
                     $.ajax(url).done(function(result) {
@@ -91,7 +91,7 @@
                 });
 
 
-                $("#btnSyncCollectoryOrgs").click(function(e) {
+                $("#btnSyncCollectoryOrgs").on('click',function(e) {
                     e.preventDefault();
                     $.ajax("${createLink(controller: 'admin', action:'syncCollectoryOrgs')}"
                     ).done(function(result) {
@@ -102,7 +102,7 @@
                     });
                 });
 
-                $("#btnSyncSciStarter").click(function(e) {
+                $("#btnSyncSciStarter").on('click',function(e) {
                     e.preventDefault();
                     $.ajax("${createLink(controller: 'admin', action:'syncSciStarter')}",
                             {
@@ -116,7 +116,7 @@
                     });
                 });
 
-                $("#btnSyncRematchSpeciesId").click(function(e) {
+                $("#btnSyncRematchSpeciesId").on('click',function(e) {
                     e.preventDefault();
                     $.ajax("${createLink(controller: 'admin', action:'syncSpeciesWithBie')}",
                             {

@@ -249,10 +249,6 @@
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
-        if(amplify.store('traffic-from-project-finder-page')) {
-            amplify.store('traffic-from-project-finder-page',false)
-            $('#about-tab').tab('show');
-        }
 
         <g:if test="${(fc.userIsAlaOrFcAdmin() || projectContent.admin.visible) && !project.isExternal}">
             projectViewModel.showBushfireBanner()

@@ -233,10 +233,10 @@ function stringToDate(date) {
 
             // if the parent container holds any element with the class 'open-datepicker'
             // then add a hook to do so
-            $element.parent().find('.open-datepicker').click(function () {
+            $element.parent().find('.open-datepicker').on('click',function () {
                 $element.datepicker('show');
             });
-            $element.parent().find('.clear-date').click(function () {
+            $element.parent().find('.clear-date').on('click',function () {
                 $element.val('');
                 $element.change();
             });
