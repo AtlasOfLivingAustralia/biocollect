@@ -389,7 +389,7 @@ var scroll = false;
 
     $('.helphover').popover({animation: true, trigger:'hover'});
 
-    $('#reset').click(function () {
+    $('#reset').on('click',function () {
     master.reset();
     });
 

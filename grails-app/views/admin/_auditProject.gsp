@@ -37,7 +37,7 @@
     $(document).ready(function() {
         $("#project-audit-list").hide();
 
-        $("#loadAuditRecords").click(function() {
+        $("#loadAuditRecords").on('click',function() {
             $("#loadAuditRecords").hide();
             $("#project-audit-list").show();
             loadAuditData();

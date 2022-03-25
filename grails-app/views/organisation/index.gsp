@@ -136,7 +136,7 @@
            selectedReport = 'dashboard';
         }
         $dashboardType.val(selectedReport);
-        $dashboardType.change(function(e) {
+        $dashboardType.on('change',function(e) {
             var $content = $('#dashboard-content');
             var $loading = $('.loading-message');
             $content.hide();

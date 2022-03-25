@@ -332,11 +332,11 @@ ko.applyBindings(new SiteUploadViewModel());
     </g:if>
     <g:else>
 
-        $('#uploadShapeFile').click(function() {
+        $('#uploadShapeFile').on('click',function() {
             $(this).attr('disabled','disabled');
             $('#shapeFileUpload').submit();
         });
-        $("#shapefile").change(function() {
+        $("#shapefile").on('change',function() {
             if ($("#shapefile").val()) {
                 $("#uploadShapeFile").removeAttr("disabled");
             }
@@ -345,7 +345,7 @@ ko.applyBindings(new SiteUploadViewModel());
             }
 
         }).trigger('change');
-        $('#cancel').click(function(){
+        $('#cancel').on('click',function(){
             document.location.href = returnTo;
         })
     </g:else>

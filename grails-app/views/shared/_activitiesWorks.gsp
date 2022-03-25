@@ -541,7 +541,7 @@
                 <td>
                     <button data-bind="click: showSpeciesConfiguration" class="btn btn-dark" ><i class="fas fa-cog"></i> <g:message code="project.survey.species.configure.works"/></button>
                     <button class="btn btn-dark" data-bind="click: $parent.transients.parent.copySettings">
-                        <i class="fas fa-bookmark"/>
+                        <i class="fas fa-bookmark"></i>
                         <g:message code="project.survey.species.setdefault"/>
                     </button>
                 </td>
