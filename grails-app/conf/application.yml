@@ -276,7 +276,7 @@ grails:
             encoding: UTF-8
             htmlcodec: xml
             codecs:
-                expression: html  #${ } will be html encoded if set to default to html
+                expression: none  #${ } will be html encoded if set to default to html
                 scriptlets: html
                 taglib: none
                 staticparts: none

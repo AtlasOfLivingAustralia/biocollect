@@ -1,5 +1,5 @@
 <%@ page import="grails.converters.JSON" %>
-<g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
+<g:set var="noImageUrl" value="${asset.assetPath([src: "biocollect-logo-dark.png"])}"/>
 <!-- ko stopBinding: true -->
 <div id="projectData" class="my-4 my-md-5">
     <div id="survey-all-activities-and-records-content">
@@ -20,12 +20,12 @@
                     <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
                         <div class="btn-group">
                             <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a class="btn btn-outline-dark active" id="data-grid-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark" id="data-grid-tab" data-toggle="tab" type="button"
                                    href="#dataGrid" title="<g:message code="data.grid.title"/>"
                                    role="tab" aria-controls="<g:message code="data.grid.title"/>">
                                     <i class="fas fa-th-large"></i>
                                 </a>
-                                <a class="btn btn-outline-dark" id="data-list-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark active" id="data-list-tab" data-toggle="tab" type="button"
                                    href="#recordVis" title="<g:message code="data.list.title"/>"
                                    role="tab" aria-controls="<g:message code="data.list.title"/>" aria-selected="true">
                                     <i class="fas fa-list"></i>
@@ -68,7 +68,7 @@
                     </button>
                     <!-- /ko -->
                     <!-- ko if: (filterViewModel.selectedFacets() && (filterViewModel.selectedFacets().length > 0)) -->
-                    <button type="button" class="btn btn-sm btn-dark clear-filters" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
+                    <button type="button" class="btn btn-sm btn-dark clear-filters"  data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
                     </button>
                     <!-- /ko -->
                 </div>
@@ -137,7 +137,7 @@
                     </g:if>
                 </div>
                 <div class="tab-content activities-search-panel">
-                    <div class="tab-pane active" id="dataGrid" role="tabpanel">
+                    <div class="tab-pane" id="dataGrid" role="tabpanel">
                         <g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
                         <!-- .pagination -->
                         <div class="records-list row d-flex flex-wrap mt-4 mt-md-4 mb-3">
@@ -243,7 +243,7 @@
                         <g:render template="/shared/pagination" model="[bs:4]"/>
                         <!-- .pagination -->
                     </div>
-                    <div class="tab-pane fade" id="recordVis">
+                    <div class="tab-pane active" id="recordVis">
                         <!-- ko if: activities().length == 0 -->
                         <div class="row">
                             <h3 class="text-left mb-1">
@@ -308,7 +308,7 @@
                                 <!-- ko foreach: $root.columnConfig -->
                                 <!-- ko if: type == 'image' -->
                                 <td class="align-top">
-                                    <div class="projectLogo">
+                                    <div class="projectLogo project-logo">
                                         <a data-bind="attr: {href: $parents[1].transients.viewUrl}">
                                             <!-- ko if: $parent.multimedia[0] && $parent.multimedia[0].identifier -->
                                             <img class="image-logo image-window" data-bind="attr:{title:($parent.multimedia[0] && $parent.multimedia[0].title) || 'No Image', src:($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
@@ -434,7 +434,7 @@
                                 <!-- ko foreach: $root.columnConfig -->
                                 <!-- ko if:  type == 'image' -->
                                 <td class="align-top">
-                                    <div class="projectLogo">
+                                    <div class="projectLogo project-logo">
                                         <img class="image-logo wide" data-bind="attr:{title:$parent.transients.imageTitle, src:$parent.transients.thumbnailUrl} " />
                                     </div>
                                 </td>

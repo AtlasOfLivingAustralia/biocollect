@@ -22,6 +22,7 @@ function initialise(roles, currentUserId, projectId) {
                 render: function (data, type, row) {
                     var $select = $("<select></select>", {
                         "id": "role_" + row.userId,
+                        "class": "form-control",
                         "value": data
                     });
                     $.each(roles, function (i, value) {

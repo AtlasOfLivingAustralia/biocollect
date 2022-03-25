@@ -7,15 +7,13 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${project?.name.encodeAsHTML()} | Project | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
     <meta name="bannerClass" content="project-banner"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
-
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
@@ -104,9 +102,7 @@
         canAddActivity: ${user?.isAdmin ? 'true' : 'false'},
         canAddSite: ${projectContent?.site?.canEditSites? 'true' : 'false'},
         worksScheduleIntroUrl: "${raw(createLink(controller: 'staticPage', action:'index', params: [page:"workScheduleHelp"]))}",
-        <g:applyCodec encodeAs="none">
-            outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
-        </g:applyCodec>
+        outputTargetMetadata: ${((outputTargetMetadata?:[]) as grails.converters.JSON).toString()},
         activityTypes: ${raw(((activityTypes?:[]) as JSON).toString())},
         themes: ${raw(((themes?:[]) as JSON).toString())},
         sites: ${raw(((project?.sites ?: []) as JSON).toString())},
@@ -120,12 +116,11 @@
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        <g:applyCodec encodeAs="none">
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        </g:applyCodec>
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}"
+        </g:applyCodec>
         },
         here = window.location.href;
 
@@ -177,7 +172,7 @@
         </g:if>
 
         <content tag="tab">
-            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
+            <ul class="nav nav-tabs" id="ul-main-project" data-tabs="tabs" role="tablist">
                 <fc:tabList tabs="${projectContent}"/>
             </ul>
         </content>
@@ -270,7 +265,7 @@
                         ],
                         "order":[3, "desc"],
                         "language": {
-                            "search":'<div class="input-prepend"><span class="add-on"><i class="fa fa-search"></i></span>_INPUT_</div>',
+                            "search": '<div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div>_INPUT_</div>',
                             "searchPlaceholder":"Search sites..."
 
                         },
@@ -423,6 +418,5 @@
     }
 
 </asset:script>
-<asset:deferredScripts/>
 </body>
 </html>

@@ -3,11 +3,12 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Home | Field Capture</title>
+    <meta name="layout" content="bs4"/>
+    <title>Home | <g:message code="g.biocollect"/></title>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -21,8 +22,7 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
         </g:applyCodec>
     }
     </asset:script>
@@ -78,7 +78,7 @@
     <div id="" class="row-fluid ">
         <div id="facetsCol" class="span4 well well-small">
             <g:set var="reqParams" value="sort,order,max,fq"/>
-            <div class="visible-phone pull-right" style="margin-top: 5px;">
+            <div class="visible-phone float-right" style="margin-top: 5px;">
                 <a href="#" id="toggleFacetDisplay" rel="facetsContent" role="button" class="btn btn-small btn-inverse" style="color:white;">
                     <span>show</span> options&nbsp;
                     <b class="caret"></b>
@@ -97,8 +97,8 @@
                             <g:set var="fqBits" value="${f?.tokenize(':')}"/>
                             <g:set var="newUrl"><fc:formatParams params="${params}" requiredParams="${reqParams}" excludeParam="${f}"/></g:set>
                             <li><g:message code="label.${fqBits[0]}" default="${fqBits[0]}"/>: <g:message code="label.${fqBits[1]}" default="${fqBits[1].capitalize()}"/>
-                                <a href="${newUrl?:"?"}" class="btn btn-inverse btn-mini tooltips" title="remove filter">
-                                    <i class="icon-white icon-remove"></i></a>
+                                <a href="${newUrl?:"?"}" class="btn btn-inverse btn-sm tooltips" title="remove filter">
+                                <i class="far fa-trash-alt"></i></a>
                             </li>
                         </g:each>
                     </ul>
@@ -195,7 +195,7 @@
                                 <button class="btn btn-small next">next&nbsp;<i class="icon-chevron-right"></i></button>
                             </div>
                             <span id="project-filter-warning" class="label filter-label label-warning hide pull-left">Filtered</span>
-                            <div class="control-group pull-right dataTables_filter">
+                            <div class="control-group float-right dataTables_filter">
                                 <div class="input-append">
                                     <g:textField class="filterinput input-medium" data-target="project"
                                                  title="Type a few characters to restrict the list." name="projects"

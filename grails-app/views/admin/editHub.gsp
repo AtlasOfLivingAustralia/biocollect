@@ -5,6 +5,7 @@
     <title>Metadata | Admin | Data capture | Atlas of Living Australia</title>
     <asset:script type="text/javascript">
         fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -17,11 +18,10 @@
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
-            <g:applyCodec encodeAs="none">
-                allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-                allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            </g:applyCodec>
+            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+            </g:applyCodec>
         };
     </asset:script>
 </head>
@@ -407,17 +407,11 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
-                </div>
 
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderHelpButtons"> Hide 'Getting Started' & 'What is this?' buttons on project finder
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorTile"> Hide project status indicator (Tile view)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorList"> Hide project status indicator (List view)

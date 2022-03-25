@@ -24,7 +24,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="not-stacked-table" data-bind="visible: speciesFields().length > 0">
+        <table class="not-stacked-table w-100" data-bind="visible: speciesFields().length > 0">
             <thead>
                 <tr>
                 <td>
@@ -67,7 +67,7 @@
                         </span>
                         <a target="_blank"
                            data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }"
-                           class="btn btn-link"><small><g:message code="project.survey.species.configure"/></small></a>
+                           class="btn btn-sm btn-primary-dark"><small><i class="fas fa-cog"></i> <g:message code="project.survey.species.configure"/></small></a>
                     </td>
                     <td>
                         <select class="form-control" data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">

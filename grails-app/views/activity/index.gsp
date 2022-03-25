@@ -3,15 +3,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="bs4"/>
-        <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="layout" content="bs4"/>
+    <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="${activity.type}"/>
@@ -21,6 +15,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -46,11 +41,10 @@
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         project:${raw(fc.modelAsJavascript(model: project))},
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        </g:applyCodec>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         sites: ${raw(fc.modelAsJavascript(model: project?.sites))}
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
@@ -60,8 +54,6 @@
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <g:set var="pActivity" value="${[commentsAllowed: false]}"/>
-    <link rel="stylesheet" type="text/css"
-          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 <body>
@@ -171,7 +163,7 @@
             <g:render template="/comment/comment"></g:render>
         </g:if>
         <div class="form-actions">
-            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> return</button>
+            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-arrow-alt-circle-left"></i> return</button>
         </div>
     </div>
     </div>

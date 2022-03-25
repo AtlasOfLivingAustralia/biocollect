@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${project.name} | Species | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name}"/>
     <meta name="breadcrumb" content="Species"/>
@@ -46,7 +46,7 @@
                     </g:each>
                     </select>
                     </td>
-                    <td width="10%"><a class="btn btn-mini" data-bind="click:$root.removeSpeciesList" href="#" title="edit"><i class="icon-edit"></i> Remove</a></td>
+                    <td width="10%"><a class="btn btn-sm" data-bind="click:$root.removeSpeciesList" href="#" title="edit"><i class="icon-edit"></i> Remove</a></td>
                 </tr>
                 </tbody>
             </table>

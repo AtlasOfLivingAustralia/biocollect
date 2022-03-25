@@ -3,15 +3,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="bs4"/>
-        <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="layout" content="bs4"/>
+    <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="Enter data"/>
@@ -19,6 +13,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -36,18 +31,17 @@
         surveyName: "${metaModel.name}",
         speciesSearchUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesImageUrl:"${createLink(controller: 'species', action: 'speciesImage')}",
-        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         sites: <fc:modelAsJavascript model="${project?.sites ?: []}"/>,
-        <g:applyCodec encodeAs="none">
             mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        </g:applyCodec>
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         addCreatedSiteToListOfSelectedSites: ${canEditSites}
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
@@ -58,8 +52,6 @@
     <asset:javascript src="enterActivityData.js"/>
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <link rel="stylesheet" type="text/css"
-          href="${createLink(controller: 'hub', action: 'getStyleSheet')}?ver=${hubConfig.lastUpdated}">
 </head>
 
 <body>
@@ -148,9 +140,10 @@
                             </div>
                         </g:if>
                         <g:else>
-                            <div class="input-group-append">
+                            <div class="input-group">
                                 <fc:datePicker targetField="startDate.date" name="startDate"
-                                               data-validation-engine="validate[required]" printable="${printView}"/>
+                                               data-validation-engine="validate[required]" printable="${printView}"
+                                               class="form-control" theme="btn-dark" bs4="true"/>
                             </div>
                         </g:else>
                     </div>
@@ -168,10 +161,10 @@
                             </div>
                         </g:if>
                         <g:else>
-                            <div class="input-group-append">
+                            <div class="input-group">
                                 <fc:datePicker targetField="endDate.date" name="endDate"
-                                               data-validation-engine="validate[future[startDate]]"
-                                               printable="${printView}"/>
+                                               data-validation-engine="validate[future[startDate]]" printable="${printView}"
+                                               class="form-control" theme="btn-dark" bs4="true"/>
                             </div>
                         </g:else>
                     </div>
