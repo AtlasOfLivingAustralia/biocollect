@@ -1,6 +1,7 @@
 <div id="projectResources" class="my-4 my-md-5">
 
     <div  id="${containerId}" class="container-fluid">
+
         <g:if test="${hubConfig.templateConfiguration?.header?.links}">
             <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
                 <g:if test="${link.contentType == 'resources'}">
@@ -13,17 +14,18 @@
         </g:else>
 
         <div class="form-group d-flex search-resources">
-            <label for="searchResources" class="sr-only">Search Resources</label>
-
+            <label for="searchText" class="sr-only">Search Resources</label>
             <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                 <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
                     <g:if test="${link.contentType == 'resources'}">
-                        <input type="text" id="searchResources" class="form-control" name="Search Resources" data-bind="textInput: documentFilter" placeholder="Search ${link.displayName}...">
+                        <input class="form-control" id="searchText" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
+                               placeholder="Search ${link.displayName}..." aria-label="Search documents..." aria-describedby="org-search-button"/>
                     </g:if>
                 </g:each>
             </g:if>
             <g:else>
-                <input type="text" id="searchResources" class="form-control" name="Search Resources" data-bind="textInput: documentFilter" placeholder="Search Resources...">
+                <input class="form-control" id="searchText" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
+                       placeholder="Search Resources..." aria-label="Search documents..." aria-describedby="org-search-button"/>
             </g:else>
 
             <label for="searchType" class="sr-only">Sort by</label>
@@ -39,15 +41,32 @@
             </div>
         </div>
 
+        <div class="row mb-2">
+            <div class="col-12">
+                <div class="border-top border-bottom border-dark py-3">
+                    <g:if test="${hubConfig.templateConfiguration?.header?.links}">
+                        <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
+                            <g:if test="${link.contentType == 'resources'}">
+                                <h6 class="m-0">Found <!-- ko text:pagination.totalResults --> <!-- /ko --> ${link.displayName}</h6>
+                            </g:if>
+                        </g:each>
+                    </g:if>
+                    <g:else>
+                        <h6 class="m-0">Found <!-- ko text:pagination.totalResults --> <!-- /ko --> Resources</h6>
+                    </g:else>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-12 col-md-12 col-lg-4 col-xl-4">
 
                 <div class="search-results">
-                    <!-- ko if: filteredDocuments().length == 0 -->
+                    <!-- ko if: documents().length == 0 -->
                     <h4 class="text-center">No documents</h4>
                     <!-- /ko -->
-                    <!-- ko foreach: { data: filteredDocuments, afterAdd: showListItem, beforeRemove: hideListItem } -->
-                    <div class="resource align-items-start overflow-hidden" data-bind="{ if: (role() == '${filterBy}' || 'all' == '${filterBy}') && role() != '${ignore}' && role() != 'variation', click: $parent.selectDocument, css: { active: $parent.selectedDocument() == $data } }">
+                    <!-- ko foreach: { data: documents, afterAdd: showListItem, beforeRemove: hideListItem } -->
+                    <div class="resource align-items-start overflow-hidden" data-bind="{ if: (role == '${filterBy}' || 'all' == '${filterBy}') && role != '${ignore}' && role != 'variation', click: $parent.selectDocument, css: { active: $parent.selectedDocument() == $data } }">
                         <!-- ko template:ko.utils.unwrapObservable(type) === 'image' ? 'imageDocTmpl' : 'objDocTmpl' --><!-- /ko -->
                     </div>
                     <!-- /ko -->
@@ -59,6 +78,7 @@
                 </div>
             </div>
         </div>
+        <g:render template="/shared/pagination" model="[bs: 4]"/>
 
     </div>
 
@@ -67,7 +87,7 @@
 <script id="htmlViewer" type="text/html">
 
 <div class="container">
-    <div class="row row-cols-1" style="padding:20px;">
+    <div class="row row-cols-1 align-items-start" style="padding:20px;">
         <div class="row">
             <div class="col">
                 <h4 data-bind="text:selectedDocument().name"></h4>
@@ -79,7 +99,7 @@
                 <label><h6>Document type:</h6></label>
             </div>
             <div class="col">
-                <label data-bind="text:mapDocument(selectedDocument().role())"/>
+                <label id="documentType" data-bind="text:mapDocument(selectedDocument().role)"/>
             </div>
         </div>
 
@@ -88,7 +108,7 @@
                 <label><h6>Keywords:</h6></label>
             </div>
             <div class="col">
-                <label data-bind="text:selectedDocument().labels"/>
+                <label id="labels" data-bind="text:selectedDocument().labels"/>
             </div>
         </div>
 
@@ -106,7 +126,7 @@
                 <label><h6>Attribution:</h6></label>
             </div>
             <div class="col">
-                <label data-bind="text:selectedDocument().attribution"/>
+                <label id="attribution" data-bind="text:selectedDocument().attribution"/>
             </div>
         </div>
 
@@ -133,7 +153,7 @@
                 <label><h6>Date uploaded:</h6></label>
             </div>
             <div class="col">
-                <label data-bind="text:selectedDocument().transients.dateCreated"/>
+                <label id="dateCreated" data-bind="text:selectedDocument().transients.dateCreated"/>
             </div>
         </div>
 
@@ -142,7 +162,7 @@
                 <label><h6>Date last modified:</h6></label>
             </div>
             <div class="col">
-                <label data-bind="text:selectedDocument().transients.lastUpdated"/>
+                <label id="lastUpdated" data-bind="text:selectedDocument().transients.lastUpdated"/>
             </div>
         </div>
 
@@ -163,15 +183,15 @@
 </script>
 
 <script id="noPreviewViewer" type="text/html">
-    <span class="instructions">
-        There is no preview available for this file.
-    </span>
+<span class="instructions">
+    There is no preview available for this file.
+</span>
 </script>
 
 <script id="noViewer" type="text/html">
-    <span class="instructions">
-        Select a document to preview it here.
-    </span>
+<span class="instructions">
+    Select a document to preview it here.
+</span>
 </script>
 
 <g:render template="/shared/documentTemplate"></g:render>
@@ -181,11 +201,10 @@
 
     $(window).on('load', function () {
 
-        if (!useExistingModel) {
-
-            var docListViewModel = new DocListViewModel(${documents ?: []});
+        if (useExistingModel) {
+            var allDocListViewModel = new AllDocListViewModel();
             ko.cleanNode(document.getElementById('${containerId}'));
-            ko.applyBindings(docListViewModel, document.getElementById('${containerId}'));
+            ko.applyBindings(allDocListViewModel, document.getElementById('${containerId}'));
         }
     });
 

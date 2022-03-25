@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.WebService
+import grails.converters.JSON
 import grails.core.GrailsApplication
 import org.apache.http.HttpStatus
 import org.springframework.web.util.UriComponents
@@ -17,6 +18,17 @@ class DocumentController {
     DocumentService documentService
     WebService webService
     GrailsApplication grailsApplication
+
+    def list() {
+    }
+
+    /**
+     * This function does an elastic search for documents. All elastic search parameters are supported like fq, max etc.
+     * @return
+     */
+    def allDocumentsSearch(Integer offset, Integer max, String searchTerm, String searchType,  String sort) {
+        render documentService.search(offset, max, searchTerm, searchType, sort) as JSON
+    }
 
     /** Downloads a the file attached to a document stored in the ecodata database */
     def download() {

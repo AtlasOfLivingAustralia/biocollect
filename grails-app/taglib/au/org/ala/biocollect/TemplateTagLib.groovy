@@ -342,7 +342,7 @@ class TemplateTagLib {
                 url = "${createLink(controller: 'site', action: 'list')}";
                 break;
             case 'resources':
-                url = "${createLink(controller: 'document', action: 'list')}";
+                url = "${createLink(controller: 'resource', action: 'list')}";
                 break;
             case 'biocacheexplorer':
                 String fq = ''

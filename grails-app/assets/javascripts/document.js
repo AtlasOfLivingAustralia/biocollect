@@ -83,14 +83,19 @@ function DocumentViewModel (doc, owner, settings) {
     });
 
     self.transients = {};
-    self.transients.dateCreated = new Date();
-    self.transients.lastUpdated = new Date();
+    self.transients.dateCreated = "";
+    self.transients.lastUpdated = "";
 
     if (doc.dateCreated)
         self.transients.dateCreated = moment(doc.dateCreated).format('DD MMM, YYYY');
 
     if (doc.lastUpdated)
         self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
+
+    self.sortBy = ko.observable("dateCreatedSort");
+    self.sortBy.subscribe(function(by) {
+        self.refreshPage();
+    });
 
     this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationText = null;
@@ -99,11 +104,8 @@ function DocumentViewModel (doc, owner, settings) {
         return (self.role() == 'embeddedVideo');
     });
 
-    this.isJournalArticle = ko.computed(function() {
-        if (self.role() == 'journalArticles')
-            return true;
-        else
-            return false;
+    self.transients.isJournalArticle = ko.computed(function() {
+        return (self.role() == 'journalArticles');
     });
 
     this.thirdPartyConsentDeclarationMade.subscribe(function(declarationMade) {
@@ -329,7 +331,11 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
             fileUploadHelper = null;
         }
         else {
-            documentViewModel.labels = documentViewModel.labels().split(',');
+            /*
+            if (documentViewModel.labels())
+                documentViewModel.labels = documentViewModel.labels().split(',');
+
+             */
 
             // There is no file attachment but we can save the document anyway.
             $.post(
@@ -444,6 +450,7 @@ function findDocumentById(documents, id) {
 var DocModel = function (doc) {
     var self = this;
     this.name = doc.name;
+    this.role = doc.role;
     this.attribution = doc.attribution;
     this.filename = doc.filename;
     this.type = doc.type;
@@ -452,11 +459,90 @@ var DocModel = function (doc) {
     this.filetypeImg = function () {
         return imageLocation + "filetypes/" + iconnameFromFilename(self.filename);
     };
+    this.contentType = ko.observable(doc ? doc.contentType : 'application/octet-stream');
+    this.embeddedVideo = ko.observable(doc.embeddedVideo);
+    this.citation = doc.citation;
+    this.doiLink = doc.doiLink;
+    this.description = doc.description;
+    this.labels = doc.labels;
+    this.filename = doc.filename;
+
+    this.transients = {};
+    this.transients.dateCreated = new Date();
+    this.transients.lastUpdated = new Date();
+
+    this.transients.isJournalArticle = function() {
+        return (self.role == 'journalArticles');
+    };
+
+    if (doc.dateCreated)
+        this.transients.dateCreated = moment(doc.dateCreated).format('DD MMM, YYYY');
+
+    if (doc.lastUpdated)
+        this.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
 };
 function DocListViewModel(documents) {
     var self = this;
     this.documents = ko.observableArray($.map(documents, function(doc) { return new DocModel(doc)} ));
 }
+function AllDocListViewModel(eagerLoad) {
+    var self = $.extend(this, new Documents());
+
+    eagerLoad = (eagerLoad !== undefined) ? eagerLoad : true;
+
+    self.pagination = new PaginationViewModel({}, self);
+    self.loading = ko.observable(false);
+    self.searchHasFocus = ko.observable(false);
+    self.documents = ko.observableArray([]);
+    self.searchType = ko.observable('');
+    self.searchTerm = ko.observable('').extend({throttle:400});
+    self.searchTerm.subscribe(function(term) {
+        self.refreshPage(0);
+    });
+    self.sortBy = ko.observable("dateCreatedSort");
+    self.sortBy.subscribe(function(by) {
+        self.refreshPage();
+    });
+
+    self.refreshPage = function(offset) {
+        var params = {offset:offset, max:self.pagination.resultsPerPage()};
+        if (self.searchTerm()) {
+            params.searchTerm = self.searchTerm();
+        }
+        else {
+            params.sort = self.sortBy();
+        }
+
+        params.searchType = self.documentFilterField().fun;
+
+        $.ajax({
+            url:fcConfig.documentSearchUrl,
+            data:params,
+            beforeSend: function () {
+                self.loading(true);
+            },
+            success:function(data) {
+                if (data.hits) {
+                    var docs = data.hits.hits || [];
+                    self.documents($.map(docs, function(hit) {
+                        //hit._source = self;
+                        return new DocModel(hit._source);
+                    }));
+                }
+
+                if (offset == 0) {
+                    self.pagination.loadPagination(0, data.hits.total);
+                }
+            },
+            complete: function () {
+                self.loading(false);
+            }
+        });
+    };
+
+    self.refreshPage(0);
+}
+
 function iconnameFromFilename(filename) {
     if (filename === undefined) { return "blank.png"; }
     var ext = filename.split('.').pop(),

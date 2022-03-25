@@ -7,12 +7,14 @@ import org.springframework.context.MessageSource
  * Proxies to the ecodata DocumentController/DocumentService.
  */
 class DocumentService {
+    private static final String DOCUMENT_FILTER = "className:au.org.ala.ecodata.Document"
     public String ROLE_LOGO = "logo"
 
     def webService, grailsApplication
     MessageSource messageSource
     UserService userService
     ActivityService activityService
+    SearchService searchService
 
     def get(String id) {
         def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${id}"
@@ -79,13 +81,44 @@ class DocumentService {
         updateDocument(link)
     }
 
-    Map search(Map params) {
-        def url = "${grailsApplication.config.ecodata.baseURL}/ws/document/search"
-        def resp = webService.doPost(url, params)
-        if (resp && !resp.error) {
-            return resp.resp
+    Map search(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String user = null) {
+        String searchTextBy = null;
+
+        if (searchType && searchTerm)
+            searchTextBy = searchType + ":" + searchTerm;
+        else
+            searchTextBy = null;
+
+        Map params = [
+                offset:offset,
+                max:max,
+                query:searchTextBy,
+                fq:DOCUMENT_FILTER//,
+                //hub:SettingService.getHubConfig().urlPath
+        ]
+
+        if(user){
+            if(params.fq){
+                params.fq = [ params.fq ]
+            } else {
+                params.fq = []
+            }
+
+            params.fq.push("users:${user}")
         }
-        return resp
+
+        if (sort) {
+            params.sort = sort
+        }
+
+        if (searchType) {
+            params.type = searchType
+        }
+
+        Map results = searchService.fulltextSearch(
+                params, true
+        )
+        results
     }
 
     /**
