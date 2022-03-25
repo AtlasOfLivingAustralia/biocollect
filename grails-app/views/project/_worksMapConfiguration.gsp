@@ -18,7 +18,7 @@
                 <div class="bg-light p-3">
                     <div class="form-check form-group m-0">
                         <input class="form-check-input" type="radio" name="siteType"
-                               data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-link'}), clickBubble: false" value="sitepick"/>
+                               data-bind="checked: surveySiteOption, clickBubble: false" value="sitepick"/>
                         <label class="form-check-label">
                             <a id="site-pick-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-pick"
                                data-bind="click: transients.setSurveySiteOption.bind({value: 'sitepick'})">
@@ -29,9 +29,9 @@
 
                 </div>
 
-                <div id="site-pick" class="collapse p-3"  data-bind="css: { 'in': transients.surveySiteOption == 'sitepick'}">
+                <div id="site-pick" class="collapse p-3"  data-bind="css: { 'show': transients.surveySiteOption == 'sitepick'}">
                     <div class="mt-3" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick'}">
-                        <div data-bind="if: surveySiteOption() === 'sitepick', slideVisible: surveySiteOption() === 'sitepick'">
+                        <div data-bind="if: surveySiteOption() === 'sitepick'">
                             <h5><strong><g:message
                                     code="mapConfiguration.user.pick.site.title"/></strong></h5>
                             <h5><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
@@ -47,7 +47,7 @@
                 <div class="bg-light p-3">
                     <div class="form-group form-check m-0">
                         <input class="form-check-input" type="radio" name="siteType"
-                            data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-create-link'}), clickBubble: false" value="sitecreate"/>
+                            data-bind="checked: surveySiteOption, clickBubble: false" value="sitecreate"/>
                         <label class="form-check-label">
                             <a id="site-create-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-create"
                                data-bind="click: transients.setSurveySiteOption.bind({value:'sitecreate'})">
@@ -57,9 +57,9 @@
                     </div>
                 </div>
 
-                <div id="site-create" class="accordion-body collapse"  data-bind="css: { 'in': transients.surveySiteOption == 'sitecreate' }">
+                <div id="site-create" class="accordion-body collapse"  data-bind="css: { 'show': transients.surveySiteOption == 'sitecreate' }">
                     <div data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitecreate'}">
-                        <div data-bind="if: surveySiteOption() === 'sitecreate', slideVisible: surveySiteOption() === 'sitecreate'">
+                        <div data-bind="if: surveySiteOption() === 'sitecreate'">
                             <h5><strong><g:message
                                     code="mapConfiguration.user.created.site.title"/></strong></h5>
                             <h5><small class="text-muted"><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
@@ -75,7 +75,7 @@
                 <div class="bg-light p-3">
                     <div class="form-check form-group m-0">
                         <input class="form-check-input" type="radio" name="siteType"
-                               data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-create-link'}), clickBubble: false" value="sitepickcreate"/>
+                               data-bind="checked: surveySiteOption, clickBubble: false" value="sitepickcreate"/>
                         <label class="form-check-label">
                             <a id="site-pick-create-link" data-toggle="collapse" data-parent="#site-accordion"
                                href="#site-pick-create" data-bind="click: transients.setSurveySiteOption.bind({value:'sitepickcreate'})">
@@ -85,9 +85,9 @@
                     </div>
                 </div>
 
-                <div id="site-pick-create" class="accordion-body collapse" data-bind="css: { 'in': transients.surveySiteOption == 'sitepickcreate' }">
+                <div id="site-pick-create" class="accordion-body collapse" data-bind="css: { 'show': transients.surveySiteOption == 'sitepickcreate' }">
                     <div data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepickcreate'}">
-                        <div data-bind="if: surveySiteOption() === 'sitepickcreate', slideVisible: surveySiteOption() === 'sitepickcreate'">
+                        <div data-bind="if: surveySiteOption() === 'sitepickcreate'">
                             <h5><strong><g:message
                                     code="mapConfiguration.user.pick.site.title"/></strong></h5>
                             <h5><small class="text-muted"><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h5>
@@ -150,16 +150,16 @@
     <div id="survey-site-list" class="row">
         <div class="col-sm-12">
             <div style="max-height: 500px; overflow-y: auto;">
-                <div class="row" data-bind="if: transients.sites.length > 1">
+                <div class="row no-gutters" data-bind="if: transients.sites.length > 1">
                     <div class="col-sm-6">
-                        <div class="large-checkbox">
+                        <div class="custom-checkbox">
                             <input id="selectall" type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
-                            <label for="selectall"><span></span> <g:message code="mapConfiguration.site.selectall.title"/></label>
+                            <label for="selectall"><g:message code="mapConfiguration.site.selectall.title"/></label>
                         </div>
                     </div>
                 </div>
                 <!-- ko foreach: transients.sites -->
-                <div class="row">
+                <div class="row no-gutters">
                     <div class="col-sm-6">
                         <label class="checkbox">
                             <input type="checkbox" data-bind="checkedValue: $data.siteId, checked: $parent.sites">

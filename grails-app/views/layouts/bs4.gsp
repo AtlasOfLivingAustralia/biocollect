@@ -9,7 +9,9 @@
     <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <title><g:layoutTitle/></title>
     <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
-    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/assets/css/ala-styles.css"/>
+    <g:if test="${hubConfig.templateConfiguration?.header?.type == 'ala' || hubConfig.templateConfiguration?.footer?.type == 'ala'}">
+    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-theme.css"/>
+    </g:if>
     <link href="${g.createLink(controller: 'hub', action: 'generateStylesheet')}?ver=${hubConfig.lastUpdated}" rel="stylesheet"/>
     <asset:stylesheet src="base-bs4.css"/>
     <asset:javascript src="base-bs4.js"/>
@@ -24,24 +26,21 @@
         <a class="skip-link sr-only sr-only-focusable" href="#content">Skip to content</a>
 
     <g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
-        <div id="ala-header-bootstrap2" class="do-not-mark-external hidden-print">
-            <hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}"/>
-        </div>
-        <div id="content-starting-point"></div>
+        <hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}" fluidLayout="false"/>
     </g:if>
     <g:elseif test="${hubConfig.templateConfiguration.header.type == 'custom'}">
         <nav class="navbar navbar-expand-lg navbar-dark navbar-alt">
-            <div class="container-fluid flex-column flex-md-row align-items-center">
-                <div>
+            <div class="container-fluid d-flex flex-nowrap align-items-center">
+                <div class="align-self-lg-start">
                     <g:if test="${hubConfig.logoUrl}">
                     <!-- Your site title as branding in the menu -->
-                    <a href="${g.createLink(uri: "/")}" class="custom-logo-link navbar-brand" rel="home" itemprop="url">
-                        <img src="${hubConfig.logoUrl}" />
+                    <a href="${g.createLink(uri: "/")}" class="custom-logo-link" rel="home" itemprop="url">
+                        <img class="hub-logo col-6 col-md-4 col-lg-2" src="${hubConfig.logoUrl}" />
                     </a> <!-- end custom logo -->
                     </g:if>
                 </div>
 
-                <div class="outer-nav-wrapper">
+                <div class="outer-nav-wrapper align-self-lg-end">
 
                     <div class="main-nav-wrapper">
                         <a href="javascript:" class="navbar-toggler order-3 order-lg-2" type="button"
@@ -53,7 +52,7 @@
 
                         <!-- The Main Menu goes here -->
                         <div id="navbarNavDropdown" class="collapse navbar-collapse offcanvas-collapse">
-                            <ul class="navbar-nav ml-auto">
+                            <ul class="navbar-nav ml-auto flex-lg-wrap">
                                 <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                                     <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
                                         <config:getLinkFromConfig config="${link}"
@@ -85,8 +84,8 @@
                 <g:if test="${pageProperty(name: 'page.slider')}">
                     <g:pageProperty name="page.slider"></g:pageProperty>
                 </g:if>
-                <g:elseif test="${bannerURL || banner}">
-                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${bannerURL? "": "no-image"} ${pageProperty(name: 'page.projectLogo')}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
+                <g:else>
+                    <div id="banner" class="page-banner ${pageProperty(name: 'meta.bannerClass') ?: ''} ${pageProperty(name: 'page.projectLogo')}" style="${bannerURL ? "background-image: url('${bannerURL}');" : ""}">
                         <g:if test="${pageProperty(name: 'page.bannertitle')}">
                             <div class="banner-title">
                                 <h1><g:pageProperty name="page.bannertitle"></g:pageProperty></h1>
@@ -94,45 +93,23 @@
                         </g:if>
                         ${raw(banner?:"")}
                     </div>
-                </g:elseif>
-                <g:else>
-                    <div id="banner" class="no-image no-content">
-                        <g:if test="${pageProperty(name: 'page.bannertitle')}">
-                            <div class="banner-title">
-                                <h1><g:pageProperty name="page.bannertitle"></g:pageProperty></h1>
-                            </div>
-                        </g:if>
-                    </div>
                 </g:else>
                 <g:set var="tabList" value="${pageProperty(name: 'page.tab')}"/>
                 <g:if test="${tabList}">
                     <div class="nav-row">
-                        <div class="container">
+                        <div class="container-fluid">
                             ${raw(tabList)}
                         </div>
                     </div>
                 </g:if>
-%{--                <g:else>--}%
-%{--                    <div class="nav-row nav-row-height">--}%
-%{--                        <div class="container">--}%
-%{--                            <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">--}%
-%{--                            </ul>--}%
-%{--                        </div>--}%
-%{--                    </div>--}%
-%{--                </g:else>--}%
                 <div id="titleBar">
                     <div class="container-fluid">
                         <div class="row d-flex title-row">
-%{--                            <g:if test="${hubConfig.logoUrl}">--}%
-%{--                                <div class="col-12 col-lg-auto flex-shrink-1 d-flex mb-4 mb-lg-0 justify-content-center justify-content-lg-end">--}%
-%{--                                    <div class="main-image">--}%
-%{--                                        <img src="${hubConfig.logoUrl}" alt="<g:message code="hub.logo.alttext"/> ${hubConfig.title}">--}%
-%{--                                    </div>--}%
-%{--                                </div>--}%
-%{--                            </g:if>--}%
-
+                            <div class="col col-lg-6 d-flex align-items-center justify-content-start">
+                                <g:render template="/layouts/breadcrumb"/>
+                            </div>
                             <g:if test="${pageProperty(name: 'page.pagefinderbuttons')}">
-                                <div class="col d-flex align-items-center justify-content-center justify-content-lg-end">
+                                <div class="col col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-end">
                                     <g:pageProperty name="page.pagefinderbuttons"/>
                                 </div>
                             </g:if>
@@ -146,9 +123,7 @@
         </main>
     </div>
     <g:if test="${hubConfig.templateConfiguration.footer.type == 'ala'}">
-        <div id="ala-footer-bootstrap2 hidden-print">
-            <hf:footer/>
-        </div>
+        <hf:footer/>
     </g:if>
     <g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
         <footer class="site-footer footer-alt" id="custom-footer">
@@ -217,7 +192,7 @@
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-            ga('create', 'UA-4355440-1', 'auto');
+            ga('create', '${grailsApplication.config.googleAnalyticsID}', 'auto');
             ga('send', 'pageview');
         </script>
         <!-- End Google Analytics -->

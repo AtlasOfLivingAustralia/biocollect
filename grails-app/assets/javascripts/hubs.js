@@ -477,13 +477,11 @@ function ContentViewModel(config) {
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
-    self.isContainer = ko.observable(config.isContainer || false);
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
     self.bushfireCategories = ko.observable(config.bushfireCategories || false);
     self.hideProjectFinderHelpButtons = ko.observable(config.hideProjectFinderHelpButtons || false);
-    self.hideProjectFinderStatusIndicatorTile = ko.observable(config.hideProjectFinderStatusIndicatorTile || false);
     self.hideProjectFinderStatusIndicatorList = ko.observable(config.hideProjectFinderStatusIndicatorList || false);
     self.hideProjectFinderProjectTags = ko.observable(config.hideProjectFinderProjectTags || false);
     self.hideProjectFinderNoImagePlaceholderList = ko.observable(config.hideProjectFinderNoImagePlaceholderList || false);

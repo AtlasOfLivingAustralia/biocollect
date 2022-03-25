@@ -6,7 +6,7 @@
 <head>
     <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
     <meta name="bannerClass" content="project-banner"/>
@@ -14,6 +14,7 @@
     <asset:stylesheet src="project-index-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -113,11 +114,10 @@
         projectNotificationUrl: "${raw(createLink(controller: 'project', action: 'sendEmailToMembers', params: [id: project.projectId]))}",
         projectTestNotificationUrl: "${raw(createLink(controller: 'project', action: 'sendTestEmail', params: [id: project.projectId]))}",
         opportunisticDisplayName: "<g:message code="facets.methodType.opportunistic"/>",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            surveyMethods: <fc:getSurveyMethods/>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        surveyMethods: <fc:getSurveyMethods/>
         </g:applyCodec>
         },
         here = window.location.href;
@@ -167,7 +167,7 @@
         </g:if>
         <g:else>
             <content tag="tab">
-                <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
+                <ul class="nav nav-tabs" id="ul-main-project" data-tabs="tabs" role="tablist">
                     <fc:tabList tabs="${projectContent}"/>
                 </ul>
             </content>

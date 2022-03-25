@@ -1,17 +1,6 @@
 @import 'settings';
 @import "bootstrap/bootstrap";
-
-@import 'partials/swiper';
-//@import "partials/jqueryui-datepicker";
-
-@import "partials/header";
-@import "partials/footer";
-@import "partials/common";
-@import "partials/hero";
-@import "partials/modal";
-@import "partials/posts";
-@import "partials/catalogue";
-@import "partials/project";
+@import 'partials/partials';
 
 .btn-space>.btn {
   margin-top: .25rem;
@@ -81,9 +70,14 @@ $social-text-color: white !default;
 
 $menu-text-color: white !default;
 $menu-background-color: black !default;
+@include media-breakpoint-up(lg) {
+  #page #wrapper-navbar .navbar {
+    background-color: $menu-background-color;
+    color: $menu-text-color;
+  }
+}
 #page #wrapper-navbar .navbar {
   background-color: rgba($menu-background-color, 0.6);
-  color: $menu-text-color;
 }
 
 .homePageNav .homepage-button {

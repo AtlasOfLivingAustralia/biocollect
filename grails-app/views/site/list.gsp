@@ -4,12 +4,13 @@
 <head>
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
     <title>${title}</title>
-%{--    <meta name="layout" content="${hubConfig.skin}"/>--}%
     <meta name="layout" content="bs4"/>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
-        var fcConfig = {
+    </script>
+    var fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -25,12 +26,10 @@
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            </g:applyCodec>
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             myFavourites: "${myFavourites}"
-        }
-    </script>
+            </g:applyCodec>
+    }
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
     <asset:javascript src="common-bs4.js"/>
@@ -79,7 +78,7 @@
                     </div>
                     <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
                         <div class="btn-group">
-                            <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
+                            <div id="siteListResultTab" class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
                                 <a type="button" class="btn btn-outline-dark active" id="list-tab" data-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
                                         class="fas fa-th-large"></i></a>
                                 <a type="button" class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i

@@ -13,16 +13,16 @@
                 <span>Validation failed</span>
                 <ol>
                     <li data-bind="visible:!isInfoValid()">
-                        All mandatory fields in survey info tab needs to be filled. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}">Fill survey info</div>
+                        All mandatory fields in survey info tab needs to be filled. <div class="btn btn-sm btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-info-tab'}">Fill survey info</div>
                     </li>
                     <li data-bind="visible: !areSpeciesValid()">
-                        Survey species constrain not set. <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Set species</div>
+                        Survey species constrain not set. <div class="btn btn-sm btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}">Set species</div>
                     </li>
                     <li data-bind="visible: !$root.isPActivityFormNameFilled()">
-                        Survey data entry template not set.  <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}">Set template</div>
+                        Survey data entry template not set.  <div class="btn btn-sm btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}">Set template</div>
                     </li>
                     <li data-bind="visible: !$root.isSiteSelected()">
-                        Site not selected for this survey <div class="btn btn-mini btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Choose survey site(s)</div>
+                        Site not selected for this survey <div class="btn btn-sm btn-primary" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Choose survey site(s)</div>
                     </li>
                 </ol>
             </div>

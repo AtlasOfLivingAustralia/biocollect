@@ -4,18 +4,20 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>Create | Organisation | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="New Organisation"/>
 
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
             organisationViewUrl: "${createLink(action: 'index')}",
             documentUpdateUrl: "${createLink(controller: "proxy", action: "documentUpdate")}",
             returnTo: "${params.returnTo}"
+        </g:applyCodec>
             };
     </asset:script>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>

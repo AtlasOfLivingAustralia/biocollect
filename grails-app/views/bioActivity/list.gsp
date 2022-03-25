@@ -5,13 +5,14 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${title} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <g:set var="wsParameters" value="${[version: params.version, spotterId: "${spotterId}", projectActivityId: "${projectActivityId}"]}"/>
     <asset:stylesheet src="data-manifest.css"/>
     <asset:script type="text/javascript">
         var fcConfig = {
+            <g:applyCodec encodeAs="none">
                 intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -50,11 +51,10 @@
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
             occurrenceUrl: "${raw(occurrenceUrl)}",
             spatialUrl: "${spatialUrl}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            </g:applyCodec>
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
+            </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
@@ -68,20 +68,20 @@
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
+<content tag="bannertitle">
+    ${title}
+</content>
+<g:if test="${hubConfig.quickLinks}">
 <div class="container-fluid">
     <div class="row">
-        %{--page title--}%
-        <div class="col-12 col-md-4">
-            <h2>${title}</h2>
-        </div>
         %{-- quick links --}%
-        <div class="col-12 col-md-8">
+        <div class="col-12">
             <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
         </div>
         %{--quick links END--}%
     </div>
 </div>
-
+</g:if>
 <div class="main-content">
     <g:render template="/bioActivity/activities"/>
 </div>

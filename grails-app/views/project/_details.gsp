@@ -221,19 +221,15 @@
                     <p><g:message code="project.details.associatedOrgs.extra"/></p>
 
                     <div id="associatedOrgList">
-                        <g:set var="noImageUrl" value="${asset.assetPath(src: "no-image-2.png")}"/>
+                        <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
                         <!-- ko foreach: associatedOrgs -->
                         <div class="row">
                             <div class="col-4" data-bind="text: name"></div>
 
                             <div class="col-4">
-                                <div data-bind="if: logo && logo.startsWith('https')">
+                                <div data-bind="if: logo">
                                     <img src="" data-bind="attr: {src: logo}" alt="Organisation logo"
-                                         class="small-logo">
-                                </div>
-
-                                <div data-bind="if: !logo || !logo.startsWith('https')">
-                                    <img src="${noImageUrl}" alt="Organisation logo" class="small-logo">
+                                         class="small-logo" onerror="imageError(this, '${noImageUrl}');">
                                 </div>
                             </div>
 

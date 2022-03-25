@@ -197,17 +197,6 @@ function MapConfiguration(config, project)
         return results && results.length > 0
     };
 
-    self.transients.toggleSiteOptionPanel = function() {
-        var id = this.accordionLinkId;
-        // Need to trigger a click event to have consistent accordion behaviour.
-        // Programatically calling collapse function does not close open accordion panel.
-        setTimeout(function () {
-            $(id).trigger('click');
-        }, 0);
-
-        return true;
-    };
-
     self.isUserSiteCreationConfigValid = function () {
         if (!(self.allowPolygons() || self.allowPoints() || self.allowLine())) {
             return "Configuration not valid - Either points, polygon or line drawing should be enabled."

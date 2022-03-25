@@ -4,13 +4,14 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>Upload | Sites | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <meta name="breadcrumb" content="Upload Sites"/>
 
     <asset:script type="text/javascript">
         var fcConfig = {
+                <g:applyCodec encodeAs="none">
             serverUrl: "${grailsApplication.config.grails.serverURL}",
                 spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
                 spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
@@ -19,7 +20,7 @@
                 sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
                 saveSitesUrl: "${createLink(action: 'createSitesFromShapefile')}",
                 siteUploadProgressUrl: "${createLink(action: 'siteUploadProgress')}"
-
+                </g:applyCodec>
             },
             returnTo = "${params.returnTo}";
     </asset:script>
@@ -53,8 +54,8 @@
             <div class="mb-5"></div>
             <input id="shapefile" type="file" accept="application/zip" name="shapefile"/>
             <button class="btn btn-primary-dark" id="uploadShapeFile" type="button"
-                    onclick="$(this).parent().submit();">Upload Shapefile</button>
-            <button class="btn btn-dark" id="cancel" type="button">Cancel</button>
+                    onclick="$(this).parent().submit();"><i class="fas fa-file-upload"></i> Upload Shapefile</button>
+            <button class="btn btn-dark" id="cancel" type="button"><i class="far fa-times-circle"></i> Cancel</button>
         </g:uploadForm>
     </div>
     </g:if>

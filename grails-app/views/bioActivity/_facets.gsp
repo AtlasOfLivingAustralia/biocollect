@@ -8,7 +8,7 @@
         <!-- ko foreach : selectedFilters -->
             <li>
                 <span data-bind="text: facetDisplayName"></span>: <span data-bind="text: term"></span>
-                <a data-bind="click: $parent.removeFilter" class="btn btn-inverse btn-mini tooltips" title="remove filter">X</a>
+                <a data-bind="click: $parent.removeFilter" class="btn btn-inverse btn-sm tooltips" title="remove filter">X</a>
             </li>
         <!-- /ko -->
         </ul>

@@ -58,7 +58,7 @@ class HubSettings extends JSONObject {
      */
     public Map getHomePageControllerAndAction() {
         if (overridesHomePage()) {
-            def regexp = "\\/(.*)\\/(.*)"
+            def regexp = "\\/(.+)\\/(.+)\\b"
             def matcher = (optString('homePagePath', '') =~ regexp)
             if (matcher.matches()) {
                 def controller = matcher[0][1]

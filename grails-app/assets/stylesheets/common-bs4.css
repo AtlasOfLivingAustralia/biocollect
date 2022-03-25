@@ -66,7 +66,7 @@
 .project-logo {
     width: 200px;
     height: 150px;
-    /*line-height: 146px;*/
+    line-height: 146px;
     overflow: hidden;
     padding: 3px;
     text-align: center;
@@ -107,6 +107,7 @@
     background: orange;
     color: white;
     padding: 4px;
+    margin-right: 6px;
     white-space: nowrap;
 }
 
@@ -193,7 +194,11 @@
  *= require jquery.validationEngine/3.1.0/validationEngine.jquery.css
 */
 /* END needed by project index, edit pages */
-
+/*search sites*/
+div.dataTables_wrapper div.dataTables_filter input{
+    margin-left: 0;
+}
+/*end search sites*/
 /** Permissions table */
 .dataTables_length > label{
     width: 100%;

@@ -31,11 +31,13 @@ class TemplateTagLib {
     }
 
     boolean isUrlActivePage(String url) {
-        String qString = request.getQueryString()
-        qString = qString ? '?' + qString : ''
-        String rUrl = "${request.requestURI}${qString}"
-        String fUrl =  "${request.forwardURI}${qString}"
-        rUrl?.endsWith(url) || fUrl?.endsWith(url)
+        if(url) {
+            String qString = request.getQueryString()
+            qString = qString ? '?' + qString : ''
+            String rUrl = "${request.requestURI}${qString}"
+            String fUrl =  "${request.forwardURI}${qString}"
+            rUrl?.endsWith(url) || fUrl?.endsWith(url)
+        }
     }
 
     /**
@@ -265,15 +267,6 @@ class TemplateTagLib {
         }
 
         out << icon
-    }
-
-    def getStyleSheet = { attrs ->
-        if(attrs.file){
-            def scss = grailsApplication.parentContext.getResource("css/template/${attrs.file}")
-            if(scss.exists()){
-                out << scss.inputStream.text;
-            }
-        }
     }
 
     def optionalContent = { attrs, body ->
