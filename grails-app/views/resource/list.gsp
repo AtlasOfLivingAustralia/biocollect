@@ -11,7 +11,6 @@
     <meta name="breadcrumb" content="${title}"/>
     <script>
         var fcConfig = {
-            listDocumentsUrl: '${createLink(controller: 'document', action: 'elasticsearch')}',
             pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
             documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}"
         }

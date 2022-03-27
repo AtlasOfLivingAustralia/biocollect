@@ -10,7 +10,7 @@
  * @param owner an object containing key and value properties identifying the owning entity for the document. eg. {key:'projectId', value:'the_id_of_the_owning_project'}
  * @constructor
  */
-function DocumentViewModel (doc, owner, settings) {
+    function DocumentViewModel (doc, owner, settings) {
     var self = this;
 
     var defaults = {
@@ -91,11 +91,6 @@ function DocumentViewModel (doc, owner, settings) {
 
     if (doc.lastUpdated)
         self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
-
-    self.sortBy = ko.observable("dateCreatedSort");
-    self.sortBy.subscribe(function(by) {
-        self.refreshPage();
-    });
 
     this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationText = null;
@@ -326,17 +321,14 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
     // We are keeping the reference to the helper here rather than the view model as it doesn't serialize correctly
     // (i.e. calls to toJSON fail).
     documentViewModel.save = function() {
+        if (documentViewModel.labels())
+            documentViewModel.labels = documentViewModel.labels().split(',');
+
         if (documentViewModel.filename() && fileUploadHelper !== undefined) {
             fileUploadHelper.submit();
             fileUploadHelper = null;
         }
         else {
-            /*
-            if (documentViewModel.labels())
-                documentViewModel.labels = documentViewModel.labels().split(',');
-
-             */
-
             // There is no file attachment but we can save the document anyway.
             $.post(
                 uploadUrl,
@@ -505,15 +497,16 @@ function AllDocListViewModel(eagerLoad) {
     });
 
     self.refreshPage = function(offset) {
-        var params = {offset:offset, max:self.pagination.resultsPerPage()};
+        var params = {offset: offset, max: self.pagination.resultsPerPage()};
         if (self.searchTerm()) {
             params.searchTerm = self.searchTerm();
-        }
-        else {
+        } else {
             params.sort = self.sortBy();
         }
 
-        params.searchType = self.documentFilterField().fun;
+        if (self.documentFilterField()) {
+            params.searchType = self.documentFilterField().fun;
+        }
 
         $.ajax({
             url:fcConfig.documentSearchUrl,

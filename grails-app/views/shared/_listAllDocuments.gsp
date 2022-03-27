@@ -13,24 +13,26 @@
             <h2>Resources</h2>
         </g:else>
 
-        <div class="form-group d-flex search-resources">
-            <label for="searchText" class="sr-only">Search Resources</label>
+        <div class="input-group col-12 search-resources">
+            <label for="searchResources" class="sr-only">Search Resources</label>
             <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                 <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
                     <g:if test="${link.contentType == 'resources'}">
-                        <input class="form-control" id="searchText" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
+                        <input class="form-control" id="searchResources" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
                                placeholder="Search ${link.displayName}..." aria-label="Search documents..." aria-describedby="org-search-button"/>
                     </g:if>
                 </g:each>
             </g:if>
             <g:else>
-                <input class="form-control" id="searchText" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
+                <input class="form-control" id="searchResources" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
                        placeholder="Search Resources..." aria-label="Search documents..." aria-describedby="org-search-button"/>
             </g:else>
 
-            <label for="searchType" class="sr-only">Sort by</label>
-            <select id="searchType" class="form-control custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Sort Order">
-            </select>
+            <div class="input-group-append">
+                <label for="searchType" class="sr-only">Filter by</label>
+                <select id="searchType" class="custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Filter">
+                </select>
+            </div>
 
             <div class="col-md-4 text-right mt-2 mt-md-0">
                 <label for="sortBy" class="col-form-label">Sort by</label>
