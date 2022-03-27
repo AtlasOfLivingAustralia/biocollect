@@ -79,6 +79,7 @@
         methoddocumentUpdateUrl: "${raw(createLink(controller:"image", action:"upload", params:[role: "methodDoc"]))}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${asset.assetPath(src:'')}",
+        documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
