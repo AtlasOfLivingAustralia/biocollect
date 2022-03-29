@@ -30,8 +30,12 @@ class HomeController {
         if (hubSettings.overridesHomePage()) {
             if(hubSettings.isHomePagePathSimple()){
                 Map result = hubSettings.getHomePageControllerAndAction()
-                forward(result)
-                return
+                if (result.controller != "home" && result.action != "index") {
+                    forward(result)
+                    return
+                } else {
+                    log.warn("Infinite loop trigger: ${request.getRequestURI()} ${params.toString()}")
+                }
             } else {
                 redirect([uri: hubSettings['homePagePath'] ])
                 return;
