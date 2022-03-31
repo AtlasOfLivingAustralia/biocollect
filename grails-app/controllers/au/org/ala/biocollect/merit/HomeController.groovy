@@ -26,7 +26,7 @@ class HomeController {
     }
 
     def index() {
-        forward(controller: 'hub', action: 'index')
+        forward(uri: '/hub/index')
     }
 
     def projectFinder() {
