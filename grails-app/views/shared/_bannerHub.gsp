@@ -33,13 +33,16 @@
                 loop: true,
                 slidesPerView: 1,
                 spaceBetween: 0,
-                speed: ${hubConfig?.templateConfiguration?.banner?.transitionSpeed ?: 1000},
+                speed: 500,
                 autoplay: {
-                    delay: 5000,
+                    delay: ${hubConfig?.templateConfiguration?.banner?.transitionSpeed ?: 1000},
                     disableOnInteraction: false
                 },
                 preventClicks: false,
                 effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
                 preloadImages: false,
                 lazy: {
                     loadPrevNext: true,

@@ -80,9 +80,13 @@ $menu-background-color: black !default;
   background-color: rgba($menu-background-color, 0.6);
 }
 
+$homepage-background-btn: $menu-background-color !default;
+$homepage-text-btn: $menu-text-color !default;
 .homePageNav .homepage-button {
-  background-color: $menu-background-color;
-  color: $menu-text-color;
+  background-color: $homepage-background-btn;
+  h3 {
+    color: $homepage-text-btn;
+  }
 }
 
 // carousel #hubCarouselBanner

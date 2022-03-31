@@ -627,6 +627,13 @@ class FCTagLib {
         }
     }
 
+    def homePageIntro = { attrs ->
+        def content = settingService.getSettingText(SettingPageType.INTRO) as String
+        if (content) {
+            out << content.markdownToHtml()
+        }
+    }
+
     /**
      * Output HTML content for the requested SettingPageType
      *

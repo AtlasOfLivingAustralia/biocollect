@@ -88,6 +88,16 @@
     ${hubConfig.title}
 </content>
 <g:render template="/shared/bannerHub"/>
+<g:set var="intro" value="${fc.homePageIntro()}"/>
+<g:if test="intro">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                ${intro}
+            </div>
+        </div>
+    </div>
+</g:if>
 <section id="catalogueSection">
     <div id="project-finder-container">
         <div class="container-fluid show expander projects-container">
