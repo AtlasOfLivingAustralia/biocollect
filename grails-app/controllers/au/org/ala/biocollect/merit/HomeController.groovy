@@ -1,6 +1,6 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.hub.HubSettings
+
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 
@@ -26,22 +26,7 @@ class HomeController {
     }
 
     def index() {
-        HubSettings hubSettings = SettingService.hubConfig
-        if (hubSettings.overridesHomePage()) {
-            if(hubSettings.isHomePagePathSimple()){
-                Map result = hubSettings.getHomePageControllerAndAction()
-                if (result.controller != "home" && result.action != "index") {
-                    forward(result)
-                    return
-                } else {
-                    log.warn("Infinite loop trigger: ${request.getRequestURI()} ${params.toString()}")
-                }
-            } else {
-                redirect([uri: hubSettings['homePagePath'] ])
-                return;
-            }
-        }
-        return projectFinder()
+        forward(controller: 'hub', action: 'index')
     }
 
     def projectFinder() {

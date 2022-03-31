@@ -116,7 +116,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="my-5" id="content">
+                <div class="my-1" id="content">
                     <g:layoutBody/>
                 </div>
             </article>

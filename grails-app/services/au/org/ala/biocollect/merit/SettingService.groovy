@@ -11,11 +11,11 @@ import grails.util.Environment
 import groovy.text.GStringTemplateEngine
 import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.scheduling.annotation.Async
 import org.springframework.web.context.request.RequestAttributes
 
 import static groovyx.gpars.GParsPool.withPool
+
 //import grails.plugin.cache.Cacheable
 
 class SettingService {
@@ -349,6 +349,8 @@ class SettingService {
                 ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : ""}
                 ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : ""}
                 ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : ""}
+                ${styles?.homepageButtonBackgroundColor ? "\$homepage-background-btn: true;\$homepage-background-btn: ${styles?.homepageButtonBackgroundColor};" : ""}
+                ${styles?.homepageButtonTextColor ? "\$homepage-text-btn: true;\$homepage-text-btn: ${styles?.homepageButtonTextColor};" : ""}
                 ${input.getInputStream().text}
                 """
 

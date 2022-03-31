@@ -8,7 +8,6 @@
     <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
-    </script>
     var fcConfig = {
             <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -30,6 +29,7 @@
             myFavourites: "${myFavourites}"
             </g:applyCodec>
     }
+    </script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
     <asset:javascript src="common-bs4.js"/>
