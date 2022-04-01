@@ -2,11 +2,18 @@
     <div class="accordion">
         <div class="card">
             <div class="card-header">
-                <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section1" aria-expanded="false" aria-controls="cs-about-section1">
-                    <h2 class="p-0 mb-0">
-                        ${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}
-                    </h2>
-                </button>
+                <div class="row">
+                    <div class="col-auto">
+                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-up about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1"></i></h2>
+                    </div>
+                    <div class="col-11">
+                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
+                            <h2 class="p-0 mb-0">
+                                ${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}
+                            </h2>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="collapse show" id="cs-about-section1">
                 <div class="card-body">
@@ -29,12 +36,22 @@
         </div>
         <div class="card">
             <div class="card-header">
-                <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2">
-                    <h2 class="p-0 mb-0" data-bind="visible:projectType() == 'survey'"><g:message code="project.display.involved" /></h2>
-                    <h2 class="p-0 mb-0" data-bind="visible:projectType() != 'survey'">
-                        ${hubConfig.getTextForProjectInformation(grailsApplication.config.content.defaultOverriddenLabels)}
-                    </h2>
-                </button>
+                <div class="row">
+                    <div class="col-auto">
+                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2"></i></h2>
+                    </div>
+                    <div class="col-11">
+                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2">
+                            <h2 class="p-0 mb-0" data-bind="visible:projectType() == 'survey'">
+                                <g:message code="project.display.involved" />
+                            </h2>
+                            <h2 class="p-0 mb-0" data-bind="visible:projectType() != 'survey'">
+                                ${hubConfig.getTextForProjectInformation(grailsApplication.config.content.defaultOverriddenLabels)}
+                            </h2>
+                        </button>
+
+                    </div>
+                </div>
             </div>
             <div class="collapse" id="cs-about-section2">
                 <div class="card-body">
@@ -154,9 +171,17 @@
     <g:if test="${projectSite?.extent?.geometry}">
         <div class="card">
             <div class="card-header">
-                <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
-                    <h2 class="p-0 mb-0">${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
-                </button>
+                <div class="row">
+                    <div class="col-auto">
+                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4"></i></h2>
+                    </div>
+                    <div class="col-11">
+                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
+                            <h2 class="p-0 mb-0">
+                                ${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="collapse" id="cs-about-section4">
                 <div class="card-body">
@@ -172,9 +197,16 @@
     <!-- ko if:associatedOrgs().length > 0 -->
         <div class="card">
             <div class="card-header">
-                <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section3" aria-expanded="false" aria-controls="cs-about-section3">
-                    <h2 class="p-0 mb-0"><g:message code="project.display.associatedOrgs"/></h2>
-                </button>
+                <div class="row">
+                    <div class="col-auto">
+                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section3" aria-expanded="false" aria-controls="cs-about-section3"></i></h2>
+                    </div>
+                    <div class="col-11">
+                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section3" aria-expanded="false" aria-controls="cs-about-section3">
+                            <h2 class="p-0 mb-0"><g:message code="project.display.associatedOrgs"/></h2>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="collapse" id="cs-about-section3">
                 <div class="card-body" data-bind="template:{name:'associated-orgs'}"></div>
@@ -183,9 +215,16 @@
     <!-- /ko -->
         <div class="card">
             <div class="card-header">
-                <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section5" aria-expanded="false" aria-controls="cs-about-section5">
-                    <h2 class="p-0 mb-0"><g:message code="project.display.other"/></h2>
-                </button>
+                <div class="row">
+                    <div class="col-auto">
+                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section5" aria-expanded="false" aria-controls="cs-about-section5"></i></h2>
+                    </div>
+                    <div class="col-11">
+                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section5" aria-expanded="false" aria-controls="cs-about-section5">
+                            <h2 class="p-0 mb-0"><g:message code="project.display.other"/></h2>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="collapse" id="cs-about-section5">
                 <div class="card-body">
@@ -363,4 +402,17 @@
     </div>
     <!-- /ko -->
 </div>
+</script>
+<script>
+    $("#cs-about .collapse").on("shown.bs.collapse hidden.bs.collapse", function (event) {
+        var child = $(this).parent().find('.card-header .about-chevron-selector');
+        switch (event.type) {
+            case 'shown':
+                child.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                break;
+            case 'hidden':
+                child.addClass('fa-chevron-down').removeClass('fa-chevron-up');
+                break;
+        }
+    });
 </script>

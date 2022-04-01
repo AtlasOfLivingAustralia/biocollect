@@ -101,12 +101,10 @@
 }
 
 .select2-selection__placeholder, .select2-selection__rendered {
-    font-size: 90%;
     color: #565656;
 }
 
 .select2-selection__rendered {
-    font-size: 80%;
     color: #565656;
 }
 
