@@ -1,5 +1,5 @@
 <div class="row">
-        <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
+        <g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
         <table data-table-list class="table">
             <tbody data-bind="foreach:pageProjects">
                 <tr data-bind="attr: {id: transients.projectId}">

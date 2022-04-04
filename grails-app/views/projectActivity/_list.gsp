@@ -43,15 +43,15 @@
 
     %{--    </div>--}%
     <!-- /ko -->
-    <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
+    <g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
 
     <!-- ko foreach: projectActivities -->
     <!-- ko if: published() -->
     <div class="survey row">
         <div class="col-12 col-md-4 col-lg-3">
-            <div class="image">
+            <div class="image d-flex justify-content-center align-content-center">
                 <img alt="No image" class="image-logo" data-bind="attr:{alt:name, src: transients.logoUrl()}" src=""
-                     onload="findLogoScalingClass(this)" onerror="imageError(this, '${noImageUrl}');"/>
+                     onload="findLogoScalingClass(this);addClassForImage(this, '${noImageUrl}', 'w-25');" onerror="imageError(this, '${noImageUrl}');"/>
 
                 <div class="status">
                     <div class="dayscount"

@@ -929,7 +929,7 @@ var ActivityRecordViewModel = function (activity) {
     self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.parent = activity.parent;
-    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "biocollect-logo-dark.png");
+    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "font-awesome/5.15.4/svgs/regular/image.svg");
     self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
 
     self.records = ko.observableArray();

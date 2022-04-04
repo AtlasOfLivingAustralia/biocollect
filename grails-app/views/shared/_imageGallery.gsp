@@ -1,4 +1,5 @@
 <bc:koLoading>
+    <g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
     <div class="image-gallery">
         <g:render template="/shared/pagination" model="[bs: 4]"/>
         <div class="thumbnails row">
