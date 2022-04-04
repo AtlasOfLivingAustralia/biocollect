@@ -56,9 +56,9 @@
                         <td class="col-3">
                             <g:if test="${canEditSites}">
                                 <span class="btn-group">
-                                    <a type="button" data-bind="click:$root.editSite" type="button" class="btn btn-sm btn-dark"><i class="fas fa-pencil-alt" title="Edit ${wordForSite.capitalize()}"></i></a>
-                                    <a type="button" data-bind="click:$root.viewSite" type="button" class="btn btn-sm btn-dark"><i class="far fa-eye" title="View ${wordForSite.capitalize()}"></i></a>
-                                    <a type="button" data-bind="click:$root.deleteSite" type="button" class="btn btn-sm btn-danger"><i class="far fa-trash-alt" title="Delete ${wordForSite.capitalize()}"></i></a>
+                                    <a data-bind="click:$root.editSite" type="button" class="btn btn-sm btn-dark"><i class="fas fa-pencil-alt" title="Edit ${wordForSite.capitalize()}"></i></a>
+                                    <a data-bind="click:$root.viewSite" type="button" class="btn btn-sm btn-dark"><i class="far fa-eye" title="View ${wordForSite.capitalize()}"></i></a>
+                                    <a data-bind="click:$root.deleteSite" type="button" class="btn btn-sm btn-danger"><i class="far fa-trash-alt" title="Delete ${wordForSite.capitalize()}"></i></a>
                                 </span>
                             </g:if>
                         </td>
