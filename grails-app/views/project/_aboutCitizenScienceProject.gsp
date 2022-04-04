@@ -381,24 +381,30 @@
 <div class="row" id="associatedOrgs" data-bind="visible: associatedOrgs().length > 0">
     <!-- ko foreach: associatedOrgs -->
     <div class="col-6 col-md-4 col-xl-2 associated-org thumbnail">
-        <div data-bind="visible: url">
-            <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external">
+        <!-- ko if: url -->
+            <a href="#" data-bind="attr: {href: url}" target="_blank" class="do-not-mark-external d-flex justify-content-center align-items-center">
 
-                <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
+                <g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
 
                 %{--Use 'if' instead of 'visible' to prevent creating child elements that potentially will source non https content--}%
-                <div data-bind="if: logo"><img src="" data-bind="attr: {src: logo, title: name}"
+                <!-- ko if: logo -->
+                <img src="" data-bind="attr: {src: logo, title: name}"
                                                                             alt="Organisation logo" class="small-logo"
-                                               onerror="imageError(this, '${noImageUrl}');"></div>
+                                               onerror="imageError(this, '${noImageUrl}');"
+                                               onload="addClassForImage(this, '${noImageUrl}', 'w-25')">
+                <!-- /ko -->
             </a>
-        </div>
+        <!-- /ko -->
 
-        <div data-bind="visible: !url">
-            <div data-bind="visible: logo"><img src="" data-bind="attr: {src: logo, title: name}"
-                                                alt="Organisation logo" class="small-logo"></div>
+        <!-- ko if: !url -->
+            <div class="d-flex justify-content-center align-items-center" data-bind="visible: logo">
+                <img src="" data-bind="attr: {src: logo, title: name}"
+                                                alt="Organisation logo" class="small-logo"
+                                                onerror="imageError(this, '${noImageUrl}');"
+                                                onload="addClassForImage(this, '${noImageUrl}', 'w-25')"></div>
 
             <div data-bind="visible: !logo" class="associated-org-no-logo"><span data-bind="text: name"></span></div>
-        </div>
+        <!-- /ko -->
     </div>
     <!-- /ko -->
 </div>

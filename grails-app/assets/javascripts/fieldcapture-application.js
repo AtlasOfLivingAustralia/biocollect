@@ -975,6 +975,14 @@ function imageError(imageElement, alternateImage) {
     return true;
 }
 
+function addClassForImage(imageElement, src, classes) {
+    if(imageElement.src.indexOf(src) > -1) {
+        var className = imageElement.className || "";
+        if(className.indexOf(classes) == -1)
+            imageElement.className =  className + ' ' + classes;
+    }
+}
+
 /**
  * fired when logo image is loaded. fn used to stretch small image to height or width of parent container.
  * @param imageElement the img element
