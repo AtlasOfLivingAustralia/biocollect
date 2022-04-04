@@ -92,17 +92,12 @@
     if (doc.lastUpdated)
         self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
 
-    this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
-    this.thirdPartyConsentDeclarationText = null;
     this.embeddedVideo = ko.observable(doc.embeddedVideo);
     this.embeddedVideoVisible = ko.computed(function() {
         return (self.role() == 'embeddedVideo');
     });
 
-    self.transients.isJournalArticle = ko.computed(function() {
-        return (self.role() == 'journalArticles');
-    });
-
+    this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationMade.subscribe(function(declarationMade) {
         // Record the text that the user agreed to (as it is an editable setting).
         if (declarationMade) {
@@ -321,8 +316,11 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
     // We are keeping the reference to the helper here rather than the view model as it doesn't serialize correctly
     // (i.e. calls to toJSON fail).
     documentViewModel.save = function() {
-        if (documentViewModel.labels())
-            documentViewModel.labels = documentViewModel.labels().split(',');
+        //when saving a new document keywords arrive as a comma separated string, hence splitting to an array
+        if (typeof(documentViewModel.labels()) == 'string') {
+            if (documentViewModel.labels())
+                documentViewModel.labels = documentViewModel.labels().split(',');
+        }
 
         if (documentViewModel.filename() && fileUploadHelper !== undefined) {
             fileUploadHelper.submit();
@@ -439,74 +437,272 @@ function findDocumentById(documents, id) {
     return null;
 }
 
-var DocModel = function (doc) {
+var DocModel = function (doc, settings) {
     var self = this;
-    this.name = doc.name;
-    this.role = doc.role;
-    this.attribution = doc.attribution;
-    this.filename = doc.filename;
-    this.type = doc.type;
+
+    var defaults = {
+        //Information is the default option.
+        roles:  [
+            {id:'blogArticles', name: 'Blog Articles'},
+            {id:'bookChapters', name: 'Book Chapters'},
+            {id:'brochures', name: 'Brochures'},
+            {id:'caseStudies', name: 'Case Studies'},
+            {id:'datasets', name: 'Datasets'},
+            {id:'documents', name: 'Documents'},
+            {id:'embeddedVideo', name:'Embedded Video'},
+            {id:'exceedanceReport', name:'Exceedance Report'},
+            {id:'factsheets', name: 'Fact sheets'},
+            {id:'information', name: 'Information'},
+            {id:'journalArticles', name: 'Journal Articles'},
+            {id:'magazines', name: 'Magazines'},
+            {id:'maps', name: 'Maps'},
+            {id:'models', name: 'Models'},
+            {id:'other', name:'Other Project document'},
+            {id:'photo', name:'Photo'},
+            {id:'postersBanners', name: 'Posters and banners'},
+            {id:'presentations', name: 'Presentations'},
+            {id:'projectPlan', name:'Project Plan / Work plan'},
+            {id:'projectVariation', name:'Project Variation'},
+            {id:'projectHighlightReport', name:'Project Highlight Report'},
+            {id:'reports', name: 'Reports'},
+            {id:'thesis', name: 'Thesis'},
+            {id:'toolsGuides', name: 'Tools and guides'},
+            {id:'webPages', name: 'Web pages'},
+            {id:'webinars', name: 'Webinars'}],
+        showSettings: true,
+        thirdPartyDeclarationTextSelector:'#thirdPartyDeclarationText',
+        imageLocation: fcConfig.imageLocation
+    };
+
+    this.settings = $.extend({}, defaults, settings);
+
+    this.documentId = ko.observable(doc.documentId);
+    this.name = ko.observable(doc.name);
+    this.role = ko.observable(doc.role);
+    this.attribution = ko.observable(doc ? doc.attribution : '');
+    this.filename = ko.observable(doc ? doc.filename : '');
+    this.type = ko.observable(doc.type);
     this.url = doc.url;
     this.thumbnailUrl = doc.thumbnailUrl ? doc.thumbnailUrl : doc.url;
     this.filetypeImg = function () {
-        return imageLocation + "filetypes/" + iconnameFromFilename(self.filename);
+        return self.settings.imageLocation + "filetypes/" + iconnameFromFilename(self.filename());
     };
     this.contentType = ko.observable(doc ? doc.contentType : 'application/octet-stream');
     this.embeddedVideo = ko.observable(doc.embeddedVideo);
-    this.citation = doc.citation;
-    this.doiLink = doc.doiLink;
-    this.description = doc.description;
-    this.labels = doc.labels;
-    this.filename = doc.filename;
+    this.citation = ko.observable(doc ? doc.citation : '');
+    this.doiLink = ko.observable(doc ? doc.doiLink : '');
+    this.description = ko.observable(doc ? doc.description : '');
+    this.labels = ko.observableArray(doc ? doc.labels : []);
+    this.readOnly = doc && doc.readOnly ? doc.readOnly : false;
+    this.license = ko.observable(doc ? doc.license : '');
+    this.hasPreview = ko.observable(false);
+    this.progress = ko.observable(0);
+    this.error = ko.observable();
+    this.complete = ko.observable(false);
+    this.filesize = ko.observable(doc ? doc.filesize : '');
+    this.public = ko.observable(doc.public);
 
     this.transients = {};
-    this.transients.dateCreated = new Date();
-    this.transients.lastUpdated = new Date();
+
+    this.roles = this.settings.roles;
 
     this.transients.isJournalArticle = function() {
-        return (self.role == 'journalArticles');
+        return (self.role() == 'journalArticles');
     };
+
+    this.filePreviewAvailable = function(file) {
+        this.hasPreview(true);
+    };
+    this.uploadProgress = function(uploaded, total) {
+        var progress = Math.round(uploaded/total*100);
+        self.progress(progress);
+    };
+    this.fileUploadFailed = function(error) {
+        this.error(error);
+    };
+
+    this.fileButtonText = ko.computed(function() {
+        return (self.filename ? "Change file" : "Attach file");
+    });
+
+    this.embeddedVideoVisible = function() {
+        return (self.role == 'embeddedVideo');
+    };
+
+    this.thirdPartyConsentDeclarationRequired = ko.computed(function() {
+        return (self.type() == 'image' ||  self.role() == 'embeddedVideo')  && self.public();
+    });
+    this.thirdPartyConsentDeclarationRequired.subscribe(function(newValue) {
+        if (newValue) {
+            setTimeout(function() {$("#thirdPartyConsentCheckbox").validationEngine('validate');}, 100);
+        }
+    });
+
+    this.fileReady = ko.computed(function() {
+        return self.filename() && self.progress() === 0 && !self.error();
+    });
+
+    this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
+    this.thirdPartyConsentDeclarationMade.subscribe(function(declarationMade) {
+        // Record the text that the user agreed to (as it is an editable setting).
+        if (declarationMade) {
+            self.thirdPartyConsentDeclarationText = $(self.settings.thirdPartyDeclarationTextSelector).text();
+        }
+        else {
+            self.thirdPartyConsentDeclarationText = null;
+        }
+        $("#thirdPartyConsentCheckbox").closest('form').validationEngine("updatePromptsPosition")
+    });
+
+    this.saveEnabled = ko.computed(function() {
+        if (self.thirdPartyConsentDeclarationRequired() && !self.thirdPartyConsentDeclarationMade()) {
+            return false;
+        }
+        else if(self.role() == 'embeddedVideo'){
+            return buildiFrame(self.embeddedVideo()) != "" ;
+        }
+
+        return self.fileReady();
+    });
+
+    this.saveHelp = ko.computed(function() {
+        if(self.role() == 'embeddedVideo' && !buildiFrame(self.embeddedVideo())){
+            return 'Invalid embed video code';
+        }
+        else if(self.role() == 'embeddedVideo' && !self.saveEnabled()){
+            return 'You must accept the Privacy Declaration before an embed video can be made viewable by everyone';
+        }
+        else if (!self.fileReady()) {
+            return 'Attach a file using the "+ Attach file" button';
+        }
+        else if (!self.saveEnabled()) {
+            return 'You must accept the Privacy Declaration before an image can be made viewable by everyone';
+        }
+        return '';
+    });
+
+    this.toJSONString = function() {
+        // These are not properties of the document object, just used by the view model.
+        return JSON.stringify(self.modelForSaving());
+    };
+
+    this.modelForSaving = function() {
+        return ko.mapping.toJS(self, {'ignore':['embeddedVideoVisible','iframe','helper', 'progress', 'hasPreview', 'error', 'fileLabel', 'file', 'complete', 'fileButtonText', 'roles', 'settings', 'thirdPartyConsentDeclarationRequired', 'saveEnabled', 'saveHelp', 'fileReady']});
+    };
+
+    this.fileUploaded = function(file) {
+        self.complete(true);
+        self.url = file.url;
+        self.documentId = file.documentId;
+        self.progress(100);
+        setTimeout(self.close, 1000);
+    };
+
+    // Callbacks from the file upload widget, these are attached manually (as opposed to a knockout binding).
+    this.fileAttached = function(file) {
+        self.filename(file.name);
+        self.filesize(file.size);
+        // Should be use just the mime type or include the mime type as well?
+        if (file.type) {
+            var type = file.type.split('/');
+            if (type) {
+                self.type(type[0]);
+            }
+        }
+        else if (file.name) {
+
+            var type = file.name.split('.').pop();
+
+            var imageTypes = ['gif','jpeg', 'jpg', 'png', 'tif', 'tiff'];
+            if ($.inArray(type.toLowerCase(), imageTypes) > -1) {
+                self.type('image');
+            }
+            else {
+                self.type('document');
+            }
+        }
+    };
+
+    this.transients.dateCreated = new Date();
+    this.transients.lastUpdated = new Date();
 
     if (doc.dateCreated)
         this.transients.dateCreated = moment(doc.dateCreated).format('DD MMM, YYYY');
 
     if (doc.lastUpdated)
         this.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
+
+    /**
+     * Detaches an attached file and resets associated fields.
+     */
+    this.removeFile = function() {
+        self.filename('');
+        self.filesize('');
+        self.hasPreview(false);
+        self.error('');
+        self.progress(0);
+        self.complete(false);
+        self.file = null;
+    };
+
+    /** Formatting function for the file name and file size */
+    this.fileLabel = ko.computed(function() {
+        var label = self.filename();
+        if (self.filesize()) {
+            label += ' ('+formatBytes(self.filesize())+')';
+        }
+        return label;
+    });
+
+    // This save method does not handle file uploads - it just deals with saving the doc record
+    // - see below for the file upload save
+    this.recordOnlySave = function (uploadUrl) {
+        $.post(
+            uploadUrl,
+            {document:self.toJSONString()},
+            function(result) {
+                self.complete(true); // ??
+                self.documentId = result.documentId;
+            })
+            .fail(function() {
+                self.error('Error saving document record');
+            });
+    };
 };
 function DocListViewModel(documents) {
     var self = this;
     this.documents = ko.observableArray($.map(documents, function(doc) { return new DocModel(doc)} ));
 }
-function AllDocListViewModel(eagerLoad) {
+function AllDocListViewModel(projectId) {
     var self = $.extend(this, new Documents());
-
-    eagerLoad = (eagerLoad !== undefined) ? eagerLoad : true;
 
     self.pagination = new PaginationViewModel({}, self);
     self.loading = ko.observable(false);
     self.searchHasFocus = ko.observable(false);
-    self.documents = ko.observableArray([]);
+    self.allDocuments = ko.observableArray([]);
     self.searchType = ko.observable('');
-    self.searchTerm = ko.observable('').extend({throttle:400});
-    self.searchTerm.subscribe(function(term) {
+    self.searchDoc = ko.observable('').extend({throttle:400});
+    self.searchDoc.subscribe(function(term) {
         self.refreshPage(0);
     });
-    self.sortBy = ko.observable("dateCreatedSort");
+    self.sortBy = ko.observable('dateCreated');
     self.sortBy.subscribe(function(by) {
         self.refreshPage();
     });
 
     self.refreshPage = function(offset) {
         var params = {offset: offset, max: self.pagination.resultsPerPage()};
-        if (self.searchTerm()) {
-            params.searchTerm = self.searchTerm();
-        } else {
-            params.sort = self.sortBy();
-        }
 
-        if (self.documentFilterField()) {
+        if (self.searchDoc())
+            params.searchTerm = self.searchDoc();
+        else
+            params.sort = self.sortBy();
+
+        if (self.documentFilterField())
             params.searchType = self.documentFilterField().fun;
-        }
+
+        if (projectId)
+            params.projectId = projectId;
 
         $.ajax({
             url:fcConfig.documentSearchUrl,
@@ -517,8 +713,7 @@ function AllDocListViewModel(eagerLoad) {
             success:function(data) {
                 if (data.hits) {
                     var docs = data.hits.hits || [];
-                    self.documents($.map(docs, function(hit) {
-                        //hit._source = self;
+                    self.allDocuments($.map(docs, function (hit) {
                         return new DocModel(hit._source);
                     }));
                 }

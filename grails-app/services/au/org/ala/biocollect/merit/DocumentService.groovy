@@ -81,21 +81,46 @@ class DocumentService {
         updateDocument(link)
     }
 
-    Map search(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String user = null) {
-        String searchTextBy = null;
+    Map search(Map params) {
+        def url = "${grailsApplication.config.ecodata.baseURL}/ws/document/search"
+        def resp = webService.doPost(url, params)
+        if (resp && !resp.error) {
+            return resp.resp
+        }
+        return resp
+    }
 
-        if (searchType && searchTerm)
-            searchTextBy = searchType + ":" + searchTerm;
-        else
-            searchTextBy = null;
+    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String projectId = null, String user = null) {
+        String searchTextBy = "status:active";
 
-        Map params = [
-                offset:offset,
-                max:max,
-                query:searchTextBy,
-                fq:DOCUMENT_FILTER//,
-                //hub:SettingService.getHubConfig().urlPath
-        ]
+        Map params = [:]
+
+        //projectId is passed in the case of viewing project documents
+        if (projectId) {
+            searchTextBy += " AND projectId:" + projectId;
+
+            if (searchType && searchTerm)
+                searchTextBy += " AND " + searchType + ":" + searchTerm;
+
+            params = [
+                    offset:offset,
+                    max:max,
+                    query:searchTextBy,
+                    fq:DOCUMENT_FILTER
+            ]
+        }
+        else { //when viewing hub documents
+            if (searchType && searchTerm)
+                searchTextBy += ":'" + searchTerm + "'";
+
+            params = [
+                    offset:offset,
+                    max:max,
+                    query:searchTextBy,
+                    fq:DOCUMENT_FILTER,
+                    hub:SettingService.getHubConfig().urlPath
+            ]
+        }
 
         if(user){
             if(params.fq){

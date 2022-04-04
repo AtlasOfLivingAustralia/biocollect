@@ -137,11 +137,20 @@ class HubSettings extends JSONObject {
 
     String findLabelOverrideForIndex (int i, List defaults) {
         List overrides = this.content?.overriddenLabels ?: defaults
-        Map config = overrides?.grep { it.id == i }?.get(0)
-        if (config?.showCustomText) {
-            config.customText
-        } else {
-            config?.defaultText
+
+        Map config = [:]
+
+        if (i <= overrides.size()) {
+            config = overrides?.grep { it.id == i }?.get(0)
+            if (config?.showCustomText) {
+                config.customText
+            } else {
+                config?.defaultText
+            }
+        }
+        else {// if a specific hub does not have hub settings configured for 'Resources'
+            if (i == 9)
+                return "Resources"
         }
     }
 
@@ -174,6 +183,10 @@ class HubSettings extends JSONObject {
 
     String getTextForProjectArea (List defaults) {
         findLabelOverrideForIndex(8, defaults)
+    }
+
+    String getTextForResources (List defaults) {
+        findLabelOverrideForIndex(9, defaults)
     }
 
     /**

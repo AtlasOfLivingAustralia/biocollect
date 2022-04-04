@@ -306,7 +306,7 @@ function FundingViewModel(funding){
 }
 
 function ProjectViewModel(project, isUserEditor) {
-    var self = $.extend(this, new Documents());
+    var self = $.extend(this, new AllDocListViewModel(project.projectId));
 
     if (isUserEditor === undefined) {
         isUserEditor = false;

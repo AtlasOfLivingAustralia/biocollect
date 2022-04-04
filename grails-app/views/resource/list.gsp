@@ -12,7 +12,8 @@
     <script>
         var fcConfig = {
             pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
-            documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}"
+            documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}",
+            imageLocation:"${asset.assetPath(src: '')}",
         }
     </script>
 
@@ -25,7 +26,7 @@
 
 <div id="documentSearch">
     <g:render template="/shared/listAllDocuments"
-              model="[useExistingModel: true, editable: false, filterBy: 'all', ignore: 'programmeLogic', imageUrl:asset.assetPath(src:'filetypes'),containerId:'overviewDocumentList']"/>
+              model="[useExistingModel: false, editable: false, filterBy: 'all', ignore: 'programmeLogic', imageUrl:asset.assetPath(src:'filetypes'),containerId:'overviewDocumentList']"/>
 </div>
 
 </body>

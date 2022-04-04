@@ -26,8 +26,8 @@ class DocumentController {
      * This function does an elastic search for documents. All elastic search parameters are supported like fq, max etc.
      * @return
      */
-    def allDocumentsSearch(Integer offset, Integer max, String searchTerm, String searchType,  String sort) {
-        render documentService.search(offset, max, searchTerm, searchType, sort) as JSON
+    def allDocumentsSearch(Integer offset, Integer max, String searchTerm, String searchType, String sort, String projectId) {
+        render documentService.allDocumentsSearch(offset, max, searchTerm, searchType, sort, projectId) as JSON
     }
 
     /** Downloads a the file attached to a document stored in the ecodata database */
