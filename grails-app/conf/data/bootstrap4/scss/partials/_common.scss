@@ -950,8 +950,9 @@ ul.links {
   }
 }
 
+// to prevent two drop down selectors from being shown on Safari
 .custom-select {
-
+  -webkit-appearance: none;
 }
 
 .facebook {
