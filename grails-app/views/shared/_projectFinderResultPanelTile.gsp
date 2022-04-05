@@ -1,13 +1,13 @@
-<g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
+<g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
 <div id="projects" class="row">
     <!-- ko foreach: pageProjects -->
-    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 project-item mb-1">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 project-item mb-1" data-bind="attr:{id: transients.projectId}">
         <a class="project-image" title="Project Title"
            data-bind="visible: !(${hubConfig?.content?.hideProjectFinderNoImagePlaceholderTile == true}), attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
             <div class="project-image-inner">
                 <img class="image-logo lazy" alt="${message(code: 'g.noImage')}"
                      data-bind="attr:{title:name, 'data-src':transients.imageUrl || '${noImageUrl}'}"
-                     onerror="imageError(this, '${noImageUrl}');">
+                     onerror="imageError(this, '${noImageUrl}');" onload="addClassForImage(this, '${noImageUrl}', 'w-25')">
             </div>
         </a>
 

@@ -371,7 +371,7 @@
 
             $('.helphover').popover({animation: true, trigger:'hover'});
 
-            $('#cancel').click(function () {
+            $('#cancel').on('click',function () {
                 document.location.href = "${createLink(action: 'index', id: project.projectId)}";
             });
 
@@ -458,7 +458,7 @@
             .attr('title','Only available to project members').addClass('tooltips');
 
             // Star button click event
-            $("#starBtn").click(function(e) {
+            $("#starBtn").on('click',function(e) {
                 var isStarred = ($("#starBtn i").attr("class") == "icon-star");
                 toggleStarred(isStarred);
             });
@@ -466,7 +466,7 @@
             // BS tooltip
             $('.tooltips').tooltip();
 
-            $('#gotoEditBlog').click(function () {
+            $('#gotoEditBlog').on('click',function () {
                 amplify.store('project-admin-tab-state', '#editProjectBlog');
                 $('#admin-tab').tab('show');
             });
@@ -504,11 +504,6 @@
             }
         }
 
-        // select about tab when coming from project finder
-        if(amplify.store('traffic-from-project-finder-page')){
-            amplify.store('traffic-from-project-finder-page',false)
-            $('#about-tab').tab('show');
-        }
     </asset:script>
     <g:if test="${user?.isAdmin || user?.isCaseManager}">
         <asset:script type="text/javascript">

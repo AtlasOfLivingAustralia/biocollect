@@ -31,7 +31,7 @@
         surveyName: "${metaModel.name}",
         speciesSearchUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesImageUrl:"${createLink(controller: 'species', action: 'speciesImage')}",
-        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
@@ -377,11 +377,11 @@
 
         $('.helphover').popover({animation: true, trigger: 'hover'});
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             master.save(activityNavigationModel.afterSave);
         });
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             activityNavigationModel.cancel();
         });
 

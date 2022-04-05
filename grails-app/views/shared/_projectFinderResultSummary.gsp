@@ -15,11 +15,11 @@
     <div class="col-6 col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1">
         <div class="btn-group" role="group" aria-label="Catalogue Display Options">
             <div class="btn-group nav nav-tabs project-finder-tab" role="group" aria-label="Catalogue Display Options">
-                <a type="button" class="btn btn-outline-dark active" id="grid-tab" data-toggle="tab" title="View as Grid" href="#grid" role="tab" aria-controls="View as Grid" aria-selected="true">
+                <a class="btn btn-outline-dark active" id="grid-tab" data-toggle="tab" title="View as Grid" href="#grid" role="tab" aria-controls="View as Grid" aria-selected="true">
                     <i class="fas fa-th-large"></i></a>
-                <a type="button" class="btn btn-outline-dark" id="list-tab" data-toggle="tab" title="View as List" href="#list" role="tab" aria-controls="View as List">
+                <a class="btn btn-outline-dark" id="list-tab" data-toggle="tab" title="View as List" href="#list" role="tab" aria-controls="View as List">
                     <i class="fas fa-list"></i></a>
-                <a type="button" class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Images" href="#map" role="tab" aria-controls="View on Map">
+                <a class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Images" href="#map" role="tab" aria-controls="View on Map">
                     <i class="far fa-map"></i></a>
             </div>
             %{--                    <button type="button" class="btn btn-outline-dark active" title="View as Grid"><i class="fas fa-th-large"></i></button>--}%

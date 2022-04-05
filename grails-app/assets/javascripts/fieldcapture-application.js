@@ -9,7 +9,7 @@ if (typeof jQuery !== 'undefined') {
 
 	$(function () {
         // deprecated
-        $('#debug').click(function () {
+        $('#debug').on('click',function () {
             $(this).next().toggle();
         });
 
@@ -19,7 +19,7 @@ if (typeof jQuery !== 'undefined') {
             $(this).find('h1,h2,h3,h4,h5')
                 .css('cursor','pointer')
                 .css('color','grey')
-                .click(function () {
+                .on('click',function () {
                     $(this).next().toggle();
                 })
                 .hover(
@@ -1066,6 +1066,14 @@ function imageError(imageElement, alternateImage) {
     imageElement.onerror = "";
     imageElement.src = alternateImage;//"/static/images/no-image-2.png";
     return true;
+}
+
+function addClassForImage(imageElement, src, classes) {
+    if(imageElement.src.indexOf(src) > -1) {
+        var className = imageElement.className || "";
+        if(className.indexOf(classes) == -1)
+            imageElement.className =  className + ' ' + classes;
+    }
 }
 
 /**

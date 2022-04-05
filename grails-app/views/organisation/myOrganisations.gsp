@@ -12,7 +12,7 @@
             createOrganisationUrl: "${createLink(controller: 'organisation', action: 'create')}",
             viewOrganisationUrl: "${createLink(controller: 'organisation', action: 'index')}",
             organisationSearchUrl: "${createLink(controller: 'organisation', action: 'searchMyOrg')}",
-            noLogoImageUrl: "${asset.assetPath(src: 'biocollect-logo-dark.png')}"
+            noLogoImageUrl: "${asset.assetPath(src: 'font-awesome/5.15.4/svgs/regular/image.svg')}"
             </g:applyCodec>
             };
     </asset:script>

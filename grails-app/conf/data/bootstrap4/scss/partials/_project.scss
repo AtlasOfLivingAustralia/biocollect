@@ -428,3 +428,9 @@
     font-weight: bold;
   }
 }
+
+// project about tab
+$about-bg-color: transparentize($primary, 0.95);
+#cs-about .card-header {
+  background-color: $about-bg-color;
+}

@@ -53,7 +53,7 @@
         });
         $('.dataTables_filter input').attr("placeholder", "Name or Description");
 
-        $("#btnProjectSearch").click(function(e) {
+        $("#btnProjectSearch").on('click',function(e) {
             e.preventDefault();
             doAuditProjectSearch()
         });

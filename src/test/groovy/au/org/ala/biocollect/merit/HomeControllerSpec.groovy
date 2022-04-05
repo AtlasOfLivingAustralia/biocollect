@@ -21,46 +21,16 @@ class HomeControllerSpec extends Specification implements ControllerUnitTest<Hom
     }
 
 
-    def "a hub without a homePagePath property uses the default"() {
+    def "home's index action should forward all requests to hub's index action"() {
 
         given:
         HubSettings settings = new HubSettings()
-        SettingService.setHubConfig(settings)
-
-        when:
-        def model = controller.index()
-
-        then:
-        model.containsKey('mapFacets')
-        model.containsKey('results')
-        model.containsKey('geographicFacets')
-    }
-
-    def "a hub with a valid homePagePath property overrides the hub homepage"() {
-
-        given:
-        HubSettings settings = new HubSettings([homePagePath:'/aController/anAction'])
         SettingService.setHubConfig(settings)
 
         when:
         controller.index()
 
         then:
-        response.forwardedUrl == '/aController/anAction'
+        response.forwardedUrl == '/hub/index?'
     }
-
-    def "optional project content must have bushfireCategores and industries facet" (){
-        given:
-        HubSettings settings = new HubSettings()
-        SettingService.setHubConfig(settings)
-
-        when:
-        def model = controller.index()
-
-        then:
-        HubSettings.OPTIONAL_PROJECT_CONTENT?.find{it == 'bushfireCategories'}
-        HubSettings.OPTIONAL_PROJECT_CONTENT?.find{it == 'industries'}
-        model.containsKey('hubConfig')
-    }
-
 }
