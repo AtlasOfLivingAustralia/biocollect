@@ -103,7 +103,7 @@
         $('.helphover').popover({animation: true, trigger:'hover'});
 
         var siteViewModel = initSiteViewModel(true, ${!userCanEdit});
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             if(siteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;
             } if(fcConfig.projectUrl){
@@ -113,7 +113,7 @@
             }
         });
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             if ($('#validation-container').validationEngine('validate')) {
                 var json = siteViewModel.toJS();
                 //validate  if extent.geometry.pid, then update extent.source to pid, extent.geometry.type to pid

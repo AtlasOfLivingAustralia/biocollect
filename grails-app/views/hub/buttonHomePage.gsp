@@ -12,8 +12,15 @@
 </g:if>
 
 <g:render template="/shared/bannerHub"/>
-
 <div class="container" id="hubHomepageContent">
+    <g:set var="intro" value="${fc.homePageIntro()}"/>
+    <g:if test="intro">
+    <div class="row">
+        <div class="col-12">
+            ${intro}
+        </div>
+    </div>
+    </g:if>
     <g:if test="${hubConfig.templateConfiguration?.homePage?.buttonsConfig?.buttons}">
         <g:set var="layout" value="${Integer.parseInt(hubConfig.templateConfiguration?.homePage?.buttonsConfig?.numberOfColumns)}"></g:set>
         <div>

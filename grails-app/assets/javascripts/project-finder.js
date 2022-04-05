@@ -818,10 +818,10 @@ function ProjectFinder(config) {
         }
     }
 
-    $("#clearFilterByRegionButton").click(clearGeoSearch);
+    $("#clearFilterByRegionButton").on('click',clearGeoSearch);
 
 
-    $('#pt-search-link').click(function () {
+    $('#pt-search-link').on('click',function () {
         self.setTextSearchSettings();
         self.resetPageOffSet();
         self.doSearch();
@@ -835,16 +835,16 @@ function ProjectFinder(config) {
         }
     });
 
-    $('#pt-reset').click(function () {
+    $('#pt-reset').on('click',function () {
         self.reset()
     });
 
-    $("#btnShowTileView").click(function () {
+    $("#btnShowTileView").on('click',function () {
         pageWindow.showTileView();
         
     });
 
-    $("#btnShowListView").click(function () {
+    $("#btnShowListView").on('click',function () {
         pageWindow.showListView();
 
     });

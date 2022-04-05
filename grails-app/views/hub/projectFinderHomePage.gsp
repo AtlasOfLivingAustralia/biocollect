@@ -52,7 +52,7 @@
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
         hideWorldWideBtn: ${!hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.showProjectRegionSwitch},
         flimit: ${grailsApplication.config.facets.flimit},
-        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
@@ -88,6 +88,16 @@
     ${hubConfig.title}
 </content>
 <g:render template="/shared/bannerHub"/>
+<g:set var="intro" value="${fc.homePageIntro()}"/>
+<g:if test="intro">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                ${intro}
+            </div>
+        </div>
+    </div>
+</g:if>
 <section id="catalogueSection">
     <div id="project-finder-container">
         <div class="container-fluid show expander projects-container">

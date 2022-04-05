@@ -20,7 +20,7 @@
 
         <div class="row">
             <div class="col-12">
-                <g:render template="addPermissions" model="[projects:projects]"/>
+                <g:render template="addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), projects:projects]"/>
             </div>
         </div>
         <div class='d-none'>
@@ -51,7 +51,7 @@
 
     $(document).ready(function() {
 
-        $("#viewUserPermissionsButton").click(function(e) {
+        $("#viewUserPermissionsButton").on('click',function(e) {
             e.preventDefault();
             if ($('#userId2').val()) {
                 $("#spinner2").removeClass('d-none');

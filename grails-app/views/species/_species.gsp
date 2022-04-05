@@ -52,7 +52,7 @@
 <asset:script type="text/javascript">
     $(window).on('load',function(){
         // click event for submit species List
-        $("#submitSpeciesList").click(function(e) {
+        $("#submitSpeciesList").on('click',function(e) {
             e.preventDefault();
 
             if ($('#speciesListForm').validationEngine('validate')) {

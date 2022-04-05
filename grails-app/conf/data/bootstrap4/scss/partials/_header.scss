@@ -243,10 +243,14 @@
     }
   }
 
-  .hub-logo {
-    position: static;
-    max-width: 250px;
-    max-height: 250px;
+  @include media-breakpoint-up(lg) {
+    .hub-logo {
+      position: static;
+      max-width: 250px;
+      max-height: 250px;
+      margin-bottom: -60%;
+      margin-top: -20%;
+    }
   }
 }
 

@@ -44,7 +44,7 @@
         searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
@@ -210,7 +210,7 @@
         $(function() {
             $('.helphover').popover({animation: true, trigger:'hover'});
 
-            $('#cancel').click(function () {
+            $('#cancel').on('click',function () {
                 document.location.href = returnTo;
             });
 

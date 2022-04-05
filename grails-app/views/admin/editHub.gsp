@@ -974,6 +974,16 @@
             <td><input class="form-control" type="color" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
             <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Button home page background colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonBackgroundColor, textColor: '#fff'}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Button home page text colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonTextColor, textColor: '#fff'}}"></td>
+        </tr>
         <tr>
             <td colspan="2">
                 <strong>Other components</strong>

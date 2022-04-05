@@ -86,10 +86,10 @@ $(function(){
 
     ko.applyBindings(viewModel, document.getElementById("projectDetails"));
 
-    $('#cancel').click(function () {
+    $('#cancel').on('click',function () {
         document.location.href = "${createLink(action: 'index', id: project?.projectId)}";
     });
-    $('#save').click(function () {
+    $('#save').on('click',function () {
     if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
         bootbox.dialog({message:"Use of this system for data collection is not available for non-biodiversity related projects." +
             " Press continue to turn data collection feature off. Otherwise, press cancel to modify the form."}, [{

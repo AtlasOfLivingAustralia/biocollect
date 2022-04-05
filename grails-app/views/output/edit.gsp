@@ -93,7 +93,7 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             document.location.href = returnTo;
         });
 

@@ -221,16 +221,17 @@
                     <p><g:message code="project.details.associatedOrgs.extra"/></p>
 
                     <div id="associatedOrgList">
-                        <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
+                        <g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
                         <!-- ko foreach: associatedOrgs -->
                         <div class="row">
                             <div class="col-4" data-bind="text: name"></div>
 
-                            <div class="col-4">
-                                <div data-bind="if: logo">
+                            <div class="col-4 d-flex justify-content-center align-content-center">
+                                <!-- ko if: logo -->
                                     <img src="" data-bind="attr: {src: logo}" alt="Organisation logo"
-                                         class="small-logo" onerror="imageError(this, '${noImageUrl}');">
-                                </div>
+                                         class="small-logo" onerror="imageError(this, '${noImageUrl}');"
+                                         onload="addClassForImage(this, '${noImageUrl}', 'w-25')">
+                                <!-- /ko -->
                             </div>
 
                             <div class="col-4">

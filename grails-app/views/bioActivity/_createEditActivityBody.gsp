@@ -164,16 +164,16 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             master.save();
             master.removeTemporarySite();
         });
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             document.location.href = fcConfig.returnTo;
         });
 
-        $('#reset').click(function () {
+        $('#reset').on('click',function () {
             master.reset();
         });
 

@@ -1,5 +1,5 @@
 <%@ page import="grails.converters.JSON" %>
-<g:set var="noImageUrl" value="${asset.assetPath([src: "biocollect-logo-dark.png"])}"/>
+<g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
 <!-- ko stopBinding: true -->
 <div id="projectData" class="my-4 my-md-5">
     <div id="survey-all-activities-and-records-content">
@@ -157,8 +157,8 @@
                             <div class="col-12 col-lg-6 col-xl-4 d-flex">
                                 <div class="record flex-grow-1">
                                     <div class="row">
-                                        <div class="col-12 col-sm-5 pb-3 pb-sm-0">
-                                            <img onload="findLogoScalingClass(this, 200, 150)" data-bind="attr:{src: thumbnailUrl}"
+                                        <div class="col-12 col-sm-5 pb-3 pb-sm-0 d-flex justify-content-center align-items-center">
+                                            <img onload="findLogoScalingClass(this, 200, 150);addClassForImage(this, '${noImageUrl}', 'w-25')" data-bind="attr:{src: thumbnailUrl}"
                                                  onerror="imageError(this, '${noImageUrl}');"/>
                                         </div>
                                         <div class="col-12 col-sm-7 pl-sm-1">

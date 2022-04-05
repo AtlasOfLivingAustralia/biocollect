@@ -712,6 +712,11 @@ function ProjectViewModel(project, isUserEditor) {
         return self.transients.subprograms[self.associatedProgram()];
     });
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
+    self.transients.canShowBackButton = function() {
+        var result = amplify.store('traffic-from-project-finder-page');
+        amplify.store('traffic-from-project-finder-page', false);
+        return result;
+    }
 
     var scienceTypesList = [
         {name:'Biodiversity', value:'biodiversity'},
