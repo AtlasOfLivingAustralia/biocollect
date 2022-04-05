@@ -716,10 +716,10 @@ function AllDocListViewModel(projectId) {
                     self.allDocuments($.map(docs, function (hit) {
                         return new DocModel(hit._source);
                     }));
-                }
 
-                if (offset == 0) {
-                    self.pagination.loadPagination(0, data.hits.total);
+                    if (offset == 0) {
+                        self.pagination.loadPagination(0, data.hits.total);
+                    }
                 }
             },
             complete: function () {
