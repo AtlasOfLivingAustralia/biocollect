@@ -5,9 +5,9 @@
         <h2>${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
 
         <div class="input-group col-12 search-resources">
-            <label for="searchResources" class="sr-only">Search Resources</label>
+            <label for="searchResources" class="sr-only">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
             <input class="form-control" id="searchResources" type="text" data-bind="value:searchDoc, hasFocus: searchHasFocus, valueUpdate:'keyup'"
-                   placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search documents..." aria-describedby="org-search-button"/>
+                   placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="org-search-button"/>
 
             <div class="input-group-append">
                 <label for="searchType" class="sr-only">Filter by</label>
@@ -18,8 +18,8 @@
             <div class="col-md-4 text-right mt-2 mt-md-0">
                 <label for="sortBy" class="col-form-label">Sort by</label>
                 <select id="sortBy" class="form-control col custom-select" data-bind="value: sortBy" aria-label="Sort Order">
-                    <option value="dateCreated">Date uploaded</option>
-                    <option value="lastUpdated">Date last modified</option>
+                    <option value="dateCreated">Recently uploaded</option>
+                    <option value="lastUpdated">Recently modified</option>
                 </select>
             </div>
         </div>

@@ -90,7 +90,7 @@ class DocumentService {
         return resp
     }
 
-    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String projectId = null, String user = null) {
+    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String order = null, String projectId = null) {
         String searchTextBy = "status:active";
 
         Map params = [:]
@@ -111,7 +111,7 @@ class DocumentService {
         }
         else { //when viewing hub documents
             if (searchType && searchTerm)
-                searchTextBy += ":'" + searchTerm + "'";
+                searchTextBy += " AND " + searchType + ":" + searchTerm;
 
             params = [
                     offset:offset,
@@ -122,14 +122,8 @@ class DocumentService {
             ]
         }
 
-        if(user){
-            if(params.fq){
-                params.fq = [ params.fq ]
-            } else {
-                params.fq = []
-            }
-
-            params.fq.push("users:${user}")
+        if (order) {
+            params.order = order
         }
 
         if (sort) {
