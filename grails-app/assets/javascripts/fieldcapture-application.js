@@ -520,7 +520,7 @@ function Documents() {
     var self = this;
     self.documents = ko.observableArray();
     self.documentFilter = ko.observable('');
-    self.documentFilterFieldOptions = [{ label: 'Name', fun: 'name'}, { label: 'Attribution', fun: 'attribution' }, { label: 'Type', fun: 'type' }, { label: 'Citation', fun: 'citation' }, { label: 'Keywords', fun: 'labels' }, { label: 'Description', fun: 'description' }];
+    self.documentFilterFieldOptions = [{ label: 'Name', fun: 'name'}, { label: 'Attribution', fun: 'attribution' }, { label: 'Type', fun: 'role' }, { label: 'Citation', fun: 'citation' }, { label: 'Keywords', fun: 'labels' }, { label: 'Description', fun: 'description' }];
     self.documentFilterField = ko.observable(self.documentFilterFieldOptions[0]);
 
     self.selectedDocument = ko.observable();

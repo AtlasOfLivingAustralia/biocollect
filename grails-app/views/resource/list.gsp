@@ -1,13 +1,10 @@
-<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
-<g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
-    <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "resource.allResources.heading")}"/>
+    <g:set var="title" value="${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}"/>
     <title>${title}</title>
-    %{--    <meta name="layout" content="${hubConfig.skin}"/>--}%
     <meta name="layout" content="bs4"/>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
         var fcConfig = {
@@ -19,7 +16,6 @@
 
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="document.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>
