@@ -18,6 +18,7 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
     UserService userService = Mock(UserService)
     WebService webService = Mock(WebService)
     ActivityService activityService = Mock(ActivityService)
+    SearchService searchService = Mock(SearchService)
 
     def setup() {
         JSON.registerObjectMarshaller(new MapMarshaller())
@@ -25,6 +26,7 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         service.userService = userService
         service.webService = webService
         service.activityService = activityService
+        service.searchService = searchService
         service.grailsApplication = grailsApplication
     }
 
@@ -176,5 +178,66 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         true | _
         false | _
 
+    }
+
+    def "retrieve project documents when projectId is passed"() {
+        setup:
+        def document = [documentId: 'doc1', projectId: 'proj1']
+
+        String searchTerm = ""
+        String searchType = "name"
+        String sort = "dateCreated"
+        String order = "desc"
+        String projectId = document.projectId
+        String query = "status:active AND projectId:" + projectId
+        String DOCUMENT_FILTER = "className:au.org.ala.ecodata.Document"
+        String hub = "nesp"
+
+        Map params = [
+                offset:0,
+                max:100,
+                query:query,
+                fq:DOCUMENT_FILTER,
+                order:order,
+                sort:sort,
+                type:searchType
+        ]
+
+        when:
+        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, sort, order, projectId, hub)
+
+        then:
+        1 * service.searchService.fulltextSearch(params,true) >> [documentId:'doc1']
+        documents
+    }
+
+    def "retrieve hub documents when hub is passed"() {
+        setup:
+        String searchTerm = ""
+        String searchType = "name"
+        String sort = "dateCreated"
+        String order = "desc"
+        String projectId = ""
+        String query = "status:active"
+        String DOCUMENT_FILTER = "className:au.org.ala.ecodata.Document"
+        String hub = "nesp"
+
+        Map params = [
+                offset:0,
+                max:100,
+                query:query,
+                fq:DOCUMENT_FILTER,
+                order:order,
+                sort:sort,
+                type:searchType,
+                hub:hub
+        ]
+
+        when:
+        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, sort, order, projectId, hub)
+
+        then:
+        1 * service.searchService.fulltextSearch(params,true) >> [documentId:'doc2']
+        documents
     }
 }
