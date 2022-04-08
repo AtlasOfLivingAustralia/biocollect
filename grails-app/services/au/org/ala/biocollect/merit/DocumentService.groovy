@@ -90,7 +90,7 @@ class DocumentService {
         return resp
     }
 
-    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String order = null, String projectId = null) {
+    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String order = null, String projectId = null, String hub = null) {
         String searchTextBy = "status:active";
 
         Map params = [:]
@@ -118,7 +118,7 @@ class DocumentService {
                     max:max,
                     query:searchTextBy,
                     fq:DOCUMENT_FILTER,
-                    hub:SettingService.getHubConfig().urlPath
+                    hub:hub
             ]
         }
 
