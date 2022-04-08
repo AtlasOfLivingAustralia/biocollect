@@ -135,7 +135,7 @@ class TemplateTagLib {
                     Map loginOrLogout = printLoginOrLogoutButton(attrs.hubConfig);
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"btn btn-primary btn-sm nav-button\" title=\"${loginOrLogout.displayName}\" href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
+                        out << "<a class=\"btn btn-primary btn-sm nav-button custom-header-login-logout\" title=\"${loginOrLogout.displayName}\" href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";

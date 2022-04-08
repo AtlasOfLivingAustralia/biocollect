@@ -1,0 +1,10 @@
+{
+  "request": {
+    "urlPattern": "/ws/shape/upload/.+",
+
+    "method": "DELETE"
+  },
+  "response" : {
+    "status": 200
+  }
+}
