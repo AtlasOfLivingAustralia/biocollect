@@ -1,0 +1,15 @@
+{
+  "request": {
+    "urlPattern": "/ws/shape/geojson/.+",
+
+    "method": "GET"
+  },
+  "response" : {
+    "status": 200,
+    "headers": {
+      "content-Type": "application/json"
+    },
+    "body": "{\"type\":\"Point\", \"coordinates\":[149.083, -35.287]}"
+
+  }
+}

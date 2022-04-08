@@ -1,0 +1,14 @@
+{
+  "request": {
+    "urlPath": "/userdetails/userDetails/getUserDetails",
+    "method": "ANY"
+  },
+  "response": {
+    "transformers": ["response-template"],
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"userName\":\"user.{{request.query.userName}}@nowhere.com.au\", \"userId\":\"{{request.query.userName}}\"}"
+  }
+}

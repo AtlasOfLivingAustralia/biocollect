@@ -1,0 +1,12 @@
+{
+  "request": {
+    "urlPath": "/favicon.ico",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "image/png"
+    }
+  }
+}

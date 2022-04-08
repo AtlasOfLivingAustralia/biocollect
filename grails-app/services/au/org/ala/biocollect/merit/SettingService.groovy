@@ -55,10 +55,10 @@ class SettingService {
 
         switch (Environment.current) {
             case Environment.PRODUCTION:
-            case Environment.TEST:
                 sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
                 targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
                 break
+            case Environment.TEST:
             case Environment.DEVELOPMENT:
                 sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
                 targetDir = "${grailsApplication.config.temp.dir}"
