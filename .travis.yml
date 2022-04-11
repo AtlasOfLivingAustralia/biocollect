@@ -15,9 +15,6 @@ branches:
   - /^hotfix\/.*$/
 node_js:
       - 12
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
   - $HOME/.m2
@@ -58,8 +55,8 @@ before_script:
 
 script:
 #  - ./gradlew -PenableClover=true cloverGenerateReport --no-daemon
-  - ./gradlew build
-  - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
+#  - ./gradlew build
+#  - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
   - ./src/main/scripts/runFunctionalTests.sh
 
 after_success:
