@@ -53,6 +53,7 @@ environments {
                 security.cas.casServerUrlPrefix="${casBaseUrl}/cas"
                 security.cas.loginUrl="${security.cas.casServerUrlPrefix}/login"
                 security.cas.casLoginUrl="${security.cas.casServerUrlPrefix}/login"
+                security.cas.logoutUrl="${security.cas.casServerUrlPrefix}/logout"
                 userDetails.url = "${casBaseUrl}/userdetails/userDetails/"
                 userDetailsSingleUrl = "${userDetails.Url}getUserDetails"
                 userDetailsUrl = "${userDetatails.url}getUserListFull"
@@ -66,7 +67,13 @@ environments {
                 api_key='testapikey'
                 spatial.baseUrl = "http://localhost:${wiremock.port}"
                 spatial.baseURL = "http://localhost:${wiremock.port}"
+                spatial.geoserverUrl= spatial.baseUrl + "/geoserver"
                 spatial.layersUrl = spatial.baseUrl + "/ws"
+                bie.baseURL="http://localhost:${wiremock.port}"
+                biocache.baseURL="http://localhost:${wiremock.port}"
+                pdfgen.baseURL="http://localhost:${wiremock.port}"
+                images.baseURL="http://localhost:${wiremock.port}"
+                lists.baseURL="http://localhost:${wiremock.port}"
                 grails.mail.port = 3025 // com.icegreen.greenmail.util.ServerSetupTest.SMTP.port
                 temp.dir="/tmp/stylesheet"
                 google.maps.apiKey="testGoogleApi"
@@ -407,7 +414,7 @@ if(!map.overlays) {
                         userAccessRestriction: 'anyUser',
                         inLayerShapeList     : true,
                         opacity: 0.5,
-                        
+
                         display     : [
                                 cqlFilter     : defaultCqlFilter,
                                 propertyName  : 'NAME_1'
