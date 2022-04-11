@@ -19,17 +19,17 @@ class BiocollectFunctionalTest extends GebReportingSpec {
     @Shared def testConfig
 
     def setupSpec() {
-        def filePath = getClass().getClassLoader().getResource('application.groovy').toURI().toURL()
-        log.info(filePath.toString());
-        def configSlurper = new ConfigSlurper(System.properties.get('grails.env'))
         testConfig = new NavigableMap()
-        testConfig.merge(configSlurper.parse(filePath), false)
-
         def propertySource = new YamlPropertySourceLoader()
         Resource resource = new FileSystemResource(getClass().getClassLoader().getResource('application.yml').getFile())
         def yamlPropertiesSource = propertySource.load('application.yml', resource)
         def ymlConfig = new PropertySourcesConfig(yamlPropertiesSource.first())
         testConfig.merge(ymlConfig)
+
+        def filePath = getClass().getClassLoader().getResource('application.groovy').toURI().toURL()
+        log.info(filePath.toString());
+        def configSlurper = new ConfigSlurper(System.properties.get('grails.env'))
+        testConfig.merge(configSlurper.parse(filePath), false)
 
         log.info("External ${testConfig.toString()}")
 

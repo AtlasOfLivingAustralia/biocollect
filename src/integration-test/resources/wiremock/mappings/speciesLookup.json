@@ -1,0 +1,13 @@
+{
+  "request": {
+    "urlPath": "/ws/search/auto.jsonp",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "content-Type": "application/json"
+    },
+    "body": "{\"autoCompleteList\":[{\"commonName\":\"Mulga\",\"commonNameMatches\":[\"<b>Acacia<\\u002fb>\",\"<b>Acacia<\\u002fb>s\"],\"georeferencedCount\":0,\"guid\":\"https://id.biodiversity.org.au/taxon/apni/51311124\",\"matchedNames\":[\"Acacia\",\"Acacias\",\"Acacia\"],\"name\":\"Acacia\",\"occurrenceCount\":0,\"rankID\":6000,\"rankString\":\"genus\",\"scientificNameMatches\":[\"<b>Acacia<\\u002fb>\"]}]}"
+  }
+}
