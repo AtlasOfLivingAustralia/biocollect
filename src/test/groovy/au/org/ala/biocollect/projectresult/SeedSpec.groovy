@@ -18,7 +18,7 @@ import spock.lang.Specification
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * Created by Temi on 2/12/19.
  */
 
@@ -123,6 +123,6 @@ class SeedSpec extends Specification implements AutowiredTest{
         def dataset = project.datasets[0]
         dataset.dataAccessMethod[0] == 'oasrdfs'
         dataset.name == 'x'
-        dataset.datasetExternalURL == "/bioActivity/projectRecords/b"
+        dataset.datasetExternalURL == "http://devt.ala.org.au:8087/bioActivity/projectRecords/b"
     }
 }
