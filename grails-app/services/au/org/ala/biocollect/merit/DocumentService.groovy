@@ -95,12 +95,17 @@ class DocumentService {
 
         Map params = [:]
 
+        if (searchType == 'none' && searchTerm)
+            searchTextBy += " AND (name:" + searchTerm + " OR role:" + searchTerm + " OR labels:" + searchTerm + " OR attribution:" + searchTerm + " OR citation:" + searchTerm + " OR description:" + searchTerm + ")";
+
         //projectId is passed in the case of viewing project documents
         if (projectId) {
             searchTextBy += " AND projectId:" + projectId;
 
-            if (searchType && searchTerm)
-                searchTextBy += " AND " + searchType + ":" + searchTerm;
+            if (searchType && searchTerm) {
+                if (searchType != 'none')
+                    searchTextBy += " AND " + searchType + ":" + searchTerm;
+            }
 
             params = [
                     offset:offset,
@@ -110,8 +115,10 @@ class DocumentService {
             ]
         }
         else { //when viewing hub documents
-            if (searchType && searchTerm)
-                searchTextBy += " AND " + searchType + ":" + searchTerm;
+            if (searchType && searchTerm) {
+                if (searchType != 'none')
+                    searchTextBy += " AND " + searchType + ":" + searchTerm;
+            }
 
             params = [
                     offset:offset,
