@@ -452,10 +452,7 @@ function AllDocListViewModel(projectId) {
     self.documentFilterField.subscribe(function(type) {
         self.refreshPage(0);
     });
-    self.searchDoc = ko.observable('').extend({throttle:400});
-    self.searchDoc.subscribe(function(term) {
-        self.refreshPage(0);
-    });
+    self.searchDoc = ko.observable('');
     self.sortBy = ko.observable('dateCreated');
     self.sortBy.subscribe(function(by) {
         self.refreshPage(0);
