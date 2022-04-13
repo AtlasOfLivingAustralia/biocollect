@@ -28,7 +28,7 @@
     <h4 style="font-weight: normal" data-bind="text:name"></h4>
     <div>
         <div class="author" data-bind="if:$data.attribution">Author Name: <!-- ko text:attribution --> <!-- /ko --></div>
-        <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="click:$parent.isHtmlViewer"><i class="far fa-eye fa-1x"></i> View Metadata</a>
+        <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="click:$parent.isHtmlViewer"><i class="far fa-eye fa-1x"></i> Description</a>
         <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="click:'url(' + filetypeImg() + ')'"><i class="far fa-eye fa-1x"></i> Preview</a>
         <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="attr:{href:url}, visible:!transients.isJournalArticle(), clickBubble: false"><i class="fas fa-download"></i> Download</a>
     </div>
