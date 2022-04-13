@@ -233,12 +233,10 @@
       font-size: 12px;
     }
   }
-  .row {
-    .role {
-      font-size: 14px;
-      color: $gray-500;
-      margin-right: 10px;
-    }
+  .role {
+    font-size: 14px;
+    color: $gray-500;
+    margin-right: 10px;
   }
   @include media-breakpoint-down(xs) {
     padding: 15px;
