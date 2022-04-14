@@ -19,21 +19,39 @@ app:
       userId: "X-ALA-userId"
       hostName: "X-ALA-hostname"
 
+auth:
+  baseURL: "https://auth.ala.org.au"
+
+casUrl: "${auth.baseURL}/cas/logout"
+appUrl: "http://devt.ala.org.au:8087/"
 
 security:
-   cas:
-      uriExclusionFilterPattern: ['/assets/.*','/images.*','/css.*','/js.*','/less.*','/ajax/(bulkLookupQuestions|saveBookmarkLocation|getBookmarkLocations)','/uploads/.*']
-      authenticateOnlyIfLoggedInPattern: "/*"
-      uriFilterPattern: ['/user/.*','/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList|checkPointInsideProjectAreaAndAddress)).*','/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*','/activity/(?!index).*','/output/(?!index).*','/image/(?!index).*','/admin/.*','/proxy/speciesListPost','/proxy/documentUpdate','/proxy/deleteDocument','/home/advanced','/organisation/(?!index).*','/organisation/(?!list).*','/bioActivity/create/.*','/bioActivity/edit/.*','/bioActivity/list','/sight/.*']
-      readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
-      alaAdminRole : "ROLE_ADMIN"
-      officerRole : "ROLE_FC_OFFICER"
-      adminRole : "ROLE_FC_ADMIN"
-#      casServerName: "https://auth.ala.org.au"
-#      casServerLoginUrl: "https://auth.ala.org.au/cas/login"
-#      casServerUrlPrefix: "https://auth.ala.org.au/cas"
-#      logoutUrl: "https://auth.ala.org.au/cas/logout"
-#      loginUrl: "https://auth.ala.org.au/cas/login"
+  cas:
+    uriExclusionFilterPattern: ['/assets/.*','/ajax/(saveBookmarkLocation|getBookmarkLocations)','/uploads/.*']
+    authenticateOnlyIfCookieFilterPattern: "/*"
+    uriFilterPattern: ['/user/.*','/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList|checkPointInsideProjectAreaAndAddress)).*','/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*','/activity/(?!index).*','/output/(?!index).*','/image/(?!index).*','/admin/.*','/proxy/speciesListPost','/proxy/documentUpdate','/proxy/deleteDocument','/home/advanced','/organisation/(?!index).*','/organisation/(?!list).*','/bioActivity/create/.*','/bioActivity/edit/.*','/bioActivity/list','/sight/.*']
+    readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
+    alaAdminRole : "ROLE_ADMIN"
+    officerRole : "ROLE_FC_OFFICER"
+    adminRole : "ROLE_FC_ADMIN"
+    enabled: false
+    casServerName: "${auth.baseURL}"
+    casServerLoginUrl: "${auth.baseURL}/cas/login"
+    casServerUrlPrefix: "${auth.baseURL}/cas"
+    logoutUrl: "${security.cas.casServerUrlPrefix}/logout"
+    loginUrl: "${security.cas.casServerUrlPrefix}/login"
+
+  oidc:
+    enabled: true
+    discoveryUri: "${auth.baseURL}/cas/oidc/.well-known"
+    clientId: "auth-dev-oidc-client-id"
+    secret: "u85789gnghdfb765"
+    scope: "openid,profile,email,ala,roles,user_defined"
+    allowUnsignedIdTokens: true
+  jwt:
+    enabled: true
+    discoveryUri: "${auth.baseURL}/cas/oidc/.well-known"
+    requiredClaims: ["sub", "iat", "exp", "jti", "client_id"]
 
 #External URL
 aekosEnabled: false
@@ -135,7 +153,8 @@ upload:
 grails:
     project:
       groupId: "au.org.ala"
-
+    mail:
+      poolSize: 1
     profile: web
     codegen:
         defaultPackage: au.org.ala.biocollect
@@ -289,8 +308,8 @@ projectdata:
   industries:
     enabled: false
 
-userDetails: 
-  url: "https://auth.ala.org.au/userdetails/"
+userDetails:
+  url: "${auth.baseURL}/userdetails/"
 
 userDetailsById:
   path: "getUserDetails"
