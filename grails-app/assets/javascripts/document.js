@@ -49,6 +49,8 @@ function DocumentViewModel (doc, owner, settings) {
     this.settings = $.extend({}, defaults, settings);
 
     // NOTE that attaching a file is optional, ie you can have a document record without a physical file
+    this.projectId = ko.observable(doc ? doc.projectId : '');
+    this.projectName = ko.observable(doc ? doc.projectName : '');
     this.filename = ko.observable(doc ? doc.filename : '');
     this.citation = ko.observable(doc ? doc.citation : '');
     this.doiLink = ko.observable(doc ? doc.doiLink : '');
@@ -95,6 +97,11 @@ function DocumentViewModel (doc, owner, settings) {
     self.transients.isJournalArticle = function() {
         return (self.role() == 'journalArticles');
     };
+
+    self.transients.projectUrl = ko.pureComputed(function () {
+        return fcConfig.projectIndexUrl + '/' + self.projectId +
+            (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
+    });
 
     this.embeddedVideo = ko.observable(doc.embeddedVideo);
     this.embeddedVideoVisible = ko.computed(function() {

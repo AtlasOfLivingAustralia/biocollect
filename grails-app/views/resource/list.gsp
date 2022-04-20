@@ -11,6 +11,8 @@
             pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
             documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}",
             imageLocation:"${asset.assetPath(src: '')}",
+            projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
+            version: "${params.version}"
         }
     </script>
 
