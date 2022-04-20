@@ -15,6 +15,7 @@ class DocumentService {
     UserService userService
     ActivityService activityService
     SearchService searchService
+    ProjectService projectService
 
     def get(String id) {
         def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${id}"
@@ -91,16 +92,19 @@ class DocumentService {
     }
 
     Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String order = null, String projectId = null, String hub = null) {
-        String searchTextBy = "status:active";
+        String searchTextBy = "";
 
         Map params = [:]
 
         if (searchType == 'none' && searchTerm)
-            searchTextBy += " AND (name:" + searchTerm + " OR role:" + searchTerm + " OR labels:" + searchTerm + " OR attribution:" + searchTerm + " OR citation:" + searchTerm + " OR description:" + searchTerm + ")";
+            searchTextBy += "(name:" + searchTerm + " OR role:" + searchTerm + " OR labels:" + searchTerm + " OR attribution:" + searchTerm + " OR citation:" + searchTerm + " OR description:" + searchTerm + ")";
 
         //projectId is passed in the case of viewing project documents
         if (projectId) {
-            searchTextBy += " AND projectId:" + projectId;
+            if (!searchTextBy.isEmpty())
+                searchTextBy += " AND projectId:" + projectId;
+            else
+                searchTextBy += "projectId:" + projectId;
 
             if (searchType && searchTerm) {
                 if (searchType != 'none')
@@ -108,24 +112,23 @@ class DocumentService {
             }
 
             params = [
-                    offset:offset,
-                    max:max,
-                    query:searchTextBy,
-                    fq:DOCUMENT_FILTER
+                    offset: offset,
+                    max   : max,
+                    query : searchTextBy,
+                    fq    : DOCUMENT_FILTER
             ]
-        }
-        else { //when viewing hub documents
+        } else { //when viewing hub documents
             if (searchType && searchTerm) {
                 if (searchType != 'none')
-                    searchTextBy += " AND " + searchType + ":" + searchTerm;
+                    searchTextBy += searchType + ":" + searchTerm;
             }
 
             params = [
-                    offset:offset,
-                    max:max,
-                    query:searchTextBy,
-                    fq:DOCUMENT_FILTER,
-                    hub:hub
+                    offset: offset,
+                    max   : max,
+                    query : searchTextBy,
+                    fq    : DOCUMENT_FILTER,
+                    hub   : hub
             ]
         }
 
@@ -144,6 +147,21 @@ class DocumentService {
         Map results = searchService.fulltextSearch(
                 params, true
         )
+
+        //add the associated projectId when viewing hub documents
+        if (!projectId) {
+            Map project = [:]
+
+            if (results) {
+                for (int i = 0; i < results.hits.hits.size(); i++) {
+                    project = projectService.get(results.hits.hits[i]._source.projectId)
+
+                    if (project)
+                        results.hits.hits[i]._source.put("projectName", project.name)
+                }
+            }
+        }
+
         results
     }
 

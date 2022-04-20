@@ -73,6 +73,17 @@
 
     <div class="row">
         <div class="col-2">
+            <label><h6>Project:</h6></label>
+        </div>
+        <div class="col">
+            <a data-bind="attr:{'href': selectedDocument().transients.projectUrl()}" rel="noopener">
+                <span data-bind="text: transients.truncatedName ? transients.truncatedName : selectedDocument().projectName()"></span>
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-2">
             <label><h6>Document type:</h6></label>
         </div>
         <div class="col">

@@ -425,6 +425,7 @@ var contentTypes = {
     convert: [
         'application/msword',
         'application/ms-excel',
+        'application/octet-stream',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
         'application/vnd.ms-word.document.macroEnabled.12',
