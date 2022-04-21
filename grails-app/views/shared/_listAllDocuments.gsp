@@ -9,14 +9,18 @@
             <input class="form-control" id="searchResources" type="text" data-bind="value:searchDoc, hasFocus: searchHasFocus, valueUpdate:'keyup'"
                    placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="org-search-button"/>
 
-            <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)">
-                <i class="fas fa-search"></i>
-            </button>
+            <div class="input-group-append">
+                <label for="searchType" class="input-group-text">Filter by</label>
+            </div>
 
-            <div class="col-md-1 text-right mt-2 mt-md-0">
+            <div class="input-group-append">
                 <select id="searchType" class="custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Filter">
                 </select>
             </div>
+
+            <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)">
+                <i class="fas fa-search"></i>
+            </button>
 
             <div class="col-md-4 text-right mt-2 mt-md-0">
                 <label for="sortBy" class="col-form-label" style="padding-right: 5px;">Sort by</label>
