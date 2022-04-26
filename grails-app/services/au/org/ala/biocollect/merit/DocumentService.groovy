@@ -115,7 +115,8 @@ class DocumentService {
                     offset: offset,
                     max   : max,
                     query : searchTextBy,
-                    fq    : DOCUMENT_FILTER
+                    fq    : DOCUMENT_FILTER,
+                    public: true
             ]
         } else { //when viewing hub documents
             if (searchType && searchTerm) {
@@ -128,7 +129,8 @@ class DocumentService {
                     max   : max,
                     query : searchTextBy,
                     fq    : DOCUMENT_FILTER,
-                    hub   : hub
+                    hub   : hub,
+                    public: true
             ]
         }
 
