@@ -21,7 +21,8 @@ var document =
       "filesize" : "",
       "contentType" : "",
       "citation" : "",
-      "doiLink" : ""
+      "doiLink" : "",
+      "publiclyViewable":false
 }
 
 
