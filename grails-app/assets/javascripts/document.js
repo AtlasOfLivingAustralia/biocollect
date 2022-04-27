@@ -83,6 +83,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.fileButtonText = ko.computed(function() {
         return (self.filename() ? "Change file" : "Attach file");
     });
+    this.externalUrl = ko.observable(doc.externalUrl);
 
     self.transients = {};
     self.transients.dateCreated = "";
@@ -94,8 +95,8 @@ function DocumentViewModel (doc, owner, settings) {
     if (doc.lastUpdated)
         self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
 
-    self.transients.isJournalArticle = function() {
-        return (self.role() == 'journalArticles');
+    self.transients.isPreviewDownloadVisible = function() {
+        return ((self.role() == 'journalArticles') || self.externalUrl());
     };
 
     self.transients.projectUrl = ko.pureComputed(function () {
