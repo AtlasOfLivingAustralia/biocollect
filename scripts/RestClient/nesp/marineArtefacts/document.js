@@ -6,7 +6,7 @@ var document =
       "lastUpdated" : "",
       "isPrimaryProjectImage" : false,
       "documentId" : "",
-      "filepath" : "2022-02",
+      "filepath" : "2022-04",
       "thirdPartyConsentDeclarationMade" : false,
       "projectActivityId" : "",
       "role" : "",
@@ -22,7 +22,7 @@ var document =
       "contentType" : "",
       "citation" : "",
       "doiLink" : "",
-      "publiclyViewable":false
+      "public": true
 }
 
 
