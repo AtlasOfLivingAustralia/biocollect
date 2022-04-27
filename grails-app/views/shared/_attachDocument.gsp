@@ -56,6 +56,15 @@
                     </div>
 
                     <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentexternalUrl">External Url</label>
+
+                        <div class="col-sm-9">
+                            <input class="form-control" id="documentexternalUrl" type="text" data-bind="value:externalUrl"/>
+
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
                         <label class="col-form-label col-sm-3" for="documentCitation">Citation</label>
 
                         <div class="col-sm-9">

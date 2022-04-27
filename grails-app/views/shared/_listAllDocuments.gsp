@@ -115,6 +115,15 @@
 
     <div class="row">
         <div class="col-2">
+            <label><h6>External Url:</h6></label>
+        </div>
+        <div class="col">
+            <a data-bind="attr: { href: selectedDocument().externalUrl() }, text: selectedDocument().externalUrl()"></a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-2">
             <label><h6>Attribution:</h6></label>
         </div>
         <div class="col">

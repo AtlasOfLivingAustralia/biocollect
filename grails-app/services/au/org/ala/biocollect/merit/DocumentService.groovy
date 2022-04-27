@@ -115,9 +115,32 @@ class DocumentService {
                     offset: offset,
                     max   : max,
                     query : searchTextBy,
-                    fq    : DOCUMENT_FILTER,
-                    public: true
+                    fq    : DOCUMENT_FILTER
             ]
+
+            Boolean isALAAdmin = userService.userIsAlaAdmin()
+            def members = projectService.getMembersForProjectId(projectId)
+
+            String userId = userService.getCurrentUserId()
+
+            boolean isViewable = false
+
+            if (userId)
+                isViewable = members.find{it.userId == userId} || isALAAdmin
+
+            if (params.fq)
+                params.fq = [params.fq]
+            else
+                params.fq = []
+
+            // at project level admins and project members can view both public and private documents
+            if (isViewable) {
+                params.fq.push("publiclyViewable:true")
+                params.fq.push("publiclyViewable:false")
+            }
+            else
+                params.fq.push("publiclyViewable:true")
+
         } else { //when viewing hub documents
             if (searchType && searchTerm) {
                 if (searchType != 'none')
@@ -129,9 +152,16 @@ class DocumentService {
                     max   : max,
                     query : searchTextBy,
                     fq    : DOCUMENT_FILTER,
-                    hub   : hub,
-                    public: true
+                    hub   : hub
             ]
+
+            if (params.fq)
+                params.fq = [params.fq]
+            else
+                params.fq = []
+
+            // at hub level all users can view public documents only
+            params.fq.push("publiclyViewable:true")
         }
 
         if (order) {
