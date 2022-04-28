@@ -3,14 +3,15 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.*
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.ecodata.forms.ActivityFormService
+import au.org.ala.ecodata.forms.UserInfoService
 import au.org.ala.web.AuthService
 import au.org.ala.web.UserDetails
 import grails.converters.JSON
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.grails.web.json.JSONArray
-import grails.web.mapping.LinkGenerator
-import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
@@ -184,7 +185,7 @@ class BioActivityController {
         model = activityModel(activity, projectId)
         model.pActivity = pActivity
         model.projectName = project.name
-        
+
         addOutputModel(model)
         model.preview = true;
 
@@ -217,6 +218,7 @@ class BioActivityController {
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+        model.authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
         render (view: model.error ? 'error' : 'edit', model: model)
     }
 
@@ -230,6 +232,7 @@ class BioActivityController {
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+        model.authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
         render (view: model.error ? 'error' : 'edit', model: model)
     }
 
@@ -727,7 +730,7 @@ class BioActivityController {
                 queryParams.put(key, value)
             }
         }
-    
+
         queryParams.max = queryParams.max ?: 10
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20
