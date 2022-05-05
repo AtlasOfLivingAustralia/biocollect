@@ -55,7 +55,8 @@ before_script:
 
 script:
 #  - ./gradlew -PenableClover=true cloverGenerateReport --no-daemon
-  - ./gradlew build
+#  - ./gradlew build
+  - ./gradlew compileGroovy
 #  - ./src/main/scripts/runFunctionalTests.sh
   - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
 
