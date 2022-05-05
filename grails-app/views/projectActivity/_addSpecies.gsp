@@ -70,8 +70,8 @@
                                                                 classes: {'ui-autocomplete': 'modal-zindex'}
                                                             }">
                             <div class="input-group-append">
-                                <button class="btn btn-dark" data-bind="click: $parent.newSpeciesLists.clearSearchValue ">
-                                    <i class="far fa-times-circle"></i>
+                                <button class="btn btn-danger" data-bind="click: $parent.newSpeciesLists.clearSearchValue ">
+                                    <i class="far fa-trash-alt"></i>
                                 </button>
                             </div>
                         </div>

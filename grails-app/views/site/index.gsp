@@ -5,7 +5,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${site?.name?.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <meta name="breadcrumb" content="${site.name?.encodeAsHTML()}"/>
@@ -312,7 +312,7 @@
                                         Add
                                     </a>
                                     <a class="btn btn-dark btn-sm" data-bind="attr:{'href': transients.editUrl}">
-                                        <i class="fa fa-edit"></i>
+                                        <i class="fas fa-pencil-alt"></i>
                                         Edit
                                     </a>
                                     <a class="btn btn-sm btn-danger" href="#" data-bind="click: $parent.remove">

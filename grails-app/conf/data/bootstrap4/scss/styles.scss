@@ -58,13 +58,13 @@ $tag-text-color: white !default;
 
 $footer-background-color: black !default;
 $footer-text-color: white !default;
-#footer .footer-top {
+#custom-footer {
   background-color: $footer-background-color;
   color: $footer-text-color;
 }
 
 $social-text-color: white !default;
-#footer .footer-top .social a {
+#custom-footer .social a {
   color: $social-text-color;
 }
 

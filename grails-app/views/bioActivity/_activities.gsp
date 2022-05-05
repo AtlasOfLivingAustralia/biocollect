@@ -64,11 +64,11 @@
                     <button class="filter-item btn btn-sm btn-outline-dark">
                         <strong data-bind="visible: exclude " title="Exclude">[EXCLUDE]</strong>
                         <!-- ko text: displayNameWithoutCount() --> <!-- /ko -->
-                        <span class="remove" data-bind="click: remove"><i class="far fa-times-circle"></i></span>
+                        <span class="remove" data-bind="click: remove"><i class="far fa-trash-alt"></i></span>
                     </button>
                     <!-- /ko -->
                     <!-- ko if: (filterViewModel.selectedFacets() && (filterViewModel.selectedFacets().length > 0)) -->
-                    <button type="button" class="btn btn-sm btn-dark clear-filters"  data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
+                    <button type="button" class="btn btn-sm btn-dark clear-filters"  data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-trash-alt"></i> Clear All
                     </button>
                     <!-- /ko -->
                 </div>
@@ -179,15 +179,14 @@
                                                    title="<g:message code="data.activity.view.title"/>"
                                                    role="button">
                                                     <i class="far fa-eye"></i>
-                                                    <g:message code="btn.view"/>
                                                 </a>
                                                 <!-- ko if: $parent.showCrud() && !$parent.readOnly()-->
                                                 <a class="btn btn-sm editBtn btn-dark"
                                                    data-bind="attr: {href: $parent.transients.editUrl }"
-                                                   title="Edit record"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
-                                                <button class="btn btn-sm btn-dark"
+                                                   title="Edit record"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn btn-sm btn-danger"
                                                         data-bind="click: $parent.delete"
-                                                        title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                                        title="Delete record"><i class="far fa-trash-alt"></i></button>
                                                 <!-- /ko -->
                                             </div>
                                         </div>
@@ -223,14 +222,13 @@
                                                    title="<g:message code="data.activity.view.title"/>"
                                                    role="button">
                                                     <i class="far fa-eye"></i>
-                                                    <g:message code="btn.view"/>
                                                 </a>
                                                 <!-- ko if: showCrud() && !readOnly() -->
                                                 <a class="btn btn-sm btn-dark editBtn"
                                                    data-bind="attr: {href: transients.editUrl}"
-                                                   title="Edit record"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
-                                                <button class="btn btn-sm btn-dark" data-bind="click: $data.delete"
-                                                        title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                                   title="Edit record"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn btn-sm btn-danger" data-bind="click: $data.delete"
+                                                        title="Delete record"><i class="far fa-trash-alt"></i></button>
                                                 <!-- /ko -->
                                             </div>
                                         </div>
@@ -400,12 +398,12 @@
                                 <!-- ko if: type == 'action' -->
                                 <td class="align-top">
                                     <div class="btn-space">
-                                        <a class="btn btn-sm btn-primary-dark editBtn" data-bind="attr: {href: $parents[1].transients.viewUrl}" title="View record"><i class="far fa-eye"></i> View</a>
+                                        <a class="btn btn-sm btn-primary-dark editBtn" data-bind="attr: {href: $parents[1].transients.viewUrl}" title="View record"><i class="far fa-eye"></i></a>
                                         <!-- ko if: !$parents[1].readOnly() &&  $parents[1].showCrud() -->
-                                        <a  class="btn btn-sm editBtn btn-dark" data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record"><i class="fas fa-pencil-alt"></i> Edit</a>
+                                        <a  class="btn btn-sm editBtn btn-dark" data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record"><i class="fas fa-pencil-alt"></i></a>
                                         <!-- /ko -->
                                         <!-- ko if: !$parents[1].readOnly() && $parents[1].showCrud() -->
-                                        <button class="btn btn-sm btn-dark" data-bind="click: $parents[1].delete" title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                        <button class="btn btn-sm btn-danger" data-bind="click: $parents[1].delete" title="Delete record"><i class="far fa-trash-alt"></i></button>
                                         <!-- /ko -->
                                     </div>
                                 </td>
@@ -500,18 +498,17 @@
                                            title="<g:message code="data.activity.view.title"/>"
                                            class="btn btn-sm editBtn btn-primary-dark">
                                             <i class="far fa-eye"></i>
-                                            <g:message code="btn.view"/>
                                         </a>
                                         <!-- ko if: $parent.showCrud() && !$parent.readOnly() -->
                                         <a data-bind="attr:{'href': $parent.transients.editUrl}"
                                            title="Edit record"
                                            class="btn btn-sm editBtn btn-dark">
-                                            <i class="fas fa-pencil-alt"></i> Edit
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-dark"
+                                        <button class="btn btn-sm btn-danger"
                                                 data-bind="click: $parent.delete"
                                                 title="Delete record">
-                                            <i class="far fa-trash-alt"></i>&nbsp;Delete
+                                            <i class="far fa-trash-alt"></i>
                                         </button>
                                         <!-- /ko -->
                                     </div>
@@ -589,7 +586,7 @@
 
         var columnConfig =${ hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON}
 
-        var facetConfig; 
+        var facetConfig;
 
         if(view === 'allrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };

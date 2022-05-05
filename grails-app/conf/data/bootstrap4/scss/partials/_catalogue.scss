@@ -236,7 +236,6 @@
   z-index: 999;
   border: 1px solid $gray-900;
   border-left: none;
-  max-height: 90vh;
   display: flex;
   flex-direction: column;
   @include media-breakpoint-down(lg) {
