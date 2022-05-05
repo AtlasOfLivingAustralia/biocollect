@@ -24,18 +24,19 @@
                     <input class="form-check-input" type="radio" name="siteType"
                            data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-link'}), clickBubble: false" value="sitepick"/>
                     <label class="form-check-label">
-                        <a id="site-pick-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-pick"
+                        <a id="site-pick-link"
                            data-bind="click: transients.setSurveySiteOption.bind({value: 'sitepick'})">
                             <h6 class="m-0"><g:message code="mapConfiguration.sites.pick.title"/></h6>
                         </a>
                     </label>
+                    <button class="btn btn-dark btn-sm" data-toggle="collapse" data-target="#site-pick"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
             </div>
 
-            <div id="site-pick" class="collapse p-3" data-bind="css: { 'show': transients.surveySiteOption == 'sitepick' }">
-                <div class="mt-3" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick' }">
-                    <div class="" data-bind="if: surveySiteOption() === 'sitepick', slideVisible: surveySiteOption() === 'sitepick'">
-                        <h6><g:message
+            <div id="site-pick" class="collapse card ml-5">
+                <div class="mt-3 card-body" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick' }">
+                    <div>
+                        <h6 class="card-title"><g:message
                                 code="mapConfiguration.user.pick.site.title"/></h6>
                         <h6><small class="text-muted"><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h6>
                         <!-- ko template: {name: 'template-sites-pick-one'} -->
@@ -51,18 +52,18 @@
                     <input class="form-check-input" type="radio" name="siteType"
                            data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-create-link'}), clickBubble: false" value="sitecreate"/>
                     <label class="form-check-label">
-                            <a id="site-create-link" data-toggle="collapse" data-parent="#site-accordion" href="#site-create"
-                           data-bind="click: transients.setSurveySiteOption.bind({value:'sitecreate'})">
+                            <a id="site-create-link" data-bind="click: transients.setSurveySiteOption.bind({value:'sitecreate'})">
                                 <h6 class="m-0"><g:message code="mapConfiguration.sites.create.title"/></h6>
                             </a>
                     </label>
+                    <button class="btn btn-dark btn-sm" data-toggle="collapse" data-target="#site-create"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
             </div>
 
-            <div id="site-create" class="accordion-body collapse" data-bind="css: { 'show': transients.surveySiteOption == 'sitecreate' }">
-                <div class="" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitecreate' }">
-                    <div class="" data-bind="if: surveySiteOption() === 'sitecreate', slideVisible: surveySiteOption() === 'sitecreate'">
-                        <h6><g:message code="mapConfiguration.user.created.site.title"/></h6>
+            <div id="site-create" class="card ml-5 collapse" data-bind="css: { 'show': transients.surveySiteOption == 'sitecreate' }">
+                <div class="card-body bg-selected-color">
+                    <div>
+                        <h6 class="card-title"><g:message code="mapConfiguration.user.created.site.title"/></h6>
                         <h6><small class="text-muted"><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h6>
                         <!-- ko template: {name: 'template-site-create'} -->
                         <!-- /ko -->
@@ -78,18 +79,18 @@
                     <input class="form-check-input" type="radio" name="siteType"
                            data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-create-link'}), clickBubble: false" value="sitepickcreate"/>
                     <label class="form-check-label">
-                        <a id="site-pick-create-link" data-toggle="collapse" data-parent="#site-accordion"
-                           href="#site-pick-create" data-bind="click: transients.setSurveySiteOption.bind({value:'sitepickcreate'})">
+                        <a id="site-pick-create-link" data-bind="click: transients.setSurveySiteOption.bind({value:'sitepickcreate'})">
                             <h6 class="m-0"><g:message code="mapConfiguration.sites.both.title"/></h6>
                         </a>
                     </label>
+                    <button class="btn btn-dark btn-sm" data-toggle="collapse" data-target="#site-pick-create"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
             </div>
 
-            <div id="site-pick-create" class="accordion-body collapse" data-bind="css: { 'show': transients.surveySiteOption == 'sitepickcreate' }">
-                <div class="" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepickcreate' }">
-                    <div class="" data-bind="if: surveySiteOption() === 'sitepickcreate', slideVisible: surveySiteOption() === 'sitepickcreate'">
-                        <h6><strong><g:message code="mapConfiguration.user.pick.site.title"/></strong></h6>
+            <div id="site-pick-create" class="collapse card ml-5" data-bind="css: { 'show': transients.surveySiteOption == 'sitepickcreate' }">
+                <div class="card-body bg-selected-color">
+                    <div>
+                        <h6 class="card-title"><strong><g:message code="mapConfiguration.user.pick.site.title"/></strong></h6>
                         <h6 class="text-muted"><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h6>
                         <!-- ko template: {name: 'template-sites-pick-one'} -->
                         <!-- /ko -->

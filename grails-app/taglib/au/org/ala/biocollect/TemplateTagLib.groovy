@@ -20,8 +20,8 @@ class TemplateTagLib {
             String url = getLinkUrl(link)
             out << """
             <div class="${classes} homePageNav">
-                <div class="w-100 h-100 border border-dark text-center rounded-lg homepage-button" onclick="window.location = '${url}'">
-                    <div class="p-5 border-0">
+                <div class="w-100 h-100 border text-center rounded-lg homepage-button" onclick="window.location = '${url}'">
+                    <div class="p-3 border-0">
                         <h3 class="p-0 m-0">${link?.displayName}</h3>
                     </div>
                 </div>

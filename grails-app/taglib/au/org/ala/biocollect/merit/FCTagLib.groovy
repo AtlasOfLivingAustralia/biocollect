@@ -160,8 +160,8 @@ class FCTagLib {
                 }
                 def clearDateWrapper = {
                     if (attrs.clearBtn?.toBoolean()){
-                        mb.span(class:"${addOnClass} clear-date") {
-                            mb.i(class: 'far fa-times-circle') {
+                        mb.span(class:"btn btn-danger clear-date") {
+                            mb.i(class: 'far fa-trash-alt') {
                                 mkp.yieldUnescaped("&nbsp;")
                             }
                         }

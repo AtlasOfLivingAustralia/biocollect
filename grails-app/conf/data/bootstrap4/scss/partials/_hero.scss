@@ -22,6 +22,9 @@
         }
     }
 
+    .swiper-slide[style^="background-image"]:after {
+        background-color: rgba(0, 0, 0, 0);
+    }
 
     .slide-overlay {
         position: relative;

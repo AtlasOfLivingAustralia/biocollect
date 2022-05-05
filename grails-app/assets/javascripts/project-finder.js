@@ -183,7 +183,7 @@ function ProjectFinder(config) {
 
         this.filterViewModel.selectedFacets.subscribe(this.doSearch)
     }
-    
+
     /**
      * check if button has active flag
      * @param $button
@@ -460,7 +460,8 @@ function ProjectFinder(config) {
                 setTimeout(scrollToProject, 500);
                 // Issue map search in parallel to 'standard' search
                 // standard search is required to drive facet display
-                self.doMapSearch(projectVMs);
+                // todo : uncomment when all project area can be shown without pagination
+                // self.doMapSearch(projectVMs);
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -506,7 +507,7 @@ function ProjectFinder(config) {
             traditional: true
         });
     };
-    
+
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
         return true
@@ -784,7 +785,7 @@ function ProjectFinder(config) {
         // }
 
     });
-    
+
     $("#pt-aus-world").on('statechange', function(){
         var viewMode = getActiveButtonValues($("#pt-view"));
     })
@@ -841,7 +842,7 @@ function ProjectFinder(config) {
 
     $("#btnShowTileView").on('click',function () {
         pageWindow.showTileView();
-        
+
     });
 
     $("#btnShowListView").on('click',function () {
@@ -934,7 +935,7 @@ function ProjectFinder(config) {
         pageWindow.sortBy( params.sort || 'dateCreatedSort');
         pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '20'));
         pageWindow.isWorldWide( params.isWorldWide || 'false');
-        
+
         $('#pt-search').val(params.queryText).focus();
         pageWindow.filterViewModel.switchOffSearch(false);
     }

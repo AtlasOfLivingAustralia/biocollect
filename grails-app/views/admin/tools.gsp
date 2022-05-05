@@ -153,7 +153,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <button id="btnClearMetadataCache" class="btn btn-warning"><i class="far fa-times-circle"></i> Clear&nbsp;Metadata&nbsp;Cache</button>
+                        <button id="btnClearMetadataCache" class="btn btn-danger"><i class="far fa-trash-alt"></i> Clear&nbsp;Metadata&nbsp;Cache</button>
                         <div class="form-group form-check">
                             <input type="checkbox" id="clearEcodataCache" checked="checked">
                             <label class="form-check-label" for="clearEcodataCache">Also clear ecodata cache</label>

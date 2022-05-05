@@ -5,7 +5,7 @@
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
     <title>${title}</title>
     <meta name="layout" content="bs4"/>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
     var fcConfig = {
@@ -99,14 +99,14 @@
                     <btn class="filter-item btn btn-sm btn-outline-dark" data-bind="attr:{title:facet.metadata.displayName + ' : ' + displayName()}">
                         <!-- ko text: facet.metadata.displayName + ' : ' + displayName() --><!-- /ko -->
                         <span class="remove" data-remove data-bind="click: $root.removeFacetTerm">
-                            <i class="far fa-times-circle"></i>
+                            <i class="far fa-trash-alt"></i>
                         </span>
                     </btn>
                     <!-- /ko -->
                     <!-- ko if: (selectedFacets() && (selectedFacets().length > 0)) -->
                     <button class="btn btn-sm btn-dark clear-filters"  data-bind="click: removeAllSelectedFacets" type="button"
                             aria-label="Clear all filters">
-                        <i class="far fa-times-circle"></i> Clear All
+                        <i class="far fa-trash-alt"></i> Clear All
                     </button>
                     <!-- /ko -->
                 </div>
