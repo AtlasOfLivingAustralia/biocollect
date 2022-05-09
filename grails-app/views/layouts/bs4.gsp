@@ -109,14 +109,14 @@
                                 <g:render template="/layouts/breadcrumb"/>
                             </div>
                             <g:if test="${pageProperty(name: 'page.pagefinderbuttons')}">
-                                <div class="col col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-end">
+                                <div class="col col-lg-6 py-2 d-flex align-items-center justify-content-center justify-content-lg-end">
                                     <g:pageProperty name="page.pagefinderbuttons"/>
                                 </div>
                             </g:if>
                         </div>
                     </div>
                 </div>
-                <div class="my-1" id="content">
+                <div class="my-1 mx-3" id="content">
                     <g:layoutBody/>
                 </div>
             </article>
