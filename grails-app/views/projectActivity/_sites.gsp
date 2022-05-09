@@ -29,12 +29,12 @@
                             <h6 class="m-0"><g:message code="mapConfiguration.sites.pick.title"/></h6>
                         </a>
                     </label>
-                    <button class="btn btn-dark btn-sm" data-toggle="collapse" data-target="#site-pick"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                    <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
             </div>
 
             <div id="site-pick" class="collapse card ml-5">
-                <div class="mt-3 card-body" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick' }">
+                <div class="mt-3 card-body" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick'}, if: surveySiteOption() === 'sitepick'">
                     <div>
                         <h6 class="card-title"><g:message
                                 code="mapConfiguration.user.pick.site.title"/></h6>
@@ -56,12 +56,12 @@
                                 <h6 class="m-0"><g:message code="mapConfiguration.sites.create.title"/></h6>
                             </a>
                     </label>
-                    <button class="btn btn-dark btn-sm" data-toggle="collapse" data-target="#site-create"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                    <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
             </div>
 
-            <div id="site-create" class="card ml-5 collapse" data-bind="css: { 'show': transients.surveySiteOption == 'sitecreate' }">
-                <div class="card-body bg-selected-color">
+            <div id="site-create" class="card ml-5 collapse">
+                <div class="card-body bg-selected-color" data-bind="if: surveySiteOption() === 'sitecreate'">
                     <div>
                         <h6 class="card-title"><g:message code="mapConfiguration.user.created.site.title"/></h6>
                         <h6><small class="text-muted"><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h6>
@@ -83,12 +83,12 @@
                             <h6 class="m-0"><g:message code="mapConfiguration.sites.both.title"/></h6>
                         </a>
                     </label>
-                    <button class="btn btn-dark btn-sm" data-toggle="collapse" data-target="#site-pick-create"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                    <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
             </div>
 
-            <div id="site-pick-create" class="collapse card ml-5" data-bind="css: { 'show': transients.surveySiteOption == 'sitepickcreate' }">
-                <div class="card-body bg-selected-color">
+            <div id="site-pick-create" class="collapse card ml-5">
+                <div class="card-body bg-selected-color" data-bind="if: surveySiteOption() === 'sitepickcreate'">
                     <div>
                         <h6 class="card-title"><strong><g:message code="mapConfiguration.user.pick.site.title"/></strong></h6>
                         <h6 class="text-muted"><small><span class="req-field"></span> <g:message code="mapConfiguration.site.mandatory.title"/></small></h6>
@@ -160,11 +160,12 @@
                     </div>
                 </div>
                 <!-- ko foreach: sites -->
+                <!-- ko if: !isProjectArea() -->
                 <div class="row">
                     <div class="col-6">
                         <label class="checkbox">
                             <input type="checkbox" data-bind="checked: added">
-                            <a class="btn-link" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                            <a class="btn-link ml-2" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
                         </label>
                     </div>
                     <div class="col-6 btn-space">
@@ -177,6 +178,12 @@
                             <g:message code="btn.delete"/>
                         </button>
                     </div>
+                </div>
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
+                <div class="alert alert-info" role="alert">
+                    <g:message code="mapConfiguration.site.create.pick.empty.list.info"></g:message>
                 </div>
                 <!-- /ko -->
             </div>

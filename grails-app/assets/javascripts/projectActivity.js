@@ -667,7 +667,7 @@ var ProjectActivity = function (params) {
         var count = 0;
         var sites = self.sites();
         sites.forEach(function(site){
-            if(site.added()){
+            if(site.added() && !site.isProjectArea()){
                 count ++;
             }
         });

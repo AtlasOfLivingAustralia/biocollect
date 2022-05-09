@@ -1,5 +1,5 @@
 <div id="sortBar" class="row d-flex">
-    <div class="col-12 col-md-4 offset-md-8 text-right mb-3">
+    <div class="col-12 col-md-4 offset-md-8 py-2 text-right mb-3">
         <div class="input-group">
             <input id="pt-search" type="text" class="form-control" placeholder="<g:message code="projectfinder.search"/>" aria-label="<g:message code="projectfinder.search"/>" aria-describedby="pt-search-link">
             <div class="input-group-append">
