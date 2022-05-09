@@ -7,7 +7,7 @@
                    aria-describedby="record-search-button">
 
             <div class="input-group-append">
-                <button class="btn btn-primary-dark" type="button" id="record-search-button">
+                <button class="btn btn-primary-dark" type="button" id="record-search-button" data-bind="click: search">
                     <i class="fas fa-search"></i> Search
                 </button>
             </div>

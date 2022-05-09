@@ -394,13 +394,6 @@ function ProjectFinder(config) {
         map.max =  pageWindow.pagination.resultsPerPage() // Page size
         map.sort = pageWindow.sortBy();
 
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                var checked = isButtonChecked($('#pt-search-program-' + program.name.replace(/ /g, '-')))
-                if (checked) map["isProgram" + program.name.replace(/ /g, '-')] = true
-            });
-        }
-
         return map
     };
 
@@ -925,12 +918,6 @@ function ProjectFinder(config) {
         pageWindow.filterViewModel.setFilterQuery(params.queryList);
         offset = Number.parseInt(params.offset || offset);
         selectedProjectId = params.projectId;
-
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                toggleButton($('#pt-search-program-' + program.name.replace(/ /g, '-')), toBoolean(params["isProject" + program.name]));
-            });
-        }
 
         pageWindow.sortBy( params.sort || 'dateCreatedSort');
         pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '20'));
