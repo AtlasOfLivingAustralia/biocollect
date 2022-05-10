@@ -32,7 +32,7 @@ def PROJECT_ID = "665b17e8-c950-4785-b0c3-e7cc89def22b"
 def PROJECT_ACTIVITY_ID = "a87bdb6b-2c90-427a-bd48-d61797a95fb8"
 def USERNAME = ""
 def AUTH_KEY = ""
-def xlsx = "data.xlsx"
+def xlsx = "Simple Voucher Sample Collection_Delta Environmental_2021.xlsx"
 
 SERVER_URL = "http://devt.ala.org.au:8087"
 SPECIES_URL = "/search/searchSpecies/${PROJECT_ACTIVITY_ID}?limit=1&hub=ecoscience&output=Simple%20Voucher%20Sample%20Collection&dataFieldName="
@@ -219,7 +219,6 @@ Paths.get(xlsx).withInputStream { input ->
             activity.outputs[0].data.minimumElevationInMetres = record."Altitude (mASL)" ? record."Altitude (mASL)".toFloat().toInteger() : null
             activity.outputs[0].data.endemicity = record."Endemicity"
             activity.outputs[0].data.countAccuracy = record."Count accuracy"
-            activity.outputs[0].data.taxonSubspecies = record."Subspecies or lower"
             activity.outputs[0].data.commonName = record."Common name"
             activity.outputs[0].data.lifeForm = record."Life form"
             activity.outputs[0].data.lifeStage = []
@@ -277,17 +276,16 @@ Paths.get(xlsx).withInputStream { input ->
                 }
             }
 
-            if(record."Family (Scientific Name Only)") {
-                activity.outputs[0].data.taxonFamily = getSpecies(record."Family (Scientific Name Only)", "taxonFamily")
-            }
-            if(record."Genus (Scientific Name Only)") {
-                activity.outputs[0].data.taxonGenus = getSpecies(record."Genus (Scientific Name Only)", "taxonGenus")
-            }
-
             if(record."Species (Scientific Name Only)") {
                 //full species name is genus + species name + sub species
                 String speciesName = record."Genus (Scientific Name Only)" + " " + record."Species (Scientific Name Only)" + (record."Subspecies or lower" ? " subsp. " + record."Subspecies or lower" : "")
                 activity.outputs[0].data.scientificName = getSpecies(speciesName, "scientificName")
+            }
+            else if(record."Genus (Scientific Name Only)"){
+                activity.outputs[0].data.scientificName = getSpecies(record."Genus (Scientific Name Only)", "scientificName")
+            }
+            else if(record."Family (Scientific Name Only)") {
+                activity.outputs[0].data.scientificName = getSpecies(record."Family (Scientific Name Only)", "scientificName")
             }
 
             activity.outputs[0].data.voucherImage = []
