@@ -17,20 +17,6 @@
         "endemicity": "",
         "individualCount": "",
         "countAccuracy": "",
-        "taxonFamily": {
-          "guid": "",
-          "name": "",
-          "scientificName": "",
-          "commonName": "",
-          "listId": ""
-        },
-        "taxonGenus": {
-          "guid": "",
-          "name": "",
-          "scientificName": "",
-          "commonName": "",
-          "listId": ""
-        },
         "scientificName": {
           "guid": "",
           "name": "",
@@ -38,7 +24,6 @@
           "commonName": "",
           "listId": ""
         },
-        "taxonSubspecies": "",
         "commonName": "",
         "lifeForm": "",
         "lifeStage": [],
