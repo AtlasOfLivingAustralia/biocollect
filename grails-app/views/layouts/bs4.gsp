@@ -116,7 +116,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="my-1 mx-3" id="content">
+                <div class="my-1 mx-1 mx-md-3" id="content">
                     <g:layoutBody/>
                 </div>
             </article>

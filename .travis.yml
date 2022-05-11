@@ -55,10 +55,9 @@ before_script:
 
 script:
 #  - ./gradlew -PenableClover=true cloverGenerateReport --no-daemon
-#  - ./gradlew build
-  - ./gradlew compileGroovy
-#  - ./src/main/scripts/runFunctionalTests.sh
+  - ./gradlew build
   - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
+  - ./src/main/scripts/runFunctionalTests.sh
 
 after_success:
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./gradlew clean && travis_wait 30 ./gradlew publish'

@@ -46,12 +46,11 @@
 
   #banner {
     &.project-banner {
-      height: auto;
       padding-top: 220px;
     }
   }
   .project-title {
-    position: relative;
+    position: absolute;
     h1 {
       font-size: 28px;
     }
