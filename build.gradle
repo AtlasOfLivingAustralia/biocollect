@@ -111,7 +111,7 @@ dependencies {
 //    implementation 'org.grails.plugins:cache:5.0.0.RC1'
 
     //ALA plugins
-    implementation("au.org.ala.plugins.grails:images-client-plugin:1.4-SNAPSHOT") {
+    implementation("au.org.ala.plugins.grails:images-client-plugin:1.4") {
         exclude group: 'commons-httpclient', module: 'commons-httpclient'
     }
 
@@ -130,7 +130,7 @@ dependencies {
 
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0"
-        implementation "org.grails.plugins:ecodata-client-plugin:4.0.3-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:4.0.3"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
