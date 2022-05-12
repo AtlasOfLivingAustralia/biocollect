@@ -83,7 +83,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.transients.methoddocumentUpdateUrl  = ko.observable(fcConfig.methoddocumentUpdateUrl);
 
     self.transients.logoUrl = ko.pureComputed(function(){
-        return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "no-image-2.png";
+        return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "font-awesome/5.15.4/svgs/regular/image.svg";
     });
 
     self.methodDocUrl = ko.pureComputed(function(){

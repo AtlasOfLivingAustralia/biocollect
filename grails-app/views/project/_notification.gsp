@@ -1,60 +1,62 @@
-<div class="row-fluid">
-    <div class="span12">
-        <h2><g:message code="notification.title"/> </h2>
+<div class="row">
+    <div class="col-12">
+        <h4><g:message code="notification.title"/> </h4>
     </div>
 </div>
 <!-- ko with: transients.notification -->
-<form class="form-horizontal">
-    <div class="control-group">
-        <label class="control-label"><g:message code="notification.subject"/> </label>
-        <div class="controls">
+<form>
+    <div class="form-group">
+        <label class="col-sm-4 col-form-label"><g:message code="notification.subject"/> </label>
+        <div class="col-sm-8">
             <input class="full-width" type="text" data-bind="value: subject">
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label"><g:message code="notification.body"/></label>
-        <div class="controls">
+    <div class="form-group">
+        <label class="col-sm-4 col-form-label"><g:message code="notification.body"/></label>
+        <div class="col-sm-8">
             <textarea class="full-width" data-bind="value: body" rows="10"></textarea>
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label"><g:message code="notification.users"/> </label>
-        <div class="controls" id="notification-selected-members">
-            <div class="row-fluid" data-bind="slideVisible: !transients.recipients().length">
-                <div class="span12" >
+    <div class="form-group">
+        <label class="col-sm-4 col-form-label"><g:message code="notification.users"/> </label>
+        <div class="col-sm-8" id="notification-selected-members">
+            <div class="row" data-bind="slideVisible: !transients.recipients().length">
+                <div class="col-12" >
                     <p><g:message code="notification.noRecipeients"/> </p>
                 </div>
             </div>
-            <div class="row-fluid" data-bind="slideVisible: transients.recipients().length">
-                <div class="span12" data-bind="foreach: transients.recipients">
-                    <div class="input-append">
-                        <span class="add-on" data-bind="text: displayName"></span>
-                        <span class="add-on" data-bind="click: $parent.removeMember"><i class="icon-remove"></i></span>
+            <div class="row" data-bind="slideVisible: transients.recipients().length">
+                <div class="col-12" data-bind="foreach: transients.recipients">
+                    <div class="input-group">
+                        <div class="input-group-append">
+                            <span class="input-group-text" data-bind="text: displayName"></span>
+                            <span class="btn btn-danger" data-bind="click: $parent.removeMember"><i class="far fa-trash-alt"></i></span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label"><g:message code="notification.bulkActions"/> </label>
-        <div class="controls" id="notification-selected-members">
-            <div class="row-fluid" >
-                <div class="span12" >
-                    <button class="btn btn-default">Select all Members</button>
-                    <button class="btn btn-default">Select only Admins</button>
-                    <button class="btn btn-default">Select only Editors</button>
-                    <button class="btn btn-default">Select only Project Participants</button>
+    <div class="form-group">
+        <label class="col-sm-4 col-form-label"><g:message code="notification.bulkActions"/> </label>
+        <div class="col-sm-8">
+            <div class="row" >
+                <div class="col-12" >
+                    <button class="btn btn-dark">Select all Members</button>
+                    <button class="btn btn-dark">Select only Admins</button>
+                    <button class="btn btn-dark">Select only Editors</button>
+                    <button class="btn btn-dark">Select only Project Participants</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="control-group">
-        <div class="control-label">
-            <label class="control-label"><g:message code="notification.projectMembers"/> </label>
+    <div class="form-group">
+        <div class="col-sm-4 col-form-label">
+            <label class="col-sm-4 col-form-label"><g:message code="notification.projectMembers"/> </label>
         </div>
-        <div class="controls">
-            <div class="row-fluid">
-                <div class="span12">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col-12">
                     <table class="table table-striped table-bordered table-hover full-width" id="notification-member-list" data-bind="if: transients.members().length">
                         <thead>
                         <th>User Id</th>
@@ -76,16 +78,16 @@
                     </table>
                     <p data-bind="if: !transients.members().length"><g:message code="notification.noMembers"/> </p>
                     <!-- ko with: transients -->
-                    <g:render template="/shared/pagination"/>
+                    <g:render template="/shared/pagination" model="[bs: 4]"/>
                     <!-- /ko -->
                 </div>
             </div>
         </div>
     </div>
-    <div class="control-group">
-        <div class="controls">
-            <button class="btn btn-default" data-bind="click: sendTestNotification"><g:message code="notification.sendTest"/> </button>
-            <button class="btn btn-danger" data-bind="click: sendNotification"><g:message code="notification.send"/> </button>
+    <div class="form-group">
+        <div class="col-sm-8 offset-sm-4">
+            <button class="btn btn-primary-dark" data-bind="click: sendTestNotification"><i class="far fa-paper-plane"></i> <g:message code="notification.sendTest"/> </button>
+            <button class="btn btn-danger" data-bind="click: sendNotification"><i class="far fa-paper-plane"></i> <g:message code="notification.send"/> </button>
         </div>
     </div>
 </form>

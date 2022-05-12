@@ -1,0 +1,15 @@
+{
+  "request": {
+    "urlPath": "/ws/shape/upload/shp",
+
+    "method": "POST"
+  },
+  "response" : {
+    "status": 200,
+    "headers": {
+      "content-Type": "application/json"
+    },
+    "body": "{\"shp_id\":\"123456789-0\",\"0\":{\"id\":1, \"NAME\":\"Site 1\"},\"1\":{\"id\":2, \"NAME\":\"Site 2\"},\"2\":{\"id\":3, \"NAME\":\"Site 3\"},\"3\":{\"id\":4, \"NAME\":\"Site 4\"},\"4\":{\"id\":5, \"NAME\":\"Site 5\"}}"
+
+  }
+}

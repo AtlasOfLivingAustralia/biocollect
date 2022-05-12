@@ -633,7 +633,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                 }
             },
             error: function (data) {
-                self.showAlert("Error updating the survey -" + data.status, "alert-error", 'alert-placeholder');
+                self.showAlert("Error updating the survey -" + data.status, "alert-danger", 'alert-placeholder');
             }
         });
         return promise;
@@ -925,7 +925,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                             self.transients.enableSubmission(false);
 
                         } else if (result2) {
-                            showAlert("Error submitting dataset to Aekos. Error: " + result2.error, "alert-error", 'alert-placeholder');
+                            showAlert("Error submitting dataset to Aekos. Error: " + result2.error, "alert-danger", 'alert-placeholder');
                             self.transients.enableSubmission(true);
                             self.transients.submissionInProgress(false);
                         }

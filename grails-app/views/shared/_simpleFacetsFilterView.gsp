@@ -1,30 +1,19 @@
 <!-- ko with: filterViewModel-->
-<div class="row-fluid">
-    <div id="pt-selectors" class="well">
-        <h4><strong><g:message code="project.search.heading"/></strong></h4>
-        <div id="filter-buttons">
-            <button class="btn btn-small facetSearch" data-bind="click: mergeTempToRefine"><i class="icon-filter"></i>Refine</button>
-            <button class="btn btn-small clearFacet" data-bind="click: $root.reset"><i class="icon-remove-sign"></i>Clear all</button>
-        </div>
-        <div>
-            <h4><strong data-bind="visible: selectedFacets().length"><g:message code="project.search.currentFilters"/></strong></h4>
-            <ul class="unstyled">
-                <!-- ko foreach:selectedFacets -->
-                <li class="row-fluid">
-                    <strong class="span4 label-ellipsis" data-bind="visible: exclude " title="Exclude">[EXCLUDE]</strong>
-                    <span class="label-ellipsis display-inline-block span6"
-                          data-bind="text: displayNameWithoutCount(), attr:{title: displayNameWithoutCount()}">
-                    </span>
-                    <a class="span2" href="#" data-bind="click: remove"><i class="icon-remove"></i></a>
-                </li>
-                <!-- /ko  -->
-            </ul>
-        </div>
-        <div id="filters-hidden">
-            <div id="pt-searchControls" class="row-fluid">
-                <g:render template="/shared/facetView"></g:render>
-            </div>
-        </div>
+<div id="filters" class="collapse data-expander show" style="">
+    <button data-toggle="collapse" data-target=".data-expander" aria-expanded="true" aria-controls="filters" class="close" title="Close Filters">
+        <i class="far fa-times-circle"></i>
+    </button>
+
+    <div class="title">
+        <h3>Filters</h3>
+        <button class="btn btn-sm btn-dark facetSearch" data-bind="click: mergeTempToRefine"><i class="fas fa-filter"></i> Refine</button>
     </div>
+    <div class="filter-group">
+
+        <g:render template="/shared/facetView" model="[modalName: 'chooseMore']"></g:render>
+
+    </div>
+
 </div>
+<g:render template="/shared/facetModalChooseMore" model="[modalName: 'chooseMore']"/>
 <!-- /ko -->

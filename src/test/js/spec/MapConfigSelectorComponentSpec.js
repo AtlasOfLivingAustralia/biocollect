@@ -121,12 +121,12 @@ describe("Map config component unit tests", function () {
         expect(swapped[1]).toEqual(first);
         expect(swapped[0]).toEqual(second);
 
-        addLayer('.add-overlays');
-        addLayer('.add-overlays');
+        addLayer('.add-overlay');
+        addLayer('.add-overlay');
         var baseLayers = vm.mapLayersConfig.overlays(),
             first = baseLayers[0],
             second = baseLayers[1];
-        moveUp(".move-up-overlays:enabled");
+        moveUp(".move-up-overlay:enabled");
         var swapped = vm.mapLayersConfig.overlays();
         expect(ko.toJS(swapped[1])).toEqual(ko.toJS(first));
         expect(swapped[0]).toEqual(second);
@@ -143,12 +143,12 @@ describe("Map config component unit tests", function () {
         expect(swapped[1]).toEqual(first);
         expect(swapped[0]).toEqual(second);
 
-        addLayer('.add-overlays');
-        addLayer('.add-overlays');
+        addLayer('.add-overlay');
+        addLayer('.add-overlay');
         var baseLayers = vm.mapLayersConfig.overlays(),
             first = baseLayers[0],
             second = baseLayers[1];
-        moveDown(".move-up-overlays:enabled");
+        moveDown(".move-up-overlay:enabled");
         var swapped = vm.mapLayersConfig.overlays();
         expect(ko.toJS(swapped[1])).toEqual(ko.toJS(first));
         expect(swapped[0]).toEqual(second);

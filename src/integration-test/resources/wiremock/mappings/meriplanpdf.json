@@ -1,0 +1,15 @@
+{
+  "request": {
+    "urlPath": "/api/pdf",
+    "method": "ANY"
+  },
+  "response": {
+    "transformers": [
+      "response-template"
+    ],
+    "status": 302,
+    "headers": {
+      "Location": "{{request.requestLine.query.docUrl}}"
+    }
+  }
+}

@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Search Results | <g:message code="g.biocollect"/></title>
 </head>
 <body>
@@ -28,7 +28,7 @@
     <g:if test="${flash.error || results.error}">
         <g:set var="error" value="${flash.error?:results.error}"/>
         <div class="row-fluid">
-            <div class="alert alert-error large-space-before">
+            <div class="alert alert-danger large-space-before">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <span>Error: ${error}</span>
             </div>
@@ -71,7 +71,7 @@
                                 <g:set var="fqBits" value="${f?.tokenize(':')}"/>
                                 <g:set var="newUrl"><fc:formatParams params="${params}" requiredParams="${reqParams}" excludeParam="${f}"/></g:set>
                                 <li><g:message code="label.${fqBits[0]}" default="${fqBits[0]}"/>: <g:message code="label.${fqBits[1]}" default="${fqBits[1]}"/>
-                                    <a href="${newUrl?:"?"}" class="btn btn-inverse btn-mini tooltips" title="remove filter">
+                                    <a href="${newUrl?:"?"}" class="btn btn-inverse btn-sm tooltips" title="remove filter">
                                         <i class="icon-white icon-remove"></i></a>
                                 </li>
                             </g:each>
@@ -183,7 +183,7 @@
 
 </div>
 <asset:script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load',function () {
         $('.tooltips').tooltip({placement: "right"});
     });
 </asset:script>

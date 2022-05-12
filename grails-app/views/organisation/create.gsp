@@ -2,46 +2,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Create | Organisation | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="New Organisation"/>
 
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
             organisationViewUrl: "${createLink(action: 'index')}",
             documentUpdateUrl: "${createLink(controller: "proxy", action: "documentUpdate")}",
             returnTo: "${params.returnTo}"
+        </g:applyCodec>
             };
     </asset:script>
-    <asset:stylesheet src="forms-manifest.css"/>
-    <asset:stylesheet src="organisation.css"/>
-    <asset:javascript src="common.js"/>
-    <asset:javascript src="fileupload-9.0.0/load-image.min.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-process.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-image.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-video.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-validate.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-audio.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.iframe-transport.js"/>
-    <asset:javascript src="fileupload-9.0.0/locale.js"/>
+    <asset:stylesheet src="fileupload-ui-manifest.css"/>
+    <asset:stylesheet src="wmd/wmd.css"/>
+    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="fileupload-manifest.js"/>
     <asset:javascript src="cors/jquery.xdr-transport.js"/>
     <asset:javascript src="organisation.js"/>
+    <asset:javascript src="document.js"/>
 
 </head>
 
 <body>
-<div class="container-fluid">
+<div class="container">
     <g:render template="organisationDetails"/>
 
-    <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Create</button>
-        <button type="button" id="cancel" class="btn">Cancel</button>
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="form-actions">
+                <button  class="btn btn-primary-dark" id="save"  type="button" data-bind="click:save">Create</button>
+                <button  class="btn btn-dark" id="cancel" type="button">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -88,6 +87,8 @@
             document.location.href = "${createLink(action: 'list')}";
         });
 
+        // tooltip needs to be initialised manually
+        $("[data-toggle=\"tooltip\"]").tooltip();
     });
 
 </asset:script>

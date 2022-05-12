@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-clover-plugin:3.0.1'
+    }
+}
+
+apply plugin: 'com.bmuschko.clover'
+
+dependencies {
+    clover 'org.openclover:clover:4.4.1'
+}
+
+clover {
+
+    excludes = ['**/Application.groovy',
+                '**/BootStrap.groovy',
+                '**/UrlMappings.groovy',
+                '**/*GrailsPlugin.groovy',
+                '**/*Mock.groovy',
+                '**/TimezoneMapper.java',
+                '**/AuditService.groovy'
+    ]
+
+
+    compiler {
+        encoding = 'UTF-8'
+
+        // Override the Java Compiler source and target compatibility settings
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+
+        // used to add debug information for Spring applications
+        debug = true
+        additionalArgs = '-parameters'
+    }
+
+
+    testIncludes = ['**/*Spec.groovy']
+    includeTasks = ['test'] // We are only running unit tests with coverage
+    report {
+        html = true
+        xml = true
+    }
+
+    targetPercentage = '7.7%' // This is unit test coverage
+}

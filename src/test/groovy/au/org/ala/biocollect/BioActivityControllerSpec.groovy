@@ -3,11 +3,10 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.biocollect.merit.SearchService
 import au.org.ala.biocollect.merit.UserService
-import grails.test.mixin.TestFor
+import grails.testing.web.controllers.ControllerUnitTest
 import spock.lang.Specification
 
-@TestFor(BioActivityController)
-class BioActivityControllerSpec extends Specification {
+class BioActivityControllerSpec extends Specification implements ControllerUnitTest<BioActivityController> {
 
     UserService userService = Mock(UserService)
     CommonService commonService = Mock(CommonService)

@@ -382,7 +382,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.transients.truncatedAim = ko.computed(function () {
-        return truncate(self.aim(), 80);
+        return truncate(self.aim(), 200);
     });
 
     self.transients.truncatedName = ko.computed(function () {
@@ -449,6 +449,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
+    self.fullSizeImageUrl = ko.observable(project.fullSizeImageUrl);
     self.baseLayer = ko.observable(project.baseLayer || '');
     self.mapLayersConfig = project.mapLayersConfig || {};
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
@@ -711,6 +712,11 @@ function ProjectViewModel(project, isUserEditor) {
         return self.transients.subprograms[self.associatedProgram()];
     });
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
+    self.transients.canShowBackButton = function() {
+        var result = amplify.store('traffic-from-project-finder-page');
+        amplify.store('traffic-from-project-finder-page', false);
+        return result;
+    }
 
     var scienceTypesList = [
         {name:'Biodiversity', value:'biodiversity'},
@@ -1068,7 +1074,7 @@ function ProjectViewModel(project, isUserEditor) {
                     type: 'DELETE',
                     success: function (data) {
                         if (data.error) {
-                            showAlert(data.error, "alert-error", self.transients.resultsHolder);
+                            showAlert(data.error, "alert-danger", self.transients.resultsHolder);
                         } else {
                             showAlert("Successfully deleted. Indexing is in process, search result will be updated in few minutes. Redirecting to search page...", "alert-success", self.transients.resultsHolder);
                             setTimeout(function () {
@@ -1077,7 +1083,7 @@ function ProjectViewModel(project, isUserEditor) {
                         }
                     },
                     error: function (data) {
-                        showAlert("Error: Unhandled error", "alert-error", self.transients.resultsHolder);
+                        showAlert("Error: Unhandled error", "alert-danger", self.transients.resultsHolder);
                     }
                 });
             }
@@ -1278,7 +1284,7 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
             self.transients.associatedOrgUrl(null);
             self.transients.associatedOrgLogoUrl(null);
         } else {
-            showAlert("This organisation has already been added",  "alert-error", "orgAlreadyAddedMessage")
+            showAlert("This organisation has already been added",  "alert-danger", "orgAlreadyAddedMessage")
         }
 
     };
@@ -1344,7 +1350,7 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
     self.title = ko.observable(blogEntry.title || '');
     self.date = ko.observable(blogEntry.date || now).extend({simpleDate:false});
     self.content = ko.observable(blogEntry.content);
-    self.stockIcon = ko.observable(blogEntry.stockImageName);
+    self.stockIcon = ko.observable(blogEntry.stockIcon);
     self.documents = ko.observableArray();
     self.image = ko.observable();
     self.type = ko.observable(blogEntry.type);

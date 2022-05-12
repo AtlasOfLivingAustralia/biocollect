@@ -22,6 +22,7 @@ function initialise(roles, currentUserId, projectId) {
                 render: function (data, type, row) {
                     var $select = $("<select></select>", {
                         "id": "role_" + row.userId,
+                        "class": "form-control",
                         "value": data
                     });
                     $.each(roles, function (i, value) {
@@ -44,7 +45,7 @@ function initialise(roles, currentUserId, projectId) {
                     if (table.ajax.json().totalNbrOfAdmins == 1 && row.role == "admin") {
                         return '';
                     } else {
-                        return '<a class="btn btn-small tooltips href="" title="remove this user and role combination"><i class="icon-remove"></i></a>';
+                        return '<a class="btn btn-sm btn-danger tooltips href="" title="remove this user and role combination"><i class="far fa-trash-alt"></i></a>';
                     }
                 },
                 bSortable: false

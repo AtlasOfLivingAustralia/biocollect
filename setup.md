@@ -25,7 +25,7 @@
 
 * Before running biocollect grails 3, make sure that the following
   properties file exist in
-  /data/biocollect/config/biocollect-config-grails3.properties (or as indicated in application.yml)
+  /data/biocollect/config/biocollect-config.properties (or as indicated in application.yml)
 ![](media/image8.png)
 
 * The minimum config in the properties file looks like this:

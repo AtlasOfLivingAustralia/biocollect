@@ -1,17 +1,20 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
-import grails.test.mixin.TestFor
+import grails.testing.spring.AutowiredTest
 import org.grails.web.converters.marshaller.json.CollectionMarshaller
 import org.grails.web.converters.marshaller.json.MapMarshaller
 import spock.lang.Specification
-
 /**
  * Tests the document service.
  */
-@TestFor(DocumentService)
-class DocumentServiceSpec extends Specification {
 
+class DocumentServiceSpec extends Specification implements AutowiredTest {
+    Closure doWithSpring() {{ ->
+        service DocumentService
+    }}
+
+    DocumentService service
     UserService userService = Mock(UserService)
     WebService webService = Mock(WebService)
     ActivityService activityService = Mock(ActivityService)

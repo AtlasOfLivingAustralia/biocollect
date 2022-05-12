@@ -2,15 +2,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Upload | Sites | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <meta name="breadcrumb" content="Upload Sites"/>
 
     <asset:script type="text/javascript">
         var fcConfig = {
+                <g:applyCodec encodeAs="none">
             serverUrl: "${grailsApplication.config.grails.serverURL}",
                 spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
                 spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
@@ -19,97 +20,94 @@
                 sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
                 saveSitesUrl: "${createLink(action: 'createSitesFromShapefile')}",
                 siteUploadProgressUrl: "${createLink(action: 'siteUploadProgress')}"
-
+                </g:applyCodec>
             },
             returnTo = "${params.returnTo}";
     </asset:script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
 </head>
 
 <body>
 <div class="container-fluid">
 
     <g:if test="${!shapeFileId}">
-        <div class="margin-bottom-50"></div>
-
-        <div class="well text-center">
-            <h2><g:message code="site.shapefile.heading"/></h2>
-            <g:if test="${flash.errorMessage || flash.message}">
-                <div class="row-fluid">
-                    <div class="span5">
-                        <div class="alert alert-error">
-                            <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-                            ${flash.errorMessage ?: flash.message}
-                        </div>
-                    </div>
+    <div class="border border-secondary text-center p-5">
+        <h2><g:message code="site.shapefile.heading"/></h2>
+        <g:if test="${flash.errorMessage || flash.message}">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-danger" role="alert">
+                    <button class="close" data-dismiss="alert" type="button" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    ${flash.errorMessage ?: flash.message}
                 </div>
-            </g:if>
-
-            <div class="margin-bottom-50"></div>
-            <g:uploadForm id="shapeFileUpload" class="loadPlanData" controller="site" action="uploadShapeFile">
-                <input type="hidden" name="returnTo" value="${returnTo}">
-                <input type="hidden" name="projectId" value="${projectId}">
-                <h4 for="shapefile"><g:message code="site.shapefile.instructions"/></h4>
-
-                <div class="margin-bottom-50"></div>
-                <input id="shapefile" type="file" accept="application/zip" name="shapefile"/>
-                <button id="uploadShapeFile" type="button" class="btn btn-success"
-                        onclick="$(this).parent().submit();">Upload Shapefile</button>
-                <button id="cancel" type="button" class="btn btn-default">Cancel</button>
-            </g:uploadForm>
+            </div>
         </div>
+        </g:if>
 
+        <g:uploadForm id="shapeFileUpload" class="loadPlanData" controller="site" action="uploadShapeFile">
+            <input type="hidden" name="returnTo" value="${returnTo}">
+            <input type="hidden" name="projectId" value="${projectId}">
+            <h4 for="shapefile"><g:message code="site.shapefile.instructions"/></h4>
+
+            <div class="mb-5"></div>
+            <input id="shapefile" type="file" accept="application/zip" name="shapefile"/>
+            <button class="btn btn-primary-dark" id="uploadShapeFile" type="button"
+                    onclick="$(this).parent().submit();"><i class="fas fa-file-upload"></i> Upload Shapefile</button>
+            <button class="btn btn-dark" id="cancel" type="button"><i class="far fa-times-circle"></i> Cancel</button>
+        </g:uploadForm>
+    </div>
     </g:if>
     <g:else>
+    <h3>Create project sites from the shape file</h3>
 
-        <h3>Create project sites from the shape file</h3>
-
-        <div class="row-fluid">
-            <div class="well">
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
                 You can select attributes from the uploaded shape file to be used for the name, description and ID for the sites to upload.
                 De-select any sites you do not want to upload.
             </div>
         </div>
+    </div>
 
-        <form id="sites">
-            <div class="row-fluid">
+    <form id="sites">
+        <fieldset>
+            <div class="row mt-3">
+                <div class="col-4 form-group">
+                    <label for="nameAttribute">Shapefile attribute to use as the site name:</label>
+                    <select class="form-control" id="nameAttribute" name="nameAttribute"
+                            data-bind="value:nameAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
+                </div>
 
+                <div class="col-4 form-group">
+                    <label for="nameAttribute">Shapefile attribute to use as the site description:</label>
+                    <select class="form-control" id="descriptionAttribute" name="descriptionAttribute"
+                            data-bind="value:descriptionAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
+                </div>
+
+                <div class="col-4 form-group">
+                    <label for="nameAttribute">Shapefile attribute to use as the site ID:</label>
+                    <select class="form-control" id="externalIdAttribute" name="externalIdAttribute"
+                            data-bind="value:externalIdAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
+                </div>
             </div>
+        </fieldset>
 
-            <div class="row-fluid">
+        <div class="row mt-2 mb-3">
+            <span class="col-3">
+                <button class="btn btn-primary-dark"
+                                        data-bind="click:save,disable:selectedCount()<=0">Create sites</button>
+                <button
+                    class="btn btn-dark" data-bind="click:cancel">Cancel</button>
+            </span>
+        </div>
+    </form>
 
-                <fieldset>
-                    <div class="span4">
-                        <label for="nameAttribute">Shapefile attribute to use as the site name:</label>
-                        <select id="nameAttribute" name="nameAttribute"
-                                data-bind="value:nameAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
-                    </div>
-
-                    <div class="span4">
-                        <label for="nameAttribute">Shapefile attribute to use as the site description:</label>
-                        <select id="descriptionAttribute" name="descriptionAttribute"
-                                data-bind="value:descriptionAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
-                    </div>
-
-                    <div class="span4">
-                        <label for="nameAttribute">Shapefile attribute to use as the site ID:</label>
-                        <select id="externalIdAttribute" name="externalIdAttribute"
-                                data-bind="value:externalIdAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
-                    </div>
-                </fieldset>
-
-            </div>
-
-            <div class="row-fluid" style="margin-top:10px; margin-bottom: 20px;">
-                <span class="span3"><button class="btn btn-success"
-                                            data-bind="click:save,disable:selectedCount()<=0">Create sites</button> <button
-                        class="btn" data-bind="click:cancel">Cancel</button></span>
-            </div>
-        </form>
-
-        <div class="row-fluid">
+    <div class="row">
+        <div class="col-12">
             <form id="sites-container">
-                <table>
+                <table class="table table-striped">
                     <thead>
                     <tr>
                         <th colspan="1"></th>
@@ -148,21 +146,22 @@
                 </table>
             </form>
         </div>
+    </div>
     </g:else>
 </div>
 
-<div class="modal hide" id="uploadProgress">
+<div class="modal fade" id="uploadProgress" aria-labelledby="modal-title" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title"><strong>Uploading sites...</strong></div>
+                <div class="modal-title" id="modal-title"><strong>Uploading sites...</strong></div>
             </div>
 
             <div class="modal-body">
                 <div data-bind="text:progressText"></div>
 
-                <div class="progress progress-popup">
-                    <div class="bar" data-bind="style:{width:progress}"></div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" data-bind="style:{width:progress}, attr: {'aria-valuenow': progress}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </div>
@@ -333,11 +332,11 @@ ko.applyBindings(new SiteUploadViewModel());
     </g:if>
     <g:else>
 
-        $('#uploadShapeFile').click(function() {
+        $('#uploadShapeFile').on('click',function() {
             $(this).attr('disabled','disabled');
             $('#shapeFileUpload').submit();
         });
-        $("#shapefile").change(function() {
+        $("#shapefile").on('change',function() {
             if ($("#shapefile").val()) {
                 $("#uploadShapeFile").removeAttr("disabled");
             }
@@ -346,7 +345,7 @@ ko.applyBindings(new SiteUploadViewModel());
             }
 
         }).trigger('change');
-        $('#cancel').click(function(){
+        $('#cancel').on('click',function(){
             document.location.href = returnTo;
         })
     </g:else>

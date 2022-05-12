@@ -14,7 +14,7 @@ ko.bindingHandlers.popover = {
     update: function (element, valueAccessor) {
 
         var $element = $(element);
-        $element.popover('destroy');
+        $element.popover('dispose');
         var options = ko.bindingHandlers.popover.initPopover(element, valueAccessor);
         if (options.autoShow) {
             if ($element.data('firstPopover') === false) {
@@ -52,7 +52,7 @@ ko.bindingHandlers.popover = {
         $(element).popover(combinedOptions);
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
-            $(element).popover("destroy");
+            $(element).popover("dispose");
         });
         return options;
     }
@@ -70,13 +70,13 @@ ko.bindingHandlers.tooltip = {
         $(element).tooltip(options);
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
-            $(element).tooltip("destroy");
+            $(element).tooltip("dispose");
         });
     },
     update: function (element, valueAccessor) {
 
         var $element = $(element);
-        $element.tooltip('destroy');
+        $element.tooltip('dispose');
 
         var local = ko.utils.unwrapObservable(valueAccessor()),
             options = {};
@@ -87,7 +87,7 @@ ko.bindingHandlers.tooltip = {
         $(element).tooltip(options);
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
-            $(element).tooltip("destroy");
+            $(element).tooltip("dispose");
         });
 
     },
@@ -149,11 +149,11 @@ ko.bindingHandlers.numeric = {
         $(element).on("keydown", function (event) {
             // Allow: backspace, delete, tab, escape, and enter
             if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
-                    // Allow: Ctrl+A
+                // Allow: Ctrl+A
                 (event.keyCode == 65 && event.ctrlKey === true) ||
-                    // Allow: . ,
+                // Allow: . ,
                 (event.keyCode == 190 || event.keyCode == 110) ||
-                    // Allow: home, end, left, right
+                // Allow: home, end, left, right
                 (event.keyCode >= 35 && event.keyCode <= 39)) {
                 // let it happen, don't do anything
                 return;
@@ -377,6 +377,8 @@ ko.bindingHandlers.fusedAutocomplete = {
         var params = params();
         var options = {};
         var url = ko.utils.unwrapObservable(params.source);
+        options.classes = params.classes || {};
+
         options.source = function (request, response) {
             $(element).addClass("ac_loading");
             $.ajax({
@@ -756,7 +758,7 @@ ko.bindingHandlers.sortIcon = {
  */
 ko.bindingHandlers.removeFromArray = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        $(element).click(function () {
+        $(element).on('click',function () {
             var array = valueAccessor();
             array.remove && array.remove(bindingContext.$data);
             bindingContext.$data.remove && bindingContext.$data.remove();
@@ -779,34 +781,34 @@ ko.bindingHandlers.removeFromArray = {
  * </div>
  */
 ko.bindingHandlers.fancybox = {
-  init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
-    var config = valueAccessor(),
-        $elem = $(element);
-    // suppress auto scroll on clicking image to view in fancybox
-    config = $.extend({
-      width: 700,
-      height: 500,
-      // fix for bringing the modal dialog to focus to make it accessible via keyboard.
-      afterShow: function(){
-        $('.fancybox-wrap').focus();
-      },
-      helpers: {
-        title: {
-          type : 'inside',
-          position : 'bottom'
-        },
-        overlay: {
-          locked: false
-        }
-      }
-    }, config);
+    init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
+        var config = valueAccessor(),
+            $elem = $(element);
+        // suppress auto scroll on clicking image to view in fancybox
+        config = $.extend({
+            width: 700,
+            height: 500,
+            // fix for bringing the modal dialog to focus to make it accessible via keyboard.
+            afterShow: function(){
+                $('.fancybox-wrap').focus();
+            },
+            helpers: {
+                title: {
+                    type : 'inside',
+                    position : 'bottom'
+                },
+                overlay: {
+                    locked: false
+                }
+            }
+        }, config);
 
-    if($elem.attr('target') == 'fancybox'){
-      $elem.fancybox(config);
-    }else{
-      $elem.find('a[target=fancybox]').fancybox(config);
+        if($elem.attr('target') == 'fancybox'){
+            $elem.fancybox(config);
+        }else{
+            $elem.find('a[target=fancybox]').fancybox(config);
+        }
     }
-  }
 };
 
 /**
@@ -842,7 +844,7 @@ ko.bindingHandlers.expandable = {
         }
 
         var anchor = $('<a/>');
-        anchor.click(function() {
+        anchor.on('click',function() {
             toggleTruncate($element);
         });
         $element.empty();

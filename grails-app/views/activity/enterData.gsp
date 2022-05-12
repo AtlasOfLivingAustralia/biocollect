@@ -3,15 +3,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
-        <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="layout" content="bs4"/>
+    <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="Enter data"/>
@@ -19,6 +13,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -26,32 +21,33 @@
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate', id: activity.activityId)}",
-        activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete', id: activity.activityId, params: [returnTo: grailsApplication.config.grails.serverURL + '/' + returnTo])}",
+        activityDeleteUrl: "${raw(createLink(controller: 'activity', action: 'ajaxDelete', id: activity.activityId, params: [returnTo: grailsApplication.config.grails.serverURL + '/' + returnTo]))}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${asset.assetPath(src: '')}",
-        speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        speciesSearch: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         surveyName: "${metaModel.name}",
-        speciesSearchUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        speciesSearchUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesImageUrl:"${createLink(controller: 'species', action: 'speciesImage')}",
-        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
-        searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
+        searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         sites: <fc:modelAsJavascript model="${project?.sites ?: []}"/>,
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         addCreatedSiteToListOfSelectedSites: ${canEditSites}
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterActivityData.js"/>
     <asset:javascript src="meritActivity.js"/>
@@ -61,8 +57,8 @@
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
-        <div class="row-fluid title-block input-block-level">
-            <div class="span12 title-attribute">
+        <div class="row title-block input-block-level">
+            <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject"
                           class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
 
@@ -74,96 +70,101 @@
         </div>
 
 
-        <div class="row-fluid">
-            <div class="span9">
+        <div class="row">
+            <div class="col-sm-9">
                 <!-- Common activity fields -->
 
-                <div class="row-fluid space-after">
+                <div class="form-group row space-after">
 
-                    <div class="span9 required">
+                    <div class="col-sm-9 required">
                         <label class="for-readonly" for="description">Description</label>
-                        <input id="description" type="text" class="input-xxlarge" data-bind="value:description"
+                        <input id="description" type="text" class="form-control" data-bind="value:description"
                                data-validation-engine="validate[required]"></span>
                     </div>
                 </div>
 
-                <div class="row-fluid space-after">
-                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length > 1">
+                <div class="form-group row space-after">
+                    <div class="col-sm-9 " data-bind="visible:transients.themes && transients.themes.length > 1">
                         <label for="theme">Major theme</label>
                         <select id="theme"
                                 data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
-                                class="input-xlarge">
+                                class="form-control">
                         </select>
                     </div>
 
-                    <div class="span6" data-bind="visible:transients.themes && transients.themes.length == 1">
+                    <div class="col-sm-9" data-bind="visible:transients.themes && transients.themes.length == 1">
                         <label for="theme">Major theme</label>
                         <span data-bind="text:mainTheme">
                         </span>
                     </div>
                 </div>
 
-                <div class="row-fluid space-after">
-                    <div class="span6">
+                <div class="form-group row space-after">
+                    <div class="col-sm-6 d-flex flex-column">
                         <label class="for-readonly inline">Activity progress</label>
-                        <button type="button" class="btn btn-small"
-                                data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-inverse':progress()=='cancelled'}"
+                        <button type="button" class="btn col-sm-2"
+                                data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-dark':progress()=='cancelled'}"
                                 style="line-height:16px;cursor:default;color:white">
                             <span data-bind="text: progress"></span>
                         </button>
                     </div>
                 </div>
 
-                <div class="row-fluid space-after">
+                <div class="form-group row space-after">
 
-                    <div class="span6" data-bind="visible:plannedStartDate()">
-                        <label class="for-readonly inline">Planned start date</label>
-                        <span class="readonly-text" data-bind="text:plannedStartDate.formattedDate"></span>
+                    <div class="col-sm-6" data-bind="visible:plannedStartDate()">
+                        <div class="d-flex flex-column">
+                            <label class="for-readonly inline">Planned start date</label>
+                            <span class="readonly-text" data-bind="text:plannedStartDate.formattedDate"></span>
+                        </div>
                     </div>
 
-                    <div class="span6" data-bind="visible:plannedEndDate()">
-                        <label class="for-readonly inline">Planned end date</label>
-                        <span class="readonly-text" data-bind="text:plannedEndDate.formattedDate"></span>
+                    <div class="col-sm-6" data-bind="visible:plannedEndDate()">
+                        <div class="d-flex flex-column">
+                            <label class="for-readonly inline">Planned end date</label>
+                            <span class="readonly-text" data-bind="text:plannedEndDate.formattedDate"></span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row-fluid">
-                    <div class="span6 required">
+                <div class="form-group row">
+                    <div class="col-sm-6 required">
                         <label for="startDate"><b>Actual start date</b>
                             <fc:iconHelp title="Start date"
                                          printable="${printView}">Date the activity was started.</fc:iconHelp>
                         </label>
                         <g:if test="${printView}">
-                            <div class="row-fluid">
+                            <div class="row">
                                 <fc:datePicker targetField="startDate.date" name="startDate"
                                                data-validation-engine="validate[required]" printable="${printView}"/>
                             </div>
                         </g:if>
                         <g:else>
-                            <div class="input-append">
+                            <div class="input-group">
                                 <fc:datePicker targetField="startDate.date" name="startDate"
-                                               data-validation-engine="validate[required]" printable="${printView}"/>
+                                               data-validation-engine="validate[required]" printable="${printView}"
+                                               class="form-control" theme="btn-dark" bs4="true"/>
                             </div>
                         </g:else>
                     </div>
 
-                    <div class="span6 required">
+                    <div class="col-sm-6 required">
                         <label for="endDate"><b>Actual end date</b>
                             <fc:iconHelp title="End date"
                                          printable="${printView}">Date the activity finished.</fc:iconHelp>
                         </label>
                         <g:if test="${printView}">
-                            <div class="row-fluid">
+                            <div class="row">
                                 <fc:datePicker targetField="endDate.date" name="endDate"
                                                data-validation-engine="validate[future[startDate]]"
                                                printable="${printView}"/>
                             </div>
                         </g:if>
                         <g:else>
-                            <div class="input-append">
+                            <div class="input-group">
                                 <fc:datePicker targetField="endDate.date" name="endDate"
-                                               data-validation-engine="validate[future[startDate]]"
-                                               printable="${printView}"/>
+                                               data-validation-engine="validate[future[startDate]]" printable="${printView}"
+                                               class="form-control" theme="btn-dark" bs4="true"/>
                             </div>
                         </g:else>
                     </div>
@@ -200,8 +201,9 @@
                 </div>
             </div>
         </g:if>
-    </div>
 
+    <div class="row">
+        <div class="col-sm-12">
 <!-- ko stopBinding: true -->
     <g:each in="${metaModel?.outputs}" var="outputName">
         <g:if test="${outputName != 'Photo Points'}">
@@ -243,16 +245,20 @@
     </g:if>
 
     <g:if test="${!printView}">
-        <div class="form-actions">
+        <div class="col-sm-12 form-actions">
             <g:render template="/shared/termsOfUse"/>
-            <button type="button" id="save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="cancel" class="btn">Cancel</button>
-            <label class="checkbox inline">
-                <input data-bind="checked:transients.markedAsFinished" type="checkbox"> Mark this activity as finished.
-            </label>
+            <div class="">
+                <button type="button" id="save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
+                <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
+                <label class="checkbox inline">
+                    <input data-bind="checked:transients.markedAsFinished" type="checkbox"> Mark this activity as finished.
+                </label>
+            </div>
         </div>
     </g:if>
-
+    </div>
+    </div>
+    </div>
 </div>
 
 <div id="timeoutMessage" class="hide">
@@ -361,8 +367,8 @@
             elementId = "ko${blockId}";
 
         var output = <fc:modelAsJavascript model="${output}"/>;
-        var config = ${fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}')};
-        config.model = ${fc.modelAsJavascript(model:model)};
+        var config = ${raw(fc.modelAsJavascript(model:metaModel.outputConfig?.find{it.outputName == outputName}, default:'{}'))};
+        config.model = ${raw(fc.modelAsJavascript(model:model))};
         config = _.extend({}, outputModelConfig, config, activityLevelData);
 
         initialiseOutputViewModel(viewModelName, config.model.dataModel, elementId, activityLevelData.activity, output, master, config, viewModel);
@@ -371,11 +377,11 @@
 
         $('.helphover').popover({animation: true, trigger: 'hover'});
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             master.save(activityNavigationModel.afterSave);
         });
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             activityNavigationModel.cancel();
         });
 

@@ -1,21 +1,21 @@
 <%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="utilService" bean="utilService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
-
+    <meta name="bannerURL" content="${utilService.getMainImageURL(organisation.documents)}"/>
     <g:set var="loadPermissionsUrl"
            value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id: organisation.organisationId)}"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -35,17 +35,17 @@
             imageLocation:"${asset.assetPath(src: '')}",
             logoLocation:"${asset.assetPath(src: 'filetypes')}",
             adHocReportsUrl: '${g.createLink(action: "getAdHocReportTypes")}',
-            dashboardUrl: "${g.createLink(controller: 'report', action: 'loadReport', params: [fq: 'organisationFacet:' + organisation.name])}",
+            dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'loadReport', params: [fq: 'organisationFacet:' + organisation.name]))}",
             reportCreateUrl: '${g.createLink(action: 'createAdHocReport')}',
             submitReportUrl: '${g.createLink(action: 'ajaxSubmitReport', id: "${organisation.organisationId}")}',
             approveReportUrl: '${g.createLink(action: 'ajaxApproveReport', id: "${organisation.organisationId}")}',
             spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             rejectReportUrl: '${g.createLink(action: 'ajaxRejectReport', id: "${organisation.organisationId}")}',
-            defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+            defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
             returnTo: '${g.createLink(action: 'index', id: "${organisation.organisationId}")}',
             projects : <fc:modelAsJavascript model="${organisation.projects}"/>,
-            projectListUrl: "${createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect'])}",
+            projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect']))}",
             projectIndexBaseUrl : "${createLink(controller: 'project', action: 'index')}/",
             organisationBaseUrl : "${createLink(controller: 'organisation', action: 'index')}/",
             organisation : <fc:modelAsJavascript model="${organisation}"/>,
@@ -59,7 +59,7 @@
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
-            getRecordsForMapping: "${createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: [version: params.version])}",
+            getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: [version: params.version]))}",
             worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
             worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
@@ -79,53 +79,34 @@
             paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            </g:applyCodec>
         };
     </asset:script>
-    <style type="text/css">
-    #projectList th {
-        white-space: normal;
-    }
-
-    .admin-action {
-        width: 7em;
-    }
-
-    .smallFont {
-        margin: 5px 0;
-    }
-    </style>
     <g:render template="/shared/conditionalLazyLoad"/>
-    <asset:stylesheet src="base.css"/>
-    <asset:stylesheet src="organisation.css"/>
-    <asset:stylesheet src="facets-filter-view.css"/>
-    <asset:stylesheet src="projects-manifest.css"/>
-    <asset:stylesheet src="project-finder.css"/>
-    <asset:javascript src="common.js"/>
-    <asset:javascript src="organisation.js"/>
-    <asset:javascript src="projectActivityInfo.js"/>
-    <asset:javascript src="facets.js"/>
-    <asset:javascript src="projects.js"/>
-    <asset:javascript src="project-activity-manifest.js"/>
-    <asset:javascript src="projects-manifest.js"/>
-    <asset:javascript src="project-finder.js"/>
+    <asset:stylesheet src="project-finder-manifest.css"/>
+    <asset:javascript src="org-index-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 
 <body>
 
-<g:render template="banner" model="${[imageUrl: asset.assetPath(src: 'filetypes')]}"/>
+<g:render template="banner" model="${[organisation: organisation]}"/>
 
 <div id="organisationDetails" class="container-fluid">
 
     <g:render template="/shared/flashScopeMessage"/>
 
-    <div class="row-fluid" id="heading">
-        <ul class="nav nav-tabs" data-tabs="tabs">
+    <content tag="tab">
+        <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
             <fc:tabList tabs="${content}"/>
         </ul>
+    </content>
 
-        <div class="tab-content">
-            <fc:tabContent tabs="${content}"/>
+    <div class="row" id="heading">
+        <div class="col-12">
+            <div class="tab-content">
+                <fc:tabContent tabs="${content}"/>
+            </div>
         </div>
     </div>
 
@@ -155,7 +136,7 @@
            selectedReport = 'dashboard';
         }
         $dashboardType.val(selectedReport);
-        $dashboardType.change(function(e) {
+        $dashboardType.on('change',function(e) {
             var $content = $('#dashboard-content');
             var $loading = $('.loading-message');
             $content.hide();
@@ -175,7 +156,7 @@
 
         var organisationTabStorageKey = 'organisation-page-tab';
         var initialisedSites = false;
-        $('a[data-toggle="tab"]').on('shown', function (e) {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             var tab = e.currentTarget.hash;
             amplify.store(organisationTabStorageKey, tab);
             if (!initialisedSites && tab == '#sites') {

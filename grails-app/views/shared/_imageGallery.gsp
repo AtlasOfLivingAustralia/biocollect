@@ -1,15 +1,16 @@
 <bc:koLoading>
+    <g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
     <div class="image-gallery">
-        <ul class="thumbnails">
-            <g:render template="/shared/pagination"/>
-
+        <g:render template="/shared/pagination" model="[bs: 4]"/>
+        <div class="thumbnails row">
             <!-- ko foreach: recordImages -->
-            <li>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mt-1">
                 <div class="projectLogo" data-toggle="popover" data-trigger="hover" data-title="Photo metadata" data-bind="popover: {placement:'top', content: function(){ return $(this).find('.metadata').html()} }">
                     <a href=""
                        data-bind="attr:{href:getImageViewerUrl()}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type: 'iframe', width:'80%', title: function(){ return $(this).next().find('.metadata').html()}}"
                        target="fancybox">
-                        <img class="image-logo image-window" data-bind="attr:{title:name, src:thumbnailUrl}" onload="findLogoScalingClass(this, 200, 150)">
+                        <img class="image-logo image-window img-thumbnail" data-bind="attr:{title:name, src:thumbnailUrl}"
+                             onload="findLogoScalingClass(this, 200, 150)" onerror="imageError(this, '${noImageUrl}');">
                     </a>
                     <div class="hide">
                         <div class="metadata">
@@ -23,12 +24,10 @@
                         </div>
                     </div>
                 </div>
-            </li>
+            </div>
             <!-- /ko -->
-        </ul>
-
-        <div class="margin-top-2"></div>
-        <g:render template="/shared/pagination"/>
+        </div>
+        <g:render template="/shared/pagination" model="[bs: 4]"/>
 
         <span data-bind="if: transients.loading()"><span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...</span>
         <!-- ko if: recordImages().length == 0 && !error() -->
@@ -36,7 +35,7 @@
         <!-- /ko -->
 
         <!-- ko if: error() -->
-        <div class="alert alert-error" data-bind="text: error">
+        <div class="alert alert-danger" data-bind="text: error">
         </div>
         <!-- /ko -->
     </div>

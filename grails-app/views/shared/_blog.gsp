@@ -1,19 +1,41 @@
 <!-- ko stopBinding:true -->
 <g:set var="blogId" value="blog-${fc.attributeSafeValue(value:type)}"/>
-<div id="${blogId}">
-    <span data-bind="if: entries().length == 0"><h1>No entries available</h1></span>
-    <div class="blog" data-bind="foreach:entries">
-        <div class="blog-entry">
-            <img class="blog-image pull-left" data-bind="visible:imageUrl(), attr:{src:imageUrl}">
-            <i class="blog-icon pull-left fa fa-4x" data-bind="visible:stockIcon(), css:stockIcon"></i>
-            <div class="widget-news-right-body">
-                <h3><span class="title" data-bind="text:title"></span><span class="pull-right" data-bind="text:formattedDate"></span></h3>
-                <div class="text" data-bind="html:content.markdownToHtml()"></div> <a class="do-not-mark-external" data-bind="visible:viewMoreUrl, attr:{href:viewMoreUrl}"  aria-label="More information"><i class="fa fa-2x fa-arrow-circle-o-right"></i></a>
+<div id="${blogId}" class="row post-list">
+    <span data-bind="if: entries().length == 0">
+        <div class="col-12">
+            <h4>No entries available</h4>
+        </div>
+    </span>
+    <!-- ko foreach:entries -->
+    <article class="blog col-12 post mb-5 mb-md-4" style="border-bottom: ridge">
+        <div class="row blog-entry">
+            <div class="col-12 col-md-3">
+                <!-- ko if: imageUrl() -->
+                    <a href="#" class="post-image">
+                        <img data-bind="attr:{src:imageUrl}">
+                    </a>
+                <!-- /ko -->
+                <!-- ko ifnot: imageUrl() -->
+                    <i class="blog-icon fa fa-4x" data-bind="visible:stockIcon(), css:stockIcon"></i>
+                <!-- /ko -->
+            </div>
+
+            <div class="col-12 col-md-9">
+                <div class="post-link">
+                    <h2 class="entry-title" data-bind="text:title"></h2>
+                </div>
+                <div class="post-meta">
+                    <time data-bind="text:formattedDate" aria-label="Date Posted"></time>
+                </div>
+                <div data-bind="html:content.markdownToHtml()"></div>
+                <a href="#" class="btn btn-sm btn-primary-dark" data-bind="visible:viewMoreUrl, attr:{href:viewMoreUrl}">
+                    <i class="far fa-eye"></i> View More
+                </a>
             </div>
         </div>
-    </div>
+    </article>
+    <!-- /ko -->
 </div>
-
 <!-- /ko -->
 <asset:script type="text/javascript">
     $(function() {

@@ -65,6 +65,7 @@ var ProjectActivity = function (params) {
     self.transients.activityLastUpdated = stats.activityLastUpdated;
     self.transients.speciesRecorded = ko.observable(stats.speciesRecorded).extend({integer:0});
     self.transients.activityCount = ko.observable(stats.activityCount).extend({integer:0});
+    self.transients.metadataToggle = ko.observable(true);
     self.transients.isDataManagementPolicyDocumented = ko.computed({
         read: function () {
             if(self.isDataManagementPolicyDocumented() === false) {
@@ -177,6 +178,10 @@ var ProjectActivity = function (params) {
         self.transients.isSelectAllSites(value);
     });
 
+    self.transients.toggleMetadata = function(value){
+        self.transients.metadataToggle(!self.transients.metadataToggle());
+    };
+
     /**
      * Does sanity check when switching between options. Makes sure certain options are cleared when survey site option
      * change.
@@ -257,7 +262,7 @@ var ProjectActivity = function (params) {
                 // contentType: 'application/json',
                 success: function (data) {
                     if (data.error) {
-                        showAlert("Error :" + data.error, "alert-error", divId);
+                        showAlert("Error :" + data.error, "alert-danger", divId);
                     }
                     else {
                         self.speciesFields.removeAll();
@@ -271,7 +276,7 @@ var ProjectActivity = function (params) {
                     }
                 },
                 error: function (data) {
-                    showAlert("Error : An unhandled error occurred" + data.status, "alert-error", divId);
+                    showAlert("Error : An unhandled error occurred" + data.status, "alert-danger", divId);
                 }
             });
         }
@@ -662,7 +667,7 @@ var ProjectActivity = function (params) {
         var count = 0;
         var sites = self.sites();
         sites.forEach(function(site){
-            if(site.added()){
+            if(site.added() && !site.isProjectArea()){
                 count ++;
             }
         });
@@ -823,7 +828,7 @@ var ProjectActivity = function (params) {
                 bootbox.alert("There are no records for this dataset or records cannot be retrieved.");
             }
 
-        }).error(function (request, status, error) {
+        }).fail(function (request, status, error) {
             bootbox.alert("Something went wrong when retrieving activity records.");
         });
 
@@ -1058,7 +1063,7 @@ var AlertViewModel = function (alert) {
         });
 
         if (invalidEmail) {
-            showAlert("Invalid email address (" + message + ")", "alert-error", "project-activities-result-placeholder");
+            showAlert("Invalid email address (" + message + ")", "alert-danger", "project-activities-result-placeholder");
         } else {
             $.each(emails, function (index, email) {
                 if (self.emailAddresses.indexOf(email) < 0) {

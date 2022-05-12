@@ -3,14 +3,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -36,9 +35,9 @@
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
-        siteCreateUrl: "${createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId])}",
-        siteSelectUrl: "${createLink(controller: 'site', action: 'select', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
-        siteUploadUrl: "${createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId])}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        siteCreateUrl: "${raw(createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId]))}",
+        siteSelectUrl: "${raw(createLink(controller: 'site', action: 'select', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         starProjectUrl: "${createLink(controller: 'project', action: 'starProject')}",
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",
@@ -59,15 +58,16 @@
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
         errorViewer: "${createLink(controller: 'resource', action: 'error')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project.projectId)}",
-        auditMessageUrl: "${createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId])}",
-        createBlogEntryUrl: "${createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
-        editBlogEntryUrl: "${createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)])}",
-        deleteBlogEntryUrl: "${createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId])}",
+        auditMessageUrl: "${raw(createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId]))}",
+        createBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
+        editBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
+        deleteBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId]))}",
         flimit: ${grailsApplication.config.facets.flimit},
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        </g:applyCodec>
         },
         here = window.location.href;
 
@@ -101,7 +101,7 @@
                 <h1 class="pull-left" data-bind="text:name"></h1>
                 <g:if test="${flash.errorMessage || flash.message}">
                     <div class="span5">
-                        <div class="alert alert-error">
+                        <div class="alert alert-danger">
                             <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
                             ${flash.errorMessage?:flash.message}
                         </div>
@@ -314,7 +314,7 @@
                                 %{--The modal view containing the contents for a modal dialog used to attach a document--}%
                                 <g:render template="/shared/attachDocument"/>
                                 <div class="row-fluid attachDocumentModal">
-                                <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="icon-white icon-plus"></i> Attach Document</button>
+                                <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="fas fa-plus"></i> Attach Document</button>
                                 </div>
                             </div>
                         </div>
@@ -346,7 +346,7 @@
     </g:if>
 </div>
     <asset:script type="text/javascript">
-        $(window).load(function () {
+        $(window).on('load',function () {
             var map;
             // setup 'read more' for long text
             $('.more').shorten({
@@ -371,7 +371,7 @@
 
             $('.helphover').popover({animation: true, trigger:'hover'});
 
-            $('#cancel').click(function () {
+            $('#cancel').on('click',function () {
                 document.location.href = "${createLink(action: 'index', id: project.projectId)}";
             });
 
@@ -458,7 +458,7 @@
             .attr('title','Only available to project members').addClass('tooltips');
 
             // Star button click event
-            $("#starBtn").click(function(e) {
+            $("#starBtn").on('click',function(e) {
                 var isStarred = ($("#starBtn i").attr("class") == "icon-star");
                 toggleStarred(isStarred);
             });
@@ -466,7 +466,7 @@
             // BS tooltip
             $('.tooltips').tooltip();
 
-            $('#gotoEditBlog').click(function () {
+            $('#gotoEditBlog').on('click',function () {
                 amplify.store('project-admin-tab-state', '#editProjectBlog');
                 $('#admin-tab').tab('show');
             });
@@ -504,16 +504,11 @@
             }
         }
 
-        // select about tab when coming from project finder
-        if(amplify.store('traffic-from-project-finder-page')){
-            amplify.store('traffic-from-project-finder-page',false)
-            $('#about-tab').tab('show');
-        }
     </asset:script>
     <g:if test="${user?.isAdmin || user?.isCaseManager}">
         <asset:script type="text/javascript">
             // Admin JS code only exposed to admin users
-            $(window).load(function () {
+            $(window).on('load',function () {
 
                 // remember state of admin nav (vertical tabs)
                 $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {

@@ -1,6 +1,6 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.hub.HubSettings
+
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 
@@ -26,18 +26,7 @@ class HomeController {
     }
 
     def index() {
-        HubSettings hubSettings = SettingService.hubConfig
-        if (hubSettings.overridesHomePage()) {
-            if(hubSettings.isHomePagePathSimple()){
-                Map result = hubSettings.getHomePageControllerAndAction()
-                forward(result)
-                return
-            } else {
-                redirect([uri: hubSettings['homePagePath'] ])
-                return;
-            }
-        }
-        return projectFinder()
+        forward(uri: '/hub/index')
     }
 
     def projectFinder() {
@@ -101,10 +90,6 @@ class HomeController {
         }
 
         selectedGeographicFacets
-    }
-
-    def tabbed() {
-        [geoPoints: searchService.allGeoPoints(params)]
     }
 
     def geoService() {

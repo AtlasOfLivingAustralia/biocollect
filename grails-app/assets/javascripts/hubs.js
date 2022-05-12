@@ -20,8 +20,8 @@ var HubSettingsViewModel = function (programsModel, options) {
 
     self.transients = {
         programNames: programNames,
-        availableSkins: ['nrm', 'ala2', 'mdba', 'ala', 'configurableHubTemplate1'],
-        configurableTemplates: ['configurableHubTemplate1'],
+        availableSkins: ['bs4'],
+        configurableTemplates: ['bs4'],
         defaultHomePage: '/project/citizenScience',
         hubHomePage: '/hub/index'
     };
@@ -477,13 +477,11 @@ function ContentViewModel(config) {
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
-    self.isContainer = ko.observable(config.isContainer || false);
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
     self.bushfireCategories = ko.observable(config.bushfireCategories || false);
     self.hideProjectFinderHelpButtons = ko.observable(config.hideProjectFinderHelpButtons || false);
-    self.hideProjectFinderStatusIndicatorTile = ko.observable(config.hideProjectFinderStatusIndicatorTile || false);
     self.hideProjectFinderStatusIndicatorList = ko.observable(config.hideProjectFinderStatusIndicatorList || false);
     self.hideProjectFinderProjectTags = ko.observable(config.hideProjectFinderProjectTags || false);
     self.hideProjectFinderNoImagePlaceholderList = ko.observable(config.hideProjectFinderNoImagePlaceholderList || false);
@@ -621,6 +619,15 @@ var StyleViewModel = function (config) {
     self.bannerBackgroundColor = ko.observable(config.bannerBackgroundColor || '');
     self.insetBackgroundColor = ko.observable(config.insetBackgroundColor || '');
     self.insetTextColor = ko.observable(config.insetTextColor || '');
+    self.primaryColor = ko.observable(config.primaryColor || '');
+    self.primaryDarkColor = ko.observable(config.primaryDarkColor || '');
+    self.secondaryColor = ko.observable(config.secondaryColor || '');
+    self.successColor = ko.observable(config.successColor || '');
+    self.infoColor = ko.observable(config.infoColor || '');
+    self.warningColor = ko.observable(config.warningColor || '');
+    self.dangerColor = ko.observable(config.dangerColor || '');
+    self.lightColor = ko.observable(config.lightColor || '');
+    self.darkColor = ko.observable(config.darkColor || '');
     self.bodyBackgroundColor = ko.observable(config.bodyBackgroundColor || '');
     self.bodyTextColor = ko.observable(config.bodyTextColor || '');
     self.footerBackgroundColor = ko.observable(config.footerBackgroundColor || '');
@@ -630,24 +637,13 @@ var StyleViewModel = function (config) {
     self.headerBannerBackgroundColor = ko.observable(config.headerBannerBackgroundColor || '');
     self.navBackgroundColor = ko.observable(config.navBackgroundColor || '');
     self.navTextColor = ko.observable(config.navTextColor || '');
-    self.gettingStartedButtonTextColor = ko.observable(config.gettingStartedButtonTextColor || '');
+    self.titleOnImageTextColor = ko.observable(config.titleOnImageTextColor || '');
     self.gettingStartedButtonBackgroundColor = ko.observable(config.gettingStartedButtonBackgroundColor || '');
-    self.whatIsThisButtonTextColor= ko.observable(config.whatIsThisButtonTextColor || '');
     self.whatIsThisButtonBackgroundColor= ko.observable(config.whatIsThisButtonBackgroundColor || '');
     self.addARecordButtonBackgroundColor = ko.observable(config.addARecordButtonBackgroundColor || '');
-    self.addARecordButtonTextColor = ko.observable(config.addARecordButtonTextColor || '');
     self.viewRecordsButtonBackgroundColor= ko.observable(config.viewRecordsButtonBackgroundColor || '');
-    self.viewRecordsButtonTextColor= ko.observable(config.viewRecordsButtonTextColor || '');
-    self.primaryButtonBackgroundColor= ko.observable(config.primaryButtonBackgroundColor || '');
-    self.primaryButtonTextColor= ko.observable(config.primaryButtonTextColor || '');
-    self.primaryButtonOutlineTextColor= ko.observable(config.primaryButtonOutlineTextColor || '');
-    self.primaryButtonOutlineTextHoverColor= ko.observable(config.primaryButtonOutlineTextHoverColor || '');
-    self.makePrimaryButtonAnOutlineButton= ko.observable(config.makePrimaryButtonAnOutlineButton || false);
-    self.defaultButtonBackgroundColor= ko.observable(config.defaultButtonBackgroundColor || '');
-    self.defaultButtonTextColor= ko.observable(config.defaultButtonTextColor || '');
-    self.defaultButtonOutlineTextColor= ko.observable(config.defaultButtonOutlineTextColor || '');
-    self.defaultButtonOutlineTextHoverColor= ko.observable(config.defaultButtonOutlineTextHoverColor || '');
-    self.makeDefaultButtonAnOutlineButton= ko.observable(config.makeDefaultButtonAnOutlineButton || false);
+    self.homepageButtonBackgroundColor= ko.observable(config.homepageButtonBackgroundColor || '');
+    self.homepageButtonTextColor= ko.observable(config.homepageButtonTextColor || '');
     self.tagBackgroundColor= ko.observable(config.tagBackgroundColor || '');
     self.tagTextColor= ko.observable(config.tagTextColor || '');
     self.hrefColor= ko.observable(config.hrefColor || '');
@@ -926,18 +922,13 @@ var colorScheme = {
     headerBannerBackgroundColor: '#ffffff',
     navBackgroundColor: '#e5e6e7',
     navTextColor: '#5f5d60',
+    titleOnImageTextColor: '#fff',
     gettingStartedButtonBackgroundColor: '#009080',
-    gettingStartedButtonTextColor: '#fff',
     whatIsThisButtonBackgroundColor: '#009080',
-    whatIsThisButtonTextColor: '#fff',
     primaryButtonBackgroundColor: '#009080',
     primaryButtonTextColor: '#fff',
-    primaryButtonOutlineTextColor: '#007bff',
-    primaryButtonOutlineTextHoverColor: '#000',
     defaultButtonBackgroundColor: '#f5f5f5',
     defaultButtonTextColor: '#000',
-    defaultButtonOutlineTextColor: '#343a40',
-    defaultButtonOutlineTextHoverColor: '#000',
     tagBackgroundColor: 'orange',
     tagTextColor: 'white',
     hrefColor:'#009080',

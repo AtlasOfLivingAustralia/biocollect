@@ -2,16 +2,18 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Advanced | Field Capture</title>
+    <meta name="layout" content="bs4"/>
+    <title>Advanced | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
+        </g:applyCodec>
     }
     </asset:script>
     <asset:javascript src="common.js"/>
@@ -36,7 +38,7 @@
 
     <g:if test="${flash.error}">
         <div class="row-fluid">
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <span>${flash.error}</span>
             </div>
@@ -169,7 +171,7 @@
 </div>
 
 <asset:script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load',function () {
 
         // bind filters
         $('.filterinput').keyup(function() {
@@ -191,7 +193,7 @@
             }
             return false;
         });
-        $('.clearFilterBtn').click(function () {
+        $('.clearFilterBtn').on('click',function () {
             var $filterInput = $(this).prev(),
                 target = $filterInput.attr('data-target');
             $filterInput.val('');

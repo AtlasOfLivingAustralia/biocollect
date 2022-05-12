@@ -2,12 +2,11 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.WebService
-import grails.test.mixin.TestFor
+import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
 
-@TestFor(DocumentController)
-class DocumentControllerSpec extends Specification {
+class DocumentControllerSpec extends Specification implements ControllerUnitTest<DocumentController> {
 
     DocumentService documentService = Mock(DocumentService)
     WebService webService = Mock(WebService)

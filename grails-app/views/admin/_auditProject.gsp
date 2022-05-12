@@ -2,20 +2,21 @@
 
 <g:set var="searchTerm" value="${params.searchTerm}"/>
 
-<div class="row">
-    <h3>Project Audit - ${project.name}</h3>
-</div>
+<h4 class="mt-3 mt-lg-0">Project Audit - ${project.name}</h4>
 
 <g:if test="${!hideBackButton}">
-    <div class="row">
-        <div class="span12 text-right">
-            <a href="${createLink(action:'auditProjectSearch',params:[searchTerm: searchTerm])}" class="btn btn-default btn-small"><i class="icon-backward"></i> Back</a>
+    <div class="row mb-2">
+        <div class="col-12">
+            <a href="${raw(createLink(action:'auditProjectSearch',params:[searchTerm: searchTerm]))}" class="btn btn-sm btn-dark">
+                <i class="far fa-arrow-alt-circle-left"></i> Back
+            </a>
         </div>
     </div>
 </g:if>
 
-<div class="row well well-small" id="project-audit-list">
-        <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="project-list">
+<div class="row" id="project-audit-list">
+    <div class="col-12 table-responsive">
+        <table class="table table-striped table-bordered table-hover" id="project-list">
             <thead>
             <th>Date</th>
             <th>Action</th>
@@ -27,15 +28,16 @@
             <tbody>
             </tbody>
         </table>
+    </div>
 </div>
 
-<button id="loadAuditRecords" class="btn btn-primary btn-large">Load ${project.name} audit records</button>
+<button id="loadAuditRecords" class="btn btn-primary-dark"><i class="fas fa-chevron-circle-down"></i> Load ${project.name} audit records</button>
 
 <asset:script type="text/javascript">
     $(document).ready(function() {
         $("#project-audit-list").hide();
 
-        $("#loadAuditRecords").click(function() {
+        $("#loadAuditRecords").on('click',function() {
             $("#loadAuditRecords").hide();
             $("#project-audit-list").show();
             loadAuditData();
@@ -89,7 +91,7 @@
                 bSortable : false
             },{
                 render: function(data, type , row){
-                    return '<a class="btn btn-small" href="'+ fcConfig.auditMessageUrl +'&id=' + row.id+'&searchTerm=${searchTerm}"><i class="icon-search"></i></a>';
+                    return '<a class="btn btn-sm btn-dark" href="'+ fcConfig.auditMessageUrl +'&id=' + row.id+'&searchTerm=${searchTerm}"><i class="fas fa-search"></i></a>';
 
                 },
                 bSortable : false

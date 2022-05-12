@@ -11,17 +11,20 @@
     <tbody>
     <!-- ko foreach:details.outcomeProgress -->
     <tr>
-        <td class="date">
-            <fc:datePicker class="input-small" targetField="date.date" name="date" data-validation-engine="validate[required]" printable="${printView}"/>
+        <td class="date align-top">
+            <div class="input-group">
+            <fc:datePicker class="form-control" targetField="date.date" name="date" data-validation-engine="validate[required]" printable="${printView}"
+            bs4="true" theme="btn-dark"/>
+            </div>
         </td>
-        <td class="type">
-            <select data-bind="options:type.options, value:type"></select>
+        <td class="type align-top">
+            <select class="form-control" data-bind="options:type.options, value:type"></select>
         </td>
-        <td class="outcome-progress">
-            <textarea data-bind="value:progress" rows="3"></textarea>
+        <td class="outcome-progress align-top">
+            <textarea class="form-control" data-bind="value:progress" rows="3"></textarea>
         </td>
-        <td class="controls">
-            <span><i class="icon-remove" data-bind="click: $parent.removeOutcomeProgress"></i></span>
+        <td class="controls align-top">
+            <span class="btn btn-sm btn-danger"><i class="far fa-trash-alt" data-bind="click: $parent.removeOutcomeProgress"></i></span>
         </td>
     </tr>
     <!-- /ko -->
@@ -30,8 +33,8 @@
     <tr>
 
         <td>
-            <button type="button" class="btn btn-small" data-bind="click: addOutcomeProgress">
-                <i class="icon-plus"></i> Add a row</button>
+            <button type="button" class="btn btn-dark btn-sm" data-bind="click: addOutcomeProgress">
+                <i class="fas fa-plus"></i> Add a row</button>
         </td>
         <td></td>
         <td></td>
@@ -40,12 +43,12 @@
     </tfoot>
 </table>
 
-<div class="row-fluid space-after">
-    <div class="span12">
+<div class="row space-after no-gutters">
+    <div class="col-sm-12">
         <div class="form-actions">
 
-            <button type="button" data-bind="click: saveMeriPlan" id="project-details-save" class="btn btn-primary">Save changes</button>
-            <button type="button" id="details-cancel" class="btn" data-bind="click: cancelMeriPlanEdits">Cancel</button>
+            <button type="button" data-bind="click: saveMeriPlan" id="project-details-save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save changes</button>
+            <button type="button" id="details-cancel" class="btn btn-dark" data-bind="click: cancelMeriPlanEdits"><i class="far fa-times-circle"></i> Cancel</button>
         </div>
 
     </div>

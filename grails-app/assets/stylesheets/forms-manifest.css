@@ -5,7 +5,7 @@
  *= require fileupload-ui-manifest.css
  *
  * datepicker
- *= require bootstrap-datepicker/css/datepicker.css
+ *= require bootstrap-datepicker/1.2.0/css/datepicker.css
  *
  * sites
  *= require sites.css
@@ -70,10 +70,9 @@
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #cccccc;
-    color: #555555;
+    border: 1px solid black;
+    border-radius: 0;
+    height: 40px;
 }
 .input-append .select2-container--default .select2-selection--single .select2-selection__rendered {
     border-radius: 4px 0 0 4px;
@@ -83,4 +82,64 @@
 }
 .input-prepend.input-append .select2-container--default .select2-selection--single .select2-selection__rendered {
     border-radius: 0;
+}
+
+.input-group .input-group-append .input-group-text, table .autocompleteSpecies .input-group-text {
+    height: auto;
+}
+
+/*.card input[type=text], .card input[type=search], .card input[type=number], .card input[type=tel] {*/
+/*    border: 1px solid black;*/
+/*}*/
+
+.table .table {
+    background-color: #f2f2f2;
+}
+
+.table th, .table td {
+    border-top: 1px solid #dee2e6 !important;
+}
+
+.select2-selection__placeholder, .select2-selection__rendered {
+    color: #565656;
+}
+
+.select2-selection__rendered {
+    color: #565656;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    margin-right: 5px;
+}
+
+.timefield {
+    display: flex;
+}
+
+.timefield span {
+    margin-left: 15px;
+    margin-top: 5px;
+}
+
+#content .boxed-heading {
+    position: relative;
+    margin: 15px 0;
+    padding: 50px 15px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+#content .boxed-heading:after {
+    content: attr(data-content);
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    padding: 7px 15px;
+    font-size: 125%;
+    font-weight: 300;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    color: inherit;
+    line-height: 1;
 }

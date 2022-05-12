@@ -1,17 +1,13 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.WebService
-import grails.test.mixin.TestFor
+import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 import java.nio.charset.StandardCharsets
 
-/***
- * This is to test the DownloadController
- */
-@TestFor(DownloadController)
-class DownloadControllerSpec extends Specification {
+class DownloadControllerSpec extends Specification implements ControllerUnitTest<DownloadController> {
 
     File scriptsPath
     File temp
@@ -19,8 +15,12 @@ class DownloadControllerSpec extends Specification {
     File modelPath
     File configPath
     WebService webService
+    def webServiceStub = Mock(WebService)
 
     void setup() {
+
+        controller.webService = webServiceStub
+        controller.grailsApplication.config.ecodata.service.url = "http://test"
 
         temp = File.createTempDir("tmp", "")
         scriptsPath = new File(temp, "scripts")
@@ -30,11 +30,14 @@ class DownloadControllerSpec extends Specification {
         modelPath = new File(hubPath, "tempModel")
         modelPath.mkdir()
 
+        controller.grailsApplication.config.app.file.script.path = scriptsPath.getAbsolutePath()
+        controller.grailsApplication.config.upload.images.path = modelPath
+
         configPath = new File(temp, "config")
         configPath.mkdir()
 
         controller.grailsApplication.config.app.file.script.path = scriptsPath.getAbsolutePath()
-        controller.grailsApplication.config.ecodata.service.url = ""
+//        controller.grailsApplication.config.ecodata.service.url = ""
 
         // Setup three files, one that should be accessible, and others that should not
         File validFile =  new File(modelPath, "validFile.js")
@@ -61,7 +64,7 @@ class DownloadControllerSpec extends Specification {
         controller.getScriptFile()
 
         then:
-        response.contentType == "text/javascript"
+        response.contentType == "text/javascript;charset=UTF-8"
         response.status == HttpStatus.SC_OK
     }
 
@@ -120,7 +123,7 @@ class DownloadControllerSpec extends Specification {
         controller.getScriptFile()
 
         then:
-        response.contentType == "text/javascript"
+        response.contentType == "text/javascript;charset=UTF-8"
         response.characterEncoding == StandardCharsets.UTF_8.toString()
         response.status == HttpStatus.SC_OK
     }
@@ -152,7 +155,7 @@ class DownloadControllerSpec extends Specification {
     def "Data can be downloaded for a created file if id and file extension is provided"(String inputFormat, String expectedOutputFormat) {
         setup:
         String projectId = 'p1'
-        controller.webService = webService = Mock(WebService)
+//        controller.webService = webService = Mock(WebService)
 
         when:
         params.id = projectId
@@ -160,12 +163,103 @@ class DownloadControllerSpec extends Specification {
         Map result = controller.downloadProjectDataFile()
 
         then:
-        1 * webService.proxyGetRequest(response, '/search/downloadProjectDataFile/'+projectId+'?fileExtension='+expectedOutputFormat, true, true)
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/'+projectId+'?fileExtension='+expectedOutputFormat, true, true)
         result == null
 
         where:
         inputFormat | expectedOutputFormat
         'zip'       | 'zip'
         ''          | 'zip'
+    }
+
+    void "Check mandatory params"() {
+        when:
+        params.filename = "validFile.js"
+        params.model = "tempModel"
+        controller.getScriptFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "filename, hub or model is missing"
+
+        when:
+        params.hub = "tempHub"
+        params.model = "tempModel"
+        controller.getScriptFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "filename, hub or model is missing"
+
+        when:
+        params.hub = "tempHub"
+        params.filename = "validFile.js"
+        controller.getScriptFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "filename, hub or model is missing"
+    }
+
+    void "Download Project Data File - missing mandatory"() {
+        when:
+        params.id = null
+        controller.downloadProjectDataFile()
+
+        then:
+        response.status == HttpStatus.SC_BAD_REQUEST
+        response.text == "A download ID is required"
+    }
+
+    void "Download Project Data File"() {
+        when:
+        params.id = '1'
+        params.fileExtension = 'zip'
+        controller.downloadProjectDataFile()
+
+        then:
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/1?fileExtension=zip', true, true)
+        response.status == HttpStatus.SC_OK
+    }
+
+    void "Get File - using id"() {
+        when:
+        params.id = '1'
+        controller.file()
+
+        then:
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/document/1/file', true, true)
+        response.status == HttpStatus.SC_OK
+    }
+
+    void "Get File - using filename - invalid file"() {
+        when:
+        params.filename = 'invalidFile.js'
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_NOT_FOUND
+    }
+
+    void "Get File - using filename - valid file"() {
+        when:
+        params.filename = 'validFile.js'
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_OK
+        response.getHeader('Content-Disposition') == "Attachment;Filename=\"validFile.js\""
+    }
+
+    void "Get File - using filename - valid file - force download"() {
+        when:
+        params.filename = 'validFile.js'
+        params.forceDownload = true
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_OK
+        response.getHeader('Content-Disposition') == "Attachment;Filename=\"validFile.js\""
+        response.contentType == "application/octet-stream"
     }
 }
