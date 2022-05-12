@@ -3,14 +3,13 @@
 <g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.fieldCapture"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="layout" content="bs4"/>
+    <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -41,15 +40,14 @@
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        </g:applyCodec>
         },
         here = window.location.href;
 
     </asset:script>
-    <asset:stylesheet src="organisation.css"/>
     <asset:stylesheet src="project-create-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="organisation.js"/>
-    <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
@@ -58,15 +56,17 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <h2><g:message code="project.create.register"/></h2>
     <p>
-    <g:message code="project.create.description"/>
-    
+        <g:message code="project.create.description"/>
     </p>
+
     <form id="projectDetails" class="form-horizontal">
         <g:render template="details" model="${pageScope.variables}"/>
-        <div class="well" style="display: none" data-bind="visible: true"> <!-- hide the panel until knockout has finished. Needs to use an inline style for this to work. -->
-            <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
-            <button type="button" id="save" class="btn btn-primary" data-bind="disable: (!termsOfUseAccepted() && !isExternal())"><g:message code="g.save"/></button>
-            <button type="button" id="cancel" class="btn"><g:message code="g.cancel"/></button>
+        <div class="row" style="display: none" data-bind="visible: true">
+            <div class="col-12 btn-space">
+                <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
+                <button type="button" id="save" class="btn btn-primary-dark" data-bind="disable: (!termsOfUseAccepted() && !isExternal())"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+                <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
+            </div>
         </div>
     </form>
 </div>
@@ -94,16 +94,16 @@ $(function(){
 
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
-    $('#cancel').click(function () {
-        document.location.href = "${createLink(action: 'homePage')}";
+    $('#cancel').on('click',function () {
+        document.location.href = "${createLink(uri: '/')}";
     });
     </g:if>
     <g:else>
-    $('#cancel').click(function () {
+    $('#cancel').on('click',function () {
         document.location.href = "${createLink(action: 'index', id: project?.projectId)}";
     });
     </g:else>
-    $('#save').click(function () {
+    $('#save').on('click',function () {
         if ($('#projectDetails').validationEngine('validate')) {
             if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
                 bootbox.dialog({message:"${message(code:'project.create.warningdatacollection')}"},

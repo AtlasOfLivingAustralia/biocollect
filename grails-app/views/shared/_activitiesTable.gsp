@@ -78,7 +78,7 @@
     </table>
 </div>
 <asset:script type="text/javascript">
-    $(window).load(function () {
+    $(window).on('load',function () {
         var collapseState = amplify.store.sessionStorage('output-accordion-state');
         function ActivitiesViewModel(activities, sites) {
             var self = this;

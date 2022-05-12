@@ -1,14 +1,17 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.merit.ActivityService
-import grails.test.mixin.TestFor
+import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 
 /**
  * Tests for the MetadataServiceSpec
  */
-@TestFor(MetadataService)
-public class MetadataServiceSpec extends Specification {
+public class MetadataServiceSpec extends Specification implements AutowiredTest{
+    Closure doWithSpring() {{ ->
+        service MetadataService
+    }}
+
+    MetadataService service
 
     def webServiceStub = Mock(WebService)
 

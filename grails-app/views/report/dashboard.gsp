@@ -9,9 +9,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Dashboard | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="Dashboard"/>
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -50,28 +50,28 @@
 <body>
 
 <div class="container-fluid">
-    <h1 class="textcenter">MERI Data Dashboard</h1>
+    <h1 class="text-center">MERI Data Dashboard</h1>
 
 
-<div class="row-fluid" style="display:none;">
+<div class="row" style="display:none;">
 <div class="chart">
 
 
-    <div id="plantingDataMap" class="span6">
+    <div id="plantingDataMap" class="col-md-6">
         <h3>Location of plants planted</h3>
         <div ></div>
         <footer>*Marker colours on the map indicate survival rate as defined on the adjacent chart</footer>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
 
         <h3>Number of plants planted by survival rate</h3>
-        <div id="plantingData" class="span12"></div>
+        <div id="plantingData" class="col-12"></div>
     </div>
 </div>
 </div>
 
 
-<div class="row-fluid">
+<div class="row">
 <div class="chart">
 
     <h3>Number of projects by theme (a single project may target multiple themes)</h3>

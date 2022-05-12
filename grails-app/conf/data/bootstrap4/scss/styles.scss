@@ -1,0 +1,95 @@
+@import 'settings';
+@import "bootstrap/bootstrap";
+@import 'partials/partials';
+
+.btn-space>.btn {
+  margin-top: .25rem;
+  margin-bottom: .25rem;
+}
+
+@if variable-exists("what-is-btn") {
+  .btn-whatisthis {
+    @include button-variant($what-is-this-button-background-color, $what-is-this-button-background-color);
+  }
+}
+
+@if variable-exists("getting-started-btn") {
+  .btn-gettingstarted {
+    @include button-variant($getting-started-button-background-color, $getting-started-button-background-color);
+  }
+}
+
+@if variable-exists("add-a-record-btn") {
+  .btn-addarecord {
+    @include button-variant($add-a-record-button-background-color, $add-a-record-button-background-color);
+  }
+}
+@if variable-exists("view-records-btn") {
+  .btn-viewrecords {
+    @include button-variant($view-records-button-background-color, $view-records-button-background-color);
+  }
+}
+
+$nav-background-color: $body-bg !default;
+$nav-text-color: $body-color !default;
+
+.homePageNav {
+  background-color: $nav-background-color;
+  border-color: $nav-background-color;
+  color: $nav-text-color;
+}
+
+$facet-background-color: $body-bg !default;
+#filters {
+  background-color: $facet-background-color;
+}
+
+$tile-background-color: $body-bg !default;
+#projects .project-item {
+  background-color: $tile-background-color;
+}
+
+$tag-background-color: orange !default;
+$tag-text-color: white !default;
+.project-tag {
+  background-color: $tag-background-color;
+  color: $tag-text-color;
+}
+
+$footer-background-color: black !default;
+$footer-text-color: white !default;
+#custom-footer {
+  background-color: $footer-background-color;
+  color: $footer-text-color;
+}
+
+$social-text-color: white !default;
+#custom-footer .social a {
+  color: $social-text-color;
+}
+
+$menu-text-color: white !default;
+$menu-background-color: black !default;
+@include media-breakpoint-up(lg) {
+  #page #wrapper-navbar .navbar {
+    background-color: $menu-background-color;
+    color: $menu-text-color;
+  }
+}
+#page #wrapper-navbar .navbar {
+  background-color: rgba($menu-background-color, 0.6);
+}
+
+$homepage-background-btn: $menu-background-color !default;
+$homepage-text-btn: $menu-text-color !default;
+.homePageNav .homepage-button {
+  cursor: pointer;
+  background-color: $homepage-background-btn;
+  h3 {
+    color: $homepage-text-btn;
+  }
+}
+
+// carousel #hubCarouselBanner
+
+// END carousel

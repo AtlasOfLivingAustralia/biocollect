@@ -1,100 +1,111 @@
 <div id="pActivitySurvey">
 
-        <!-- ko foreach: projectActivities -->
+    <!-- ko foreach: projectActivities -->
 
-            <!-- ko if: current -->
+    <!-- ko if: current -->
 
-            <div class="well">
-                <div class="row-fluid">
-                    <div class="span10 text-left">
-                        <h2 class="strong">Step 5 of 7 - Set the range of species applicable for the survey</h2>
-                    </div>
-                    <div class="span2 text-right">
-                        <g:render template="/projectActivity/status"/>
-                    </div>
-                </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <h5 class="d-inline">Step 5 of 7 - Set the range of species applicable for the survey</h5>
+            <g:render template="/projectActivity/status"/>
+        </div>
+    </div>
 
-                <g:render template="/projectActivity/warning"/>
+    <g:render template="/projectActivity/warning"/>
 
-                <div class="row-fluid">
-                    <div class="span12 text-left">
-                        <p><g:message code="project.survey.species.description"/></p>
-                    </div>
-                </div>
-                </br>
-                <div class="row-fluid" data-bind="visible: speciesFields().length == 0">
-                    <span class="alert-success"><g:message code="project.survey.species.noSpeciesInSurvey"/></span>
+    <div class="row">
+        <div class="col-12">
+            <p><g:message code="project.survey.species.description"/></p>
+        </div>
+    </div>
 
-                </div>
+    <div class="row mt-2" data-bind="visible: speciesFields().length == 0">
+        <span class="alert-success"><g:message code="project.survey.species.noSpeciesInSurvey"/></span>
+    </div>
 
-                <div class="row-fluid" data-bind="visible: speciesFields().length > 0">
-                    <div class="span3 text-left">
-                      <label class="control-label"><g:message code="project.survey.species.fieldName"/>
-                          <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.fieldName"/>', content:'<g:message code="project.survey.species.fieldName.content"/>'}">
-                              <i class="icon-question-sign"></i>
-                          </a>
-                      </label>
-                    </div>
-                    <div class="span5 text-left">
-                        <label class="control-label"><g:message code="project.survey.species.settings"/>
-                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.settings"/>', content:'<g:message code="project.survey.species.settings.content"/>'}">
-                                <i class="icon-question-sign"></i>
-                            </a>
-                        </label>
-                    </div>
-                    <div class="span4 text-left">
-                        <label class="control-label"><g:message code="project.survey.species.displayAs"/>
-                            <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.species.displayAs"/>', content:'<g:message code="project.survey.species.displayAs.content"/>'}">
-                                <i class="icon-question-sign"></i>
-                            </a>
-                        </label>
-                    </div>
-                </div>
-
-                %{--Specific field configuration entries if more than one species field in the form--}%
+    <div class="table-responsive">
+        <table class="not-stacked-table w-100" data-bind="visible: speciesFields().length > 0">
+            <thead>
+                <tr>
+                <td class="col-3">
+                        <g:message code="project.survey.species.fieldName"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message
+                                code="project.survey.species.fieldName"/>', content:'<g:message
+                                code="project.survey.species.fieldName.content"/>'}">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                </td>
+                <td class="req-field col-6" >
+                        <g:message code="project.survey.species.settings"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message
+                                code="project.survey.species.settings"/>', content:'<g:message
+                                code="project.survey.species.settings.content"/>'}">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                </td>
+                <td class="col-3">
+                        <g:message code="project.survey.species.displayAs"/>
+                        <a href="#" class="helphover" data-bind="popover: {title:'<g:message
+                                code="project.survey.species.displayAs"/>', content:'<g:message
+                                code="project.survey.species.displayAs.content"/>'}">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                </td>
+            </tr>
+            </thead>
+            %{--Specific field configuration entries if more than one species field in the form--}%
+            <tbody>
                 <!-- ko  foreach: speciesFields() -->
-                <div class="row-fluid">
-                    <div class="span3 text-left">
+                <tr>
+                    <td>
                         <span data-bind="text: transients.fieldName "></span>
-                    </div>
-                    <div class="span5">
-                        <span class="req-field" data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}">
-                            <input type="text" class="input-large" data-bind="disable: true, value: config().transients.inputSettingsSummary"> </input>
-                        </span>
-                        <a target="_blank" data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }" class="btn btn-link" ><small><g:message code="project.survey.species.configure"/></small></a>
-                    </div>
-                    <div class="span4 text-left">
-                        <select data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
+                    </td>
+                    <td>
+                        <div class="input-group" data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}">
+                            <input type="text" class="form-control form-control-lg"
+                                   data-bind="disable: true, value: config().transients.inputSettingsSummary">
+                            <div class="input-group-append">
+                                <a target="_blank"
+                                   data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }"
+                                   class="btn btn-primary-dark"><i class="fas fa-cog"></i> <g:message code="project.survey.species.configure"/></a>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <select class="form-control" data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
                         </select>
-                    </div>
-                </div>
+                    </td>
+                </tr>
                 <!-- /ko -->
-            </div>
+            </tbody>
+        </table>
+    </div>
+    <!-- ko stopBinding: true -->
+    <div id="speciesFieldDialog" data-bind="template: {name:'speciesFieldDialogTemplate'}"></div>
+    <!-- /ko -->
 
-            <!-- ko stopBinding: true -->
-                <div  id="speciesFieldDialog" data-bind="template: {name:'speciesFieldDialogTemplate'}"></div>
-            <!-- /ko -->
-
-            <script type="text/html" id="speciesFieldDialogTemplate">
-                <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
-            </script>
+    <script type="text/html" id="speciesFieldDialogTemplate">
+    <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
+    </script>
 
 
+    <div class="row mt-2">
 
-            <div class="row-fluid">
+        <div class="col-12">
+            <button class="btn-primary-dark btn btn-sm"
+                    data-bind="click: $parent.saveForm"><i class="fas fa-hdd"></i> Save</button>
+            <button class="btn-dark btn btn-sm" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}"><i
+                    class="far fa-arrow-alt-circle-left"></i> Back</button>
+            <button class="btn-dark btn btn-sm"
+                    data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}"><i
+                    class="far fa-arrow-alt-circle-right"></i> Next</button>
+        </div>
 
-                <div class="span12">
-                    <button class="btn-primary btn block btn-small"
-                            data-bind="click: $parent.saveForm"><i class="icon-white  icon-hdd" ></i>Save</button>
-                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-form-tab'}"><i class="icon-white icon-chevron-left" ></i>Back</button>
-                    <button class="btn-primary btn btn-small block" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-locations-tab'}">Next <i class="icon-white icon-chevron-right" ></i></button>
-                </div>
+    </div>
 
-            </div>
+    <!-- /ko -->
 
-        <!-- /ko -->
-
-        <!-- /ko -->
+    <!-- /ko -->
 </div>
 
 

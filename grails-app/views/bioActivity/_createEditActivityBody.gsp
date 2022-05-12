@@ -2,16 +2,15 @@
 <g:set var="showCreate" value="${activity.activityId ||  (!activity.activityId && !hubConfig.content?.hideCancelButtonOnForm)}"></g:set>
 <bc:koLoading>
 <div class="container-fluid validationEngineContainer" id="validation-container">
+    <content tag="bannertitle">
+        ${title}
+    </content>
     <div id="koActivityMainBlock">
         <g:if test="${!mobile}">
-            <div class="row-fluid">
-                %{--page title--}%
-                <div class="span4">
-                    <h2>${title}</h2>
-                </div>
+            <div class="row">
                 %{-- quick links --}%
-                <div class="span8">
-                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+                <div class="col-12">
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
                 </div>
                 %{--quick links END--}%
             </div>
@@ -40,7 +39,7 @@
                 <label class="checkbox" ><input type="checkbox" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
             </div>
 
-            <div id="${blockId}-content" class="well" data-bind="visible:!outputNotCompleted()">
+            <div id="${blockId}-content" data-bind="visible:!outputNotCompleted()">
                 <!-- add the dynamic components -->
                 <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}"/>
             </div>
@@ -51,22 +50,27 @@
 <!-- end model binding -->
 
 <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-    <div >
-        <h3 class="text-center text-error well-title">Site Details</h3>
-        <div class="output-block text-center well">
-            <fc:select
-                    data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
-                    printable="${printView}"/>
-            <m:map id="activitySiteMap" width="90%" height="512px"/>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="text-center text-danger card-title">Site Details</h3>
+            <div class="output-block text-center">
+                <fc:select
+                        data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
+                        printable="${printView}"/>
+                <m:map id="activitySiteMap" width="100%" height="512px"/>
+            </div>
         </div>
-
     </div>
 </g:if>
 
 <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
-    <h3 class="text-center text-error well-title">Photo Points</h3>
-    <div class="output-block well" data-bind="with:transients.photoPointModel">
-        <g:render template="/site/photoPoints"></g:render>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="text-center text-danger card-title">Photo Points</h3>
+            <div class="output-block" data-bind="with:transients.photoPointModel">
+                    <g:render template="/site/photoPoints"></g:render>
+            </div>
+        </div>
     </div>
 </g:if>
 
@@ -75,11 +79,11 @@
         <g:render template="/shared/termsOfUse"/>
         <br>
         <g:if test="${!preview}">
-            <button type="button" id="save" class="btn btn-primary btn-large">Submit</button>
+            <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> Submit</button>
         </g:if>
         <g:if test="${showCreate && !mobile}">
             <g:if test="${!preview}">
-                <button type="button" id="cancel" class="btn btn-large">Cancel</button>
+                <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> Cancel</button>
             </g:if>
         </g:if>
     </div>
@@ -116,7 +120,7 @@
 
 <div id="timeoutMessage" class="hide">
 
-    <span class='label label-important'>Important</span><h4>There was an error while trying to save your changes.</h4>
+    <span class='badge badge-danger'>Important</span><h4>There was an error while trying to save your changes.</h4>
 
     <p>This could be because your login has timed out or the internet is unavailable.</p>
 
@@ -160,16 +164,16 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             master.save();
             master.removeTemporarySite();
         });
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             document.location.href = fcConfig.returnTo;
         });
 
-        $('#reset').click(function () {
+        $('#reset').on('click',function () {
             master.reset();
         });
 

@@ -1,0 +1,13 @@
+{
+  "request": {
+    "urlPath": "/apikey/ws/check",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"valid\":true}"
+  }
+}

@@ -1,7 +1,8 @@
 package au.org.ala.biocollect.projectresult
 
-
+import grails.testing.spring.AutowiredTest
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.joda.time.DateTime
 import spock.lang.Specification
 
 /*
@@ -17,13 +18,11 @@ import spock.lang.Specification
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * Created by Temi on 2/12/19.
  */
 
-class SeedSpec extends Specification {
-    def grailsApplication
-    def messageSource
+class SeedSpec extends Specification implements AutowiredTest{
     def results
     def params
     def instance
@@ -50,10 +49,10 @@ class SeedSpec extends Specification {
                                    organisationName : 'org1',
                                    scienceType      : ['a'],
                                    ecoScienceType   : ['b'],
-                                   plannedStartDate : new Date().minus(1),
+                                   plannedStartDate : new DateTime().minus(1),
                                    imageUrl         : 'a',
                                    urlWeb           : "http://abc.com",
-                                   plannedStartDate : new Date().minus(1),
+                                   plannedStartDate : new DateTime().minus(1),
                                    plannedEndDate   : new Date(),
                                    projectType      : 'g',
                                    isMERIT          : false,
@@ -124,6 +123,6 @@ class SeedSpec extends Specification {
         def dataset = project.datasets[0]
         dataset.dataAccessMethod[0] == 'oasrdfs'
         dataset.name == 'x'
-        dataset.datasetExternalURL == "/bioActivity/projectRecords/b"
+        dataset.datasetExternalURL == "http://devt.ala.org.au:8087/bioActivity/projectRecords/b"
     }
 }

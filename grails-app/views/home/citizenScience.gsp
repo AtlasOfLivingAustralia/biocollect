@@ -2,17 +2,19 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title><g:message code="g.citizenScience"/> | <g:message code="g.fieldCapture"/></title>
+    <meta name="layout" content="bs4"/>
+    <title><g:message code="g.citizenScience"/> | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
         spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
         spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
-        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
+        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}"
+        </g:applyCodec>
     }
     </asset:script>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
@@ -107,7 +109,7 @@
             easy for you to find projects happening in your area or with a subject or theme that is of interest to you.
             <p>In the interim, here is a list of citizen science projects supported by Atlas infrastructure and
             other projects in Australia that the Atlas does not support directly, but that we are aware of.</p>
-            <a href="${createLink(controller:'project', action:'homePage')}" class="btn btn-small">
+            <a href="${createLink(uri: '/')}" class="btn btn-small">
                 <g:message code="project.citizenScience.heading"/></a>
             <br/>
             <h3>Citizen Science Network Australia</h3>

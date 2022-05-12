@@ -8,15 +8,15 @@
 
             <div class="modal-body">
                 <div style="padding-right:12px;">
-                    <g:textArea name="jsonEditorInput" id="jsonEditorInput" data-bind="value:initialValue" rows="16"
-                                cols="120" style="width:100%;margin:0;"/>
+                    <g:textArea name="jsonEditorInput" id="jsonEditorInput" class="form-control" data-bind="value:initialValue" rows="16"
+                                cols="120" />
                 </div>
             </div>
 
             <div class="modal-footer control-group">
                 <div class="controls">
-                    <button type="button" class="btn btn-success" data-bind="click:save">Done</button>
-                    <button class="btn" data-bind="click:cancel">Cancel</button>
+                    <button type="button" class="btn btn-primary-dark" data-bind="click:save"><i class="fas fa-hdd"></i> Done</button>
+                    <button class="btn btn-dark" data-bind="click:cancel"><i class="far fa-times-circle"></i> Cancel</button>
                 </div>
             </div>
         </div>

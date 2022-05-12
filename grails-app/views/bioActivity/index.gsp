@@ -3,15 +3,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="${mobile ? 'mobile' : hubConfig.skin}"/>
-        <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
+    <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
     <asset:stylesheet src="forms-manifest.css"/>
@@ -25,6 +19,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -46,44 +41,44 @@
         activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
-        searchBieUrl: "${createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10])}",
+        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         ${(params?.version) ? ',version: ' + params?.version : ''}
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
 </head>
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
+    <content tag="bannertitle">
+        <g:message code="record.view.title"></g:message>
+    </content>
 
     <div id="koActivityMainBlock">
         <bc:koLoading>
         <g:if test="${!mobile}">
-            <div class="row-fluid">
-                %{--page title--}%
-                <div class="span4">
-                    <h2><g:message code="record.view.title"></g:message></h2>
-                </div>
+            <div class="row">
                 %{-- quick links --}%
-                <div class="span8">
-                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+                <div class="col-12">
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
                 </div>
                 %{--quick links END--}%
             </div>
         </g:if>
 
         <g:if test="${params?.version}">
-            <div class="well">
+            <div class="card">
                 <h4>
                     Version:
                     <span id="versionMsg"></span>
@@ -92,18 +87,26 @@
         </g:if>
 
         <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-            <h3 class="text-error text-center well-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
-            <div data-bind="if: transients.site">
-                <div class="output-block well text-center">
-                    <m:map id="activitySiteMap" width="90%" height="300px"/>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-danger text-center card-title">Site location: <span data-bind="text: transients.site.name"></span></h3>
+                    <div data-bind="if: transients.site">
+                        <div class="output-block text-center">
+                                <m:map id="activitySiteMap" width="100%" height="300px"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </g:if>
 
         <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
-            <h3 class="text-center text-error well-title">Photo Points</h3>
-            <div class="output-block well" data-bind="with:transients.photoPointModel">
-                <g:render template="/site/photoPoints" model="[readOnly: true]"/>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-center text-danger card-title">Photo Points</h3>
+                    <div class="output-block" data-bind="with:transients.photoPointModel">
+                        <g:render template="/site/photoPoints" model="[readOnly: true]"/>
+                    </div>
+                </div>
             </div>
         </g:if>
 
@@ -116,9 +119,9 @@
                 <g:set var="output" value="[name: outputName]"/>
             </g:if>
             <g:render template="/output/outputJSModelWithGeodata" plugin="ecodata-client-plugin"
-                      model="${[edit:false, readonly: true, model:model, outputName:outputName]}"></g:render>
+                      model="${raw([edit:false, readonly: true, model:model, outputName:outputName])}"></g:render>
 
-            <div class="output-block well" id="ko${blockId}">
+            <div class="output-block" id="ko${blockId}">
                 <div data-bind="if:outputNotCompleted">
                     <label class="checkbox" ><input type="checkbox" disabled="disabled" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
                 </div>
@@ -155,10 +158,10 @@
     <g:if test="${!mobile}">
         <div class="form-actions">
             <g:if test="${hasEditRights}">
-                <a class="btn btn-primary btn-large" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}"><span class="fa fa-edit"></span> Edit</a>
+                <a class="btn btn-primary-dark btn-lg" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}"><span class="fas fa-pencil-alt"></span> Edit</a>
             </g:if>
             <g:if test="${userIsProjectMember}">
-                <a class="btn btn-primary  btn-large" href="${createLink(controller: 'bioActivity', action: 'create')}/${pActivity.projectActivityId}"><span class="fa fa-plus"></span> Add new record</a>
+                <a class="btn btn-primary-dark  btn-lg" href="${createLink(controller: 'bioActivity', action: 'create')}/${pActivity.projectActivityId}"><span class="fas fa-plus"></span> Add new record</a>
             </g:if>
         </div>
     </g:if>
@@ -207,7 +210,7 @@
         $(function() {
             $('.helphover').popover({animation: true, trigger:'hover'});
 
-            $('#cancel').click(function () {
+            $('#cancel').on('click',function () {
                 document.location.href = returnTo;
             });
 

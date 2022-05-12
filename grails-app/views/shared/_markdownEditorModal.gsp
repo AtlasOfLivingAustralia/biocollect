@@ -1,26 +1,26 @@
 <!-- ko stopBinding: true -->
-<div id="markdownEditor" class="modal fade" style="display:none;">
+<div id="markdownEditor" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="title" data-bind="text:title">Attach Document</h4>
+        <h4 class="modal-title" id="title" data-bind="text:title"></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
 
       <div class="modal-body">
-        <div id="editor-button-bar" style="width:100%;background-color: white;"></div>
-        <div style="padding-right:12px;">
+        <div class="w-100 bg-white mb-2" id="editor-button-bar"></div>
+        <div class="pr-2">
           <g:textArea name="editorInput" id="editorInput" data-bind="value:initialValue" rows="16"
                       cols="120" style="width:100%;margin:0;"></g:textArea>
         </div>
-        <div class="hide"><input type="text" name="editorOutput" id="editorOutput" class="hide"></div>
+        <div class="d-none"><input type="text" name="editorOutput" id="editorOutput" class="hide"></div>
 
       </div>
-      <div class="modal-footer control-group">
-        <div class="controls">
-          <button type="button" class="btn btn-success" data-bind="click:save">Done</button>
-          <button class="btn" data-bind="click:cancel">Cancel</button>
-
-        </div>
+      <div class="modal-footer ">
+        <button class="btn btn-primary-dark" type="button" data-bind="click:save"><i class="fas fa-hdd"></i> Done</button>
+        <button class="btn btn-dark" data-bind="click:cancel"><i class="far fa-times-circle"></i> Cancel</button>
       </div>
 
     </div>

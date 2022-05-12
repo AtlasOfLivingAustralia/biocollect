@@ -5,6 +5,7 @@
 		<title>Admin - Audit | Data capture | Atlas of Living Australia</title>
 		<style type="text/css" media="screen">
 		</style>
+        <content tag="pageTitle">Audit</content>
 	</head>
 	<body>
         <asset:stylesheet src="datatables-manifest.css"/>
@@ -17,8 +18,8 @@
         </form>
         <g:if test="${results}">
         <g:set var="searchTerm" value="${params.searchTerm}"/>
-        <div class="well well-small">
-            <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="project-list">
+        <div class="border bg-light table-responsive">
+            <table class="table table-striped table-bordered table-hover" id="project-list">
                 <thead>
                     <th>Name</th>
                     <th>Description</th>
@@ -27,7 +28,7 @@
                     <g:each in="${results.hits?.hits}" var="hit">
                         <tr>
                             <td>
-                                <a href="${createLink(action:'auditProject', params:[id:hit._source?.projectId, searchTerm:searchTerm])}">${hit._source?.name}</a>
+                                <a href="${raw(createLink(action:'auditProject', params:[id:hit._source?.projectId, searchTerm:searchTerm]))}">${hit._source?.name}</a>
                             </td>
                             <td>${hit._source?.description}</td>
                         </tr>
@@ -52,7 +53,7 @@
         });
         $('.dataTables_filter input').attr("placeholder", "Name or Description");
 
-        $("#btnProjectSearch").click(function(e) {
+        $("#btnProjectSearch").on('click',function(e) {
             e.preventDefault();
             doAuditProjectSearch()
         });

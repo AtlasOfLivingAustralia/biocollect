@@ -13,7 +13,7 @@ function ImageGalleryViewModel(config){
     self.error = ko.observable('');
     self.total = ko.observable();
     self.offset = ko.observable(0);
-    self.pagination = new PaginationViewModel({}, self);
+    self.pagination = new PaginationViewModel({numberPerPage: 30}, self);
     self.max = ko.observable(self.pagination.resultsPerPage());
     self.isLoadMore = ko.computed(function(){
         return self.total() > self.max();

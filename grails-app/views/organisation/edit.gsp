@@ -2,15 +2,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Edit | ${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
 
     <asset:script type="text/javascript">
         var fcConfig = {
+            <g:applyCodec encodeAs="none">
             serverUrl: "${grailsApplication.config.grails.serverURL}",
             viewProjectUrl: "${createLink(controller: 'project', action: 'index')}",
             documentUpdateUrl: '${g.createLink(controller: "proxy", action: "documentUpdate")}',
@@ -22,35 +23,32 @@
             organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
             imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
             returnTo: "${params.returnTo ?: createLink(action: 'index', id: organisation.organisationId)}"
-
+            </g:applyCodec>
             };
     </asset:script>
-    <asset:stylesheet src="forms-manifest.css"/>
-    <asset:stylesheet src="organisation.css"/>
-    <asset:javascript src="common.js"/>
-    <asset:javascript src="fileupload-9.0.0/load-image.min.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-process.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-image.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-video.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-validate.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.fileupload-audio.js"/>
-    <asset:javascript src="fileupload-9.0.0/jquery.iframe-transport.js"/>
-    <asset:javascript src="fileupload-9.0.0/locale.js"/>
+    <asset:stylesheet src="fileupload-ui-manifest.css"/>
+    <asset:stylesheet src="wmd/wmd.css"/>
+    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="fileupload-manifest.js"/>
+    <!-- todo: is cors/jquery.xdr-transport.js needed -->
     <asset:javascript src="cors/jquery.xdr-transport.js"/>
     <asset:javascript src="organisation.js"/>
-
+    <asset:javascript src="document.js"/>
 </head>
 
 <body>
 
-<div class="container-fluid organisation-header organisation-banner image-box"
+<div class="container organisation-header organisation-banner image-box"
      data-bind="style:{'backgroundImage':asBackgroundImage(bannerUrl())}">
     <g:render template="organisationDetails"/>
 
-    <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Save</button>
-        <button type="button" id="cancel" class="btn">Cancel</button>
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="form-actions">
+                <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save</button>
+                <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
+            </div>
+        </div>
     </div>
 
 </div>

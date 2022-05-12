@@ -149,12 +149,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.sortClass = function (column) {
         if( self.sort() === column.code ) {
             if (self.order() === 'asc') {
-                return 'fa fa-sort-up'
+                return 'fas fa-sort-up'
             } else {
-                return 'fa fa-sort-down'
+                return 'fas fa-sort-down'
             }
         } else  {
-            return 'fa fa-sort'
+            return 'fas fa-sort'
         }
     };
 
@@ -227,9 +227,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         if (self.total() > asyncDownloadThreshold) {
             self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
         } else {
-            $('#downloadStartedMsg').removeClass('hide');
+            $('#downloadStartedMsg').removeClass('d-none');
             window.setTimeout(function(){
-                $('#downloadStartedMsg').addClass('hide');
+                $('#downloadStartedMsg').addClass('d-none');
             }, 5000);
             window.location.href = url;
         }
@@ -523,7 +523,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             results = data;
             self.generateDotsFromResult(data);
             alaMap.finishLoading();
-        }).error(function (request, status, error) {
+        }).fail(function (request, status, error) {
             console.error("AJAX error", status, error);
             alaMap.finishLoading();
         });
@@ -929,7 +929,7 @@ var ActivityRecordViewModel = function (activity) {
     self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.parent = activity.parent;
-    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "no-image-2.png");
+    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "font-awesome/5.15.4/svgs/regular/image.svg");
     self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
 
     self.records = ko.observableArray();

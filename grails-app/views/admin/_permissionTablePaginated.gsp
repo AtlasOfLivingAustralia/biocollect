@@ -1,25 +1,29 @@
-<div class="pill-pane">
-    <div class="row well well-small" id="project-member-list">
-        <table style="width: 95%;" class="table table-striped table-bordered table-hover" id="member-list">
-            <thead>
-            <th>User Id</th>
-            <th>User Name</th>
-            <th>Role</th>
-            <th width="5%"></th>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+<div>
+    <div class="row" id="project-member-list">
+        <div class="col-12 table-responsive">
+            <table class="table table-striped table-bordered table-hover not-stacked-table w-100" id="member-list">
+                <thead>
+                <th>User Id</th>
+                <th>User Name</th>
+                <th>Role</th>
+                <th width="5%"></th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="span5">
-        <div id="formStatus" class="hide alert alert-success">
-            <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
-            <span></span>
+    <div class="row">
+        <div class="col-12">
+            <div id="formStatus" class="hide alert alert-success">
+                <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                <span></span>
+            </div>
         </div>
     </div>
 </div>
 <asset:script type="text/javascript">
-    $(window).load(function () {
-        initialise(${roles.inspect()}, ${user?.userId}, "${project.projectId}");
+    $(window).on('load', function () {
+        initialise(${raw(roles.inspect())}, ${raw(user?.userId)}, "${raw(project.projectId)}");
      })
 </asset:script>

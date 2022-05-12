@@ -73,10 +73,11 @@ class WebService {
         conn.setConnectTimeout(grailsApplication.config.webservice.connectTimeout as int)
         conn.setReadTimeout(readTimeout)
         addHubUrlPath(conn)
-
-        def user = getUserService().getUser()
-        if (includeUserId && user) {
-            conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId)
+        if (includeUserId) {
+            def user = getUserService().getUser()
+            if (user) {
+                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId)
+            }
         }
         conn
     }
@@ -181,10 +182,10 @@ class WebService {
         return get(url, true)
     }
 
-    def getJson(String url, Integer timeout = null, boolean includeApiKey = false) {
+    def getJson(String url, Integer timeout = null, boolean includeApiKey = false, boolean includeUserId = true) {
         def conn = null
         try {
-            conn = configureConnection(url, true, timeout)
+            conn = configureConnection(url, includeUserId, timeout)
             if (includeApiKey) {
                 conn.setRequestProperty("Authorization", grailsApplication.config.api_key);
             }
@@ -222,11 +223,11 @@ class WebService {
      */
     def responseText(urlConnection) {
 
-        def charset = 'UTF-8' // default
+        String charset = 'UTF-8' // default
         def contentType = urlConnection.getContentType()
         if (contentType) {
-            def mediaType = MediaType.parseMediaType(contentType)
-            charset = (mediaType.charSet)?mediaType.charSet.toString():'UTF-8'
+            MediaType mediaType = MediaType.parseMediaType(contentType)
+            charset = (mediaType.charset)?mediaType.charset.toString():'UTF-8'
         }
         return urlConnection.content.getText(charset)
     }

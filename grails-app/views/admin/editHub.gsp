@@ -5,6 +5,7 @@
     <title>Metadata | Admin | Data capture | Atlas of Living Australia</title>
     <asset:script type="text/javascript">
         fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -20,6 +21,7 @@
             allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
             allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+            </g:applyCodec>
         };
     </asset:script>
 </head>
@@ -29,29 +31,36 @@
 <asset:stylesheet src="admin.css"/>
 <asset:stylesheet src="fileupload-ui-manifest.css"/>
 <asset:javascript src="leaflet-manifest.js"/>
-<asset:javascript src="common.js"/>
+<asset:javascript src="common-bs4.js"/>
 <asset:javascript src="fileupload-manifest.js"/>
+%{-- Todo: cors/jquery.xdr-transport.js needed?--}%
+<asset:javascript src="cors/jquery.xdr-transport.js"/>
 <asset:javascript src="document.js"/>
 <asset:javascript src="hubs.js"/>
 <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-<content tag="pageTitle">Create / Edit Hub</content>
+<content tag="pageTitle">Manage Hubs</content>
 
 <div class="alert alert-info">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <span>You are viewing the hub: ${hubConfig.urlPath}</span>
 </div>
 
-<div class="alert" data-bind="visible:message()">
+<div class="alert alert-info" data-bind="visible:message()">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <span data-bind="text:message"></span>
 </div>
-<div class="row-fluid">
-    <div class="span4">
-        Configured hubs: <select data-bind="value:selectedHubUrlPath, options:hubs"></select>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group row">
+            <label class="col-md-4 col-form-label">Configured hubs:</label>
+            <div class="col-md-8">
+                <select class="form-control" data-bind="value:selectedHubUrlPath, options:hubs"></select>
+            </div>
+        </div>
     </div>
-    <div class="span2">
-        <button class="btn btn-info" data-bind="click:editHub">Edit <span data-bind="text:selectedHubUrlPath"></span></button>
-        <button class="btn btn-info" data-bind="click:newHub">New Hub</button>
+    <div class="col-md-6 btn-space">
+        <button class="btn btn-info" data-bind="click:editHub"><i class="fas fa-pencil-alt"></i> Edit <span data-bind="text:selectedHubUrlPath"></span></button>
+        <button class="btn btn-info" data-bind="click:newHub"><i class="fas fa-plus"></i> New Hub</button>
     </div>
 
 </div>
@@ -61,81 +70,81 @@
 <div class="selected-hub form-horizontal" data-bind="visible:selectedHub(), with:selectedHub">
     <h2><span data-bind="visible:hubId">Editing: </span><span data-bind="visible:!hubId()">Creating: </span> <span data-bind="text:urlPath"></span></h2>
     <ul class="nav nav-tabs">
-        <li class="active">
-            <a href="#hubPrograms" data-toggle="tab">Programs</a>
+        <li class="nav-item">
+            <a class="nav-link active" href="#hubPrograms" data-toggle="tab">Programs</a>
         </li>
-        <li><a href="#hubTemplate"  data-toggle="tab">Template</a></li>
-        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHeader"  data-toggle="tab">Header</a></li>
-        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubFooter"  data-toggle="tab">Footer</a></li>
-        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubBanner"  data-toggle="tab">Banner</a></li>
-        <li><a href="#hubContent"  data-toggle="tab">Content</a></li>
-        <li><a href="#hubFacet"  data-toggle="tab">Facets</a></li>
-        <li><a href="#hubData"  data-toggle="tab">Data</a></li>
-        <li><a href="#hubMap"  data-toggle="tab">Map</a></li>
-        <li data-bind="disable: transients.isSkinAConfigurableTemplate"><a href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubTemplate"  data-toggle="tab">Template</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubHeader"  data-toggle="tab">Header</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubFooter"  data-toggle="tab">Footer</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubBanner"  data-toggle="tab">Banner</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubContent"  data-toggle="tab">Content</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubFacet"  data-toggle="tab">Facets</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubData"  data-toggle="tab">Data</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubMap"  data-toggle="tab">Map</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
     </ul>
-    <div class="tab-content">
+    <div class="tab-content mt-3">
         <div class="tab-pane active" id="hubPrograms">
 
-            <div class="control-group">
-                <label class="control-label" for="name">URL path (added to URL to select the hub)</label>
-                <div class="controls required">
-                    <input type="text" id="name" class="input-xxlarge" data-bind="value:urlPath" data-validation-engine="validate[required]">
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="name">URL path (added to URL to select the hub)</label>
+                <div class="col-md-8 required">
+                    <input type="text" id="name" class="form-control" data-bind="value:urlPath" data-validation-engine="validate[required]">
                 </div>
             </div>
 
-            <div class="control-group">
-                <label class="control-label" for="description">Title</label>
-                <div class="controls required">
-                    <textarea rows="3" class="input-xxlarge" data-bind="value:title" data-validation-engine="validate[required]" id="description" placeholder="Displays as a heading on the home page"></textarea>
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="description">Title</label>
+                <div class="col-md-8 required">
+                    <textarea rows="3" class="form-control" data-bind="value:title" data-validation-engine="validate[required]" id="description" placeholder="Displays as a heading on the home page"></textarea>
                 </div>
             </div>
 
-            <div class="control-group">
-                <label class="control-label" for="description">Home Page Path</label>
-                <div class="controls required">
-                    <input type="text" class="input-xxlarge" data-bind="value:homePagePath" placeholder="Relative path to home page (leave blank for default)"></input>
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="description">Home Page Path</label>
+                <div class="col-md-8 required">
+                    <input type="text" class="form-control" data-bind="value:homePagePath" placeholder="Relative path to home page (leave blank for default)"></input>
                 </div>
             </div>
 
-            <div class="control-group">
-                <label class="control-label" for="supported-programs">Supported Programs (Projects in this hub can only select from these programs)</label>
-                <div class="controls">
-                    <ul id="supported-programs" data-bind="foreach:$parent.transients.programNames" class="unstyled">
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="supported-programs">Supported Programs (Projects in this hub can only select from these programs)</label>
+                <div class="col-md-8">
+                    <ul class="list-unstyled" id="supported-programs" data-bind="foreach:$parent.transients.programNames">
                         <li><label><input type="checkbox" data-bind="checked:$parent.supportedPrograms, attr:{value:$data}"> <span data-bind="text:$data"></span></label></li>
                     </ul>
                 </div>
             </div>
 
-            <div class="control-group">
-                <label class="control-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
-                <div class="controls">
-                    <select id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
+                <div class="col-md-8">
+                    <select class="form-control" id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
                 </div>
             </div>
         </div>
 
         <div class="tab-pane" id="hubTemplate">
-            <div class="control-group">
-                <label class="control-label" for="skin">Skin</label>
-                <div class="controls required">
-                    <select id="skin" data-bind="value:skin,options:$parent.transients.availableSkins" data-validation-engine="validate[required]"></select>
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="skin">Skin</label>
+                <div class="col-md-8 required">
+                    <select class="form-control" id="skin" data-bind="value:skin,options:$parent.transients.availableSkins" data-validation-engine="validate[required]"></select>
                 </div>
             </div>
 
             <div data-bind="slideVisible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: styles -->
-                        <div class="control-group">
-                            <label class="control-label" for="skin">Colour scheme</label>
-                            <div class="controls">
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="skin">Colour scheme</label>
+                            <div class="col-md-8">
                                 <!-- ko template: { name: 'templateStyles'} -->
                                 <!-- /ko -->
                             </div>
                         </div>
-                        <div class="control-group">
-                            <label class="control-label" for="skin" id="preview">Preview</label>
-                            <div class="controls">
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="skin" id="preview">Preview</label>
+                            <div class="col-md-8">
                                 <!-- ko template: { name: 'templatePreviewHomePage'} -->
                                 <!-- /ko -->
                             </div>
@@ -149,13 +158,15 @@
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: header -->
                         <h3>Header</h3>
-                        <div>
-                            Choose between the following header options: <select data-bind="value: type">
-                                <option value="">Please choose</option>
-                                <option value="ala">ALA</option>
-                                <option value="biocollect">Biocollect classic</option>
-                                <option value="custom">Custom header</option>
-                            </select>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label">Choose between the following header options: </label>
+                            <div class="col-md-8">
+                                <select class="form-control" data-bind="value: type">
+                                    <option value="">Please choose</option>
+                                    <option value="ala">ALA</option>
+                                    <option value="custom">Custom header</option>
+                                </select>
+                            </div>
                         </div>
                         <h3>Custom Header Settings</h3>
                         <!-- ko template: {name: 'templateLinkNotes'} -->
@@ -181,7 +192,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>
-                                        <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                                        <button type="button" class="btn btn-dark" data-bind="click: addLink"><i class="fas fa-plus"></i> Add link</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -201,12 +212,17 @@
                     <!-- ko with: footer -->
                     <div>
                         <h3>Footer</h3>
-                        <div>
-                            Choose between the following footer options: <select data-bind="value: type">
-                            <option value="">Please choose</option>
-                            <option value="ala">ALA</option>
-                            <option value="custom">Custom footer</option>
-                        </select>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label">
+                                Choose between the following footer options:
+                            </label>
+                            <div class="col-md-8">
+                                <select class="form-control" data-bind="value: type">
+                                    <option value="">Please choose</option>
+                                    <option value="ala">ALA</option>
+                                    <option value="custom">Custom footer</option>
+                                </select>
+                            </div>
                         </div>
                         <h3>Custom Footer Settings</h3>
                         <div class="">
@@ -233,7 +249,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>
-                                        <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                                        <button type="button" class="btn btn-dark" data-bind="click: addLink"><i class="fas fa-plus"></i> Add link</button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -260,7 +276,7 @@
                                         <td></td>
                                         <td></td>
                                         <td>
-                                            <button type="button" class="btn" data-bind="click: addSocialMedia"><i class="icon-plus"></i> Add social media</button>
+                                            <button type="button" class="btn btn-dark" data-bind="click: addSocialMedia"><i class="fas fa-plus"></i> Add social media</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -281,13 +297,13 @@
                                 <!-- ko foreach: logos -->
                                 <tr>
                                     <td>
-                                        <img class="span3" data-bind="visible: url, attr:{src:url}">
+                                        <img class="col-3" data-bind="visible: url, attr:{src:url}">
                                     </td>
                                     <td>
-                                        <input type="text" data-bind="value: href"></input>
+                                        <input class="form-control" type="text" data-bind="value: href"></input>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-small btn-danger" data-bind="visible:$data, click:remove"><i class="icon icon-remove icon-white"></i> Remove Banner</button>
+                                        <button type="button" class="btn btn-sm btn-danger" data-bind="visible:$data, click:remove"><i class="far fa-trash-alt"></i> Remove Banner</button>
                                     </td>
                                 </tr>
                                 <!-- /ko -->
@@ -295,11 +311,15 @@
                                     <td></td>
                                     <td></td>
                                     <td>
-                                        <span class="btn fileinput-button pull-right  btn-small"
+                                        <span class="btn fileinput-button float-right btn-dark"
                                               data-url="${createLink(controller: 'image', action:'upload')}"
                                               data-role="footerlogo"
                                               data-owner-type="hubId"
-                                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:$parents[1].documents"><i class="icon-plus"></i> <input id="footerLogo" type="file" name="files"><span>Add a Logo</span></span>
+                                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:$parents[1].documents">
+                                            <i class="fas fa-file-upload"></i>
+                                            <input id="footerLogo" type="file" name="files">
+                                            <span>Add a Logo</span>
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -317,17 +337,22 @@
         <div class="tab-pane" id="hubBanner">
             <div>
                 <h3>Logo image</h3>
-                <div class="row-fluid">
-                    <div class="span6">
+                <div class="row">
+                    <div class="col-6">
                         <img data-bind="visible:logoUrl(), attr:{src:logoUrl}">
                     </div>
-                    <div class="offset4 span2">
-                        <button type="button" class="btn  btn-small btn-danger" data-bind="visible:logoUrl(), click:removeLogo"><i class="icon icon-white icon-remove"></i> Remove Logo</button>
-                        <span class="btn fileinput-button pull-right"
+                    <div class="offset-4 col-2">
+                        <button type="button" class="btn  btn-sm btn-danger" data-bind="visible:logoUrl(), click:removeLogo"><i class="far fa-trash-alt"></i> Remove Logo</button>
+                        <span class="btn fileinput-button float-right btn-dark"
                               data-url="${createLink(controller: 'image', action:'upload')}"
                               data-role="logo"
                               data-owner-type="hubId"
-                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents, visible:!logoUrl()"><i class="icon-plus"></i> <input id="logo" type="file" name="files"><span>Attach Organisation Logo</span></span>
+                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents, visible:!logoUrl()">
+                            <i class="fas fa-file-upload"></i> <input id="logo" type="file" name="files">
+                            <span>
+                            Attach Organisation Logo
+                            </span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -335,39 +360,40 @@
                 <h3>Carousel settings</h3>
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: banner -->
-                        <div class="row-fluid" data-bind="slideVisible: images().length">
-                            <div class="span6">Carousel image transition speed in milli-seconds (ms)</div>
-                            <div class="span2">
-                                <input type="number" data-bind="value: transitionSpeed">
+                        <div class="row mb-2" data-bind="slideVisible: images().length">
+                            <div class="col-6">Carousel image transition speed in milli-seconds (ms)</div>
+                            <div class="col-2">
+                                <input class="form-control" type="number" data-bind="value: transitionSpeed">
                             </div>
-                            <div class="row-fluid"><div class="span12"></div></div>
                         </div>
                         <h4>Carousel images</h4>
                         <!-- ko foreach: images -->
-                            <div class="row-fluid">
-                                <div class="span6">
+                            <div class="row mb-2">
+                                <div class="col-6">
                                     <img data-bind="visible: url, attr:{src:url}">
                                 </div>
-                                <div class="span4">
-                                    <textarea data-bind="value: caption"></textarea>
+                                <div class="col-4">
+                                    <textarea class="form-control" data-bind="value: caption"></textarea>
                                 </div>
-                                <div class="span2">
-                                    <button type="button" class="btn btn-small btn-danger" data-bind="visible:$data, click:$parent.removeBanner"><i class="icon icon-remove icon-white"></i> Remove Banner</button>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-sm btn-danger" data-bind="visible:$data, click:$parent.removeBanner"><i class="far fa-trash-alt"></i> Remove Banner</button>
                                 </div>
-                                <div class="row-fluid"><div class="span12"></div></div>
                             </div>
                         <!-- /ko -->
                         %{-- END bannerImages --}%
                     <!-- /ko -->
                 <!-- /ko -->
-                <div class="row-fluid">
-                    <div class="span10"></div>
-                    <div class="span2">
-                        <span class="btn fileinput-button pull-right  btn-small"
+                <div class="row">
+                    <div class="col-10"></div>
+                    <div class="col-2">
+                        <span class="btn fileinput-button float-right  btn-dark"
                               data-url="${createLink(controller: 'image', action:'upload')}"
                               data-role="banner"
                               data-owner-type="hubId"
-                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents"><i class="icon-plus"></i> <input id="banner" type="file" name="files"><span>Attach Banner Image</span></span>
+                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents">
+                            <i class="fas fa-file-upload"></i> <input id="bannerupload" type="file" name="files">
+                            <span>Attach Banner Image</span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -381,17 +407,11 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
-                </div>
 
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderHelpButtons"> Hide 'Getting Started' & 'What is this?' buttons on project finder
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorTile"> Hide project status indicator (Tile view)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorList"> Hide project status indicator (List view)
@@ -450,8 +470,8 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: showNote"> Show note on record listing page
                 </div>
-                <div class="margin-top-1 row-fluid" data-bind="slideVisible: showNote">
-                    <textarea class="span6" data-bind="value: recordNote">
+                <div class="margin-top-1 row" data-bind="slideVisible: showNote">
+                    <textarea class="form-control" class="col-6" data-bind="value: recordNote">
 
                     </textarea>
                 </div>
@@ -485,7 +505,7 @@
                         <td></td>
                         <td></td>
                         <td>
-                            <button type="button" class="btn" data-bind="click: addLink"><i class="icon-plus"></i> Add link</button>
+                            <button type="button" class="btn btn-dark" data-bind="click: addLink"><i class="fas fa-plus"></i> Add link</button>
                         </td>
                     </tr>
                     </tbody>
@@ -512,7 +532,7 @@
                         <td></td>
                         <td></td>
                         <td>
-                            <button type="button" class="btn" data-bind="click: addCustomBreadCrumb"><i class="icon-plus"></i> Add breadcrumb for a page</button>
+                            <button type="button" class="btn btn-dark" data-bind="click: addCustomBreadCrumb"><i class="fas fa-plus"></i> Add breadcrumb for a page</button>
                         </td>
                     </tr>
                     </tbody>
@@ -555,7 +575,7 @@
                         </div>
                     </td>
                     <td>
-                        <input type="text" data-bind="value: customText">
+                        <input class="form-control" type="text" data-bind="value: customText">
                     </td>
                     <td>
                         <label data-bind="text: notes"></label>
@@ -569,15 +589,15 @@
             </div>
         </div>
         <div class="tab-pane" id="hubFacet">
-            <div class="control-group">
-                <label class="control-label" for="default-facets-list">Default Facet Query (Searches will automatically include these facets)</label>
-                <div class="controls">
-                    <ul id="default-facets-list" data-bind="foreach:defaultFacetQuery" class="unstyled">
-                        <li>
-                            <input type="text" class="input-xxlarge"  data-bind="value:query" placeholder="query string as produced by the home page"> <button class="btn" data-bind="click:$parent.removeDefaultFacetQuery">Remove</button>
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="default-facets-list">Default Facet Query (Searches will automatically include these facets)</label>
+                <div class="col-md-8 btn-space">
+                    <ul id="default-facets-list" data-bind="foreach:defaultFacetQuery" class="list-unstyled">
+                        <li class="btn-space">
+                            <input type="text" class="form-control"  data-bind="value:query" placeholder="query string as produced by the home page"> <button class="btn btn-danger" data-bind="click:$parent.removeDefaultFacetQuery"><i class="far fa-trash-alt"></i> Remove</button>
                         </li>
                     </ul>
-                    <button class="btn" data-bind="click:addDefaultFacetQuery">Add</button>
+                    <button class="btn btn-dark" data-bind="click:addDefaultFacetQuery"><i class="fas fa-plus"></i> Add</button>
 
                 </div>
             </div>
@@ -590,7 +610,7 @@
                 </div>
             </div>
 
-            <div class="margin-bottom-20 border-bottom-4">
+            <div class="mb-4 border-bottom-4">
                 <h4><strong>Configure facets on all records page</strong></h4>
                 <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.allRecords } -->
@@ -598,7 +618,7 @@
                 </div>
             </div>
 
-            <div class="margin-bottom-20 border-bottom-4">
+            <div class="mb-4 border-bottom-4">
                 <h4><strong>Configure facets on my records page</strong></h4>
                 <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myRecords } -->
@@ -606,7 +626,7 @@
                 </div>
             </div>
 
-            <div class="margin-bottom-20 border-bottom-4">
+            <div class="mb-4 border-bottom-4">
                 <h4><strong>Configure facets on project's data tab</strong></h4>
                 <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.project } -->
@@ -614,7 +634,7 @@
                 </div>
             </div>
 
-            <div class="margin-bottom-20 border-bottom-4">
+            <div class="mb-4 border-bottom-4">
                 <h4><strong>Configure facets on my project records page</strong></h4>
                 <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.myProjectRecords } -->
@@ -623,7 +643,7 @@
             </div>
 
 
-            <div class="margin-bottom-20 border-bottom-4">
+            <div class="mb-4 border-bottom-4">
                 <h4><strong>Configure facets on user's project activity records page</strong></h4>
                 <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.userProjectActivityRecords } -->
@@ -632,7 +652,7 @@
             </div>
 
 
-            <div class="margin-bottom-20 border-bottom-4">
+            <div class="mb-4 border-bottom-4">
                 <h4><strong>Configure facets on project records page</strong></h4>
                 <div class="overflow-x">
                     <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.projectRecords } -->
@@ -666,13 +686,13 @@
                             <div>
                                 <h4>Homepage</h4>
                                 <div>
-                                    <select data-bind="value: homePageConfig">
+                                    <select class="form-control" data-bind="value: homePageConfig">
                                         <option value="projectfinder">Project finder</option>
                                         <option value="buttons">Buttons</option>
                                     </select>
                                 </div>
                             </div>
-                            <div>
+                            <div class="mt-2">
                                 <h4>Homepage content settings</h4>
                                 <div>
                                     <!-- ko template: {name: 'templateHomePage'} -->
@@ -689,19 +709,19 @@
             </div>
         </div>
     </div>
-    <div class="form-actions">
-        <button type="button" id="save" data-bind="click:save" class="btn btn-primary">Save</button>
-        <button type="button" id="cancel" class="btn">Cancel</button>
+    <div class="form-actions mt-2">
+        <button type="button" id="save" data-bind="click:save" class="btn btn-primary-dark"><i class="fas fa-hdd"></i> Save</button>
+        <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
     </div>
 </div>
 
 <script id="templateLink" type="text/html">
     <tr>
         <td>
-            <input type="text" data-bind="value: link.displayName"/>
+            <input class="form-control" type="text" data-bind="value: link.displayName"/>
         </td>
         <td>
-            <select data-bind="value: link.contentType">
+            <select class="form-control" data-bind="value: link.contentType">
                 <option value="content">Biocollect content</option>
                 <option value="static">Static page</option>
                 <option value="external">External link</option>
@@ -718,11 +738,11 @@
             </select>
         </td>
         <td>
-            <input type="text" data-bind="value: link.href"/>
+            <input class="form-control" type="text" data-bind="value: link.href"/>
         </td>
         <!-- ko if:!disableRoles -->
         <td>
-            <select data-bind="value: link.role">
+            <select class="form-control" data-bind="value: link.role">
                 <option value="">Anyone</option>
                 <g:render template="/admin/userRoleOptions"/>
             </select>
@@ -730,7 +750,7 @@
         <!-- /ko -->
         <td>
             <button class="btn btn-danger" data-bind="click: removeLink">
-                <i class="icon icon-remove icon-white"></i> Remove
+                <i class="far fa-trash-alt"></i> Remove
             </button>
         </td>
     </tr>
@@ -739,14 +759,14 @@
 <script id="templateCustomBreadCrumb" type="text/html">
     <tr>
         <td>
-            <input type="text" data-bind="value: controllerName"/>
+            <input class="form-control" type="text" data-bind="value: controllerName"/>
         </td>
         <td>
-            <input type="text" data-bind="value: actionName"/>
+            <input class="form-control" type="text" data-bind="value: actionName"/>
         </td>
         <td>
             <button class="btn btn-danger" data-bind="click: $parent.removeCustomBreadCrumb">
-                <i class="icon icon-remove icon-white"></i> Remove
+                <i class="far fa-trash-alt"></i> Remove
             </button>
         </td>
     </tr>
@@ -774,7 +794,7 @@
                     <td></td>
                     <td></td>
                     <td>
-                        <button type="button" class="btn" data-bind="click: addBreadCrumb"><i class="icon-plus"></i> Add a breadcrumb</button>
+                        <button type="button" class="btn btn-dark" data-bind="click: addBreadCrumb"><i class="fas fa-plus"></i> Add a breadcrumb</button>
                     </td>
                 </tr>
                 </tbody>
@@ -786,25 +806,25 @@
 <script id="templateSocial" type="text/html">
     <tr>
         <td>
-            <select data-bind="value: contentType">
+            <select class="form-control" data-bind="value: contentType">
                 <option value="youtube">Youtube</option>
                 <option value="facebook">Facebook</option>
                 <option value="twitter">Twitter</option>
             </select>
         </td>
         <td>
-            <input type="text" data-bind="value: href"/>
+            <input class="form-control" type="text" data-bind="value: href"/>
         </td>
         <td>
-            <button class="btn btn-small btn-danger" data-bind="click: $parent.removeLink">
-                <i class="icon icon-remove icon-white"></i> Remove
+            <button class="btn btn-danger" data-bind="click: $parent.removeLink">
+                <i class="far fa-trash-alt"></i> Remove
             </button>
         </td>
     </tr>
 </script>
 
 <script id="templateStyles" type="text/html">
-    <table class="table borderless">
+    <table class="table borderless table-hover">
         <thead>
         <tr>
             <th>Styling Component</th>
@@ -819,21 +839,16 @@
                 <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showHeader} } -->
                 <!-- /ko -->
             </td>
-            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+            <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showHeader">
             <td>Menu background colour</td>
-            <td><input type="text" data-bind="value: menuBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: menuBackgroundColor"/></td>
             <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: menuTextColor, backgroundColor: menuBackgroundColor, text: 'Menu'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showHeader">
             <td>Menu text colour</td>
-            <td><input type="text" data-bind="value: menuTextColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showHeader">
-            <td>Header banner space background colour</td>
-            <td><input type="text" data-bind="value: headerBannerBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':headerBannerBackgroundColor}"></div></td>
+            <td><input class="form-control" type="color" data-bind="value: menuTextColor"/></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -841,21 +856,16 @@
                 <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showBanner} } -->
                 <!-- /ko -->
             </td>
-            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
-        </tr>
-        <tr data-bind="visible: transients.showBanner">
-            <td>Banner background colour</td>
-            <td><input type="text" data-bind="value: bannerBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':bannerBackgroundColor}"></div></td>
+            <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showBanner">
             <td>Inset panel background colour</td>
-            <td><input type="text" data-bind="value: insetBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: insetBackgroundColor"/></td>
             <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: insetTextColor, backgroundColor: insetBackgroundColor, text: 'Inset'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showBanner">
             <td>Inset panel text colour</td>
-            <td><input type="text" data-bind="value: insetTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: insetTextColor"/></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -863,36 +873,77 @@
                 <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showGlobal} } -->
                 <!-- /ko -->
             </td>
-            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+            <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showGlobal">
+            <td>Primary</td>
+            <td><input class="form-control" type="color" data-bind="value: primaryColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: primaryColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Primary dark</td>
+            <td><input class="form-control" type="color" data-bind="value: primaryDarkColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: primaryDarkColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Secondary</td>
+            <td><input class="form-control" type="color" data-bind="value: secondaryColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: secondaryColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Success</td>
+            <td><input class="form-control" type="color" data-bind="value: successColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: successColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Info</td>
+            <td><input class="form-control" type="color" data-bind="value: infoColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: infoColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Warning</td>
+            <td><input class="form-control" type="color" data-bind="value: warningColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: warningColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Danger</td>
+            <td><input class="form-control" type="color" data-bind="value: dangerColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: dangerColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Light</td>
+            <td><input class="form-control" type="color" data-bind="value: lightColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: lightColor, text: ''}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showGlobal">
+            <td>Dark</td>
+            <td><input class="form-control" type="color" data-bind="value: darkColor"/></td>
+            <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: '', backgroundColor: darkColor, text: ''}}"></td>
+        </tr>
+
+        <tr data-bind="visible: transients.showGlobal">
             <td>Body background colour</td>
-            <td><input type="text" data-bind="value: bodyBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: bodyBackgroundColor"/></td>
             <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: bodyTextColor, backgroundColor: bodyBackgroundColor, text: 'Body'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showGlobal">
             <td>Body text colour</td>
-            <td><input type="text" data-bind="value: bodyTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: bodyTextColor"/></td>
         </tr>
         <tr data-bind="visible: transients.showGlobal">
             <td>Title text colour</td>
-            <td><input type="text" data-bind="value: titleTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: titleTextColor"/></td>
             <td data-bind="template: {name: 'textPreview', data: {textColor: titleTextColor, backgroundColor: 'transparent', text: 'Title'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showGlobal">
             <td>Breadcrumbs background colour</td>
-            <td><input type="text" data-bind="value: breadCrumbBackGroundColour"/></td>
+            <td><input class="form-control" type="color" data-bind="value: breadCrumbBackGroundColour"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':breadCrumbBackGroundColour}"></div></td>
         </tr>
         <tr data-bind="visible: transients.showGlobal">
             <td>Href colour</td>
-            <td><input type="text" data-bind="value: hrefColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: hrefColor"/></td>
             <td data-bind="template: {name: 'textPreview', data: {textColor: hrefColor, backgroundColor: 'transparent', text: 'Anchor'}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showGlobal">
-            <td>Well background colour</td>
-            <td><input type="text" data-bind="value: wellBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':wellBackgroundColor}"></div></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -900,116 +951,37 @@
                 <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showButtons} } -->
                 <!-- /ko -->
             </td>
-            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Primary button colour</td>
-            <td><input type="text" data-bind="value: primaryButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: primaryButtonBackgroundColor, textColor: primaryButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Primary button text colour</td>
-            <td><input type="text" data-bind="value: primaryButtonTextColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button colour</td>
-            <td><input type="text" data-bind="value: defaultButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: defaultButtonBackgroundColor, textColor: defaultButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button text colour</td>
-            <td><input type="text" data-bind="value: defaultButtonTextColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button colour when active</td>
-            <td><input type="text" data-bind="value: defaultButtonColorActive"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: defaultButtonBackgroundColorActive, textColor: defaultButtonColorActive}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button background colour when active</td>
-            <td><input type="text" data-bind="value: defaultButtonBackgroundColorActive"/></td>
+            <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'Getting started' button background colour</td>
-            <td><input type="text" data-bind="value: gettingStartedButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: gettingStartedButtonBackgroundColor, textColor: gettingStartedButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'Getting started' button text colour</td>
-            <td><input type="text" data-bind="value: gettingStartedButtonTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: gettingStartedButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: gettingStartedButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'What is this' button background colour</td>
-            <td><input type="text" data-bind="value: whatIsThisButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: whatIsThisButtonBackgroundColor, textColor: whatIsThisButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'What is this' button text colour</td>
-            <td><input type="text" data-bind="value: whatIsThisButtonTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: whatIsThisButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: whatIsThisButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'Add a record' button background colour</td>
-            <td><input type="text" data-bind="value: addARecordButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: addARecordButtonBackgroundColor, textColor: addARecordButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'Add a record' button text colour</td>
-            <td><input type="text" data-bind="value: addARecordButtonTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: addARecordButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: addARecordButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'View records' button background colour</td>
-            <td><input type="text" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: viewRecordsButtonTextColor}}"></td>
+            <td><input class="form-control" type="color" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
-            <td>'View records' button text colour</td>
-            <td><input type="text" data-bind="value: viewRecordsButtonTextColor"/></td>
+            <td>Button home page background colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
-        <tr>
-            <td colspan="2">
-                <strong>Outline buttons</strong>
-                <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showOutlineButtons} } -->
-                <!-- /ko -->
-            </td>
-            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
-        </tr>
-        <tr data-bind="visible: transients.showOutlineButtons">
-            <td>Make standalone primary button an outline button (transparent background)<br/>
-                <small>
-                    All standalone primary buttons will be render like an outline button using style defined below.
-                    Primary buttons associated with a button group or input will use the above style.
-                </small>
-            </td>
-            <td><input type="checkbox" data-bind="checked: makePrimaryButtonAnOutlineButton"/></td>
-            <td></td>
-        </tr>
-        <tr data-bind="visible: transients.showOutlineButtons">
-            <td>Primary outline button text colour</td>
-            <td><input type="text" data-bind="value: primaryButtonOutlineTextColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'outlineButtonPreview', data: {textColor: primaryButtonOutlineTextColor, hoverTextColor: primaryButtonOutlineTextHoverColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showOutlineButtons">
-            <td>Primary outline button text hover colour</td>
-            <td><input type="text" data-bind="value: primaryButtonOutlineTextHoverColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showOutlineButtons">
-            <td>Make standalone default button an outline button (transparent background)<br/>
-                <small>
-                    All standalone default buttons will be render like an outline button using style defined below.
-                    Default buttons associated with a button group or input will use the above style.
-                </small>
-            </td>
-            <td><input type="checkbox" data-bind="checked: makeDefaultButtonAnOutlineButton"/></td>
-            <td></td>
-        </tr>
-        <tr data-bind="visible: transients.showOutlineButtons">
-            <td>Default outline button text colour</td>
-            <td><input type="text" data-bind="value: defaultButtonOutlineTextColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'outlineButtonPreview', data: {textColor: defaultButtonOutlineTextColor, hoverTextColor: defaultButtonOutlineTextHoverColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showOutlineButtons">
-            <td>Default outline button text hover colour</td>
-            <td><input type="text" data-bind="value: defaultButtonOutlineTextHoverColor"/></td>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Button home page text colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonTextColor, textColor: '#fff'}}"></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -1017,35 +989,35 @@
                 <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showOtherComponents} } -->
                 <!-- /ko -->
             </td>
-            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+            <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showOtherComponents">
             <td>Nav text colour</td>
-            <td><input type="text" data-bind="value: navTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: navTextColor"/></td>
             <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: navTextColor, backgroundColor: navBackgroundColor, text: 'Nav'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showOtherComponents">
             <td>Nav background colour</td>
-            <td><input type="text" data-bind="value: navBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: navBackgroundColor"/></td>
         </tr>
         <tr data-bind="visible: transients.showOtherComponents">
             <td>Facet background colour</td>
-            <td><input type="text" data-bind="value: facetBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: facetBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':facetBackgroundColor}"></div></td>
         </tr>
         <tr data-bind="visible: transients.showOtherComponents">
             <td>Tile background colour</td>
-            <td><input type="text" data-bind="value: tileBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: tileBackgroundColor"/></td>
             <td><div class="previewColor" data-bind="style:{'background-color':tileBackgroundColor}"></div></td>
         </tr>
         <tr data-bind="visible: transients.showOtherComponents">
             <td>Tag background colour</td>
-            <td><input type="text" data-bind="value: tagBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: tagBackgroundColor"/></td>
             <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: tagTextColor, backgroundColor: tagBackgroundColor, text: 'Tag'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showOtherComponents">
             <td>Tag text colour</td>
-            <td><input type="text" data-bind="value: tagTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: tagTextColor"/></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -1053,20 +1025,20 @@
                 <!-- ko template: {'name': 'collapseExpandComponent', data: {flag: transients.showFooter} } -->
                 <!-- /ko -->
             </td>
-            <td><a href="#preview"><i class="icon-arrow-down"></i> Preview</a></td>
+            <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showFooter">
             <td>Footer background colour</td>
-            <td><input type="text" data-bind="value: footerBackgroundColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: footerBackgroundColor"/></td>
             <td rowspan="2" data-bind="template: {name: 'textPreview', data: {textColor: footerTextColor, backgroundColor: footerBackgroundColor, text: 'Contact us'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showFooter">
             <td>Footer text colour</td>
-            <td><input type="text" data-bind="value: footerTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: footerTextColor"/></td>
         </tr>
         <tr data-bind="visible: transients.showFooter">
             <td>Social media icon colour</td>
-            <td><input type="text" data-bind="value: socialTextColor"/></td>
+            <td><input class="form-control" type="color" data-bind="value: socialTextColor"/></td>
             <td rowspan="2" data-bind="template: {name: 'socialMediaPreview', data: {textColor: socialTextColor}}"></td>
         </tr>
         </tbody>
@@ -1075,57 +1047,75 @@
 
 <script id="templateHomePage" type="text/html">
 <div class="accordion" id="homePageConfiguration">
-    <div class="accordion-group">
-        <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                Project Finder Home Page Config
-            </a>
-        </div>
-        <div id="collapseOne" class="accordion-body collapse in">
+    <div>
+        <h4>
+            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Project Finder Home Page Config <i class="fas fa-chevron-down float-right"></i>
+            </button>
+        </h4>
+        <div id="collapseOne" class="collapse show" data-parent="#homePageConfiguration">
             <!-- ko with: projectFinderConfig -->
-                <div class="accordion-inner">
-                    <div class="control-group">
-                        <label>Default content view:</label>
-                        <label class="radio">
-                            <input type="radio" name="defaultView" data-bind="checked: defaultView" value="grid">
-                            Projects Grid
-                        </label>
-                        <label class="radio">
-                            <input type="radio" name="defaultView" data-bind="checked: defaultView" value="list">
-                            Projects List
-                        </label>
-                        <label class="radio">
-                            <input type="radio" name="defaultView" data-bind="checked: defaultView" value="map" disabled>
-                            Projects Map
-                        </label>
+                <div class="pl-4">
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-4">Default content view:</label>
+                        <div class="col-sm-8">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="defaultView" data-bind="checked: defaultView" value="grid">
+                                <label class="form-check-label">
+                                    Projects Grid
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="defaultView" data-bind="checked: defaultView" value="list">
+                                <label class="form-check-label">
+                                    Projects List
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="defaultView" data-bind="checked: defaultView" value="map" disabled>
+                                <label class="form-check-label">
+                                    Projects Map
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="control-group">
-                        <label class="checkbox">
-                            <input type="checkbox" name="showProjectRegion" data-bind="checked: showProjectRegionSwitch"> Show project region button
-                        </label>
+                    <div class="form-group row">
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="showProjectRegion" data-bind="checked: showProjectRegionSwitch">
+                                <label class="form-check-label">
+                                    Show project region button
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="control-group">
-                        <label class="checkbox">
-                            <input type="checkbox" name="showProjectDownloadButton" data-bind="checked: showProjectDownloadButton"> Show project download button (hub admins only)
-                        </label>
+                    <div class="form-group row">
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="showProjectDownloadButton" data-bind="checked: showProjectDownloadButton">
+                                <label class="form-check-label">
+                                    Show project download button (hub admins only)
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             <!-- /ko -->
         </div>
     </div>
-    <div class="accordion-group">
-        <div class="accordion-heading">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                Buttons Home Page Config
-            </a>
-        </div>
-        <div id="collapseTwo" class="accordion-body collapse">
+    <div>
+        <h4>
+            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Buttons Home Page Config <i class="fas fa-chevron-down float-right"></i>
+            </button>
+        </h4>
+        <div id="collapseTwo" class="collapse">
             <!-- ko with: buttonsConfig -->
-                <div class="accordion-inner">
-                    <div class="control-group">
-                        <label class="control-label">Number of columns</label>
-                        <div class="controls">
-                            <select data-bind="value: numberOfColumns">
+                <div class="pl-4">
+                    <div class="form-group row">
+                        <label class="col-md-4 col-form-label">Number of columns</label>
+                        <div class="col-md-8">
+                            <select class="form-control" data-bind="value: numberOfColumns">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -1155,7 +1145,7 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <button type="button" class="btn" data-bind="click: addButton"><i class="icon-plus"></i> Add button</button>
+                                <button type="button" class="btn btn-dark" data-bind="click: addButton"><i class="fas fa-plus"></i> Add button</button>
                             </td>
                         </tr>
                         </tbody>
@@ -1186,82 +1176,78 @@
 </script>
 <script id="templatePreviewHomePage" type="text/html">
     <div class="container-fluid">
-        <div class="row-fluid previewHeader" data-bind="style:{'background-color': menuBackgroundColor}">
-            <ul class="breadcrumb pull-right">
-                <li><a href="#" data-bind="style:{color: menuTextColor}">Home</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
-                <li><a href="#" data-bind="style:{color: menuTextColor}">Data</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
-                <li><a href="#" data-bind="style:{color: menuTextColor}">Help</a></li>
-            </ul>
-        </div>
-        <div class="row-fluid previewHeaderBannerSpace" data-bind="style:{'background-color': headerBannerBackgroundColor}">
-
-        </div>
-        <div class="row-fluid">
-            <div class="previewBanner row-fluid margin-bottom-20"  data-bind="style:{'background-color': bannerBackgroundColor}">
-                <div class="offset2 span8 previewBannerImage">
-                    <div class="previewLogo text-center"><p>Logo</p></div>
-                    <div class="previewInset" data-bind="style:{'background-color': insetBackgroundColor}">
-                        <p class="text-center" data-bind="style:{color: insetTextColor}">Inset text</p>
-                    </div>
-                    <h4 class="text-center">Banner Image</h4>
-                </div>
-            </div>
-            <div class="row-fluid previewBody" data-bind="style:{'background-color': bodyBackgroundColor}">
-                <div class="row-fluid margin-bottom-20">
-                    <div class="span4"><h1 data-bind="style:{color: titleTextColor}">Title text</h1></div>
-                    <div class="span4"><h1 data-bind="style:{color: bodyTextColor}">Body text</h1></div>
-                    <div class="span4">
-                        <!-- ko template: {name: 'textPreview', data: {textColor: hrefColor, backgroundColor: 'transparent', text: 'Anchor'}} -->
-                        <!-- /ko -->
-                    </div>
-                </div>
-                <div class="row-fluid">
-                    <div class="offset4 span2">
-                        <!-- ko template: {name: 'buttonPreview', data: {textColor: primaryButtonTextColor, backgroundColor: primaryButtonBackgroundColor}} -->
-                        <!-- /ko -->
-                    </div>
-                    <div class="span2">
-                        <!-- ko template: {name: 'buttonPreview', data: {textColor: defaultButtonTextColor, backgroundColor: defaultButtonBackgroundColor}} -->
-                        <!-- /ko -->
-                    </div>
-                </div>
-                <div class="row-fluid" data-bind="visible: makeDefaultButtonAnOutlineButton() || makePrimaryButtonAnOutlineButton()">
-                    <div class="offset4 span2">
-                        <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: primaryButtonOutlineTextColor, hoverTextColor: primaryButtonOutlineTextHoverColor}} -->
-                        <!-- /ko -->
-                    </div>
-                    <div class="span2">
-                        <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: defaultButtonOutlineTextColor, hoverTextColor: defaultButtonOutlineTextHoverColor}} -->
-                        <!-- /ko -->
-                    </div>
-                </div>
-                <div class="row-fluid margin-bottom-20">
-                    <div class="offset4 span2">
-                        <!-- ko template: {name: 'textPreview', data: {textColor: tagTextColor, backgroundColor: tagBackgroundColor, text: 'Tag'}} -->
-                        <!-- /ko -->
-                    </div>
-                    <div class="span2">
-                        <!-- ko template: {name: 'textPreview', data: {textColor: navTextColor, backgroundColor: navBackgroundColor, text: 'Nav'}} -->
-                        <!-- /ko -->
-                    </div>
-                </div>
-                <div class="row-fluid ">
-                    <div class="span4 drawBorder height100" data-bind="style:{'background-color': facetBackgroundColor}"><h3>Facet Background</h3></div>
-                    <div class="span4 drawBorder height100" data-bind="style:{'background-color': tileBackgroundColor}"><h3>Tile Background</h3></div>
-                    <div class="span4 drawBorder height100" data-bind="style:{'background-color': wellBackgroundColor}">
-                        <h3>Well colour</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row-fluid previewFooter"  data-bind="style:{'background-color': footerBackgroundColor}">
-            <div class="span12">
-                <ul class="breadcrumb pull-left">
-                    <li><a href="#" data-bind="style:{color: footerTextColor}">Contact us</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
-                    <li><a href="#" data-bind="style:{color: footerTextColor}">Disclaimer</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
-                    <li><a href="#" data-bind="style:{color: footerTextColor}">About us</a></li>
+        <div class="row previewHeader" data-bind="style:{'background-color': menuBackgroundColor}">
+            <div class="col-12">
+                <ul class="list-inline float-right">Choose between the following header option
+                    <li class="list-inline-item"><a href="#" data-bind="style:{color: menuTextColor}">Home</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
+                    <li class="list-inline-item"><a href="#" data-bind="style:{color: menuTextColor}">Data</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
+                    <li class="list-inline-item"><a href="#" data-bind="style:{color: menuTextColor}">Help</a></li>
                 </ul>
-                <div class="pull-right">
+            </div>
+        </div>
+        <div class="row previewHeaderBannerSpace" data-bind="style:{'background-color': headerBannerBackgroundColor}">
+            <div class="col-12"></div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="previewBanner row mb-4"  >
+                    <div class="offset-2 col-8 previewBannerImage">
+                        <div class="previewLogo text-center"><p>Logo</p></div>
+                        <div class="previewInset" data-bind="style:{'background-color': insetBackgroundColor}">
+                            <p class="text-center" data-bind="style:{color: insetTextColor}">Inset text</p>
+                        </div>
+                        <h4 class="text-center">Banner Image</h4>
+                    </div>
+                </div>
+                <div class="row previewBody" data-bind="style:{'background-color': bodyBackgroundColor}">
+                    <div class="col-12">
+                        <div class="row mb-4">
+                            <div class="col-4"><h1 data-bind="style:{color: titleTextColor}">Title text</h1></div>
+                            <div class="col-4"><h1 data-bind="style:{color: bodyTextColor}">Body text</h1></div>
+                            <div class="col-4">
+                                <!-- ko template: {name: 'textPreview', data: {textColor: hrefColor, backgroundColor: 'transparent', text: 'Anchor'}} -->
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="offset-4 col-2">
+                                <!-- ko template: {name: 'buttonPreview', data: {textColor: '#fff', backgroundColor: primaryDarkColor}} -->
+                                <!-- /ko -->
+                            </div>
+                            <div class="col-2">
+                                <!-- ko template: {name: 'buttonPreview', data: {textColor: '#fff', backgroundColor: darkColor}} -->
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="offset-4 col-2">
+                                <!-- ko template: {name: 'textPreview', data: {textColor: tagTextColor, backgroundColor: tagBackgroundColor, text: 'Tag'}} -->
+                                <!-- /ko -->
+                            </div>
+                            <div class="col-2">
+                                <!-- ko template: {name: 'textPreview', data: {textColor: navTextColor, backgroundColor: navBackgroundColor, text: 'Nav'}} -->
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-4 border h-100" data-bind="style:{'background-color': facetBackgroundColor}"><h3>Facet Background</h3></div>
+                            <div class="col-4 border h-100" data-bind="style:{'background-color': tileBackgroundColor}"><h3>Tile Background</h3></div>
+                            <div class="col-4 border h-100" data-bind="style:{'background-color': wellBackgroundColor}">
+                                <h3>Well colour</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row previewFooter"  data-bind="style:{'background-color': footerBackgroundColor}">
+            <div class="col-12">
+                <ul class="list-inline float-left">
+                    <li class="list-inline-item"><a href="#" data-bind="style:{color: footerTextColor}">Contact us</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
+                    <li class="list-inline-item"><a href="#" data-bind="style:{color: footerTextColor}">Disclaimer</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
+                    <li class="list-inline-item"><a href="#" data-bind="style:{color: footerTextColor}">About us</a></li>
+                </ul>
+                <div class="float-right">
                     <a class="do-not-mark-external" href="" data-bind="style:{color: socialTextColor}">
                         <span class="fa-stack fa-lg">
                             <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
@@ -1303,22 +1289,22 @@
     <!-- ko foreach: facets -->
     <tr>
         <td>
-            <p style="width: 170px;" data-bind="text: title"></p>
+            <p data-bind="text: title"></p>
 
-            <p class="muted" style="width: 170px;" data-bind="text: name"></p>
+            <p class="muted" data-bind="text: name"></p>
         </td>
         <td>
-            <input type="text" data-bind="value:title" placeholder="Give a custom name for facet.">
+            <input class="form-control" type="text" data-bind="value:title" placeholder="Give a custom name for facet.">
         </td>
         <td>
-            <select style="width: 210px;" data-bind="value: state">
+            <select class="form-control" data-bind="value: state">
                 <option value="Expanded">Show - Expanded</option>
                 <option value="Collapsed">Show - Collapsed</option>
                 <option value="Hidden">Hidden - used for chart data</option>
             </select>
         </td>
         <td>
-            <select style="width: 170px;" data-bind="value: facetTermType">
+            <select class="form-control" data-bind="value: facetTermType">
                 <option value="Default">Default</option>
                 <option value="ActiveOrCompleted">Active or Completed</option>
                 <option value="PresenceOrAbsence">Presence or Absence</option>
@@ -1328,24 +1314,24 @@
             </select>
         </td>
         <td>
-            <input style="width: 120px;" type="number" data-bind="value:interval, disable: isNotHistogram" step="1" min="0">
+            <input class="form-control" type="number" data-bind="value:interval, disable: isNotHistogram" step="1" min="0">
         </td>
-        <td>
-            <select style="width: 100px;" data-bind="value: chartjsType">
+        <td class="btn-space">
+            <select class="form-control" data-bind="value: chartjsType">
                 <option value="none">None</option>
                 <option value="pie">Pie</option>
                 <option value="bar">Bar</option>
                 <option value="line">Line</option>
             </select>
-            <button class="btn btn-small" style="margin-top:5px;" data-bind="visible: chartjsType() !== 'none', click: editChartjsConfig">Edit Config</button>
+            <button class="btn btn-sm btn-dark" data-bind="visible: chartjsType() !== 'none', click: editChartjsConfig"><i class="fas fa-pencil-alt"></i> Edit Config</button>
         </td>
         <td>
-            <textarea style="width: 170px;" rows="2" data-bind="value:helpText"
+            <textarea class="form-control" rows="2" data-bind="value:helpText"
                       placeholder="Add custom help text"></textarea>
         </td>
         <td>
-            <button class="btn btn-small btn-danger" style="width:85px;" data-bind="click: $parent.remove">
-                <i class="icon-remove icon-white"></i> Remove
+            <button class="btn btn-sm btn-danger" style="width:85px;" data-bind="click: $parent.remove">
+                <i class="far fa-trash-alt"></i> Remove
             </button>
         </td>
     </tr>
@@ -1361,10 +1347,16 @@
     <tfoot>
     <tr>
         <td colspan="8">
-            Pick a facet
-            <select style="width: 400px;" data-bind="options: transients.facetList,
-            optionsText:'formattedName', value: transients.selectedFacet"></select>
-            <button class="btn btn-small btn-default" data-bind="click: add"><i class="icon-plus"></i> Add</button>
+            <div class="form-group row">
+                <div class="col-label-form col-sm-2">
+                    Pick a facet
+                </div>
+                <div class="col-sm-10 btn-space">
+                    <select class="form-control" data-bind="options: transients.facetList,
+                        optionsText:'formattedName', value: transients.selectedFacet"></select>
+                    <button class="btn btn-sm btn-dark" data-bind="click: add"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
         </td>
         <td>
 
@@ -1391,19 +1383,24 @@
 
         </td>
         <td>
-            <input type="text"  data-bind="value:displayName" placeholder="Give a custom name for column." />
+            <input class="form-control" type="text"  data-bind="value:displayName" placeholder="Give a custom name for column." />
         </td>
         <td>
-            <input type="radio" name="sort" data-bind="value: code, checked: $parent.transients.sortColumn, disable: !isSortable()" />
+            <div class="custom-control custom-radio">
+
+            </div>
+            <div class="form-group form-check form-control-lg">
+                <input class="form-check-input" type="radio" name="sort" data-bind="value: code, checked: $parent.transients.sortColumn, disable: !isSortable()" />
+            </div>
         </td>
         <td>
-            <select data-bind="value: order, disable: !isSortable()">
+            <select class="form-control" data-bind="value: order, disable: !isSortable()">
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
             </select>
         </td>
         <td>
-            <button class="btn btn-small btn-danger" data-bind="click: $parent.removeDataColumn"><i class="icon-remove icon-white"></i> Remove</button>
+            <button class="btn btn-sm btn-danger" data-bind="click: $parent.removeDataColumn"><i class="far fa-trash-alt"></i> Remove</button>
         </td>
 
     </tr>
@@ -1419,8 +1416,13 @@
     <tfoot>
     <tr>
         <td colspan="5">
-            Pick a column <select data-bind="options: transients.defaultDataColumns, optionsText: 'name', value: transients.selectedDataColumn"></select>
-            <button class="btn btn-small btn-default" data-bind="click: addDataColumn"><i class="icon-plus"></i> Add</button>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Pick a column</label>
+                <div class="col-sm-10 btn-space">
+                    <select class="form-control" data-bind="options: transients.defaultDataColumns, optionsText: 'name', value: transients.selectedDataColumn"></select>
+                    <button class="btn btn-sm btn-dark" data-bind="click: addDataColumn"><i class="fas fa-plus"></i> Add</button>
+                </div>
+            </div>
         </td>
     </tr>
     </tfoot>
@@ -1453,8 +1455,8 @@
 </script>
 <script id="collapseExpandComponent" type="text/html">
 <div class="inline">
-    <i class="icon-plus" data-bind="visible: !flag(), click: function(){flag(true)}"></i>
-    <i class="icon-minus" data-bind="visible: flag, click: function(){flag(false)}"></i>
+    <i class="fas fa-chevron-down" data-bind="visible: !flag(), click: function(){flag(true)}"></i>
+    <i class="fas fa-chevron-up" data-bind="visible: flag, click: function(){flag(false)}"></i>
 </div>
 </script>
 <asset:script type="text/javascript">

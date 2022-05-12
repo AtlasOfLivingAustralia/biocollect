@@ -1,85 +1,87 @@
-<div class="tab-pane" id="admin">
+<div>
     <!-- ADMIN -->
-    <div class="row-fluid">
-        <div class="span2 large-space-before">
-            <ul id="ul-cs-internal-project-admin" class="nav nav-tabs nav-stacked ">
-                <li><a href="#project-settings" id="project-settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.information"/></a></li>
-                <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.blog"/></a></li>
-                <li><a href="#edit-documents" id="edit-documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.resources"/></a></li>
+    <div class="row mt-4">
+        <div class="col-12 col-lg-2">
+            <ul id="ul-cs-internal-project-admin" class="nav flex-row flex-lg-column nav-pills nav-fill">
+                <li class="nav-item text-left"><a class="nav-link active" href="#project-settings" id="project-settings-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.information"/></a></li>
+                <li class="nav-item text-left"><a class="nav-link" href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.blog"/></a></li>
+                <li class="nav-item text-left"><a class="nav-link" href="#edit-documents" id="edit-documents-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.resources"/></a></li>
 
                 <g:if test="${!project.isExternal}">
-                    <li><a href="#project-activity" id="project-activity-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.settings"/></a></li>
+                    <li class="nav-item text-left"><a class="nav-link" href="#project-activity" id="project-activity-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.settings"/></a></li>
                     <g:if test="${hasLegacyNewsAndEvents}">
-                        <li><a href="#edit-news-and-events" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.news"/></a></li>
+                        <li class="nav-item text-left"><a class="nav-link" href="#edit-news-and-events" id="editnewsandevents-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.news"/></a></li>
                     </g:if>
                     <g:if test="${hasLegacyProjectStories}">
-                        <li><a href="#edit-project-stories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.stories"/></a></li>
+                        <li class="nav-item text-left"><a class="nav-link" href="#edit-project-stories" id="editprojectstories-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.stories"/></a></li>
                     </g:if>
                 </g:if>
 
-                <li><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.members"/></a></li>
+                <li class="nav-item text-left"><a class="nav-link" href="#permissions" id="permissions-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.members"/></a></li>
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
                     <g:if test="${grailsApplication.config.notification.enabled?.toBoolean()}">
-                    <li><a href="#project-notification" id="project-notification-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="notification.tabTitle"/></a></li>
+                    <li class="nav-item text-left"><a class="nav-link" href="#project-notification" id="project-notification-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="notification.tabTitle"/></a></li>
                     </g:if>
-                    <li><a href="#project-audit" id="project-audit-tab" data-toggle="tab"><i class="icon-chevron-right"></i> <g:message code="project.admin.audit"/></a></li>
+                    <li class="nav-item text-left"><a class="nav-link" href="#project-audit" id="project-audit-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.audit"/></a></li>
                 </g:if>
             </ul>
         </div>
-        <div class="span10">
-            <div class="pill-content">
+        <div class="col-12 col-lg-10">
+            <div class="tab-content">
 
                 <!-- PROJECT info -->
-                <div id="project-settings" class="pill-pane">
+                <div id="project-settings" class="tab-pane active" role="tabpanel">
                     <g:render template="editOrDeleteProject"/>
                 </div>
-                <div id="editProjectBlog" class="pill-pane">
-                    <h3><g:message code="project.admin.editblog"/></h3>
+                <div id="editProjectBlog" class="tab-pane" role="tabpanel">
+                    <h4 class="mt-3 mt-lg-0"><g:message code="project.admin.editblog"/></h4>
                     <g:render template="/blog/blogSummary" model="${[blog:project.blog?:[]]}"/>
                 </div>
 
                 <!-- DOCUMENTS -->
-                <div id="edit-documents" class="pill-pane">
-                    <h3><g:message code="project.admin.projectresources"/></h3>
-                    <div class="row-fluid">
-                        <div class="span10">
+                <div id="edit-documents" class="tab-pane" role="tabpanel">
+                    <h4 class="mt-3 mt-lg-0"><g:message code="project.admin.projectresources"/></h4>
+                    <div class="row">
+                        <div class="col-12">
                             <g:render template="/shared/editDocuments"
                                       model="[useExistingModel: true,editable:true, filterBy: 'all', ignore: '', imageUrl:asset.assetPath(src:'filetypes'),containerId:'adminDocumentList']"/>
                         </div>
                     </div>
 
-                    <div class="row-fluid attachDocumentModal">
-                        <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="icon-white icon-plus"></i> <g:message code="project.admin.attachdoc"/></button>
+                    <div class="row attachDocumentModal">
+                        <div class="col-12">
+                            <button class="btn btn-sm btn-primary-dark" id="doAttach" data-bind="click:attachDocument"><i class="fas fa-plus"></i> <g:message code="project.admin.attachdoc"/></button>
+                        </div>
                     </div>
                 </div>
 
                 <g:if test="${!project.isExternal}">
-                    <div id="edit-news-and-events" class="pill-pane">
+                    <div id="edit-news-and-events" class="tab-pane" role="tabpanel">
                         <g:render template="editProjectContent" model="${[attributeName:'newsAndEvents', header: message(code: 'project.admin.news')]}"/>
                     </div>
 
-                    <div id="edit-project-stories" class="pill-pane">
+                    <div id="edit-project-stories" class="tab-pane" role="tabpanel">
                         <g:render template="editProjectContent" model="${[attributeName:'projectStories', header: message(code:'project.admin.stories')]}"/>
                     </div>
 
-                    <div id="project-activity" class="pill-pane">
+                    <div id="project-activity" class="tab-pane" role="tabpanel">
                         <g:render template="/projectActivity/settings" model="[projectActivities:projectActivities]" />
                     </div>
                 </g:if>
 
-                <div id="permissions" class="pill-pane">
-                    <h3><g:message code="project.admin.members"/></h3>
+                <div id="permissions" class="tab-pane" role="tabpanel">
+                    <h4 class="mt-3 mt-lg-0"><g:message code="project.admin.members"/></h4>
                     <g:render template="/admin/addPermissions" model="[addUserUrl:g.createLink(controller:'user', action:'addUserAsRoleToProject'), entityId:project.projectId]"/>
                     <g:render template="/admin/permissionTablePaginated"/>
                 </div>
 
                 <!--AUDIT-->
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
-                    <div id="project-audit" class="pill-pane">
+                    <div id="project-audit" class="tab-pane" role="tabpanel">
                         <g:render template="/admin/auditProject"/>
                     </div>
                     <g:if test="${grailsApplication.config.notification.enabled?.toBoolean()}">
-                    <div id="project-notification" class="pill-pane">
+                    <div id="project-notification" class="tab-pane" role="tabpanel">
                         <g:render template="/project/notification"/>
                     </div>
                     </g:if>

@@ -1,5 +1,7 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.SettingService
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -7,9 +9,6 @@ import org.apache.http.HttpStatus
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.FileBody
-
-//import org.apache.http.entity.mime.content.ByteArrayBody
-//import org.apache.http.entity.mime.content.InputStreamBody
 import org.apache.http.entity.mime.content.StringBody
 import org.springframework.context.MessageSource
 
@@ -133,5 +132,36 @@ class UtilService {
         }
 
         value
+    }
+
+    String getMainImageURL(List documents) {
+        Map doc = documents?.find {
+            it.role == 'mainImage' && it.status != 'deleted'
+        }
+
+        doc?.url ?: doc?.externalUrl
+    }
+
+    String getLogoURL(List documents) {
+        Map document = documents?.find {
+            it.role == 'logo' && it.status != 'deleted'
+        }
+
+        document?.thumbnailUrl ?: document?.url
+    }
+
+    Map getHeaderLinkForContentTypeOrURI(String contentType, String uri){
+        HubSettings hubSettings = SettingService.getHubConfig()
+        List links = hubSettings.templateConfiguration?.header?.links
+        Map result
+        if (links) {
+            result = links?.find {it.contentType == contentType}
+
+            if (!result) {
+                result = links?.findAll {it.contentType == 'content'}?.find { it.href?.contains(uri) }
+            }
+        }
+
+        result
     }
 }

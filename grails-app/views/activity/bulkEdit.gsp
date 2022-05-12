@@ -2,15 +2,16 @@
 <g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Create | Activity | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${activity.projectId},Project"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -24,10 +25,11 @@
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         returnTo: "${params.returnTo}"
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <style type="text/css">
     input.editor-text {
@@ -68,7 +70,7 @@
     }
 
     </style>
-    <g:set var="thisPage" value="${g.createLink(absolute: true, action: 'report', params: params)}"/>
+    <g:set var="thisPage" value="${raw(g.createLink(absolute: true, action: 'report', params: params))}"/>
     <g:set var="loginUrl"
            value="${grailsApplication.config.security.cas.loginUrl ?: 'https://auth.ala.org.au/cas/login'}?service=${thisPage.encodeAsURL()}"/>
 </head>
@@ -76,7 +78,7 @@
 <body>
 
 <div class="container-fluid">
-    <div class="row-fluid">
+    <div class="row">
         <h2>${title}</h2>
     </div>
 
@@ -88,37 +90,37 @@
     <g:render template="/shared/restoredData" model="[id: 'restoredData', cancelButton: 'Cancel']"/>
 
 
-    <div class="row-fluid">
-        <span class="span12">
+    <div class="row">
+        <span class="col-sm-12">
             <div id="myGrid" class="validationEngineContainer" style="width:100%;"></div>
         </span>
     </div>
 
 
-    <div class="row-fluid">
+    <div class="row">
 
         <div class="form-actions">
-            <span class="span3">
+            <span class="col-sm-3">
                 <button type="button" id="bulkUploadTrigger" class="btn btn-small"><i
                         class="icon-upload"></i> Upload data for this table</button>
 
                 <div id="bulkUpload" style="display:none;">
                     <div class="text-left" style="margin:5px">
                         <a target="_blank" id="downloadTemplate"
-                           class="btn btn-small">Step 1 - Download template (.xlsx)</a>
+                           class="btn btn-dark btn-sm">Step 1 - Download template (.xlsx)</a>
                     </div>
 
                     <div class="text-left" style="margin:5px">
-                        <span class="btn btn-small fileinput-button">
+                        <span class="btn btn-dark btn-sm fileinput-button">
                             Step 2 - Upload populated template <input id="fileupload" type="file" name="templateFile">
                         </span>
                     </div>
                 </div>
             </span>
-            <span class="span9" style="text-align:right">
-                <button type="button" id="save" class="btn btn-primary"
+            <span class="col-sm-9" style="text-align:right">
+                <button type="button" id="save" class="btn btn-primary-dark"
                         title="Save edits and return to the previous page">Save</button>
-                <buttom type="button" id="cancel" class="btn btn"
+                <buttom type="button" id="cancel" class="btn btn-dark"
                         title="Cancel edits and return to previous page">Cancel</buttom>
             </span>
         </div>
@@ -406,7 +408,7 @@
         });
 
         var $finishAll = $('<input type="checkbox" class="progress-checkbox" name="finishAll">');
-        $finishAll.change(function(event) {
+        $finishAll.on('change',function(event) {
             Slick.GlobalEditorLock.commitCurrentEdit();
             var changedRows = [];
             var finish = $(event.target).is(':checked');
@@ -458,7 +460,7 @@
 
         $('.slick-cell.r'+highlightColumn)[0].click();
 
-        $('#save').click(function() {
+        $('#save').on('click',function() {
 
             Slick.GlobalEditorLock.commitCurrentEdit();
             var valid = true;
@@ -508,7 +510,7 @@
             });
         });
 
-        $('#cancel').click(function() {
+        $('#cancel').on('click',function() {
             disableNavigationHook = true; // Disable the before unload event handler.
             $.each(activityModels, function(i, model) {
                 amplify.store('activity-'+model.activityId, null);
@@ -520,7 +522,7 @@
         $('.validationEngineContainer').validationEngine({scroll:false});
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#downloadTemplate').click(function() {
+        $('#downloadTemplate').on('click',function() {
             var ids = []
             $.each(activities, function(i, activity) {
                 ids.push(activity.activityId);
@@ -563,17 +565,17 @@
                     showAlert("Successfully populated the table with xlsx template data.","alert-success","load-xlsx-result-placeholder");
                 }
                 else if(data.result.status == 400) {
-                    showAlert("Error: " + data.result.status.error, "alert-error","load-xlsx-result-placeholder");
+                    showAlert("Error: " + data.result.status.error, "alert-danger","load-xlsx-result-placeholder");
                 }
             },
             fail: function (e, data) {
                 var message = 'Please contact MERIT support and attach your spreadsheet to help us resolve the problem';
-                showAlert(message, "alert-error","load-xlsx-result-placeholder");
+                showAlert(message, "alert-danger","load-xlsx-result-placeholder");
             },
             formData: {type:"${type}"}
         });
 
-        $("#bulkUploadTrigger").click(function(){
+        $("#bulkUploadTrigger").on('click',function(){
              $("#bulkUpload").toggle();
         });
     });

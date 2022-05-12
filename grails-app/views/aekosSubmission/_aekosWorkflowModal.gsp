@@ -146,7 +146,7 @@
 
 <asset:script type="text/javascript">
 
-    $(window).load(function () {
+    $(window).on('load', function () {
         $("div.modal.hide.fade.aekosModal").validationEngine();
     });
 

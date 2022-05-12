@@ -3,15 +3,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:if test="${printView}">
-        <meta name="layout" content="nrmPrint"/>
-        <title>Print | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:if>
-    <g:else>
-        <meta name="layout" content="${hubConfig.skin}"/>
-        <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
-    </g:else>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="layout" content="bs4"/>
+    <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="${activity.type}"/>
@@ -21,6 +15,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -38,22 +33,23 @@
         deleteCommentUrl:"${commentUrl}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         surveyName: "${metaModel.name}",
-        speciesConfig: ${fc.modelAsJavascript(model: speciesConfig)},
-        speciesSearch: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
-        speciesSearchUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
-        speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
+        speciesConfig: ${raw(fc.modelAsJavascript(model: speciesConfig))},
+        speciesSearch: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
+        speciesSearchUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
+        speciesProfileUrl: "${raw(createLink(controller: 'proxy', action: 'speciesProfile'))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
-        searchBieUrl: "${createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10])}",
+        searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
-        project:${fc.modelAsJavascript(model: project)},
+        project:${raw(fc.modelAsJavascript(model: project))},
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
-        sites: ${fc.modelAsJavascript(model: project?.sites)}
+        sites: ${raw(fc.modelAsJavascript(model: project?.sites))}
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common.js"/>
+    <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -64,7 +60,7 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
         <g:if test="${editInMerit}">
-            <div class="alert alert-error">
+            <div class="alert alert-danger">
                 <strong>Note:</strong> This activity can only be edited in the <a
                     href="${g.createLink(action: 'edit', id: activity.activityId, base: grailsApplication.config.merit.url)}"
                     target="_merit">MERIT system</a>
@@ -72,8 +68,8 @@
         </g:if>
 
 
-        <div class="row-fluid title-block well well-small input-block-level">
-            <div class="span12 title-attribute">
+        <div class="row title-block card input-block-level">
+            <div class="col-sm-12 title-attribute">
                 <h1><span data-bind="click:goToProject"
                           class="clickable">${project?.name?.encodeAsHTML() ?: 'no project defined!!'}</span></h1>
 
@@ -83,31 +79,31 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="${mapFeatures.toString() != '{}' ? 'span9' : 'span12'}" style="font-size: 1.2em">
+        <div class="row mt-3 ml-3">
+            <div class="${mapFeatures.toString() != '{}' ? 'col-sm-9' : 'col-sm-12'}" style="font-size: 1.2em">
                 <!-- Common activity fields -->
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Description:</span> <span
+                <div class="row">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Description:</span> <span
                             data-bind="text:description"></span></span>
-                    <span class="span6"><span class="label">Type:</span> <span data-bind="text:type"></span></span>
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Type:</span> <span data-bind="text:type"></span></span>
                 </div>
 
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Starts:</span> <span
+                <div class="row mt-3">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Starts:</span> <span
                             data-bind="text:startDate.formattedDate"></span></span>
-                    <span class="span6"><span class="label">Ends:</span> <span
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Ends:</span> <span
                             data-bind="text:endDate.formattedDate"></span></span>
                 </div>
 
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Project stage:</span> <span
+                <div class="row mt-3">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Project stage:</span> <span
                             data-bind="text:projectStage"></span></span>
-                    <span class="span6"><span class="label">Major theme:</span> <span data-bind="text:mainTheme"></span>
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Major theme:</span> <span data-bind="text:mainTheme"></span>
                     </span>
                 </div>
 
-                <div class="row-fluid">
-                    <span class="span6"><span class="label">Activity status:</span> <span
+                <div class="row mt-3">
+                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Activity status:</span> <span
                             data-bind="text:progress"></span></span>
                 </div>
             </div>
@@ -142,31 +138,34 @@
             </div>
         </g:if>
     </div>
+    <div class="row ml-3 mr-3">
+        <div class="col-sm-12">
+        <!-- ko stopBinding: true -->
+        <g:each in="${metaModel?.outputs}" var="outputName">
 
-    <!-- ko stopBinding: true -->
-    <g:each in="${metaModel?.outputs}" var="outputName">
+            <g:if test="${outputName != 'Photo Points'}">
+                <g:render template="/output/outputJSModel" plugin="ecodata-client-plugin"
+                          model="${[viewModelInstance: activity.activityId + fc.toSingleWord([name: outputName]) + 'ViewModel',
+                                    edit             : false, model: outputModels[outputName],
+                                    outputName       : outputName]}"></g:render>
+                <g:render template="/output/readOnlyOutput"
+                          model="${[activity     : activity,
+                                    outputModel  : outputModels[outputName],
+                                    outputName   : outputName,
+                                    activityModel: metaModel,
+                                    disablePrepop: activity.progress != au.org.ala.biocollect.merit.ActivityService.PROGRESS_PLANNED]}"
+                          plugin="ecodata-client-plugin"></g:render>
 
-        <g:if test="${outputName != 'Photo Points'}">
-            <g:render template="/output/outputJSModel" plugin="ecodata-client-plugin"
-                      model="${[viewModelInstance: activity.activityId + fc.toSingleWord([name: outputName]) + 'ViewModel',
-                                edit             : false, model: outputModels[outputName],
-                                outputName       : outputName]}"></g:render>
-            <g:render template="/output/readOnlyOutput"
-                      model="${[activity     : activity,
-                                outputModel  : outputModels[outputName],
-                                outputName   : outputName,
-                                activityModel: metaModel,
-                                disablePrepop: activity.progress != au.org.ala.biocollect.merit.ActivityService.PROGRESS_PLANNED]}"
-                      plugin="ecodata-client-plugin"></g:render>
-
+            </g:if>
+        </g:each>
+        <!-- /ko -->
+        <g:if test="${pActivity?.commentsAllowed}">
+            <g:render template="/comment/comment"></g:render>
         </g:if>
-    </g:each>
-    <!-- /ko -->
-    <g:if test="${projectActivity?.commentsAllowed}">
-        <g:render template="/comment/comment"></g:render>
-    </g:if>
-    <div class="form-actions">
-        <button type="button" id="cancel" class="btn">return</button>
+        <div class="form-actions">
+            <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-arrow-alt-circle-left"></i> return</button>
+        </div>
+    </div>
     </div>
 </div>
 
@@ -192,7 +191,7 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             document.location.href = returnTo;
         });
 
