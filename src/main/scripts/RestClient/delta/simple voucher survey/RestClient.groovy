@@ -41,8 +41,9 @@ def SITE_TEMPLATE_FILE = "site_template.json"
 def SITE_CREATION_URL = '/site/ajaxUpdate'
 def SITE_LIST = '/site/ajaxList'
 def IMAGE_UPLOAD_URL = "${SERVER_URL}/ws/attachment/upload"
-def IMAGES_PATH = "photos/"
-
+def IMAGES_PATH = "https://confluence.csiro.au/download/attachments/1653245364/"
+def CONFLUENCE_USERNAME = ""
+def CONFLUENCE_PASSWORD = ""
 
 def header = []
 def values = []
@@ -304,11 +305,14 @@ Paths.get(xlsx).withInputStream { input ->
                             File newFile
                             def mimeType = "image/jpeg"
                             fileName = fileName.trim()
-                            newFile = new File(IMAGES_PATH + fileName + ".JPG")
 
-                            if (!newFile.exists()) {
-                                newFile = new File(IMAGES_PATH + fileName + ".jpg")
+                            new File("/tmp/" + fileName + ".JPG").withOutputStream { out ->
+                                def url = new URL(IMAGES_PATH + fileName + ".JPG").openConnection()
+                                def authHeaderValue = 'Basic ' + Base64.encoder.encodeToString("${CONFLUENCE_USERNAME}:${CONFLUENCE_PASSWORD}".bytes)
+                                url.setRequestProperty('Authorization', authHeaderValue)
+                                out << url.inputStream
                             }
+                            newFile = new File("/tmp/" + fileName + ".JPG")
 
                             if (newFile.exists()) {
                                 fileUploadSuccessful = true;
@@ -341,6 +345,7 @@ Paths.get(xlsx).withInputStream { input ->
                             } else {
                                 println("File not found - ${fileName}")
                             }
+                            newFile.delete()
 
                         } catch (Exception e) {
                             println("Error downloading image " + e)

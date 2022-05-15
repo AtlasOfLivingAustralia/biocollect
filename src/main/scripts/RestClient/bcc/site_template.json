@@ -1,0 +1,32 @@
+{
+  "pActivityId": "",
+  "site": {
+    "area": 0,
+    "catchment": "",
+    "description": "",
+    "externalId": "",
+    "notes": "",
+    "poi": [],
+    "siteId": "",
+    "name": "",
+    "projects": [],
+    "extent": {
+      "geometry": {
+        "centre": [
+          136.58507823944092,
+          -28.310023107055127
+        ],
+        "type": "Point",
+        "areaKmSq": 0,
+        "coordinates": [
+          136.58507823944092,
+          -28.310023107055127
+        ]
+      },
+      "source": "Point"
+    },
+    "type": "surveyArea",
+    "asyncUpdate": true,
+    "visibility": "private"
+  }
+}
