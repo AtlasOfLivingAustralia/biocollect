@@ -21,17 +21,14 @@ class DocumentController {
     SettingService settingService
     GrailsApplication grailsApplication
 
-    def list() {
-    }
-
     /**
      * This function does an elastic search for documents. All elastic search parameters are supported like fq, max etc.
      * @return
      */
-    def allDocumentsSearch(Integer offset, Integer max, String searchTerm, String searchType, String sort, String order, String projectId) {
+    def allDocumentsSearch(Integer offset, Integer max, String searchTerm, String searchType, String searchInRole, String sort, String order, String projectId) {
         String hub = settingService.getHubConfig().urlPath;
 
-        render documentService.allDocumentsSearch(offset, max, searchTerm, searchType, sort, order, projectId, hub) as JSON
+        render documentService.allDocumentsSearch(offset, max, searchTerm, searchType, searchInRole, sort, order, projectId, hub) as JSON
     }
 
     /** Downloads a the file attached to a document stored in the ecodata database */
@@ -106,9 +103,5 @@ class DocumentController {
         result[0] = path
         result[1] = filename
         result
-    }
-
-    def speciesList() {
-        render webService.get("${grailsApplication.config.lists.baseURL}/ws/speciesList?druid=${params.druid}", false)
     }
 }

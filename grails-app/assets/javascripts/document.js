@@ -460,6 +460,9 @@ function AllDocListViewModel(projectId) {
     self.documentFilterField.subscribe(function(type) {
         self.refreshPage(0);
     });
+    self.roleFilterField.subscribe(function(type) {
+        self.refreshPage(0);
+    });
     self.searchDoc = ko.observable('');
     self.sortBy = ko.observable('dateCreated');
     self.sortBy.subscribe(function(by) {
@@ -473,9 +476,9 @@ function AllDocListViewModel(projectId) {
             params.searchTerm = self.searchDoc();
         }
 
-        if (self.documentFilterField()) {
-            if (self.documentFilterField().fun == 'role')
-                params.searchTerm = self.mapDocumentForSearch(self.searchDoc());
+        if (self.roleFilterField()) {
+            if (self.roleFilterField().id != 'none')
+                params.searchInRole = self.roleFilterField()
         }
 
         if (self.sortBy()) {
