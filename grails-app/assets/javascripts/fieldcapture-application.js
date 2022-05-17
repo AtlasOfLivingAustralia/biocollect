@@ -968,7 +968,7 @@ function Documents() {
 
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
-        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
+        'roleFilterFieldOptions', 'roleFilterField', 'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
         'mainImageAttributionText', 'logoAttributionText'];
 
 }
