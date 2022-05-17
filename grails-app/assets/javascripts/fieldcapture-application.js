@@ -521,8 +521,38 @@ function Documents() {
     var self = this;
     self.documents = ko.observableArray();
     self.documentFilter = ko.observable('');
-    self.documentFilterFieldOptions = [{ label: 'No Filters', fun: 'none'}, { label: 'Name', fun: 'name'}, { label: 'Attribution', fun: 'attribution' }, { label: 'Type', fun: 'role' }, { label: 'Citation', fun: 'citation' }, { label: 'Keywords', fun: 'labels' }, { label: 'Description', fun: 'description' }];
+    self.documentFilterFieldOptions = [{ label: 'No Filters', fun: 'none'}, { label: 'Name', fun: 'name'}, { label: 'Attribution', fun: 'attribution' }, { label: 'Citation', fun: 'citation' }, { label: 'Keywords', fun: 'labels' }, { label: 'Description', fun: 'description' }];
     self.documentFilterField = ko.observable(self.documentFilterFieldOptions[0]);
+
+    self.roleFilterFieldOptions = [
+        {id:'none', name: 'No Filters'},
+        {id:'blogArticles', name: 'Blog Articles'},
+        {id:'bookChapters', name: 'Book Chapters'},
+        {id:'brochures', name: 'Brochures'},
+        {id:'caseStudies', name: 'Case Studies'},
+        {id:'datasets', name: 'Datasets'},
+        {id:'documents', name: 'Documents'},
+        {id:'embeddedVideo', name:'Embedded Video'},
+        {id:'exceedanceReport', name:'Exceedance Report'},
+        {id:'factsheets', name: 'Fact sheets'},
+        {id:'information', name: 'Information'},
+        {id:'journalArticles', name: 'Journal Articles'},
+        {id:'magazines', name: 'Magazines'},
+        {id:'maps', name: 'Maps'},
+        {id:'models', name: 'Models'},
+        {id:'other', name:'Other Project document'},
+        {id:'photo', name:'Photo'},
+        {id:'postersBanners', name: 'Posters and banners'},
+        {id:'presentations', name: 'Presentations'},
+        {id:'projectPlan', name:'Project Plan / Work plan'},
+        {id:'projectVariation', name:'Project Variation'},
+        {id:'projectHighlightReport', name:'Project Highlight Report'},
+        {id:'reports', name: 'Reports'},
+        {id:'thesis', name: 'Thesis'},
+        {id:'toolsGuides', name: 'Tools and guides'},
+        {id:'webPages', name: 'Web pages'},
+        {id:'webinars', name: 'Webinars'}];
+    self.roleFilterField = ko.observable(self.roleFilterFieldOptions[0]);
 
     self.selectedDocument = ko.observable();
 

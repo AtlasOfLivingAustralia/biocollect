@@ -91,13 +91,27 @@ class DocumentService {
         return resp
     }
 
-    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String sort = null, String order = null, String projectId = null, String hub = null) {
+    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String searchInRole = null, String sort = "dateCreated", String order = "desc", String projectId = null, String hub = null) {
         String searchTextBy = "";
 
         Map params = [:]
 
         if (searchType == 'none' && searchTerm)
-            searchTextBy += "(name:" + searchTerm + " OR role:" + searchTerm + " OR labels:" + searchTerm + " OR attribution:" + searchTerm + " OR citation:" + searchTerm + " OR description:" + searchTerm + ")";
+            searchTextBy += "(name:" + searchTerm + " OR labels:" + searchTerm + " OR attribution:" + searchTerm + " OR citation:" + searchTerm + " OR description:" + searchTerm + ")";
+
+        if (searchType && searchTerm) {
+            if (searchType != 'none')
+                searchTextBy += " AND " + searchType + ":" + searchTerm;
+        }
+
+        if (searchInRole) {
+            if (searchInRole != 'none') {
+                if (!searchTextBy.isEmpty())
+                    searchTextBy += " AND role:" + searchInRole;
+                else
+                    searchTextBy += "role:" + searchInRole;
+            }
+        }
 
         //projectId is passed in the case of viewing project documents
         if (projectId) {
@@ -105,11 +119,6 @@ class DocumentService {
                 searchTextBy += " AND projectId:" + projectId;
             else
                 searchTextBy += "projectId:" + projectId;
-
-            if (searchType && searchTerm) {
-                if (searchType != 'none')
-                    searchTextBy += " AND " + searchType + ":" + searchTerm;
-            }
 
             params = [
                     offset: offset,
@@ -119,14 +128,15 @@ class DocumentService {
             ]
 
             Boolean isALAAdmin = userService.userIsAlaAdmin()
-            def members = projectService.getMembersForProjectId(projectId)
 
             String userId = userService.getCurrentUserId()
 
-            boolean isViewable = false
+            boolean isViewable = isALAAdmin
 
-            if (userId)
-                isViewable = members.find{it.userId == userId} || isALAAdmin
+            if (userId && !isALAAdmin) {
+                def members = projectService.getMembersForProjectId(projectId)
+                isViewable = members.find { it.userId == userId }
+            }
 
             if (params.fq)
                 params.fq = [params.fq]
@@ -134,19 +144,10 @@ class DocumentService {
                 params.fq = []
 
             // at project level admins and project members can view both public and private documents
-            if (isViewable) {
-                params.fq.push("publiclyViewable:true")
-                params.fq.push("publiclyViewable:false")
-            }
-            else
+            if (!isViewable)
                 params.fq.push("publiclyViewable:true")
 
         } else { //when viewing hub documents
-            if (searchType && searchTerm) {
-                if (searchType != 'none')
-                    searchTextBy += searchType + ":" + searchTerm;
-            }
-
             params = [
                     offset: offset,
                     max   : max,

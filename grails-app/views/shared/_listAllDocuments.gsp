@@ -18,6 +18,14 @@
                 </select>
             </div>
 
+            <div class="input-group-append">
+                <label for="searchInRole" class="input-group-text">Search in</label>
+            </div>
+
+            <div class="input-group-append">
+                <select id="searchInRole" class="custom-select" data-bind="options:roleFilterFieldOptions, optionsText: 'name', optionsValue: 'id', value:roleFilterField"></select>
+            </div>
+
             <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)">
                 <i class="fas fa-search"></i>
             </button>
