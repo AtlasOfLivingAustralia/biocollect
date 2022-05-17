@@ -177,6 +177,10 @@ class DocumentService {
             params.type = searchType
         }
 
+        if (searchInRole) {
+            params.searchInRole = searchInRole
+        }
+
         Map results = searchService.fulltextSearch(
                 params, true
         )
