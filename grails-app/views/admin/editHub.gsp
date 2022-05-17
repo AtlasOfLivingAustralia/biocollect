@@ -20,7 +20,7 @@
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
             allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
             allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}",
             </g:applyCodec>
         };
     </asset:script>
@@ -730,6 +730,7 @@
                 <option value="admin">Admin</option>
                 <option value="allrecords">All Records</option>
                 <option value="home">Home</option>
+                <option value="charts">Charts</option>
                 <option value="login">Login / Logout</option>
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>

@@ -1,7 +1,9 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.DocumentService
+import au.org.ala.biocollect.merit.SettingPageType
 import au.org.ala.biocollect.merit.WebService
+import grails.converters.JSON
 import grails.core.GrailsApplication
 import org.apache.http.HttpStatus
 import org.springframework.web.util.UriComponents
@@ -90,5 +92,26 @@ class DocumentController {
         result[0] = path
         result[1] = filename
         result
+    }
+
+    def dashboardConfig(){
+        renderStaticPage(SettingPageType.DASHBOARD_CONFIG, false)
+    }
+
+    /**
+     * This function populates data for NESP charts.
+     * @return
+     */
+    def populateChartData() {
+        String jsonStr = settingService.getSettingText(SettingPageType.DASHBOARD_CONFIG) as String
+        String jsonStr1 = settingService.getSettingText(SettingPageType.DASHBOARD_CONFIG_1) as String
+        String jsonStr2 = settingService.getSettingText(SettingPageType.DASHBOARD_CONFIG_2) as String
+
+        //String jsonStr = getClass().getResource("/data/test.json").text
+
+        def jsonSlurper = new groovy.json.JsonSlurper()
+        def model = jsonSlurper.parseText(jsonStr)
+
+        render model as JSON
     }
 }
