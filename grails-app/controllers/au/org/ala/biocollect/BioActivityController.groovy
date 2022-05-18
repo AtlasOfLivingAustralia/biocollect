@@ -184,7 +184,7 @@ class BioActivityController {
         model = activityModel(activity, projectId)
         model.pActivity = pActivity
         model.projectName = project.name
-        
+
         addOutputModel(model)
         model.preview = true;
 
@@ -422,6 +422,7 @@ class BioActivityController {
         render(view: 'list',
                 model: [
                         view: 'myrecords',
+                        contentURI: '/bioActivity/list',
                         user: userService.user,
                         title: messageSource.getMessage('myrecords.title', [].toArray(), '', Locale.default),
                         returnTo: g.createLink(controller: 'bioActivity', action: 'list')
@@ -438,6 +439,7 @@ class BioActivityController {
         render(view: 'list',
                 model: [
                         view: 'allrecords',
+                        contentURI: '/bioActivity/allRecords',
                         title: messageSource.getMessage('allrecords.title', [].toArray(), '', Locale.default),
                         returnTo: g.createLink(controller: 'bioActivity', action: 'allRecords')
                 ]
@@ -458,6 +460,7 @@ class BioActivityController {
         render(view: 'list',
                 model: [
                         view: view,
+                        contentURI: '/bioActivity/projectRecords',
                         projectId: id,
                         project: project,
                         title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
@@ -485,6 +488,7 @@ class BioActivityController {
             render(view: 'list',
                     model: [
                             view: view,
+                            contentURI: '/bioActivity/myProjectRecords',
                             user:  userService.user,
                             projectId: id,
                             project: project,
@@ -521,6 +525,7 @@ class BioActivityController {
                 render(view: 'list',
                         model: [
                                 view: view,
+                                contentURI: '/bioActivity/listRecordsForUser',
                                 spotterId:  params.spotterId,
                                 projectActivityId: params.projectActivityId,
                                 pActivity: projectActivity,
@@ -727,7 +732,7 @@ class BioActivityController {
                 queryParams.put(key, value)
             }
         }
-    
+
         queryParams.max = queryParams.max ?: 10
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20

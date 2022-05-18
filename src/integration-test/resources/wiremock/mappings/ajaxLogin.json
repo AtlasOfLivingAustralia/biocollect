@@ -1,0 +1,9 @@
+{
+  "request": {
+    "urlPath": "/cas/login",
+    "method": "OPTIONS"
+  },
+  "response": {
+    "status": 200
+  }
+}

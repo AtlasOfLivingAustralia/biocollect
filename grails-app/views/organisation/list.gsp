@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>Organisations | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="Organisations"/>
 
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>

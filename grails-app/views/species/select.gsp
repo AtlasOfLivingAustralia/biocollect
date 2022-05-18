@@ -3,7 +3,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${project.name} | Species | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name}"/>
     <meta name="breadcrumb" content="Species"/>

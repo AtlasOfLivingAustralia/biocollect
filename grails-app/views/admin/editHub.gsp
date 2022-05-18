@@ -45,7 +45,7 @@
     <span>You are viewing the hub: ${hubConfig.urlPath}</span>
 </div>
 
-<div class="alert" data-bind="visible:message()">
+<div class="alert alert-info" data-bind="visible:message()">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <span data-bind="text:message"></span>
 </div>

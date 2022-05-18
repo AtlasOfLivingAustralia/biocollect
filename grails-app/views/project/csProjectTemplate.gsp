@@ -6,7 +6,7 @@
 <head>
     <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
     <meta name="bannerClass" content="project-banner"/>
@@ -135,7 +135,7 @@
 %{--            }--}%
 %{--        </style>--}%
 %{--    <![endif]-->--}%
-%{--    <asset:stylesheet src="projects-manifest.css"/>--}%
+    <asset:stylesheet src="projects-manifest.css"/>
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>

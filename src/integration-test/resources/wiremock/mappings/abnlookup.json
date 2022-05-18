@@ -1,0 +1,15 @@
+{
+  "request": {
+    "urlPath": "/json/AbnDetails.aspx",
+
+    "method": "GET"
+  },
+  "response" : {
+    "status": 200,
+    "headers": {
+      "content-Type": "text/javascript"
+    },
+    "body": "callback({\"Abn\":\"11111111111\",\"AbnStatus\":\"Active\",\"Acn\":\"\",\"AddressDate\":\"2011-06-23\",\"AddressPostcode\":\"2601\",\"AddressState\":\"ACT\",\"BusinessName\":[],\"EntityName\":\"THE TRUSTEE FOR PSS FUND Test\",\"EntityTypeCode\":\"CSP\",\"EntityTypeName\":\"Commonwealth Government APRA Regulated Public Sector Scheme\",\"Gst\":\"2000-07-01\",\"Message\":\"\"})"
+
+  }
+}

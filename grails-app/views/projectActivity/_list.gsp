@@ -50,32 +50,8 @@
     <div class="survey row">
         <div class="col-12 col-md-4 col-lg-3">
             <div class="image d-flex justify-content-center align-content-center">
-                <img alt="No image" class="image-logo" data-bind="attr:{alt:name, src: transients.logoUrl()}" src=""
+                <img alt="No image" class="image-logo project-activity-logo" data-bind="attr:{alt:name, src: transients.logoUrl()}" src=""
                      onload="findLogoScalingClass(this);addClassForImage(this, '${noImageUrl}', 'w-25');" onerror="imageError(this, '${noImageUrl}');"/>
-
-                <div class="status">
-                    <div class="dayscount"
-                         data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() > 0">
-                        <!-- ko text:transients.daysRemaining --> <!-- /ko -->
-                        <g:message code="project.survey.daysToGo"/>
-                    </div>
-
-                    <div class="dayscount"
-                         data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0">
-                        <g:message code="g.survey"/> <g:message code="g.ended"/>
-                    </div>
-
-                    <div class="dayscount"
-                         data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() < 0">
-                        <g:message code="g.survey"/> <g:message code="g.ongoing"/>
-                    </div>
-
-                    <div class="dayscount" data-bind="visible:transients.daysSince() < 0">
-                        <g:message code="project.survey.startsIn"/>
-                        <!-- ko text:-transients.daysSince() --> <!-- /ko -->
-                        <g:message code="g.days"/>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -92,11 +68,37 @@
                         <span class="label"><g:message code="g.status"/>:</span> <span
                             data-bind="text: transients.status" aria-label="Survey Status"></span>
                     </div>
+
+                    <div class="divider"></div>
+
+                    <div class="status item">
+                        <div class="dayscount"
+                             data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() > 0">
+                            <!-- ko text:transients.daysRemaining --> <!-- /ko -->
+                            <g:message code="project.survey.daysToGo"/>
+                        </div>
+
+                        <div class="dayscount"
+                             data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() == 0">
+                            <g:message code="g.survey"/> <g:message code="g.ended"/>
+                        </div>
+
+                        <div class="dayscount"
+                             data-bind="visible:transients.daysSince() >= 0 && transients.daysRemaining() < 0">
+                            <g:message code="g.survey"/> <g:message code="g.ongoing"/>
+                        </div>
+
+                        <div class="dayscount" data-bind="visible:transients.daysSince() < 0">
+                            <g:message code="project.survey.startsIn"/>
+                            <!-- ko text:-transients.daysSince() --> <!-- /ko -->
+                            <g:message code="g.days"/>
+                        </div>
+                    </div>
                     <!-- ko if: startDate -->
                     <div class="divider"></div>
 
                     <div class="item">
-                        <span class="label"><g:message code="project.details.plannedStartDate"/>:</span> <time
+                        <span class="label"><g:message code="project.details.plannedStartDate"/></span> <time
                             class="start-date"
                             data-bind="text: moment(startDate()).format('DD MMMM, YYYY'), attr: {datetime: startDate()}"
                             aria-label="Survey Start Date"></time>
@@ -106,7 +108,7 @@
                     <div class="divider"></div>
 
                     <div class="item">
-                        <span class="label"><g:message code="project.details.plannedEndDate"/>:</span> <time
+                        <span class="label"><g:message code="project.details.plannedEndDate"/></span> <time
                             class="end-date"
                             data-bind="text: moment(endDate()).format('DD MMMM, YYYY'), attr: {datetime: endDate()}"
                             aria-label="Survey End Date"></time>
@@ -147,9 +149,10 @@
                         <!-- /ko -->
                     </g:if>
                     <button class="btn btn-sm btn-dark"
-                            type="button" data-bind="attr: {'data-target': '#showMetadata' + $index()}"
+                            type="button" data-bind="attr: {'data-target': '#showMetadata' + $index()}, click: transients.toggleMetadata"
                             data-toggle="collapse" aria-expanded="false">
-                        <i class="fas fa-chevron-down mr-1"></i> Show metadata
+                        <i class="fas fa-chevron-down mr-1"></i> <!-- ko if: transients.metadataToggle -->Show<!-- /ko -->
+                        <!-- ko if: !transients.metadataToggle() -->Hide<!-- /ko --> metadata
                     </button>
                 </div>
                 <div class="collapse mt-3" data-bind="attr: {id: 'showMetadata' + $index()}">
