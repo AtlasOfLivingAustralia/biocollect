@@ -17,7 +17,7 @@
                         <label class="col-form-label col-sm-3" for="documentName">Title</label>
 
                         <div class="col-sm-9">
-                            <input class="form-control" id="documentName" type="text" data-bind="value:name"/>
+                            <textarea class="form-control" rows="2" id="documentName" type="text" data-bind="value:name"></textarea>
                         </div>
                     </div>
 
@@ -25,7 +25,7 @@
                         <label class="col-form-label col-sm-3" for="documentDescription">Description</label>
 
                         <div class="col-sm-9">
-                            <input class="form-control" id="documentDescription" type="text" data-bind="value:description"/>
+                            <textarea class="form-control" rows="2" id="documentDescription" type="text" data-bind="value:description"></textarea>
                         </div>
                     </div>
 
@@ -43,6 +43,40 @@
 
                         <div class="col-sm-9">
                             <select class="form-control" id="documentRole" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentDoi">DOI</label>
+
+                        <div class="col-sm-9">
+                            <input class="form-control" id="documentDoi" type="text" data-bind="value:doiLink"/>
+
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentexternalUrl">External Url</label>
+
+                        <div class="col-sm-9">
+                            <input class="form-control" id="documentexternalUrl" type="text" data-bind="value:externalUrl"/>
+
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentCitation">Citation</label>
+
+                        <div class="col-sm-9">
+                            <textarea class="form-control" rows="2" id="documentCitation" type="text" data-bind="value:citation"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="documentKeywords">Keywords</label>
+
+                        <div class="col-sm-9">
+                            <textarea class="form-control" rows="2" id="documentKeywords" type="text" data-bind="value:labels"></textarea>
                         </div>
                     </div>
 
