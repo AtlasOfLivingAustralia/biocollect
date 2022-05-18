@@ -18,6 +18,8 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
     UserService userService = Mock(UserService)
     WebService webService = Mock(WebService)
     ActivityService activityService = Mock(ActivityService)
+    SearchService searchService = Mock(SearchService)
+    ProjectService projectService = Mock(ProjectService)
 
     def setup() {
         JSON.registerObjectMarshaller(new MapMarshaller())
@@ -25,6 +27,8 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         service.userService = userService
         service.webService = webService
         service.activityService = activityService
+        service.searchService = searchService
+        service.projectService = projectService
         service.grailsApplication = grailsApplication
     }
 
@@ -176,5 +180,77 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         true | _
         false | _
 
+    }
+
+    def "retrieve project documents when projectId is passed"() {
+        setup:
+        def document = [documentId: 'doc1', projectId: 'proj1']
+
+        String searchTerm = ""
+        String searchType = "name"
+        String sort = "dateCreated"
+        String order = "desc"
+        String projectId = document.projectId
+        String searchInRole = "magazines"
+        String query = "role:" + searchInRole + " AND projectId:" + projectId
+        List DOCUMENT_FILTER = ["className:au.org.ala.ecodata.Document"]
+        String hub = "nesp"
+        String userId = 'u1'
+
+        Map params = [
+                offset:0,
+                max:100,
+                query:query,
+                fq:DOCUMENT_FILTER,
+                order:order,
+                sort:sort,
+                type:searchType,
+                searchInRole: searchInRole
+        ]
+
+        when:
+        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, searchInRole, sort, order, projectId, hub)
+
+        then:
+        1 * service.userService.userIsAlaAdmin() >> true
+        1 * service.userService.getCurrentUserId() >> userId
+        1 * service.searchService.fulltextSearch(params,true) >> [documentId:'doc1', role:'magazines']
+        documents
+    }
+
+    def "retrieve hub documents when hub is passed"() {
+        setup:
+        Map project = [projectId: 'proj1']
+        List searchResults =[[_source:[projectId:'proj1', documentId:'doc2']]]
+
+        String searchTerm = ""
+        String searchType = "name"
+        String sort = "dateCreated"
+        String order = "desc"
+        String projectId = ""
+        String searchInRole = "magazines"
+        String query = "role:" + searchInRole
+        List DOCUMENT_FILTER = ["publiclyViewable:true","className:au.org.ala.ecodata.Document"]
+        String hub = "nesp"
+
+        Map params = [
+                offset:0,
+                max:100,
+                query:query,
+                fq:DOCUMENT_FILTER,
+                hub:hub,
+                order:order,
+                sort:sort,
+                type:searchType,
+                searchInRole: searchInRole
+        ]
+
+        when:
+        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, searchInRole, sort, order, projectId, hub)
+
+        then:
+        1 * service.projectService.get(project.projectId) >> project
+        1 * service.searchService.fulltextSearch(params,true) >> [hits:[hits:searchResults]]
+        documents
     }
 }

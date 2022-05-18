@@ -341,6 +341,14 @@ content.defaultOverriddenLabels = [
                 defaultText: 'Project Area',
                 customText:'',
                 notes: 'Section heading for Map.'
+        ],
+        [
+                id: 9,
+                showCustomText: false,
+                page: 'Project > "Resources" tab',
+                defaultText: 'Resources',
+                customText:'',
+                notes: 'Section heading on project\'s resources tab.'
         ]
 ]
 
