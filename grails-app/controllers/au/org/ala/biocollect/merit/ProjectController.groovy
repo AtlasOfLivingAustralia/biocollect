@@ -303,14 +303,16 @@ class ProjectController {
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
-            [project: project,
-             siteDocuments: siteInfo.documents?:'[]',
-             site: siteInfo.site,
-             programs: metadataService.programsModel(),
-             scienceTypes: scienceTypes,
-             ecoScienceTypes: ecoScienceTypes
-            ]
+            def projectActivities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
 
+            [project        : project,
+             siteDocuments  : siteInfo.documents ?: '[]',
+             site           : siteInfo.site,
+             programs       : metadataService.programsModel(),
+             scienceTypes   : scienceTypes,
+             ecoScienceTypes: ecoScienceTypes,
+             projectActivities     : projectActivities
+            ]
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
@@ -353,6 +355,8 @@ class ProjectController {
             project.isEcoScience = true
             project.projectType = ProjectService.PROJECT_TYPE_ECOSCIENCE
         }
+
+        project.projLifecycleStatus = 'unpublished'
 
         HubSettings hub = SettingService.getHubConfig()
         if (hub && hub.defaultProgram) {
@@ -485,6 +489,30 @@ class ProjectController {
         String mainImageAttribution = values.remove("mainImageAttribution")
         String logoAttribution = values.remove("logoAttribution")
 
+        def hasPublishedProjectActivities = false
+
+        if (project != null) {
+            def projectActivities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
+
+            //checks whether there's at least one published survey
+            if (projectActivities != null && projectActivities.size() > 0) {
+                for (int i = 0; i < projectActivities.size(); i++) {
+                    if (projectActivities[i].published) {
+                        hasPublishedProjectActivities = true;
+                        break;
+                    }
+                }
+            }
+
+            //check whether a project can be published
+            if (values.projLifecycleStatus != null) {
+                if ((values.projLifecycleStatus == 'published') && values.isExternal && !hasPublishedProjectActivities) {
+                    render status: HttpStatus.SC_BAD_REQUEST, text: "At least one published survey should be there to publish a project."
+                    return
+                }
+            }
+        }
+
         def siteResult
         if (projectSite) {
             siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
@@ -612,7 +640,6 @@ class ProjectController {
                 facets = searchService.standardiseHistogramFacets(facets, histogramFacetConfig)
             }
 
-
             // if facet is provided by client do not add special facets
             if(!params.facets){
                 facets = projectService.addSpecialFacets(facets)
@@ -636,6 +663,30 @@ class ProjectController {
         }
         response.setCharacterEncoding('UTF-8')
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
+    }
+
+    /**
+     *  Remove facets specified in config from the Project Finder Page, when user is not logged in or if user is not
+     *  AlaAdmin and not in user page
+     */
+    private String removeFacetsFromProjectFinderPage(List facets) {
+        List facetsToRemove = grailsApplication.config.lists.facetsToRemoveFromProjectFinderPage
+
+        def user = userService.getUser()
+        boolean isAlaAdmin = userService.userIsAlaAdmin()
+        boolean isUserPage = params.getBoolean('isUserPage', false)
+
+        if (!user || (!isAlaAdmin && !isUserPage)) {
+            facets.removeAll(facetsToRemove)
+        }
+
+        String facetStr = "";
+
+        if (facets.size() > 0) {
+            facetStr = facets.join(',')
+        }
+
+        return facetStr
     }
 
     /**
@@ -729,6 +780,12 @@ class ProjectController {
         if(!trimmedParams.facets) {
             trimmedParams.facets = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)?.collect { it.name }?.join(",")
         }
+
+        List facetList = trimmedParams.facets.split(",")
+
+        //check and remove facets from Project Finder Page if there is any
+        if (facetList)
+            trimmedParams.facets = removeFacetsFromProjectFinderPage(facetList)
 
         List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
         if(presenceAbsenceFacets){
@@ -826,7 +883,17 @@ class ProjectController {
             trimmedParams.status = null
         }
 
+        boolean isAlaAdmin = userService.userIsAlaAdmin()
+
+        if (!isAlaAdmin)
+            fq.push('projLifecycleStatus:published')
+
         if (trimmedParams.isUserPage) {
+            if (!fq.contains('projLifecycleStatus:published'))
+                fq.add('projLifecycleStatus:published')
+            if (!fq.contains('projLifecycleStatus:unpublished'))
+                fq.add('projLifecycleStatus:unpublished')
+
             if (trimmedParams.mobile) {
                 String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
                 String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)

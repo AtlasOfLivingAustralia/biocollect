@@ -89,6 +89,7 @@ images:
 lists:
   baseURL: "https://lists.ala.org.au" # "https://lists-test.ala.org.au/public/speciesLists"
   commonFields: ['rawScientificName', 'matchedName', 'commonName']
+  facetsToRemoveFromProjectFinderPage: ['projLifecycleStatus']
 
 merit:
   baseURL: "https://fieldcapture-test.ala.org.au"

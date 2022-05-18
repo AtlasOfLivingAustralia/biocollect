@@ -312,6 +312,7 @@ function ProjectViewModel(project, isUserEditor) {
         isUserEditor = false;
     }
 
+    self.projLifecycleStatus = 'unpublished';
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
     self.description = ko.observable(project.description).extend({markdown:true});
@@ -985,6 +986,26 @@ function ProjectViewModel(project, isUserEditor) {
         'Geography and spatial data',
         'Other'
     ];
+
+    self.transients.hasPublishedProjectActivities = false;
+
+    self.checkPublishedProjectActivities = function (projectActivities) {
+        if (projectActivities && Object.keys(projectActivities).length > 0) {
+            for (var i = 0; i < projectActivities.length; i++) {
+                if (projectActivities[i].published) {
+                    self.transients.hasPublishedProjectActivities = true;
+                    break;
+                }
+            }
+        }
+    };
+
+    self.publishUnpublish = function () {
+        if (project.projLifecycleStatus == 'unpublished')
+            return "Publish"
+        else if (project.projLifecycleStatus == 'published')
+            return "Unpublish"
+    }
 
     self.loadPrograms = function (programsModel) {
         $.each(programsModel.programs, function (i, program) {
