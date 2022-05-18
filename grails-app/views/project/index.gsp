@@ -5,7 +5,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <asset:script type="text/javascript">
     var fcConfig = {

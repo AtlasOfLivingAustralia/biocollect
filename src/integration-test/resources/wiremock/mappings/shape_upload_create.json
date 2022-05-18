@@ -1,0 +1,15 @@
+{
+  "request": {
+    "urlPattern": "/ws/shape/upload/shp/.+/.+",
+
+    "method": "POST"
+  },
+  "response" : {
+    "status": 200,
+    "headers": {
+      "content-Type": "application/json"
+    },
+    "body": "{\"id\":1}"
+
+  }
+}

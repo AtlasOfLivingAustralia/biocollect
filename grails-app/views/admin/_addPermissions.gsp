@@ -55,6 +55,7 @@
             var email = $('#emailAddress').val();
             var role = $('#addUserRole').val();
             var entityId = $('#entityId').val();
+            entityId = entityId ||  $('#projectId').val();
 
             if ($('#userAccessForm').validationEngine('validate')) {
                 $("#spinner1").show();

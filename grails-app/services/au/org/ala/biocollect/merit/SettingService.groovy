@@ -55,10 +55,10 @@ class SettingService {
 
         switch (Environment.current) {
             case Environment.PRODUCTION:
-            case Environment.TEST:
                 sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
                 targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
                 break
+            case Environment.TEST:
             case Environment.DEVELOPMENT:
                 sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
                 targetDir = "${grailsApplication.config.temp.dir}"
@@ -332,8 +332,8 @@ class SettingService {
                 ${styles?.titleTextColor ? "\$headings-color: ${styles?.titleTextColor};" : ''}
                 ${styles?.breadCrumbBackGroundColour ? "\$breadcrumb-bg: ${styles?.breadCrumbBackGroundColour};" : ''}
                 ${styles?.hrefColor ? "\$link-color: ${styles?.hrefColor};" : ''}
-                ${styles?.navbackgroundcolor ? "\$nav-background-color: ${styles?.navbackgroundcolor};" : ''}
-                ${styles?.navtextcolor ? "\$nav-text-color: ${styles?.navtextcolor};" : ''}
+                ${styles?.navbackgroundcolor ? "\$nav-background-color: ${styles?.navBackgroundColor};" : ''}
+                ${styles?.navtextcolor ? "\$nav-text-color: ${styles?.navTextColor};" : ''}
                 ${styles?.facetBackgroundColor ? "\$facet-background-color: ${styles?.facetBackgroundColor};" : ''}
                 ${styles?.tileBackgroundColor ? "\$tile-background-color: ${styles?.tileBackgroundColor};" : ''}
                 ${styles?.tagBackgroundColor ? "\$tag-background-color: ${styles?.tagBackgroundColor};" : ''}
