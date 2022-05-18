@@ -46,6 +46,7 @@ var ProjectActivity = function (params) {
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
     self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense || "");
+    self.publishProject = ko.observable("Yes");
     self.spatialAccuracy = ko.observable(pActivity.spatialAccuracy || "");
     self.speciesIdentification = ko.observable(pActivity.speciesIdentification || "");
     self.temporalAccuracy = ko.observable(pActivity.temporalAccuracy || "");
