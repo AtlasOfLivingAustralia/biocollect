@@ -58,7 +58,7 @@ class HubSettings extends JSONObject {
      */
     public Map getHomePageControllerAndAction() {
         if (overridesHomePage()) {
-            def regexp = "\\/(.*)\\/(.*)"
+            def regexp = "\\/(.+)\\/(.+)\\b"
             def matcher = (optString('homePagePath', '') =~ regexp)
             if (matcher.matches()) {
                 def controller = matcher[0][1]
@@ -137,7 +137,12 @@ class HubSettings extends JSONObject {
 
     String findLabelOverrideForIndex (int i, List defaults) {
         List overrides = this.content?.overriddenLabels ?: defaults
-        Map config = overrides?.grep { it.id == i }?.get(0)
+
+        Map config = this.content?.overriddenLabels?.find { it.id == i }
+        if (!config) {
+            config = defaults?.find { it.id == i }
+        }
+
         if (config?.showCustomText) {
             config.customText
         } else {
@@ -174,6 +179,10 @@ class HubSettings extends JSONObject {
 
     String getTextForProjectArea (List defaults) {
         findLabelOverrideForIndex(8, defaults)
+    }
+
+    String getTextForResources (List defaults) {
+        findLabelOverrideForIndex(9, defaults)
     }
 
     /**

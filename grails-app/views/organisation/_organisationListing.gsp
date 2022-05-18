@@ -28,7 +28,8 @@
 
         <div class="col-md-4 text-right mt-2 mt-md-0">
             <g:if test="${fc.userIsAlaOrFcAdmin()}">
-            <a class="btn btn-info" href="${g.createLink(action: 'create')}" role="button">Create Organisation</a>
+            <a class="btn btn-info" href="${g.createLink(action: 'create')}" role="button"><i class="fas fa-plus"></i>
+                Create Organisation</a>
             </g:if>
         </div>
     </div>

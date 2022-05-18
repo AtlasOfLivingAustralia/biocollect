@@ -156,7 +156,6 @@
 
     .nav-button {
       margin: 7px 1rem;
-      color: $c-text;
       font-size: 12px;
       @include media-breakpoint-down(md) {
         margin: 7px 0;
@@ -243,10 +242,14 @@
     }
   }
 
-  .hub-logo {
-    position: static;
-    max-width: 250px;
-    max-height: 250px;
+  @include media-breakpoint-up(lg) {
+    .hub-logo {
+      position: static;
+      max-width: 250px;
+      max-height: 250px;
+      margin-bottom: -60%;
+      margin-top: -15px;
+    }
   }
 }
 

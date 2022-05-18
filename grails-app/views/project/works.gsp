@@ -2,10 +2,11 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title><g:message code="project.works.heading"/> | <g:message code="project.works.heading"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -34,6 +35,7 @@
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         associatedPrograms: ${associatedPrograms},
         flimit: ${grailsApplication.config.facets.flimit}
+        </g:applyCodec>
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
@@ -54,8 +56,8 @@
 </content>
 <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
     <content tag="pagefinderbuttons">
-        <button class="btn btn-info btn-getttingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</button>
-        <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</button>
+        <button class="btn btn-info btn-getttingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}"><i class="fas fa-info"></i> Getting started</button>
+        <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}"><i class="fas fa-question"></i> What is this?</button>
     </content>
 </g:if>
 <div id="wrapper" class="content container-fluid">

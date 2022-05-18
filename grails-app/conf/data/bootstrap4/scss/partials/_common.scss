@@ -20,7 +20,7 @@ img {
 
 
 // Custom numbered list bullet styles
-ol {
+ol.homepage-style {
   counter-reset: item;
   margin: 0 0 1em;
   padding: 0;
@@ -950,8 +950,9 @@ ul.links {
   }
 }
 
+// to prevent two drop down selectors from being shown on Safari
 .custom-select {
-
+  -webkit-appearance: none;
 }
 
 .facebook {

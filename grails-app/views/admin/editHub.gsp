@@ -5,6 +5,7 @@
     <title>Metadata | Admin | Data capture | Atlas of Living Australia</title>
     <asset:script type="text/javascript">
         fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -17,11 +18,10 @@
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
-            <g:applyCodec encodeAs="none">
-                allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-                allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            </g:applyCodec>
+            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+            </g:applyCodec>
         };
     </asset:script>
 </head>
@@ -45,7 +45,7 @@
     <span>You are viewing the hub: ${hubConfig.urlPath}</span>
 </div>
 
-<div class="alert" data-bind="visible:message()">
+<div class="alert alert-info" data-bind="visible:message()">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <span data-bind="text:message"></span>
 </div>
@@ -407,17 +407,11 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
-                </div>
 
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderHelpButtons"> Hide 'Getting Started' & 'What is this?' buttons on project finder
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorTile"> Hide project status indicator (Tile view)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorList"> Hide project status indicator (List view)
@@ -736,6 +730,7 @@
                 <option value="admin">Admin</option>
                 <option value="allrecords">All Records</option>
                 <option value="home">Home</option>
+                <option value="resources">Resources</option>
                 <option value="login">Login / Logout</option>
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>
@@ -978,6 +973,16 @@
             <td>'View records' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
             <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: '#fff'}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Button home page background colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonBackgroundColor, textColor: '#fff'}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Button home page text colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonTextColor, textColor: '#fff'}}"></td>
         </tr>
         <tr>
             <td colspan="2">

@@ -9,45 +9,6 @@ server:
     session:
       timeout: 3600
 
-environments:
-    development:
-        grails:
-           config:
-              locations:
-                 - file:///data/biocollect/config/biocollect-config-grails3.properties
-        temp:
-          dir: /data/biocollect/temp
-        #system level config
-        server:
-           port: 8087
-           serverURL: http://devt.ala.org.au:8087
-        biocollect:
-          system:
-            email:
-              replyTo: "biocollect-dev<no-reply>@ala.org.au"
-              sender: "biocollect-dev@ala.org.au"
-        debugUI: true
-        loggerLevel: "DEBUG"
-    test:
-        grails:
-          config:
-             locations:
-                - file:///data/biocollect/config/biocollect-config.properties
-        debugUI: false
-        loggerLevel: "DEBUG"
-    production:
-        grails:
-            config:
-               locations:
-                  - file:///data/biocollect/config/biocollect-config.properties
-        biocollect:
-           system:
-              email:
-                replyTo: "biocollect<no-reply>@ala.org.au"
-                sender: "biocollect-local@ala.org.au"
-        debugUI: false
-        loggerLevel: "INFO"
-
 app:
   default:
     hub: "ala"
@@ -68,11 +29,11 @@ security:
       alaAdminRole : "ROLE_ADMIN"
       officerRole : "ROLE_FC_OFFICER"
       adminRole : "ROLE_FC_ADMIN"
-      casServerName: "https://auth.ala.org.au"
-      casServerLoginUrl: "https://auth.ala.org.au/cas/login"
-      casServerUrlPrefix: "https://auth.ala.org.au/cas"
-      logoutUrl: "https://auth.ala.org.au/cas/logout"
-      loginUrl: "https://auth.ala.org.au/cas/login"
+#      casServerName: "https://auth.ala.org.au"
+#      casServerLoginUrl: "https://auth.ala.org.au/cas/login"
+#      casServerUrlPrefix: "https://auth.ala.org.au/cas"
+#      logoutUrl: "https://auth.ala.org.au/cas/logout"
+#      loginUrl: "https://auth.ala.org.au/cas/login"
 
 #External URL
 aekosEnabled: false
@@ -88,40 +49,6 @@ notification:
 # Specific configurations used by Biocollect
 facets:
   flimit: 15
-
-
-aekosSubmission:
-  url: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
-aekosMintedDoi:
-  url: "http://shared-uat.aekos.org.au:8080/AEKOS.AekosSearchPortal/dataset"
-
-acsaUrl: 'http://csna.gaiaresources.com.au/wordpress/'
-
-bie:
-  baseURL: "https://bie.ala.org.au"
-
-biocache:
-  baseURL: "https://biocache.ala.org.au"
-
-biocollect:
-  support:
-    email:
-      address: "biocollect-support@ala.org.au"
-
-collectory:
-  service:
-    url: "https://collections.ala.org.au"
-
-
-ecodata:
-  baseURL: "https://ecodata.ala.org.au/"
-
-
-google:
-  maps:
-    base: "https://maps.googleapis.com/maps/api/js?key="
-  geocode:
-    url: "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng="
 
 headerAndFooter:
   baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
@@ -277,7 +204,7 @@ grails:
             encoding: UTF-8
             htmlcodec: xml
             codecs:
-                expression: html  #${ } will be html encoded if set to default to html
+                expression: none  #${ } will be html encoded if set to default to html
                 scriptlets: html
                 taglib: none
                 staticparts: none

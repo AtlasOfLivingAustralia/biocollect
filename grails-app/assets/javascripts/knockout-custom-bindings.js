@@ -758,7 +758,7 @@ ko.bindingHandlers.sortIcon = {
  */
 ko.bindingHandlers.removeFromArray = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        $(element).click(function () {
+        $(element).on('click',function () {
             var array = valueAccessor();
             array.remove && array.remove(bindingContext.$data);
             bindingContext.$data.remove && bindingContext.$data.remove();
@@ -844,7 +844,7 @@ ko.bindingHandlers.expandable = {
         }
 
         var anchor = $('<a/>');
-        anchor.click(function() {
+        anchor.on('click',function() {
             toggleTruncate($element);
         });
         $element.empty();

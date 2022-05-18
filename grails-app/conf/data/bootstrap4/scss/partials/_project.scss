@@ -46,12 +46,11 @@
 
   #banner {
     &.project-banner {
-      height: auto;
       padding-top: 220px;
     }
   }
   .project-title {
-    position: relative;
+    position: absolute;
     h1 {
       font-size: 28px;
     }
@@ -158,7 +157,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 670px;
+  height: 1000px;
   .instructions {
     font-family: $headings-font-family;
     font-weight: 900;
@@ -232,6 +231,11 @@
     .btn {
       font-size: 12px;
     }
+  }
+  .role {
+    font-size: 14px;
+    color: $gray-500;
+    margin-right: 10px;
   }
   @include media-breakpoint-down(xs) {
     padding: 15px;
@@ -427,4 +431,10 @@
   .label {
     font-weight: bold;
   }
+}
+
+// project about tab
+$about-bg-color: transparentize($primary, 0.95);
+#cs-about .card-header {
+  background-color: $about-bg-color;
 }

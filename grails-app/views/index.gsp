@@ -1,13 +1,13 @@
 <!doctype html>
 <html>
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title>Welcome to ${grailsApplication.config.appName?.capitalize()}!</title>
 </head>
 
 <body>
-<div class="row-fluid">
-    <div class="span9" id="page-body" role="main">
+<div class="row">
+    <div class="col-12" id="page-body" role="main">
         <bc:koLoading>
 
         </bc:koLoading>

@@ -3,11 +3,12 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
-    <title>Home | Field Capture</title>
+    <meta name="layout" content="bs4"/>
+    <title>Home | <g:message code="g.biocollect"/></title>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -21,8 +22,7 @@
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
         </g:applyCodec>
     }
     </asset:script>
@@ -78,7 +78,7 @@
     <div id="" class="row-fluid ">
         <div id="facetsCol" class="span4 well well-small">
             <g:set var="reqParams" value="sort,order,max,fq"/>
-            <div class="visible-phone pull-right" style="margin-top: 5px;">
+            <div class="visible-phone float-right" style="margin-top: 5px;">
                 <a href="#" id="toggleFacetDisplay" rel="facetsContent" role="button" class="btn btn-small btn-inverse" style="color:white;">
                     <span>show</span> options&nbsp;
                     <b class="caret"></b>
@@ -195,7 +195,7 @@
                                 <button class="btn btn-small next">next&nbsp;<i class="icon-chevron-right"></i></button>
                             </div>
                             <span id="project-filter-warning" class="label filter-label label-warning hide pull-left">Filtered</span>
-                            <div class="control-group pull-right dataTables_filter">
+                            <div class="control-group float-right dataTables_filter">
                                 <div class="input-append">
                                     <g:textField class="filterinput input-medium" data-target="project"
                                                  title="Type a few characters to restrict the list." name="projects"
@@ -317,7 +317,7 @@
         $.fn.clicktoggle = function(a, b) {
             return this.each(function() {
                 var clicked = false;
-                $(this).click(function() {
+                $(this).on('click',function() {
                     if (clicked) {
                         clicked = false;
                         return b.apply(this, arguments);
@@ -367,7 +367,7 @@
                 if (reportType) {
                     $reportSelector.val(reportType);
                 }
-                $reportSelector.change(function() {
+                $reportSelector.on('change',function() {
                     var reportType = $reportSelector.val();
                     amplify.store('report-type-state', reportType);
                     loadReport(reportType);
@@ -410,7 +410,7 @@
             return false;
         });
 
-        $('.clearFilterBtn').click(function () {
+        $('.clearFilterBtn').on('click',function () {
             var $filterInput = $(this).prev(),
                 target = $filterInput.attr('data-target');
             //console.log("clear button");
@@ -505,7 +505,7 @@
 
 
         // sorting project table
-        $("#projectTable .header").click(function(el) {
+        $("#projectTable .header").on('click',function(el) {
             var sort = $(this).data("sort");
             var order = $(this).data("order");
             var prevSort =  $("#projectTable").data("sort");
@@ -523,7 +523,7 @@
         });
 
         // facet buttons
-        $(".facetBtn").click(function(el) {
+        $(".facetBtn").on('click',function(el) {
             facetList = []; // reset global var
             var facet = $(this).data("facet");
             var facetVal = $(this).data("value");
@@ -548,7 +548,7 @@
         });
 
         // next/prev buttons in project list table
-        $("#paginateTable .btn").not(".clearFilterBtn").click(function(el) {
+        $("#paginateTable .btn").not(".clearFilterBtn").on('click',function(el) {
             // Don't trigger if button is disabled
             if (!$(this).hasClass("disabled")) {
                  //var prevOrNext = (this).hasClass("next") ? "next" : "prev";
@@ -562,7 +562,7 @@
         });
 
         // in mobile view toggle display of facets
-        $("#toggleFacetDisplay").click(function(e) {
+        $("#toggleFacetDisplay").on('click',function(e) {
             e.preventDefault();
             $(this).find("i").toggleClass("icon-chevron-down icon-chevron-right");
             if ($("#" + $(this).attr('rel')).is(":visible")) {
@@ -587,11 +587,11 @@
             $(this).find("i").addClass("icon-flipped180");
         });
         
-        $(".clearFacet").click(function(e){
+        $(".clearFacet").on('click',function(e){
        	 window.location.href ="${grailsApplication.config.grails.serverURL}";
         });
         
-        $(".facetSearch").click(function(e){
+        $(".facetSearch").on('click',function(e){
         	var data = [];
         	$('input[type="checkbox"][name="facetSelection"]').each(function(i){
 		        if(this.checked){

@@ -25,6 +25,8 @@ class ResourceController {
 
     def error() {}
 
+    def list() {}
+
     // proxy this request to work around browsers (firefox) that don't follow redirects properly :(
     def pdfUrl() {
         def url = params.file

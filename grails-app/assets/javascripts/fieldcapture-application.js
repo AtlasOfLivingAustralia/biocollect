@@ -9,7 +9,7 @@ if (typeof jQuery !== 'undefined') {
 
 	$(function () {
         // deprecated
-        $('#debug').click(function () {
+        $('#debug').on('click',function () {
             $(this).next().toggle();
         });
 
@@ -19,7 +19,7 @@ if (typeof jQuery !== 'undefined') {
             $(this).find('h1,h2,h3,h4,h5')
                 .css('cursor','pointer')
                 .css('color','grey')
-                .click(function () {
+                .on('click',function () {
                     $(this).next().toggle();
                 })
                 .hover(
@@ -425,6 +425,7 @@ var contentTypes = {
     convert: [
         'application/msword',
         'application/ms-excel',
+        'application/octet-stream',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
         'application/vnd.ms-word.document.macroEnabled.12',
@@ -520,8 +521,38 @@ function Documents() {
     var self = this;
     self.documents = ko.observableArray();
     self.documentFilter = ko.observable('');
-    self.documentFilterFieldOptions = [{ label: 'Name', fun: 'name'}, { label: 'Attribution', fun: 'attribution' }, { label: 'Type', fun: 'type' }];
+    self.documentFilterFieldOptions = [{ label: 'No Filters', fun: 'none'}, { label: 'Name', fun: 'name'}, { label: 'Attribution', fun: 'attribution' }, { label: 'Citation', fun: 'citation' }, { label: 'Keywords', fun: 'labels' }, { label: 'Description', fun: 'description' }];
     self.documentFilterField = ko.observable(self.documentFilterFieldOptions[0]);
+
+    self.roleFilterFieldOptions = [
+        {id:'none', name: 'No Filters'},
+        {id:'blogArticles', name: 'Blog Articles'},
+        {id:'bookChapters', name: 'Book Chapters'},
+        {id:'brochures', name: 'Brochures'},
+        {id:'caseStudies', name: 'Case Studies'},
+        {id:'datasets', name: 'Datasets'},
+        {id:'documents', name: 'Documents'},
+        {id:'embeddedVideo', name:'Embedded Video'},
+        {id:'exceedanceReport', name:'Exceedance Report'},
+        {id:'factsheets', name: 'Fact sheets'},
+        {id:'information', name: 'Information'},
+        {id:'journalArticles', name: 'Journal Articles'},
+        {id:'magazines', name: 'Magazines'},
+        {id:'maps', name: 'Maps'},
+        {id:'models', name: 'Models'},
+        {id:'other', name:'Other Project document'},
+        {id:'photo', name:'Photo'},
+        {id:'postersBanners', name: 'Posters and banners'},
+        {id:'presentations', name: 'Presentations'},
+        {id:'projectPlan', name:'Project Plan / Work plan'},
+        {id:'projectVariation', name:'Project Variation'},
+        {id:'projectHighlightReport', name:'Project Highlight Report'},
+        {id:'reports', name: 'Reports'},
+        {id:'thesis', name: 'Thesis'},
+        {id:'toolsGuides', name: 'Tools and guides'},
+        {id:'webPages', name: 'Web pages'},
+        {id:'webinars', name: 'Webinars'}];
+    self.roleFilterField = ko.observable(self.roleFilterFieldOptions[0]);
 
     self.selectedDocument = ko.observable();
 
@@ -534,6 +565,93 @@ function Documents() {
         return true;
     };
 
+    self.isHtmlViewer = function(data) {
+        self.transients.isHtmlViewer = true;
+    };
+
+    self.mapDocument = function (data) {
+        switch (data) {
+            case "blogArticles":
+                return roleName = "Blog Articles";
+                break;
+            case "bookChapters":
+                return roleName = "Book Chapters";
+                break;
+            case "brochures":
+                return roleName = "Brochures";
+                break;
+            case "caseStudies":
+                return roleName = "Case Studies";
+                break;
+            case "datasets":
+                return roleName = "Datasets";
+                break;
+            case "documents":
+                return roleName = "Documents";
+                break;
+            case "embeddedVideo":
+                return roleName = "Embedded Video";
+                break;
+            case "exceedanceReport":
+                return roleName = "Exceedance Report";
+                break;
+            case "factsheets":
+                return roleName = "Fact sheets";
+                break;
+            case "information":
+                return roleName = "Information";
+                break;
+            case "journalArticles":
+                return roleName = "Journal Articles";
+                break;
+            case "magazines":
+                return roleName = "Magazines";
+                break;
+            case "maps":
+                return roleName = "Maps";
+                break;
+            case "models":
+                return roleName = "Models";
+                break;
+            case "other":
+                return roleName = "Other Project document";
+                break;
+            case "photo":
+                return roleName = "Photo";
+                break;
+            case "postersBanners":
+                return roleName = "Posters and banners";
+                break;
+            case "presentations":
+                return roleName = "Presentations";
+                break;
+            case "projectPlan":
+                return roleName = "Project Plan / Work plan";
+                break;
+            case "projectVariation":
+                return roleName =  "Project Variation";
+                break;
+            case "projectHighlightReport":
+                return roleName = "Project Highlight Report";
+                break;
+            case "reports":
+                return roleName = "Reports";
+                break;
+            case "thesis":
+                return roleName = "Thesis";
+                break;
+            case "toolsGuides":
+                return roleName = "Tools and guides";
+                break;
+            case "webPages":
+                return roleName = "Web pages";
+                break;
+            case "webinars":
+                return roleName = "Webinars";
+                break;
+        }
+    }
+
     self.previewTemplate = ko.pureComputed(function() {
         var selectedDoc = self.selectedDocument();
 
@@ -543,14 +661,18 @@ function Documents() {
             var embeddedVideo = selectedDoc.embeddedVideo();
             if (embeddedVideo) {
                 val = "xssViewer";
-            } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType)) {
+            } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType) && !self.transients.isHtmlViewer) {
                 val = "iframeViewer";
+            } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType) && self.transients.isHtmlViewer) {
+                val = "htmlViewer";
             } else {
                 val = "noPreviewViewer";
             }
         } else {
             val = "noViewer";
         }
+
+        self.transients.isHtmlViewer = false;
         return val;
     });
 
@@ -729,6 +851,8 @@ function Documents() {
 
     self.transients = {};
 
+    self.transients.isHtmlViewer = false;
+
     self.transients.mobileApps = ko.pureComputed(function() {
         var urls = [], links = self.links();
         for (var i = 0; i < mobileAppRoles.length; i++)
@@ -844,7 +968,7 @@ function Documents() {
 
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
-        'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
+        'roleFilterFieldOptions', 'roleFilterField', 'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
         'mainImageAttributionText', 'logoAttributionText'];
 
 }
@@ -973,6 +1097,14 @@ function imageError(imageElement, alternateImage) {
     imageElement.onerror = "";
     imageElement.src = alternateImage;//"/static/images/no-image-2.png";
     return true;
+}
+
+function addClassForImage(imageElement, src, classes) {
+    if(imageElement.src.indexOf(src) > -1) {
+        var className = imageElement.className || "";
+        if(className.indexOf(classes) == -1)
+            imageElement.className =  className + ' ' + classes;
+    }
 }
 
 /**

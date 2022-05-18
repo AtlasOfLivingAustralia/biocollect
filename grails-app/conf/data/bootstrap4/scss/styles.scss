@@ -1,17 +1,6 @@
 @import 'settings';
 @import "bootstrap/bootstrap";
-
-@import 'partials/swiper';
-//@import "partials/jqueryui-datepicker";
-
-@import "partials/header";
-@import "partials/footer";
-@import "partials/common";
-@import "partials/hero";
-@import "partials/modal";
-@import "partials/posts";
-@import "partials/catalogue";
-@import "partials/project";
+@import 'partials/partials';
 
 .btn-space>.btn {
   margin-top: .25rem;
@@ -69,13 +58,13 @@ $tag-text-color: white !default;
 
 $footer-background-color: black !default;
 $footer-text-color: white !default;
-#footer .footer-top {
+#custom-footer {
   background-color: $footer-background-color;
   color: $footer-text-color;
 }
 
 $social-text-color: white !default;
-#footer .footer-top .social a {
+#custom-footer .social a {
   color: $social-text-color;
 }
 
@@ -91,9 +80,14 @@ $menu-background-color: black !default;
   background-color: rgba($menu-background-color, 0.6);
 }
 
+$homepage-background-btn: $menu-background-color !default;
+$homepage-text-btn: $menu-text-color !default;
 .homePageNav .homepage-button {
-  background-color: $menu-background-color;
-  color: $menu-text-color;
+  cursor: pointer;
+  background-color: $homepage-background-btn;
+  h3 {
+    color: $homepage-text-btn;
+  }
 }
 
 // carousel #hubCarouselBanner

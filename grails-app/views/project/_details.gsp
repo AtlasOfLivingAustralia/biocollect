@@ -1,21 +1,18 @@
 <%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <bc:koLoading>
-    <div>
-        <div class="row mt-4">
-            <div class="col-12">
-                <h4 class="d-inline-block">Project metadata</h4>
-                <span class="float-right">
-                    <g:if test="${project.projLifecycleStatus == 'published'}">
-                        <span class="badge badge-success">Published</span>
-                    </g:if>
-                    <g:elseif test="${project.projLifecycleStatus == 'unpublished'}">
-                        <span class="badge badge-info">Draft</span>
-                    </g:elseif>
-                </span>
-            </div>
-        </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Project metadata</h4>
+            <span class="float-right">
+                <g:if test="${project.projLifecycleStatus == 'published'}">
+                    <span class="badge badge-success">Published</span>
+                </g:if>
+                <g:elseif test="${project.projLifecycleStatus == 'unpublished'}">
+                    <span class="badge badge-info">Draft</span>
+                </g:elseif>
+            </span>
 
-        <div class="row form-group">
+            <div class="row form-group">
             <label class="col-from-label col-md-4"><g:message code="project.details.type"/><fc:iconHelp><g:message
                     code="project.details.type.help"/></fc:iconHelp><i class="req-field"></i></label>
 
@@ -27,7 +24,7 @@
             </div>
         </div>
 
-        <div class="row form-group" data-bind="visible:!isWorks()">
+            <div class="row form-group" data-bind="visible:!isWorks()">
 
             <label class="col-from-label col-md-4" for="isExternal"><g:message
                     code="project.details.useALA"/><fc:iconHelp><g:message
@@ -41,7 +38,7 @@
             </div>
         </div>
 
-        <div id="organisationSearch" data-bind="with: organisationSearch">
+            <div id="organisationSearch" data-bind="with: organisationSearch">
             <div class="row form-group">
                 <label class="col-from-label col-md-4"><g:message
                         code="project.details.organisationNameSearch"/><fc:iconHelp><g:message
@@ -55,9 +52,9 @@
                                data-validation-engine="validate[funcCall[validateOrganisationSelection]]"/>
 
                         <div class="input-group-append">
-                            <button class="btn btn-dark" type="button" data-bind="click:clearSelection"><i
+                            <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}"><i
                                     class='fas fa-search'
-                                    data-bind="css:{'ffa-search':!searchTerm(), 'far fa-times-circle':searchTerm()}"></i>
+                                    data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
                             </button>
                         </div>
                     </div>
@@ -111,404 +108,407 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()">
-        %{--        <div class="well">--}%
-        <h4 class="block-header"><g:message code="project.details.tell"/></h4>
+    <div class="card mt-3" data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()">
+        <div class="card-body">
+            <h4 class="card-title"><g:message code="project.details.tell"/></h4>
 
-        <div class="row form-group">
-            <label class="col-from-label col-md-4" for="name"><g:message
-                    code="project.details.name"/><fc:iconHelp><g:message
-                    code="project.details.name.help"/></fc:iconHelp><i class="req-field"></i></label>
-
-            <div class="col-md-8">
-                <g:textField class="form-control" name="name" data-bind="value:name"
-                             data-validation-engine="validate[required]"/>
-            </div>
-        </div>
-
-        <div data-bind="visible:!isWorks()" class="row form-group">
-            <label class="col-from-label col-md-4" for="aim"><g:message
-                    code="project.details.aim"/><fc:iconHelp><g:message
-                    code="project.details.aim.help"/></fc:iconHelp><i class="req-field"></i></label>
-
-            <div class="col-md-8">
-                <g:textArea class="form-control" name="aim" data-bind="value:aim"
-                            data-validation-engine="validate[required]" maxlength="300" rows="3"/>
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <label class="col-from-label col-md-4" for="description"><g:message
-                    code="project.details.description"/><fc:iconHelp><g:message
-                    code="project.details.description.help"/></fc:iconHelp><i class="req-field"></i></label>
-
-            <div class="col-md-8">
-                <g:textArea class="form-control" name="description" data-bind="value:description"
-                            data-validation-engine="validate[required]" rows="3"/>
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <label class="col-from-label col-md-4" for="manager"><g:message
-                    code="project.details.manager"/><fc:iconHelp><g:message
-                    code="project.details.manager.help"/></fc:iconHelp></label>
-
-            <div class="col-md-8">
-                <g:textField class="form-control" type="email" data-bind="value:manager" name="manager"/>
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <label class="col-from-label col-md-4" for="managerEmail"><g:message
-                    code="project.details.managerEmail"/><fc:iconHelp><g:message
-                    code="project.details.managerEmail.help"/></fc:iconHelp></label>
-
-            <div class="col-md-8">
-                <g:textField class="form-control" type="text" data-bind="value:managerEmail" name="managerEmail"/>
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <label class="col-from-label col-md-4" for="plannedStartDate"><g:message
-                    code="project.details.plannedStartDate"/>
-                <fc:iconHelp><g:message code="project.details.plannedStartDate.help"/></fc:iconHelp><i
-                    class="req-field"></i></label>
-
-            <div class="col-12 col-md-4 col-xl-3">
-                <div class="input-group">
-                    <fc:datePicker class="form-control" targetField="plannedStartDate.date" name="plannedStartDate"
-                                   id="plannedStartDate" data-validation-engine="validate[required]" bs4="true"
-                                   theme="btn-dark"/>
-                </div>
-            </div>
-        </div>
-
-        <div class="row form-group" data-bind="visible:!isWorks()">
-            <label class="col-from-label col-md-4" for="plannedEndDate"><g:message
-                    code="project.details.plannedEndDate"/>
-            <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp>
-            </label>
-
-            <div class="col-12 col-md-4 col-xl-3">
-                <div class="input-group">
-                    <fc:datePicker class="form-control" targetField="plannedEndDate.date" name="plannedEndDate"
-                                   clearBtn="true"
-                                   id="plannedEndDate" data-validation-engine="validate[future[plannedStartDate]]"
-                                   bs4="true" theme="btn-dark"/>
-                </div>
-                <small id="emailHelp" class="form-text text-muted"><g:message
-                        code="project.details.plannedEndDate.extra"/></small>
-            </div>
-        </div>
-
-        <div class="row form-group" data-bind="visible:isWorks()">
-            <label class="col-from-label col-md-4" for="plannedEndDate"><g:message
-                    code="project.details.plannedEndDate"/>
-                <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp><i
-                    class="req-field"></i>
-            </label>
-
-            <div class="col-12 col-md-4 col-xl-2">
-                <div class="input-group">
-                    <fc:datePicker class="form-control" targetField="plannedEndDate.date" name="plannedEndDate"
-                                   id="plannedEndDate"
-                                   data-validation-engine="validate[required,future[plannedStartDate]]"
-                                   data-errormessage-value-missing="Works projects must have an end date" bs4="true"
-                                   theme="btn-dark"/>
-                </div>
-            </div>
-        </div>
-
-
-        <div id="associatedOrgs">
             <div class="row form-group">
-                <label class="col-from-label col-md-4" for="associatedOrgList">
-                    <g:message code="project.details.associatedOrgs"/>:
-                    <fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp>
-                </label>
+                <label class="col-from-label col-md-4" for="name"><g:message
+                        code="project.details.name"/><fc:iconHelp><g:message
+                        code="project.details.name.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="col-md-8">
-                    <p><g:message code="project.details.associatedOrgs.extra"/></p>
+                    <g:textField class="form-control" name="name" data-bind="value:name"
+                                 data-validation-engine="validate[required]"/>
+                </div>
+            </div>
 
-                    <div id="associatedOrgList">
-                        <g:set var="noImageUrl" value="${asset.assetPath(src: "biocollect-logo-dark.png")}"/>
-                        <!-- ko foreach: associatedOrgs -->
-                        <div class="row">
-                            <div class="col-4" data-bind="text: name"></div>
+            <div data-bind="visible:!isWorks()" class="row form-group">
+                <label class="col-from-label col-md-4" for="aim"><g:message
+                        code="project.details.aim"/><fc:iconHelp><g:message
+                        code="project.details.aim.help"/></fc:iconHelp><i class="req-field"></i></label>
 
-                            <div class="col-4">
-                                <div data-bind="if: logo">
-                                    <img src="" data-bind="attr: {src: logo}" alt="Organisation logo"
-                                         class="small-logo" onerror="imageError(this, '${noImageUrl}');">
-                                </div>
-                            </div>
+                <div class="col-md-8">
+                    <g:textArea class="form-control" name="aim" data-bind="value:aim"
+                                data-validation-engine="validate[required]" maxlength="300" rows="3"/>
+                </div>
+            </div>
 
-                            <div class="col-4">
-                                <a href="#" data-bind="click: $parent.removeAssociatedOrganisation"
-                                   class="btn btn-primary-dark">
-                                    <i class="far fa-trash-alt"></i>
-                                    <g:message code="project.details.associatedOrgs.remove"/>
-                                </a>
-                            </div>
-                        </div>
-                        <!-- /ko -->
+            <div class="row form-group">
+                <label class="col-from-label col-md-4" for="description"><g:message
+                        code="project.details.description"/><fc:iconHelp><g:message
+                        code="project.details.description.help"/></fc:iconHelp><i class="req-field"></i></label>
+
+                <div class="col-md-8">
+                    <g:textArea class="form-control" name="description" data-bind="value:description"
+                                data-validation-engine="validate[required]" rows="3"/>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <label class="col-from-label col-md-4" for="manager"><g:message
+                        code="project.details.manager"/><fc:iconHelp><g:message
+                        code="project.details.manager.help"/></fc:iconHelp></label>
+
+                <div class="col-md-8">
+                    <g:textField class="form-control" type="email" data-bind="value:manager" name="manager"/>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <label class="col-from-label col-md-4" for="managerEmail"><g:message
+                        code="project.details.managerEmail"/><fc:iconHelp><g:message
+                        code="project.details.managerEmail.help"/></fc:iconHelp></label>
+
+                <div class="col-md-8">
+                    <g:textField class="form-control" type="text" data-bind="value:managerEmail" name="managerEmail"/>
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <label class="col-from-label col-md-4" for="plannedStartDate"><g:message
+                        code="project.details.plannedStartDate"/>
+                    <fc:iconHelp><g:message code="project.details.plannedStartDate.help"/></fc:iconHelp><i
+                        class="req-field"></i></label>
+
+                <div class="col-12 col-md-4 col-xl-3">
+                    <div class="input-group">
+                        <fc:datePicker class="form-control" targetField="plannedStartDate.date" name="plannedStartDate"
+                                       id="plannedStartDate" data-validation-engine="validate[required]" bs4="true"
+                                       theme="btn-dark"/>
                     </div>
                 </div>
             </div>
 
-            <div data-bind="with: associatedOrganisationSearch">
-                <div id="addAssociatedOrgPanel">
-                    <div class="row form-group">
-                        <label class="col-form-label col-md-4"
-                               for="associatedOrgName"><g:message
-                                code="project.details.associatedOrgs.name"/><i class="req-field"
-                                                                               data-bind="visible: $parent.transients.associatedOrgNotInList()"></i>
-                        </label>
+            <div class="row form-group" data-bind="visible:!isWorks()">
+                <label class="col-from-label col-md-4" for="plannedEndDate"><g:message
+                        code="project.details.plannedEndDate"/>
+                <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp>
+                </label>
 
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <input id="associatedOrgName" class="form-control" type="text"
-                                       placeholder="Start typing a name here" maxlength="256"
-                                       data-validation-engine="validate[condRequired[associatedOrgNotPresent],maxSize[256]]"
-                                       data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'">
+                <div class="col-12 col-md-5 col-xl-4">
+                    <div class="input-group">
+                        <fc:datePicker class="form-control" targetField="plannedEndDate.date" name="plannedEndDate"
+                                       clearBtn="true"
+                                       id="plannedEndDate" data-validation-engine="validate[future[plannedStartDate]]"
+                                       bs4="true" theme="btn-dark"/>
+                    </div>
+                    <small id="emailHelp" class="form-text text-muted"><g:message
+                            code="project.details.plannedEndDate.extra"/></small>
+                </div>
+            </div>
 
-                                <div class="input-group-append">
-                                    <button
-                                            class="btn btn-dark" type="button" data-bind="click:clearSelection">
-                                        <i
-                                                class='fas fa-search'
-                                                data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-times-circle':searchTerm()}"></i>
-                                    </button>
+            <div class="row form-group" data-bind="visible:isWorks()">
+                <label class="col-from-label col-md-4" for="plannedEndDate"><g:message
+                        code="project.details.plannedEndDate"/>
+                    <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp><i
+                        class="req-field"></i>
+                </label>
+
+                <div class="col-12 col-md-4 col-xl-2">
+                    <div class="input-group">
+                        <fc:datePicker class="form-control" targetField="plannedEndDate.date" name="plannedEndDate"
+                                       id="plannedEndDate"
+                                       data-validation-engine="validate[required,future[plannedStartDate]]"
+                                       data-errormessage-value-missing="Works projects must have an end date" bs4="true"
+                                       theme="btn-dark"/>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="associatedOrgs">
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="associatedOrgList">
+                        <g:message code="project.details.associatedOrgs"/>:
+                        <fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp>
+                    </label>
+
+                    <div class="col-md-8">
+                        <p><g:message code="project.details.associatedOrgs.extra"/></p>
+
+                        <div id="associatedOrgList">
+                            <g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
+                            <!-- ko foreach: associatedOrgs -->
+                            <div class="row">
+                                <div class="col-4" data-bind="text: name"></div>
+
+                                <div class="col-4 d-flex justify-content-center align-content-center">
+                                    <!-- ko if: logo -->
+                                        <img src="" data-bind="attr: {src: logo}" alt="Organisation logo"
+                                             class="small-logo" onerror="imageError(this, '${noImageUrl}');"
+                                             onload="addClassForImage(this, '${noImageUrl}', 'w-25')">
+                                    <!-- /ko -->
+                                </div>
+
+                                <div class="col-4">
+                                    <a href="#" data-bind="click: $parent.removeAssociatedOrganisation"
+                                       class="btn btn-danger">
+                                        <i class="far fa-trash-alt"></i>
+                                        <g:message code="project.details.associatedOrgs.remove"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+
+                <div data-bind="with: associatedOrganisationSearch">
+                    <div id="addAssociatedOrgPanel">
+                        <div class="row form-group">
+                            <label class="col-form-label col-md-4"
+                                   for="associatedOrgName"><g:message
+                                    code="project.details.associatedOrgs.name"/><i class="req-field"
+                                                                                   data-bind="visible: $parent.transients.associatedOrgNotInList()"></i>
+                            </label>
+
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input id="associatedOrgName" class="form-control" type="text"
+                                           placeholder="Start typing a name here" maxlength="256"
+                                           data-validation-engine="validate[condRequired[associatedOrgNotPresent],maxSize[256]]"
+                                           data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'">
+
+                                    <div class="input-group-append">
+                                        <button
+                                                class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
+                                            <i
+                                                    class='fas fa-search'
+                                                    data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="organisation-search" data-bind="slideVisible: navigationShouldBeVisible()">
-                        <div data-bind="slideVisible: !$parent.transients.associatedOrgNotInList()">
+                        <div class="organisation-search" data-bind="slideVisible: navigationShouldBeVisible()">
+                            <div data-bind="slideVisible: !$parent.transients.associatedOrgNotInList()">
+                                <div class="row form-group">
+                                    <div class="col-md-4"></div>
+
+                                    <div class="col-md-8">
+                                        <p>
+                                            <b>Organisation Search Results</b> (Click an organisation to select it)
+                                        </p>
+
+                                        <div class="organisation-list">
+                                            <ul class="list-unstyled ml-1">
+                                                <!-- ko foreach : organisations -->
+                                                <li data-bind="css:{active:$parent.isSelected($data)}">
+                                                    <a class="btn btn-link text-left"
+                                                       data-bind="click:$parent.select, text:name"></a>
+                                                </li>
+                                                <!-- /ko -->
+                                            </ul>
+                                        </div>
+
+                                        <g:render template="/shared/pagination" model="[bs: 4, classes: 'my-1']"/>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row form-group">
                                 <div class="col-md-4"></div>
 
                                 <div class="col-md-8">
+                                    <div class="custom-checkbox">
+                                        <input type="checkbox" id="associatedOrgNotPresent"
+                                               value="organisationNotOnList"
+                                               data-bind="checked: $parent.transients.associatedOrgNotInList, enable:displayNavigationControls() && allViewed()"/>
+                                        <label class="form-check-label" for="associatedOrgNotPresent">
+                                            <g:message code="project.details.associatedOrgs.notInList"/>&nbsp;
+                                            <fc:iconHelp><g:message
+                                                code="project.details.organisation.notInList.help"/></fc:iconHelp>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" data-bind="visible: $parent.transients.associatedOrgNotInList()">
+                                <div class="col-md-4"></div>
+
+                                <div class="col-md-8">
                                     <p>
-                                        <b>Organisation Search Results</b> (Click an organisation to select it)
+                                        <g:message code="project.details.associatedOrgs.notInList.extra"/>
                                     </p>
 
-                                    <div class="organisation-list">
-                                        <ul class="list-unstyled ml-1">
-                                            <!-- ko foreach : organisations -->
-                                            <li data-bind="css:{active:$parent.isSelected($data)}">
-                                                <a class="btn btn-link text-left"
-                                                   data-bind="click:$parent.select, text:name"></a>
-                                            </li>
-                                            <!-- /ko -->
-                                        </ul>
+                                    <div class="row form-group">
+                                        <label class="col-form-label col-md-4"
+                                               for="associatedOrgUrl"><g:message
+                                                code="project.details.associatedOrgs.url"/></label>
+
+                                        <div class="col-md-8">
+                                            <input id="associatedOrgUrl" class="form-control" type="text"
+                                                   data-bind="value: $parent.transients.associatedOrgUrl">
+                                        </div>
                                     </div>
 
-                                    <g:render template="/shared/pagination" model="[bs: 4, classes: 'my-1']"/>
-                                </div>
-                            </div>
-                        </div>
+                                    <div class="row form-group">
+                                        <label class="col-form-label col-md-4"
+                                               for="associatedOrgLogo"><g:message
+                                                code="project.details.associatedOrgs.logo"/></label>
 
-                        <div class="row form-group">
-                            <div class="col-md-4"></div>
-
-                            <div class="col-md-8">
-                                <div class="custom-checkbox">
-                                    <input type="checkbox" id="associatedOrgNotPresent"
-                                           value="organisationNotOnList"
-                                           data-bind="checked: $parent.transients.associatedOrgNotInList, enable:displayNavigationControls() && allViewed()"/>
-                                    <label class="form-check-label" for="associatedOrgNotPresent">
-                                        <g:message code="project.details.associatedOrgs.notInList"/>&nbsp;
-                                        <fc:iconHelp><g:message
-                                            code="project.details.organisation.notInList.help"/></fc:iconHelp>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row form-group" data-bind="visible: $parent.transients.associatedOrgNotInList()">
-                            <div class="col-md-4"></div>
-
-                            <div class="col-md-8">
-                                <p>
-                                    <g:message code="project.details.associatedOrgs.notInList.extra"/>
-                                </p>
-
-                                <div class="row form-group">
-                                    <label class="col-form-label col-md-4"
-                                           for="associatedOrgUrl"><g:message
-                                            code="project.details.associatedOrgs.url"/></label>
-
-                                    <div class="col-md-8">
-                                        <input id="associatedOrgUrl" class="form-control" type="text"
-                                               data-bind="value: $parent.transients.associatedOrgUrl">
-                                    </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <label class="col-form-label col-md-4"
-                                           for="associatedOrgLogo"><g:message
-                                            code="project.details.associatedOrgs.logo"/></label>
-
-                                    <div class="col-md-8">
-                                        <input id="associatedOrgLogo" class="form-control" type="text"
-                                               data-validation-engine="validate[custom[httpsUrl]]"
-                                               data-bind="value: $parent.transients.associatedOrgLogoUrl">
+                                        <div class="col-md-8">
+                                            <input id="associatedOrgLogo" class="form-control" type="text"
+                                                   data-validation-engine="validate[custom[httpsUrl]]"
+                                                   data-bind="value: $parent.transients.associatedOrgLogoUrl">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row form-group">
-                            <div class="offset-md-4 col-md-8">
-                                <div id="orgAlreadyAddedMessage"></div>
+                            <div class="row form-group">
+                                <div class="offset-md-4 col-md-8">
+                                    <div id="orgAlreadyAddedMessage"></div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="row form-group">
-                            <div class="offset-md-4 col-md-8">
-                                <button class="btn btn-primary-dark"
-                                        data-bind="click: addSelectedOrganisation, enable: selection() || searchTerm() && $parent.transients.associatedOrgNotInList() ">
-                                    <i class="fas fa-plus"></i><g:message
-                                        code="project.details.associatedOrgs.add"/></button>
+                            <div class="row form-group">
+                                <div class="offset-md-4 col-md-8">
+                                    <button class="btn btn-primary-dark"
+                                            data-bind="click: addSelectedOrganisation, enable: selection() || searchTerm() && $parent.transients.associatedOrgNotInList() ">
+                                        <i class="fas fa-plus"></i><g:message
+                                            code="project.details.associatedOrgs.add"/></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_INDUSTRIES}">
-                <div class="row form-group">
-                        <label class="col-from-label col-md-4"><g:message
-                                code="project.details.industries.label"/>:<fc:iconHelp><g:message
-                                code="project.details.industries.help"/></fc:iconHelp></label>
+                <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_INDUSTRIES}">
+                    <div class="row form-group">
+                            <label class="col-from-label col-md-4"><g:message
+                                    code="project.details.industries.label"/>:<fc:iconHelp><g:message
+                                    code="project.details.industries.help"/></fc:iconHelp></label>
 
-                        <div class="col-md-8">
-                            <!-- ko foreach: transients.industries -->
-                            <!-- ko template: { name:'industryTemplate'} -->
-                            <!-- /ko -->
-                            <!-- /ko -->
-                        </div>
-                </div>
-            </config:optionalContent>
+                            <div class="col-md-8">
+                                <!-- ko foreach: transients.industries -->
+                                <!-- ko template: { name:'industryTemplate'} -->
+                                <!-- /ko -->
+                                <!-- /ko -->
+                            </div>
+                    </div>
+                </config:optionalContent>
 
-            <g:if test="${!hubConfig.content?.hideProjectEditCountries}">
-                <div class="row form-group">
-                        <label class="col-from-label col-md-4" for="associatedOrgList"><g:message
-                                code="project.details.countries.label"/>:<fc:iconHelp><g:message
-                                code="project.details.countries.help"/></fc:iconHelp><i class="req-field"></i></label>
+                <g:if test="${!hubConfig.content?.hideProjectEditCountries}">
+                    <div class="row form-group">
+                            <label class="col-from-label col-md-4" for="associatedOrgList"><g:message
+                                    code="project.details.countries.label"/>:<fc:iconHelp><g:message
+                                    code="project.details.countries.help"/></fc:iconHelp><i class="req-field"></i></label>
 
-                        <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <!-- ko foreach: countries -->
-                                    <div class="row mb-1">
-                                        <div class="col-12">
-                                            <div class="input-group">
-                                                <input data-bind="value: $data" readonly>
-                                                <div class="input-group-append">
-                                                    <a class="btn btn-danger btn-sm" href="#" data-bind="click: $root.transients.removeCountry">
-                                                        <i class="far fa-trash-alt"></i>
-                                                    </a>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <!-- ko foreach: countries -->
+                                        <div class="row mb-1">
+                                            <div class="col-12">
+                                                <div class="input-group">
+                                                    <input data-bind="value: $data" readonly>
+                                                    <div class="input-group-append">
+                                                        <a class="btn btn-danger btn-sm" href="#" data-bind="click: $root.transients.removeCountry">
+                                                            <i class="far fa-trash-alt"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- /ko -->
+                                        <select class="form-control" id="countries"
+                                                data-bind="options: $root.transients.countries, event:{change: $root.transients.selectCountry}, optionsCaption: '<g:message
+                                                        code="project.details.countries.placeholder"/>'"></select>
                                     </div>
-                                    <!-- /ko -->
-                                    <select class="form-control" id="countries"
-                                            data-bind="options: $root.transients.countries, event:{change: $root.transients.selectCountry}, optionsCaption: '<g:message
-                                                    code="project.details.countries.placeholder"/>'"></select>
-                                </div>
 
-                                <div class="col-md-8">
-                                    <div class="row form-group">
-                                        <label class="col-from-label col-md-3"><g:message
-                                                    code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message
-                                                    code="project.details.uNRegions.help"/></fc:iconHelp><i
-                                                    class="req-field"></i></label>
+                                    <div class="col-md-8">
+                                        <div class="row form-group">
+                                            <label class="col-from-label col-md-3"><g:message
+                                                        code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message
+                                                        code="project.details.uNRegions.help"/></fc:iconHelp><i
+                                                        class="req-field"></i></label>
 
-                                            <div class="col-md-9">
-                                                <!-- ko foreach: uNRegions -->
-                                                <div class="row mb-1">
-                                                    <div class="col-12">
-                                                    <div class="input-group">
-                                                        <input data-bind="value: $data" readonly>
-                                                        <div class="input-group-append">
-                                                            <a class="btn btn-danger btn-sm" href="#" data-bind="click: $root.transients.removeUNRegion">
-                                                                <i class="far fa-trash-alt"></i>
-                                                            </a>
+                                                <div class="col-md-9">
+                                                    <!-- ko foreach: uNRegions -->
+                                                    <div class="row mb-1">
+                                                        <div class="col-12">
+                                                        <div class="input-group">
+                                                            <input data-bind="value: $data" readonly>
+                                                            <div class="input-group-append">
+                                                                <a class="btn btn-danger btn-sm" href="#" data-bind="click: $root.transients.removeUNRegion">
+                                                                    <i class="far fa-trash-alt"></i>
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    </div>
+                                                    <!-- /ko -->
+                                                    <select class="form-control" id="uNRegionsId"
+                                                            data-bind="options: $root.transients.uNRegions, event:{change: $root.transients.selectUNRegion}, optionsCaption: '<g:message
+                                                                    code="project.details.uNRegions.placeholder"/>'"></select>
                                                 </div>
-                                                </div>
-                                                <!-- /ko -->
-                                                <select class="form-control" id="uNRegionsId"
-                                                        data-bind="options: $root.transients.uNRegions, event:{change: $root.transients.selectUNRegion}, optionsCaption: '<g:message
-                                                                code="project.details.uNRegions.placeholder"/>'"></select>
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                </div>
-            </g:if>
+                    </div>
+                </g:if>
 
 
-            <div class="row form-group">
-                <label class="col-from-label col-md-4" for="bushfire"><g:message
-                        code="project.details.bushfire"/><fc:iconHelp><g:message
-                        code="project.details.bushfire.help"/></fc:iconHelp></label>
-
-                <div class="col-md-8">
-                    <select class="form-control" id="bushfire"
-                          data-bind="booleanValue:isBushfire, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select>
-                </div>
-            </div>
-
-            <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_BUSHFIRE_CATEGORIES}">
                 <div class="row form-group">
-                    <label class="col-from-label col-md-4"><g:message
-                            code="project.details.bushfireCategories.label"/>:<fc:iconHelp><g:message
-                            code="project.details.bushfireCategories.help"/></fc:iconHelp></label>
+                    <label class="col-from-label col-md-4" for="bushfire"><g:message
+                            code="project.details.bushfire"/><fc:iconHelp><g:message
+                            code="project.details.bushfire.help"/></fc:iconHelp></label>
 
                     <div class="col-md-8">
-                        <!-- ko foreach: transients.bushfireCategories -->
-                        <!-- ko template: { name:'bushfireCategoriesTemplate'} -->
-                        <!-- /ko -->
-                        <!-- /ko -->
+                        <select class="form-control" id="bushfire"
+                              data-bind="booleanValue:isBushfire, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select>
                     </div>
                 </div>
-            </config:optionalContent>
 
-            <g:if test="${!hubConfig.content?.hideProjectEditScienceTypes}">
-                <div class="row form-group" data-bind="if:isEcoScience()">
-                    <label class="col-from-label col-md-4"><g:message
-                            code="project.details.scienceType"/><fc:iconHelp><g:message
-                            code="project.details.scienceType.help"/></fc:iconHelp></label>
+                <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_BUSHFIRE_CATEGORIES}">
+                    <div class="row form-group">
+                        <label class="col-from-label col-md-4"><g:message
+                                code="project.details.bushfireCategories.label"/>:<fc:iconHelp><g:message
+                                code="project.details.bushfireCategories.help"/></fc:iconHelp></label>
 
-                    <div class="col-md-8">
-                        <div class="row">
-                            <!-- ko foreach: transients.availableEcoScienceTypes -->
-                            <div class="col-12 col-md-4">
-
-                                <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 1 }-->
-
-                                <!-- /ko -->
-                            </div>
+                        <div class="col-md-8">
+                            <!-- ko foreach: transients.bushfireCategories -->
+                            <!-- ko template: { name:'bushfireCategoriesTemplate'} -->
+                            <!-- /ko -->
                             <!-- /ko -->
                         </div>
                     </div>
-                </div>
-            </g:if>
+                </config:optionalContent>
+
+                <g:if test="${!hubConfig.content?.hideProjectEditScienceTypes}">
+                    <div class="row form-group" data-bind="if:isEcoScience()">
+                        <label class="col-from-label col-md-4"><g:message
+                                code="project.details.scienceType"/><fc:iconHelp><g:message
+                                code="project.details.scienceType.help"/></fc:iconHelp></label>
+
+                        <div class="col-md-8">
+                            <div class="row">
+                                <!-- ko foreach: transients.availableEcoScienceTypes -->
+                                <div class="col-12 col-md-4">
+
+                                    <!-- ko template: { name:'ecoScienceTypeTemplate', if: ($index() +1) % 3 == 1 }-->
+
+                                    <!-- /ko -->
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+                </g:if>
+            </div>
         </div>
     </div>
 
-    <div>
-        <div>
-            <h4 class="block-header"><g:message code="project.details.associations"/></h4>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h4 class="card-title"><g:message code="project.details.associations"/></h4>
 
             <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row form-group">
                 <label class="col-from-label col-md-4" for="externalId"><g:message
@@ -614,9 +614,9 @@
                                    data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection"
                                    class="form-control" placeholder="Start typing a name here..." type="text"/>
                             <div class="input-group-append">
-                                <button class="btn btn-dark" type="button" data-bind="click:clearSelection, css:{'btn-dark':!searchTerm(), 'btn-danger':searchTerm()}">
+                                <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
                                     <i class='fas fa-search'
-                                        data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-times-circle':searchTerm()}"></i>
+                                        data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
                                 </button>
                             </div>
                         </div>
@@ -677,9 +677,9 @@
                                    data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection"
                                    class="form-control" placeholder="Start typing a name here..." type="text"/>
                             <div class="input-group-append">
-                                <button class="btn btn-dark" type="button" data-bind="click:clearSelection">
+                                <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
                                     <i class='fas fa-search'
-                                        data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-times-circle':searchTerm()}"></i>
+                                        data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
                                 </button>
                             </div>
                         </div>
@@ -743,9 +743,9 @@
         </div>
     </div>
 
-    <div data-bind="if:(isCitizenScience() || !isExternal()) && !isWorks() && !isEcoScience()" class="row form-group">
-        <div class="col-12">
-            <h4 class="block-header"><g:message code="project.details.involved"/></h4>
+    <div data-bind="if:(isCitizenScience() || !isExternal()) && !isWorks() && !isEcoScience()" class="card mt-3">
+        <div class="card-body">
+            <h4 class="card-title"><g:message code="project.details.involved"/></h4>
 
             <div class="row form-group">
                 <label class="col-from-label col-md-4" for="getInvolved"><g:message
@@ -887,9 +887,9 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row form-group">
-        <div class="col-12">
-            <h4 class="block-header"><g:message code="project.details.find"/></h4>
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="card mt-3">
+        <div class="card-body">
+            <h4 class="card-title"><g:message code="project.details.find"/></h4>
 
             <div class="row form-group">
                 <label class="col-from-label col-md-4" for="urlWeb"><g:message
@@ -918,9 +918,9 @@
         </div>
     </div>
 
-    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="row form-group">
-        <div class="col-12">
-            <h4 class="block-header"><g:message code="project.details.image"/></h4>
+    <div data-bind="visible:isCitizenScience() || isEcoScience() || !isExternal()" class="card mt-3">
+        <div class="card-body">
+            <h4 class="card-title"><g:message code="project.details.image"/></h4>
 
             <div class="row form-group">
                 <label class="col-from-label col-md-4" for="logo"><g:message
@@ -1007,11 +1007,11 @@
         </div>
     </div>
 
-    <div data-bind="visible:(isCitizenScience() || isEcoScience() || !isExternal())" class="row form-group">
-        <div class="col-12">
+    <div data-bind="visible:(isCitizenScience() || isEcoScience() || !isExternal())" class="card mt-3">
+        <div class="card-body">
             <!-- ko stopBinding: true -->
             <div id="sitemap">
-                <h4 class="block-header"><g:message code="project.details.site"/><i class="req-field"></i></h4>
+                <h4 class="card-title"><g:message code="project.details.site"/><i class="req-field"></i></h4>
 
                 <p>
                     <g:message code="project.projectarea.title"/>
@@ -1022,18 +1022,18 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <h4 class="block-header"><g:message code="project.details.configuration"/></h4>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h4 class="card-title"><g:message code="project.details.configuration"/></h4>
             <map-config-selector
                     params="allBaseLayers: fcConfig.allBaseLayers, allOverlays: fcConfig.allOverlays, mapLayersConfig: mapLayersConfig"></map-config-selector>
         </div>
     </div>
 
     <g:if test="${grailsApplication.config.termsOfUseUrl}">
-        <div class="row" style="display: none" data-bind="visible: !isExternal()">
-            <div class="col-12">
-                <h4 class="block-header"><g:message code="project.details.termsOfUseAgreement"/></h4>
+        <div class="card mt-3" style="display: none" data-bind="visible: !isExternal()">
+            <div class="card-body">
+                <h4 class="card-title"><g:message code="project.details.termsOfUseAgreement"/></h4>
 
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="termsOfUseAgreement"><g:message

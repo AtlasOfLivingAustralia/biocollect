@@ -6,7 +6,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
@@ -15,6 +15,7 @@
            value="${createLink(controller: 'organisation', action: 'getMembersForOrganisation', id: organisation.organisationId)}"/>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -77,30 +78,12 @@
             spatialUrl: "",
             paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
             </g:applyCodec>
         };
     </asset:script>
-%{--    <style type="text/css">--}%
-%{--    #projectList th {--}%
-%{--        white-space: normal;--}%
-%{--    }--}%
-
-%{--    .admin-action {--}%
-%{--        width: 7em;--}%
-%{--    }--}%
-
-%{--    .smallFont {--}%
-%{--        margin: 5px 0;--}%
-%{--    }--}%
-%{--    </style>--}%
     <g:render template="/shared/conditionalLazyLoad"/>
     <asset:stylesheet src="project-finder-manifest.css"/>
-%{--    <asset:stylesheet src="base.css"/>--}%
-%{--    <asset:stylesheet src="facets-filter-view.css"/>--}%
-%{--    <asset:stylesheet src="projects-manifest.css"/>--}%
-%{--    <asset:stylesheet src="project-finder.css"/>--}%
     <asset:javascript src="org-index-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
@@ -153,7 +136,7 @@
            selectedReport = 'dashboard';
         }
         $dashboardType.val(selectedReport);
-        $dashboardType.change(function(e) {
+        $dashboardType.on('change',function(e) {
             var $content = $('#dashboard-content');
             var $loading = $('.loading-message');
             $content.hide();

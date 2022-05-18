@@ -5,7 +5,7 @@
 <head>
   <meta name="layout" content="bs4"/>
   <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <g:if test="${project}">
@@ -22,6 +22,7 @@
 
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -47,10 +48,9 @@
         sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
         ajaxUpdateUrl: "${createLink(action: 'ajaxUpdate', id: site?.siteId)}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-        </g:applyCodec>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
+        </g:applyCodec>
         },
         here = window.location.href;
 
@@ -103,17 +103,17 @@
         $('.helphover').popover({animation: true, trigger:'hover'});
 
         var siteViewModel = initSiteViewModel(true, ${!userCanEdit});
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             if(siteViewModel.saved()){
                 document.location.href = fcConfig.sitePageUrl;
-            } if(fcConfig.projectUrl){
+            } else if(fcConfig.projectUrl){
                 document.location.href = fcConfig.projectUrl;
-            }else {
+            } else {
                 document.location.href = fcConfig.homePageUrl;
             }
         });
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             if ($('#validation-container').validationEngine('validate')) {
                 var json = siteViewModel.toJS();
                 //validate  if extent.geometry.pid, then update extent.source to pid, extent.geometry.type to pid

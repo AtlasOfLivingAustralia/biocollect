@@ -786,13 +786,21 @@ function DatePickerViewModel(config) {
     self.doNotUpdate = ko.observable(false);
 
     self.fromDate.subscribe(function () {
-        self.term.from(getYearMonthDate(self.fromDate.date()));
-        self.updateSelectedFacets();
+        var fromDate = getYearMonthDate(self.fromDate.date()),
+            termFromDate = self.term.from();
+        if (fromDate !== termFromDate) {
+            self.term.from(getYearMonthDate(self.fromDate.date()));
+            self.updateSelectedFacets();
+        }
     });
 
     self.toDate.subscribe(function () {
-        self.term.to(getYearMonthDate(self.toDate.date()));
-        self.updateSelectedFacets();
+        var toDate = getYearMonthDate(self.toDate.date()),
+            termToDate = self.term.to();
+        if (toDate !== termToDate) {
+            self.term.to(getYearMonthDate(self.toDate.date()));
+            self.updateSelectedFacets();
+        }
     });
 
     self.setTermState = function () {

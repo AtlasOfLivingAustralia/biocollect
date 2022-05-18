@@ -183,7 +183,7 @@ function ProjectFinder(config) {
 
         this.filterViewModel.selectedFacets.subscribe(this.doSearch)
     }
-    
+
     /**
      * check if button has active flag
      * @param $button
@@ -394,13 +394,6 @@ function ProjectFinder(config) {
         map.max =  pageWindow.pagination.resultsPerPage() // Page size
         map.sort = pageWindow.sortBy();
 
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                var checked = isButtonChecked($('#pt-search-program-' + program.name.replace(/ /g, '-')))
-                if (checked) map["isProgram" + program.name.replace(/ /g, '-')] = true
-            });
-        }
-
         return map
     };
 
@@ -460,7 +453,8 @@ function ProjectFinder(config) {
                 setTimeout(scrollToProject, 500);
                 // Issue map search in parallel to 'standard' search
                 // standard search is required to drive facet display
-                self.doMapSearch(projectVMs);
+                // todo : uncomment when all project area can be shown without pagination
+                // self.doMapSearch(projectVMs);
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -506,7 +500,7 @@ function ProjectFinder(config) {
             traditional: true
         });
     };
-    
+
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
         return true
@@ -784,7 +778,7 @@ function ProjectFinder(config) {
         // }
 
     });
-    
+
     $("#pt-aus-world").on('statechange', function(){
         var viewMode = getActiveButtonValues($("#pt-view"));
     })
@@ -818,10 +812,10 @@ function ProjectFinder(config) {
         }
     }
 
-    $("#clearFilterByRegionButton").click(clearGeoSearch);
+    $("#clearFilterByRegionButton").on('click',clearGeoSearch);
 
 
-    $('#pt-search-link').click(function () {
+    $('#pt-search-link').on('click',function () {
         self.setTextSearchSettings();
         self.resetPageOffSet();
         self.doSearch();
@@ -835,16 +829,16 @@ function ProjectFinder(config) {
         }
     });
 
-    $('#pt-reset').click(function () {
+    $('#pt-reset').on('click',function () {
         self.reset()
     });
 
-    $("#btnShowTileView").click(function () {
+    $("#btnShowTileView").on('click',function () {
         pageWindow.showTileView();
-        
+
     });
 
-    $("#btnShowListView").click(function () {
+    $("#btnShowListView").on('click',function () {
         pageWindow.showListView();
 
     });
@@ -925,16 +919,10 @@ function ProjectFinder(config) {
         offset = Number.parseInt(params.offset || offset);
         selectedProjectId = params.projectId;
 
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                toggleButton($('#pt-search-program-' + program.name.replace(/ /g, '-')), toBoolean(params["isProject" + program.name]));
-            });
-        }
-
         pageWindow.sortBy( params.sort || 'dateCreatedSort');
         pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '20'));
         pageWindow.isWorldWide( params.isWorldWide || 'false');
-        
+
         $('#pt-search').val(params.queryText).focus();
         pageWindow.filterViewModel.switchOffSearch(false);
     }

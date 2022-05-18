@@ -66,6 +66,7 @@ var ProjectActivity = function (params) {
     self.transients.activityLastUpdated = stats.activityLastUpdated;
     self.transients.speciesRecorded = ko.observable(stats.speciesRecorded).extend({integer:0});
     self.transients.activityCount = ko.observable(stats.activityCount).extend({integer:0});
+    self.transients.metadataToggle = ko.observable(true);
     self.transients.isDataManagementPolicyDocumented = ko.computed({
         read: function () {
             if(self.isDataManagementPolicyDocumented() === false) {
@@ -177,6 +178,10 @@ var ProjectActivity = function (params) {
     self.transients.areAllSitesSelected.subscribe(function(value){
         self.transients.isSelectAllSites(value);
     });
+
+    self.transients.toggleMetadata = function(value){
+        self.transients.metadataToggle(!self.transients.metadataToggle());
+    };
 
     /**
      * Does sanity check when switching between options. Makes sure certain options are cleared when survey site option
@@ -663,7 +668,7 @@ var ProjectActivity = function (params) {
         var count = 0;
         var sites = self.sites();
         sites.forEach(function(site){
-            if(site.added()){
+            if(site.added() && !site.isProjectArea()){
                 count ++;
             }
         });

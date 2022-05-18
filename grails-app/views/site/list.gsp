@@ -4,12 +4,12 @@
 <head>
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
     <title>${title}</title>
-%{--    <meta name="layout" content="${hubConfig.skin}"/>--}%
     <meta name="layout" content="bs4"/>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
-        var fcConfig = {
+    var fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -25,11 +25,10 @@
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            </g:applyCodec>
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             myFavourites: "${myFavourites}"
-        }
+            </g:applyCodec>
+    }
     </script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
@@ -80,11 +79,11 @@
                     <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
                         <div class="btn-group">
                             <div id="siteListResultTab" class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a type="button" class="btn btn-outline-dark active" id="list-tab" data-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
+                                <a class="btn btn-outline-dark active" id="list-tab" data-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
                                         class="fas fa-th-large"></i></a>
-                                <a type="button" class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i
+                                <a class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i
                                         class="far fa-map"></i></a>
-                                <a type="button" class="btn btn-outline-dark" id="images-tab" data-toggle="tab" title="View as Images" href="#images" role="tab" aria-controls="View as Images"><i
+                                <a class="btn btn-outline-dark" id="images-tab" data-toggle="tab" title="View as Images" href="#images" role="tab" aria-controls="View as Images"><i
                                         class="far fa-images"></i></a>
                             </div>
                         </div>
@@ -100,14 +99,14 @@
                     <btn class="filter-item btn btn-sm btn-outline-dark" data-bind="attr:{title:facet.metadata.displayName + ' : ' + displayName()}">
                         <!-- ko text: facet.metadata.displayName + ' : ' + displayName() --><!-- /ko -->
                         <span class="remove" data-remove data-bind="click: $root.removeFacetTerm">
-                            <i class="far fa-times-circle"></i>
+                            <i class="far fa-trash-alt"></i>
                         </span>
                     </btn>
                     <!-- /ko -->
                     <!-- ko if: (selectedFacets() && (selectedFacets().length > 0)) -->
                     <button class="btn btn-sm btn-dark clear-filters"  data-bind="click: removeAllSelectedFacets" type="button"
                             aria-label="Clear all filters">
-                        <i class="far fa-times-circle"></i> Clear All
+                        <i class="far fa-trash-alt"></i> Clear All
                     </button>
                     <!-- /ko -->
                 </div>

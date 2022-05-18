@@ -6,7 +6,7 @@
     </div>
 </div>
 <div class="content">
-    <h4 data-bind="text:name"></h4>
+    <h4 style="font-weight: normal" data-bind="text:name"></h4>
     <div>
         <div class="author" data-bind="if:$data.attribution">Author Name: <!-- ko text:attribution --> <!-- /ko --></div>
         <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="attr:{href:url}, clickBubble: false"><i class="fas fa-download"></i> Download</a>
@@ -15,17 +15,22 @@
 </script>
 
 <script id="objDocTmpl" type="text/html">
-<div class="image" data-bind="style:{'background-image': 'url(' + filetypeImg() + ')'}, alt:name" data-preview="filename.jpg">
-    <div class="hover">
-        <i class="far fa-eye fa-2x"></i>
-        <span>Preview</span>
+<div>
+    <div class="image" data-bind="style:{'background-image': 'url(' + filetypeImg() + ')'}, alt:name" data-preview="filename.jpg">
+        <div class="hover" data-bind="visible:!transients.isPreviewDownloadVisible()">
+            <i class="far fa-eye fa-2x"></i>
+            <span>Preview</span>
+        </div>
     </div>
+    <div class="role" data-bind="if:$data.role"><!-- ko text:$parent.mapDocument(role()) --> <!-- /ko --></div>
 </div>
 <div class="content">
-    <h4  data-bind="text:name"></h4>
+    <h4 style="font-weight: normal" data-bind="text:name"></h4>
     <div>
         <div class="author" data-bind="if:$data.attribution">Author Name: <!-- ko text:attribution --> <!-- /ko --></div>
-        <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="attr:{href:url}, clickBubble: false"><i class="fas fa-download"></i> Download</a>
+        <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="click:$parent.isHtmlViewer"><i class="far fa-eye"></i> Description</a>
+        <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="click:'url(' + filetypeImg() + ')', visible:!transients.isPreviewDownloadVisible()"><i class="far fa-eye"></i> Preview</a>
+        <a href="#" class="btn btn-sm btn-primary-dark mt-1" data-bind="attr:{href:url}, visible:!transients.isPreviewDownloadVisible(), clickBubble: false"><i class="fas fa-download"></i> Download</a>
     </div>
 </div>
 </script>

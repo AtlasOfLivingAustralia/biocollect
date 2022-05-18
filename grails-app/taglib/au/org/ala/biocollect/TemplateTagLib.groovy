@@ -20,8 +20,8 @@ class TemplateTagLib {
             String url = getLinkUrl(link)
             out << """
             <div class="${classes} homePageNav">
-                <div class="w-100 h-100 border border-dark text-center rounded-lg homepage-button" onclick="window.location = '${url}'">
-                    <div class="p-5 border-0">
+                <div class="w-100 h-100 border text-center rounded-lg homepage-button" onclick="window.location = '${url}'">
+                    <div class="p-3 border-0">
                         <h3 class="p-0 m-0">${link?.displayName}</h3>
                     </div>
                 </div>
@@ -31,11 +31,13 @@ class TemplateTagLib {
     }
 
     boolean isUrlActivePage(String url) {
-        String qString = request.getQueryString()
-        qString = qString ? '?' + qString : ''
-        String rUrl = "${request.requestURI}${qString}"
-        String fUrl =  "${request.forwardURI}${qString}"
-        rUrl?.endsWith(url) || fUrl?.endsWith(url)
+        if(url) {
+            String qString = request.getQueryString()
+            qString = qString ? '?' + qString : ''
+            String rUrl = "${request.requestURI}${qString}"
+            String fUrl =  "${request.forwardURI}${qString}"
+            rUrl?.endsWith(url) || fUrl?.endsWith(url)
+        }
     }
 
     /**
@@ -133,7 +135,7 @@ class TemplateTagLib {
                     Map loginOrLogout = printLoginOrLogoutButton(attrs.hubConfig);
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"btn btn-primary btn-sm nav-button\" title=\"${loginOrLogout.displayName}\" href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
+                        out << "<a class=\"btn btn-primary btn-sm nav-button custom-header-login-logout\" title=\"${loginOrLogout.displayName}\" href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
@@ -160,6 +162,17 @@ class TemplateTagLib {
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
                         out << "<a href=\"${url}\">${link.displayName?:'Sites'}</a>";
+                        out << "</li>";
+                    }
+                    break;
+                case 'resources':
+                    if (bs4) {
+                        out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Resources'}\" href=\"${url}\">${link.displayName?:'Resources'}</a>";
+                        out << "</li>";
+                    } else {
+                        out << "<li class=\"main-menu ${classes}\">";
+                        out << "<a href=\"${url}\">${link.displayName?:'Resources'}</a>";
                         out << "</li>";
                     }
                     break;
@@ -256,15 +269,6 @@ class TemplateTagLib {
         out << icon
     }
 
-    def getStyleSheet = { attrs ->
-        if(attrs.file){
-            def scss = grailsApplication.parentContext.getResource("css/template/${attrs.file}")
-            if(scss.exists()){
-                out << scss.inputStream.text;
-            }
-        }
-    }
-
     def optionalContent = { attrs, body ->
 
         if (settingService.getHubConfig()?.supportsOptionalContent(attrs?.key)) {
@@ -329,6 +333,9 @@ class TemplateTagLib {
                 break;
             case 'sites':
                 url = "${createLink(controller: 'site', action: 'list')}";
+                break;
+            case 'resources':
+                url = "${createLink(controller: 'resource', action: 'list')}";
                 break;
             case 'biocacheexplorer':
                 String fq = ''

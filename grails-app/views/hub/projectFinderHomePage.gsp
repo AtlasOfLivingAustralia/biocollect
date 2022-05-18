@@ -9,6 +9,7 @@
 %{--    <asset:stylesheet src="project-finder.css" />--}%
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -51,13 +52,12 @@
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
         hideWorldWideBtn: ${!hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.showProjectRegionSwitch},
         flimit: ${grailsApplication.config.facets.flimit},
-        noImageUrl: '${asset.assetPath(src: "biocollect-logo-dark.png")}',
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
         </g:applyCodec>
   }
     </asset:script>
@@ -88,6 +88,16 @@
     ${hubConfig.title}
 </content>
 <g:render template="/shared/bannerHub"/>
+<g:set var="intro" value="${fc.homePageIntro()}"/>
+<g:if test="intro">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                ${intro}
+            </div>
+        </div>
+    </div>
+</g:if>
 <section id="catalogueSection">
     <div id="project-finder-container">
         <div class="container-fluid show expander projects-container">
