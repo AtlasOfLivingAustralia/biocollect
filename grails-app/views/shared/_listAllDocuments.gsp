@@ -4,38 +4,45 @@
 
         <h2>${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
 
-        <div class="input-group col-12 search-resources">
-            <label for="searchResources" class="sr-only">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
-            <input class="form-control" id="searchResources" type="text" data-bind="value:searchDoc, hasFocus: searchHasFocus, valueUpdate:'keyup'"
-                   placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="org-search-button"/>
-
-            <div class="input-group-append">
-                <label for="searchType" class="input-group-text">Filter by</label>
+        <div class="row mb-2">
+            <div class="col-sm-6 col-lg-3">
+                <div class="input-group search-resources">
+                    <label for="searchResources" class="sr-only">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
+                    <input class="form-control" id="searchResources" type="text" data-bind="value:searchDoc, hasFocus: searchHasFocus, valueUpdate:'keyup'"
+                       placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="org-search-button"/>
+                    <div class="input-group-append">
+                        <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-
-            <div class="input-group-append">
-                <select id="searchType" class="custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Filter">
-                </select>
+            <div class="col-sm-6 col-lg-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label for="searchType" class="input-group-text">Search in</label>
+                    </div>
+                    <select id="searchType" class="custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Filter"></select>
+                </div>
             </div>
-
-            <div class="input-group-append">
-                <label for="searchInRole" class="input-group-text">Search in</label>
+            <div class="col-sm-6 col-lg-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label for="searchInRole" class="input-group-text">Filter by type</label>
+                    </div>
+                    <select id="searchInRole" class="custom-select" data-bind="options:roleFilterFieldOptions, optionsText: 'name', optionsValue: 'id', value:roleFilterField"></select>
+                </div>
             </div>
-
-            <div class="input-group-append">
-                <select id="searchInRole" class="custom-select" data-bind="options:roleFilterFieldOptions, optionsText: 'name', optionsValue: 'id', value:roleFilterField"></select>
-            </div>
-
-            <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)">
-                <i class="fas fa-search"></i>
-            </button>
-
-            <div class="col-md-4 text-right mt-2 mt-md-0">
-                <label for="sortBy" class="col-form-label" style="padding-right: 5px;">Sort by</label>
-                <select id="sortBy" class="form-control col custom-select" data-bind="value: sortBy" aria-label="Sort Order">
-                    <option value="dateCreated">Recently uploaded</option>
-                    <option value="lastUpdated">Recently modified</option>
-                </select>
+            <div class="col-sm-6 col-lg-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text"  for="sortBy">Sort by</label>
+                    </div>
+                    <select id="sortBy" class="custom-select" data-bind="value: sortBy" aria-label="Sort Order">
+                        <option value="dateCreated">Recently uploaded</option>
+                        <option value="lastUpdated">Recently modified</option>
+                    </select>
+                </div>
             </div>
         </div>
 
