@@ -110,14 +110,44 @@ function ReportChartjsViewModel() {
         self.chartInstance = chartInstance;
     }
 
-    self.chartjsList = ko.observableArray();
+    self.chartjsList = ko.observableArray([]);
 
-    self.testChartType = ko.observable('');
-    self.testChartData = ko.observable('');
-    self.testChartOptions = ko.observable('');
+    self.chartjsType = ko.observable('');
+    self.data = ko.observable('');
+    self.options = ko.observable('');
 
     self.chartjsPerRowSelected = ko.observable('');
-    self.chartjsConfig= ko.observable('');
+    self.chartjsConfig = ko.observable('');
+
+    self.chartjsPerRowSpan = ko.pureComputed(function () {
+        const selected = self.chartjsPerRowSelected();
+        const perRow = 12 / parseInt(selected || '2');
+        return 'col-sm-' + perRow.toString();
+    });
+
+    self.populateCharts = function() {
+        var params = {};
+
+        $.ajax({
+            url:fcConfig.chartPopulateUrl,
+            data:params,
+            success:function(data) {
+                if (data) {
+                    self.chartjsPerRowSelected(data.chartjsPerRowSelected)
+
+                    for (let i = 0; i < data.chartList.length; i++)
+                    {
+                        var chart = data.chartList[i]
+
+                        const dashboardViewModel = new DashboardViewModel(chart);
+                        self.chartjsList.push(dashboardViewModel);
+                    }
+                }
+            }
+        });
+    }
+
+    self.populateCharts();
 
     self.chartjsPerRowGroupedItems = ko.pureComputed(function () {
         const selected = self.chartjsPerRowSelected();
@@ -134,32 +164,20 @@ function ReportChartjsViewModel() {
         }
         return result;
     });
+}
 
-    self.populateCharts = function() {
-        var params = {};
+function DashboardViewModel(config) {
+    var self = this;
 
-        $.ajax({
-            url:fcConfig.chartPopulateUrl,
-            data:params,
-            beforeSend: function () {
-                //self.loading(true);
-            },
-            success:function(data) {
-                if (data) {
-                    self.testChartType(data.chartList[0].chartjsType)
-                    self.testChartData(data.chartList[0].data)
-                    self.testChartOptions(data.chartList[0].options)
-                    self.chartjsPerRowSelected(data.chartjsPerRowSelected)
-                    self.chartjsConfig(data.chartjsConfig)
-                }
-            },
-            complete: function () {
-                //self.loading(false);
-            }
-        });
+    self.name = ko.observable(config.formattedName)
+    self.chartType = ko.observable(config.chartjsType)
+    self.data = ko.observable(config.data)
+    self.options = ko.observable(config.options)
+
+    self.chartInstance = null;
+    self.setChartInstance = function (chartInstance) {
+        self.chartInstance = chartInstance;
     }
-
-    self.populateCharts();
 }
 
 /**
