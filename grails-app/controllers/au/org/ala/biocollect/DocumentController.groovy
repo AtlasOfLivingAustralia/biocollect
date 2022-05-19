@@ -22,6 +22,16 @@ class DocumentController {
     WebService webService
     GrailsApplication grailsApplication
 
+    /**
+     * This function does an elastic search for documents. All elastic search parameters are supported like fq, max etc.
+     * @return
+     */
+    def allDocumentsSearch(Integer offset, Integer max, String searchTerm, String searchType, String searchInRole, String sort, String order, String projectId) {
+        String hub = settingService.getHubConfig().urlPath;
+
+        render documentService.allDocumentsSearch(offset, max, searchTerm, searchType, searchInRole, sort, order, projectId, hub) as JSON
+    }
+
     /** Downloads a the file attached to a document stored in the ecodata database */
     def download() {
         final String THUMBNAIL_PREFIX = "thumb_"

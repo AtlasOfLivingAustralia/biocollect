@@ -7,12 +7,15 @@ import org.springframework.context.MessageSource
  * Proxies to the ecodata DocumentController/DocumentService.
  */
 class DocumentService {
+    private static final String DOCUMENT_FILTER = "className:au.org.ala.ecodata.Document"
     public String ROLE_LOGO = "logo"
 
     def webService, grailsApplication
     MessageSource messageSource
     UserService userService
     ActivityService activityService
+    SearchService searchService
+    ProjectService projectService
 
     def get(String id) {
         def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${id}"
@@ -86,6 +89,117 @@ class DocumentService {
             return resp.resp
         }
         return resp
+    }
+
+    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String searchInRole = null, String sort = "dateCreated", String order = "desc", String projectId = null, String hub = null) {
+        String searchTextBy = "";
+
+        Map params = [:]
+
+        if (searchType == 'none' && searchTerm)
+            searchTextBy += "(name:" + searchTerm + " OR labels:" + searchTerm + " OR attribution:" + searchTerm + " OR citation:" + searchTerm + " OR description:" + searchTerm + ")";
+
+        if (searchType && searchTerm) {
+            if (searchType != 'none')
+                searchTextBy += " AND " + searchType + ":" + searchTerm;
+        }
+
+        if (searchInRole) {
+            if (searchInRole != 'none') {
+                if (!searchTextBy.isEmpty())
+                    searchTextBy += " AND role:" + searchInRole;
+                else
+                    searchTextBy += "role:" + searchInRole;
+            }
+        }
+
+        //projectId is passed in the case of viewing project documents
+        if (projectId) {
+            if (!searchTextBy.isEmpty())
+                searchTextBy += " AND projectId:" + projectId;
+            else
+                searchTextBy += "projectId:" + projectId;
+
+            params = [
+                    offset: offset,
+                    max   : max,
+                    query : searchTextBy,
+                    fq    : DOCUMENT_FILTER
+            ]
+
+            Boolean isALAAdmin = userService.userIsAlaAdmin()
+
+            String userId = userService.getCurrentUserId()
+
+            boolean isViewable = isALAAdmin
+
+            if (userId && !isALAAdmin) {
+                def members = projectService.getMembersForProjectId(projectId)
+                isViewable = members.find { it.userId == userId }
+            }
+
+            if (params.fq)
+                params.fq = [params.fq]
+            else
+                params.fq = []
+
+            // at project level admins and project members can view both public and private documents
+            if (!isViewable)
+                params.fq.push("publiclyViewable:true")
+
+        } else { //when viewing hub documents
+            params = [
+                    offset: offset,
+                    max   : max,
+                    query : searchTextBy,
+                    fq    : DOCUMENT_FILTER,
+                    hub   : hub
+            ]
+
+            if (params.fq)
+                params.fq = [params.fq]
+            else
+                params.fq = []
+
+            // at hub level all users can view public documents only
+            params.fq.push("publiclyViewable:true")
+        }
+
+        if (order) {
+            params.order = order
+        }
+
+        if (sort) {
+            params.sort = sort
+        }
+
+        if (searchType) {
+            params.type = searchType
+        }
+
+        if (searchInRole) {
+            params.searchInRole = searchInRole
+        }
+
+        Map results = searchService.fulltextSearch(
+                params, true
+        )
+
+        //add the associated projectId when viewing hub documents
+        if (!projectId) {
+            Map project = [:]
+
+            if (results) {
+                for (int i = 0; i < results.hits.hits.size(); i++) {
+                    project = projectService.get(results.hits.hits[i]._source.projectId)
+
+                    if (project)
+                        results.hits.hits[i]._source.put("projectName", project.name)
+                }
+            }
+        }
+
+        results
     }
 
     /**

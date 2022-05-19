@@ -731,6 +731,7 @@
                 <option value="allrecords">All Records</option>
                 <option value="home">Home</option>
                 <option value="charts">Charts</option>
+                <option value="resources">Resources</option>
                 <option value="login">Login / Logout</option>
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>
