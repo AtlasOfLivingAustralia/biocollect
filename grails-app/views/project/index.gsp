@@ -232,7 +232,7 @@
         <g:if test="${user?.hasViewAccess}">
             <div class="tab-pane" id="document">
                 <!-- DOCUMENTS -->
-                <g:render template="docs" />
+                <g:render template="docs" model="[projectId:projectId]"/>
             </div>
 
             <div class="tab-pane" id="plan">
