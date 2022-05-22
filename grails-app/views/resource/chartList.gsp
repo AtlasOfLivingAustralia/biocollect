@@ -10,6 +10,7 @@
     <asset:script type="text/javascript">
         var fcConfig = {
             chartPopulateUrl: "${createLink(controller: 'document', action: 'populateChartData')}",
+            reportConfigUrl: "${createLink(controller: 'document', action: 'getReportConfig')}",
         }
     </asset:script>
     <asset:javascript src="chartjs/chart.min.js"/>

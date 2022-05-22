@@ -117,7 +117,7 @@ function ReportChartjsViewModel() {
     self.options = ko.observable('');
 
     self.chartjsPerRowSelected = ko.observable('');
-    self.chartjsConfig = ko.observable('');
+    //self.chartjsConfig = ko.observable('');
 
     self.chartjsPerRowSpan = ko.pureComputed(function () {
         const selected = self.chartjsPerRowSelected();
@@ -171,13 +171,30 @@ function DashboardViewModel(config) {
 
     self.name = ko.observable(config.formattedName)
     self.chartType = ko.observable(config.chartjsType)
-    self.data = ko.observable(config.data)
+    self.data = ko.observable()
     self.options = ko.observable(config.options)
 
     self.chartInstance = null;
     self.setChartInstance = function (chartInstance) {
         self.chartInstance = chartInstance;
     }
+
+    var params = {};
+    params.config = config
+
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        url:fcConfig.reportConfigUrl,
+        data:JSON.stringify(params.config),
+        success:function(data) {
+            if (data) {
+                self.data(data)
+                //CONFIG EKA GANIN DATA PUROPAN! EKEN EKATA..STATIC TEXT JSON EKE REPORT CONFIG DAPU EKAI ANITH EWAI COMPARE KARAPAN
+            }
+        }
+    });
 }
 
 /**

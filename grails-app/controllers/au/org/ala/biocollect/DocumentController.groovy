@@ -7,6 +7,8 @@ import au.org.ala.biocollect.merit.WebService
 import grails.converters.JSON
 import grails.core.GrailsApplication
 import org.apache.http.HttpStatus
+import org.grails.web.json.JSONArray
+import org.grails.web.json.JSONObject
 import org.springframework.web.util.UriComponents
 import org.springframework.web.util.UriComponentsBuilder
 import org.springframework.web.util.UriUtils
@@ -121,5 +123,45 @@ class DocumentController {
         def model = jsonSlurper.parseText(jsonStr)
 
         render model as JSON
+    }
+
+    def getReportConfig() {
+        def postBody = request.JSON
+        
+        if (postBody.name == 'projectsByHub') {
+            String hub = settingService.getHubConfig().urlPath;
+
+            Map outputData = documentService.allDocumentsSearch(0, 999, "", "name", "", "dateCreated", "desc", "", hub)
+        }
+        List<String> temp = new ArrayList();
+
+        if (documents) {
+            for (int i = 0; i < documents.hits.hits.size(); i++) {
+                temp.add(documents.hits.hits[i]._source.role)
+            }
+        }
+
+        Set<String> distinct = new HashSet<>(temp);
+        //JSONArray jsonArray = new JSONArray();
+        JSONArray labelArray = new JSONArray();
+        JSONArray dataArray = new JSONArray();
+
+        for (String s: distinct) {
+            labelArray.put(s)
+            dataArray.put(Collections.frequency(temp, s))
+            //JSONObject jo = new JSONObject();
+
+            //jo.put("label", s)
+            //jo.put("count", Collections.frequency(temp, s))
+
+            //jsonArray.put(jo);
+
+            System.out.println(s + ": " + Collections.frequency(temp, s));
+        }
+
+        postBody.datasets[0].data = dataArray
+        postBody.labels = labelArray
+
+        render postBody as JSON
     }
 }
