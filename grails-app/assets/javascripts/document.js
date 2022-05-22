@@ -100,7 +100,9 @@ function DocumentViewModel (doc, owner, settings) {
     };
 
     self.transients.projectUrl = ko.pureComputed(function () {
-        return fcConfig.projectIndexUrl + '/' + self.projectId() +
+        var projectId = ko.unwrap(self.projectId)
+
+        return fcConfig.projectIndexUrl + '/' + projectId +
             (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
     });
 
