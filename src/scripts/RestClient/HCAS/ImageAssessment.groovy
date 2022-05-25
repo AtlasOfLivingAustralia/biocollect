@@ -8,6 +8,13 @@
 // User must have a auth token [ ozatlasproxy.ala.org.au]
 // Generating UUID on the device: python -c 'import uuid; print str(uuid.uuid1())'
 
+
+import groovy.json.JsonSlurper
+import groovyx.net.http.ContentType
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.Method
+import org.apache.http.entity.mime.MultipartEntityBuilder
+import org.apache.http.entity.mime.content.FileBody
 @Grapes([
         @Grab('org.codehaus.groovy.modules.http-builder:http-builder:0.7'),
         @Grab('org.apache.httpcomponents:httpmime:4.5.1'),
@@ -16,17 +23,11 @@
         @Grab('org.apache.poi:poi-ooxml:3.10.1')]
 )
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import static org.apache.poi.ss.usermodel.Cell.*
+
 import java.nio.file.Paths
+
 import static java.util.UUID.randomUUID
-import groovy.json.JsonSlurper
-
-import groovyx.net.http.HTTPBuilder
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.entity.mime.content.FileBody
-import groovyx.net.http.Method
-import groovyx.net.http.ContentType
-
+import static org.apache.poi.ss.usermodel.Cell.*
 // IMPORTANT CONFIGURATION
 def DEBUG_AND_VALIDATE = false;
 def USERNAME = ""

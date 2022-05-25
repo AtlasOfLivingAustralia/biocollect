@@ -625,7 +625,7 @@ class ReportService {
         String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/genericReport"
         Map report = webService.doPost(url, config)
 
-        Map results = report?.resp?.results
+        Map results = report?.resp?.results ?: [:]
         groupResultsByItems(results, config)
     }
 

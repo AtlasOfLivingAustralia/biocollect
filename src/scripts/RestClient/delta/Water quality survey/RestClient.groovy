@@ -7,6 +7,7 @@
 // Use http://jsonformatter.org/ to format the data. (make sure to remove the " " around the string...)
 // User must have a auth token [ ozatlasproxy.ala.org.au]
 
+
 import groovy.json.JsonSlurper
 @Grapes([
         @Grab('org.apache.poi:poi:3.10.1'),
@@ -14,10 +15,8 @@ import groovy.json.JsonSlurper
         @Grab('org.apache.poi:poi-ooxml:3.10.1')]
 )
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import org.apache.poi.ss.usermodel.*
-import java.nio.file.Paths
-import java.nio.file.Files
 
+import java.nio.file.Paths
 // Import Configuration
 def DEBUG_AND_VALIDATE = false;
 def PROJECT_ID = "dea9729b-d9fe-42b7-ac74-af5e157933e0"
