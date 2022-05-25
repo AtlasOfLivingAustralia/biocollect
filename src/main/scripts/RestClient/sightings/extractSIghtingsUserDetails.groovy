@@ -6,17 +6,7 @@
         @Grab(group = 'commons-codec', module = 'commons-codec', version = '1.9'),
         @Grab('org.apache.poi:poi-ooxml:3.10.1')]
 )
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import static org.apache.poi.ss.usermodel.Cell.*
-import java.nio.file.Paths
-import static java.util.UUID.randomUUID
-import groovy.json.JsonSlurper
-
-import groovyx.net.http.HTTPBuilder
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.entity.mime.content.FileBody
-import groovyx.net.http.Method
-import groovyx.net.http.ContentType
+import java.lang.Object
 
 def SIGHTINGS_URL = "https://biocollect.ala.org.au/sightings/project/getMembersForProjectIdPaginated/f813c99c-1a1d-4096-8eeb-cbc40e321101";
 println("Building sightings users")
