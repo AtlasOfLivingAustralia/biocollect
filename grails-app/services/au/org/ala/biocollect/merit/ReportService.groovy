@@ -618,6 +618,38 @@ class ReportService {
          budgetByYear:asScore("Budget by financial year", budgetByYear, 'barchart')]
     }
 
+    Map genericReport(Map config){
+        def defaultFQs = SettingService.getHubConfig().defaultFacetQuery ?: []
+        config.fq = config.fq ?: []
+        config.fq.addAll(defaultFQs)
+        String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/genericReport"
+        Map report = webService.doPost(url, config)
+
+        Map results = report?.resp?.results
+        groupResultsByItems(results, config)
+    }
+
+    Map groupResultsByItems(Map results, Map config) {
+        if (config.resultGrouping && results) {
+            List unGrouped = results.groups
+            Map grouped = unGrouped.groupBy { item ->
+                def found = config.resultGrouping.find { group ->
+                    group.items?.contains(item.group)
+                }
+
+                found?.label
+            }
+
+            if (grouped) {
+                results.groups = grouped?.collect { String key, List items ->
+                    [group: key, count: items.sum { it.count }]
+                }
+            }
+        }
+
+        results
+    }
+
     private Map asScore(String label, Map data, String type = 'piechart') {
 
         [label: label, result: [result:data], displayType:type]
