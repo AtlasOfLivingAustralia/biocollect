@@ -2,16 +2,17 @@
 <bc:koLoading>
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Project metadata</h4>
-            <span class="float-right">
-                <g:if test="${project.projLifecycleStatus == 'published'}">
-                    <span class="badge badge-success">Published</span>
-                </g:if>
-                <g:elseif test="${project.projLifecycleStatus == 'unpublished'}">
-                    <span class="badge badge-info">Draft</span>
-                </g:elseif>
-            </span>
-
+            <h4 class="card-title">
+                Project metadata
+                <span class="float-right">
+                    <g:if test="${project.projLifecycleStatus == 'published'}">
+                        <span class="badge badge-success">Published</span>
+                    </g:if>
+                    <g:elseif test="${project.projLifecycleStatus == 'unpublished'}">
+                        <span class="badge badge-info">Draft</span>
+                    </g:elseif>
+                </span>
+            </h4>
             <div class="row form-group">
             <label class="col-from-label col-md-4"><g:message code="project.details.type"/><fc:iconHelp><g:message
                     code="project.details.type.help"/></fc:iconHelp><i class="req-field"></i></label>
