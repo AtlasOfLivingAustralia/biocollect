@@ -1,6 +1,11 @@
 package au.org.ala.biocollect.merit
 
+import grails.converters.JSON
+import pl.touk.excel.export.WebXlsxExporter
+
 class ReportController {
+
+    static allowedMethods = ['downloadReport': 'POST']
 
     static defaultAction = "dashboard"
     def webService, cacheService, searchService, metadataService, reportService, userService
@@ -76,6 +81,39 @@ class ReportController {
         }
         else {
             render status:401, text: "Unauthorized"
+        }
+
+    }
+
+    def genericReport() {
+        Map body = request.JSON
+
+        if (body) {
+            def result = reportService.genericReport(body)
+            render text: result as JSON, contentType: 'application/json'
+        } else {
+            render text: [message: "Request body missing."] as JSON, status: 400, contentType: 'application/json'
+        }
+    }
+
+    def downloadReport() {
+        Map body = request.JSON
+        if (body) {
+            def headers = grailsApplication.config.report.download.collect { it.header }
+            def withProperties = grailsApplication.config.report.download.collect { it.property }
+
+            new WebXlsxExporter().with {
+                setResponseHeaders(response)
+                body.each { String sheetName, List rows ->
+                    sheet (sheetName).with {
+                        fillHeader(headers)
+                        add(rows, withProperties)
+                    }
+                }
+                save(response.outputStream)
+            }
+        } else {
+            render text: [message: "Request body missing."] as JSON, status: 400, contentType: 'application/json'
         }
 
     }
