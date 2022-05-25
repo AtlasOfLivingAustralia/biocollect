@@ -7,8 +7,6 @@
 )
 import java.lang.Object
 
-import static org.apache.poi.ss.usermodel.Cell.*
-
 def SIGHTINGS_URL = "https://biocollect.ala.org.au/sightings/project/getMembersForProjectIdPaginated/f813c99c-1a1d-4096-8eeb-cbc40e321101";
 println("Building sightings users")
 def start = 0;
