@@ -133,7 +133,7 @@ class ReportController {
             def withProperties = grailsApplication.config.report.download.collect { it.property }
 
             new WebXlsxExporter().with {
-                setResponseHeaders(response)
+                setResponseHeaders(response, 'report.xlsx')
                 body.each { String sheetName, List rows ->
                     sheet (sheetName).with {
                         fillHeader(headers)
@@ -142,6 +142,8 @@ class ReportController {
                 }
                 save(response.outputStream)
             }
+
+            response.outputStream.flush()
         } else {
             render text: [message: "Request body missing."] as JSON, status: 400, contentType: 'application/json'
         }
