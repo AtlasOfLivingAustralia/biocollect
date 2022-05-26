@@ -111,13 +111,14 @@ function ReportChartjsViewModel() {
     }
 
     self.chartjsList = ko.observableArray([]);
-
     self.chartjsType = ko.observable('');
     self.data = ko.observable('');
     self.options = ko.observable('');
-
     self.chartjsPerRowSelected = ko.observable('');
-    //self.chartjsConfig = ko.observable('');
+
+    //chart filters
+    self.associatedPrograms = ko.observableArray()
+    self.electorates = ko.observableArray()
 
     self.chartjsPerRowSpan = ko.pureComputed(function () {
         const selected = self.chartjsPerRowSelected();
@@ -125,21 +126,34 @@ function ReportChartjsViewModel() {
         return 'col-sm-' + perRow.toString();
     });
 
+    self.associatedProgramFilterField = ko.observable(self.associatedPrograms[0]);
+    self.associatedProgramFilterField.subscribe(function(type) {
+        self.populateCharts();
+    });
+
+    self.electorateFilterField = ko.observable('');
+    self.electorateFilterField.subscribe(function(type) {
+        self.populateCharts();
+    });
+
     self.populateCharts = function() {
         var params = {};
 
+        //if (self.electorateFilterField())
+            //params.searchType = self.electorateFilterField().name;
+
         $.ajax({
-            url:fcConfig.chartPopulateUrl,
+            url:fcConfig.populateChartDataUrl,
             data:params,
             success:function(data) {
                 if (data) {
                     self.chartjsPerRowSelected(data.chartjsPerRowSelected)
 
-                    for (let i = 0; i < data.chartList.length; i++)
-                    {
+                    for (var i = 0; i < data.chartList.length; i++) {
                         var chart = data.chartList[i]
 
                         const dashboardViewModel = new DashboardViewModel(chart);
+                        //const dashboardViewModel = new DashboardViewModel(chart, params);
                         self.chartjsList.push(dashboardViewModel);
                     }
                 }
@@ -147,7 +161,104 @@ function ReportChartjsViewModel() {
         });
     }
 
-    self.populateCharts();
+    self.populateAssociatedPrograms = function() {
+        var params = {};
+
+        $.ajax({
+            url:fcConfig.populateAssociatedProgramsUrl,
+            data:params,
+            success:function(data) {
+                if (data) {
+                    let tempArr = []
+
+                    tempArr = data
+                    tempArr.splice(0, 0, "No Filters");
+
+                    self.associatedPrograms(tempArr)
+                }
+            }
+        });
+    }
+
+    self.populateElectorates = function() {
+        var params = {};
+
+        $.ajax({
+            url:fcConfig.populateElectoratesUrl,
+            data:params,
+            success:function(data) {
+                if (data) {
+                    let tempArr = []
+
+                    for (var j = 0;j < data.length; j++) {
+                        tempArr.push({"pid": data[j].pid, "name": data[j].name})
+                    }
+
+                    tempArr.splice(0, 0, {"pid": "none", "name": "No Filters"});
+
+                    self.electorates(tempArr)
+                }
+            }
+        });
+    }
+
+    self.populateCharts('');
+    self.populateAssociatedPrograms();
+    self.populateElectorates();
+
+    self.downloadReport = function() {
+        var params = {};
+
+        params = {
+            "Products by phase": [
+                {
+                    "count": 88,
+                    "results": [],
+                    "group": "NESP 1 - Threatened Species Recovery Hub"
+                },
+                {
+                    "count": 73,
+                    "results": [],
+                    "group": "NESP 1 - Clean Air and Urban Landscapes Hub"
+                },
+                {
+                    "count": 25,
+                    "results": [],
+                    "group": "NESP 1 - Earth Systems and Climate Change Hub"
+                }
+            ],
+                "Products by hub": [
+                {
+                    "count": 88,
+                    "results": [],
+                    "group": "NESP 1 - Threatened Species Recovery Hub"
+                },
+                {
+                    "count": 73,
+                    "results": [],
+                    "group": "NESP 1 - Clean Air and Urban Landscapes Hub"
+                },
+                {
+                    "count": 25,
+                    "results": [],
+                    "group": "NESP 1 - Earth Systems and Climate Change Hub"
+                }
+            ]
+        }
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json',
+            dataType: 'JSON',
+            url:fcConfig.downloadReportUrl,
+            data:JSON.stringify(params),
+            success:function(data) {
+                if (data) {
+
+                }
+            }
+        });
+    }
 
     self.chartjsPerRowGroupedItems = ko.pureComputed(function () {
         const selected = self.chartjsPerRowSelected();
@@ -167,12 +278,12 @@ function ReportChartjsViewModel() {
 }
 
 function DashboardViewModel(config) {
+//function DashboardViewModel(config, params) {
     var self = this;
 
-    self.name = ko.observable(config.formattedName)
-    self.chartType = ko.observable(config.chartjsType)
+    self.chartType = ko.observable(config.chartOptions.type)
     self.data = ko.observable()
-    self.options = ko.observable(config.options)
+    self.options = ko.observable(config.chartOptions.options)
 
     self.chartInstance = null;
     self.setChartInstance = function (chartInstance) {
@@ -180,18 +291,20 @@ function DashboardViewModel(config) {
     }
 
     var params = {};
-    params.config = config
+    params.configuration = config.configuration
+
+    //if (self.associatedProgramFilterField())
+    //params.configuration.fq.push('associatedProgram:' + self.associatedProgramFilterField().);
 
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
         dataType: 'JSON',
-        url:fcConfig.reportConfigUrl,
-        data:JSON.stringify(params.config),
+        url:fcConfig.genericReportUrl,
+        data:JSON.stringify(params.configuration),
         success:function(data) {
             if (data) {
-                self.data(data)
-                //CONFIG EKA GANIN DATA PUROPAN! EKEN EKATA..STATIC TEXT JSON EKE REPORT CONFIG DAPU EKAI ANITH EWAI COMPARE KARAPAN
+                self.data({"datasets":[{"data":data.groups}]})
             }
         }
     });

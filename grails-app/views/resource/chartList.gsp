@@ -9,8 +9,11 @@
     <asset:stylesheet src="data-manifest.css"/>
     <asset:script type="text/javascript">
         var fcConfig = {
-            chartPopulateUrl: "${createLink(controller: 'document', action: 'populateChartData')}",
-            reportConfigUrl: "${createLink(controller: 'document', action: 'getReportConfig')}",
+            populateChartDataUrl: "${createLink(controller: 'report', action: 'populateChartData')}",
+            genericReportUrl: "${createLink(controller: 'report', action: 'genericReport')}",
+            populateAssociatedProgramsUrl: "${createLink(controller: 'report', action: 'populateAssociatedPrograms')}",
+            populateElectoratesUrl: "${createLink(controller: 'report', action: 'populateElectorates')}",
+            downloadReportUrl: "${createLink(controller: 'report', action: 'downloadReport')}"
         }
     </asset:script>
     <asset:javascript src="chartjs/chart.min.js"/>

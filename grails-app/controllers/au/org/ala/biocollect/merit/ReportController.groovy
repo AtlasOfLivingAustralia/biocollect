@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
+import org.grails.web.json.JSONArray
 import pl.touk.excel.export.WebXlsxExporter
 
 class ReportController {
@@ -8,7 +9,7 @@ class ReportController {
     static allowedMethods = ['downloadReport': 'POST']
 
     static defaultAction = "dashboard"
-    def webService, cacheService, searchService, metadataService, reportService, userService
+    def webService, cacheService, searchService, metadataService, reportService, userService, settingService
 
     def loadReport() {
         forward action: params.report+'Report', params:params
@@ -83,6 +84,35 @@ class ReportController {
             render status:401, text: "Unauthorized"
         }
 
+    }
+
+    def dashboardConfig(){
+        renderStaticPage(SettingPageType.DASHBOARD_CONFIG, false)
+    }
+
+    def populateChartData() {
+        String jsonStr = settingService.getSettingText(SettingPageType.DASHBOARD_CONFIG) as String
+
+        def jsonSlurper = new groovy.json.JsonSlurper()
+        def model = jsonSlurper.parseText(jsonStr)
+
+        render model as JSON
+    }
+
+    def populateAssociatedPrograms() {
+        JSONArray associatedPrograms = SettingService.getHubConfig().supportedPrograms
+        render associatedPrograms as JSON
+    }
+
+    def populateElectorates() {
+        def SPATIAL_URL = "https://spatial.ala.org.au"
+
+        String uniqueIdResponse = new URL(SPATIAL_URL + "/ws/objects/cl958")?.text
+
+        def jsonResponse = new groovy.json.JsonSlurper()
+        def model = jsonResponse.parseText(uniqueIdResponse)
+
+        render model as JSON
     }
 
     def genericReport() {
