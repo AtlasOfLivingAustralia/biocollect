@@ -17,7 +17,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.orderOptions = [{id: 'ASC', name: 'ASC'}, {id: 'DESC', name: 'DESC'}];
     self.activities = ko.observableArray();
-    self.pagination = new PaginationViewModel({}, self);
+    self.pagination = new PaginationViewModel({numberPerPage: 30}, self);
     self.facets = ko.observableArray();
     self.total = ko.observable(0);
     self.filter = ko.observable(false);
