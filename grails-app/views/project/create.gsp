@@ -54,7 +54,7 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <h2><g:message code="project.create.register"/></h2>
+    <content tag="pageTitle"><g:message code="project.create.register"/></content>
     <p>
         <g:message code="project.create.description"/>
     </p>
