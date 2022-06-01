@@ -105,11 +105,6 @@ function ChartjsManagerViewModel() {
 function ReportChartjsViewModel() {
     var self = this;
 
-    self.chartInstance = null;
-    self.setChartInstance = function (chartInstance) {
-        self.chartInstance = chartInstance;
-    }
-
     self.chartjsList = ko.observableArray([]);
     self.chartjsType = ko.observable('');
     self.data = ko.observable('');
@@ -118,7 +113,7 @@ function ReportChartjsViewModel() {
 
     //chart filters
     self.associatedPrograms = ko.observableArray()
-    self.electorates = ko.observableArray()
+    self.electorateFilterFieldOptions = ko.observableArray()
 
     self.chartjsPerRowSpan = ko.pureComputed(function () {
         const selected = self.chartjsPerRowSelected();
@@ -126,21 +121,24 @@ function ReportChartjsViewModel() {
         return 'col-sm-' + perRow.toString();
     });
 
-    self.associatedProgramFilterField = ko.observable(self.associatedPrograms[0]);
-    self.associatedProgramFilterField.subscribe(function(type) {
-        self.populateCharts();
+    self.associatedProgramFilterFields = ko.observable(self.associatedPrograms[0]);
+    self.associatedProgramFilterFields.subscribe(function(type) {
+        if (self.associatedProgramFilterFields()) {
+            var searchFilters = self.associatedProgramFilterFields();
+            self.populateCharts(searchFilters, 'associatedProgram');
+        }
     });
 
-    self.electorateFilterField = ko.observable('');
-    self.electorateFilterField.subscribe(function(type) {
-        self.populateCharts();
+    self.electorateFilterFields = ko.observable(self.electorateFilterFieldOptions[0]);
+    self.electorateFilterFields.subscribe(function(type) {
+        if (self.electorateFilterFields() && self.electorateFilterFields() != 'none') {
+            var searchFilters = self.electorateFilterFields();
+            self.populateCharts(searchFilters, 'electorate');
+        }
     });
 
-    self.populateCharts = function() {
+    self.populateCharts = function(searchFilters, searchBy) {
         var params = {};
-
-        //if (self.electorateFilterField())
-            //params.searchType = self.electorateFilterField().name;
 
         $.ajax({
             url:fcConfig.populateChartDataUrl,
@@ -149,11 +147,14 @@ function ReportChartjsViewModel() {
                 if (data) {
                     self.chartjsPerRowSelected(data.chartjsPerRowSelected)
 
+                    //Re-draw charts
+                    if (searchFilters)
+                        self.chartjsList.splice(0, data.chartList.length)
+
                     for (var i = 0; i < data.chartList.length; i++) {
                         var chart = data.chartList[i]
 
-                        const dashboardViewModel = new DashboardViewModel(chart);
-                        //const dashboardViewModel = new DashboardViewModel(chart, params);
+                        const dashboardViewModel = new DashboardViewModel(chart, searchFilters, searchBy);
                         self.chartjsList.push(dashboardViewModel);
                     }
                 }
@@ -191,12 +192,12 @@ function ReportChartjsViewModel() {
                     let tempArr = []
 
                     for (var j = 0;j < data.length; j++) {
-                        tempArr.push({"pid": data[j].pid, "name": data[j].name})
+                        tempArr.push(data[j].name)
                     }
 
-                    tempArr.splice(0, 0, {"pid": "none", "name": "No Filters"});
+                    tempArr.splice(0, 0, "No Filters");
 
-                    self.electorates(tempArr)
+                    self.electorateFilterFieldOptions(tempArr)
                 }
             }
         });
@@ -209,55 +210,29 @@ function ReportChartjsViewModel() {
     self.downloadReport = function() {
         var params = {};
 
-        params = {
-            "Products by phase": [
-                {
-                    "count": 88,
-                    "results": [],
-                    "group": "NESP 1 - Threatened Species Recovery Hub"
-                },
-                {
-                    "count": 73,
-                    "results": [],
-                    "group": "NESP 1 - Clean Air and Urban Landscapes Hub"
-                },
-                {
-                    "count": 25,
-                    "results": [],
-                    "group": "NESP 1 - Earth Systems and Climate Change Hub"
-                }
-            ],
-                "Products by hub": [
-                {
-                    "count": 88,
-                    "results": [],
-                    "group": "NESP 1 - Threatened Species Recovery Hub"
-                },
-                {
-                    "count": 73,
-                    "results": [],
-                    "group": "NESP 1 - Clean Air and Urban Landscapes Hub"
-                },
-                {
-                    "count": 25,
-                    "results": [],
-                    "group": "NESP 1 - Earth Systems and Climate Change Hub"
-                }
-            ]
+        for (var i = 0; i < self.chartjsList().length; i++) {
+            params[self.chartjsList()[i].data().datasets[0].label] = self.chartjsList()[i].data().datasets[0].data
         }
 
-        $.ajax({
-            type: 'POST',
-            contentType: 'application/json',
-            dataType: 'JSON',
-            url:fcConfig.downloadReportUrl,
-            data:JSON.stringify(params),
-            success:function(data) {
-                if (data) {
+        var xhttp = new XMLHttpRequest();
 
-                }
+        xhttp.onreadystatechange = function() {
+            var a;
+
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                a = document.createElement('a');
+                a.href = window.URL.createObjectURL(xhttp.response);
+                a.download = "dashboard.xlsx";
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
             }
-        });
+        };
+
+        xhttp.open("POST", fcConfig.downloadReportUrl);
+        xhttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+        xhttp.responseType = 'blob';
+        xhttp.send(JSON.stringify(params));
     }
 
     self.chartjsPerRowGroupedItems = ko.pureComputed(function () {
@@ -277,8 +252,10 @@ function ReportChartjsViewModel() {
     });
 }
 
-function DashboardViewModel(config) {
-//function DashboardViewModel(config, params) {
+var tempAssociatedProgArr = []
+var tempElectorateArr = []
+
+function DashboardViewModel(config, searchFilters, searchBy) {
     var self = this;
 
     self.chartType = ko.observable(config.chartOptions.type)
@@ -293,8 +270,36 @@ function DashboardViewModel(config) {
     var params = {};
     params.configuration = config.configuration
 
-    //if (self.associatedProgramFilterField())
-    //params.configuration.fq.push('associatedProgram:' + self.associatedProgramFilterField().);
+    var query = ""
+
+    if (searchFilters) {
+        if (searchFilters != "No Filters") {
+            for (var i = 0; i < searchFilters.length; i++) {
+                if (searchBy == "associatedProgram" && tempAssociatedProgArr.indexOf(("associatedProgramFacet:" + '"' + searchFilters[i] + '"')) === -1) {
+                    tempAssociatedProgArr.push("associatedProgramFacet:" + '"' + searchFilters[i] + '"')
+                }
+                else if (searchBy == "electorate" && tempElectorateArr.indexOf(("electFacet:" + '"' + searchFilters[i].toUpperCase() + '"')) === -1) {
+                    tempElectorateArr.push("electFacet:" + '"' + searchFilters[i].toUpperCase() + '"')
+                }
+            }
+
+            if (tempAssociatedProgArr.length > 0 && tempElectorateArr.length > 0) {
+                query = ("(" + tempElectorateArr.join(" OR ") + ")" + " AND " + "(" + tempAssociatedProgArr.join(" OR ") + ")")
+            }
+            else {
+                if (tempAssociatedProgArr.length > 0) {
+                    query = tempAssociatedProgArr.join(" OR ")
+                }
+
+                if (tempElectorateArr.length > 0) {
+                    query = tempElectorateArr.join(" OR ")
+                }
+            }
+
+            params.configuration.query = query
+            params.configuration.isFilterAdded = true
+        }
+    }
 
     $.ajax({
         type: 'POST',
@@ -304,7 +309,12 @@ function DashboardViewModel(config) {
         data:JSON.stringify(params.configuration),
         success:function(data) {
             if (data) {
-                self.data({"datasets":[{"data":data.groups}]})
+                self.data({"datasets":[
+                    {
+                        "label":data.label,
+                        "backgroundColor": ["#3e95cd"],
+                        "data":data.groups}
+                    ]})
             }
         }
     });
