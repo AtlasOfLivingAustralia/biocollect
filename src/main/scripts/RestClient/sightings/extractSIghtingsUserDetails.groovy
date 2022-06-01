@@ -1,4 +1,3 @@
-/*
 @Grapes([
         @Grab('org.codehaus.groovy.modules.http-builder:http-builder:0.7'),
         @Grab('org.apache.httpcomponents:httpmime:4.5.1'),
@@ -30,5 +29,4 @@ for(int i=0; i < 86; i++) {
 }
 
 println("Done - index = ${start} ")
-*/
 
