@@ -297,7 +297,6 @@ function DashboardViewModel(config, searchFilters, searchBy) {
             }
 
             params.configuration.query = query
-            params.configuration.isFilterAdded = true
         }
     }
 
