@@ -112,7 +112,7 @@ function ReportChartjsViewModel() {
     self.chartjsPerRowSelected = ko.observable('');
 
     //chart filters
-    self.associatedPrograms = ko.observableArray()
+    self.associatedProgramFilterFieldOptions = ko.observableArray()
     self.electorateFilterFieldOptions = ko.observableArray()
 
     self.chartjsPerRowSpan = ko.pureComputed(function () {
@@ -121,23 +121,61 @@ function ReportChartjsViewModel() {
         return 'col-sm-' + perRow.toString();
     });
 
-    self.associatedProgramFilterFields = ko.observable(self.associatedPrograms[0]);
-    self.associatedProgramFilterFields.subscribe(function(type) {
-        if (self.associatedProgramFilterFields()) {
-            var searchFilters = self.associatedProgramFilterFields();
-            self.populateCharts(searchFilters, 'associatedProgram');
-        }
-    });
+    self.allFilters = ko.observableArray();
 
-    self.electorateFilterFields = ko.observable(self.electorateFilterFieldOptions[0]);
-    self.electorateFilterFields.subscribe(function(type) {
-        if (self.electorateFilterFields() && self.electorateFilterFields() != 'none') {
-            var searchFilters = self.electorateFilterFields();
-            self.populateCharts(searchFilters, 'electorate');
-        }
-    });
+    self.associatedProgramFilterFields = ""
+    self.electorateFilterFields = ""
 
-    self.populateCharts = function(searchFilters, searchBy) {
+    self.addAssociatedProgram = function() {
+        if (self.associatedProgramFilterFields[0] != 'No Filters') {
+            self.allFilters.push({"searchText": self.associatedProgramFilterFields, "searchBy": "associatedProgram"})
+
+            self.populateCharts(self.allFilters());
+
+            //remove added item from dropdown
+            const index = self.associatedProgramFilterFieldOptions.indexOf(self.associatedProgramFilterFields[0])
+            self.associatedProgramFilterFieldOptions.splice(index, 1)
+        }
+    }
+
+    self.addElectorate = function() {
+        if (self.electorateFilterFields[0] != 'No Filters') {
+            self.allFilters.push({"searchText": self.electorateFilterFields, "searchBy": "electorate"})
+
+            self.populateCharts(self.allFilters());
+
+            //remove added item from dropdown
+            const index = self.electorateFilterFieldOptions.indexOf(self.electorateFilterFields[0])
+            self.electorateFilterFieldOptions.splice(index, 1)
+        }
+    }
+
+    self.removeFilter = function() {
+        self.allFilters.remove(this)
+
+        if (self.allFilters().length == 0)
+            self.populateCharts('')
+        else
+            self.populateCharts(self.allFilters())
+
+        //re-add removed item to dropdown
+        if (this.searchBy == 'associatedProgram')
+            self.associatedProgramFilterFieldOptions.push(this.searchText[0])
+        else if (this.searchBy == 'electorate') {
+            self.electorateFilterFieldOptions.push(this.searchText[0])
+            self.electorateFilterFieldOptions.sort()
+        }
+    }
+
+    self.resetAll = function() {
+        self.allFilters.splice(0, self.allFilters().length)
+
+        self.populateCharts('')
+        self.populateAssociatedPrograms()
+        self.populateElectorates()
+    }
+
+    self.populateCharts = function(searchFilters) {
         var params = {};
 
         $.ajax({
@@ -148,13 +186,12 @@ function ReportChartjsViewModel() {
                     self.chartjsPerRowSelected(data.chartjsPerRowSelected)
 
                     //Re-draw charts
-                    if (searchFilters)
-                        self.chartjsList.splice(0, data.chartList.length)
+                    self.chartjsList.splice(0, data.chartList.length)
 
                     for (var i = 0; i < data.chartList.length; i++) {
                         var chart = data.chartList[i]
 
-                        const dashboardViewModel = new DashboardViewModel(chart, searchFilters, searchBy);
+                        const dashboardViewModel = new DashboardViewModel(chart, searchFilters);
                         self.chartjsList.push(dashboardViewModel);
                     }
                 }
@@ -169,14 +206,8 @@ function ReportChartjsViewModel() {
             url:fcConfig.populateAssociatedProgramsUrl,
             data:params,
             success:function(data) {
-                if (data) {
-                    let tempArr = []
-
-                    tempArr = data
-                    tempArr.splice(0, 0, "No Filters");
-
-                    self.associatedPrograms(tempArr)
-                }
+                if (data)
+                    self.associatedProgramFilterFieldOptions(data)
             }
         });
     }
@@ -194,8 +225,6 @@ function ReportChartjsViewModel() {
                     for (var j = 0;j < data.length; j++) {
                         tempArr.push(data[j].name)
                     }
-
-                    tempArr.splice(0, 0, "No Filters");
 
                     self.electorateFilterFieldOptions(tempArr)
                 }
@@ -252,10 +281,7 @@ function ReportChartjsViewModel() {
     });
 }
 
-var tempAssociatedProgArr = []
-var tempElectorateArr = []
-
-function DashboardViewModel(config, searchFilters, searchBy) {
+function DashboardViewModel(config, searchFilters) {
     var self = this;
 
     self.chartType = ko.observable(config.chartOptions.type)
@@ -270,34 +296,37 @@ function DashboardViewModel(config, searchFilters, searchBy) {
     var params = {};
     params.configuration = config.configuration
 
+    var tempAssociatedProgArr = []
+    var tempElectorateArr = []
+
     var query = ""
 
     if (searchFilters) {
-        if (searchFilters != "No Filters") {
-            for (var i = 0; i < searchFilters.length; i++) {
-                if (searchBy == "associatedProgram" && tempAssociatedProgArr.indexOf(("associatedProgramFacet:" + '"' + searchFilters[i] + '"')) === -1) {
-                    tempAssociatedProgArr.push("associatedProgramFacet:" + '"' + searchFilters[i] + '"')
+        for (var i = 0; i < searchFilters.length; i++) {
+            if (searchFilters[i] != "No Filters") {
+                if (searchFilters[i].searchBy == "associatedProgram" && tempAssociatedProgArr.indexOf(("associatedProgramFacet:" + '"' + searchFilters[i].searchText + '"')) === -1) {
+                    tempAssociatedProgArr.push("associatedProgramFacet:" + '"' + searchFilters[i].searchText + '"')
                 }
-                else if (searchBy == "electorate" && tempElectorateArr.indexOf(("electFacet:" + '"' + searchFilters[i].toUpperCase() + '"')) === -1) {
-                    tempElectorateArr.push("electFacet:" + '"' + searchFilters[i].toUpperCase() + '"')
-                }
-            }
-
-            if (tempAssociatedProgArr.length > 0 && tempElectorateArr.length > 0) {
-                query = ("(" + tempElectorateArr.join(" OR ") + ")" + " AND " + "(" + tempAssociatedProgArr.join(" OR ") + ")")
-            }
-            else {
-                if (tempAssociatedProgArr.length > 0) {
-                    query = tempAssociatedProgArr.join(" OR ")
-                }
-
-                if (tempElectorateArr.length > 0) {
-                    query = tempElectorateArr.join(" OR ")
+                else if (searchFilters[i].searchBy == "electorate" && tempElectorateArr.indexOf(("electFacet:" + '"' + searchFilters[i].searchText.toString().toUpperCase() + '"')) === -1) {
+                    tempElectorateArr.push("electFacet:" + '"' + searchFilters[i].searchText.toString().toUpperCase() + '"')
                 }
             }
-
-            params.configuration.query = query
         }
+
+        if (tempAssociatedProgArr.length > 0 && tempElectorateArr.length > 0) {
+            query = ("(" + tempElectorateArr.join(" OR ") + ")" + " AND " + "(" + tempAssociatedProgArr.join(" OR ") + ")")
+        }
+        else {
+            if (tempAssociatedProgArr.length > 0) {
+                query = tempAssociatedProgArr.join(" OR ")
+            }
+
+            if (tempElectorateArr.length > 0) {
+                query = tempElectorateArr.join(" OR ")
+            }
+        }
+
+        params.configuration.query = query
     }
 
     $.ajax({
