@@ -127,7 +127,7 @@ function ReportChartjsViewModel() {
     self.electorateFilterFields = ""
 
     self.addAssociatedProgram = function() {
-        if (self.associatedProgramFilterFields[0] != 'No Filters') {
+        if (self.associatedProgramFilterFields[0] != undefined) {
             self.allFilters.push({"searchText": self.associatedProgramFilterFields, "searchBy": "associatedProgram"})
 
             self.populateCharts(self.allFilters());
@@ -139,7 +139,7 @@ function ReportChartjsViewModel() {
     }
 
     self.addElectorate = function() {
-        if (self.electorateFilterFields[0] != 'No Filters') {
+        if (self.electorateFilterFields[0] != undefined) {
             self.allFilters.push({"searchText": self.electorateFilterFields, "searchBy": "electorate"})
 
             self.populateCharts(self.allFilters());
