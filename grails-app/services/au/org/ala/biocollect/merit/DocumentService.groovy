@@ -101,7 +101,7 @@ class DocumentService {
 
         if (searchType && searchTerm) {
             if (searchType != 'none')
-                searchTextBy += " AND " + searchType + ":" + searchTerm;
+                searchTextBy += searchType + ":" + searchTerm;
         }
 
         if (searchInRole) {
