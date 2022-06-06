@@ -97,6 +97,5 @@
         initialiseData(fcConfig.view);
     });
 </asset:script>
-
 </body>
 </html>
