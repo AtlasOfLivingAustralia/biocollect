@@ -50,6 +50,9 @@
 </head>
 
 <body>
+<content tag="bannertitle">
+    <g:message code="project.edit"/>
+</content>
 <div class="container-fluid validationEngineContainer" id="validation-container">
 <form id="projectDetails" class="form-horizontal">
     <g:render template="details" model="${pageScope.variables}"/>
