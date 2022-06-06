@@ -1,4 +1,4 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig, facetConfig) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig, facetConfig, boundElementSelector) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results, radio;
@@ -277,6 +277,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 $('.main-content').show();
                 self.transients.loading(false);
                 $('.activities-search-panel').removeClass('searching-opacity');
+                boundElementSelector && $(boundElementSelector).trigger('resizefilters');
             }
         });
     };

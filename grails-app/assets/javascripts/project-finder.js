@@ -15,6 +15,7 @@ function ProjectFinder(config) {
     var self = this;
     /* holds all projects */
     var allProjects = [];
+    var projectContainerId = 'project-finder-container';
 
     /* holds current filtered list */
     var projects;
@@ -263,7 +264,7 @@ function ProjectFinder(config) {
     }
 
     pageWindow = new PageVM(config);
-    ko.applyBindings(pageWindow, document.getElementById('project-finder-container'));
+    ko.applyBindings(pageWindow, document.getElementById(projectContainerId))   ;
 
     this.getParams = function () {
         var fq = [];
@@ -462,6 +463,7 @@ function ProjectFinder(config) {
             },
             complete: function () {
                 $('.search-spinner').addClass('d-none');
+                $("#" + projectContainerId).trigger('resizefilters');
             }
         })
     };

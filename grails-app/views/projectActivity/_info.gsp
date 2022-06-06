@@ -574,18 +574,15 @@
     </div>
 
     <div class="row form-group">
-        <div class="col-12 col-md-4 col-form-label">
-            <label class="col-12 col-md-4 col-form-label" for="dataQualityAssuranceDescription"><g:message
-                    code="project.survey.info.dataQualityAssuranceDescription"/>
-                <a href="#" class="helphover" data-bind="popover: {title:'<g:message
-                        code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message
-                        code="project.survey.info.dataQualityAssuranceDescription.content" encodeAs="JavaScript"/>'}">
-                    <i class="fas fa-info-circle"></i>
-                </a>
-                <span class="right-padding"></span>
-            </label>
-        </div>
-
+        <label class="col-12 col-md-4 col-form-label" for="dataQualityAssuranceDescription"><g:message
+                code="project.survey.info.dataQualityAssuranceDescription"/>
+            <a href="#" class="helphover" data-bind="popover: {title:'<g:message
+                    code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message
+                    code="project.survey.info.dataQualityAssuranceDescription.content" encodeAs="JavaScript"/>'}">
+                <i class="fas fa-info-circle"></i>
+            </a>
+            <span class="right-padding"></span>
+        </label>
         <div class="col-12 col-md-8">
             <div class="controls">
                 <textarea id="dataQualityAssuranceDescription" rows="6" class="form-control"

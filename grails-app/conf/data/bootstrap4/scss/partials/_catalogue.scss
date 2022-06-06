@@ -253,7 +253,6 @@
 
   //Collapse overrides
   &.collapse, &.collapsing {
-    height: auto !important;
     transform: translateX(-110%);
     transition: transform 500ms ease !important;
     &.show {
