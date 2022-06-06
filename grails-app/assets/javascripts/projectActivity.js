@@ -12,7 +12,7 @@ var ProjectActivity = function (params) {
     var tabDocumentId = params.tabDocumentId || "#documents-tab";
     var stats = pActivity.stats || {};
 
-    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
+    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName, this));
     self.project = project;
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);

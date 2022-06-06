@@ -15,6 +15,7 @@ function ProjectFinder(config) {
     var self = this;
     /* holds all projects */
     var allProjects = [];
+    var projectContainerId = 'project-finder-container';
 
     /* holds current filtered list */
     var projects;
@@ -24,7 +25,7 @@ function ProjectFinder(config) {
 
     /* size of current filtered list */
     var total = 0;
-    var projectsPerPage = 20;
+    var projectsPerPage = 30;
 
     /* The map must only be initialised once, so keep track of when that has happened */
     var mapInitialised = false;
@@ -263,7 +264,7 @@ function ProjectFinder(config) {
     }
 
     pageWindow = new PageVM(config);
-    ko.applyBindings(pageWindow, document.getElementById('project-finder-container'));
+    ko.applyBindings(pageWindow, document.getElementById(projectContainerId))   ;
 
     this.getParams = function () {
         var fq = [];
@@ -462,6 +463,7 @@ function ProjectFinder(config) {
             },
             complete: function () {
                 $('.search-spinner').addClass('d-none');
+                $("#" + projectContainerId).trigger('resizefilters');
             }
         })
     };
@@ -920,7 +922,7 @@ function ProjectFinder(config) {
         selectedProjectId = params.projectId;
 
         pageWindow.sortBy( params.sort || 'dateCreatedSort');
-        pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '20'));
+        pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '30'));
         pageWindow.isWorldWide( params.isWorldWide || 'false');
 
         $('#pt-search').val(params.queryText).focus();
