@@ -194,7 +194,7 @@
 </script>
 
 <script id="xssViewer" type="text/html">
-<div class="w-100" style="text-align:center;" data-bind="html: selectedDocument().embeddedVideo"></div>
+<div class="w-100 text-center" data-bind="html: selectedDocument().embeddedVideo"></div>
 </script>
 
 <script id="noPreviewViewer" type="text/html">
