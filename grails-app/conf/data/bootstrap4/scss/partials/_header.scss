@@ -171,8 +171,8 @@
     .current-menu-item,
     .current-menu-parent {
       > .nav-link:before {
-        left: 0.5rem;
-        right: 0.5rem;
+        left: 0;
+        right: 0;
       }
     }
 
