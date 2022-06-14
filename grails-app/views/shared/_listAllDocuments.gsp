@@ -2,7 +2,9 @@
 
     <div id="${containerId}" class="container-fluid">
 
-        <h2>${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
+        <content tag="bannertitle">
+            <h2>${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
+        </content>
 
         <div class="row mb-2">
             <div class="col-sm-6 col-lg-3">
