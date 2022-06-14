@@ -7,9 +7,9 @@
         <div class="row mb-2">
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group search-resources">
-                    <label for="searchResources" class="sr-only">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
+                    <label id="lblSearchResources" for="searchResources" class="sr-only">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
                     <input class="form-control" id="searchResources" type="text" data-bind="value:searchDoc, hasFocus: searchHasFocus, valueUpdate:'keyup'"
-                       placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="org-search-button"/>
+                           placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="lblSearchResources"/>
                     <div class="input-group-append">
                         <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)">
                             <i class="fas fa-search"></i>
