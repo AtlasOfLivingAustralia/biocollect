@@ -39,7 +39,7 @@
         <div class="row mb-2">
             <div class="col-12">
                 <div class="filter-bar d-flex align-items-center my-0">
-                    <h6 class="m-0">Applied Filters: </h6>
+                    <h4 class="m-0">Applied Filters: </h4>
 
                     <!-- ko foreach: allFilters() -->
                     <button class="filter-item btn btn-outline-dark btn-sm" data-bind="click: $parent.removeFilter"> <!-- ko text: $data.searchText --> <!-- /ko --> <i class="far fa-trash-alt"></i></button>

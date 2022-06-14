@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
+    <g:set var="title" value="${hubConfig.getTextForCharts(grailsApplication.config.content.defaultOverriddenLabels)}"/>
+    <title>${title}</title>
     <meta name="layout" content="bs4"/>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
