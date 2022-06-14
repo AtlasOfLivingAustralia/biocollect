@@ -1,6 +1,7 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
-`<g:set var="projectService" bean="projectService"></g:set>`
+<g:set var="projectService" bean="projectService"></g:set>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="messageSource" bean="messageSource"></g:set>
 <html>
 <head>
     <meta name="layout" content="bs4"/>
@@ -54,7 +55,10 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <content tag="pageTitle"><g:message code="project.create.register"/></content>
+    <content tag="bannertitle">
+        <g:set var="customTitle" value="${hubConfig.templateConfiguration?.header?.links?.find {it.contentType == 'newproject'}?.displayName}"/>
+        ${customTitle?:messageSource.getMessage('project.create.register', [].toArray(), '', Locale.default)}
+    </content>
     <p>
         <g:message code="project.create.description"/>
     </p>

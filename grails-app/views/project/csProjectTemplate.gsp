@@ -258,5 +258,6 @@
         </g:if>
     });
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '.projects-container']" />
 </body>
 </html>

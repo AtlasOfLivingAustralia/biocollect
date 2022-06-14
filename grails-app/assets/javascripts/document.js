@@ -95,8 +95,12 @@ function DocumentViewModel (doc, owner, settings) {
     if (doc.lastUpdated)
         self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
 
-    self.transients.isPreviewDownloadVisible = function() {
+    self.transients.isPreviewVisible = function() {
         return ((self.role() == 'journalArticles') || self.externalUrl());
+    };
+
+    self.transients.isDownloadVisible = function() {
+        return ((self.role() == 'journalArticles') || self.externalUrl() || (self.role() == 'embeddedVideo'));
     };
 
     self.transients.projectUrl = ko.pureComputed(function () {

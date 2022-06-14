@@ -16,7 +16,7 @@ buildscript {
 }
 
 
-version "6.2-SNAPSHOT"
+version "6.1.1-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -80,6 +80,7 @@ dependencies {
     implementation "org.grails:grails-async-gpars"
     implementation "org.grails.plugins:scaffolding"
     profile "org.grails.profiles:web"
+    implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
     implementation "commons-io:commons-io:2.6"
@@ -135,7 +136,7 @@ dependencies {
 
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0"
-        implementation "org.grails.plugins:ecodata-client-plugin:4.0.3"
+        implementation "org.grails.plugins:ecodata-client-plugin:4.0.4-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"

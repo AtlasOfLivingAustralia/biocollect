@@ -75,5 +75,8 @@
     var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false}});
 
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '#project-finder-container .projects-container',
+                                                  target: '#project-finder-container #filters',
+                                                  listenTo: '#project-finder-container']" />
 </body>
 </html>

@@ -168,8 +168,10 @@
     var SITES_TAB_AMPLIFY_VAR = 'site-list-result-tab'
     $(document).ready(function () {
         RestoreTab('siteListResultTab', 'list-tab')
-
-        var sites = new SitesListViewModel();
+        var boundElementSelector = "#siteSearch"
+        var sites = new SitesListViewModel({
+            boundElementSelector: boundElementSelector
+        });
         var params = {
             loadOnInit: false
         }
@@ -229,5 +231,6 @@
         }
     })
 </script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '#siteSearch', target: '#filters', listenTo: '#siteSearch']" />
 </body>
 </html>
