@@ -295,6 +295,7 @@ function DashboardViewModel(config, searchFilters) {
 
     var params = {};
     params.configuration = config.configuration
+    params.backgroundColor = config.backgroundColor
 
     var tempAssociatedProgArr = []
     var tempElectorateArr = []
@@ -340,7 +341,7 @@ function DashboardViewModel(config, searchFilters) {
                 self.data({"datasets":[
                     {
                         "label":data.label,
-                        "backgroundColor": ["#3e95cd"],
+                        "backgroundColor": params.backgroundColor,
                         "data":data.groups}
                     ]})
             }
