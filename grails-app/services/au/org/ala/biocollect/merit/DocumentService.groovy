@@ -165,6 +165,10 @@ class DocumentService {
             params.fq.push("publiclyViewable:true")
         }
 
+        //exclude logo and mainImage roles
+        params.fq.push("-role:logo")
+        params.fq.push("-role:mainImage")
+
         if (order) {
             params.order = order
         }
