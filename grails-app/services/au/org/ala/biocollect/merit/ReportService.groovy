@@ -621,7 +621,10 @@ class ReportService {
     Map genericReport(Map config){
         def defaultFQs = SettingService.getHubConfig().defaultFacetQuery ?: []
         config.fq = config.fq ?: []
+        config.fq.add('-role:logo')
+        config.fq.add('-role:mainImage')
         config.fq.addAll(defaultFQs)
+
         String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/genericReport"
         Map report = webService.doPost(url, config)
 
