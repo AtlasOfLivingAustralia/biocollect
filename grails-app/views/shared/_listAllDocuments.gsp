@@ -3,7 +3,7 @@
     <div id="${containerId}" class="container-fluid">
 
         <content tag="bannertitle">
-            <h2>${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
+            <h2 data-bind="visible: isProject()">${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
         </content>
 
         <div class="row mb-2">
