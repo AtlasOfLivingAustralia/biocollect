@@ -3,7 +3,8 @@
         $("${listenTo}").on("resizefilters", setFilterPanelSize);
         $(document).on("shown.bs.tab", setFilterPanelSize);
         // Boostrap Collapse removes styles when filter is hidden. Reset height everytime filter panel is shown.
-        $("${target}").on("shown.bs.collapse", setFilterPanelSize);
+        // Using setTimeout to wait for animation to finish.
+        $("${target}").on("shown.bs.collapse", function () { setTimeout(setFilterPanelSize, 100) });
         function setFilterPanelSize() {
             var dependent = "${dependentDiv}",
                 dependency = "${target ?: "#filters"}",

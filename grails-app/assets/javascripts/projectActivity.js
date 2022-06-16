@@ -127,6 +127,14 @@ var ProjectActivity = function (params) {
         return true;
     };
 
+    self.transients.areSitesNotAvailableForSelection = ko.pureComputed(function () {
+        var sites = $.grep(self.sites(), function (site){
+            return !site.isProjectArea();
+        }) || [];
+
+        return sites.length == 0;
+    });
+
     function diffArrays(a, b) {
         var diff = [];
         a && a.forEach(function (item) {
