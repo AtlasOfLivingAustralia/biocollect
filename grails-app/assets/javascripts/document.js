@@ -475,6 +475,10 @@ function AllDocListViewModel(projectId) {
         self.refreshPage(0);
     });
 
+    self.isProject = function(projectId) {
+        !!projectId;
+    }
+
     self.refreshPage = function(offset) {
         var params = {offset: offset, max: self.pagination.resultsPerPage()};
 
