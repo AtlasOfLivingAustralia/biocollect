@@ -64,6 +64,7 @@
 
 <asset:script type="text/javascript">
     var ctx = document.getElementById('chartId');
+    Chart.register(ChartDataLabels);
 
     var reportChartjsViewModel = new ReportChartjsViewModel();
     ko.applyBindings(reportChartjsViewModel, ctx);

@@ -18,7 +18,8 @@
             downloadReportUrl: "${createLink(controller: 'report', action: 'downloadReport')}"
         }
     </asset:script>
-    <asset:javascript src="chart.min.js"/>
+    <asset:javascript src="chartjs_v3_8/chart.min.js"/>
+    <asset:javascript src="chartjs-plugin-datalabels/chartjs-plugin-datalabels.min.js"/>
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="chartjsManager.js"/>

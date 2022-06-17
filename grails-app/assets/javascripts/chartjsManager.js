@@ -232,6 +232,11 @@ function ReportChartjsViewModel() {
         });
     }
 
+    function showValues (value) {
+        console.log(value);
+        return value;
+    }
+
     self.populateCharts('');
     self.populateAssociatedPrograms();
     self.populateElectorates();
@@ -340,9 +345,19 @@ function DashboardViewModel(config, searchFilters) {
             if (data) {
                 self.data({"datasets":[
                     {
-                        "label":data.label,
                         "backgroundColor": params.backgroundColor,
-                        "data":data.groups}
+                        "data":data.groups,
+                        "datalabels": {
+                            "formatter": function(value) { return value.count; },
+                            "anchor": "end",
+                            "align": "end",
+                            "labels": {
+                                "value": {
+                                    "color": "#565656"
+                                }
+                            }
+                        }
+                    }
                     ]})
             }
         }

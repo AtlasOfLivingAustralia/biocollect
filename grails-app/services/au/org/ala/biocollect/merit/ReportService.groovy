@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
+import org.grails.web.json.JSONArray
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Period
@@ -621,8 +622,6 @@ class ReportService {
     Map genericReport(Map config){
         def defaultFQs = SettingService.getHubConfig().defaultFacetQuery ?: []
         config.fq = config.fq ?: []
-        config.fq.add('-role:logo')
-        config.fq.add('-role:mainImage')
         config.fq.addAll(defaultFQs)
 
         String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/genericReport"
@@ -630,6 +629,15 @@ class ReportService {
 
         Map results = report?.resp?.results ?: [:]
         groupResultsByItems(results, config)
+
+        //if (results.label == "Products by type")
+            //MapDisplayName(results)
+    }
+
+    def MapDisplayName (Map results) {
+        results.groups.group?.each { group ->
+            group.group = messageSource.getMessage("products." + group, Locale.default) //products.property(role)
+        }
     }
 
     Map groupResultsByItems(Map results, Map config) {
