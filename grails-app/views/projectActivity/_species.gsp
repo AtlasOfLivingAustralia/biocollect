@@ -27,7 +27,7 @@
         <table class="not-stacked-table w-100" data-bind="visible: speciesFields().length > 0">
             <thead>
                 <tr>
-                <td class="col-3">
+                <td class="w-25">
                         <g:message code="project.survey.species.fieldName"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message
                                 code="project.survey.species.fieldName"/>', content:'<g:message
@@ -35,7 +35,7 @@
                             <i class="fas fa-info-circle"></i>
                         </a>
                 </td>
-                <td class="req-field col-6" >
+                <td class="req-field w-50" >
                         <g:message code="project.survey.species.settings"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message
                                 code="project.survey.species.settings"/>', content:'<g:message
@@ -43,7 +43,7 @@
                             <i class="fas fa-info-circle"></i>
                         </a>
                 </td>
-                <td class="col-3">
+                <td class="w-25">
                         <g:message code="project.survey.species.displayAs"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message
                                 code="project.survey.species.displayAs"/>', content:'<g:message
