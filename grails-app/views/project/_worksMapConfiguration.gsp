@@ -26,6 +26,14 @@
                         </label>
                         <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
+                    <!-- ko if: surveySiteOption() == 'sitepick' && !isSiteConfigValid() -->
+                    <div class="formError inline mt-2" >
+                        <div class="formErrorContent">
+                            <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --><br>
+                            <g:message code="projectActivity.locations.mandatory"/>
+                        </div>
+                    </div>
+                    <!-- /ko -->
 
                 </div>
 
@@ -55,6 +63,14 @@
                         </label>
                         <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
+                    <!-- ko if: surveySiteOption() == 'sitecreate' && !isSiteConfigValid() -->
+                    <div class="formError inline mt-2" >
+                        <div class="formErrorContent">
+                            <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
+                            <g:message code="projectActivity.locations.mandatory"/>
+                        </div>
+                    </div>
+                    <!-- /ko -->
                 </div>
 
                 <div id="site-create" class="card ml-5 collapse">
@@ -83,6 +99,15 @@
                         </label>
                         <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
+                    <!-- ko if: surveySiteOption() == 'sitepickcreate' && !isSiteConfigValid() -->
+                    <div class="formError inline mt-2" >
+                        <div class="formErrorContent">
+                            <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
+                            <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --> <br>
+                            <g:message code="projectActivity.locations.mandatory"/>
+                        </div>
+                    </div>
+                    <!-- /ko -->
                 </div>
 
                 <div id="site-pick-create" class="card collapse ml-5">
@@ -130,7 +155,7 @@
 
         <div class="row">
             <div class="col-sm-12">
-                <button class="btn btn-primary-dark btn-sm block" data-bind="click: $parent.saveMapConfig"><i
+                <button class="btn btn-primary-dark btn-sm block" data-bind="click: $parent.saveMapConfig, enable: isSiteConfigValid()"><i
                         class="fas fa-hdd"></i>  Save</button>
             </div>
         </div>
