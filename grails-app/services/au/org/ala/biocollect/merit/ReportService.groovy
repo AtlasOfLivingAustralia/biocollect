@@ -2,7 +2,6 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
-import org.grails.web.json.JSONArray
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Period
@@ -630,14 +629,15 @@ class ReportService {
         Map results = report?.resp?.results ?: [:]
         groupResultsByItems(results, config)
 
-        //if (results.label == "Products by type")
-            //MapDisplayName(results)
+        MapDisplayName(results, config.reportConfig.groups.property)
     }
 
-    def MapDisplayName (Map results) {
-        results.groups.group?.each { group ->
-            group.group = messageSource.getMessage("products." + group, Locale.default) //products.property(role)
+    def MapDisplayName (Map results, String property) {
+        results.groups?.each { group ->
+            group.group = messageSource.getMessage("products." + property + "." + group.group, null, group.group, Locale.default)
         }
+
+        results
     }
 
     Map groupResultsByItems(Map results, Map config) {
