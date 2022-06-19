@@ -206,15 +206,9 @@ class TemplateTagLib {
                     break;
                     break;
                 case 'charts':
-                    if (bs4) {
-                        out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Charts'}\" href=\"${url}\">${link.displayName?:'Charts'}</a>";
-                        out << "</li>";
-                    } else {
-                        out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\">${link.displayName?:'Charts'}</a>";
-                        out << "</li>";
-                    }
+                    out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
+                    out << "<a class=\"nav-link\" title=\"${link.displayName?:'Charts'}\" href=\"${url}\">${link.displayName?:'Charts'}</a>";
+                    out << "</li>";
             }
         }
     }
@@ -361,7 +355,7 @@ class TemplateTagLib {
                 break;
                 break;
             case 'charts':
-                url = "${createLink(controller: 'resource', action: 'chartList')}";
+                url = "${createLink(controller: 'report', action: 'chartList')}";
         }
 
         return url;

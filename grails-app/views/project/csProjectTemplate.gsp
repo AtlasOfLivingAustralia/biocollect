@@ -118,7 +118,6 @@
         mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
         allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        chartListViewer: "${createLink(controller: 'resource', action: 'chartList')}",
         surveyMethods: <fc:getSurveyMethods/>
         </g:applyCodec>
         },

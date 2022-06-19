@@ -7,11 +7,9 @@
     <meta name="layout" content="bs4"/>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <asset:stylesheet src="data-manifest.css"/>
     <asset:script type="text/javascript">
         var fcConfig = {
-            populateChartDataUrl: "${createLink(controller: 'report', action: 'populateChartData')}",
+            getChartConfigUrl: "${createLink(controller: 'report', action: 'getChartConfig')}",
             genericReportUrl: "${createLink(controller: 'report', action: 'genericReport')}",
             populateAssociatedProgramsUrl: "${createLink(controller: 'report', action: 'populateAssociatedPrograms')}",
             populateElectoratesUrl: "${createLink(controller: 'report', action: 'populateElectorates')}",
@@ -26,9 +24,7 @@
 </head>
 <body>
 
-<div class="main-content">
-    <g:render template="/resource/chartGraphTab"/>
-</div>
+<g:render template="/report/chartGraphTab"/>
 
 </body>
 </html>

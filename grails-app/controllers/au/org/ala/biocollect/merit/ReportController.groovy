@@ -11,6 +11,8 @@ class ReportController {
     static defaultAction = "dashboard"
     def webService, cacheService, searchService, metadataService, reportService, userService, settingService
 
+    def chartList() {}
+
     def loadReport() {
         forward action: params.report+'Report', params:params
     }
@@ -86,11 +88,7 @@ class ReportController {
 
     }
 
-    def dashboardConfig(){
-        renderStaticPage(SettingPageType.DASHBOARD_CONFIG, false)
-    }
-
-    def populateChartData() {
+    def getChartConfig() {
         String jsonStr = settingService.getSettingText(SettingPageType.DASHBOARD_CONFIG) as String
 
         def jsonSlurper = new groovy.json.JsonSlurper()
@@ -105,7 +103,7 @@ class ReportController {
     }
 
     def populateElectorates() {
-        def SPATIAL_URL = "https://spatial.ala.org.au"
+        def SPATIAL_URL = grailsApplication.config.spatial.baseURL
 
         String uniqueIdResponse = new URL(SPATIAL_URL + "/ws/objects/cl958")?.text
 

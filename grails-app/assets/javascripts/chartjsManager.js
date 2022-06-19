@@ -111,6 +111,8 @@ function ReportChartjsViewModel() {
     self.options = ko.observable('');
     self.chartjsPerRowSelected = ko.observable('');
 
+    self.chartConfig = ''
+
     //chart filters
     self.associatedProgramFilterFieldOptions = ko.observableArray()
     self.electorateFilterFieldOptions = ko.observableArray()
@@ -123,29 +125,29 @@ function ReportChartjsViewModel() {
 
     self.allFilters = ko.observableArray();
 
-    self.associatedProgramFilterFields = ""
-    self.electorateFilterFields = ""
+    self.associatedProgramFilterField = ko.observable(self.associatedProgramFilterFieldOptions[0]);
+    self.electorateFilterField = ko.observable(self.electorateFilterFieldOptions[0]);
 
     self.addAssociatedProgram = function() {
-        if (self.associatedProgramFilterFields[0] != undefined) {
-            self.allFilters.push({"searchText": self.associatedProgramFilterFields, "searchBy": "associatedProgram"})
+        if (self.associatedProgramFilterField() != undefined) {
+            self.allFilters.push({"searchText": self.associatedProgramFilterField(), "searchBy": "associatedProgram"})
 
-            self.populateCharts(self.allFilters());
+            self.drawCharts(self.chartConfig, self.allFilters());
 
             //remove added item from dropdown
-            const index = self.associatedProgramFilterFieldOptions.indexOf(self.associatedProgramFilterFields[0])
+            const index = self.associatedProgramFilterFieldOptions.indexOf(self.associatedProgramFilterField())
             self.associatedProgramFilterFieldOptions.splice(index, 1)
         }
     }
 
     self.addElectorate = function() {
-        if (self.electorateFilterFields[0] != undefined) {
-            self.allFilters.push({"searchText": self.electorateFilterFields, "searchBy": "electorate"})
+        if (self.electorateFilterField() != undefined) {
+            self.allFilters.push({"searchText": self.electorateFilterField(), "searchBy": "electorate"})
 
-            self.populateCharts(self.allFilters());
+            self.drawCharts(self.chartConfig, self.allFilters());
 
             //remove added item from dropdown
-            const index = self.electorateFilterFieldOptions.indexOf(self.electorateFilterFields[0])
+            const index = self.electorateFilterFieldOptions.indexOf(self.electorateFilterField())
             self.electorateFilterFieldOptions.splice(index, 1)
         }
     }
@@ -159,10 +161,12 @@ function ReportChartjsViewModel() {
             self.populateCharts(self.allFilters())
 
         //re-add removed item to dropdown
-        if (this.searchBy == 'associatedProgram')
-            self.associatedProgramFilterFieldOptions.push(this.searchText[0])
+        if (this.searchBy == 'associatedProgram') {
+            self.associatedProgramFilterFieldOptions.push(this.searchText)
+            self.associatedProgramFilterFieldOptions.sort()
+        }
         else if (this.searchBy == 'electorate') {
-            self.electorateFilterFieldOptions.push(this.searchText[0])
+            self.electorateFilterFieldOptions.push(this.searchText)
             self.electorateFilterFieldOptions.sort()
         }
     }
@@ -176,48 +180,46 @@ function ReportChartjsViewModel() {
     }
 
     self.populateCharts = function(searchFilters) {
-        var params = {};
-
         $.ajax({
-            url:fcConfig.populateChartDataUrl,
-            data:params,
+            url:fcConfig.getChartConfigUrl,
             success:function(data) {
                 if (data) {
-                    self.chartjsPerRowSelected(data.chartjsPerRowSelected)
-
-                    //Re-draw charts
-                    self.chartjsList.splice(0, data.chartList.length)
-
-                    for (var i = 0; i < data.chartList.length; i++) {
-                        var chart = data.chartList[i]
-
-                        const dashboardViewModel = new DashboardViewModel(chart, searchFilters);
-                        self.chartjsList.push(dashboardViewModel);
-                    }
+                    self.chartConfig = data
+                    self.drawCharts(data, searchFilters)
                 }
             }
         });
     }
 
-    self.populateAssociatedPrograms = function() {
-        var params = {};
+    self.drawCharts = function(data, searchFilters) {
+        self.chartjsPerRowSelected(data.chartjsPerRowSelected)
 
+        //Re-draw charts
+        self.chartjsList.removeAll()
+
+        for (var i = 0; i < data.chartList.length; i++) {
+            var chart = data.chartList[i]
+
+            const dashboardViewModel = new DashboardViewModel(chart, searchFilters);
+            self.chartjsList.push(dashboardViewModel);
+        }
+    }
+
+    self.populateAssociatedPrograms = function() {
         $.ajax({
             url:fcConfig.populateAssociatedProgramsUrl,
-            data:params,
             success:function(data) {
-                if (data)
+                if (data) {
                     self.associatedProgramFilterFieldOptions(data)
+                    self.associatedProgramFilterFieldOptions.sort()
+                }
             }
         });
     }
 
     self.populateElectorates = function() {
-        var params = {};
-
         $.ajax({
             url:fcConfig.populateElectoratesUrl,
-            data:params,
             success:function(data) {
                 if (data) {
                     let tempArr = []
@@ -230,11 +232,6 @@ function ReportChartjsViewModel() {
                 }
             }
         });
-    }
-
-    function showValues (value) {
-        console.log(value);
-        return value;
     }
 
     self.populateCharts('');
@@ -260,6 +257,8 @@ function ReportChartjsViewModel() {
                 a.style.display = 'none';
                 document.body.appendChild(a);
                 a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(a.href);
             }
         };
 
@@ -332,7 +331,10 @@ function DashboardViewModel(config, searchFilters) {
             }
         }
 
-        params.configuration.query = query
+        if (params.configuration.query)
+            params.configuration.query += " AND " + query
+        else
+            params.configuration.query = query
     }
 
     $.ajax({
@@ -348,14 +350,7 @@ function DashboardViewModel(config, searchFilters) {
                         "backgroundColor": params.backgroundColor,
                         "data":data.groups,
                         "datalabels": {
-                            "formatter": function(value) { return value.count; },
-                            "anchor": "end",
-                            "align": "end",
-                            "labels": {
-                                "value": {
-                                    "color": "#565656"
-                                }
-                            }
+                            "formatter": function(value) { return value.count; }
                         }
                     }
                     ]})
