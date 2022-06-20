@@ -17,7 +17,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-sm-6 col-lg-3 mt-1 mt-lg-0">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <label for="electorate" class="input-group-text">Electorate</label>
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-sm-6 col-lg-3 mt-1 mt-lg-0">
                 <button id="downloadReport" class="btn btn-primary-dark" data-bind="click: downloadReport"><i class="fas fa-download"></i> Download</button>
             </div>
         </div>

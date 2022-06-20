@@ -353,7 +353,7 @@ content.defaultOverriddenLabels = [
         [
                 id: 10,
                 showCustomText: false,
-                page: 'Project > "Charts" tab',
+                page: 'Hub > "Charts" tab',
                 defaultText: 'Dashboard',
                 customText:'',
                 notes: 'Section heading on project\'s charts tab.'

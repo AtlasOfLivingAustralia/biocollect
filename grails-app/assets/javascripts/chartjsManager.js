@@ -156,9 +156,9 @@ function ReportChartjsViewModel() {
         self.allFilters.remove(this)
 
         if (self.allFilters().length == 0)
-            self.populateCharts('')
+            self.drawCharts(self.chartConfig,'');
         else
-            self.populateCharts(self.allFilters())
+            self.drawCharts(self.chartConfig, self.allFilters());
 
         //re-add removed item to dropdown
         if (this.searchBy == 'associatedProgram') {
@@ -174,18 +174,18 @@ function ReportChartjsViewModel() {
     self.resetAll = function() {
         self.allFilters.splice(0, self.allFilters().length)
 
-        self.populateCharts('')
+        self.drawCharts(self.chartConfig,'');
         self.populateAssociatedPrograms()
         self.populateElectorates()
     }
 
-    self.populateCharts = function(searchFilters) {
+    self.populateCharts = function() {
         $.ajax({
             url:fcConfig.getChartConfigUrl,
             success:function(data) {
                 if (data) {
                     self.chartConfig = data
-                    self.drawCharts(data, searchFilters)
+                    self.drawCharts(data,'');
                 }
             }
         });
@@ -234,7 +234,7 @@ function ReportChartjsViewModel() {
         });
     }
 
-    self.populateCharts('');
+    self.populateCharts();
     self.populateAssociatedPrograms();
     self.populateElectorates();
 
@@ -305,6 +305,7 @@ function DashboardViewModel(config, searchFilters) {
     var tempElectorateArr = []
 
     var query = ""
+    var copiedConfig = Object.assign({}, config.configuration);
 
     if (searchFilters) {
         for (var i = 0; i < searchFilters.length; i++) {
@@ -331,10 +332,10 @@ function DashboardViewModel(config, searchFilters) {
             }
         }
 
-        if (params.configuration.query)
-            params.configuration.query += " AND " + query
-        else
-            params.configuration.query = query
+        if (query && copiedConfig.query)
+            copiedConfig.query += " AND " + query
+        else if (query)
+            copiedConfig.query = query
     }
 
     $.ajax({
@@ -342,9 +343,16 @@ function DashboardViewModel(config, searchFilters) {
         contentType: 'application/json',
         dataType: 'JSON',
         url:fcConfig.genericReportUrl,
-        data:JSON.stringify(params.configuration),
+        data:JSON.stringify(copiedConfig),
         success:function(data) {
             if (data) {
+                var i = data.groups.length
+
+                while(i--) {
+                    if (data.groups[i].group == "")
+                        data.groups.splice(i, 1) //remove item if group is blank
+                }
+
                 self.data({"datasets":[
                     {
                         "backgroundColor": params.backgroundColor,
