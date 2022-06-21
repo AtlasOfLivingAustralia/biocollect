@@ -360,13 +360,6 @@ function DashboardViewModel(config, searchFilters) {
         data:JSON.stringify(copiedConfig),
         success:function(data) {
             if (data) {
-                var i = data.groups.length
-
-                while(i--) {
-                    if (data.groups[i].group == "")
-                        data.groups.splice(i, 1) //remove item if group is blank
-                }
-
                 self.data({"datasets":[
                     {
                         "backgroundColor": params.backgroundColor,
