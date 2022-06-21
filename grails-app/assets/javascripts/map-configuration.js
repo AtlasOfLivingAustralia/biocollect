@@ -214,6 +214,25 @@ function MapConfiguration(config, project)
         }
     };
 
+    self.isSiteConfigValid = function () {
+        var msg
+        if (['sitecreate', 'sitepickcreate'].indexOf(self.surveySiteOption()) > -1) {
+            msg = self.isUserSiteCreationConfigValid();
+            if (msg) {
+                return false;
+            }
+        }
+
+        if (['sitepick', 'sitepickcreate'].indexOf(self.surveySiteOption()) > -1) {
+            msg = self.isSiteSelectionConfigValid();
+            if (msg) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     self.surveySiteOption.subscribe(function(newOption) {
         switch (newOption) {
             case SITE_CREATE:

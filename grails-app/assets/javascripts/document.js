@@ -95,12 +95,18 @@ function DocumentViewModel (doc, owner, settings) {
     if (doc.lastUpdated)
         self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
 
-    self.transients.isPreviewDownloadVisible = function() {
+    self.transients.isPreviewVisible = function() {
         return ((self.role() == 'journalArticles') || self.externalUrl());
     };
 
+    self.transients.isDownloadVisible = function() {
+        return ((self.role() == 'journalArticles') || self.externalUrl() || (self.role() == 'embeddedVideo'));
+    };
+
     self.transients.projectUrl = ko.pureComputed(function () {
-        return fcConfig.projectIndexUrl + '/' + self.projectId() +
+        var projectId = ko.unwrap(self.projectId)
+
+        return fcConfig.projectIndexUrl + '/' + projectId +
             (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
     });
 
@@ -469,11 +475,16 @@ function AllDocListViewModel(projectId) {
         self.refreshPage(0);
     });
 
+    self.isProject = function(projectId) {
+        !!projectId;
+    }
+
     self.refreshPage = function(offset) {
         var params = {offset: offset, max: self.pagination.resultsPerPage()};
 
         if (self.searchDoc()) {
-            params.searchTerm = self.searchDoc();
+            let query = this.getQuery(true, self.searchDoc());
+            params.searchTerm = query;
         }
 
         if (self.roleFilterField()) {
@@ -514,6 +525,16 @@ function AllDocListViewModel(projectId) {
                 self.loading(false);
             }
         });
+    };
+
+    this.getQuery = function (partialSearch, queryText) {
+        var query = queryText.toLowerCase();
+
+        if (partialSearch && ((query.length >= 3) && (query.indexOf('*') == -1))) {
+            query = '*' + query + '*';
+        }
+
+        return query;
     };
 
     self.refreshPage(0);

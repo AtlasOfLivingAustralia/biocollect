@@ -11,7 +11,7 @@
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * Created by Temi on 1/02/16.
  */
 var availableFacets = [
@@ -81,6 +81,9 @@ function SitesListViewModel(params) {
                 error: function (xhr) {
                     self.error(xhr.responseText);
                     self.sitesLoaded(true);
+                },
+                complete: function (){
+                    params.boundElementSelector && $(params.boundElementSelector);
                 }
             })
         }

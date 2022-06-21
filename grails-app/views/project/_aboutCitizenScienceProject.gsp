@@ -353,6 +353,13 @@
             });
         }
     }
+
+    %{-- Map on about tab needs redrawing since leaflet viewer shows base layer on top left corner. #1253--}%
+        var firstMapRedrawOnAboutTab = true;
+        $('#csProjectContent,#worksProjectContent').on("knockout-visible", function() {
+            firstMapRedrawOnAboutTab && map && map.redraw && map.redraw();
+            firstMapRedrawOnAboutTab = false;
+        });
     </g:if>
 
     // make sure the list of associated organisations are below the shorter of the two columns.
@@ -365,14 +372,6 @@
     }
 
     setTimeout(placeAssociatedOrgs, 2000);
-
-    %{-- Map on about tab needs redrawing since leaflet viewer shows base layer on top left corner. #1253--}%
-    var firstMapRedrawOnAboutTab = true;
-    $('#csProjectContent,#worksProjectContent').on("knockout-visible", function() {
-        firstMapRedrawOnAboutTab && map && map.redraw && map.redraw();
-        firstMapRedrawOnAboutTab = false;
-    });
-
 </asset:script>
 
 

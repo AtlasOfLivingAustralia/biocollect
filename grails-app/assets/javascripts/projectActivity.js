@@ -12,7 +12,7 @@ var ProjectActivity = function (params) {
     var tabDocumentId = params.tabDocumentId || "#documents-tab";
     var stats = pActivity.stats || {};
 
-    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
+    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName, this));
     self.project = project;
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
@@ -126,6 +126,14 @@ var ProjectActivity = function (params) {
 
         return true;
     };
+
+    self.transients.areSitesNotAvailableForSelection = ko.pureComputed(function () {
+        var sites = $.grep(self.sites(), function (site){
+            return !site.isProjectArea();
+        }) || [];
+
+        return sites.length == 0;
+    });
 
     function diffArrays(a, b) {
         var diff = [];

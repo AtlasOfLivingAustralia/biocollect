@@ -2,12 +2,14 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
+import org.springframework.context.MessageSource
 
 class TemplateTagLib {
     static namespace = "config"
 
     UserService userService
     SettingService settingService
+    MessageSource messageSource
 
     def createAButton = { attrs ->
         Map link = attrs.config;
@@ -204,6 +206,11 @@ class TemplateTagLib {
                         out << "</li>"
                     }
                     break;
+                    break;
+                case 'charts':
+                    out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
+                    out << "<a class=\"nav-link\" title=\"${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}\" href=\"${url}\">${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}</a>";
+                    out << "</li>";
             }
         }
     }
@@ -348,6 +355,9 @@ class TemplateTagLib {
             case 'recordSighting':
                 url = "${createLink(uri: link.href)}"
                 break;
+                break;
+            case 'charts':
+                url = "${createLink(controller: 'report', action: 'chartList')}";
         }
 
         return url;

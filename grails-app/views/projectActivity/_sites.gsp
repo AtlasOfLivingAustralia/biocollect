@@ -31,6 +31,14 @@
                     </label>
                     <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
+                <!-- ko if: surveySiteOption() == 'sitepick' && !isSiteConfigValid() -->
+                <div class="formError inline mt-2" >
+                    <div class="formErrorContent">
+                        <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --><br>
+                        <g:message code="projectActivity.locations.mandatory"/>
+                    </div>
+                </div>
+                <!-- /ko -->
             </div>
 
             <div id="site-pick" class="collapse card ml-5">
@@ -58,6 +66,14 @@
                     </label>
                     <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
+                <!-- ko if: surveySiteOption() == 'sitecreate' && !isSiteConfigValid() -->
+                <div class="formError inline mt-2" >
+                    <div class="formErrorContent">
+                        <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
+                        <g:message code="projectActivity.locations.mandatory"/>
+                    </div>
+                </div>
+                <!-- /ko -->
             </div>
 
             <div id="site-create" class="card ml-5 collapse">
@@ -85,6 +101,15 @@
                     </label>
                     <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
+                <!-- ko if: surveySiteOption() == 'sitepickcreate' && !isSiteConfigValid() -->
+                <div class="formError inline mt-2" >
+                    <div class="formErrorContent">
+                        <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
+                        <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --> <br>
+                        <g:message code="projectActivity.locations.mandatory"/>
+                    </div>
+                </div>
+                <!-- /ko -->
             </div>
 
             <div id="site-pick-create" class="collapse card ml-5">
@@ -134,11 +159,11 @@
     <!-- ko if: current -->
     <div class="row">
         <div class="col-12">
-            <button class="btn-primary-dark btn btn-sm" data-bind="click: $parent.saveSites"><i
+            <button class="btn-primary-dark btn btn-sm" data-bind="click: $parent.saveSites, enable: isSiteConfigValid()"><i
                     class="fas fa-hdd"></i> Save</button>
             <button class="btn-dark btn btn-sm" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-species-tab'}"><i
                     class="far fa-arrow-alt-circle-left"></i> Back</button>
-            <button class="btn-dark btn btn-sm" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-publish-tab'}"><i
+            <button class="btn-dark btn btn-sm" data-bind="showTabOrRedirect: {url:'', tabId: '#survey-publish-tab'}, enable: isSiteConfigValid()"><i
                     class="far fa-arrow-alt-circle-right"></i> Next</button>
         </div>
     </div>
@@ -153,7 +178,7 @@
             <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
                 <div class="row" data-bind="if: sites().length > 1">
                     <div class="col-6">
-                        <div class="large-checkbox">
+                        <div class="custom-checkbox">
                             <input id="selectall" type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
                             <label for="selectall"><span></span> <g:message code="mapConfiguration.site.selectall.title"/></label>
                         </div>
@@ -181,7 +206,7 @@
                 </div>
                 <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko if: getNumberOfSitesForSurvey() == 0 -->
+                <!-- ko if: transients.areSitesNotAvailableForSelection -->
                 <div class="alert alert-info" role="alert">
                     <g:message code="mapConfiguration.site.create.pick.empty.list.info"></g:message>
                 </div>

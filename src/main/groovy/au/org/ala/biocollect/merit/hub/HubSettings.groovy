@@ -185,6 +185,10 @@ class HubSettings extends JSONObject {
         findLabelOverrideForIndex(9, defaults)
     }
 
+    String getTextForCharts (List defaults) {
+        findLabelOverrideForIndex(10, defaults)
+    }
+
     /**
      * Get facets without special meaning like 'date', 'geoMap' etc.
      * @param facets

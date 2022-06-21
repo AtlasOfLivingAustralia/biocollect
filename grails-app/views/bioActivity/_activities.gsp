@@ -607,7 +607,7 @@
 
         var hubConfig = ${ hubConfig }
 
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig);
+        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig, '#survey-all-activities-and-records-content');
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#data-map-tab').on('shown.bs.tab',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
@@ -656,3 +656,4 @@
     tabId && $(tabId).tab('show');
     </g:applyCodec>
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '.data-expander.data-container', target: '#survey-all-activities-and-records-content #filters', listenTo: '#survey-all-activities-and-records-content']" />

@@ -1,9 +1,17 @@
 package au.org.ala.biocollect.merit
 
+import grails.converters.JSON
+import org.grails.web.json.JSONArray
+import pl.touk.excel.export.WebXlsxExporter
+
 class ReportController {
 
+    static allowedMethods = ['downloadReport': 'POST']
+
     static defaultAction = "dashboard"
-    def webService, cacheService, searchService, metadataService, reportService, userService
+    def webService, cacheService, searchService, metadataService, reportService, userService, settingService
+
+    def chartList() {}
 
     def loadReport() {
         forward action: params.report+'Report', params:params
@@ -80,5 +88,63 @@ class ReportController {
 
     }
 
+    def getChartConfig() {
+        String jsonStr = settingService.getSettingText(SettingPageType.DASHBOARD_CONFIG) as String
 
+        def jsonSlurper = new groovy.json.JsonSlurper()
+        def model = jsonSlurper.parseText(jsonStr)
+
+        render model as JSON
+    }
+
+    def populateAssociatedPrograms() {
+        JSONArray associatedPrograms = SettingService.getHubConfig().supportedPrograms
+        render associatedPrograms as JSON
+    }
+
+    def populateElectorates() {
+        def SPATIAL_URL = grailsApplication.config.spatial.baseURL
+
+        String uniqueIdResponse = new URL(SPATIAL_URL + "/ws/objects/cl958")?.text
+
+        def jsonResponse = new groovy.json.JsonSlurper()
+        def model = jsonResponse.parseText(uniqueIdResponse)
+
+        render model as JSON
+    }
+
+    def genericReport() {
+        Map body = request.JSON
+
+        if (body) {
+            def result = reportService.genericReport(body)
+            render text: result as JSON, contentType: 'application/json'
+        } else {
+            render text: [message: "Request body missing."] as JSON, status: 400, contentType: 'application/json'
+        }
+    }
+
+    def downloadReport() {
+        Map body = request.JSON
+        if (body) {
+            def headers = grailsApplication.config.report.download.collect { it.header }
+            def withProperties = grailsApplication.config.report.download.collect { it.property }
+
+            new WebXlsxExporter().with {
+                setResponseHeaders(response, 'report.xlsx')
+                body.each { String sheetName, List rows ->
+                    sheet (sheetName).with {
+                        fillHeader(headers)
+                        add(rows, withProperties)
+                    }
+                }
+                save(response.outputStream)
+            }
+
+            response.outputStream.flush()
+        } else {
+            render text: [message: "Request body missing."] as JSON, status: 400, contentType: 'application/json'
+        }
+
+    }
 }
