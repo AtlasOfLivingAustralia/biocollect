@@ -51,7 +51,7 @@
 
         <!-- ko foreach: chartjsPerRowGroupedItems -->
         <div class="row" data-bind="foreach: $data">
-            <div id="customChart" data-bind="attr: {class: $parents[1].chartjsPerRowSpan }">
+            <div data-bind="attr: {class: 'customChart ' + $parents[1].chartjsPerRowSpan() }">
                 <canvas class="customChartCanvas" data-bind="chartjs: { facetName: 'test', type: chartType, data: data, options: options }"
                         width="2" height="2"></canvas>
             </div>
