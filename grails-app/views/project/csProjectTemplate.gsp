@@ -245,8 +245,8 @@
             initialiseInternalCSAdmin();
         </g:if>
 
-
-        $('.validationEngineContainer').validationEngine({promptPosition: 'topLeft'});
+        //do not trigger validation on blur
+        $('.validationEngineContainer').validationEngine({promptPosition: 'topLeft', validationEventTrigger: "none"});
         $('.helphover').popover({animation: true, trigger:'hover'})
 
         //Main tab selection

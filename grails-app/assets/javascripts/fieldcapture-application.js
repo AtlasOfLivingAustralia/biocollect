@@ -659,7 +659,7 @@ function Documents() {
         if (selectedDoc) {
             var contentType = (selectedDoc.contentType() || 'application/octet-stream').toLowerCase().trim();
             var embeddedVideo = selectedDoc.embeddedVideo();
-            if (embeddedVideo) {
+            if (embeddedVideo && !self.transients.isHtmlViewer) {
                 val = "xssViewer";
             } else if (listContains(contentTypes.convert.concat(contentTypes.audio, contentTypes.video, contentTypes.image, contentTypes.pdf), contentType) && !self.transients.isHtmlViewer) {
                 val = "iframeViewer";

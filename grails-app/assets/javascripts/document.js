@@ -475,11 +475,16 @@ function AllDocListViewModel(projectId) {
         self.refreshPage(0);
     });
 
+    self.isProject = function(projectId) {
+        !!projectId;
+    }
+
     self.refreshPage = function(offset) {
         var params = {offset: offset, max: self.pagination.resultsPerPage()};
 
         if (self.searchDoc()) {
-            params.searchTerm = self.searchDoc();
+            let query = this.getQuery(true, self.searchDoc());
+            params.searchTerm = query;
         }
 
         if (self.roleFilterField()) {
@@ -520,6 +525,16 @@ function AllDocListViewModel(projectId) {
                 self.loading(false);
             }
         });
+    };
+
+    this.getQuery = function (partialSearch, queryText) {
+        var query = queryText.toLowerCase();
+
+        if (partialSearch && ((query.length >= 3) && (query.indexOf('*') == -1))) {
+            query = '*' + query + '*';
+        }
+
+        return query;
     };
 
     self.refreshPage(0);
