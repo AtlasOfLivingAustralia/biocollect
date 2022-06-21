@@ -59,7 +59,9 @@ enum SettingPageType {
     SURVEY_SPECIES_SINGLE("surveySpeciesSingle", "Descriptive text for the 'single species' option on the Survey configuration's Species dialog", "fielddata.survey.species.single"),
     SURVEY_SPECIES_GROUP("surveySpeciesGroup", "Descriptive text for the 'selection or group' option on the Survey configuration's Species dialog", "fielddata.survey.species.group"),
     SURVEY_DEFAULT("surveySpeciesDefault", "Descriptive text for the 'selection or default' option on the Survey configuration's Species dialog", "fielddata.survey.species.default"),
-    WORKS_SCHEDULE_INTRO("worksScheduleIntro", "How does work schedule function?", "fielddata.works.scheduleIntro")
+    WORKS_SCHEDULE_INTRO("worksScheduleIntro", "How does work schedule function?", "fielddata.works.scheduleIntro"),
+    DASHBOARD_CONFIG("dashboardConfig", "Dashboard configurations", "fielddata.dashboard.dashboardConfig")
+
 
     String name
     String title

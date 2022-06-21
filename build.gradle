@@ -16,7 +16,7 @@ buildscript {
 }
 
 
-version "6.1.1-SNAPSHOT"
+version "6.2-Dashboard-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -103,7 +103,7 @@ dependencies {
     runtimeOnly 'org.webjars:jquery:1.12.4'
     implementation 'dk.glasius:external-config:3.0.0'
     implementation "org.grails.plugins:excel-import:3.0.2"
-    implementation "org.grails.plugins:excel-export:0.2.1"
+    implementation "org.grails.plugins:excel-export:2.1"
     implementation 'org.grails.plugins:grails-google-visualization:2.2.1'
     implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
     implementation 'org.grails.plugins:mail:2.0.0.RC6'
@@ -117,6 +117,10 @@ dependencies {
         exclude group: 'commons-httpclient', module: 'commons-httpclient'
     }
 
+    implementation 'org.apache.poi:ooxml-schemas:1.4'
+    implementation 'org.apache.poi:poi:4.1.2'
+    implementation 'org.apache.poi:poi-ooxml:4.1.2'
+    implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
 
     implementation "org.grails.plugins:ala-admin-plugin:2.2"
     implementation "org.grails.plugins:ala-auth:3.2.3"
