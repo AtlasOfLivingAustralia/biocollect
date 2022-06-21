@@ -16,7 +16,7 @@ buildscript {
 }
 
 
-version "6.2-Dashboard-SNAPSHOT"
+version "6.2-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin: "eclipse"
