@@ -125,8 +125,8 @@ function ReportChartjsViewModel() {
 
     self.allFilters = ko.observableArray();
 
-    self.associatedProgramFilterField = ko.observable(self.associatedProgramFilterFieldOptions[0]);
-    self.electorateFilterField = ko.observable(self.electorateFilterFieldOptions[0]);
+    self.associatedProgramFilterField = ko.observable(self.associatedProgramFilterFieldOptions()[0]);
+    self.electorateFilterField = ko.observable(self.electorateFilterFieldOptions()[0]);
 
     self.addAssociatedProgram = function() {
         if (self.associatedProgramFilterField() != undefined) {
@@ -291,15 +291,18 @@ function DashboardViewModel(config, searchFilters) {
     self.chartType = ko.observable(config.chartOptions.type)
     self.data = ko.observable()
     self.options = ko.observable(config.chartOptions.options)
+    self.minifyXLabel = ko.observable(config.chartOptions.minifyXLabel)
 
-    if (self.options().scales != undefined) {
-        self.options().scales.x.ticks["callback"] = function(val) {
-            var maxLabelLength = 20;
+    if (self.minifyXLabel()) {
+        if (self.options().scales != undefined) {
+            self.options().scales.x.ticks["callback"] = function (val) {
+                var maxLabelLength = self.minifyXLabel();
 
-            if (this.getLabelForValue(val).length > maxLabelLength)
-                return this.getLabelForValue(val).substring(0, maxLabelLength) + '...';
-            else
-                return this.getLabelForValue(val);
+                if (this.getLabelForValue(val).length > maxLabelLength)
+                    return this.getLabelForValue(val).substring(0, maxLabelLength) + '...';
+                else
+                    return this.getLabelForValue(val);
+            }
         }
     }
 

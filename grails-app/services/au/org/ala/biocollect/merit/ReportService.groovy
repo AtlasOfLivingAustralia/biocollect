@@ -634,7 +634,7 @@ class ReportService {
 
     def MapDisplayName (Map results, String property) {
         results.groups?.each { group ->
-            group.group = messageSource.getMessage("products." + property + "." + group.group, null, group.group, Locale.default)
+            group.group = messageSource.getMessage("report." + property + "." + group.group, null, group.group, Locale.default)
         }
 
         results

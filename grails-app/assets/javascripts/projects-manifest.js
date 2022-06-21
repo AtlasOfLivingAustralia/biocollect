@@ -12,9 +12,6 @@
 // fileupload
 //= require fileupload-manifest.js
 
-// charts
-//= require chart-manifest.js
-
 // project species field configuration
 //= require speciesFieldsSettings.js
 //= require projectSpeciesFieldsConfiguration.js
