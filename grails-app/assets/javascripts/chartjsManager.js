@@ -292,6 +292,17 @@ function DashboardViewModel(config, searchFilters) {
     self.data = ko.observable()
     self.options = ko.observable(config.chartOptions.options)
 
+    if (self.options().scales != undefined) {
+        self.options().scales.x.ticks["callback"] = function(val) {
+            var maxLabelLength = 20;
+
+            if (this.getLabelForValue(val).length > maxLabelLength)
+                return this.getLabelForValue(val).substring(0, maxLabelLength) + '...';
+            else
+                return this.getLabelForValue(val);
+        }
+    }
+
     self.chartInstance = null;
     self.setChartInstance = function (chartInstance) {
         self.chartInstance = chartInstance;
@@ -361,7 +372,8 @@ function DashboardViewModel(config, searchFilters) {
                             "formatter": function(value) { return value.count; }
                         }
                     }
-                    ]})
+                    ]}
+                )
             }
         }
     });
