@@ -58,6 +58,11 @@
         </div>
         <!-- /ko -->
     </div>
+
+    <div class="alert alert-info mt-5" role="alert">
+        <h4 class="alert-heading"><g:message code="report.note.heading"/></h4>
+        <g:message code="report.note"/>
+    </div>
 </div>
 
 <asset:script type="text/javascript">
