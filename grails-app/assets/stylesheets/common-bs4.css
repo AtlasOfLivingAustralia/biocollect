@@ -148,6 +148,18 @@
 }
 /* END project resources */
 
+/* dashboard */
+#customChart {
+    padding-bottom: 33px !important;
+}
+
+.customChartCanvas {
+    background-color: #f6f6f6;
+    border-radius: 25px;
+}
+
+/* end dashboard */
+
 /**
  * used in project activities for colour coding reliability tags
  */
