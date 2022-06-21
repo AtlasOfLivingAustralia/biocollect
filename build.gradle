@@ -136,7 +136,7 @@ dependencies {
 
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0"
-        implementation "org.grails.plugins:ecodata-client-plugin:4.0.4-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:4.0.4"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
