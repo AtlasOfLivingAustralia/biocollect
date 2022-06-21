@@ -7,6 +7,13 @@
 // Use http://jsonformatter.org/ to format the data. (make sure to remove the " " around the string...)
 // User must have a auth token [ ozatlasproxy.ala.org.au]
 
+
+import groovy.json.JsonSlurper
+import groovyx.net.http.ContentType
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.Method
+import org.apache.http.entity.mime.MultipartEntityBuilder
+import org.apache.http.entity.mime.content.FileBody
 @Grapes([
         @Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.7'),
         @Grab('org.apache.httpcomponents:httpmime:4.5.13'),
@@ -15,17 +22,8 @@
         @Grab('org.apache.poi:poi-ooxml:3.10.1')]
 )
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import org.apache.poi.ss.usermodel.*
+
 import java.nio.file.Paths
-import static java.util.UUID.randomUUID
-import groovy.json.JsonSlurper
-
-import groovyx.net.http.HTTPBuilder
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.entity.mime.content.FileBody
-import groovyx.net.http.Method
-import groovyx.net.http.ContentType
-
 // Import Configuration
 def DEBUG_AND_VALIDATE = false;
 def PROJECT_ID = "665b17e8-c950-4785-b0c3-e7cc89def22b"

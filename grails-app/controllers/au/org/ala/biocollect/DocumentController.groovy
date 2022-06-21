@@ -17,8 +17,8 @@ class DocumentController {
     static final String DOCUMENT_DOWNLOAD_PATH = '/document/download/'
 
     DocumentService documentService
-    WebService webService
     SettingService settingService
+    WebService webService
     GrailsApplication grailsApplication
 
     /**

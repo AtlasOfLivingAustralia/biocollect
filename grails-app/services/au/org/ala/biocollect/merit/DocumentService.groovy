@@ -101,7 +101,7 @@ class DocumentService {
 
         if (searchType && searchTerm) {
             if (searchType != 'none')
-                searchTextBy += " AND " + searchType + ":" + searchTerm;
+                searchTextBy += searchType + ":" + searchTerm;
         }
 
         if (searchInRole) {
@@ -164,6 +164,10 @@ class DocumentService {
             // at hub level all users can view public documents only
             params.fq.push("publiclyViewable:true")
         }
+
+        //exclude logo and mainImage roles
+        params.fq.push("-role:logo")
+        params.fq.push("-role:mainImage")
 
         if (order) {
             params.order = order
