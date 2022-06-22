@@ -1,11 +1,6 @@
 <div id="projectResources" class="my-4 my-md-5">
 
     <div id="${containerId}" class="container-fluid">
-
-        <content tag="bannertitle">
-            <h2 data-bind="visible: isProject()">${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
-        </content>
-
         <div class="row mb-2">
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group search-resources">

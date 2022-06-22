@@ -21,6 +21,9 @@
 </head>
 
 <body>
+<content tag="bannertitle">
+    ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}
+</content>
 
 <div id="documentSearch">
     <g:render template="/shared/listAllDocuments"
