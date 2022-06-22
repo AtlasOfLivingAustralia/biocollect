@@ -242,7 +242,7 @@ function ReportChartjsViewModel() {
         var params = {};
 
         for (var i = 0; i < self.chartjsList().length; i++) {
-            params[self.chartjsList()[i].data().datasets[0].label] = self.chartjsList()[i].data().datasets[0].data
+            params[self.chartjsList()[i].chartLabel()] = self.chartjsList()[i].data().datasets[0].data
         }
 
         var xhttp = new XMLHttpRequest();
@@ -292,6 +292,7 @@ function DashboardViewModel(config, searchFilters) {
     self.data = ko.observable()
     self.options = ko.observable(config.chartOptions.options)
     self.minifyXLabel = ko.observable(config.chartOptions.minifyXLabel)
+    self.chartLabel = ko.observable(config.configuration.reportConfig.label)
 
     if (self.minifyXLabel()) {
         if (self.options().scales != undefined) {
