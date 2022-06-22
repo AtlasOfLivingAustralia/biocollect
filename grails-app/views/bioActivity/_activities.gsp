@@ -94,19 +94,12 @@
                     </div>
                     <div class="row" data-bind="visible: transients.showEmailDownloadPrompt()">
                         <div class="col-12">
-                            <div class="mb-2">
+                            <div class="mb-2 alert alert-info" role="alert">
                                 <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
                             </div>
                             <div class="form-group">
                                 <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-sm-2" for="email">Email address</label>
-                                <div class="col-sm-10">
-                                    <g:textField class="input-xxlarge" type="email" data-bind="value: transients.downloadEmail" name="email"/>
-                                </div>
+                                <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
                             </div>
                             <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                         </div>
