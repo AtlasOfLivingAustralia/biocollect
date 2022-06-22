@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4 text-center text-md-right order-0 order-md-2">
-                        <button class="btn btn-dark padding-top-1"
+                        <button id="download-data" class="btn btn-dark padding-top-1"
                                 data-bind="click: download, disable: transients.loading"
                                 data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
                             <i class="fas fa-download">&nbsp;</i> <g:message code="g.download"/>

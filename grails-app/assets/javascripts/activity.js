@@ -4,6 +4,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     var features, featureType = 'record', alaMap, results, radio;
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
+    var downloadElementID = '#download-data';
 
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
@@ -220,6 +221,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var asyncDownloadThreshold = DEFAULT_EMAIL_DOWNLOAD_THRESHOLD;
         if (elem) {
                 asyncDownloadThreshold = $(elem).data("email-threshold");
+                if(!asyncDownloadThreshold) {
+                    asyncDownloadThreshold = $(elem).closest(downloadElementID).data("email-threshold") || DEFAULT_EMAIL_DOWNLOAD_THRESHOLD;
+                }
         }
 
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
