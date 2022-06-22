@@ -11,6 +11,7 @@ class ReportController {
     static defaultAction = "dashboard"
     def webService, cacheService, searchService, metadataService, reportService, userService, settingService
 
+    @PreAuthorise(accessLevel='hubAdmin')
     def chartList() {}
 
     def loadReport() {
@@ -88,6 +89,7 @@ class ReportController {
 
     }
 
+    @PreAuthorise(accessLevel='hubAdmin')
     def getChartConfig() {
         String jsonStr = settingService.getSettingText(SettingPageType.DASHBOARD_CONFIG) as String
 
@@ -113,6 +115,7 @@ class ReportController {
         render model as JSON
     }
 
+    @PreAuthorise(accessLevel='hubAdmin')
     def genericReport() {
         Map body = request.JSON
 
