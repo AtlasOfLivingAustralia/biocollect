@@ -2,7 +2,16 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.AttributeMap
 import au.org.ala.biocollect.Databindings
+import au.org.ala.biocollect.swagger.model.GetOutputSpeciesIdentifierResponse
+import au.org.ala.biocollect.swagger.model.GetOutputSpeciesIdentifierError
+import au.org.ala.plugins.openapi.Path
 import grails.converters.JSON
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 
 /**
  * As of 10/9/2013 the editing of outputs is done only on the activity edit page.
@@ -10,12 +19,14 @@ import grails.converters.JSON
  * So direct requests to show or edit outputs (such as following links from audit logs)
  * are redirected to the activity controller.
  */
+@SSO
 class OutputController {
 
     def outputService, activityService, siteService, metadataService, projectService
 
     static ignore = ['action','controller','id']
 
+    @NoSSO
     def index(String id) {
         def output = outputService.get(id)
         if (!output || output.error) {
@@ -147,6 +158,34 @@ class OutputController {
      *
      * @return output species identifier.
      */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "outputspeciesidentifier",
+            summary = "Get Output Species Identifier. It is an UUID assigned to each species on a form.",
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GetOutputSpeciesIdentifierResponse.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "503",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GetOutputSpeciesIdentifierError.class
+                                    )
+                            )
+                    )
+            ]
+    )
+    @Path("ws/species/uniqueId")
+    @NoSSO
     def getOutputSpeciesIdentifier(){
         def result = outputService.getOutputSpeciesId()
         header 'Cache-Control', 'no-cache, no-store, must-revalidate'

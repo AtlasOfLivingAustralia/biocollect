@@ -2,7 +2,10 @@ package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
 import org.grails.web.json.JSONObject
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 
+@SSO
 class AjaxController {
 
     def locationService
@@ -17,6 +20,7 @@ class AjaxController {
         render(['status':'ok'] as JSON)
     }
 
+    @NoSSO
     def getBookmarkLocations() {
         def userId = userInfoService.getCurrentUser()?.userId
         def result = locationService.getBookmarkLocationsForUser(userId)
@@ -28,6 +32,7 @@ class AjaxController {
         }
     }
 
+    @NoSSO
     def saveBookmarkLocation() {
         def userId = userInfoService.getCurrentUser()?.userId
         JSONObject bookmark = request.JSON
