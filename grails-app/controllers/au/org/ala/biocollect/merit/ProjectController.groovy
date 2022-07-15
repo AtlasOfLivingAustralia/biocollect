@@ -4,11 +4,25 @@ import au.org.ala.biocollect.*
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
+import au.org.ala.biocollect.swagger.model.ProjectSearchResponse
 import au.org.ala.ecodata.forms.UserInfoService
+import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.AuthService
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.media.ArraySchema
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.security.SecurityScheme
+import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 import org.springframework.context.MessageSource
 
@@ -16,6 +30,11 @@ import java.text.SimpleDateFormat
 
 import static org.apache.http.HttpStatus.*
 
+@SecurityScheme(name = "auth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer"
+)
+@SSO
 class ProjectController {
 
     ProjectService projectService
@@ -48,7 +67,64 @@ class ProjectController {
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST", "sendEmailToMembers": "POST"]
     static int MAX_FACET_TERMS = 500
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "projectsurveylist",
+            summary = "Get surveys associated with a project",
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.PATH,
+                            description = "List surveys associated from this project"
+                    ),
+                    @Parameter(
+                            name = "version",
+                            in = ParameterIn.QUERY,
+                            description = "The date and time on which project activity was created. Version number unit is milliseconds since epoch.",
+                            schema = @Schema(
+                                    name = "version",
+                                    type = "integer",
+                                    format = "int64"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(
+                                                    implementation = Map.class
+                                            )
+                                    )
+                            )
 
+                    )
+            ]
+    )
+    @Path("ws/survey/list/{id}")
+    @NoSSO
+    def listSurveys(String id) {
+        def projectActivities = []
+        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
+        if (project && project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]) {
+            projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
+        }
+
+        render projectActivities as JSON
+    }
+
+    /*
+     * Get list of surveys/project activities for a given project
+     *
+     * @param id projectId
+     *
+     * @return surveys/projectActivities
+     *
+     */
+    @NoSSO
     def index(String id) {
         def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
         def roles = roleService.getRoles()
@@ -142,24 +218,6 @@ class ProjectController {
 
             render view:content.view, model:model
         }
-    }
-
-    /*
-     * Get list of surveys/project activities for a given project
-     *
-     * @param id projectId
-     *
-     * @return surveys/projectActivities
-     *
-     */
-    def listSurveys(String id) {
-        def projectActivities = []
-        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
-        if (project && project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]) {
-            projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
-        }
-
-        render projectActivities as JSON
     }
 
     protected Map projectContent(project, user, programs, params) {
@@ -392,6 +450,7 @@ class ProjectController {
         render view: 'projectFinder',  model:  result
     }
 
+    @SSO(cookie=true)
     def projectFinder() {
         Map result =
         [
@@ -585,6 +644,184 @@ class ProjectController {
     /**
      * Search project data and customize the result set based on initiator (ala, scistarter and biocollect).
      */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "projectsearch",
+            summary = "Search for projects",
+            description = "Search for projects in a hub context",
+            parameters = [
+                    @Parameter(
+                            name = "hub",
+                            in = ParameterIn.QUERY,
+                            description = "The hub context this request will be executed in. Visibility of projects depends on hub configuration. If no hub is specified, system defined default hub is used."
+                    ),
+                    @Parameter(
+                            name = "q",
+                            in = ParameterIn.QUERY,
+                            description = "Searches for terms in this parameter.",
+                            schema = @Schema(
+                                    name = "q",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "max",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of returned projects per page.",
+                            schema = @Schema(
+                                    name = "max",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "20"
+                            )
+                    ),
+                    @Parameter(
+                            name = "offset",
+                            in = ParameterIn.QUERY,
+                            description = "Search result offset to return projects from.",
+                            schema = @Schema(
+                                    name = "offset",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "0"
+                            )
+                    ),
+                    @Parameter(
+                            name = "status",
+                            in = ParameterIn.QUERY,
+                            description = "Return active or completed projects",
+                            schema = @Schema(
+                                    name = "status",
+                                    type = "string",
+                                    allowableValues =  ["active", "completed"]
+                            )
+                    ),
+                    @Parameter(
+                            name = "organisationName",
+                            in = ParameterIn.QUERY,
+                            description = "Filter projects by organisation name",
+                            schema = @Schema(
+                                    name = "organisationName",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "geoSearchJSON",
+                            in = ParameterIn.QUERY,
+                            description = "Filter projects by GeoJSON shape",
+                            schema = @Schema(
+                                    name = "geoSearchJSON",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isCitizenScience",
+                            in = ParameterIn.QUERY,
+                            description = "Get citizen science projects",
+                            schema = @Schema(
+                                    name = "isCitizenScience",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isWorks",
+                            in = ParameterIn.QUERY,
+                            description = "Get works projects",
+                            schema = @Schema(
+                                    name = "isWorks",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isBiologicalScience",
+                            in = ParameterIn.QUERY,
+                            description = "Get eco-science projects",
+                            schema = @Schema(
+                                    name = "isBiologicalScience",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "difficulty",
+                            in = ParameterIn.QUERY,
+                            description = "Difficulty level of projects",
+                            schema = @Schema(
+                                    name = "difficulty",
+                                    type = "string",
+                                    allowableValues =  ["Easy", "Medium", "Hard"]
+                            )
+                    ),
+                    @Parameter(
+                            name = "isWorldWide",
+                            in = ParameterIn.QUERY,
+                            description = "Set to false to return Australia specific projects. Set to true to get all projects.",
+                            schema = @Schema(
+                                    name = "isWorldWide",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isUserPage",
+                            in = ParameterIn.QUERY,
+                            description = "Set to true to get all the projects a user is participating in.",
+                            schema = @Schema(
+                                    name = "isUserPage",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "mobile",
+                            in = ParameterIn.QUERY,
+                            description = "Set to true if the request is coming from mobile client and user need to be identified. User identification is required for mobile app requests with isUserPage parameter is set to true.",
+                            schema = @Schema(
+                                    name = "mobile",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "facets",
+                            in = ParameterIn.QUERY,
+                            description = "Comma seperated list of facets the search should return. If left empty, facet list is populated from hub configuration.",
+                            schema = @Schema(
+                                    name = "facets",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "flimit",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of facets to be returned.",
+                            schema = @Schema(
+                                    name = "flimit",
+                                    type = "integer",
+                                    minimum = "0",
+                                    maximum = "500",
+                                    defaultValue = "15"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ProjectSearchResponse.class
+                                    )
+                            )
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/project/search")
+    @NoSSO
     def search() {
 
         GrailsParameterMap queryParams = buildProjectSearch(params)
@@ -827,9 +1064,7 @@ class ProjectController {
 
         if (trimmedParams.isUserPage) {
             if (trimmedParams.mobile) {
-                String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
-                String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-                fq.push('allParticipants:' + (username && key ? userInfoService.getUserFromAuthKey(username, key)?.userId : ''))
+                fq.push('allParticipants:' + (username && key ? userInfoService.getCurrentUser()?.userId : ''))
             } else {
                 fq.push('allParticipants:' + userService.getUser()?.userId);
             }
@@ -1005,6 +1240,7 @@ class ProjectController {
      * list images in the context of a project, all records or my records
      * payload.view parameter is used to differentiate these context
      */
+    @NoSSO
     def listRecordImages() {
         try{
             Map payload = request.JSON
@@ -1165,6 +1401,7 @@ class ProjectController {
      * be converted into PDF.
      * @param id the project id
      */
+    @NoSSO
     def projectSummaryReportCallback(String id) {
 
         if (pdfGenerationService.authorizePDF(request)) {

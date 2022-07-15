@@ -112,16 +112,19 @@ dependencies {
 //    implementation 'org.grails.plugins:cache:5.0.0.RC1'
 
     //ALA plugins
-    implementation("au.org.ala.plugins.grails:images-client-plugin:1.4-SNAPSHOT") {
+    implementation("au.org.ala.plugins.grails:images-client-plugin:1.4") {
         exclude group: 'commons-httpclient', module: 'commons-httpclient'
         exclude group: 'org.grails.plugins', module: 'ala-auth'
     }
 
 
     implementation "org.grails.plugins:ala-admin-plugin:2.2"
-    implementation "org.grails.plugins:ala-auth:5.0.0-SNAPSHOT"
-    implementation "org.grails.plugins:ala-ws-security-plugin:4.0.0-SNAPSHOT"
-    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.0.1-SNAPSHOT"
+    implementation ("org.grails.plugins:ala-auth:5.1.0-SNAPSHOT")
+    implementation "org.grails.plugins:ala-ws-security-plugin:4.0.0"
+    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.0.0"
+
+    //    swagger API
+    implementation 'au.org.ala.plugins:openapi:1.0.0'
 
     implementation "au.org.ala:userdetails-service-client:1.5.0"
     implementation "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"

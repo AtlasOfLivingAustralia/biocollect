@@ -3,9 +3,11 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.BaseController
 import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.web.AuthService
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
-
+@SSO
 class CommentController extends BaseController {
 
     CommonService commonService
@@ -46,6 +48,7 @@ class CommentController extends BaseController {
         }
     }
 
+    @NoSSO
     def list() {
         Map json = commonService.parseParams(params)
         if (!json.entityId || !json.entityId) {
@@ -56,6 +59,7 @@ class CommentController extends BaseController {
         }
     }
 
+    @NoSSO
     def get(){
         Map json = commonService.parseParams(params);
         if (!json.id ){

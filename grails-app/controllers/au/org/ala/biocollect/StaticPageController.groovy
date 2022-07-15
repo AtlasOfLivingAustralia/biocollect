@@ -2,10 +2,13 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.web.AlaSecured
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 
+@SSO
 class StaticPageController {
     SettingService settingService
-
+    @NoSSO
     def index() {
         String page = params.page;
         if(page){
