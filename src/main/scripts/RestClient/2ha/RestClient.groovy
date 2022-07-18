@@ -13,10 +13,11 @@
         @Grab('org.apache.poi:poi-ooxml:3.10.1')]
 )
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import static org.apache.poi.ss.usermodel.Cell.*
-import java.nio.file.Paths
-import static java.util.UUID.randomUUID
 
+import java.nio.file.Paths
+
+import static java.util.UUID.randomUUID
+import static org.apache.poi.ss.usermodel.Cell.*
 // Import Configuration
 def DEBUG_AND_VALIDATE = true;
 def PROJECT_ID = "f0caedd0-70fd-4388-adb8-8d26935fa6f7"

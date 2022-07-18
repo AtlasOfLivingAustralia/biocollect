@@ -5,7 +5,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <asset:script type="text/javascript">
     var fcConfig = {
@@ -232,7 +232,7 @@
         <g:if test="${user?.hasViewAccess}">
             <div class="tab-pane" id="document">
                 <!-- DOCUMENTS -->
-                <g:render template="docs" />
+                <g:render template="docs" model="[projectId:projectId]"/>
             </div>
 
             <div class="tab-pane" id="plan">

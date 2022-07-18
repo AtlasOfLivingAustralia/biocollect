@@ -65,8 +65,8 @@
 
             <div class="modal-footer">
                 <button id="clearFilterByRegionButton" type="button"
-                        class="btn btn-sm btn-dark"><i
-                        class="toggleIndicator far fa-times-circle"></i> <g:message
+                        class="btn btn-sm btn-danger"><i
+                        class="toggleIndicator far fa-trash-alt"></i> <g:message
                         code="project.search.mapClear"/></button>
                 <button type="button" class="btn btn-sm btn-primary-dark" data-dismiss="modal" aria-label="Close">
                     <i class="far fa-arrow-alt-circle-right"></i>

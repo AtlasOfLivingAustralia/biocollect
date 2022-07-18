@@ -156,7 +156,6 @@
 
     .nav-button {
       margin: 7px 1rem;
-      color: $c-text;
       font-size: 12px;
       @include media-breakpoint-down(md) {
         margin: 7px 0;
@@ -172,8 +171,8 @@
     .current-menu-item,
     .current-menu-parent {
       > .nav-link:before {
-        left: 1rem;
-        right: 1rem;
+        left: 0;
+        right: 0;
       }
     }
 
@@ -249,7 +248,7 @@
       max-width: 250px;
       max-height: 250px;
       margin-bottom: -60%;
-      margin-top: -20%;
+      margin-top: -15px;
     }
   }
 }

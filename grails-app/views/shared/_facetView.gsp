@@ -161,8 +161,8 @@
 
     <div class="row form-group">
         <div class="offset-md-3 col-md-9">
-            <button class="btn btn-sm btn-dark" data-bind="click: clearDates, enable: showClearButton">
-                <i class="far fa-times-circle"></i> Clear dates</button>
+            <button class="btn btn-sm btn-danger" data-bind="click: clearDates, enable: showClearButton">
+                <i class="far fa-trash-alt"></i> Clear dates</button>
         </div>
     </div>
 </div>

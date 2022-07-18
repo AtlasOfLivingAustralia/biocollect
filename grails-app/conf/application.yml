@@ -106,6 +106,7 @@ images:
 lists:
   baseURL: "https://lists.ala.org.au" # "https://lists-test.ala.org.au/public/speciesLists"
   commonFields: ['rawScientificName', 'matchedName', 'commonName']
+  facetsToRemoveFromProjectFinderPage: ['projLifecycleStatus']
 
 merit:
   baseURL: "https://fieldcapture-test.ala.org.au"
@@ -119,6 +120,13 @@ mobile:
   auth:
     check:
       url:  "https://m.ala.org.au/mobileauth/mobileKey/checkKey"
+
+report:
+  download:
+    - header: 'Group'
+      property: 'group'
+    - header: 'Count'
+      property: 'count'
 
 
 pdfgen:

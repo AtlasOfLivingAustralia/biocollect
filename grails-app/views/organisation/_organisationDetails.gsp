@@ -70,7 +70,7 @@
                             id="logo" type="file" name="files"><span>Attach</span></span>
 
                     <button class="btn btn-danger main-image-button" data-bind="click:removeLogoImage, visible:logoUrl()"><i
-                            class="fas fa-minus"></i> Remove</button>
+                            class="far fa-trash-alt"></i> Remove</button>
                 </span>
             </div>
 
@@ -96,7 +96,7 @@
                             id="mainImage" type="file" name="files"><span>Attach</span></span>
 
                     <button class="btn btn-danger main-image-button" data-bind="click:removeMainImage,  visible:mainImageUrl()"><i
-                            class="fas fa-minus"></i> Remove</button>
+                            class="far fa-trash-alt"></i> Remove</button>
                 </span>
             </div>
         </div>

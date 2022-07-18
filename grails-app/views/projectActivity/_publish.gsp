@@ -34,6 +34,36 @@
                     &quot;Survey form&quot; or &quot;Locations&quot; tabs, you must first &quot;Unpublish&quot; the survey.
                     All data already recorded for this survey will be lost if you do this. To retain existing data, end-date
                     the current survey and create a new one with the same details and changed configuration settings.</p>
+                    <p>Would you like to publish the project as well? <span class="req-field"></span></p>
+
+                    <div class="col-12 col-md-8">
+                        <div class="row">
+                            <div class="col-12 col-lg-1">
+                                <div class="form-check">
+                                    <input name="publishProject" class="form-check-input" type="radio"
+                                           data-bind="checked: publishProject"
+                                           value="<g:message code="project.survey.info.publishProject.yes.value"/>"
+                                           data-validation-engine="validate[required]">
+                                    <label class="form-check-label"><g:message code="project.survey.info.publishProject.yes.value"/></label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-1">
+                                <div class="form-check">
+                                    <input name="publishProject" class="form-check-input" type="radio"
+                                           data-bind="checked: publishProject"
+                                           value="<g:message code="project.survey.info.publishProject.no.value"/>"
+                                           data-validation-engine="validate[required]">
+                                    <label class="form-check-label"><g:message code="project.survey.info.publishProject.no.value"/></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p></br>Publishing the project will make it publicly visible.</p>
+                    <p><strong>Before publishing</strong>, please ensure that the project information properly describes the project for
+                    intended audiences, that you have added appropriate logo and banner images and that the defined project
+                    area accurately reflects the spatial area in which the project is being undertaken.</p>
+
                     <button class="btn btn-primary-dark btn-sm" data-bind="click: $root.updateStatus, disable: !$root.isSurveyPublishable()"><i class="fas fa-upload"></i> Publish</button>
                 </div>
             </div>

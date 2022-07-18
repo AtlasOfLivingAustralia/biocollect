@@ -1,11 +1,12 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
-`<g:set var="projectService" bean="projectService"></g:set>`
+<g:set var="projectService" bean="projectService"></g:set>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="messageSource" bean="messageSource"></g:set>
 <html>
 <head>
     <meta name="layout" content="bs4"/>
     <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
     <asset:script type="text/javascript">
     var fcConfig = {
@@ -54,7 +55,10 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <h2><g:message code="project.create.register"/></h2>
+    <content tag="bannertitle">
+        <g:set var="customTitle" value="${hubConfig.templateConfiguration?.header?.links?.find {it.contentType == 'newproject'}?.displayName}"/>
+        ${customTitle?:messageSource.getMessage('project.create.register', [].toArray(), '', Locale.default)}
+    </content>
     <p>
         <g:message code="project.create.description"/>
     </p>
@@ -64,7 +68,12 @@
         <div class="row" style="display: none" data-bind="visible: true">
             <div class="col-12 btn-space">
                 <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
-                <button type="button" id="save" class="btn btn-primary-dark" data-bind="disable: (!termsOfUseAccepted() && !isExternal())"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+
+                <button type="button" id="save" class="btn btn-primary-dark" data-bind="disable: (!termsOfUseAccepted() && !isExternal())" title="<g:message code="g.save.title"/>"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+
+                <!-- Publish workflow applies to all citizen science, eco science and works projects. When either citizen
+                science or eco science, if isExternal is true, then enable the Publish button else disable the Publish button -->
+                <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || (isWorks() && termsOfUseAccepted()))" title="<g:message code="g.savePublish"/>"><i class="fas fa-hdd"></i> <g:message code="g.savePublish.title"/></button>
                 <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
             </div>
         </div>
@@ -127,6 +136,53 @@ $(function(){
             } else {
                 var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
+                    viewModel.projLifecycleStatus = 'unpublished';
+
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
+
+                        if (viewModel.isExternal()) {
+                            document.location.href = "${createLink(action: 'index')}/" + projectId;
+                        } else {
+                            document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                        }
+                    },function(data) {
+                        var responseText = data.responseText || "${message(code:'project.create.error')}";
+                        bootbox.alert(responseText);
+                    });
+                } else {
+                    bootbox.alert(projectErrors);
+                }
+            }
+        }
+    });
+
+    $('#publish').click(function () {
+        if ($('#projectDetails').validationEngine('validate')) {
+            if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
+                bootbox.dialog({message:"${message(code:'project.create.warningdatacollection')}"},
+                    [{
+                      label: "Continue",
+                      className: "btn-primary",
+                      callback: function() {
+                        viewModel.isExternal(true);
+                        $('#publish').click()
+                      }
+                    },{
+                        label: "Cancel",
+                        className: "btn-alert",
+                        callback: function() {
+                            $('html, body').animate({
+                                scrollTop: $("#scienceTypeControlGroup").offset().top
+                            }, 2000);
+                       }
+                    }]
+                );
+            } else {
+                var projectErrors = viewModel.transients.projectHasErrors()
+                if (!projectErrors) {
+                    viewModel.projLifecycleStatus = 'published';
+
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
 

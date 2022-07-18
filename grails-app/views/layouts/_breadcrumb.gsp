@@ -5,7 +5,7 @@
            value="${settingService.getCustomBreadCrumbsSetForControllerAction(controllerName, actionName)}"/>
     <g:if test="${breadCrumbs}">
         <nav id="breadcrumb" aria-label="breadcrumb">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb pl-0">
                 <g:each in="${breadCrumbs}" var="item" status="index">
                     <config:getLinkFromConfig classes="breadcrumb-item" config="${item}" hubConfig="${hubConfig}"></config:getLinkFromConfig>
                 </g:each>
@@ -17,7 +17,7 @@
         <g:set var="metaName" value="${'meta.breadcrumbParent' + index}"/>
         <g:if test="${pageProperty(name: "meta.breadcrumb")}">
             <nav id="breadcrumb" aria-label="breadcrumb">
-                <ol class="breadcrumb">
+                <ol class="breadcrumb pl-0">
                     <g:while test="${pageProperty(name: metaName)}">
                         <g:set value="${pageProperty(name: metaName).tokenize(',')}" var="parentArray"/>
                         <li class="breadcrumb-item"><a href="${parentArray[0]}">${parentArray[1]}</a></li>

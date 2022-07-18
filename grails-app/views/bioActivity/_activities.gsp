@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4 text-center text-md-right order-0 order-md-2">
-                        <button class="btn btn-dark padding-top-1"
+                        <button id="download-data" class="btn btn-dark padding-top-1"
                                 data-bind="click: download, disable: transients.loading"
                                 data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
                             <i class="fas fa-download">&nbsp;</i> <g:message code="g.download"/>
@@ -64,11 +64,11 @@
                     <button class="filter-item btn btn-sm btn-outline-dark">
                         <strong data-bind="visible: exclude " title="Exclude">[EXCLUDE]</strong>
                         <!-- ko text: displayNameWithoutCount() --> <!-- /ko -->
-                        <span class="remove" data-bind="click: remove"><i class="far fa-times-circle"></i></span>
+                        <span class="remove" data-bind="click: remove"><i class="far fa-trash-alt"></i></span>
                     </button>
                     <!-- /ko -->
                     <!-- ko if: (filterViewModel.selectedFacets() && (filterViewModel.selectedFacets().length > 0)) -->
-                    <button type="button" class="btn btn-sm btn-dark clear-filters"  data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
+                    <button type="button" class="btn btn-sm btn-dark clear-filters"  data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-trash-alt"></i> Clear All
                     </button>
                     <!-- /ko -->
                 </div>
@@ -94,19 +94,12 @@
                     </div>
                     <div class="row" data-bind="visible: transients.showEmailDownloadPrompt()">
                         <div class="col-12">
-                            <div class="mb-2">
+                            <div class="mb-2 alert alert-info" role="alert">
                                 <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
                             </div>
                             <div class="form-group">
                                 <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-sm-2" for="email">Email address</label>
-                                <div class="col-sm-10">
-                                    <g:textField class="input-xxlarge" type="email" data-bind="value: transients.downloadEmail" name="email"/>
-                                </div>
+                                <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
                             </div>
                             <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                         </div>
@@ -179,15 +172,14 @@
                                                    title="<g:message code="data.activity.view.title"/>"
                                                    role="button">
                                                     <i class="far fa-eye"></i>
-                                                    <g:message code="btn.view"/>
                                                 </a>
                                                 <!-- ko if: $parent.showCrud() && !$parent.readOnly()-->
                                                 <a class="btn btn-sm editBtn btn-dark"
                                                    data-bind="attr: {href: $parent.transients.editUrl }"
-                                                   title="Edit record"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
-                                                <button class="btn btn-sm btn-dark"
+                                                   title="Edit record"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn btn-sm btn-danger"
                                                         data-bind="click: $parent.delete"
-                                                        title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                                        title="Delete record"><i class="far fa-trash-alt"></i></button>
                                                 <!-- /ko -->
                                             </div>
                                         </div>
@@ -223,14 +215,13 @@
                                                    title="<g:message code="data.activity.view.title"/>"
                                                    role="button">
                                                     <i class="far fa-eye"></i>
-                                                    <g:message code="btn.view"/>
                                                 </a>
                                                 <!-- ko if: showCrud() && !readOnly() -->
                                                 <a class="btn btn-sm btn-dark editBtn"
                                                    data-bind="attr: {href: transients.editUrl}"
-                                                   title="Edit record"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
-                                                <button class="btn btn-sm btn-dark" data-bind="click: $data.delete"
-                                                        title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                                   title="Edit record"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn btn-sm btn-danger" data-bind="click: $data.delete"
+                                                        title="Delete record"><i class="far fa-trash-alt"></i></button>
                                                 <!-- /ko -->
                                             </div>
                                         </div>
@@ -400,12 +391,12 @@
                                 <!-- ko if: type == 'action' -->
                                 <td class="align-top">
                                     <div class="btn-space">
-                                        <a class="btn btn-sm btn-primary-dark editBtn" data-bind="attr: {href: $parents[1].transients.viewUrl}" title="View record"><i class="far fa-eye"></i> View</a>
+                                        <a class="btn btn-sm btn-primary-dark editBtn" data-bind="attr: {href: $parents[1].transients.viewUrl}" title="View record"><i class="far fa-eye"></i></a>
                                         <!-- ko if: !$parents[1].readOnly() &&  $parents[1].showCrud() -->
-                                        <a  class="btn btn-sm editBtn btn-dark" data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record"><i class="fas fa-pencil-alt"></i> Edit</a>
+                                        <a  class="btn btn-sm editBtn btn-dark" data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record"><i class="fas fa-pencil-alt"></i></a>
                                         <!-- /ko -->
                                         <!-- ko if: !$parents[1].readOnly() && $parents[1].showCrud() -->
-                                        <button class="btn btn-sm btn-dark" data-bind="click: $parents[1].delete" title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                        <button class="btn btn-sm btn-danger" data-bind="click: $parents[1].delete" title="Delete record"><i class="far fa-trash-alt"></i></button>
                                         <!-- /ko -->
                                     </div>
                                 </td>
@@ -500,18 +491,17 @@
                                            title="<g:message code="data.activity.view.title"/>"
                                            class="btn btn-sm editBtn btn-primary-dark">
                                             <i class="far fa-eye"></i>
-                                            <g:message code="btn.view"/>
                                         </a>
                                         <!-- ko if: $parent.showCrud() && !$parent.readOnly() -->
                                         <a data-bind="attr:{'href': $parent.transients.editUrl}"
                                            title="Edit record"
                                            class="btn btn-sm editBtn btn-dark">
-                                            <i class="fas fa-pencil-alt"></i> Edit
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-dark"
+                                        <button class="btn btn-sm btn-danger"
                                                 data-bind="click: $parent.delete"
                                                 title="Delete record">
-                                            <i class="far fa-trash-alt"></i>&nbsp;Delete
+                                            <i class="far fa-trash-alt"></i>
                                         </button>
                                         <!-- /ko -->
                                     </div>
@@ -589,7 +579,7 @@
 
         var columnConfig =${ hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON}
 
-        var facetConfig; 
+        var facetConfig;
 
         if(view === 'allrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
@@ -610,7 +600,7 @@
 
         var hubConfig = ${ hubConfig }
 
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig);
+        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig, '#survey-all-activities-and-records-content');
         ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
         $('#data-map-tab').on('shown.bs.tab',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
@@ -659,3 +649,4 @@
     tabId && $(tabId).tab('show');
     </g:applyCodec>
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '.data-expander.data-container', target: '#survey-all-activities-and-records-content #filters', listenTo: '#survey-all-activities-and-records-content']" />
