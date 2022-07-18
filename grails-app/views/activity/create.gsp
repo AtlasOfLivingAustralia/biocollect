@@ -5,7 +5,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>Create | Activity | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <g:if test="${project}">
         <meta name="breadcrumbParent2"
               content="${createLink(controller: 'project', action: 'index')}/${project?.projectId},Project"/>

@@ -164,7 +164,7 @@
                                 <small class="media-heading" data-bind="text:methodDocName"></small>
                             </a>
 
-                            <span class="btn fileinput-button float-left"
+                            <span class="btn btn-dark fileinput-button float-left"
                                   data-bind="
                                         attr:{'data-role':'methodDoc',
                                             'data-url': transients.methoddocumentUpdateUrl(),
@@ -173,12 +173,12 @@
                                              stagedImageUpload: documents,
                                                  visible:!methodDocUrl(), validateObservable: methodDocUrl"
                                   data-validation-engine="validate[groupRequired[DescriptionSurveyMethod]]">
-                                <i class="icon-plus"></i>
+                                <i class="fas fa-file-upload"></i>
                                 <input id="mthDoc" type="file" name="files">
                                 <span>Attach Document</span></span>
-                            <button class="btn btn-sm btn-danger"
+                            <button class="btn btn-sm btn-danger ml-3"
                                     data-bind="click:removeMethodDoc, visible:methodDocUrl()"><i
-                                    class="fas fa-info-circle"></i> Remove Document</button>
+                                    class="far fa-trash-alt"></i> Remove</button>
                         </div>
                     </div>
                 </div>
@@ -280,9 +280,11 @@
         </label>
 
         <div class="col-8">
-            <img class="img-thumbnail" alt="No image" data-bind="attr:{src: transients.logoUrl()}">
+            <div class="project-logo">
+                <img class="image-logo" alt="No image" data-bind="attr:{src: transients.logoUrl()}">
+            </div>
             <div class="btn-space">
-                <button class="btn btn-sm btn-dark fileinput-button float-none"
+                <button class="btn btn-sm btn-primary-dark fileinput-button float-none"
                       data-bind="
                                 attr:{'data-role':'logo',
                                     'data-url': transients.imageUploadUrl(),
@@ -377,25 +379,25 @@
                         </div>
                     </div>
                     <div class="form-check">
-                        <input name="spatialAccuracy" class="form-check-input" type="radio"
+                        <input id="fsah" name="spatialAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: spatialAccuracy"
                                value="<g:message code="project.survey.info.spatialAccuracy.high.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.spatialAccuracy.high"/></label>
+                        <label for="fsah" class="form-check-label"><g:message code="facets.spatialAccuracy.high"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="spatialAccuracy" class="form-check-input" type="radio"
+                        <input id="fsam" name="spatialAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: spatialAccuracy"
                                value="<g:message code="project.survey.info.spatialAccuracy.moderate.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.spatialAccuracy.moderate"/></label>
+                        <label for="fsam" class="form-check-label"><g:message code="facets.spatialAccuracy.moderate"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="spatialAccuracy" class="form-check-input" type="radio"
+                        <input id="fsal" name="spatialAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: spatialAccuracy"
                                value="<g:message code="project.survey.info.spatialAccuracy.low.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.spatialAccuracy.low"/></label>
+                        <label for="fsal" class="form-check-label"><g:message code="facets.spatialAccuracy.low"/></label>
                     </div>
                 </div>
 
@@ -415,32 +417,32 @@
                         </div>
                     </div>
                     <div class="form-check">
-                        <input name="speciesIdentification" class="form-check-input" type="radio"
+                        <input id="sih" name="speciesIdentification" class="form-check-input" type="radio"
                                data-bind="checked: speciesIdentification"
                                value="<g:message code="project.survey.info.speciesIdentification.high.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.speciesIdentification.high"/></label>
+                        <label class="form-check-label" for="sih"><g:message code="facets.speciesIdentification.high"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="speciesIdentification" class="form-check-input" type="radio"
+                        <input id="sim" name="speciesIdentification" class="form-check-input" type="radio"
                                data-bind="checked: speciesIdentification"
                                value="<g:message code="project.survey.info.speciesIdentification.moderate.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.speciesIdentification.moderate"/></label>
+                        <label class="form-check-label" for="sim"><g:message code="facets.speciesIdentification.moderate"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="speciesIdentification" class="form-check-input" type="radio"
+                        <input id="sil" name="speciesIdentification" class="form-check-input" type="radio"
                                data-bind="checked: speciesIdentification"
                                value="<g:message code="project.survey.info.speciesIdentification.low.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.speciesIdentification.low"/></label>
+                        <label for="sil" class="form-check-label"><g:message code="facets.speciesIdentification.low"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="speciesIdentification" class="form-check-input" type="radio"
+                        <input id="sin" name="speciesIdentification" class="form-check-input" type="radio"
                                data-bind="checked: speciesIdentification"
                                value="<g:message code="project.survey.info.speciesIdentification.na.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.speciesIdentification.na"/></label>
+                        <label for="sin" class="form-check-label"><g:message code="facets.speciesIdentification.na"/></label>
                     </div>
                     %{-- species identification confidence - END--}%
                 </div>
@@ -462,25 +464,25 @@
                         </div>
                     </div>
                     <div class="form-check">
-                        <input name="temporalAccuracy" class="form-check-input" type="radio"
+                        <input id="tah" name="temporalAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: temporalAccuracy"
                                value="<g:message code="project.survey.info.temporalAccuracy.high.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.temporalAccuracy.high"/></label>
+                        <label for="tah" class="form-check-label"><g:message code="facets.temporalAccuracy.high"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="temporalAccuracy" class="form-check-input" type="radio"
+                        <input id="tam" name="temporalAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: temporalAccuracy"
                                value="<g:message code="project.survey.info.temporalAccuracy.moderate.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.temporalAccuracy.moderate"/></label>
+                        <label for="tam" class="form-check-label"><g:message code="facets.temporalAccuracy.moderate"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="temporalAccuracy" class="form-check-input" type="radio"
+                        <input id="tal" name="temporalAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: temporalAccuracy"
                                value="<g:message code="project.survey.info.temporalAccuracy.low.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.temporalAccuracy.low"/></label>
+                        <label for="tal" class="form-check-label"><g:message code="facets.temporalAccuracy.low"/></label>
                     </div>
                 </div>
 
@@ -499,25 +501,25 @@
                         </div>
                     </div>
                     <div class="form-check">
-                        <input name="nonTaxonomicAccuracy" class="form-check-input" type="radio"
+                        <input id="ntah" name="nonTaxonomicAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: nonTaxonomicAccuracy"
                                value="<g:message code="project.survey.info.nonTaxonomicAccuracy.high.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.nonTaxonomicAccuracy.high"/></label>
+                        <label for="ntah" class="form-check-label"><g:message code="facets.nonTaxonomicAccuracy.high"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="nonTaxonomicAccuracy" class="form-check-input" type="radio"
+                        <input id="ntam" name="nonTaxonomicAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: nonTaxonomicAccuracy"
                                value="<g:message code="project.survey.info.nonTaxonomicAccuracy.moderate.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.nonTaxonomicAccuracy.moderate"/></label>
+                        <label for="ntam" class="form-check-label"><g:message code="facets.nonTaxonomicAccuracy.moderate"/></label>
                     </div>
                     <div class="form-check">
-                        <input name="nonTaxonomicAccuracy" class="form-check-input" type="radio"
+                        <input id="ntal" name="nonTaxonomicAccuracy" class="form-check-input" type="radio"
                                data-bind="checked: nonTaxonomicAccuracy"
                                value="<g:message code="project.survey.info.nonTaxonomicAccuracy.low.value"/>"
                                data-validation-engine="validate[required]">
-                        <label class="form-check-label"><g:message code="facets.nonTaxonomicAccuracy.low"/></label>
+                        <label for="ntal" class="form-check-label"><g:message code="facets.nonTaxonomicAccuracy.low"/></label>
                     </div>
                 </div>
             </div>
@@ -572,18 +574,15 @@
     </div>
 
     <div class="row form-group">
-        <div class="col-12 col-md-4 col-form-label">
-            <label class="col-12 col-md-4 col-form-label" for="dataQualityAssuranceDescription"><g:message
-                    code="project.survey.info.dataQualityAssuranceDescription"/>
-                <a href="#" class="helphover" data-bind="popover: {title:'<g:message
-                        code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message
-                        code="project.survey.info.dataQualityAssuranceDescription.content" encodeAs="JavaScript"/>'}">
-                    <i class="fas fa-info-circle"></i>
-                </a>
-                <span class="right-padding"></span>
-            </label>
-        </div>
-
+        <label class="col-12 col-md-4 col-form-label" for="dataQualityAssuranceDescription"><g:message
+                code="project.survey.info.dataQualityAssuranceDescription"/>
+            <a href="#" class="helphover" data-bind="popover: {title:'<g:message
+                    code="project.survey.info.dataQualityAssuranceDescription"/>', content:'<g:message
+                    code="project.survey.info.dataQualityAssuranceDescription.content" encodeAs="JavaScript"/>'}">
+                <i class="fas fa-info-circle"></i>
+            </a>
+            <span class="right-padding"></span>
+        </label>
         <div class="col-12 col-md-8">
             <div class="controls">
                 <textarea id="dataQualityAssuranceDescription" rows="6" class="form-control"

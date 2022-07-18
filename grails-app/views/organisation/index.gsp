@@ -6,7 +6,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'organisation', action: 'list')},Organisations"/>
     <meta name="breadcrumb" content="${organisation.name}"/>
@@ -180,7 +180,7 @@ $(function() {
     var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false}});
     });
 </asset:script>
-
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '#project-finder-container .projects-container', target: '#projects #filters', listenTo: '#project-finder-container']" />
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 arch: amd64
 os: linux
-dist: xenial
+dist: bionic
 language: groovy
 jdk:
 - openjdk11
@@ -14,7 +14,7 @@ branches:
   - /^feature\/.*$/
   - /^hotfix\/.*$/
 node_js:
-      - 12
+      - 16
 cache:
   directories:
   - $HOME/.m2
@@ -48,8 +48,8 @@ install:
 
 before_script:
   - cd $TRAVIS_BUILD_DIR
-  - nvm install 12.14.1
-  - nvm use 12.14.1
+  - nvm install 16.15.0
+  - nvm use 16.15.0
   - node -v
   - npm install
 
@@ -57,7 +57,10 @@ script:
 #  - ./gradlew -PenableClover=true cloverGenerateReport --no-daemon
   - ./gradlew classes
 #  - ./src/main/scripts/runFunctionalTests.sh chromeHeadless '/tmp/ecodata' 'feature/newAuthAndJava11'
+#  - ./gradlew compileGroovy
   - node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
+  - ./src/main/scripts/runFunctionalTests.sh
+  - cat build/test-results/integrationTest/*.xml
 
 after_success:
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./gradlew clean && travis_wait 30 ./gradlew publish'

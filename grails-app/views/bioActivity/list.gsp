@@ -1,11 +1,13 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="utilService" bean="utilService"></g:set>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="bs4"/>
+    <g:set var="title" value="${utilService.getHeaderLinkForContentTypeOrURI(view, contentURI)?.displayName?:title}"/>
     <title>${title} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/' + hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <g:set var="wsParameters" value="${[version: params.version, spotterId: "${spotterId}", projectActivityId: "${projectActivityId}"]}"/>
@@ -69,7 +71,8 @@
 </head>
 <body>
 <content tag="bannertitle">
-    ${title}
+    <g:set var="customTitle" value="${hubConfig.templateConfiguration?.header?.links?.find {it.contentType == view}?.displayName}"/>
+    ${customTitle?:title}
 </content>
 <g:if test="${hubConfig.quickLinks}">
 <div class="container-fluid">
@@ -94,6 +97,5 @@
         initialiseData(fcConfig.view);
     });
 </asset:script>
-
 </body>
 </html>

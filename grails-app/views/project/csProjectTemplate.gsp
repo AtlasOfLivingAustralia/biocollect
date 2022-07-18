@@ -6,7 +6,7 @@
 <head>
     <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
-    <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
     <meta name="bannerURL" content="${utilService.getMainImageURL(project.documents)}"/>
     <meta name="bannerClass" content="project-banner"/>
@@ -79,11 +79,13 @@
         methoddocumentUpdateUrl: "${raw(createLink(controller:"image", action:"upload", params:[role: "methodDoc"]))}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${asset.assetPath(src:'')}",
+        documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
         imgViewer: "${createLink(controller: 'resource', action: 'imageviewer')}",
         audioViewer: "${createLink(controller: 'resource', action: 'audioviewer')}",
         videoViewer: "${createLink(controller: 'resource', action: 'videoviewer')}",
+        documentListViewer: "${createLink(controller: 'resource', action: 'list')}",
         recordListUrl: "${raw(createLink(controller: 'record', action: 'ajaxListForProject', params: [id:project.projectId]))}",
         recordDeleteUrl:"${createLink(controller: 'record', action: 'delete')}",
         projectDeleteUrl:"${createLink(action:'delete', id:project.projectId)}",
@@ -133,7 +135,7 @@
 %{--            }--}%
 %{--        </style>--}%
 %{--    <![endif]-->--}%
-%{--    <asset:stylesheet src="projects-manifest.css"/>--}%
+    <asset:stylesheet src="projects-manifest.css"/>
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
@@ -243,8 +245,8 @@
             initialiseInternalCSAdmin();
         </g:if>
 
-
-        $('.validationEngineContainer').validationEngine({promptPosition: 'topLeft'});
+        //do not trigger validation on blur
+        $('.validationEngineContainer').validationEngine({promptPosition: 'topLeft', validationEventTrigger: "none"});
         $('.helphover').popover({animation: true, trigger:'hover'})
 
         //Main tab selection
@@ -255,5 +257,6 @@
         </g:if>
     });
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '.projects-container']" />
 </body>
 </html>

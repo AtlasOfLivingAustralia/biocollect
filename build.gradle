@@ -15,7 +15,8 @@ buildscript {
     }
 }
 
-version "6.0-SNAPSHOT"
+
+version "6.3-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -79,6 +80,7 @@ dependencies {
     implementation "org.grails:grails-async-gpars"
     implementation "org.grails.plugins:scaffolding"
     profile "org.grails.profiles:web"
+    implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
     implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
@@ -102,7 +104,7 @@ dependencies {
     runtimeOnly 'org.webjars:jquery:1.12.4'
     implementation 'dk.glasius:external-config:3.0.0'
     implementation "org.grails.plugins:excel-import:3.0.2"
-    implementation "org.grails.plugins:excel-export:0.2.1"
+    implementation "org.grails.plugins:excel-export:2.1"
     implementation 'org.grails.plugins:grails-google-visualization:2.2.1'
     implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
     implementation 'org.grails.plugins:mail:2.0.0.RC6'
@@ -117,6 +119,10 @@ dependencies {
         exclude group: 'org.grails.plugins', module: 'ala-auth'
     }
 
+    implementation 'org.apache.poi:ooxml-schemas:1.4'
+    implementation 'org.apache.poi:poi:4.1.2'
+    implementation 'org.apache.poi:poi-ooxml:4.1.2'
+    implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
 
     implementation "org.grails.plugins:ala-admin-plugin:2.2"
     implementation ("org.grails.plugins:ala-auth:5.1.0-SNAPSHOT")
@@ -183,7 +189,7 @@ assets {
     ]
 
     includes = []
-    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec/spec.hintrc.js', 'spec.hintrc.unminified.js']
+    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
 }
 
 if (Boolean.valueOf(inplace)) {

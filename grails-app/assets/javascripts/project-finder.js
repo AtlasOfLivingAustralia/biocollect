@@ -15,6 +15,7 @@ function ProjectFinder(config) {
     var self = this;
     /* holds all projects */
     var allProjects = [];
+    var projectContainerId = 'project-finder-container';
 
     /* holds current filtered list */
     var projects;
@@ -24,7 +25,7 @@ function ProjectFinder(config) {
 
     /* size of current filtered list */
     var total = 0;
-    var projectsPerPage = 20;
+    var projectsPerPage = 30;
 
     /* The map must only be initialised once, so keep track of when that has happened */
     var mapInitialised = false;
@@ -183,7 +184,7 @@ function ProjectFinder(config) {
 
         this.filterViewModel.selectedFacets.subscribe(this.doSearch)
     }
-    
+
     /**
      * check if button has active flag
      * @param $button
@@ -263,7 +264,7 @@ function ProjectFinder(config) {
     }
 
     pageWindow = new PageVM(config);
-    ko.applyBindings(pageWindow, document.getElementById('project-finder-container'));
+    ko.applyBindings(pageWindow, document.getElementById(projectContainerId))   ;
 
     this.getParams = function () {
         var fq = [];
@@ -394,13 +395,6 @@ function ProjectFinder(config) {
         map.max =  pageWindow.pagination.resultsPerPage() // Page size
         map.sort = pageWindow.sortBy();
 
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                var checked = isButtonChecked($('#pt-search-program-' + program.name.replace(/ /g, '-')))
-                if (checked) map["isProgram" + program.name.replace(/ /g, '-')] = true
-            });
-        }
-
         return map
     };
 
@@ -460,7 +454,8 @@ function ProjectFinder(config) {
                 setTimeout(scrollToProject, 500);
                 // Issue map search in parallel to 'standard' search
                 // standard search is required to drive facet display
-                self.doMapSearch(projectVMs);
+                // todo : uncomment when all project area can be shown without pagination
+                // self.doMapSearch(projectVMs);
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -468,6 +463,7 @@ function ProjectFinder(config) {
             },
             complete: function () {
                 $('.search-spinner').addClass('d-none');
+                $("#" + projectContainerId).trigger('resizefilters');
             }
         })
     };
@@ -506,7 +502,7 @@ function ProjectFinder(config) {
             traditional: true
         });
     };
-    
+
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
         return true
@@ -784,7 +780,7 @@ function ProjectFinder(config) {
         // }
 
     });
-    
+
     $("#pt-aus-world").on('statechange', function(){
         var viewMode = getActiveButtonValues($("#pt-view"));
     })
@@ -841,7 +837,7 @@ function ProjectFinder(config) {
 
     $("#btnShowTileView").on('click',function () {
         pageWindow.showTileView();
-        
+
     });
 
     $("#btnShowListView").on('click',function () {
@@ -925,16 +921,10 @@ function ProjectFinder(config) {
         offset = Number.parseInt(params.offset || offset);
         selectedProjectId = params.projectId;
 
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                toggleButton($('#pt-search-program-' + program.name.replace(/ /g, '-')), toBoolean(params["isProject" + program.name]));
-            });
-        }
-
         pageWindow.sortBy( params.sort || 'dateCreatedSort');
-        pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '20'));
+        pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '30'));
         pageWindow.isWorldWide( params.isWorldWide || 'false');
-        
+
         $('#pt-search').val(params.queryText).focus();
         pageWindow.filterViewModel.switchOffSearch(false);
     }

@@ -45,7 +45,7 @@
     <span>You are viewing the hub: ${hubConfig.urlPath}</span>
 </div>
 
-<div class="alert" data-bind="visible:message()">
+<div class="alert alert-info" data-bind="visible:message()">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <span data-bind="text:message"></span>
 </div>
@@ -730,6 +730,8 @@
                 <option value="admin">Admin</option>
                 <option value="allrecords">All Records</option>
                 <option value="home">Home</option>
+                <option value="charts">Charts</option>
+                <option value="resources">Resources</option>
                 <option value="login">Login / Logout</option>
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>

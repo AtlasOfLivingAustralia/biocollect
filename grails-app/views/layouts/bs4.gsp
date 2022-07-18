@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <title><g:layoutTitle/></title>
+    <link rel="icon" href="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" href="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-192x192.png" sizes="192x192" />
     <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
     <g:if test="${hubConfig.templateConfiguration?.header?.type == 'ala' || hubConfig.templateConfiguration?.footer?.type == 'ala'}">
     <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-theme.css"/>
@@ -109,14 +111,14 @@
                                 <g:render template="/layouts/breadcrumb"/>
                             </div>
                             <g:if test="${pageProperty(name: 'page.pagefinderbuttons')}">
-                                <div class="col col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-end">
+                                <div class="col col-lg-6 py-2 d-flex align-items-center justify-content-center justify-content-lg-end">
                                     <g:pageProperty name="page.pagefinderbuttons"/>
                                 </div>
                             </g:if>
                         </div>
                     </div>
                 </div>
-                <div class="my-1" id="content">
+                <div class="my-1 mx-1 mx-md-3" id="content">
                     <g:layoutBody/>
                 </div>
             </article>

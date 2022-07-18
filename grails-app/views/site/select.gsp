@@ -98,7 +98,7 @@
                             </button>
                             <button class="removeSite btn btn-sm btn-danger mt-2"
                                     data-bind="click: $parent.removeSite, visible: isProjectSite() ">
-                                <i class="fas fa-minus"></i>
+                                <i class="far fa-trash-alt"></i>
                                 Remove
                             </button>
                         </td>

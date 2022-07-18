@@ -102,6 +102,280 @@ function ChartjsManagerViewModel() {
     }
 }
 
+function ReportChartjsViewModel() {
+    var self = this;
+
+    self.chartjsList = ko.observableArray([]);
+    self.chartjsType = ko.observable('');
+    self.data = ko.observable('');
+    self.options = ko.observable('');
+    self.chartjsPerRowSelected = ko.observable('');
+
+    self.chartConfig = ''
+
+    //chart filters
+    self.associatedProgramFilterFieldOptions = ko.observableArray()
+    self.electorateFilterFieldOptions = ko.observableArray()
+
+    self.chartjsPerRowSpan = ko.pureComputed(function () {
+        const selected = self.chartjsPerRowSelected();
+        const perRow = 12 / parseInt(selected || '2');
+        return 'col-sm-' + perRow.toString();
+    });
+
+    self.allFilters = ko.observableArray();
+
+    self.associatedProgramFilterField = ko.observable(self.associatedProgramFilterFieldOptions()[0]);
+    self.electorateFilterField = ko.observable(self.electorateFilterFieldOptions()[0]);
+
+    self.addAssociatedProgram = function() {
+        if (self.associatedProgramFilterField() != undefined) {
+            self.allFilters.push({"searchText": self.associatedProgramFilterField(), "searchBy": "associatedProgram"})
+
+            self.drawCharts(self.chartConfig, self.allFilters());
+
+            //remove added item from dropdown
+            const index = self.associatedProgramFilterFieldOptions.indexOf(self.associatedProgramFilterField())
+            self.associatedProgramFilterFieldOptions.splice(index, 1)
+        }
+    }
+
+    self.addElectorate = function() {
+        if (self.electorateFilterField() != undefined) {
+            self.allFilters.push({"searchText": self.electorateFilterField(), "searchBy": "electorate"})
+
+            self.drawCharts(self.chartConfig, self.allFilters());
+
+            //remove added item from dropdown
+            const index = self.electorateFilterFieldOptions.indexOf(self.electorateFilterField())
+            self.electorateFilterFieldOptions.splice(index, 1)
+        }
+    }
+
+    self.removeFilter = function() {
+        self.allFilters.remove(this)
+
+        if (self.allFilters().length == 0)
+            self.drawCharts(self.chartConfig,'');
+        else
+            self.drawCharts(self.chartConfig, self.allFilters());
+
+        //re-add removed item to dropdown
+        if (this.searchBy == 'associatedProgram') {
+            self.associatedProgramFilterFieldOptions.push(this.searchText)
+            self.associatedProgramFilterFieldOptions.sort()
+        }
+        else if (this.searchBy == 'electorate') {
+            self.electorateFilterFieldOptions.push(this.searchText)
+            self.electorateFilterFieldOptions.sort()
+        }
+    }
+
+    self.resetAll = function() {
+        self.allFilters.splice(0, self.allFilters().length)
+
+        self.drawCharts(self.chartConfig,'');
+        self.populateAssociatedPrograms()
+        self.populateElectorates()
+    }
+
+    self.populateCharts = function() {
+        $.ajax({
+            url:fcConfig.getChartConfigUrl,
+            success:function(data) {
+                if (data) {
+                    self.chartConfig = data
+                    self.drawCharts(data,'');
+                }
+            }
+        });
+    }
+
+    self.drawCharts = function(data, searchFilters) {
+        self.chartjsPerRowSelected(data.chartjsPerRowSelected)
+
+        //Re-draw charts
+        self.chartjsList.removeAll()
+
+        for (var i = 0; i < data.chartList.length; i++) {
+            var chart = data.chartList[i]
+
+            const dashboardViewModel = new DashboardViewModel(chart, searchFilters);
+            self.chartjsList.push(dashboardViewModel);
+        }
+    }
+
+    self.populateAssociatedPrograms = function() {
+        $.ajax({
+            url:fcConfig.populateAssociatedProgramsUrl,
+            success:function(data) {
+                if (data) {
+                    self.associatedProgramFilterFieldOptions(data)
+                    self.associatedProgramFilterFieldOptions.sort()
+                }
+            }
+        });
+    }
+
+    self.populateElectorates = function() {
+        $.ajax({
+            url:fcConfig.populateElectoratesUrl,
+            success:function(data) {
+                if (data) {
+                    let tempArr = []
+
+                    for (var j = 0;j < data.length; j++) {
+                        tempArr.push(data[j].name)
+                    }
+
+                    self.electorateFilterFieldOptions(tempArr)
+                }
+            }
+        });
+    }
+
+    self.populateCharts();
+    self.populateAssociatedPrograms();
+    self.populateElectorates();
+
+    self.downloadReport = function() {
+        var params = {};
+
+        for (var i = 0; i < self.chartjsList().length; i++) {
+            params[self.chartjsList()[i].chartLabel()] = self.chartjsList()[i].data().datasets[0].data
+        }
+
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            var a;
+
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                a = document.createElement('a');
+                a.href = window.URL.createObjectURL(xhttp.response);
+                a.download = "dashboard.xlsx";
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(a.href);
+            }
+        };
+
+        xhttp.open("POST", fcConfig.downloadReportUrl);
+        xhttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+        xhttp.responseType = 'blob';
+        xhttp.send(JSON.stringify(params));
+    }
+
+    self.chartjsPerRowGroupedItems = ko.pureComputed(function () {
+        const selected = self.chartjsPerRowSelected();
+
+        const chartList = self.chartjsList();
+        const perRow = parseInt(selected || '2');
+        const result = [];
+        for (let index = 0; index < chartList.length; index++) {
+            const item = chartList[index];
+            if (index % perRow === 0) {
+                result.push([]);
+            }
+            result[result.length - 1].push(item);
+        }
+        return result;
+    });
+}
+
+function DashboardViewModel(config, searchFilters) {
+    var self = this;
+
+    self.chartType = ko.observable(config.chartOptions.type)
+    self.data = ko.observable()
+    self.options = ko.observable(config.chartOptions.options)
+    self.minifyXLabel = ko.observable(config.chartOptions.minifyXLabel)
+    self.chartLabel = ko.observable(config.configuration.reportConfig.label)
+
+    if (self.minifyXLabel()) {
+        if (self.options().scales != undefined) {
+            self.options().scales.x.ticks["callback"] = function (val) {
+                var maxLabelLength = self.minifyXLabel();
+
+                if (this.getLabelForValue(val).length > maxLabelLength)
+                    return this.getLabelForValue(val).substring(0, maxLabelLength) + '...';
+                else
+                    return this.getLabelForValue(val);
+            }
+        }
+    }
+
+    self.chartInstance = null;
+    self.setChartInstance = function (chartInstance) {
+        self.chartInstance = chartInstance;
+    }
+
+    var params = {};
+    params.configuration = config.configuration
+    params.backgroundColor = config.backgroundColor
+
+    var tempAssociatedProgArr = []
+    var tempElectorateArr = []
+
+    var query = ""
+    var copiedConfig = Object.assign({}, config.configuration);
+
+    if (searchFilters) {
+        for (var i = 0; i < searchFilters.length; i++) {
+            if (searchFilters[i] != "No Filters") {
+                if (searchFilters[i].searchBy == "associatedProgram" && tempAssociatedProgArr.indexOf(("associatedProgramFacet:" + '"' + searchFilters[i].searchText + '"')) === -1) {
+                    tempAssociatedProgArr.push("associatedProgramFacet:" + '"' + searchFilters[i].searchText + '"')
+                }
+                else if (searchFilters[i].searchBy == "electorate" && tempElectorateArr.indexOf(("electFacet:" + '"' + searchFilters[i].searchText.toString().toUpperCase() + '"')) === -1) {
+                    tempElectorateArr.push("electFacet:" + '"' + searchFilters[i].searchText.toString().toUpperCase() + '"')
+                }
+            }
+        }
+
+        if (tempAssociatedProgArr.length > 0 && tempElectorateArr.length > 0) {
+            query = ("(" + tempElectorateArr.join(" OR ") + ")" + " AND " + "(" + tempAssociatedProgArr.join(" OR ") + ")")
+        }
+        else {
+            if (tempAssociatedProgArr.length > 0) {
+                query = tempAssociatedProgArr.join(" OR ")
+            }
+
+            if (tempElectorateArr.length > 0) {
+                query = tempElectorateArr.join(" OR ")
+            }
+        }
+
+        if (query && copiedConfig.query)
+            copiedConfig.query += " AND " + query
+        else if (query)
+            copiedConfig.query = query
+    }
+
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: 'JSON',
+        url:fcConfig.genericReportUrl,
+        data:JSON.stringify(copiedConfig),
+        success:function(data) {
+            if (data) {
+                self.data({"datasets":[
+                    {
+                        "backgroundColor": params.backgroundColor,
+                        "data":data.groups,
+                        "datalabels": {
+                            "formatter": function(value) { return value.count; }
+                        }
+                    }
+                    ]}
+                )
+            }
+        }
+    });
+}
+
 /**
  * Knockout view model for a Chart.js instance.
  * @param facet {object} The facet data.
