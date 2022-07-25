@@ -216,7 +216,7 @@
          * Ping server every 5 minutes (default value)  to keep session active
          */
         setInterval(function () {
-            $.get("${createLink(controller: 'ajax', action: 'keepSessionAlive')}")
+            $.get("/ajax/keepSessionAlive");
         }, delay);
     })
 </script>
