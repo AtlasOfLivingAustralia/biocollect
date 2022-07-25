@@ -49,6 +49,7 @@ notification:
 # Specific configurations used by Biocollect
 facets:
   flimit: 15
+pingDuration: 5000
 
 headerAndFooter:
   baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
