@@ -204,12 +204,20 @@
 <asset:deferredScripts />
 <script>
     $(document).ready(function () {
+        var delay = ${grailsApplication.config.pingDuration};
         /**
          * Mobile (off-canvas) menu
          */
         $('[data-toggle="offcanvas"]').on('click', function () {
             $('#page.site').toggleClass('offcanvas-open');
         });
+
+        /**
+         * Ping server every 5 minutes (default value)  to keep session active
+         */
+        setInterval(function () {
+            $.get("${createLink(controller: 'ajax', action: 'keepSessionAlive')}")
+        }, delay);
     })
 </script>
 </body>
