@@ -134,7 +134,7 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
 
     if (!Boolean.valueOf(inplace)) {
-        implementation "org.grails.plugins:ala-map-plugin:3.0"
+        implementation "org.grails.plugins:ala-map-plugin:3.0.1-SNAPSHOT"
         implementation "org.grails.plugins:ecodata-client-plugin:4.0.5-SNAPSHOT"
     }
 
