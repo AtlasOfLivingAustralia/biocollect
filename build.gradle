@@ -52,13 +52,12 @@ configurations {
 
 dependencies {
 //    implementation "org.grails:grails-plugin-rest"
-//    implementation "org.grails:grails-plugin-databinding"
+    implementation "org.grails:grails-plugin-databinding"
 //    implementation "org.grails.plugins:async"
 //    implementation "org.grails.plugins:events"
-//    implementation "org.grails.plugins:gsp"
+    implementation "org.grails.plugins:gsp"
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     compileOnly "io.micronaut:micronaut-inject-groovy"
-    implementation "org.seleniumhq.selenium:selenium-chrome-driver:4.0.0"
     console "org.grails:grails-console"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-validation"
@@ -66,7 +65,7 @@ dependencies {
     implementation "org.grails:grails-core"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-tomcat"
-    implementation "org.grails:grails-dependencies"
+//    implementation "org.grails:grails-dependencies"
     implementation "org.grails:grails-logging"
     implementation "org.grails:grails-web-boot"
     implementation "org.grails:grails-logging"
@@ -135,8 +134,8 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
 
     if (!Boolean.valueOf(inplace)) {
-        implementation "org.grails.plugins:ala-map-plugin:3.0"
-        implementation "org.grails.plugins:ecodata-client-plugin:4.0.4"
+        implementation "org.grails.plugins:ala-map-plugin:3.0.1"
+        implementation "org.grails.plugins:ecodata-client-plugin:4.0.5"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
@@ -147,6 +146,7 @@ dependencies {
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:4.0.0"
     testImplementation "org.seleniumhq.selenium:selenium-api:4.0.0"
     testImplementation "org.seleniumhq.selenium:selenium-support:4.0.0"
+    testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:4.0.0"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:4.0.0"
     testCompileOnly "com.github.tomakehurst:wiremock-jre8-standalone:2.28.0"
     testCompileOnly "com.codeborne:phantomjsdriver:1.3.0"
@@ -183,7 +183,7 @@ assets {
     ]
 
     includes = []
-    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
+    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
 }
 
 if (Boolean.valueOf(inplace)) {
@@ -225,9 +225,31 @@ tasks.withType(Test) {
     useJUnitPlatform()
 }
 
+webdriverBinaries {
+    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
+        chromedriver {
+            versionRegexp = '.*'
+            architecture = 'X86_64'
+            fallbackTo32Bit = true
+        }
+        geckodriver '0.30.0'
+    }
+}
+
 tasks.withType(Test) {
     systemProperty "geb.env", System.getProperty('geb.env')
     systemProperty "geb.build.reportsDir", reporting.file("geb/integrationTest")
-    systemProperty "webdriver.chrome.driver", System.getProperty('webdriver.chrome.driver')
-    systemProperty "webdriver.gecko.driver", System.getProperty('webdriver.gecko.driver')
+    if (!System.getenv().containsKey('GITHUB_ACTIONS')) {
+        systemProperty 'webdriver.chrome.driver', System.getProperty('webdriver.chrome.driver')
+        systemProperty 'webdriver.gecko.driver', System.getProperty('webdriver.gecko.driver')
+    } else {
+        systemProperty 'webdriver.chrome.driver', "${System.getenv('CHROMEWEBDRIVER')}/chromedriver"
+        systemProperty 'webdriver.gecko.driver', "${System.getenv('GECKOWEBDRIVER')}/geckodriver"
+    }
+}
+
+
+assets {
+    minifyJs = true
+    minifyCss = true
 }
