@@ -54,7 +54,7 @@ class DownloadController {
             log.debug("Hub: " + params.hub)
             log.debug("Model: " + params.model)
             String filename = FilenameUtils.getName(params.filename)
-            String hub = FilenameUtils.getName(params.hub)
+            String hub = FilenameUtils.getName(params?.hubDir ?: params.hub)
             String model = FilenameUtils.getName(params.model)
             String path = "${grailsApplication.config.app.file.script.path}${File.separator}${hub}${File.separator}${model}${File.separator}${filename}"
             log.debug("Script path: " + path)
