@@ -4,6 +4,7 @@ aekosMintedDoi.url= "http://shared-uat.aekos.org.au:8080/AEKOS.AekosSearchPortal
 acsaUrl= 'http://csna.gaiaresources.com.au/wordpress/'
 
 bie.baseURL= "https://bie.ala.org.au"
+bieWs.baseURL= "https://bie-ws.ala.org.au"
 
 biocache.baseURL= "https://biocache.ala.org.au"
 

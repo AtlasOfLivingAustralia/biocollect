@@ -47,6 +47,7 @@
             recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
+            bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             </g:applyCodec>

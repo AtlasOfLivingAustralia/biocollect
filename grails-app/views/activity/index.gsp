@@ -32,6 +32,7 @@
         updateCommentUrl:"${commentUrl}",
         deleteCommentUrl:"${commentUrl}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         surveyName: "${metaModel.name}",
         speciesConfig: ${raw(fc.modelAsJavascript(model: speciesConfig))},
         speciesSearch: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
