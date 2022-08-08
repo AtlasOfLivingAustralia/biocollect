@@ -31,6 +31,7 @@ class SpeciesController {
         if (url) {
             addCachingHeaders(response)
             webService.proxyGetRequest(response, url)
+            return null
         }
         else {
             String noImageUrl = asset.assetPath(src:'font-awesome/5.15.4/svgs/regular/image.svg', absolute:true)
