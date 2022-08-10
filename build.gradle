@@ -252,4 +252,5 @@ tasks.withType(Test) {
 assets {
     minifyJs = true
     minifyCss = true
+    maxThreads = 4
 }
