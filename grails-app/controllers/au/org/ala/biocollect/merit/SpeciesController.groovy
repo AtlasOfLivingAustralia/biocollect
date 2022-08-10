@@ -34,8 +34,8 @@ class SpeciesController {
             return null
         }
         else {
-            String noImageUrl = asset.assetPath(src:'font-awesome/5.15.4/svgs/regular/image.svg', absolute:true)
-            response.sendRedirect(noImageUrl)
+            response.outputStream << getClass().getResourceAsStream("/data/images/image.svg")
+            return null
         }
 
     }
