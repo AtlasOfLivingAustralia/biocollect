@@ -879,7 +879,7 @@ ko.bindingHandlers.getImage = {
             viewModel.transients.image('');
 
             $.ajax({
-                url: fcConfig.bieUrl + '/ws/species/guids/bulklookup',
+                url: fcConfig.bieWsUrl + '/ws/species/guids/bulklookup',
                 method: 'post',
                 dataType: 'json',
                 data: JSON.stringify([ viewModel.guid() ]),

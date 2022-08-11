@@ -388,8 +388,7 @@ class BioActivityController {
         boolean userIsModerator = userId && projectService.canUserModerateProjects(userId, pActivity?.projectId)
         boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
 
-        def members = projectService.getMembersForProjectId(activity?.projectId)
-        boolean userIsProjectMember = members.find{it.userId == userId} || userIsAlaAdmin
+        boolean userIsProjectMember =  userIsAlaAdmin || projectService.isUserMemberOfProject(userId, activity?.projectId)
 
         if (activity && pActivity) {
             if (embargoed && !userIsModerator && !userIsOwner && !userIsAlaAdmin) {
