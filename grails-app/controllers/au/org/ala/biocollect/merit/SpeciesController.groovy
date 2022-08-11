@@ -34,8 +34,8 @@ class SpeciesController {
             return null
         }
         else {
-            response.contentType = "image/svg+xml"
-            response.outputStream << getClass().getResourceAsStream("/data/images/image.svg")
+            response.contentType = "image/png"
+            response.outputStream << getClass().getResourceAsStream("/data/images/image.png")
             return null
         }
 
