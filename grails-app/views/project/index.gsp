@@ -25,6 +25,7 @@
         siteEditUrl: "${createLink(controller: 'site', action: 'edit')}",
         removeSiteUrl: "${createLink(controller: 'site', action: '')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         activityBulkDeleteUrl: "${createLink(controller: 'bioActivity', action: 'bulkDelete')}",
         activityBulkEmbargoUrl: "${createLink(controller: 'bioActivity', action: 'bulkEmbargo')}",
         activityBulkReleaseUrl: "${createLink(controller: 'bioActivity', action: 'bulkRelease')}",

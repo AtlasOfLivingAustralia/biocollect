@@ -343,6 +343,18 @@ class ProjectService {
         webService.getJson(url)
     }
 
+    /**
+     * Does the current user have caseManager permission for the requested projectId?
+     *
+     * @param userId
+     * @param projectId
+     * @return
+     */
+    def isUserMemberOfProject(userId, projectId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserMemberOfProject?projectId=${projectId}&userId=${userId}"
+        webService.getJson(url)?.access // either will be true or false
+    }
+
     def getMembersForProjectPerPage(projectId, pageStart, pageSize) {
         def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProjectPerPage?projectId=${projectId}&offset=${pageStart}&max=${pageSize}"
         webService.getJson(url, null, true)
