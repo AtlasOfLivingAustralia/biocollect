@@ -125,7 +125,7 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
 
     implementation "org.grails.plugins:ala-admin-plugin:2.2"
-    implementation ("org.grails.plugins:ala-auth:5.1.0-SNAPSHOT")
+    implementation ("org.grails.plugins:ala-auth:5.1.1")
     implementation "org.grails.plugins:ala-ws-security-plugin:4.0.0"
     runtimeOnly "org.grails.plugins:ala-bootstrap3:4.0.0"
 

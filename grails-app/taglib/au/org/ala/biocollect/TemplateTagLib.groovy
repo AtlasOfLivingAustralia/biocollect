@@ -134,14 +134,23 @@ class TemplateTagLib {
                     }
                     break;
                 case 'login':
-                    Map loginOrLogout = printLoginOrLogoutButton(attrs.hubConfig);
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"btn btn-primary btn-sm nav-button custom-header-login-logout\" title=\"${loginOrLogout.displayName}\" href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
+                        out << auth.loginLogout(
+                                ignoreCookie: "true", cssClass: "btn btn-primary btn-sm nav-button custom-header-login-logout",
+                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+                                loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
+                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                        )
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
+                        out << auth.loginLogout(
+                                ignoreCookie: "true",
+                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+                                loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
+                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                        )
                         out << "</li>";
                     }
                     break;
@@ -392,13 +401,7 @@ class TemplateTagLib {
         return ''
     }
 
-    private Map printLoginOrLogoutButton(Map hubConfig){
-        if(!fc.userIsLoggedIn()){
-            String loginUrl = grailsApplication.config.security.cas.loginUrl + "?service=" + grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Login', href: loginUrl, contentType:'external']
-        } else {
-            String logoutUrl = grailsApplication.config.grails.serverURL + "/logout/logout?casUrl=" + grailsApplication.config.security.cas.logoutUrl + "&appUrl=" +  grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Logout', href: logoutUrl, contentType:'external']
-        }
+    private String getCurrentURL(Map hubConfig){
+        grailsApplication.config.getProperty("grails.serverURL") + request.forwardURI + "?hub=" + hubConfig.urlPath
     }
 }
