@@ -1132,7 +1132,7 @@ class ProjectController {
                 fq.add('projLifecycleStatus:unpublished')
 
             if (trimmedParams.mobile) {
-                fq.push('allParticipants:' + (username && key ? userInfoService.getCurrentUser()?.userId : ''))
+                fq.push('allParticipants:' + (userInfoService.getCurrentUser()?.userId?:""))
             } else {
                 fq.push('allParticipants:' + userService.getUser()?.userId);
             }
