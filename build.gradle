@@ -126,7 +126,7 @@ dependencies {
 
     implementation "org.grails.plugins:ala-admin-plugin:2.2"
     implementation ("org.grails.plugins:ala-auth:5.1.1")
-    implementation "org.grails.plugins:ala-ws-security-plugin:4.0.0"
+    implementation "org.grails.plugins:ala-ws-security-plugin:4.1.2"
     runtimeOnly "org.grails.plugins:ala-bootstrap3:4.0.0"
 
     //    swagger API
@@ -182,7 +182,7 @@ bootJar {
 assets {
     minifyJs = true
     minifyCss = true
-    maxThreads = 4
+    maxThreads = 6
     minifyOptions = [
             languageMode  : 'ES6', //languageIn
             targetLanguage: 'ES5', // languageOut
