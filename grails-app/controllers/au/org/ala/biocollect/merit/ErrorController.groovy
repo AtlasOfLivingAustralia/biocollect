@@ -7,7 +7,7 @@ class ErrorController {
         try {
             loadRecentHub()
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
         }
 
@@ -18,7 +18,7 @@ class ErrorController {
         try {
             loadRecentHub()
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
         }
 
