@@ -103,10 +103,6 @@ class SettingService {
 
         if (!hub) {
             hub = grailsApplication.config.app.default.hub?:'default'
-            String previousHub = cookieService.getCookie(LAST_ACCESSED_HUB)
-            if (!previousHub) {
-                cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
-            }
         }
         else {
             // Hub value in multiple places like url path and in parameter causes Array to be passed instead of String.
@@ -114,19 +110,14 @@ class SettingService {
             if (hub && ((hub instanceof List) || hub.getClass().isArray())) {
                 hub = hub[0]
             }
-
-            // Store the most recently accessed hub in a cookie so that 404 errors can be presented with the
-            // correct skin.
-            cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
         }
 
-        GrailsWebRequest.lookup().params.hub = hub
         def settings = getHubSettings(hub)
         if (!settings) {
             log.warn("no settings returned for hub ${hub}!")
             settings = new HubSettings(
                     title:'Default',
-                    skin:'ala2',
+                    skin:'bs4',
                     urlPath:grailsApplication.config.app.default.hub?:'default',
                     availableFacets: ['isExternal','status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','mainThemeFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','otherFacet', 'gerSubRegionFacet','electFacet'],
                     adminFacets: ['electFacet'],
@@ -134,6 +125,8 @@ class SettingService {
             )
         }
 
+        cookieService.setCookie(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */)
+        GrailsWebRequest.lookup().params.hub = settings?.urlPath
         SettingService.setHubConfig(settings)
     }
 

@@ -3,9 +3,12 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.RoleService
 import au.org.ala.web.AuthService
 import grails.converters.JSON
+import au.org.ala.web.SSO
+import au.org.ala.web.NoSSO
 /**
  * Processes requests relating to organisations
  */
+@SSO
 class OrganisationController {
 
     static allowedMethods = [ajaxDelete: "POST", delete: "POST", ajaxUpdate: "POST"]
@@ -14,8 +17,10 @@ class OrganisationController {
     AuthService authService
 
     // Simply forwards to the list view
+    @NoSSO
     def list() {}
 
+    @NoSSO
     def index(String id) {
         def organisation = organisationService.get(id)
 
