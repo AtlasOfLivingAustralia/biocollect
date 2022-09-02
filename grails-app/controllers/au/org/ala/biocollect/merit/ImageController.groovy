@@ -5,6 +5,8 @@ import au.org.ala.biocollect.swagger.model.FileUpload
 import au.org.ala.biocollect.swagger.model.FileUploadErrorResponse
 import au.org.ala.biocollect.swagger.model.UploadResponse
 import au.org.ala.plugins.openapi.Path
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.GeoLocation
 import com.drew.metadata.Directory
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.headers.Header
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
@@ -30,8 +33,6 @@ import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import au.org.ala.web.NoSSO
-import au.org.ala.web.SSO
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
@@ -198,7 +199,12 @@ class ImageController {
                                                 FileUploadErrorResponse.class
                                         ]
                                 )
-                        )
+                        ),
+                        headers = [
+                                @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                        ]
                 )
         ],
         security = @SecurityRequirement(name="auth")

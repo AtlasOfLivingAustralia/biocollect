@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.headers.Header
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
@@ -98,7 +99,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = ActivitySaveResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -107,7 +113,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = ErrorResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     )
             ],
             security = @SecurityRequirement(name="auth")
@@ -399,7 +410,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = DeleteActivityResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -408,7 +424,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = DeleteActivityResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     )
             ],
             security = @SecurityRequirement(name="auth")
@@ -858,7 +879,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = SearchProjectActivitiesResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     )
             ],
             security = @SecurityRequirement(name="auth")
@@ -1026,7 +1052,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = GetProjectActivitiesRecordsForMappingResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     )
             ],
             security = @SecurityRequirement(name="auth")
@@ -1365,7 +1396,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = GetOutputForActivityResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -1374,7 +1410,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = ErrorResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     )
             ],
             security = @SecurityRequirement(name="auth")
@@ -1439,7 +1480,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = GetActivityModelResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -1448,7 +1494,12 @@ class BioActivityController {
                                     schema = @Schema(
                                             implementation = ErrorResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     )
             ],
             security = @SecurityRequirement(name="auth")
