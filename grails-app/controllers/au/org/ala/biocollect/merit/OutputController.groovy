@@ -2,17 +2,17 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.AttributeMap
 import au.org.ala.biocollect.Databindings
-import au.org.ala.biocollect.swagger.model.GetOutputSpeciesIdentifierResponse
 import au.org.ala.biocollect.swagger.model.GetOutputSpeciesIdentifierError
+import au.org.ala.biocollect.swagger.model.GetOutputSpeciesIdentifierResponse
 import au.org.ala.plugins.openapi.Path
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import grails.converters.JSON
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.headers.Header
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import au.org.ala.web.NoSSO
-import au.org.ala.web.SSO
-
 /**
  * As of 10/9/2013 the editing of outputs is done only on the activity edit page.
  *
@@ -171,7 +171,12 @@ class OutputController {
                                     schema = @Schema(
                                             implementation = GetOutputSpeciesIdentifierResponse.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     ),
                     @ApiResponse(
                             responseCode = "503",
@@ -180,7 +185,12 @@ class OutputController {
                                     schema = @Schema(
                                             implementation = GetOutputSpeciesIdentifierError.class
                                     )
-                            )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
                     )
             ]
     )
