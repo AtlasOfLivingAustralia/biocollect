@@ -23,7 +23,7 @@
     </div>
 </div>
 <asset:script type="text/javascript">
-    $(window).on('load', function () {
-        initialise(${raw(roles.inspect())}, ${raw(user?.userId)}, "${raw(project.projectId)}");
+    $(document).ready(function () {
+        initialise(${raw(roles.inspect())}, "${raw(user?.userId)}", "${raw(project.projectId)}");
      })
 </asset:script>
