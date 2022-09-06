@@ -16,7 +16,7 @@ buildscript {
 }
 
 
-version "6.2.2"
+version "6.3-SNAPSHOT"
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -81,6 +81,7 @@ dependencies {
     profile "org.grails.profiles:web"
     implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
+    implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
     implementation "commons-io:commons-io:2.6"
     implementation "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
@@ -114,6 +115,7 @@ dependencies {
     //ALA plugins
     implementation("au.org.ala.plugins.grails:images-client-plugin:1.4") {
         exclude group: 'commons-httpclient', module: 'commons-httpclient'
+        exclude group: 'org.grails.plugins', module: 'ala-auth'
     }
 
     implementation 'org.apache.poi:ooxml-schemas:1.4'
@@ -121,9 +123,13 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml:4.1.2'
     implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
 
-    implementation "org.grails.plugins:ala-admin-plugin:2.2"
-    implementation "org.grails.plugins:ala-auth:3.2.3"
-    runtimeOnly "org.grails.plugins:ala-bootstrap3:3.2.3"
+    implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
+    implementation ("org.grails.plugins:ala-auth:5.1.1")
+    implementation "org.grails.plugins:ala-ws-security-plugin:4.1.2"
+    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.1.0"
+
+    //    swagger API
+    implementation 'au.org.ala.plugins:openapi:1.1.0'
 
     implementation "au.org.ala:userdetails-service-client:1.5.0"
     implementation "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
@@ -135,7 +141,7 @@ dependencies {
 
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:4.0.5"
+        implementation "org.grails.plugins:ecodata-client-plugin:4.1"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
@@ -176,7 +182,7 @@ bootJar {
 assets {
     minifyJs = true
     minifyCss = true
-    maxThreads = 4
+    maxThreads = 6
     minifyOptions = [
             languageMode  : 'ES6', //languageIn
             targetLanguage: 'ES5', // languageOut

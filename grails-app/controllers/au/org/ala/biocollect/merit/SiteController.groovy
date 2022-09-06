@@ -1,6 +1,8 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.web.AuthService
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
@@ -8,7 +10,7 @@ import grails.web.servlet.mvc.GrailsParameterMap
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
-
+@SSO
 class SiteController {
 
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
@@ -71,6 +73,7 @@ class SiteController {
                                      pActivityId: params?.pActivityId, userCanEdit: userCanEditSite]
     }
 
+    @NoSSO
     def index(String id) {
 
         // Include activities only when biocollect starts supporting NRM based projects.
@@ -163,6 +166,7 @@ class SiteController {
     }
 
 
+    @NoSSO
     def ajaxList(String id) {
         if (params.entityType == "projectActivity") {
             def pActivity = projectActivityService.get(id, 'all')
@@ -485,6 +489,7 @@ class SiteController {
     }
 
     @PreAuthorise(accessLevel = "editSite")
+    @NoSSO
     def ajaxUpdate(String id) {
         def result = [:]
         String userId = userService.getCurrentUserId(request)
@@ -547,6 +552,7 @@ class SiteController {
         }
     }
 
+    @NoSSO
     def checkSiteName(String id) {
         log.debug "Name: ${params.name}"
         def result = siteService.isSiteNameUnique(id, params.entityType, params.name)
@@ -672,6 +678,7 @@ class SiteController {
      * @param id - required - eg. 123,345
      * @return
      */
+    @NoSSO
     def getImages() {
         List results
         if (params.id) {
@@ -696,6 +703,7 @@ class SiteController {
      * @param poiId - required
      * @return
      */
+    @NoSSO
     def getPoiImages() {
         Map results
         if (params.siteId && params.poiId) {
@@ -714,6 +722,7 @@ class SiteController {
         }
     }
 
+    @NoSSO
     def list() {
     }
 
@@ -731,6 +740,7 @@ class SiteController {
      * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
      * @return
      */
+    @NoSSO
     def elasticsearch() {
         try {
             List query = ['className:au.org.ala.ecodata.Site', '-type:projectArea']
@@ -837,6 +847,7 @@ class SiteController {
         }
     }
 
+    @NoSSO
     def checkPointInsideProjectAreaAndAddress(String lat, String lng, String projectId) {
         if (lat && lng && projectId) {
             Map result = siteService.checkPointInsideProjectAreaAndAddress(lat, lng, projectId)
