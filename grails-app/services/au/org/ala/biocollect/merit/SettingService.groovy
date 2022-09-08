@@ -112,7 +112,13 @@ class SettingService {
             }
         }
 
-        def settings = getHubSettings(hub)
+        def settings
+        try {
+            settings = getHubSettings(hub)
+        } catch (Throwable ex) {
+            log.error("Could not find hub - ${hub}")
+        }
+
         if (!settings) {
             log.warn("no settings returned for hub ${hub}!")
             settings = new HubSettings(
