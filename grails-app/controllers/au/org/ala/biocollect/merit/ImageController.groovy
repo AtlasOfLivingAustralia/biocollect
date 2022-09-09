@@ -292,6 +292,7 @@ class ImageController {
      * A convenience method to help serve files in the dev. environment.
      * The content type of the file is derived purely from the file extension.
      */
+    @NoSSO
     def get() {
         String filename = FilenameUtils.getName(params.id)
         if (filename != params.id) {
