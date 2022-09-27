@@ -334,7 +334,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             result.features = features;
             result.speciesInfo = {};
             if (speciesGuids.length > 0) {
-                var url = fcConfig.bieUrl + '/ws/species/guids/bulklookup'; //"http://bie.ala.org.au/ws/species/guids/bulklookup.json";
+                var url = fcConfig.bieWsUrl + '/ws/species/guids/bulklookup'; //"http://bie.ala.org.au/ws/species/guids/bulklookup.json";
                 $.ajax({
                     url: url,
                     type: 'POST',

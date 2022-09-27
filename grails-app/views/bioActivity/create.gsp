@@ -32,6 +32,7 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         siteDeleteUrl: "${createLink(controller: 'site', action: 'forceDelete')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${asset.assetPath(src: '')}",
         speciesSearchUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
@@ -46,7 +47,8 @@
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}"
+        uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
+        returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index')+ "/" + pActivity.projectId)}"
         </g:applyCodec>
         },
         here = document.location.href;

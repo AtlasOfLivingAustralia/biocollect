@@ -75,6 +75,7 @@
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         methoddocumentUpdateUrl: "${raw(createLink(controller:"image", action:"upload", params:[role: "methodDoc"]))}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",

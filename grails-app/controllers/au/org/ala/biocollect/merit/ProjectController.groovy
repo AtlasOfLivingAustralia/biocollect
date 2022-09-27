@@ -1391,6 +1391,9 @@ class ProjectController {
         if (resp.status != 200) {
             render view:'/error', model:[error:resp.error]
         }
+        else {
+            return null
+        }
     }
 
     @PreAuthorise(accessLevel = 'admin')
@@ -1421,6 +1424,8 @@ class ProjectController {
         boolean result = pdfGenerationService.generatePDF(reportUrlConfig, pdfGenParams, response)
         if (!result) {
             render view: '/error', model: [error: "An error occurred generating the project report."]
+        } else {
+            return null
         }
 
     }

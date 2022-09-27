@@ -31,6 +31,7 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         imageLocation:"${asset.assetPath(src:'')}",
         createCommentUrl : "${commentUrl}",
         commentListUrl:"${commentUrl}",
