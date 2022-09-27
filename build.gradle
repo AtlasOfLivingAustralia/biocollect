@@ -16,7 +16,7 @@ buildscript {
 }
 
 
-version "6.3-SNAPSHOT"
+version "6.3"
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -257,4 +257,5 @@ tasks.withType(Test) {
 assets {
     minifyJs = true
     minifyCss = true
+    maxThreads = 4
 }

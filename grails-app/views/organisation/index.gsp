@@ -57,6 +57,7 @@
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
+            bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: [version: params.version]))}",
