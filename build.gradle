@@ -81,7 +81,6 @@ dependencies {
     profile "org.grails.profiles:web"
     implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
-    implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
     implementation "commons-io:commons-io:2.6"
     implementation "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
