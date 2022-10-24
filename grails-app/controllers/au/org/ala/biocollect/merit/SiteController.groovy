@@ -1,7 +1,7 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.biocollect.swagger.model.ActivityAjaxUpdate
-import au.org.ala.biocollect.swagger.model.GetProjectActivitiesRecordsForMappingResponse
+import au.org.ala.biocollect.swagger.model.SiteAjaxUpdate
+import au.org.ala.biocollect.swagger.model.SiteCreateUpdateResponse
 import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.AuthService
 import au.org.ala.web.NoSSO
