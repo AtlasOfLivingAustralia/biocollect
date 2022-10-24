@@ -323,8 +323,7 @@ class SiteService {
                 featuresMap = [:]
         }
 
-        def asJSON = featuresMap as JSON
-        asJSON
+        featuresMap
     }
 
     /**

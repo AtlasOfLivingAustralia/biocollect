@@ -29,6 +29,24 @@ class ActivityAjaxUpdate {
 }
 
 @JsonIgnoreProperties('metaClass')
+class SiteAjaxUpdate {
+    Boolean visibility
+    String projectId
+    List projects
+    String pActivityId
+    Boolean asyncUpdate
+    Map extent
+    String name
+}
+
+@JsonIgnoreProperties('metaClass')
+class SiteCreateUpdateResponse {
+    String status
+    String message
+    String id
+}
+
+@JsonIgnoreProperties('metaClass')
 class Output {
     String activityId
     String outputId
