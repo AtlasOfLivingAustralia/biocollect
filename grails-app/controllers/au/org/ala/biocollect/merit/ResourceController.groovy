@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.web.NoSSO
 import grails.converters.JSON
 
 import org.apache.http.HttpHost;
@@ -14,20 +15,21 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 class ResourceController {
 
     grails.core.GrailsApplication grailsApplication
-
+    @NoSSO
     def viewer() {}
-
+    @NoSSO
     def imageviewer() {}
-
+    @NoSSO
     def videoviewer() {}
-
+    @NoSSO
     def audioviewer() {}
-
+    @NoSSO
     def error() {}
-
+    @NoSSO
     def list() {}
 
     // proxy this request to work around browsers (firefox) that don't follow redirects properly :(
+    @NoSSO
     def pdfUrl() {
         def url = params.file
 

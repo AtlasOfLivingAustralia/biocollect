@@ -600,29 +600,44 @@
 
         var hubConfig = ${ hubConfig }
 
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig, '#survey-all-activities-and-records-content');
-        ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
+        // on project page, show listings only when data tab is active.
+        // in other context like all records, show listing as soon as possible
+        if($('#data-tab').length == 1) {
+            $('#data-tab').on('shown.bs.tab', initialiseActivityListing)
+        }
+        else {
+            initialiseActivityListing()
+        }
+
+
+        function initialiseActivityListing(){
+            if (!activitiesAndRecordsViewModel) {
+                activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig, '#survey-all-activities-and-records-content');
+                ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
+
+                configImageGallery = {
+                    recordUrl: fcConfig.recordImageListUrl,
+                    poiUrl: fcConfig.poiImageListUrl,
+                    method: 'POST',
+                    element: document.getElementById('imageGallery'),
+                    data: {
+                        view: fcConfig.view,
+                        fq: [],
+                        searchTerm: '',
+                        projectId: fcConfig.projectId || '',
+                        spotterId: fcConfig.spotterId,
+                        projectActivityId: fcConfig.projectActivityId
+                    },
+                    viewModel: activitiesAndRecordsViewModel
+                }
+
+                activitiesAndRecordsViewModel.imageGallery = initialiseImageGallery(configImageGallery);
+            }
+        }
+
         $('#data-map-tab').on('shown.bs.tab',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
         })
-
-        configImageGallery = {
-            recordUrl: fcConfig.recordImageListUrl,
-            poiUrl: fcConfig.poiImageListUrl,
-            method: 'POST',
-            element: document.getElementById('imageGallery'),
-            data: {
-                view: fcConfig.view,
-                fq: [],
-                searchTerm: '',
-                projectId: fcConfig.projectId || '',
-                spotterId: fcConfig.spotterId,
-                projectActivityId: fcConfig.projectActivityId
-            },
-            viewModel: activitiesAndRecordsViewModel
-        }
-
-        activitiesAndRecordsViewModel.imageGallery = initialiseImageGallery(configImageGallery);
     }
 
     // initialise tab

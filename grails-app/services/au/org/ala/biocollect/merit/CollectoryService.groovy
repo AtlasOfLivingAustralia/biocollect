@@ -20,21 +20,24 @@ class CollectoryService {
 
     GrailsApplication grailsApplication
     WebService webService
+    CacheService cacheService
 
     List licence() {
-        def url = "${grailsApplication.config.collectory.service.url}/licence/"
-        List licences = webService.getJson(url);
-        List bioSupported = this.BioCollectSupported;
-        for (item in bioSupported) {
-            String supported = item.url;
-            def found = licences.find {
-                supported == it.url
+        cacheService.get('collectory-licence',{
+            def url = "${grailsApplication.config.collectory.service.url}/licence/"
+            List licences = webService.getJson(url);
+            List bioSupported = this.BioCollectSupported;
+            for (item in bioSupported) {
+                String supported = item.url;
+                def found = licences.find {
+                    supported == it.url
+                }
+                if (found) {
+                    item.name = found.name
+                }
             }
-            if (found) {
-                item.name = found.name
-            }
-        }
-        return bioSupported;
+            return bioSupported;
+        })
     }
 
 

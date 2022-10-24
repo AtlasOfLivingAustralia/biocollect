@@ -131,9 +131,15 @@ class ProjectController {
      */
     @NoSSO
     def index(String id) {
+        def start, end
+        start = System.currentTimeMillis()
         def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
+        end = System.currentTimeMillis()
+        log.debug("Project fetch time (ms) = " + (end - start) )
+        start = System.currentTimeMillis()
         def roles = roleService.getRoles()
-
+        end = System.currentTimeMillis()
+        log.debug("Role fetch time (ms) = " + (end - start) )
         if (!project || project.error) {
             flash.message = "Project not found with id: ${id}"
             if (project?.error) {
@@ -156,11 +162,17 @@ class ProjectController {
                 project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
             } else if(project.projectSiteId) {
                 // Project site is missing, update site and sync project site info
+                start = System.currentTimeMillis()
                 project.projectSite = siteService.get(project.projectSiteId, [view:'brief'])
+                end = System.currentTimeMillis()
+                log.debug("Site fetch time (ms) = " + (end - start) )
                 List projectIds = project.projectSite?.projects
                 projectIds = projectIds?.findAll{it != '' && it != null} ?: []
                 projectIds << project.projectId
+                start = System.currentTimeMillis()
                 siteService.update(project.projectSiteId, [projects: projectIds])
+                end = System.currentTimeMillis()
+                log.debug("Site update time (ms) = " + (end - start) )
             }
 
             if(project.origin){
@@ -169,9 +181,11 @@ class ProjectController {
 
             String view = 'project'
             def user = userService.getUser()
-            def members = projectService.getMembersForProjectId(id)
-            def admins = members.findAll{ it.role == "admin" }.collect{ it.userName }.join(",") // comma separated list of user email addresses
-
+            start = System.currentTimeMillis()
+            def admins = projectService.getMembersForProjectId(id, ['admin'])
+            end = System.currentTimeMillis()
+            log.debug("Get members of project time (ms) = " + (end - start) )
+            start = System.currentTimeMillis()
             if (user) {
                 user = user.properties
                 user.isAdmin = projectService.isUserAdminForProject(user.userId, id)?:false
@@ -179,6 +193,10 @@ class ProjectController {
                 user.isEditor = projectService.canUserEditProject(user.userId, id)?:false
                 user.hasViewAccess = projectService.canUserViewProject(user.userId, id)?:false
             }
+            end = System.currentTimeMillis()
+            log.debug("Get user properties (ms) = " + (end - start) )
+
+            start = System.currentTimeMillis()
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs, params)
             projectService.buildFieldsForTags (project)
@@ -186,7 +204,9 @@ class ProjectController {
             String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
             Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
             def licences = collectoryService.licence()
-
+            end = System.currentTimeMillis()
+            log.debug("Collectory fetch time (ms) = " + (end - start) )
+            start = System.currentTimeMillis()
             def model = [project: project,
                 projectId: project.projectId,
                 mapFeatures: commonService.getMapFeatures(project),
@@ -208,19 +228,38 @@ class ProjectController {
                 isProjectContributingDataToALA: isProjectContributingDataToALA,
                 licences: licences
             ]
+            end = System.currentTimeMillis()
+            log.debug("model create time (ms) = " + (end - start) )
 
-
+            start = System.currentTimeMillis()
             if(project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]){
                 model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version, true)
+                end = System.currentTimeMillis()
+                log.debug("getAllByProject fetch time (ms) = " + (end - start) )
+                start = System.currentTimeMillis()
+
                 model.pActivityForms = projectService.supportedActivityTypes(project).collect{[name: it.name, images: it.images]}
+                end = System.currentTimeMillis()
+                log.debug("supportedActivityTypes fetch time (ms) = " + (end - start) )
+                start = System.currentTimeMillis()
+
                 model.vocabList = vocabService.getVocabValues ()
+                end = System.currentTimeMillis()
+                log.debug("getVocabValues fetch time (ms) = " + (end - start) )
+                start = System.currentTimeMillis()
+
                 println model.pActivityForms
             }
+            end = System.currentTimeMillis()
+            log.debug("CS metadata fetch time (ms) = " + (end - start) )
+            start = System.currentTimeMillis()
             model.mobile = params.getBoolean('mobile', false)
             model.showBackButton = request.getHeader('referer') ? true:false
             if(projectService.isWorks(project)){
                 model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
             }
+            end = System.currentTimeMillis()
+            log.debug("After adding species fields (ms) = " + (end - start) )
 
             render view:content.view, model:model
         }
@@ -568,9 +607,9 @@ class ProjectController {
                 }
             }
 
-            //check whether a project can be published
+            //check whether an internal project (projects using BioCollect to collect data) can be published
             if (values.projLifecycleStatus != null) {
-                if ((values.projLifecycleStatus == 'published') && values.isExternal && !hasPublishedProjectActivities) {
+                if ((values.projLifecycleStatus == 'published') && (values.isExternal == false) && !hasPublishedProjectActivities) {
                     render status: HttpStatus.SC_BAD_REQUEST, text: "At least one published survey should be there to publish a project."
                     return
                 }

@@ -137,9 +137,9 @@
 %{--        </style>--}%
 %{--    <![endif]-->--}%
     <asset:stylesheet src="projects-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
-    <asset:javascript src="project-activity-manifest.js"/>
-    <asset:javascript src="projects-manifest.js"/>
+    <asset:javascript src="common-bs4.js" asset-defer="true"/>
+    <asset:javascript src="project-activity-manifest.js" asset-defer="true"/>
+    <asset:javascript src="projects-manifest.js" asset-defer="true"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 </head>
 <body>
