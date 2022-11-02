@@ -17,17 +17,7 @@ class FormSpeciesFieldParserService {
      * @return the list of species fields
      */
     Map getSpeciesFieldsForSurvey(String id) {
-        def cacheKey = "activityFormService-getActivityAndOutputMetadata-${id}"
-        def cachedValue = cacheService.get(cacheKey, {
-            try {
-                return activityFormService.getActivityAndOutputMetadata(id) ?: [:]
-            } catch (Exception e) {
-                log.error("Could not get activity and output metadata from activity form service.", e)
-            }
-            return [:]
-        })
-
-        def model = cachedValue
+        def model = activityFormService.getActivityAndOutputMetadata(id) ?: [:]
 
         def fields = []
 
