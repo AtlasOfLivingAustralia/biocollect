@@ -3,7 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
-
+import org.springframework.context.MessageSource
 /*
  * Copyright (C) 2022 Atlas of Living Australia
  * All Rights Reserved.
@@ -29,17 +29,19 @@ class ReportServiceSpec extends Specification implements AutowiredTest{
     ReportService service
     def settingServiceStub = Mock(SettingService)
     def webServiceStub = Mock(WebService)
+    def messageSourceStub = Mock(MessageSource)
 
     void setup() {
         service.grailsApplication = grailsApplication
         service.webService = webServiceStub
+        service.messageSource = messageSourceStub
     }
 
     void "Report items should be returned as provided" () {
         given:
         grailsApplication.config.ecodata.baseURL = ""
         SettingService.setHubConfig(new HubSettings([defaultFacetQuery: ["className:abc"]]))
-        def config = [fq:[], reportConfig: [:], index: "homepage"]
+        def config = [fq:[], reportConfig: [groups:[property: 'grp1']], index: "homepage"]
         def resp = [resp: [ results: [count:451, groups:[[count:31, results:[], group:"group 1"], [count:94, results:[], group:"group 2"]], label:"label 1"], metadata: [:]]]
 
         when:
@@ -47,6 +49,7 @@ class ReportServiceSpec extends Specification implements AutowiredTest{
 
         then:
         1 * webServiceStub.doPost("/ws/search/genericReport", _) >> resp
+        2 * messageSourceStub.getMessage(_, _, _, _) >> { code, args, defaultMessage, locale -> defaultMessage }
         result == resp.resp.results
     }
 
@@ -54,7 +57,7 @@ class ReportServiceSpec extends Specification implements AutowiredTest{
         given:
         grailsApplication.config.ecodata.baseURL = ""
         SettingService.setHubConfig(new HubSettings([defaultFacetQuery: ["className:abc"]]))
-        def config = [fq:[], reportConfig: [:], index: "homepage", resultGrouping: [[label: "group", items: ["group 1", 'group 2']]]]
+        def config = [fq:[], reportConfig: [groups:[property: 'grp1']], index: "homepage", resultGrouping: [[label: "group", items: ["group 1", 'group 2']]]]
         def resp = [resp: [ results: [count:125, groups:[[count:31, results:[], group:"group 1"], [count:94, results:[], group:"group 2"]], label:"label 1"], metadata: [:]]]
 
         when:
@@ -62,6 +65,7 @@ class ReportServiceSpec extends Specification implements AutowiredTest{
 
         then:
         1 * webServiceStub.doPost("/ws/search/genericReport", _) >> resp
+        1 * messageSourceStub.getMessage(_, _, _, _) >> { code, args, defaultMessage, locale -> defaultMessage }
         result == [count:125, groups:[[count:125, group:"group"]], label:"label 1"]
     }
 
@@ -69,7 +73,7 @@ class ReportServiceSpec extends Specification implements AutowiredTest{
         given:
         grailsApplication.config.ecodata.baseURL = ""
         SettingService.setHubConfig(new HubSettings([defaultFacetQuery: ["className:abc"]]))
-        def config = [fq:[], reportConfig: [:], index: "homepage", resultGrouping: [[label: "group", items: ["group 1", 'group 2']]]]
+        def config = [fq:[], reportConfig: [groups:[property: 'grp1']], index: "homepage", resultGrouping: [[label: "group", items: ["group 1", 'group 2']]]]
         def resp = [error: "An error occurred", statusCode: 500]
 
         when:
@@ -77,6 +81,7 @@ class ReportServiceSpec extends Specification implements AutowiredTest{
 
         then:
         1 * webServiceStub.doPost("/ws/search/genericReport", _) >> resp
+        0 * messageSourceStub.getMessage(_, _, _, _) >> { code, args, defaultMessage, locale -> defaultMessage }
         result == [:]
     }
 }
