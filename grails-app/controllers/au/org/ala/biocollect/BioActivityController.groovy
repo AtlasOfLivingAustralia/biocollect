@@ -371,6 +371,7 @@ class BioActivityController {
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
+            model.isUserAdmin = userService.userIsAlaOrFcAdmin()
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
@@ -546,11 +547,13 @@ class BioActivityController {
      */
     @SSO
     def list() {
+        Boolean userIsAdmin = userService.userIsAlaOrFcAdmin()
         render(view: 'list',
                 model: [
                         view: 'myrecords',
                         contentURI: '/bioActivity/list',
                         user: userService.user,
+                        userIsAdmin: userIsAdmin,
                         title: messageSource.getMessage('myrecords.title', [].toArray(), '', Locale.default),
                         returnTo: g.createLink(controller: 'bioActivity', action: 'list')
                 ]
@@ -563,11 +566,13 @@ class BioActivityController {
      * @return
      */
     def allRecords() {
+        Boolean userIsAdmin = userService.userIsAlaOrFcAdmin()
         render(view: 'list',
                 model: [
                         view: 'allrecords',
                         contentURI: '/bioActivity/allRecords',
                         title: messageSource.getMessage('allrecords.title', [].toArray(), '', Locale.default),
+                        userIsAdmin: userIsAdmin,
                         returnTo: g.createLink(controller: 'bioActivity', action: 'allRecords')
                 ]
         )

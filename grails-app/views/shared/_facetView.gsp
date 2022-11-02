@@ -1,95 +1,7 @@
-%{--<div class="row-fluid">--}%
-%{--    <div class="span12">--}%
-%{--        <!-- ko foreach: facets -->--}%
-%{--        <!-- ko if: $data instanceof FacetViewModel && $data.state() !== 'Hidden' -->--}%
-%{--        <div class="row-fluid" data-bind="visible: showTermPanel">--}%
-%{--            <button data-bind="click: toggleState" class="btn btn-block btn-text-left">--}%
-%{--                &nbsp;--}%
-%{--                <i data-bind="css: {'icon-plus': state() == 'Collapsed', 'icon-minus': state() == 'Expanded'}"></i>--}%
-%{--                <strong data-bind="text: displayName"></strong>--}%
-%{--                <a href="#" tabindex="-1"--}%
-%{--                   data-bind="visible: helpText, popover: {placement:'right', content: helpText }">--}%
-%{--                    <i class="icon-question-sign">&nbsp;</i>--}%
-%{--                </a>--}%
-%{--            </button>--}%
-
-%{--            <div data-bind="slideVisible: state() == 'Expanded'" class="margin-top-10">--}%
-%{--                <div class=" facet-display-height">--}%
-%{--                    <!-- ko foreach: terms -->--}%
-%{--                    <label class="control-label checkbox" data-bind="visible: !refined()">--}%
-%{--                        <input type="checkbox" data-bind="checked: checked" style="display: inline-block;">--}%
-%{--                        <span class="label-ellipsis"--}%
-%{--                              data-bind="text:displayName, click: filterNow, attr:{title: displayName}"></span>--}%
-%{--                    </label>--}%
-%{--                    <!-- /ko -->--}%
-%{--                </div>--}%
-%{--                <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title=""--}%
-%{--                   data-target="#${modalName}"--}%
-%{--                   data-original-title="View full list of values"--}%
-%{--                   data-bind="click: loadMoreTerms, visible: showChooseMore()">--}%
-%{--                    <i class="fa fa-hand-o-right"></i> choose more...--}%
-%{--                </a>--}%
-%{--            </div>--}%
-%{--        </div>--}%
-%{--        <!-- /ko -->--}%
-%{--        <!-- ko if: $data instanceof DatePickerViewModel && $data.state() !== 'Hidden' -->--}%
-%{--        <div class="row-fluid">--}%
-%{--            <button data-bind="click: toggleState" class="btn btn-block btn-text-left">--}%
-%{--                &nbsp;--}%
-%{--                <i data-bind="css: {'icon-plus': state() == 'Collapsed', 'icon-minus': state() == 'Expanded'}"></i>--}%
-%{--                <strong data-bind="text: displayName"></strong>--}%
-%{--                <a href="#" tabindex="-1"--}%
-%{--                   data-bind="visible: helpText, popover: {placement:'right', content: helpText }">--}%
-%{--                    <i class="icon-question-sign">&nbsp;</i>--}%
-%{--                </a>--}%
-%{--            </button>--}%
-
-%{--            <div data-name="projectDates" class="margin-top-10 form-horizontal facetDates validationEngineContainer"--}%
-%{--                 data-bind="slideVisible: state() == 'Expanded', independentlyValidated: true">--}%
-%{--                <div class="row-fluid">--}%
-%{--                    <label class="input-label"><span class="span2">From:</span>--}%
-
-%{--                        <div class="input-append">--}%
-%{--                            <input data-bind="value: fromDate.formattedDate, datepicker: fromDate.date, datePickerOptions: { format: 'dd/mm/yyyy'}, event: {blur: setContext($element)}"--}%
-%{--                                   id="fromDate" name="fromDate" type="text" size="16" class="input-small"--}%
-%{--                                   placeholder="dd/mm/yyyy"--}%
-%{--                                   targetfield="fromDate.date"--}%
-%{--                                   data-validation-engine="validate[date]">--}%
-%{--                            <span class="add-on open-datepicker">--}%
-%{--                                <i class="icon-calendar">&nbsp;</i>--}%
-%{--                            </span>--}%
-%{--                        </div>--}%
-%{--                    </label>--}%
-%{--                </div>--}%
-
-%{--                <div class="">--}%
-%{--                    <label class="input-label"><span class="span2">To:</span>--}%
-
-%{--                        <div class="input-append">--}%
-%{--                            <input data-bind="value: toDate.formattedDate, datepicker: toDate.date, datePickerOptions: { format: 'dd/mm/yyyy'}, event: {blur: setContext($element)}"--}%
-%{--                                   id="toDate" type="text" size="16" class="input-append input-small"--}%
-%{--                                   targetfield="toDate.date"--}%
-%{--                                   placeholder="dd/mm/yyyy" data-validation-engine="validate[date,future[fromDate]]">--}%
-%{--                            <span class="add-on open-datepicker">--}%
-%{--                                <i class="icon-calendar">&nbsp;</i>--}%
-%{--                            </span>--}%
-%{--                        </div>--}%
-%{--                    </label>--}%
-%{--                </div>--}%
-
-%{--                <div><span class="span2"></span><button data-bind="click: clearDates, enable: showClearButton"--}%
-%{--                                                        class="btn btn-small"><i class="icon-remove"></i> Clear dates--}%
-%{--                </button></div>--}%
-%{--            </div>--}%
-%{--        </div>--}%
-%{--        <!-- /ko -->--}%
-%{--        &nbsp;--}%
-%{--        <!-- /ko -->--}%
-%{--    </div>--}%
-%{--</div>--}%
-
+<g:set var="userIsAdmin" value="${userIsAdmin || false}"></g:set>
 <!-- ko foreach: facets -->
 <!-- ko if: $data instanceof FacetViewModel && $data.state() !== 'Hidden'-->
+<!-- ko if: !adminOnly() || ${userIsAdmin} -->
 <button class="accordion-header" type="button" data-toggle="collapse"
         data-bind="attr: { 'data-target': '#' + name()}, css: {collapsed: state() === 'Collapsed'}, visible: showTermPanel"
         aria-expanded="true" aria-controls="types">
@@ -112,6 +24,7 @@
         <i class="far fa-hand-point-right"></i> choose more...
     </a>
 </div>
+<!-- /ko -->
 <!-- /ko -->
 
 <!-- ko if: $data instanceof DatePickerViewModel -->

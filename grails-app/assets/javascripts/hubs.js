@@ -798,6 +798,7 @@ function FacetConfigurationViewModel(config, availableFacets) {
             facetVM.interval(facet.interval || facetVM.interval());
             facetVM.chartjsType(facet.chartjsType);
             facetVM.chartjsConfig(facet.chartjsConfig);
+            facetVM.adminOnly(facet.adminOnly || facetVM.adminOnly());
 
             var index = self.transients.facetList.indexOf(facetVM);
             if(index >= 0){
@@ -821,7 +822,8 @@ function FacetViewModel(config){
     self.facetTermType = ko.observable(config.facetTermType||'Default');
     self.interval = ko.observable(config.interval || 10);
     self.chartjsType = ko.observable(config.chartjsType || 'none');
-    self.chartjsConfig = ko.observable(config.chartjsConfig || ''); 
+    self.chartjsConfig = ko.observable(config.chartjsConfig || '');
+    self.adminOnly = ko.observable(config.adminOnly || false);
 
     self.formattedName = ko.computed(function () {
         return self.title() + ' (' + self.name() + ')'
