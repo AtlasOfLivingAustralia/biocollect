@@ -1,10 +1,11 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
-
+import au.org.ala.web.SSO
 /**
  * Controller to display User page (My Profile) as well as some webservices
  */
+@SSO
 class UserController {
     def userService, authService, projectService, organisationService
 

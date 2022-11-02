@@ -1,14 +1,28 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.swagger.model.SiteAjaxUpdate
+import au.org.ala.biocollect.swagger.model.SiteCreateUpdateResponse
+import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.AuthService
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import grails.converters.JSON
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.headers.Header
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
-
+@SSO
 class SiteController {
 
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
@@ -71,6 +85,7 @@ class SiteController {
                                      pActivityId: params?.pActivityId, userCanEdit: userCanEditSite]
     }
 
+    @NoSSO
     def index(String id) {
 
         // Include activities only when biocollect starts supporting NRM based projects.
@@ -163,6 +178,7 @@ class SiteController {
     }
 
 
+    @NoSSO
     def ajaxList(String id) {
         if (params.entityType == "projectActivity") {
             def pActivity = projectActivityService.get(id, 'all')
@@ -484,7 +500,48 @@ class SiteController {
         }
     }
 
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "bioactivitysiteajaxupdate",
+            summary = "Create or edit a site",
+            requestBody = @RequestBody(
+                    description = "JSON body",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    implementation = SiteAjaxUpdate.class
+                            )
+                    )
+            ),
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.QUERY,
+                            description = "Site id. Leave blank if creating new site."
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = SiteCreateUpdateResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/site")
     @PreAuthorise(accessLevel = "editSite")
+    @NoSSO
     def ajaxUpdate(String id) {
         def result = [:]
         String userId = userService.getCurrentUserId(request)
@@ -547,6 +604,7 @@ class SiteController {
         }
     }
 
+    @NoSSO
     def checkSiteName(String id) {
         log.debug "Name: ${params.name}"
         def result = siteService.isSiteNameUnique(id, params.entityType, params.name)
@@ -661,7 +719,7 @@ class SiteController {
     def features(String id) {
         def site = siteService.get(id)
         if (site) {
-            render siteService.getMapFeatures(site)
+            render siteService.getMapFeatures(site) as JSON
         } else {
             render 'no such site'
         }
@@ -672,6 +730,7 @@ class SiteController {
      * @param id - required - eg. 123,345
      * @return
      */
+    @NoSSO
     def getImages() {
         List results
         if (params.id) {
@@ -696,6 +755,7 @@ class SiteController {
      * @param poiId - required
      * @return
      */
+    @NoSSO
     def getPoiImages() {
         Map results
         if (params.siteId && params.poiId) {
@@ -714,6 +774,7 @@ class SiteController {
         }
     }
 
+    @NoSSO
     def list() {
     }
 
@@ -731,6 +792,7 @@ class SiteController {
      * This function does an elastic search for sites. All elastic search parameters are supported like fq, max etc.
      * @return
      */
+    @NoSSO
     def elasticsearch() {
         try {
             List query = ['className:au.org.ala.ecodata.Site', '-type:projectArea']
@@ -837,6 +899,7 @@ class SiteController {
         }
     }
 
+    @NoSSO
     def checkPointInsideProjectAreaAndAddress(String lat, String lng, String projectId) {
         if (lat && lng && projectId) {
             Map result = siteService.checkPointInsideProjectAreaAndAddress(lat, lng, projectId)

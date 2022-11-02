@@ -4,12 +4,24 @@ class ErrorController {
 
     def settingService, cookieService
     def response404() {
-        loadRecentHub()
+        try {
+            loadRecentHub()
+        }
+        catch (Throwable ex) {
+            log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
+        }
+
         render view:'/404'
     }
 
     def response500() {
-        loadRecentHub()
+        try {
+            loadRecentHub()
+        }
+        catch (Throwable ex) {
+            log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
+        }
+
         render view:'/error'
     }
 
