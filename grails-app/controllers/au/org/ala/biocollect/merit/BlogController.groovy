@@ -3,7 +3,8 @@ package au.org.ala.biocollect.merit
 import grails.converters.JSON
 
 import static org.apache.http.HttpStatus.SC_OK
-
+import au.org.ala.web.SSO
+@SSO
 class BlogController {
 
     BlogService blogService

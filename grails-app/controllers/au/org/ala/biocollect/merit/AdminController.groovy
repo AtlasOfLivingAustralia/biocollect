@@ -9,8 +9,10 @@ import grails.util.GrailsNameUtils
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.web.multipart.MultipartHttpServletRequest
 import static grails.async.Promises.task
+import au.org.ala.web.SSO
 
 @PreAuthorise(accessLevel = 'officer', redirectController = "home")
+@SSO
 class AdminController {
 
     def cacheService

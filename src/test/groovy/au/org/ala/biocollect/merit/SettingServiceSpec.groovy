@@ -1,10 +1,13 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
+import grails.plugin.cookie.CookieService
 import grails.testing.spring.AutowiredTest
+import grails.testing.web.controllers.ControllerUnitTest
+import org.grails.web.servlet.mvc.GrailsWebRequest
 import spock.lang.Specification
 
-class SettingServiceSpec extends Specification implements AutowiredTest {
+class SettingServiceSpec extends Specification implements AutowiredTest, ControllerUnitTest {
     Closure doWithSpring() {{ ->
         service SettingService
     }}
@@ -54,5 +57,26 @@ class SettingServiceSpec extends Specification implements AutowiredTest {
         then:
         result.exists()
         result.text.contains("black")
+    }
+
+    def "should not load invalid value to cookie"() {
+        setup:
+        grailsApplication.config.app.default.hub = "xyz"
+        service.cookieService = new CookieService()
+        service.cacheService = new CacheService()
+        service.webService = Mock(WebService)
+
+        when:
+        service.webService.getJson(*_) >> [:]
+        service.loadHubConfig(hub)
+
+        then:
+        service.getHubConfig().urlPath == expected
+        GrailsWebRequest.lookup().params.hub == expected
+        response.getCookie(service.LAST_ACCESSED_HUB).getValue() == expected
+
+        where:
+        hub       | expected
+        "ab=!*cd" | "xyz"
     }
 }

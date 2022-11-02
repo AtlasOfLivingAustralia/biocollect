@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
+import au.org.ala.web.SSO
 
 class HomeController {
 
@@ -15,6 +16,7 @@ class HomeController {
     def userService
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    @SSO
     def advanced() {
         [
                 projects   : projectService.list(),

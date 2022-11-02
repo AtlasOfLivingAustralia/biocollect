@@ -27,6 +27,7 @@ class DownloadController {
     def file() {
         if (params.id) {
             webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/document/${params.id}/file", true, true)
+            return null
         } else if (params.filename) {
             String path = grailsApplication.config.upload.images.path
             File file = new File(FileUtils.fullPath(params.filename, path))

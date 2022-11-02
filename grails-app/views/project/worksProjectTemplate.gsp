@@ -66,6 +66,7 @@
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${asset.assetPath(src:'')}",
