@@ -86,6 +86,7 @@ class UtilService {
 
     /**
      * Convert facet names and terms to a human understandable text.
+     * add adminOnly property to control visibility of facets
      * @param facets
      * @return
      */
@@ -110,6 +111,7 @@ class UtilService {
             Map facetSetting = facetConfig.find { it.name == facet.name }
             facet.title = facetSetting?.title
             facet.helpText = facetSetting?.helpText
+            facet.adminOnly = facetSetting?.adminOnly || false
         }
     }
 

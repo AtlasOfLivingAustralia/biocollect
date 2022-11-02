@@ -239,6 +239,12 @@ function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, conf
     self.mainTheme = ko.observable(act.mainTheme);
     self.type = ko.observable(act.type);
     self.projectId = act.projectId;
+
+    // check if project activity requires manual verification by admin 
+    var verificationStatus = pActivity.adminVerification ? 'not verified' : 'not applicable';
+    self.verificationStatus = ko.observable(act.verificationStatus || verificationStatus);
+    self.verificationStatusOptions = ['not approved', 'not verified', 'under review' , 'approved'];
+
     self.transients = {};
     self.transients.pActivity = new pActivityInfo(pActivity);
     self.transients.pActivitySites = pActivity.sites;
@@ -300,7 +306,7 @@ function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, conf
 
     self.modelForSaving = function () {
         // get model as a plain javascript object
-        var jsData = ko.mapping.toJS(self, {'ignore':['transients']});
+        var jsData = ko.mapping.toJS(self, {'ignore':['transients', 'verificationStatusOptions']});
         if (metaModel.supportsPhotoPoints) {
             jsData.photoPoints = self.transients.photoPointModel().modelForSaving();
         }
