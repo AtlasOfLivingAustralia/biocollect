@@ -144,7 +144,10 @@ function DocumentViewModel (doc, owner, settings) {
         else if(self.role() == 'embeddedVideo'){
             return buildiFrame(self.embeddedVideo()) != "" ;
         }
-
+        else if((self.role() == 'journalArticles' && self.doiLink()) ||
+            ((self.role() == 'bookChapters' || self.role() == 'webPages' || self.role() == 'webinars') && self.externalUrl())){
+            return true;
+        }
         return self.fileReady();
     });
     this.saveHelp = ko.computed(function() {
