@@ -307,6 +307,15 @@ function DashboardViewModel(config, searchFilters) {
         }
     }
 
+    if (self.chartType() == "pie" || self.chartType() == "doughnut") {
+        if (self.options() != undefined) {
+            self.options().plugins.tooltip.callbacks.label = function (context) {
+                context.label = context.raw.group + ": " + context.raw.count
+                return context.label
+            }
+        }
+    }
+
     self.chartInstance = null;
     self.setChartInstance = function (chartInstance) {
         self.chartInstance = chartInstance;
