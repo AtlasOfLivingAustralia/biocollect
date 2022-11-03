@@ -76,7 +76,7 @@
                             ${activity.verificationStatus}</span>
                     </g:if>
                     <g:else >
-                        <span class="badge badge-warning"><g:message code="record.view.verificationStatus"></g:message>:
+                        <span class="badge badge-danger"><g:message code="record.view.verificationStatus"></g:message>:
                             ${activity.verificationStatus}</span>
                     </g:else>
                 </div>
