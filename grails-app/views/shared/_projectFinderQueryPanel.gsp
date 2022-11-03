@@ -19,30 +19,8 @@
             <button class="btn btn-sm btn-dark" data-target="#mapModal" data-toggle="modal">
                 <i class="far fa-map"></i>
                 Filter by geographic location
-%{--                <a href="#" tabindex="-1" data-bind="popover: {placement:'right', content: '<g:message--}%
-%{--                        code="project.search.geoFilter.helpText"/>' }">--}%
-%{--                    <i class="fas fa-info-circle"></i>--}%
-%{--                </a>--}%
             </button>
         </div>
-
-%{--        <div class="row-fluid">--}%
-%{--            <div class="span12">--}%
-%{--                <h5><g:message code="project.search.geoFilter"/>--}%
-%{--                    <a href="#" tabindex="-1" data-bind="popover: {placement:'right', content: '<g:message--}%
-%{--                            code="project.search.geoFilter.helpText"/>' }">--}%
-%{--                        <i class="icon-question-sign">&nbsp;</i>--}%
-%{--                    </a>--}%
-%{--    </h5>--}%
-
-%{--                <div class="row-fluid">--}%
-%{--                    <!-- Trigger the modal with a button -->--}%
-%{--                    <button id="filterByRegionButton" type="button" class="btn btn-small btn-info margin-bottom-2"--}%
-%{--                            data-toggle="modal" data-target="#mapModal"><g:message--}%
-%{--                            code="project.search.mapToggle"/></button>--}%
-%{--                </div>--}%
-%{--            </div>--}%
-%{--        </div>--}%
     </div>
 </div>
 <g:render template="/shared/facetModalChooseMore"/>
@@ -73,9 +51,6 @@
                     <g:message
                             code="project.search.mapClose"/>
                 </button>
-%{--                <button type="button" class="btn btn-primary-dark btn-sm" data-dismiss="modal"><i--}%
-%{--                        class=""></i> <g:message--}%
-%{--                        code="project.search.mapClose"/></button>--}%
             </div>
         </div>
 

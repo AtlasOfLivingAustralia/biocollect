@@ -1,7 +1,6 @@
-<g:set var="userIsAdmin" value="${userIsAdmin || false}"></g:set>
 <!-- ko foreach: facets -->
 <!-- ko if: $data instanceof FacetViewModel && $data.state() !== 'Hidden'-->
-<!-- ko if: !adminOnly() || ${userIsAdmin} -->
+%{--<!-- ko if: !adminOnly() -->--}%
 <button class="accordion-header" type="button" data-toggle="collapse"
         data-bind="attr: { 'data-target': '#' + name()}, css: {collapsed: state() === 'Collapsed'}, visible: showTermPanel"
         aria-expanded="true" aria-controls="types">
@@ -24,7 +23,7 @@
         <i class="far fa-hand-point-right"></i> choose more...
     </a>
 </div>
-<!-- /ko -->
+%{--<!-- /ko -->--}%
 <!-- /ko -->
 
 <!-- ko if: $data instanceof DatePickerViewModel -->

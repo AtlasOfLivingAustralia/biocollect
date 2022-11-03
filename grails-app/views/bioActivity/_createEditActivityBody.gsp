@@ -15,7 +15,7 @@
                 %{--quick links END--}%
             </div>
         </g:if>
-<g:if test="${isUserAdmin && pActivity?.adminVerification}">
+<g:if test="${isUserAdminModeratorOrEditor && pActivity?.adminVerification}">
     <h4><g:message code="record.edit.verificationStatus"/>
     <fc:select data-bind="options:verificationStatusOptions, value: verificationStatus"/></h4>
 </g:if>

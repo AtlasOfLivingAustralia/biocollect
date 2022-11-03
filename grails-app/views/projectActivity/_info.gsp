@@ -164,13 +164,13 @@
                                 <small class="media-heading" data-bind="text:methodDocName"></small>
                             </a>
 
-                            <button class="btn btn-dark fileinput-button float-left"
+                            <span class="btn btn-dark fileinput-button float-left"
                                     data-bind="attr:{'data-role':'methodDoc', 'data-url': transients.methoddocumentUpdateUrl(), 'data-owner-type': 'projectActivityId','data-owner-id': projectActivityId()}, stagedImageUpload: documents, visible:!methodDocUrl(), validateObservable: methodDocUrl"
                                     data-validation-engine="validate[groupRequired[DescriptionSurveyMethod]]">
                                 <i class="fas fa-file-upload"></i>
                                 <input id="mthDoc" type="file" name="files"/>
                                 <span>Attach Document</span>
-                            </button>
+                            </span>
                             <button class="btn btn-sm btn-danger ml-3"
                                     data-bind="click:removeMethodDoc, visible:methodDocUrl()"><i
                                     class="far fa-trash-alt"></i> Remove
@@ -281,16 +281,22 @@
         <div class="col-12 col-md-8">
             <div class="row mb-3">
                 <div class="col-6 col-md-12">
-                    <label class="form-check"><g:message code="project.survey.info.adminVerification.allow"/>
+                    <div class="form-check">
                         <input class="form-check-input" id="adminVerification" type="checkbox" data-bind="checked: adminVerification">
-                    </label>
+                        <label class="form-check-label" for="adminVerification">
+                            <g:message code="project.survey.info.adminVerification.allow"/>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="col-6 col-md-12">
-                    <label class="form-check"><g:message code="project.survey.info.adminVerification.showStatus"/>
+                    <div class="form-check">
                         <input class="form-check-input" id="showVerificationStatus" type="checkbox"
                                data-bind="checked: showVerificationStatus">
-                    </label>
+                        <label class="form-check-label" for="showVerificationStatus">
+                            <g:message code="project.survey.info.adminVerification.showStatus"/>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
