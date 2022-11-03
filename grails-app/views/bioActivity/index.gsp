@@ -68,6 +68,20 @@
 
     <div id="koActivityMainBlock">
         <bc:koLoading>
+        <g:if test="${pActivity?.adminVerification && pActivity?.showVerificationStatus}">
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <g:if test="${activity.verificationStatus == 'approved'}">
+                        <span class="badge badge-success"><g:message code="record.view.verificationStatus"></g:message>:
+                            ${activity.verificationStatus}</span>
+                    </g:if>
+                    <g:else >
+                        <span class="badge badge-danger"><g:message code="record.view.verificationStatus"></g:message>:
+                            ${activity.verificationStatus}</span>
+                    </g:else>
+                </div>
+            </div>
+        </g:if>
         <g:if test="${!mobile}">
             <div class="row">
                 %{-- quick links --}%

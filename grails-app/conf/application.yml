@@ -66,6 +66,7 @@ notification:
 # Specific configurations used by Biocollect
 facets:
   flimit: 15
+
 pingDuration: 300000
 
 headerAndFooter:

@@ -1,9 +1,21 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.swagger.model.SiteAjaxUpdate
+import au.org.ala.biocollect.swagger.model.SiteCreateUpdateResponse
+import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.AuthService
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
 import grails.converters.JSON
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.headers.Header
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
@@ -488,6 +500,46 @@ class SiteController {
         }
     }
 
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "bioactivitysiteajaxupdate",
+            summary = "Create or edit a site",
+            requestBody = @RequestBody(
+                    description = "JSON body",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                    implementation = SiteAjaxUpdate.class
+                            )
+                    )
+            ),
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.QUERY,
+                            description = "Site id. Leave blank if creating new site."
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = SiteCreateUpdateResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/site")
     @PreAuthorise(accessLevel = "editSite")
     @NoSSO
     def ajaxUpdate(String id) {
@@ -667,7 +719,7 @@ class SiteController {
     def features(String id) {
         def site = siteService.get(id)
         if (site) {
-            render siteService.getMapFeatures(site)
+            render siteService.getMapFeatures(site) as JSON
         } else {
             render 'no such site'
         }
