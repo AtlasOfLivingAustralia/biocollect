@@ -426,7 +426,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"OK"]]
 
         when:
-        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"published"}'
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":false, "projLifecycleStatus":"published"}'
         controller.ajaxUpdate(projectId)
 
         then:
@@ -444,7 +444,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"BAD_REQUEST", text:"At least one published survey should be there to publish a project."]]
 
         when:
-        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"published"}'
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":false, "projLifecycleStatus":"published"}'
         controller.ajaxUpdate(projectId)
 
         then:
@@ -463,7 +463,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"BAD_REQUEST", text:"At least one published survey should be there to publish a project."]]
 
         when:
-        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"published"}'
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":false, "projLifecycleStatus":"published"}'
         controller.ajaxUpdate(projectId)
 
         then:
@@ -482,7 +482,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"OK"]]
 
         when:
-        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"unpublished"}'
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":false, "projLifecycleStatus":"unpublished"}'
         controller.ajaxUpdate(projectId)
 
         then:
@@ -500,7 +500,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         projectServiceStub.update(projectId,_) >> [error:null, resp:[status:"OK"]]
 
         when:
-        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":"external", "projLifecycleStatus":"unpublished"}'
+        request.json = '{"organisationId":"org1", "projectId":"projectId", "name":"Test", "projectSiteId":"siteId", "isExternal":true, "projLifecycleStatus":"unpublished"}'
         controller.ajaxUpdate(projectId)
 
         then:

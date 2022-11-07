@@ -317,7 +317,15 @@ class ProjectActivityService {
     }
 
     boolean isEmbargoed(Map projectActivity) {
-        projectActivity?.visibility?.embargoUntil && Date.parse("yyyy-MM-dd", projectActivity.visibility.embargoUntil).after(new Date())
+        switch (projectActivity?.visibility?.embargoOption) {
+            case "DAYS":
+            case "DATE":
+                if (projectActivity?.visibility?.embargoUntil && Date.parse("yyyy-MM-dd", projectActivity.visibility.embargoUntil).after(new Date())) {
+                    return true
+                }
+        }
+
+        false
     }
 
     /**

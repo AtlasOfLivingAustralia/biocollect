@@ -338,8 +338,9 @@ class ProjectService {
      * @param projectId
      * @return
      */
-    def getMembersForProjectId(projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProject/${projectId}"
+    def getMembersForProjectId(projectId, List roles = null) {
+        def role = roles?.join("&role=")
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProject/${projectId}?${role ? 'role=' + role : ''}"
         webService.getJson(url)
     }
 
