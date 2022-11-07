@@ -13,6 +13,7 @@ class ReportService {
     public static final String REPORT_APPROVED = 'published'
     public static final String REPORT_SUBMITTED = 'pendingApproval'
     public static final String REPORT_NOT_APPROVED = 'unpublished'
+    public static final String PREFIX_REPORT_CACHE = 'REPORT_CACHE_'
 
     public static final String REEF_2050_PLAN_ACTION_REPORTING_ACTIVITY_TYPE = 'Reef 2050 Plan Action Reporting'
 
@@ -27,6 +28,7 @@ class ReportService {
     def metadataService
     def activityService
     def messageSource
+    def cacheService
 
     private static int DEFAULT_REPORT_DAYS_TO_COMPLETE = 43
 
@@ -619,20 +621,30 @@ class ReportService {
     }
 
     Map genericReport(Map config){
-        def defaultFQs = SettingService.getHubConfig().defaultFacetQuery ?: []
-        config.fq = config.fq ?: []
-        config.fq.addAll(defaultFQs)
+        Closure action = { ->
+            def defaultFQs = SettingService.getHubConfig().defaultFacetQuery ?: []
+            config.fq = config.fq ?: []
+            config.fq.addAll(defaultFQs)
 
-        String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/genericReport"
-        Map report = webService.doPost(url, config)
+            String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/genericReport"
+            Map report = webService.doPost(url, config)
 
-        Map results = report?.resp?.results ?: [:]
-        groupResultsByItems(results, config)
+            Map results = report?.resp?.results ?: [:]
+            groupResultsByItems(results, config)
 
-        MapDisplayName(results, config.reportConfig.groups.property)
+            mapDisplayName(results, config.reportConfig.groups.property)
+        }
+
+        config.cache ? cacheService.get(getReportConfigName(config), action) : action()
     }
 
-    def MapDisplayName (Map results, String property) {
+    String getReportConfigName (Map config){
+        String hub = SettingService.getHubConfig()?.urlPath
+        String reportName = config.label ?: ''
+        PREFIX_REPORT_CACHE + hub + reportName
+    }
+
+    def mapDisplayName(Map results, String property) {
         results.groups?.each { group ->
             group.group = messageSource.getMessage("report." + property + "." + group.group, null, group.group, Locale.default)
         }

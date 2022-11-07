@@ -1,6 +1,6 @@
 package au.org.ala.biocollect
 
-import com.vividsolutions.jts.geom.Geometry
+import org.locationtech.jts.geom.Geometry
 import grails.converters.JSON
 import org.geotools.geojson.geom.GeometryJSON
 

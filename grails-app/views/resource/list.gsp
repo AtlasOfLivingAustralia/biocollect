@@ -9,6 +9,7 @@
     <script>
         var fcConfig = {
             pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
+            pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
             documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}",
             imageLocation:"${asset.assetPath(src: '')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",

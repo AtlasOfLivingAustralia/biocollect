@@ -16,8 +16,19 @@
             </div>
         </g:if>
 <g:if test="${isUserAdminModeratorOrEditor && pActivity?.adminVerification}">
-    <h4><g:message code="record.edit.verificationStatus"/>
-    <fc:select data-bind="options:verificationStatusOptions, value: verificationStatus"/></h4>
+    <div class="form-group row">
+        <label for="verificationStatusName" class="col-sm-2 col-form-label">
+            <g:message code="record.edit.verificationStatus"/>
+            <a href="#" class="helphover"
+               data-bind="popover: {title:'<g:message code="record.edit.verificationStatusTypes.help.title"/>',
+                             content:'<g:message code="record.edit.verificationStatusTypes.help"/>'}">
+                <i class="fa fa-question-circle"></i>
+            </a>
+        </label>
+        <div class="col-sm-10">
+            <fc:select name="verificationStatusName" class="custom-select" data-bind="options:verificationStatusOptions, value: verificationStatus"/>
+        </div>
+    </div>
 </g:if>
 <!-- start model binding -->
 <!-- ko stopBinding: true -->

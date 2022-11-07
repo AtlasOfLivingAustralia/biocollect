@@ -214,7 +214,7 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         then:
         1 * service.userService.userIsAlaAdmin() >> true
         1 * service.userService.getCurrentUserId() >> userId
-        1 * service.searchService.fulltextSearch(params,true) >> [documentId:'doc1', role:'magazines']
+        1 * service.searchService.fulltextSearch(_,true) >> [documentId:'doc1', role:'magazines']
         documents
     }
 
@@ -250,7 +250,7 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
 
         then:
         1 * service.projectService.get(project.projectId) >> project
-        1 * service.searchService.fulltextSearch(params,true) >> [hits:[hits:searchResults]]
+        1 * service.searchService.fulltextSearch(_,true) >> [hits:[hits:searchResults]]
         documents
     }
 }
