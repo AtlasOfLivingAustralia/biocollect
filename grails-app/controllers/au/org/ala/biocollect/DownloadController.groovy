@@ -50,9 +50,9 @@ class DownloadController {
      * @return
      */
     def getScriptFile() {
-        if (params.filename && params.hub && params.model) {
+        if (params.filename && (params?.hubDir ?: params.hub) && params.model) {
             log.debug("Script name: " + params.filename)
-            log.debug("Hub: " + params.hub)
+            log.debug("Hub: " + params?.hubDir ?: params.hub)
             log.debug("Model: " + params.model)
             String filename = FilenameUtils.getName(params.filename)
             String hub = FilenameUtils.getName(params?.hubDir ?: params.hub)
@@ -60,7 +60,7 @@ class DownloadController {
             String path = "${grailsApplication.config.app.file.script.path}${File.separator}${hub}${File.separator}${model}${File.separator}${filename}"
             log.debug("Script path: " + path)
 
-            if (filename != params.filename || hub != params.hub || model != params.model || FilenameUtils.normalize(path) != path) {
+            if (filename != params.filename || hub != (params?.hubDir ?: params.hub) || model != params.model || FilenameUtils.normalize(path) != path) {
                 response.status = 404
                 return
             }
