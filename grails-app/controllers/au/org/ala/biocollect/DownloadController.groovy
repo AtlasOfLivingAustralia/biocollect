@@ -88,6 +88,9 @@ class DownloadController {
             else if(extension == 'png'){
                 response.setContentType('image/png')
             }
+            else if(extension in ['jpg', 'jpeg']){
+                response.setContentType('image/jpeg')
+            }
             response.outputStream << new FileInputStream(file)
             response.outputStream.flush()
 
