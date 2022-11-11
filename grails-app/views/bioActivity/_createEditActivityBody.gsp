@@ -25,8 +25,8 @@
                 <i class="fa fa-question-circle"></i>
             </a>
         </label>
-        <div class="col-sm-10">
-            <fc:select name="verificationStatusName" class="custom-select" data-bind="options:verificationStatusOptions, value: verificationStatus"/>
+        <div class="col-4">
+            <select name="verificationStatusName" class="custom-select" data-bind="options:verificationStatusOptions, optionsText:'displayName', optionsValue:'code', value: verificationStatus"></select>
         </div>
     </div>
 </g:if>

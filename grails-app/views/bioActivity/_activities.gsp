@@ -237,12 +237,14 @@
                     <div class="tab-pane active" id="recordVis">
                         <!-- ko if: activities().length == 0 -->
                         <div class="row">
-                            <h3 class="text-left mb-1">
-                                <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
-                                    No data has been recorded for this project yet
-                                </span>
-                                <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
-                            </h3>
+                            <div class="col-12"
+                                <h3 class="text-left mb-1">
+                                    <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
+                                        No data has been recorded for this project yet
+                                    </span>
+                                    <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
+                                </h3>
+                            </div>
                         </div>
                         <!-- /ko -->
 
