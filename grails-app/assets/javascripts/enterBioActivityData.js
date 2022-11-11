@@ -243,7 +243,7 @@ function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, conf
     // check if project activity requires manual verification by admin 
     var verificationStatus = pActivity.adminVerification ? 'not verified' : 'not applicable';
     self.verificationStatus = ko.observable(act.verificationStatus || verificationStatus);
-    self.verificationStatusOptions = ['not approved', 'not verified', 'under review' , 'approved'];
+    self.verificationStatusOptions = [{code: 'not approved', displayName: 'Rejected'}, { code: 'not verified', displayName: 'Not verified'},  { code: 'under review', displayName: 'Under review'} , { code: 'approved', displayName: 'Verified'}];
 
     self.transients = {};
     self.transients.pActivity = new pActivityInfo(pActivity);
