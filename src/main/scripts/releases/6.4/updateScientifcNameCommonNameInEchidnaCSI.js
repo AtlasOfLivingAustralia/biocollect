@@ -1,7 +1,12 @@
 // modify echidna csi survey records so that when ecodata regenerates records, scientific and common names will be
 // populated correctly.
 var modified = db.output.updateMany({
-    "data.species.name": "Short-beaked Echidna (Tachyglossus aculeatus)",
+    "data.species.name": {
+        "$in": [
+            "Short-beaked Echidna (Tachyglossus aculeatus)", "Tachyglossus aculeatus (Short-Beaked Echidna)",
+            "Short-Beaked Echidna (Tachyglossus aculeatus)", "Short-beaked Echidna", "Tachyglossus aculeatus"
+        ]
+    },
     "data.species.scientificName": null,
     name: "Echidna CSI"
 }, {
