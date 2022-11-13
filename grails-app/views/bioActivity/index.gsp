@@ -73,11 +73,11 @@
                 <div class="col-sm-12 text-right">
                     <g:if test="${activity.verificationStatus == 'approved'}">
                         <span class="badge badge-success"><g:message code="record.view.verificationStatus"></g:message>:
-                            ${activity.verificationStatus}</span>
+                            <g:message code="facets.verificationStatusFacet.${activity.verificationStatus}"></g:message></span>
                     </g:if>
                     <g:else >
                         <span class="badge badge-danger"><g:message code="record.view.verificationStatus"></g:message>:
-                            ${activity.verificationStatus}</span>
+                            <g:message code="facets.verificationStatusFacet.${activity.verificationStatus}"></g:message></span>
                     </g:else>
                 </div>
             </div>
