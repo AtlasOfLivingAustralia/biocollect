@@ -11,7 +11,7 @@
                             <li data-bind="visible: description"><span class="label"><g:message
                                     code="label.description"/>:</span> <span data-bind="text: description"></span></li>
                             <li data-bind="visible: type"><span class="label"><g:message
-                                    code="label.site.type"/>:</span> Echinda CSI</li>
+                                    code="label.site.type"/>:</span> <span data-bind="text: type"></span></li>
                             <li data-bind="visible: numberOfPoi() != undefined"><span class="label"><g:message
                                     code="label.poi"/>:</span> <span data-bind="text: numberOfPoi"></span></li>
                             <li data-bind="visible: numberOfProjects() != undefined"><span class="label"><g:message
