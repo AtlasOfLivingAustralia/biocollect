@@ -32,15 +32,7 @@ class UserService {
     }
 
     def getCurrentUserId(request = null) {
-        def userId = ""
-
-        if (request) {
-            String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
-            String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-            userId = username && key ? userInfoService.getUserFromAuthKey(username, key)?.userId : ''
-        }
-
-        userId ?: (getUser()?.userId ?: "")
+        userInfoService.getCurrentUser()?.userId
     }
 
     AppUserDetails getUser() {

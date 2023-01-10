@@ -1,4 +1,4 @@
-<g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
+<g:render template="/shared/pagination" model="[bs:4, classes:'my-2']"/>
 <div id="pt-table">
     <bc:koLoading>
         <div class="tab-content" data-bind="visible: pageProjects().length > 0">
@@ -26,10 +26,10 @@
             <div class="tab-pane fade" id="list" role="tabpanel" aria-labelledby="list-tab">
                 <g:render template="/shared/projectFinderResultPanelList"></g:render>
             </div>
-
-            <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">
-                <g:render template="/shared/projectFinderResultPanelMap"></g:render>
-            </div>
+%{-- todo : uncomment when all project area can be shown without pagination--}%
+%{--            <div class="tab-pane fade" id="map" role="tabpanel" aria-labelledby="map-tab">--}%
+%{--                <g:render template="/shared/projectFinderResultPanelMap"></g:render>--}%
+%{--            </div>--}%
         </div>
     </bc:koLoading>
 </div>

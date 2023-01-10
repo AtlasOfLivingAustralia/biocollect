@@ -1,14 +1,16 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
-`<g:set var="projectService" bean="projectService"></g:set>`
+<g:set var="projectService" bean="projectService"></g:set>
 <g:set var="mapService" bean="mapService"></g:set>
+<g:set var="messageSource" bean="messageSource"></g:set>
 <html>
 <head>
     <meta name="layout" content="bs4"/>
-    <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.fieldCapture"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.biocollect"/></title>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -27,19 +29,18 @@
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         deleteSiteUrl: "${createLink(controller:'site', action:'delete')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
-        <g:applyCodec encodeAs="none">
-            scienceTypes: ${scienceTypes as grails.converters.JSON},
-            ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
-            lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-            lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
-            dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
-            countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
-            hideProjectEditScienceTypes: ${!!hubConfig?.content?.hideProjectEditScienceTypes},
-            uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        scienceTypes: ${scienceTypes as grails.converters.JSON},
+        ecoScienceTypes: ${ecoScienceTypes as grails.converters.JSON},
+        lowerCaseScienceType: ${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        lowerCaseEcoScienceType: ${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() } as grails.converters.JSON},
+        dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
+        countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
+        hideProjectEditScienceTypes: ${!!hubConfig?.content?.hideProjectEditScienceTypes},
+        uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
+        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         </g:applyCodec>
         },
         here = window.location.href;
@@ -54,7 +55,10 @@
 
 <body>
 <div class="container-fluid validationEngineContainer" id="validation-container">
-    <h2><g:message code="project.create.register"/></h2>
+    <content tag="bannertitle">
+        <g:set var="customTitle" value="${hubConfig.templateConfiguration?.header?.links?.find {it.contentType == 'newproject'}?.displayName}"/>
+        ${customTitle?:messageSource.getMessage('project.create.register', [].toArray(), '', Locale.default)}
+    </content>
     <p>
         <g:message code="project.create.description"/>
     </p>
@@ -64,7 +68,12 @@
         <div class="row" style="display: none" data-bind="visible: true">
             <div class="col-12 btn-space">
                 <div class="alert warning" data-bind="visible: !termsOfUseAccepted() && !isExternal()"><g:message code="project.details.termsOfUseAgreement.saveButtonWarning"/></div>
-                <button type="button" id="save" class="btn btn-primary-dark" data-bind="disable: (!termsOfUseAccepted() && !isExternal())"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+
+                <button type="button" id="save" class="btn btn-primary-dark" data-bind="disable: (!termsOfUseAccepted() && !isExternal())" title="<g:message code="g.save.title"/>"><i class="fas fa-hdd"></i> <g:message code="g.save"/></button>
+
+                <!-- Publish workflow applies to all citizen science, eco science and works projects. When either citizen
+                science or eco science, if isExternal is true, then enable the Publish button else disable the Publish button -->
+                <button type="button" id="publish" class="btn btn-primary-dark" data-bind="enable: (isExternal() || (isWorks() && termsOfUseAccepted()))" title="<g:message code="g.savePublish"/>"><i class="fas fa-hdd"></i> <g:message code="g.savePublish.title"/></button>
                 <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
             </div>
         </div>
@@ -94,16 +103,16 @@ $(function(){
 
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
-    $('#cancel').click(function () {
-        document.location.href = "${createLink(action: 'homePage')}";
+    $('#cancel').on('click',function () {
+        document.location.href = "${createLink(uri: '/')}";
     });
     </g:if>
     <g:else>
-    $('#cancel').click(function () {
+    $('#cancel').on('click',function () {
         document.location.href = "${createLink(action: 'index', id: project?.projectId)}";
     });
     </g:else>
-    $('#save').click(function () {
+    $('#save').on('click',function () {
         if ($('#projectDetails').validationEngine('validate')) {
             if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
                 bootbox.dialog({message:"${message(code:'project.create.warningdatacollection')}"},
@@ -127,6 +136,53 @@ $(function(){
             } else {
                 var projectErrors = viewModel.transients.projectHasErrors()
                 if (!projectErrors) {
+                    viewModel.projLifecycleStatus = 'unpublished';
+
+                    viewModel.saveWithErrorDetection(function(data) {
+                        var projectId = "${project?.projectId}" || data.projectId;
+
+                        if (viewModel.isExternal()) {
+                            document.location.href = "${createLink(action: 'index')}/" + projectId;
+                        } else {
+                            document.location.href = "${createLink(action: 'newProjectIntro')}/" + projectId;
+                        }
+                    },function(data) {
+                        var responseText = data.responseText || "${message(code:'project.create.error')}";
+                        bootbox.alert(responseText);
+                    });
+                } else {
+                    bootbox.alert(projectErrors);
+                }
+            }
+        }
+    });
+
+    $('#publish').click(function () {
+        if ($('#projectDetails').validationEngine('validate')) {
+            if(viewModel.transients.kindOfProject() == 'citizenScience' && !viewModel.transients.isDataEntryValid()){
+                bootbox.dialog({message:"${message(code:'project.create.warningdatacollection')}"},
+                    [{
+                      label: "Continue",
+                      className: "btn-primary",
+                      callback: function() {
+                        viewModel.isExternal(true);
+                        $('#publish').click()
+                      }
+                    },{
+                        label: "Cancel",
+                        className: "btn-alert",
+                        callback: function() {
+                            $('html, body').animate({
+                                scrollTop: $("#scienceTypeControlGroup").offset().top
+                            }, 2000);
+                       }
+                    }]
+                );
+            } else {
+                var projectErrors = viewModel.transients.projectHasErrors()
+                if (!projectErrors) {
+                    viewModel.projLifecycleStatus = 'published';
+
                     viewModel.saveWithErrorDetection(function(data) {
                         var projectId = "${project?.projectId}" || data.projectId;
 

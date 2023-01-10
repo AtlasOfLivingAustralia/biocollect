@@ -24,10 +24,10 @@
     </div>
 
     <div class="table-responsive">
-        <table class="not-stacked-table" data-bind="visible: speciesFields().length > 0">
+        <table class="not-stacked-table w-100" data-bind="visible: speciesFields().length > 0">
             <thead>
                 <tr>
-                <td>
+                <td class="w-25">
                         <g:message code="project.survey.species.fieldName"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message
                                 code="project.survey.species.fieldName"/>', content:'<g:message
@@ -35,7 +35,7 @@
                             <i class="fas fa-info-circle"></i>
                         </a>
                 </td>
-                <td>
+                <td class="req-field w-50" >
                         <g:message code="project.survey.species.settings"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message
                                 code="project.survey.species.settings"/>', content:'<g:message
@@ -43,7 +43,7 @@
                             <i class="fas fa-info-circle"></i>
                         </a>
                 </td>
-                <td>
+                <td class="w-25">
                         <g:message code="project.survey.species.displayAs"/>
                         <a href="#" class="helphover" data-bind="popover: {title:'<g:message
                                 code="project.survey.species.displayAs"/>', content:'<g:message
@@ -61,13 +61,15 @@
                         <span data-bind="text: transients.fieldName "></span>
                     </td>
                     <td>
-                        <span class="req-field" data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}">
-                            <input type="text" class="input-large"
-                                   data-bind="disable: true, value: config().transients.inputSettingsSummary"></input>
-                        </span>
-                        <a target="_blank"
-                           data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }"
-                           class="btn btn-link"><small><g:message code="project.survey.species.configure"/></small></a>
+                        <div class="input-group" data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}">
+                            <input type="text" class="form-control form-control-lg"
+                                   data-bind="disable: true, value: config().transients.inputSettingsSummary">
+                            <div class="input-group-append">
+                                <a target="_blank"
+                                   data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }"
+                                   class="btn btn-primary-dark"><i class="fas fa-cog"></i> <g:message code="project.survey.species.configure"/></a>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <select class="form-control" data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">

@@ -7,6 +7,7 @@
     <title>Add existing site | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
         var fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -21,10 +22,9 @@
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            </g:applyCodec>
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
+            </g:applyCodec>
         },
         returnTo = "${params.returnTo}";
     </asset:script>
@@ -98,7 +98,7 @@
                             </button>
                             <button class="removeSite btn btn-sm btn-danger mt-2"
                                     data-bind="click: $parent.removeSite, visible: isProjectSite() ">
-                                <i class="fas fa-minus"></i>
+                                <i class="far fa-trash-alt"></i>
                                 Remove
                             </button>
                         </td>

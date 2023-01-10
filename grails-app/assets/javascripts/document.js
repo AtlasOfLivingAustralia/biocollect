@@ -16,14 +16,32 @@ function DocumentViewModel (doc, owner, settings) {
     var defaults = {
         //Information is the default option.
         roles:  [
-            {id: 'information', name: 'Information'},
+            {id:'blogArticles', name: 'Blog Articles'},
+            {id:'bookChapters', name: 'Book Chapters'},
+            {id:'brochures', name: 'Brochures'},
+            {id:'caseStudies', name: 'Case Studies'},
+            {id:'datasets', name: 'Datasets'},
+            {id:'documents', name: 'Documents'},
             {id:'embeddedVideo', name:'Embedded Video'},
             {id:'exceedanceReport', name:'Exceedance Report'},
+            {id:'factsheets', name: 'Fact sheets'},
+            {id:'information', name: 'Information'},
+            {id:'journalArticles', name: 'Journal Articles'},
+            {id:'magazines', name: 'Magazines'},
+            {id:'maps', name: 'Maps'},
+            {id:'models', name: 'Models'},
+            {id:'other', name:'Other Project document'},
             {id:'photo', name:'Photo'},
+            {id:'postersBanners', name: 'Posters and banners'},
+            {id:'presentations', name: 'Presentations'},
             {id:'projectPlan', name:'Project Plan / Work plan'},
             {id:'projectVariation', name:'Project Variation'},
             {id:'projectHighlightReport', name:'Project Highlight Report'},
-            {id:'other', name:'Other Project document'}],
+            {id:'reports', name: 'Reports'},
+            {id:'thesis', name: 'Thesis'},
+            {id:'toolsGuides', name: 'Tools and guides'},
+            {id:'webPages', name: 'Web pages'},
+            {id:'webinars', name: 'Webinars'}],
         showSettings: true,
         thirdPartyDeclarationTextSelector:'#thirdPartyDeclarationText',
         imageLocation: fcConfig.imageLocation
@@ -31,8 +49,13 @@ function DocumentViewModel (doc, owner, settings) {
     this.settings = $.extend({}, defaults, settings);
 
     // NOTE that attaching a file is optional, ie you can have a document record without a physical file
+    this.projectId = ko.observable(doc ? doc.projectId : '');
+    this.projectName = ko.observable(doc ? doc.projectName : '');
     this.filename = ko.observable(doc ? doc.filename : '');
+    this.citation = ko.observable(doc ? doc.citation : '');
+    this.doiLink = ko.observable(doc ? doc.doiLink : '');
     this.description = ko.observable(doc ? doc.description : '');
+    this.labels = ko.observableArray(doc ? doc.labels : []);
     this.filesize = ko.observable(doc ? doc.filesize : '');
     this.name = ko.observable(doc.name);
     // the notes field can be used as a pseudo-document (eg a deferral reason) or just for additional metadata
@@ -60,14 +83,39 @@ function DocumentViewModel (doc, owner, settings) {
     this.fileButtonText = ko.computed(function() {
         return (self.filename() ? "Change file" : "Attach file");
     });
+    this.externalUrl = ko.observable(doc.externalUrl);
 
-    this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
-    this.thirdPartyConsentDeclarationText = null;
+    self.transients = {};
+    self.transients.dateCreated = "";
+    self.transients.lastUpdated = "";
+
+    if (doc.dateCreated)
+        self.transients.dateCreated = moment(doc.dateCreated).format('DD MMM, YYYY');
+
+    if (doc.lastUpdated)
+        self.transients.lastUpdated = moment(doc.lastUpdated).format('DD MMM, YYYY');
+
+    self.transients.isPreviewVisible = function() {
+        return ((self.role() == 'journalArticles') || self.externalUrl());
+    };
+
+    self.transients.isDownloadVisible = function() {
+        return ((self.role() == 'journalArticles') || self.externalUrl() || (self.role() == 'embeddedVideo'));
+    };
+
+    self.transients.projectUrl = ko.pureComputed(function () {
+        var projectId = ko.unwrap(self.projectId)
+
+        return fcConfig.projectIndexUrl + '/' + projectId +
+            (fcConfig.version !== undefined ? "?version=" + fcConfig.version : '');
+    });
+
     this.embeddedVideo = ko.observable(doc.embeddedVideo);
     this.embeddedVideoVisible = ko.computed(function() {
         return (self.role() == 'embeddedVideo');
     });
 
+    this.thirdPartyConsentDeclarationMade = ko.observable(doc.thirdPartyConsentDeclarationMade);
     this.thirdPartyConsentDeclarationMade.subscribe(function(declarationMade) {
         // Record the text that the user agreed to (as it is an editable setting).
         if (declarationMade) {
@@ -96,7 +144,10 @@ function DocumentViewModel (doc, owner, settings) {
         else if(self.role() == 'embeddedVideo'){
             return buildiFrame(self.embeddedVideo()) != "" ;
         }
-
+        else if((self.role() == 'journalArticles' && self.doiLink()) ||
+            ((self.role() == 'bookChapters' || self.role() == 'webPages' || self.role() == 'webinars') && self.externalUrl())){
+            return true;
+        }
         return self.fileReady();
     });
     this.saveHelp = ko.computed(function() {
@@ -281,11 +332,13 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
         documentViewModel.fileUploadFailed(data.errorThrown);
     });
 
-
-
     // We are keeping the reference to the helper here rather than the view model as it doesn't serialize correctly
     // (i.e. calls to toJSON fail).
     documentViewModel.save = function() {
+        //when saving a new document keywords arrive as a comma separated string, hence splitting to an array
+        if (typeof(documentViewModel.labels()) == 'string')
+            documentViewModel.labels(documentViewModel.labels().split(','))
+
         if (documentViewModel.filename() && fileUploadHelper !== undefined) {
             fileUploadHelper.submit();
             fileUploadHelper = null;
@@ -401,22 +454,185 @@ function findDocumentById(documents, id) {
     return null;
 }
 
-var DocModel = function (doc) {
-    var self = this;
-    this.name = doc.name;
-    this.attribution = doc.attribution;
-    this.filename = doc.filename;
-    this.type = doc.type;
-    this.url = doc.url;
-    this.thumbnailUrl = doc.thumbnailUrl ? doc.thumbnailUrl : doc.url;
-    this.filetypeImg = function () {
-        return imageLocation + "filetypes/" + iconnameFromFilename(self.filename);
-    };
-};
 function DocListViewModel(documents) {
     var self = this;
-    this.documents = ko.observableArray($.map(documents, function(doc) { return new DocModel(doc)} ));
+    this.documents = ko.observableArray($.map(documents, function(doc) { return new DocumentViewModel(doc)} ));
 }
+function AllDocListViewModel(projectId) {
+    var self = $.extend(this, new Documents());
+
+    self.pagination = new PaginationViewModel({}, self);
+    self.loading = ko.observable(false);
+    self.searchHasFocus = ko.observable(false);
+    self.allDocuments = ko.observableArray([]);
+    self.documentFilterField = ko.observable('name');
+    self.documentFilterField.subscribe(function(type) {
+        self.refreshPage(0);
+    });
+    self.roleFilterField.subscribe(function(type) {
+        self.refreshPage(0);
+    });
+    self.searchDoc = ko.observable('');
+    self.sortBy = ko.observable('dateCreated');
+    self.sortBy.subscribe(function(by) {
+        self.refreshPage(0);
+    });
+
+    self.isProject = function(projectId) {
+        !!projectId;
+    }
+
+    self.refreshPage = function(offset) {
+        var params = {offset: offset, max: self.pagination.resultsPerPage()};
+
+        if (self.searchDoc()) {
+            let query = this.getQuery(true, self.searchDoc());
+            params.searchTerm = query;
+        }
+
+        if (self.roleFilterField()) {
+            if (self.roleFilterField().id != 'none')
+                params.searchInRole = self.roleFilterField()
+        }
+
+        if (self.sortBy()) {
+            params.sort = self.sortBy();
+            params.order = 'desc';
+        }
+
+        if (self.documentFilterField())
+            params.searchType = self.documentFilterField().fun;
+
+        if (projectId)
+            params.projectId = projectId;
+
+        $.ajax({
+            url:fcConfig.documentSearchUrl,
+            data:params,
+            beforeSend: function () {
+                self.loading(true);
+            },
+            success:function(data) {
+                if (data.hits) {
+                    var docs = data.hits.hits || [];
+                    self.allDocuments($.map(docs, function (hit) {
+                        return new DocumentViewModel(hit._source);
+                    }));
+
+                    if (offset == 0) {
+                        self.pagination.loadPagination(0, data.hits.total);
+                    }
+                }
+            },
+            complete: function () {
+                self.loading(false);
+            }
+        });
+    };
+
+    this.getQuery = function (partialSearch, queryText) {
+        var query = queryText.toLowerCase();
+
+        if (partialSearch && ((query.length >= 3) && (query.indexOf('*') == -1))) {
+            query = '*' + query + '*';
+        }
+
+        return query;
+    };
+
+    self.refreshPage(0);
+
+    self.mapDocumentForSearch = function (data) {
+        let text = data.toLowerCase();
+
+        switch (text) {
+            case "blog articles":
+                return roleName = "blogArticles";
+                break;
+            case "book chapters":
+                return roleName = "bookChapters";
+                break;
+            case "brochures":
+                return roleName = "brochures";
+                break;
+            case "case studies":
+                return roleName = "caseStudies";
+                break;
+            case "datasets":
+                return roleName = "datasets";
+                break;
+            case "documents":
+                return roleName = "documents";
+                break;
+            case "embedded video":
+                return roleName = "embeddedVideo";
+                break;
+            case "exceedance report":
+                return roleName = "exceedanceReport";
+                break;
+            case "factsheets":
+                return roleName = "factsheets";
+                break;
+            case "information":
+                return roleName = "information";
+                break;
+            case "journal articles":
+                return roleName = "journalArticles";
+                break;
+            case "magazines":
+                return roleName = "magazines";
+                break;
+            case "maps":
+                return roleName = "maps";
+                break;
+            case "models":
+                return roleName = "models";
+                break;
+            case "other":
+                return roleName = "other";
+                break;
+            case "photo":
+                return roleName = "photo";
+                break;
+            case "posters and banners":
+                return roleName = "postersBanners";
+                break;
+            case "presentations":
+                return roleName = "presentations";
+                break;
+            case "project plan":
+                return roleName = "projectPlan";
+                break;
+            case "work plan":
+                return roleName = "projectPlan";
+                break;
+            case "project variation":
+                return roleName =  "projectVariation";
+                break;
+            case "project highlight report":
+                return roleName = "projectHighlightReport";
+                break;
+            case "reports":
+                return roleName = "reports";
+                break;
+            case "thesis":
+                return roleName = "thesis";
+                break;
+            case "tools and guides":
+                return roleName = "toolsGuides";
+                break;
+            case "webPages":
+                return roleName = "webPages";
+                break;
+            case "webinars":
+                return roleName = "webinars";
+                break;
+            default:
+                return roleName = text;
+        }
+    }
+}
+
 function iconnameFromFilename(filename) {
     if (filename === undefined) { return "blank.png"; }
     var ext = filename.split('.').pop(),

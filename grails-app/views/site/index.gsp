@@ -5,13 +5,14 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${site?.name?.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'site', action: 'list')},Sites"/>
     <meta name="breadcrumb" content="${site.name?.encodeAsHTML()}"/>
 
     <asset:script type="text/javascript">
         var fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -46,9 +47,9 @@
             recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             bieUrl: "${grailsApplication.config.bie.baseURL}",
+            bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             </g:applyCodec>
         },
         here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";
@@ -302,23 +303,21 @@
                                     </ul>
 
                                     <!-- ko if: showCrud() -->
-                                    <a class="btn btn-primary-dark btn-sm"
-                                       data-bind="attr:{'href': transients.viewUrl}">
-                                        <i class="far fa-eye"></i>
-                                        View
-                                    </a>
-                                    <a class="btn btn-dark btn-sm" data-bind="visible: showAdd(), attr:{'href': transients.addUrl}">
-                                        <i class="fa fa-plus"></i>
-                                        Add
-                                    </a>
-                                    <a class="btn btn-dark btn-sm" data-bind="attr:{'href': transients.editUrl}">
-                                        <i class="fa fa-edit"></i>
-                                        Edit
-                                    </a>
-                                    <a class="btn btn-sm btn-danger" href="#" data-bind="click: $parent.remove">
-                                        <i class="far fa-trash-alt" title="Delete survey"></i>
-                                        Delete
-                                    </a>
+                                    <div class="btn-space">
+                                        <a class="btn btn-primary-dark btn-sm"
+                                           data-bind="attr:{'href': transients.viewUrl}" title="<g:message code="site.survey.view.btn" />">
+                                            <i class="far fa-eye"></i>
+                                        </a>
+                                        <a class="btn btn-dark btn-sm" data-bind="visible: showAdd(), attr:{'href': transients.addUrl}" title="<g:message code="site.survey.add.btn" />">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                        <a class="btn btn-dark btn-sm" data-bind="attr:{'href': transients.editUrl}" title="<g:message code="site.survey.edit.btn" />">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" href="#" data-bind="click: $parent.remove" title="<g:message code="site.survey.delete.btn" />">
+                                            <i class="far fa-trash-alt"></i>
+                                        </a>
+                                    </div>
                                     <!-- /ko -->
                                 </div>
                             </div>

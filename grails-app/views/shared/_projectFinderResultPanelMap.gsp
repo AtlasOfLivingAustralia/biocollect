@@ -1,4 +1,4 @@
 <div class="row-fluid">
         %{--<g:render template="/shared/sites"/>--}%
-        <div id="pfMap" style="height: 500px"></div>
+        <m:map id="pfMap" height="500px" width="auto" imageLocation="${assetPath(src: '/leaflet/images')}"></m:map>
 </div>

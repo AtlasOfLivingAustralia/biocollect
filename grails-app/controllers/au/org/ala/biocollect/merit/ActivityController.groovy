@@ -10,7 +10,10 @@ import org.grails.web.json.JSONArray
 import org.grails.plugins.excelimport.ExcelImportService
 import org.springframework.context.MessageSource
 import grails.core.GrailsApplication
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 
+@SSO
 class ActivityController {
 
     ActivityService activityService
@@ -95,6 +98,7 @@ class ActivityController {
 
     }
 
+    @NoSSO
     def index(String id) {
         def activity = activityService.get(id)
         if (activity) {
@@ -184,24 +188,6 @@ class ActivityController {
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
-    }
-
-    def print(String id) {
-        def activity = activityService.get(id)
-        if (activity) {
-            // permissions check
-            if (!projectService.canUserViewProject(userService.getCurrentUserId(), activity.projectId)) {
-                flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${activity.projectId}"
-                redirect(controller:'project', action:'index', id: activity.projectId)
-            }
-            // pass the activity
-            def model = activityAndOutputModel(activity, activity.projectId)
-            model.printView = true
-            render view: 'enterData', model: model
-        } else {
-            forward(action: 'list', model: [error: 'no such id'])
-        }
-
     }
 
 

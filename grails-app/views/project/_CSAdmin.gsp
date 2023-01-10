@@ -1,11 +1,11 @@
-<div class="tab-pane" id="admin">
+<div>
     <!-- ADMIN -->
     <div class="row mt-4">
         <div class="col-12 col-lg-2">
             <ul id="ul-cs-internal-project-admin" class="nav flex-row flex-lg-column nav-pills nav-fill">
                 <li class="nav-item text-left"><a class="nav-link active" href="#project-settings" id="project-settings-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.information"/></a></li>
                 <li class="nav-item text-left"><a class="nav-link" href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.blog"/></a></li>
-                <li class="nav-item text-left"><a class="nav-link" href="#edit-documents" id="edit-documents-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.resources"/></a></li>
+                <li class="nav-item text-left"><a class="nav-link" href="#edit-documents" id="edit-documents-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</a></li>
 
                 <g:if test="${!project.isExternal}">
                     <li class="nav-item text-left"><a class="nav-link" href="#project-activity" id="project-activity-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.settings"/></a></li>
@@ -40,7 +40,7 @@
 
                 <!-- DOCUMENTS -->
                 <div id="edit-documents" class="tab-pane" role="tabpanel">
-                    <h4 class="mt-3 mt-lg-0"><g:message code="project.admin.projectresources"/></h4>
+                    <h4 class="mt-3 mt-lg-0">Project ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
                     <div class="row">
                         <div class="col-12">
                             <g:render template="/shared/editDocuments"

@@ -758,7 +758,7 @@ ko.bindingHandlers.sortIcon = {
  */
 ko.bindingHandlers.removeFromArray = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-        $(element).click(function () {
+        $(element).on('click',function () {
             var array = valueAccessor();
             array.remove && array.remove(bindingContext.$data);
             bindingContext.$data.remove && bindingContext.$data.remove();
@@ -844,7 +844,7 @@ ko.bindingHandlers.expandable = {
         }
 
         var anchor = $('<a/>');
-        anchor.click(function() {
+        anchor.on('click',function() {
             toggleTruncate($element);
         });
         $element.empty();
@@ -879,7 +879,7 @@ ko.bindingHandlers.getImage = {
             viewModel.transients.image('');
 
             $.ajax({
-                url: fcConfig.bieUrl + '/ws/species/guids/bulklookup',
+                url: fcConfig.bieWsUrl + '/ws/species/guids/bulklookup',
                 method: 'post',
                 dataType: 'json',
                 data: JSON.stringify([ viewModel.guid() ]),
@@ -1124,4 +1124,16 @@ ko.bindingHandlers.chartjs = {
     }
 }
 
-            
+/**
+ * Provides an easy way to debug knockout bindings.
+ * Example: <span data-bind="debug: $data"></span>
+ */
+ko.bindingHandlers.debug = {
+    update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        // This will be called once when the binding is first applied to an element,
+        // and again whenever any observable/computed that are accessed change.
+        console.log('Knockout binding:');
+        console.log(element);
+        console.log(ko.toJS(valueAccessor()));
+    }
+};

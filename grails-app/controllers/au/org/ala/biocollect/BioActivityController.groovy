@@ -2,21 +2,40 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.biocollect.swagger.model.*
 import au.org.ala.ecodata.forms.ActivityFormService
+import au.org.ala.ecodata.forms.UserInfoService
+import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.AuthService
+import au.org.ala.web.SSO
 import au.org.ala.web.UserDetails
 import grails.converters.JSON
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.headers.Header
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.grails.web.json.JSONArray
-import grails.web.mapping.LinkGenerator
-import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_OK
 
+@SecurityScheme(name = "auth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer"
+)
 class BioActivityController {
     ProjectService projectService
     MetadataService metadataService
@@ -46,6 +65,65 @@ class BioActivityController {
      * @param pActivityId project activity Id
      * @return
      */
+    @Operation(
+            method = "POST",
+            tags = "biocollect",
+            operationId = "bioactivityajaxupdate",
+            summary = "Create or edit an activity",
+            requestBody = @RequestBody(
+                    description = "JSON body",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(
+                                        implementation = ActivityAjaxUpdate.class
+                                )
+                    )
+            ),
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.QUERY,
+                            description = "Activity id. Leave blank if creating new activity."
+                    ),
+                    @Parameter(
+                            name = "pActivityId",
+                            in = ParameterIn.QUERY,
+                            description = "Project activity id (survey id)"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ActivitySaveResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/save")
     def ajaxUpdate(String id, String pActivityId) {
         def postBody = request.JSON
         def activity = null
@@ -156,6 +234,7 @@ class BioActivityController {
      * @param id project activity
      * @return
      */
+    @SSO
     def create(String id) {
         Map model = addActivity(id)
         model?.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
@@ -184,7 +263,7 @@ class BioActivityController {
         model = activityModel(activity, projectId)
         model.pActivity = pActivity
         model.projectName = project.name
-        
+
         addOutputModel(model)
         model.preview = true;
 
@@ -198,6 +277,7 @@ class BioActivityController {
      * @param id activity id
      * @return
      */
+    @SSO
     def edit(String id) {
         Map model = editActivity(id)
         model?.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
@@ -217,6 +297,7 @@ class BioActivityController {
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+        model.authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
         render (view: model.error ? 'error' : 'edit', model: model)
     }
 
@@ -230,6 +311,7 @@ class BioActivityController {
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+        model.authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
         render (view: model.error ? 'error' : 'edit', model: model)
     }
 
@@ -259,6 +341,7 @@ class BioActivityController {
             model.projectName = project.name
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
+            model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
             addOutputModel(model)
             addDefaultSpecies(activity)
         }
@@ -289,6 +372,7 @@ class BioActivityController {
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
+            model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
         } else {
             flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
@@ -308,6 +392,51 @@ class BioActivityController {
      * @param id activity identifier
      * @return
      */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "bioactivitydelete",
+            summary = "Delete an activity",
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.PATH,
+                            description = "Activity id"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = DeleteActivityResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = DeleteActivityResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("/ws/bioactivity/delete/{id}")
     def delete(String id) {
         def activity = activityService.get(id)
         String userId = userService.getCurrentUserId(request)
@@ -388,8 +517,7 @@ class BioActivityController {
         boolean userIsModerator = userId && projectService.canUserModerateProjects(userId, pActivity?.projectId)
         boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
 
-        def members = projectService.getMembersForProjectId(activity?.projectId)
-        boolean userIsProjectMember = members.find{it.userId == userId} || userIsAlaAdmin
+        boolean userIsProjectMember =  userIsAlaAdmin || projectService.isUserMemberOfProject(userId, activity?.projectId)
 
         if (activity && pActivity) {
             if (embargoed && !userIsModerator && !userIsOwner && !userIsAlaAdmin) {
@@ -418,11 +546,15 @@ class BioActivityController {
      * @param id activity id
      * @return
      */
+    @SSO
     def list() {
+        Boolean userIsAdmin = userService.userIsAlaOrFcAdmin()
         render(view: 'list',
                 model: [
                         view: 'myrecords',
+                        contentURI: '/bioActivity/list',
                         user: userService.user,
+                        userIsAdmin: userIsAdmin,
                         title: messageSource.getMessage('myrecords.title', [].toArray(), '', Locale.default),
                         returnTo: g.createLink(controller: 'bioActivity', action: 'list')
                 ]
@@ -435,10 +567,13 @@ class BioActivityController {
      * @return
      */
     def allRecords() {
+        Boolean userIsAdmin = userService.userIsAlaOrFcAdmin()
         render(view: 'list',
                 model: [
                         view: 'allrecords',
+                        contentURI: '/bioActivity/allRecords',
                         title: messageSource.getMessage('allrecords.title', [].toArray(), '', Locale.default),
+                        userIsAdmin: userIsAdmin,
                         returnTo: g.createLink(controller: 'bioActivity', action: 'allRecords')
                 ]
         )
@@ -458,6 +593,7 @@ class BioActivityController {
         render(view: 'list',
                 model: [
                         view: view,
+                        contentURI: '/bioActivity/projectRecords',
                         projectId: id,
                         project: project,
                         title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
@@ -485,6 +621,7 @@ class BioActivityController {
             render(view: 'list',
                     model: [
                             view: view,
+                            contentURI: '/bioActivity/myProjectRecords',
                             user:  userService.user,
                             projectId: id,
                             project: project,
@@ -521,6 +658,7 @@ class BioActivityController {
                 render(view: 'list',
                         model: [
                                 view: view,
+                                contentURI: '/bioActivity/listRecordsForUser',
                                 spotterId:  params.spotterId,
                                 projectActivityId: params.projectActivityId,
                                 pActivity: projectActivity,
@@ -640,7 +778,123 @@ class BioActivityController {
     /*
      * Search project activities and records
      */
-
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "bioactivitydelete",
+            summary = "Search activities",
+            parameters = [
+                    @Parameter(
+                            name = "hub",
+                            in = ParameterIn.QUERY,
+                            description = "The hub context this request will be executed in. Visibility of activities depends on hub configuration. If no hub is specified, system defined default hub is used."
+                    ),
+                    @Parameter(
+                            name = "searchTerm",
+                            in = ParameterIn.QUERY,
+                            description = "Searches for terms in this parameter.",
+                            schema = @Schema(
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "max",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of returned activities per page.",
+                            schema = @Schema(
+                                    name = "max",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "10"
+                            )
+                    ),
+                    @Parameter(
+                            name = "offset",
+                            in = ParameterIn.QUERY,
+                            description = "Offset search result by this parameter",
+                            schema = @Schema(
+                                    name = "offset",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "0"
+                            )
+                    ),
+                    @Parameter(
+                            name = "view",
+                            in = ParameterIn.QUERY,
+                            description = "Page on which activities will be rendered. To get all activities for a hub use 'allrecords'. To get activities belonging to a project use 'project'. etc. ",
+                            schema = @Schema(
+                                    type = "string",
+                                    allowableValues = ['myrecords', 'project', 'projectrecords', 'myprojectrecords', 'userprojectactivityrecords', 'allrecords']
+                            )
+                    ),
+                    @Parameter(
+                            name = "fq",
+                            in = ParameterIn.QUERY,
+                            description = "Restrict search results to these filter queries.",
+                            schema = @Schema(
+                                            type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "sort",
+                            in = ParameterIn.QUERY,
+                            description = "Sort by attribute",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "lastUpdated"
+                            )
+                    ),
+                    @Parameter(
+                            name = "order",
+                            in = ParameterIn.QUERY,
+                            description = "Order sort item by this parameter",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "DESC"
+                            )
+                    ),
+                    @Parameter(
+                            name = "facets",
+                            in = ParameterIn.QUERY,
+                            description = "Comma seperated list of facets the search should return. If left empty, facet list is populated from hub configuration.",
+                            schema = @Schema(
+                                    name = "facets",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "flimit",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of facets to be returned.",
+                            schema = @Schema(
+                                    name = "flimit",
+                                    type = "integer",
+                                    minimum = "0",
+                                    maximum = "500",
+                                    defaultValue = "20"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = SearchProjectActivitiesResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/search")
     def searchProjectActivities() {
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
@@ -718,6 +972,102 @@ class BioActivityController {
      * map points are generated from this function. It requires some client side code to convert the output of this
      * function to points.
      */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "bioactivitydelete",
+            summary = "Get sites associated with activities to draw points on map",
+            parameters = [
+                    @Parameter(
+                            name = "hub",
+                            in = ParameterIn.QUERY,
+                            description = "The hub context this request will be executed in. Visibility of activities depends on hub configuration. If no hub is specified, system defined default hub is used."
+                    ),
+                    @Parameter(
+                            name = "searchTerm",
+                            in = ParameterIn.QUERY,
+                            description = "Searches for terms in this parameter.",
+                            schema = @Schema(
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "max",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of returned activities per page.",
+                            schema = @Schema(
+                                    name = "max",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "10"
+                            )
+                    ),
+                    @Parameter(
+                            name = "offset",
+                            in = ParameterIn.QUERY,
+                            description = "Offset search result by this parameter",
+                            schema = @Schema(
+                                    name = "offset",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "0"
+                            )
+                    ),
+                    @Parameter(
+                            name = "view",
+                            in = ParameterIn.QUERY,
+                            description = "Page on which activities will be rendered. To get all activities for a hub use 'allrecords'. To get activities belonging to a project use 'project'. etc. ",
+                            schema = @Schema(
+                                    type = "string",
+                                    allowableValues = ['myrecords', 'project', 'projectrecords', 'myprojectrecords', 'userprojectactivityrecords', 'allrecords']
+                            )
+                    ),
+                    @Parameter(
+                            name = "fq",
+                            in = ParameterIn.QUERY,
+                            description = "Restrict search results to these filter queries.",
+                            schema = @Schema(
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "sort",
+                            in = ParameterIn.QUERY,
+                            description = "Sort by attribute",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "lastUpdated"
+                            )
+                    ),
+                    @Parameter(
+                            name = "order",
+                            in = ParameterIn.QUERY,
+                            description = "Order sort item by this parameter",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "DESC"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GetProjectActivitiesRecordsForMappingResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/map")
     def getProjectActivitiesRecordsForMapping() {
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
@@ -727,7 +1077,7 @@ class BioActivityController {
                 queryParams.put(key, value)
             }
         }
-    
+
         queryParams.max = queryParams.max ?: 10
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20
@@ -740,7 +1090,7 @@ class BioActivityController {
         queryParams.include = ['activityId', 'projectActivity.name',
                                'projectActivity.records.coordinates', 'projectActivity.records.individualCount',
                                'projectActivity.records.multimedia.identifier', 'projectActivity.records.name',
-                               'projectActivity.projectId', 'projectActivity.projectName', 'coordinates', 'sites']
+                               'projectActivity.projectId', 'projectActivity.projectName', 'coordinates', 'sites', 'type', 'projectActivityId']
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
         List activities = searchResult?.hits?.hits
@@ -1030,6 +1380,52 @@ class BioActivityController {
      * @return activity
      *
      */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "activityoutputs",
+            summary = "Get data for an activity",
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Activity id"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GetOutputForActivityResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/data/{id}")
     def getOutputForActivity(String id){
         String userId = userService.getCurrentUserId(request)
         def activity = activityService.get(id)
@@ -1068,6 +1464,52 @@ class BioActivityController {
      * @return activity model
      *
      */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "projectactivitymodel",
+            summary = "Get survey's data model",
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Survey id or project activity id"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GetActivityModelResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/model/{id}")
     def getActivityModel(String id){
         String userId = userService.getCurrentUserId(request)
         Map model = [:]

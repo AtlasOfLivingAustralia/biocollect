@@ -4,12 +4,12 @@
 <head>
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
     <title>${title}</title>
-%{--    <meta name="layout" content="${hubConfig.skin}"/>--}%
     <meta name="layout" content="bs4"/>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
-        var fcConfig = {
+    var fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -25,11 +25,10 @@
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
-            <g:applyCodec encodeAs="none">
-                mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
-            </g:applyCodec>
+            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             myFavourites: "${myFavourites}"
-        }
+            </g:applyCodec>
+    }
     </script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
@@ -40,6 +39,7 @@
 </head>
 
 <body>
+<g:render template="/shared/bannerHub"/>
 <div id="projectData">
     <div id="siteSearch" class="container">
         <div class="my-4 my-md-5">
@@ -59,11 +59,9 @@
                 </g:if>
 
                 <g:if test="${myFavourites}">
-                    <div class="row">
-                        <div class="col-12" id="heading">
-                            <h1><g:message code="site.myFavouriteSites.heading"/></h1>
-                        </div>
-                    </div>
+                    <content tag="bannertitle">
+                        <g:message code="site.myFavouriteSites.heading"/>
+                    </content>
                 </g:if>
 
                 <div id="sortBar" class="row d-flex">
@@ -80,12 +78,12 @@
                     </div>
                     <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
                         <div class="btn-group">
-                            <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a type="button" class="btn btn-outline-dark active" id="list-tab" data-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
+                            <div id="siteListResultTab" class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
+                                <a class="btn btn-outline-dark active" id="list-tab" data-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
                                         class="fas fa-th-large"></i></a>
-                                <a type="button" class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i
+                                <a class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i
                                         class="far fa-map"></i></a>
-                                <a type="button" class="btn btn-outline-dark" id="images-tab" data-toggle="tab" title="View as Images" href="#images" role="tab" aria-controls="View as Images"><i
+                                <a class="btn btn-outline-dark" id="images-tab" data-toggle="tab" title="View as Images" href="#images" role="tab" aria-controls="View as Images"><i
                                         class="far fa-images"></i></a>
                             </div>
                         </div>
@@ -98,17 +96,19 @@
                 <div class="filter-bar d-flex align-items-center">
                     <h4><g:message code="label.applied.filters"/>: </h4>
                     <!-- ko foreach: selectedFacets -->
-                    <span class="filter-item" data-bind="attr:{title:facet.metadata.displayName + ' : ' + displayName()}">
+                    <btn class="filter-item btn btn-sm btn-outline-dark" data-bind="attr:{title:facet.metadata.displayName + ' : ' + displayName()}">
                         <!-- ko text: facet.metadata.displayName + ' : ' + displayName() --><!-- /ko -->
-                        <button class="remove" data-remove data-bind="click: $root.removeFacetTerm">
-                            <i class="far fa-times-circle"></i>
-                        </button>
-                    </span>
+                        <span class="remove" data-remove data-bind="click: $root.removeFacetTerm">
+                            <i class="far fa-trash-alt"></i>
+                        </span>
+                    </btn>
                     <!-- /ko -->
+                    <!-- ko if: (selectedFacets() && (selectedFacets().length > 0)) -->
                     <button class="btn btn-sm btn-dark clear-filters"  data-bind="click: removeAllSelectedFacets" type="button"
                             aria-label="Clear all filters">
-                        <i class="far fa-times-circle"></i> Clear All
+                        <i class="far fa-trash-alt"></i> Clear All
                     </button>
+                    <!-- /ko -->
                 </div>
 
                 <div class="records-found">
@@ -168,8 +168,10 @@
     var SITES_TAB_AMPLIFY_VAR = 'site-list-result-tab'
     $(document).ready(function () {
         RestoreTab('siteListResultTab', 'list-tab')
-
-        var sites = new SitesListViewModel();
+        var boundElementSelector = "#siteSearch"
+        var sites = new SitesListViewModel({
+            boundElementSelector: boundElementSelector
+        });
         var params = {
             loadOnInit: false
         }
@@ -229,5 +231,6 @@
         }
     })
 </script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '#siteSearch', target: '#filters', listenTo: '#siteSearch']" />
 </body>
 </html>

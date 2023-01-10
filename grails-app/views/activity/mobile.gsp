@@ -8,18 +8,19 @@
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
         spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
+        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile', absolute: true)}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        </g:applyCodec>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         googleStaticUrl:"http://maps.googleapis.com/maps/api/staticmap?maptype=terrian&zoom=12&sensor=false&size=350x250&markers=color:red%7C"
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
@@ -31,18 +32,18 @@
 <div class="container-fluid validationEngineContainer" id="validation-container">
     <div id="koActivityMainBlock">
 
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-12">
                 <!-- Common activity fields -->
 
-                <div class="row-fluid space-after">
-                    <div class="span4">
+                <div class="row space-after">
+                    <div class="col-md-4">
 
                         <label class="for-readonly">Type</label>
                         <span class="readonly-text" data-bind="text:type"></span>
                     </div>
 
-                    <div class="span8">
+                    <div class="col-md-8">
 
                         <label class="for-readonly">Description</label>
                         <span class="readonly-text" data-bind="text:description"></span>
@@ -50,60 +51,63 @@
                 </div>
 
 
-                <div class="row-fluid space-after">
-                    <div class="span4">
+                <div class="row space-after">
+                    <div class="col-md-4">
                         <label class="for-readonly inline">Planned start date</label>
                         <span class="readonly-text" data-bind="text:plannedStartDate.formattedDate"></span>
                     </div>
 
-                    <div class="span8">
+                    <div class="col-md-8">
                         <label class="for-readonly inline">Planned end date</label>
                         <span class="readonly-text" data-bind="text:plannedEndDate.formattedDate"></span>
                     </div>
                 </div>
 
-                <div class="well">
-                    <div class="row-fluid">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
 
-                        <span class="span8">
-                            <div class="row-fluid space-after">
+                        <span class="col-md-8">
+                            <div class="row space-after">
 
-                                <div class="span6 required">
+                                <div class="col-md-6 required">
                                     <label for="startDate"><b>Actual start date</b>
                                         <fc:iconHelp title="Start date">Date the activity was started.</fc:iconHelp>
                                     </label>
 
 
-                                    <div class="input-append">
+                                    <div class="input-group">
                                         <fc:datePicker readonly="readonly" targetField="startDate.date" name="startDate"
-                                                       data-validation-engine="validate[required]"/>
+                                                       data-validation-engine="validate[required]"
+                                                       class="form-control" theme="btn-dark" bs4="true"/>
                                     </div>
 
                                 </div>
 
-                                <div class="span6" data-bind="css:{required:transients.markedAsFinished}">
+                                <div class="col-md-6" data-bind="css:{required:transients.markedAsFinished}">
                                     <label for="endDate"><b>Actual end date</b>
                                         <fc:iconHelp title="End date">Date the activity finished.</fc:iconHelp>
                                     </label>
 
-                                    <div class="input-append">
+                                    <div class="input-group">
                                         <fc:datePicker readonly="readonly" targetField="endDate.date" name="endDate"
-                                                       data-validation-engine="validate[future[startDate]]"/>
+                                                       data-validation-engine="validate[future[startDate]]"
+                                                       class="form-control" theme="btn-dark" bs4="true"/>
                                     </div>
 
                                 </div>
                             </div>
 
-                            <div class="row-fluid space-after">
-                                <div class="span6">
+                            <div class="row space-after">
+                                <div class="col-md-6">
                                     <label for="theme"><b>Major theme</b></label>
                                     <select id="theme"
                                             data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
-                                            class="input-xlarge" style="width:90%">
+                                            class="form-control">
                                     </select>
                                 </div>
 
-                                <div class="span6">
+                                <div class="col-md-6">
                                     <label><b>Progress</b></label>
                                     <label for="activityComplete"><input type="checkbox" id="activityComplete"
                                                                          data-bind="checked:transients.markedAsFinished"
@@ -114,45 +118,28 @@
 
                             </div>
 
-                            <div class="row-fluid">
-                                <div class="span6">
+                            <div class="row">
+                                <div class="col-md-6">
                                     <label for="site"><b>Site</b></label>
                                     <fc:select id="site" style="width:90%"
                                                data-bind='options:transients.sites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'/>
 
                                 </div>
 
-                                <div class="span3">
+                                <div class="col-md-3">
 
                                     <button class="btn btn-info" style="margin-top:25px;"
                                             data-bind="visible:transients.newSiteSupported,click:createNewSite">Create new Site</button>
                                 </div>
                             </div>
-
-                            %{--<div class="row-fluid">--}%
-                            %{--<table id="photoPoints">--}%
-                            %{--<thead>--}%
-                            %{--<tr><td>Photo point</td><td>Lat</td><td>Lon</td><td></td></tr>--}%
-                            %{--</thead>--}%
-                            %{--<tbody>--}%
-                            %{--<tr data-bind="foreach:transients.photoPoints">--}%
-                            %{--<td data-bind="text:name"></td>--}%
-                            %{--<td data-bind="text:geometry.decimalLatitude"></td>--}%
-                            %{--<td data-bind="text:geometry.decimalLongitude"></td>--}%
-                            %{--<td><button class="btn-info" data-bind="click:attachPhotoPoint">Attach Photo</button> </td>--}%
-
-                            %{--</tr>--}%
-                            %{--</tbody>--}%
-                            %{--</table>--}%
-
-                            %{--</div>--}%
                         </span>
-                        <span class="span4">
+                        <span class="col-md-4">
 
                             <img id="siteLocationImage" width="100%"
                                  data-bind="event:{error:siteLoadError}, attr:{src:transients.siteImgUrl}, visible:transients.siteImgUrl()"/>
 
                         </span>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -403,7 +390,7 @@ var scroll = false;
 
     $('.helphover').popover({animation: true, trigger:'hover'});
 
-    $('#reset').click(function () {
+    $('#reset').on('click',function () {
     master.reset();
     });
 

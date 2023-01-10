@@ -4,6 +4,8 @@
 <head>
     <title><g:layoutTitle/></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
+    <link href="${g.createLink(controller: 'hub', action: 'generateStylesheet')}?ver=${hubConfig.lastUpdated}" rel="stylesheet"/>
     <asset:stylesheet src="base-bs4.css"/>
     <asset:javascript src="base-bs4.js"/>
     <g:layoutHead/>
@@ -36,20 +38,19 @@
 <div class="site" id="page">
     <g:set var="bannerURL"
            value="${pageProperty(name: 'meta.bannerURL') ?: hubConfig.templateConfiguration.banner.images[0]?.url}"/>
-    <g:if test="${pageProperty(name: 'meta.bannerURL')}">
-        <div class="wrapper" id="catalogue">
-            <main class="site-main">
-                <article class="page">
-                    <div id="banner" class="page-banner" style="background-image: url('${bannerURL}');">
-                        <g:pageProperty name="page.banner"/>
-                    </div>
-                </article>
-            </main>
-        </div>
-    </g:if>
-
-    <div id="main-content" class="container-fluid mt-5">
-        <g:layoutBody/>
+    <div class="wrapper" id="catalogue">
+        <main class="site-main">
+            <article class="page">
+                <g:if test="${pageProperty(name: 'meta.bannerURL')}">
+                <div id="banner" class="page-banner" style="background-image: url('${bannerURL}');">
+                    <g:pageProperty name="page.banner"/>
+                </div>
+                </g:if>
+                <div id="content">
+                    <g:layoutBody/>
+                </div>
+            </article>
+        </main>
     </div>
 </div>
 <script type="text/javascript">
@@ -59,8 +60,13 @@
             withCredentials: true
         },
         beforeSend: function (xhr) {
-            xhr.setRequestHeader('authKey', "${authKey}");
-            xhr.setRequestHeader('userName', "${userName}");
+            <g:if test="${authorization}">
+                xhr.setRequestHeader('Authorization', "${authorization}");
+            </g:if>
+            <g:elseif test="${grailsApplication.config.getProperty("mobile.authKeyEnabled", Boolean) && authKey && userName}">
+                xhr.setRequestHeader('authKey', "${authKey}");
+                xhr.setRequestHeader('userName', "${userName}");
+            </g:elseif>
         }
     });
 </script>

@@ -4,7 +4,7 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>Edit | Blog Entry | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${blogEntry.projectId},Project"/>
     <meta name="breadcrumb" content="Edit blog entry"/>
@@ -12,6 +12,7 @@
 %{--    <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>--}%
     <asset:script type="text/javascript">
         var fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -22,6 +23,7 @@
             blogViewUrl: "${grailsApplication.config.grails.serverURL}/blog/index",
             documentUpdateUrl: "${grailsApplication.config.grails.serverURL}/document/documentUpdate",
             returnTo: "${params.returnTo}"
+            </g:applyCodec>
             };
     </asset:script>
     <asset:javascript src="blog-manifest.js"/>

@@ -160,8 +160,8 @@ class FCTagLib {
                 }
                 def clearDateWrapper = {
                     if (attrs.clearBtn?.toBoolean()){
-                        mb.span(class:"${addOnClass} clear-date") {
-                            mb.i(class: 'far fa-times-circle') {
+                        mb.span(class:"btn btn-danger clear-date") {
+                            mb.i(class: 'far fa-trash-alt') {
                                 mkp.yieldUnescaped("&nbsp;")
                             }
                         }
@@ -624,6 +624,13 @@ class FCTagLib {
         def content = settingService.getSettingText(SettingPageType.TITLE) as String
         if (content) {
             out << content
+        }
+    }
+
+    def homePageIntro = { attrs ->
+        def content = settingService.getSettingText(SettingPageType.INTRO) as String
+        if (content) {
+            out << content.markdownToHtml()
         }
     }
 

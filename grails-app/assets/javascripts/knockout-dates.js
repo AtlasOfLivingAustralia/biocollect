@@ -233,10 +233,10 @@ function stringToDate(date) {
 
             // if the parent container holds any element with the class 'open-datepicker'
             // then add a hook to do so
-            $element.parent().find('.open-datepicker').click(function () {
+            $element.parent().find('.open-datepicker').on('click',function () {
                 $element.datepicker('show');
             });
-            $element.parent().find('.clear-date').click(function () {
+            $element.parent().find('.clear-date').on('click',function () {
                 $element.val('');
                 $element.change();
             });
@@ -355,34 +355,179 @@ ko.bindingHandlers.clickToPickDate = {
 /**
  * Creates a flag that indicates whether the model has been modified.
  *
- * Compares the model to its initial state each time an observable changes. Uses the model's
- * modelAsJSON method if it is defined else uses ko.toJSON.
+ * Compares the model to its initial state each time an observable changes
+ * Uses the model's 'modelAsJSON' method if it is defined otherwise uses 'ko.toJSON'.
  *
  * @param root the model to watch
- * @param isInitiallyDirty
+ * @param isInitiallyChanged whether the model already has changes
  * @returns an object (function) with the methods 'isDirty' and 'reset'
  */
-ko.dirtyFlag = function(root, isInitiallyDirty) {
+ko.dirtyFlag = function(root, isInitiallyChanged) {
     var result = function() {};
-    var _isInitiallyDirty = ko.observable(isInitiallyDirty || false);
+    var _isInitiallyChanged = ko.observable(isInitiallyChanged || false);
     // this allows for models that do not have a modelAsJSON method
     var getRepresentation = function () {
         return (typeof root.modelAsJSON === 'function') ? root.modelAsJSON() : ko.toJSON(root);
     };
     var _initialState = ko.observable(getRepresentation());
 
-    result.isDirty = ko.dependentObservable(function() {
-        var dirty = _isInitiallyDirty() || _initialState() !== getRepresentation();
-        /*if (dirty) {
-            console.log('Initial: ' + _initialState());
-            console.log('Actual: ' + getRepresentation());
-        }*/
-        return dirty;
+    /**
+     * Compare two objects and find the differences.
+     * @param a The first (original) object.
+     * @param b The second (potentially changed) object.
+     * @param prefix The current object's prefix.
+     * @returns {{total: number, differences: {}, matches: {}, matched: number, different: number}} The results.
+     */
+    var compareDataObjects = function compareDataObjects(a, b, prefix) {
+        if (!a) a = {};
+        if (!b) b = {};
+        if (!prefix) prefix = '';
+
+        // Note that Object.keys "returns an array of a given object's own enumerable property names".
+        // This means it does not include some properties e.g. Functions, properties defined on a parent prototype.
+        const aKeys = Object.keys(a);
+        const bKeys = Object.keys(b);
+
+        // Get an array of unique property (key) names.
+        const allKeys = [].concat(aKeys).concat(bKeys).filter(function (value, index, self) {
+            return self.indexOf(value) === index;
+        }).sort();
+
+        const result = {
+            total: 0,
+            matched: 0,
+            different: 0,
+            differences: {},
+            matches: {}
+        };
+
+        const buildKey = function buildKey(prefix, key) {
+            const diffKeys = [prefix, key].filter(function (item) {
+                return item && item.trim();
+            });
+            return diffKeys.join('.');
+        };
+
+        const addMatch = function addMatch(r, key, a, b, msg) {
+            r.total += 1;
+            r.matched += 1;
+            // for debugging: r.matches[key] = {original: a, changed: b, comparison: msg};
+        }
+        const addDifferent = function addDifferent(r, key, a, b, msg) {
+            r.total += 1;
+            r.different += 1;
+            r.differences[key] = {original: a, changed: b, comparison: msg};
+        }
+
+        allKeys.forEach(function (key) {
+            const aValue = a[key];
+            const bValue = b[key];
+            const currentKey = buildKey(prefix, key);
+
+            // If strictly equal, they match
+            if (aValue === bValue) {
+                addMatch(result, currentKey, aValue, bValue, "same reference");
+                return;
+            }
+
+            // If aren't the same type, they don't match
+            if (typeof aValue !== typeof bValue) {
+                addDifferent(result, currentKey, aValue, bValue, "different types");
+                return;
+            }
+
+            // Already know types are the same, so if type is number
+            // and both NaN, they match
+            if (typeof aValue == 'number' && isNaN(aValue) && isNaN(bValue)) {
+                addMatch(result, currentKey, aValue, bValue, "number NaN");
+                return;
+            }
+
+            // Get internal [[Class]]
+            const aClass = Object.prototype.toString.call(aValue);
+            const bClass = Object.prototype.toString.call(bValue);
+
+            // If not same class, they don't match
+            if (aClass !== bClass) {
+                addDifferent(result, currentKey, aValue, bValue, "different classes");
+                return;
+            }
+
+            // If they're Boolean, String or Number objects, check values
+            if (aClass === '[object Boolean]' || aClass === '[object String]' || aClass === '[object Number]') {
+                if (aValue.valueOf() === bValue.valueOf()) {
+                    addMatch(result, currentKey, aValue, bValue, "bool or string or number valueOf");
+                    return;
+                } else {
+                    addDifferent(result, currentKey, aValue, bValue, "bool or string or number valueOf");
+                    return;
+                }
+            }
+
+            // If they're RegExps, Dates or Error objects, check stringified values
+            if (aClass === '[object RegExp]' || aClass === '[object Date]' || aClass === '[object Error]') {
+                if (aValue.toString() === bValue.toString()) {
+                    addMatch(result, currentKey, aValue, bValue, "regexp or date or error toString");
+                    return;
+                } else {
+                    addDifferent(result, currentKey, aValue, bValue, "regexp or date or error toString");
+                    return;
+                }
+            }
+
+            // For functions, check 'stringified values' are the same.
+            // Note that comparing stringified functions is 'good enough'.
+            // Trivial functions might compare equal even if they aren't the exact same function.
+            // 'Built-in' / 'native' functions can have surprising or unexpected comparisons, depending on the browser and function.
+            if (aClass === '[object Function]') {
+                if (aValue.toString() === bValue.toString()) {
+                    addMatch(result, currentKey, aValue, bValue, "same functions");
+                    return;
+                } else {
+                    addDifferent(result, currentKey, aValue, bValue, "different functions");
+                    return;
+                }
+            }
+
+            // All other types are assumed to be objects, including Object, Array and host / window / browser objects.
+            // For these, recurse into the objects' properties to compare the value.
+            const compareValues = compareDataObjects(aValue, bValue, currentKey);
+
+            result.total += compareValues.total;
+            result.matched += compareValues.matched;
+            result.different += compareValues.different;
+            Object.assign(result.differences, compareValues.differences);
+            // for debugging: Object.assign(result.matches, compareValues.matches);
+        })
+        return result;
+    };
+
+    result.isDirty = ko.dependentObservable(function () {
+        const initialState = _initialState();
+        const currentState = getRepresentation();
+
+        const areEqual = initialState === currentState;
+        const isInitWithChanges = _isInitiallyChanged();
+        const hasChanges = isInitWithChanges || !areEqual;
+
+        if (!areEqual) {
+            const initialStateObj = JSON.parse(initialState);
+            const currentStateObj = JSON.parse(currentState);
+            const compareObjs = compareDataObjects(initialStateObj, currentStateObj, null);
+
+            console.warn('[ViewModel] Comparison of objects in ko.dirtyFlag', {
+                'isInitWithChanges': isInitWithChanges,
+                'areEqual': areEqual,
+                'hasChanges': hasChanges,
+                'compareObjs': compareObjs,
+            });
+        }
+        return hasChanges;
     });
 
     result.reset = function() {
         _initialState(getRepresentation());
-        _isInitiallyDirty(false);
+        _isInitiallyChanged(false);
     };
 
     return result;

@@ -81,6 +81,11 @@ class RoleService {
     public static final String EDIT_SITE_ROLE = 'editSite'
 
     /**
+     * Biocollect hub role.
+     */
+    public static final String HUB_ADMIN = 'hubAdmin'
+
+    /**
      * Biocollect logged-in user role.
      */
     public static final String LOGGED_IN_USER_ROLE = 'loggedInUser'

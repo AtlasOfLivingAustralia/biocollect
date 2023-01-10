@@ -25,7 +25,7 @@ class UrlMappings {
 
                 }
 
-                "/"(controller: 'home', action: 'index')
+                "/"(controller: 'hub', action: 'index')
 
 
                 "/$hub/$controller/$id?"(parseRequest:true) {
@@ -72,12 +72,12 @@ class UrlMappings {
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
 
-                "/$hub/"(controller: 'home', action: 'index') {
+                "/$hub/"(controller: 'hub', action: 'index') {
                         constraints {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
                 }
-                "/$hub"(controller: 'home', action: 'index') {
+                "/$hub"(controller: 'hub', action: 'index') {
                         constraints {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
@@ -133,6 +133,7 @@ class UrlMappings {
                 "/ws/bioactivity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
                 "/ws/species/uniqueId"(controller:  "output", action: 'getOutputSpeciesIdentifier')
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
+                "/ws/bioactivity/site"(controller:  "site", action: 'ajaxUpdate')
                 "/ws/bioactivity/delete/$id"(controller:  "bioActivity", action: 'delete')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
                 "/ws/bioactivity/map"(controller:  "bioActivity", action: 'getProjectActivitiesRecordsForMapping')

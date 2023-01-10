@@ -1,0 +1,14 @@
+{
+  "request": {
+    "urlPath": "/userdetails/userDetails/userDetails/getUserDetails",
+    "method": "ANY"
+  },
+  "response": {
+    "transformers": ["response-template"],
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"userId\":\"{{regexExtract request.query.userName '[0-9]+' default='1'}}\",\"userName\":\"{{request.query.userName}}\",\"firstName\":\"Test\",\"lastName\":\"Test\"}"
+  }
+}

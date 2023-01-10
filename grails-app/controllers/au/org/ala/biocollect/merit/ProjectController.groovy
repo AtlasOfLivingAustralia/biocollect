@@ -4,11 +4,26 @@ import au.org.ala.biocollect.*
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
 import au.org.ala.biocollect.projectresult.Initiator
+import au.org.ala.biocollect.swagger.model.ProjectSearchResponse
 import au.org.ala.ecodata.forms.UserInfoService
+import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.AuthService
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.headers.Header
+import io.swagger.v3.oas.annotations.media.ArraySchema
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.security.SecurityScheme
+import org.apache.http.HttpStatus
 import org.joda.time.DateTime
 import org.springframework.context.MessageSource
 
@@ -16,6 +31,11 @@ import java.text.SimpleDateFormat
 
 import static org.apache.http.HttpStatus.*
 
+@SecurityScheme(name = "auth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer"
+)
+@SSO
 class ProjectController {
 
     ProjectService projectService
@@ -48,8 +68,71 @@ class ProjectController {
     static ignore = ['action','controller','id']
     static allowedMethods = [listRecordImages: "POST", "sendEmailToMembers": "POST"]
     static int MAX_FACET_TERMS = 500
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "projectsurveylist",
+            summary = "Get surveys associated with a project",
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.PATH,
+                            description = "List surveys associated from this project"
+                    ),
+                    @Parameter(
+                            name = "version",
+                            in = ParameterIn.QUERY,
+                            description = "The date and time on which project activity was created. Version number unit is milliseconds since epoch.",
+                            schema = @Schema(
+                                    name = "version",
+                                    type = "integer",
+                                    format = "int64"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(
+                                            schema = @Schema(
+                                                    implementation = Map.class
+                                            )
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ]
+    )
+    @Path("ws/survey/list/{id}")
+    @NoSSO
+    def listSurveys(String id) {
+        def projectActivities = []
+        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
+        if (project && project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]) {
+            projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
+        }
 
+        render projectActivities as JSON
+    }
+
+    /*
+     * Get list of surveys/project activities for a given project
+     *
+     * @param id projectId
+     *
+     * @return surveys/projectActivities
+     *
+     */
+    @NoSSO
     def index(String id) {
+        def start, end
+        start = System.currentTimeMillis()
         def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
         def roles = roleService.getEcodataRolesForBiocollect()
 
@@ -75,11 +158,17 @@ class ProjectController {
                 project.projectSite = project.sites?.find{it.siteId == project.projectSiteId}
             } else if(project.projectSiteId) {
                 // Project site is missing, update site and sync project site info
+                start = System.currentTimeMillis()
                 project.projectSite = siteService.get(project.projectSiteId, [view:'brief'])
+                end = System.currentTimeMillis()
+                log.debug("Site fetch time (ms) = " + (end - start) )
                 List projectIds = project.projectSite?.projects
                 projectIds = projectIds?.findAll{it != '' && it != null} ?: []
                 projectIds << project.projectId
+                start = System.currentTimeMillis()
                 siteService.update(project.projectSiteId, [projects: projectIds])
+                end = System.currentTimeMillis()
+                log.debug("Site update time (ms) = " + (end - start) )
             }
 
             if(project.origin){
@@ -88,9 +177,11 @@ class ProjectController {
 
             String view = 'project'
             def user = userService.getUser()
-            def members = projectService.getMembersForProjectId(id)
-            def admins = members.findAll{ it.role == "admin" }.collect{ it.userName }.join(",") // comma separated list of user email addresses
-
+            start = System.currentTimeMillis()
+            def admins = projectService.getMembersForProjectId(id, ['admin'])
+            end = System.currentTimeMillis()
+            log.debug("Get members of project time (ms) = " + (end - start) )
+            start = System.currentTimeMillis()
             if (user) {
                 user = user.properties
                 user.isAdmin = projectService.isUserAdminForProject(user.userId, id)?:false
@@ -98,6 +189,10 @@ class ProjectController {
                 user.isEditor = projectService.canUserEditProject(user.userId, id)?:false
                 user.hasViewAccess = projectService.canUserViewProject(user.userId, id)?:false
             }
+            end = System.currentTimeMillis()
+            log.debug("Get user properties (ms) = " + (end - start) )
+
+            start = System.currentTimeMillis()
             def programs = projectService.programsModel()
             def content = projectContent(project, user, programs, params)
             projectService.buildFieldsForTags (project)
@@ -105,8 +200,11 @@ class ProjectController {
             String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
             Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
             def licences = collectoryService.licence()
-
+            end = System.currentTimeMillis()
+            log.debug("Collectory fetch time (ms) = " + (end - start) )
+            start = System.currentTimeMillis()
             def model = [project: project,
+                projectId: project.projectId,
                 mapFeatures: commonService.getMapFeatures(project),
                 isProjectStarredByUser: userService.isProjectStarredByUser(user?.userId?:"0", project.projectId)?.isProjectStarredByUser,
                 user: user,
@@ -126,40 +224,41 @@ class ProjectController {
                 isProjectContributingDataToALA: isProjectContributingDataToALA,
                 licences: licences
             ]
+            end = System.currentTimeMillis()
+            log.debug("model create time (ms) = " + (end - start) )
 
-
+            start = System.currentTimeMillis()
             if(project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]){
                 model.projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version, true)
+                end = System.currentTimeMillis()
+                log.debug("getAllByProject fetch time (ms) = " + (end - start) )
+                start = System.currentTimeMillis()
+
                 model.pActivityForms = projectService.supportedActivityTypes(project).collect{[name: it.name, images: it.images]}
+                end = System.currentTimeMillis()
+                log.debug("supportedActivityTypes fetch time (ms) = " + (end - start) )
+                start = System.currentTimeMillis()
+
                 model.vocabList = vocabService.getVocabValues ()
+                end = System.currentTimeMillis()
+                log.debug("getVocabValues fetch time (ms) = " + (end - start) )
+                start = System.currentTimeMillis()
+
                 println model.pActivityForms
             }
+            end = System.currentTimeMillis()
+            log.debug("CS metadata fetch time (ms) = " + (end - start) )
+            start = System.currentTimeMillis()
             model.mobile = params.getBoolean('mobile', false)
             model.showBackButton = request.getHeader('referer') ? true:false
             if(projectService.isWorks(project)){
                 model.activityTypes = projectService.addSpeciesFieldsToActivityTypesList(metadataService.activityTypesList(project.associatedProgram))
             }
+            end = System.currentTimeMillis()
+            log.debug("After adding species fields (ms) = " + (end - start) )
 
             render view:content.view, model:model
         }
-    }
-
-    /*
-     * Get list of surveys/project activities for a given project
-     *
-     * @param id projectId
-     *
-     * @return surveys/projectActivities
-     *
-     */
-    def listSurveys(String id) {
-        def projectActivities = []
-        def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
-        if (project && project.projectType in [ProjectService.PROJECT_TYPE_ECOSCIENCE, ProjectService.PROJECT_TYPE_CITIZEN_SCIENCE]) {
-            projectActivities = projectActivityService?.getAllByProject(project.projectId, "docs", params?.version)
-        }
-
-        render projectActivities as JSON
     }
 
     protected Map projectContent(project, user, programs, params) {
@@ -189,7 +288,7 @@ class ProjectController {
 
         def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, default: true],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
+         documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.content.defaultOverriddenLabels), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -217,7 +316,7 @@ class ProjectController {
 
         def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, default: false],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', default: true],
+         documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.content.defaultOverriddenLabels), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', default: true],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -260,7 +359,7 @@ class ProjectController {
 
         Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
                        news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-                       documents:[label:'Resources', template:'/shared/listDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', project:project],
+                       documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.content.defaultOverriddenLabels), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', project:project],
                        activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
                        site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
                        meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, canViewRisks: canViewRisks, type:'tab', template:'viewMeriPlan'],
@@ -302,14 +401,16 @@ class ProjectController {
 
         if (project) {
             def siteInfo = siteService.getRaw(project.projectSiteId)
-            [project: project,
-             siteDocuments: siteInfo.documents?:'[]',
-             site: siteInfo.site,
-             programs: metadataService.programsModel(),
-             scienceTypes: scienceTypes,
-             ecoScienceTypes: ecoScienceTypes
-            ]
+            def projectActivities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
 
+            [project        : project,
+             siteDocuments  : siteInfo.documents ?: '[]',
+             site           : siteInfo.site,
+             programs       : metadataService.programsModel(),
+             scienceTypes   : scienceTypes,
+             ecoScienceTypes: ecoScienceTypes,
+             projectActivities     : projectActivities
+            ]
         } else {
             forward(action: 'list', model: [error: 'no such id'])
         }
@@ -353,6 +454,8 @@ class ProjectController {
             project.projectType = ProjectService.PROJECT_TYPE_ECOSCIENCE
         }
 
+        project.projLifecycleStatus = 'unpublished'
+
         HubSettings hub = SettingService.getHubConfig()
         if (hub && hub.defaultProgram) {
             project.associatedProgram = hub.defaultProgram
@@ -392,6 +495,7 @@ class ProjectController {
         render view: 'projectFinder',  model:  result
     }
 
+    @SSO(cookie=true)
     def projectFinder() {
         Map result =
         [
@@ -483,6 +587,30 @@ class ProjectController {
 
         String mainImageAttribution = values.remove("mainImageAttribution")
         String logoAttribution = values.remove("logoAttribution")
+
+        def hasPublishedProjectActivities = false
+
+        if (project != null) {
+            def projectActivities = projectActivityService.getAllByProject(project.projectId, "docs", params?.version, true)
+
+            //checks whether there's at least one published survey
+            if (projectActivities != null && projectActivities.size() > 0) {
+                for (int i = 0; i < projectActivities.size(); i++) {
+                    if (projectActivities[i].published) {
+                        hasPublishedProjectActivities = true;
+                        break;
+                    }
+                }
+            }
+
+            //check whether an internal project (projects using BioCollect to collect data) can be published
+            if (values.projLifecycleStatus != null) {
+                if ((values.projLifecycleStatus == 'published') && (values.isExternal == false) && !hasPublishedProjectActivities) {
+                    render status: HttpStatus.SC_BAD_REQUEST, text: "At least one published survey should be there to publish a project."
+                    return
+                }
+            }
+        }
 
         def siteResult
         if (projectSite) {
@@ -585,6 +713,189 @@ class ProjectController {
     /**
      * Search project data and customize the result set based on initiator (ala, scistarter and biocollect).
      */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "projectsearch",
+            summary = "Search for projects",
+            description = "Search for projects in a hub context",
+            parameters = [
+                    @Parameter(
+                            name = "hub",
+                            in = ParameterIn.QUERY,
+                            description = "The hub context this request will be executed in. Visibility of projects depends on hub configuration. If no hub is specified, system defined default hub is used."
+                    ),
+                    @Parameter(
+                            name = "q",
+                            in = ParameterIn.QUERY,
+                            description = "Searches for terms in this parameter.",
+                            schema = @Schema(
+                                    name = "q",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "max",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of returned projects per page.",
+                            schema = @Schema(
+                                    name = "max",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "20"
+                            )
+                    ),
+                    @Parameter(
+                            name = "offset",
+                            in = ParameterIn.QUERY,
+                            description = "Search result offset to return projects from.",
+                            schema = @Schema(
+                                    name = "offset",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "0"
+                            )
+                    ),
+                    @Parameter(
+                            name = "status",
+                            in = ParameterIn.QUERY,
+                            description = "Return active or completed projects",
+                            schema = @Schema(
+                                    name = "status",
+                                    type = "string",
+                                    allowableValues =  ["active", "completed"]
+                            )
+                    ),
+                    @Parameter(
+                            name = "organisationName",
+                            in = ParameterIn.QUERY,
+                            description = "Filter projects by organisation name",
+                            schema = @Schema(
+                                    name = "organisationName",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "geoSearchJSON",
+                            in = ParameterIn.QUERY,
+                            description = "Filter projects by GeoJSON shape",
+                            schema = @Schema(
+                                    name = "geoSearchJSON",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isCitizenScience",
+                            in = ParameterIn.QUERY,
+                            description = "Get citizen science projects",
+                            schema = @Schema(
+                                    name = "isCitizenScience",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isWorks",
+                            in = ParameterIn.QUERY,
+                            description = "Get works projects",
+                            schema = @Schema(
+                                    name = "isWorks",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isBiologicalScience",
+                            in = ParameterIn.QUERY,
+                            description = "Get eco-science projects",
+                            schema = @Schema(
+                                    name = "isBiologicalScience",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "difficulty",
+                            in = ParameterIn.QUERY,
+                            description = "Difficulty level of projects",
+                            schema = @Schema(
+                                    name = "difficulty",
+                                    type = "string",
+                                    allowableValues =  ["Easy", "Medium", "Hard"]
+                            )
+                    ),
+                    @Parameter(
+                            name = "isWorldWide",
+                            in = ParameterIn.QUERY,
+                            description = "Set to false to return Australia specific projects. Set to true to get all projects.",
+                            schema = @Schema(
+                                    name = "isWorldWide",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "isUserPage",
+                            in = ParameterIn.QUERY,
+                            description = "Set to true to get all the projects a user is participating in.",
+                            schema = @Schema(
+                                    name = "isUserPage",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "mobile",
+                            in = ParameterIn.QUERY,
+                            description = "Set to true if the request is coming from mobile client and user need to be identified. User identification is required for mobile app requests with isUserPage parameter is set to true.",
+                            schema = @Schema(
+                                    name = "mobile",
+                                    type = "boolean",
+                                    defaultValue = "false"
+                            )
+                    ),
+                    @Parameter(
+                            name = "facets",
+                            in = ParameterIn.QUERY,
+                            description = "Comma seperated list of facets the search should return. If left empty, facet list is populated from hub configuration.",
+                            schema = @Schema(
+                                    name = "facets",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
+                            name = "flimit",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of facets to be returned.",
+                            schema = @Schema(
+                                    name = "flimit",
+                                    type = "integer",
+                                    minimum = "0",
+                                    maximum = "500",
+                                    defaultValue = "15"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ProjectSearchResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/project/search")
+    @NoSSO
     def search() {
 
         GrailsParameterMap queryParams = buildProjectSearch(params)
@@ -611,7 +922,6 @@ class ProjectController {
                 facets = searchService.standardiseHistogramFacets(facets, histogramFacetConfig)
             }
 
-
             // if facet is provided by client do not add special facets
             if(!params.facets){
                 facets = projectService.addSpecialFacets(facets)
@@ -635,6 +945,30 @@ class ProjectController {
         }
         response.setCharacterEncoding('UTF-8')
         render( text: [ projects:  projects, total: searchResult.hits?.total?:0, facets: facets ] as JSON );
+    }
+
+    /**
+     *  Remove facets specified in config from the Project Finder Page, when user is not logged in or if user is not
+     *  AlaAdmin and not in user page
+     */
+    private String removeFacetsFromProjectFinderPage(List facets) {
+        List facetsToRemove = grailsApplication.config.lists.facetsToRemoveFromProjectFinderPage
+
+        def user = userService.getUser()
+        boolean isAlaAdmin = userService.userIsAlaAdmin()
+        boolean isUserPage = params.getBoolean('isUserPage', false)
+
+        if (!user || (!isAlaAdmin && !isUserPage)) {
+            facets.removeAll(facetsToRemove)
+        }
+
+        String facetStr = "";
+
+        if (facets.size() > 0) {
+            facetStr = facets.join(',')
+        }
+
+        return facetStr
     }
 
     /**
@@ -728,6 +1062,12 @@ class ProjectController {
         if(!trimmedParams.facets) {
             trimmedParams.facets = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)?.collect { it.name }?.join(",")
         }
+
+        List facetList = trimmedParams.facets.split(",")
+
+        //check and remove facets from Project Finder Page if there is any
+        if (facetList)
+            trimmedParams.facets = removeFacetsFromProjectFinderPage(facetList)
 
         List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
         if(presenceAbsenceFacets){
@@ -825,11 +1165,19 @@ class ProjectController {
             trimmedParams.status = null
         }
 
+        boolean isAlaAdmin = userService.userIsAlaAdmin()
+
+        if (!isAlaAdmin)
+            fq.push('projLifecycleStatus:published')
+
         if (trimmedParams.isUserPage) {
+            if (!fq.contains('projLifecycleStatus:published'))
+                fq.add('projLifecycleStatus:published')
+            if (!fq.contains('projLifecycleStatus:unpublished'))
+                fq.add('projLifecycleStatus:unpublished')
+
             if (trimmedParams.mobile) {
-                String username = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
-                String key = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-                fq.push('allParticipants:' + (username && key ? userInfoService.getUserFromAuthKey(username, key)?.userId : ''))
+                fq.push('allParticipants:' + (userInfoService.getCurrentUser()?.userId?:""))
             } else {
                 fq.push('allParticipants:' + userService.getUser()?.userId);
             }
@@ -1005,6 +1353,7 @@ class ProjectController {
      * list images in the context of a project, all records or my records
      * payload.view parameter is used to differentiate these context
      */
+    @NoSSO
     def listRecordImages() {
         try{
             Map payload = request.JSON
@@ -1077,6 +1426,9 @@ class ProjectController {
         if (resp.status != 200) {
             render view:'/error', model:[error:resp.error]
         }
+        else {
+            return null
+        }
     }
 
     @PreAuthorise(accessLevel = 'admin')
@@ -1107,6 +1459,8 @@ class ProjectController {
         boolean result = pdfGenerationService.generatePDF(reportUrlConfig, pdfGenParams, response)
         if (!result) {
             render view: '/error', model: [error: "An error occurred generating the project report."]
+        } else {
+            return null
         }
 
     }
@@ -1165,6 +1519,7 @@ class ProjectController {
      * be converted into PDF.
      * @param id the project id
      */
+    @NoSSO
     def projectSummaryReportCallback(String id) {
 
         if (pdfGenerationService.authorizePDF(request)) {

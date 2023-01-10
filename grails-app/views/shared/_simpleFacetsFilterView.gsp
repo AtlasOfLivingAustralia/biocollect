@@ -6,7 +6,7 @@
 
     <div class="title">
         <h3>Filters</h3>
-        <button class="btn btn-sm btn-dark facetSearch" data-bind="click: mergeTempToRefine"><i class="fas fa-filter"></i>Refine</button>
+        <button class="btn btn-sm btn-dark facetSearch" data-bind="click: mergeTempToRefine"><i class="fas fa-filter"></i> Refine</button>
     </div>
     <div class="filter-group">
 

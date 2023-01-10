@@ -211,7 +211,15 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
             jsData.published = true;
             return self.publish(jsData);
         } else {
-            showAlert("Mandatory fields in 'Survey Info', 'Species', 'Survey Form' and 'Locations' tab must be completed before publishing the survey.", "alert-danger", self.placeHolder);
+            if (!current.isInfoValid()) {
+                showAlert("Mandatory fields in 'Survey Info' tab must be completed before publishing the survey.", "alert-danger", self.placeHolder);
+            }
+            else if (!current.areSpeciesValid() || !jsData.pActivityFormName) {
+                showAlert("Mandatory fields in 'Survey Form' & 'Species'  tabs must be completed before publishing the survey.", "alert-danger", self.placeHolder);
+            }
+            else {
+                showAlert("Mandatory fields in 'Locations' tab must be completed before publishing the survey.", "alert-danger", self.placeHolder);
+            }
         }
     };
 
@@ -243,6 +251,11 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
     self.saveSites = function () {
         if (!$('#project-activities-locations-validation').validationEngine('validate')) {
+            return;
+        }
+
+        var current = self.current();
+        if (current && !current.isSiteConfigValid()) {
             return;
         }
 

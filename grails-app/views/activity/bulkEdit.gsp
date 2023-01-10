@@ -4,13 +4,14 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>Create | Activity | <g:message code="g.biocollect"/></title>
-    <meta name="breadcrumbParent1" content="${createLink(controller: 'project', action: 'homePage')},Home"/>
+    <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${activity.projectId},Project"/>
     <meta name="breadcrumb" content="${title}"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
         var fcConfig = {
+        <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -21,11 +22,10 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        </g:applyCodec>
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         returnTo: "${params.returnTo}"
+        </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
@@ -408,7 +408,7 @@
         });
 
         var $finishAll = $('<input type="checkbox" class="progress-checkbox" name="finishAll">');
-        $finishAll.change(function(event) {
+        $finishAll.on('change',function(event) {
             Slick.GlobalEditorLock.commitCurrentEdit();
             var changedRows = [];
             var finish = $(event.target).is(':checked');
@@ -460,7 +460,7 @@
 
         $('.slick-cell.r'+highlightColumn)[0].click();
 
-        $('#save').click(function() {
+        $('#save').on('click',function() {
 
             Slick.GlobalEditorLock.commitCurrentEdit();
             var valid = true;
@@ -510,7 +510,7 @@
             });
         });
 
-        $('#cancel').click(function() {
+        $('#cancel').on('click',function() {
             disableNavigationHook = true; // Disable the before unload event handler.
             $.each(activityModels, function(i, model) {
                 amplify.store('activity-'+model.activityId, null);
@@ -522,7 +522,7 @@
         $('.validationEngineContainer').validationEngine({scroll:false});
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#downloadTemplate').click(function() {
+        $('#downloadTemplate').on('click',function() {
             var ids = []
             $.each(activities, function(i, activity) {
                 ids.push(activity.activityId);
@@ -575,7 +575,7 @@
             formData: {type:"${type}"}
         });
 
-        $("#bulkUploadTrigger").click(function(){
+        $("#bulkUploadTrigger").on('click',function(){
              $("#bulkUpload").toggle();
         });
     });

@@ -5,6 +5,7 @@
     <title>Metadata | Admin | Data capture | Atlas of Living Australia</title>
     <asset:script type="text/javascript">
         fcConfig = {
+            <g:applyCodec encodeAs="none">
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -17,11 +18,10 @@
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
-            <g:applyCodec encodeAs="none">
-                allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-                allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-            </g:applyCodec>
+            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
+            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+            </g:applyCodec>
         };
     </asset:script>
 </head>
@@ -45,7 +45,7 @@
     <span>You are viewing the hub: ${hubConfig.urlPath}</span>
 </div>
 
-<div class="alert" data-bind="visible:message()">
+<div class="alert alert-info" data-bind="visible:message()">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <span data-bind="text:message"></span>
 </div>
@@ -164,7 +164,6 @@
                                 <select class="form-control" data-bind="value: type">
                                     <option value="">Please choose</option>
                                     <option value="ala">ALA</option>
-                                    <option value="biocollect">Biocollect classic</option>
                                     <option value="custom">Custom header</option>
                                 </select>
                             </div>
@@ -408,17 +407,11 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: isContainer"> Content should be in a fixed width container
-                </div>
 
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderHelpButtons"> Hide 'Getting Started' & 'What is this?' buttons on project finder
-                </div>
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorTile"> Hide project status indicator (Tile view)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectFinderStatusIndicatorList"> Hide project status indicator (List view)
@@ -737,6 +730,8 @@
                 <option value="admin">Admin</option>
                 <option value="allrecords">All Records</option>
                 <option value="home">Home</option>
+                <option value="charts">Charts</option>
+                <option value="resources">Resources</option>
                 <option value="login">Login / Logout</option>
                 <option value="newproject">New Project</option>
                 <option value="sites">Sites</option>
@@ -857,11 +852,6 @@
             <td>Menu text colour</td>
             <td><input class="form-control" type="color" data-bind="value: menuTextColor"/></td>
         </tr>
-%{--        <tr data-bind="visible: transients.showHeader">--}%
-%{--            <td>Header banner space background colour</td>--}%
-%{--            <td><input class="form-control" type="color" data-bind="value: headerBannerBackgroundColor"/></td>--}%
-%{--            <td><div class="previewColor" data-bind="style:{'background-color':headerBannerBackgroundColor}"></div></td>--}%
-%{--        </tr>--}%
         <tr>
             <td colspan="2">
                 <strong>Banner</strong>
@@ -869,11 +859,6 @@
                 <!-- /ko -->
             </td>
             <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
-        </tr>
-        <tr data-bind="visible: transients.showBanner">
-            <td>Banner background colour</td>
-            <td><input class="form-control" type="color" data-bind="value: bannerBackgroundColor"/></td>
-            <td><div class="previewColor" data-bind="style:{'background-color':bannerBackgroundColor}"></div></td>
         </tr>
         <tr data-bind="visible: transients.showBanner">
             <td>Inset panel background colour</td>
@@ -971,58 +956,34 @@
             <td><a href="#preview"><i class="fas fa-chevron-down"></i> Preview</a></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
-            <td>Primary button colour</td>
-            <td><input class="form-control" type="color" data-bind="value: primaryButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: primaryButtonBackgroundColor, textColor: primaryButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Primary button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: primaryButtonTextColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button colour</td>
-            <td><input class="form-control" type="color" data-bind="value: defaultButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: defaultButtonBackgroundColor, textColor: defaultButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>Default button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: defaultButtonTextColor"/></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
             <td>'Getting started' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: gettingStartedButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: gettingStartedButtonBackgroundColor, textColor: gettingStartedButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'Getting started' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: gettingStartedButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: gettingStartedButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'What is this' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: whatIsThisButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: whatIsThisButtonBackgroundColor, textColor: whatIsThisButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'What is this' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: whatIsThisButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: whatIsThisButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'Add a record' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: addARecordButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: addARecordButtonBackgroundColor, textColor: addARecordButtonTextColor}}"></td>
-        </tr>
-        <tr data-bind="visible: transients.showButtons">
-            <td>'Add a record' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: addARecordButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: addARecordButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
             <td>'View records' button background colour</td>
             <td><input class="form-control" type="color" data-bind="value: viewRecordsButtonBackgroundColor"/></td>
-            <td rowspan="2" data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: viewRecordsButtonTextColor}}"></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: viewRecordsButtonBackgroundColor, textColor: '#fff'}}"></td>
         </tr>
         <tr data-bind="visible: transients.showButtons">
-            <td>'View records' button text colour</td>
-            <td><input class="form-control" type="color" data-bind="value: viewRecordsButtonTextColor"/></td>
+            <td>Button home page background colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonBackgroundColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonBackgroundColor, textColor: '#fff'}}"></td>
+        </tr>
+        <tr data-bind="visible: transients.showButtons">
+            <td>Button home page text colour</td>
+            <td><input class="form-control" type="color" data-bind="value: homepageButtonTextColor"/></td>
+            <td data-bind="template: {name: 'buttonPreview', data: {backgroundColor: homepageButtonTextColor, textColor: '#fff'}}"></td>
         </tr>
         <tr>
             <td colspan="2">
@@ -1231,7 +1192,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="previewBanner row mb-4"  data-bind="style:{'background-color': bannerBackgroundColor}">
+                <div class="previewBanner row mb-4"  >
                     <div class="offset-2 col-8 previewBannerImage">
                         <div class="previewLogo text-center"><p>Logo</p></div>
                         <div class="previewInset" data-bind="style:{'background-color': insetBackgroundColor}">
@@ -1252,21 +1213,11 @@
                         </div>
                         <div class="row">
                             <div class="offset-4 col-2">
-                                <!-- ko template: {name: 'buttonPreview', data: {textColor: primaryButtonTextColor, backgroundColor: primaryButtonBackgroundColor}} -->
+                                <!-- ko template: {name: 'buttonPreview', data: {textColor: '#fff', backgroundColor: primaryDarkColor}} -->
                                 <!-- /ko -->
                             </div>
                             <div class="col-2">
-                                <!-- ko template: {name: 'buttonPreview', data: {textColor: defaultButtonTextColor, backgroundColor: defaultButtonBackgroundColor}} -->
-                                <!-- /ko -->
-                            </div>
-                        </div>
-                        <div class="row" data-bind="visible: makeDefaultButtonAnOutlineButton() || makePrimaryButtonAnOutlineButton()">
-                            <div class="offset-4 col-2">
-                                <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: primaryButtonOutlineTextColor, hoverTextColor: primaryButtonOutlineTextHoverColor}} -->
-                                <!-- /ko -->
-                            </div>
-                            <div class="col-2">
-                                <!-- ko template: {name: 'outlineButtonPreview', data: {textColor: defaultButtonOutlineTextColor, hoverTextColor: defaultButtonOutlineTextHoverColor}} -->
+                                <!-- ko template: {name: 'buttonPreview', data: {textColor: '#fff', backgroundColor: darkColor}} -->
                                 <!-- /ko -->
                             </div>
                         </div>

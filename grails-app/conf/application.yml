@@ -9,45 +9,6 @@ server:
     session:
       timeout: 3600
 
-environments:
-    development:
-        grails:
-           config:
-              locations:
-                 - file:///data/biocollect/config/biocollect-config-grails3.properties
-        temp:
-          dir: /data/biocollect/temp
-        #system level config
-        server:
-           port: 8087
-           serverURL: http://devt.ala.org.au:8087
-        biocollect:
-          system:
-            email:
-              replyTo: "biocollect-dev<no-reply>@ala.org.au"
-              sender: "biocollect-dev@ala.org.au"
-        debugUI: true
-        loggerLevel: "DEBUG"
-    test:
-        grails:
-          config:
-             locations:
-                - file:///data/biocollect/config/biocollect-config.properties
-        debugUI: false
-        loggerLevel: "DEBUG"
-    production:
-        grails:
-            config:
-               locations:
-                  - file:///data/biocollect/config/biocollect-config.properties
-        biocollect:
-           system:
-              email:
-                replyTo: "biocollect<no-reply>@ala.org.au"
-                sender: "biocollect-local@ala.org.au"
-        debugUI: false
-        loggerLevel: "INFO"
-
 app:
   default:
     hub: "ala"
@@ -56,22 +17,40 @@ app:
   http:
     header:
       userId: "X-ALA-userId"
+      hostName: "X-ALA-hostname"
 
+auth:
+  baseURL: "https://auth.ala.org.au"
+
+casUrl: "${auth.baseURL}/cas/logout"
+appUrl: "http://devt.ala.org.au:8087/"
 
 security:
-   cas:
-      uriExclusionFilterPattern: ['/assets/.*','/images.*','/css.*','/js.*','/less.*','/ajax/(bulkLookupQuestions|saveBookmarkLocation|getBookmarkLocations)','/uploads/.*']
-      authenticateOnlyIfLoggedInPattern: "/*"
-      uriFilterPattern: ['/user/.*','/site/(?!(index|list|elasticsearch|getImages|getPoiImages|ajaxUpdate|checkSiteName|ajaxList|checkPointInsideProjectAreaAndAddress)).*','/project/(?!(index|search|citizenScience|listRecordImages|projectSummaryReportCallback)).*','/activity/(?!index).*','/output/(?!index).*','/image/(?!index).*','/admin/.*','/proxy/speciesListPost','/proxy/documentUpdate','/proxy/deleteDocument','/home/advanced','/organisation/(?!index).*','/organisation/(?!list).*','/bioActivity/create/.*','/bioActivity/edit/.*','/bioActivity/list','/sight/.*']
-      readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
-      alaAdminRole : "ROLE_ADMIN"
-      officerRole : "ROLE_FC_OFFICER"
-      adminRole : "ROLE_FC_ADMIN"
-      casServerName: "https://auth.ala.org.au"
-      casServerLoginUrl: "https://auth.ala.org.au/cas/login"
-      casServerUrlPrefix: "https://auth.ala.org.au/cas"
-      logoutUrl: "https://auth.ala.org.au/cas/logout"
-      loginUrl: "https://auth.ala.org.au/cas/login"
+  cas:
+    enabled: false
+    uriExclusionFilterPattern: ['/assets/.*','/uploads/.*']
+    uriFilterPattern: []
+    readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
+    alaAdminRole : "ROLE_ADMIN"
+    officerRole : "ROLE_FC_OFFICER"
+    adminRole : "ROLE_FC_ADMIN"
+    casServerName: "${auth.baseURL}"
+    casServerLoginUrl: "${auth.baseURL}/cas/login"
+    casServerUrlPrefix: "${auth.baseURL}/cas"
+    logoutUrl: "${security.cas.casServerUrlPrefix}/logout"
+    loginUrl: "${security.cas.casServerUrlPrefix}/login"
+
+  oidc:
+    enabled: true
+    discoveryUri: "${auth.baseURL}/cas/oidc/.well-known"
+    clientId: "changeMe"
+    secret: "changeMe"
+    scope: "openid,profile,email,ala,roles"
+    allowUnsignedIdTokens: true
+  jwt:
+    enabled: true
+    discoveryUri: "${auth.baseURL}/cas/oidc/.well-known"
+    fallbackToLegacyBehaviour: true
 
 #External URL
 aekosEnabled: false
@@ -88,39 +67,7 @@ notification:
 facets:
   flimit: 15
 
-
-aekosSubmission:
-  url: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
-aekosMintedDoi:
-  url: "http://shared-uat.aekos.org.au:8080/AEKOS.AekosSearchPortal/dataset"
-
-acsaUrl: 'http://csna.gaiaresources.com.au/wordpress/'
-
-bie:
-  baseURL: "https://bie.ala.org.au"
-
-biocache:
-  baseURL: "https://biocache.ala.org.au"
-
-biocollect:
-  support:
-    email:
-      address: "biocollect-support@ala.org.au"
-
-collectory:
-  service:
-    url: "https://collections.ala.org.au"
-
-
-ecodata:
-  baseURL: "https://ecodata.ala.org.au/"
-
-
-google:
-  maps:
-    base: "https://maps.googleapis.com/maps/api/js?key="
-  geocode:
-    url: "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng="
+pingDuration: 300000
 
 headerAndFooter:
   baseURL: "https://www.ala.org.au/commonui-bs2" #"https://www.ala.org.au/commonui-bs2-v2/commonui-bs2"
@@ -161,6 +108,7 @@ images:
 lists:
   baseURL: "https://lists.ala.org.au" # "https://lists-test.ala.org.au/public/speciesLists"
   commonFields: ['rawScientificName', 'matchedName', 'commonName']
+  facetsToRemoveFromProjectFinderPage: ['projLifecycleStatus']
 
 merit:
   baseURL: "https://fieldcapture-test.ala.org.au"
@@ -170,9 +118,17 @@ mdba:
   searchUrl: "/occurrences/search?fq=data_hub_uid:dh10#tab_mapView"
 
 mobile:
+  authKeyEnabled: true
   auth:
     check:
       url:  "https://m.ala.org.au/mobileauth/mobileKey/checkKey"
+
+report:
+  download:
+    - header: 'Group'
+      property: 'group'
+    - header: 'Count'
+      property: 'count'
 
 
 pdfgen:
@@ -207,7 +163,8 @@ upload:
 grails:
     project:
       groupId: "au.org.ala"
-
+    mail:
+      poolSize: 1
     profile: web
     codegen:
         defaultPackage: au.org.ala.biocollect
@@ -275,7 +232,7 @@ grails:
             encoding: UTF-8
             htmlcodec: xml
             codecs:
-                expression: html  #${ } will be html encoded if set to default to html
+                expression: none  #${ } will be html encoded if set to default to html
                 scriptlets: html
                 taglib: none
                 staticparts: none
@@ -321,7 +278,7 @@ spring:
       check-template-location: false
   devtools:
     restart:
-      additional-exclude:
+      exclude:
         - '*.gsp'
         - '**/*.gsp'
         - '*.gson'
@@ -361,8 +318,8 @@ projectdata:
   industries:
     enabled: false
 
-userDetails: 
-  url: "https://auth.ala.org.au/userdetails/"
+userDetails:
+  url: "${auth.baseURL}/userdetails/"
 
 userDetailsById:
   path: "getUserDetails"
@@ -380,3 +337,7 @@ bootstrap4:
   themeExtension: "scss"
   copyFromDir: "bootstrap4"
   copyToDir: "bootstrap4"
+
+# used by ala-admin-plugin
+skin:
+  layout: "bs4"

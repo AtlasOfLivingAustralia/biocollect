@@ -105,7 +105,7 @@
             diffContainer: ".diff1"
         });
 
-        $( "#toggle-ids" ).click(function() {
+        $( "#toggle-ids" ).on('click',function() {
             $( "#ids" ).toggle();
         });
 

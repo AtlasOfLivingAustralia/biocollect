@@ -2,20 +2,34 @@
 <g:set var="showCreate" value="${activity.activityId ||  (!activity.activityId && !hubConfig.content?.hideCancelButtonOnForm)}"></g:set>
 <bc:koLoading>
 <div class="container-fluid validationEngineContainer" id="validation-container">
+    <content tag="bannertitle">
+        ${title}
+    </content>
     <div id="koActivityMainBlock">
         <g:if test="${!mobile}">
             <div class="row">
-                %{--page title--}%
-                <div class="col-12 col-md-4">
-                    <h2>${title}</h2>
-                </div>
                 %{-- quick links --}%
-                <div class="col-12 col-md-8">
-                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'pull-right']}"></g:render>
+                <div class="col-12">
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
                 </div>
                 %{--quick links END--}%
             </div>
         </g:if>
+<g:if test="${isUserAdminModeratorOrEditor && pActivity?.adminVerification}">
+    <div class="form-group row">
+        <label for="verificationStatusName" class="col-sm-2 col-form-label">
+            <g:message code="record.edit.verificationStatus"/>
+            <a href="#" class="helphover"
+               data-bind="popover: {title:'<g:message code="record.edit.verificationStatusTypes.help.title"/>',
+                             content:'<g:message code="record.edit.verificationStatusTypes.help"/>'}">
+                <i class="fa fa-question-circle"></i>
+            </a>
+        </label>
+        <div class="col-4">
+            <select name="verificationStatusName" class="custom-select" data-bind="options:verificationStatusOptions, optionsText:'displayName', optionsValue:'code', value: verificationStatus"></select>
+        </div>
+    </div>
+</g:if>
 <!-- start model binding -->
 <!-- ko stopBinding: true -->
 <g:set var="user" value="${user}"/>
@@ -40,7 +54,7 @@
                 <label class="checkbox" ><input type="checkbox" data-bind="checked:outputNotCompleted"> <span data-bind="text:transients.questionText"></span> </label>
             </div>
 
-            <div id="${blockId}-content" class="card" data-bind="visible:!outputNotCompleted()">
+            <div id="${blockId}-content" data-bind="visible:!outputNotCompleted()">
                 <!-- add the dynamic components -->
                 <md:modelView model="${model}" site="${site}" edit="true" output="${output.name}" printable="${printView}"/>
             </div>
@@ -51,22 +65,27 @@
 <!-- end model binding -->
 
 <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-    <div >
-        <h3 class="text-center text-danger card-title">Site Details</h3>
-        <div class="output-block text-center card">
-            <fc:select
-                    data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
-                    printable="${printView}"/>
-            <m:map id="activitySiteMap" width="90%" height="512px"/>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="text-center text-danger card-title">Site Details</h3>
+            <div class="output-block text-center">
+                <fc:select
+                        data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
+                        printable="${printView}"/>
+                <m:map id="activitySiteMap" width="100%" height="512px"/>
+            </div>
         </div>
-
     </div>
 </g:if>
 
 <g:if test="${metaModel?.supportsPhotoPoints?.toBoolean()}">
-    <h3 class="text-center text-danger card-title">Photo Points</h3>
-    <div class="output-block card" data-bind="with:transients.photoPointModel">
-        <g:render template="/site/photoPoints"></g:render>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="text-center text-danger card-title">Photo Points</h3>
+            <div class="output-block" data-bind="with:transients.photoPointModel">
+                    <g:render template="/site/photoPoints"></g:render>
+            </div>
+        </div>
     </div>
 </g:if>
 
@@ -160,16 +179,16 @@
 
         $('.helphover').popover({animation: true, trigger:'hover'});
 
-        $('#save').click(function () {
+        $('#save').on('click',function () {
             master.save();
             master.removeTemporarySite();
         });
 
-        $('#cancel').click(function () {
+        $('#cancel').on('click',function () {
             document.location.href = fcConfig.returnTo;
         });
 
-        $('#reset').click(function () {
+        $('#reset').on('click',function () {
             master.reset();
         });
 

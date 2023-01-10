@@ -13,6 +13,7 @@ class ReportService {
     public static final String REPORT_APPROVED = 'published'
     public static final String REPORT_SUBMITTED = 'pendingApproval'
     public static final String REPORT_NOT_APPROVED = 'unpublished'
+    public static final String PREFIX_REPORT_CACHE = 'REPORT_CACHE_'
 
     public static final String REEF_2050_PLAN_ACTION_REPORTING_ACTIVITY_TYPE = 'Reef 2050 Plan Action Reporting'
 
@@ -27,6 +28,7 @@ class ReportService {
     def metadataService
     def activityService
     def messageSource
+    def cacheService
 
     private static int DEFAULT_REPORT_DAYS_TO_COMPLETE = 43
 
@@ -616,6 +618,59 @@ class ReportService {
          issueCountByImpact:asScore("Issue count by impact" , issues),
          riskCountByRating:asScore("Risk count by rating", risks),
          budgetByYear:asScore("Budget by financial year", budgetByYear, 'barchart')]
+    }
+
+    Map genericReport(Map config){
+        Closure action = { ->
+            def defaultFQs = SettingService.getHubConfig().defaultFacetQuery ?: []
+            config.fq = config.fq ?: []
+            config.fq.addAll(defaultFQs)
+
+            String url =  grailsApplication.config.ecodata.baseURL+"/ws/search/genericReport"
+            Map report = webService.doPost(url, config)
+
+            Map results = report?.resp?.results ?: [:]
+            groupResultsByItems(results, config)
+
+            mapDisplayName(results, config.reportConfig.groups.property)
+        }
+
+        config.cache ? cacheService.get(getReportConfigName(config), action) : action()
+    }
+
+    String getReportConfigName (Map config){
+        String hub = SettingService.getHubConfig()?.urlPath
+        String reportName = config.label ?: ''
+        PREFIX_REPORT_CACHE + hub + reportName
+    }
+
+    def mapDisplayName(Map results, String property) {
+        results.groups?.each { group ->
+            group.group = messageSource.getMessage("report." + property + "." + group.group, null, group.group, Locale.default)
+        }
+
+        results
+    }
+
+    Map groupResultsByItems(Map results, Map config) {
+        if (config.resultGrouping && results) {
+            List unGrouped = results.groups
+            Map grouped = unGrouped.groupBy { item ->
+                def found = config.resultGrouping.find { group ->
+                    group.items?.contains(item.group)
+                }
+
+                found?.label
+            }
+
+            if (grouped) {
+                results.groups = grouped?.collect { String key, List items ->
+                    [group: key, count: items.sum { it.count }]
+                }
+            }
+        }
+
+        results
     }
 
     private Map asScore(String label, Map data, String type = 'piechart') {
