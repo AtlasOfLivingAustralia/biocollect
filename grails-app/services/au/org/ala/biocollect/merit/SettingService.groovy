@@ -5,6 +5,7 @@ import asset.pipeline.fs.FileSystemAssetResolver
 import asset.pipeline.jsass.SassAssetFile
 import asset.pipeline.jsass.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
+import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import grails.util.Environment
@@ -13,6 +14,8 @@ import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.scheduling.annotation.Async
 import org.springframework.web.context.request.RequestAttributes
+
+import java.nio.file.Paths
 
 import static groovyx.gpars.GParsPool.withPool
 
@@ -112,7 +115,7 @@ class SettingService {
             }
         }
 
-        def settings
+        HubSettings settings = null
         try {
             settings = getHubSettings(hub)
         } catch (Throwable ex) {
@@ -299,20 +302,26 @@ class SettingService {
     }
 
     Map generateStyleSheetForHub(HubSettings hub) {
-        String scssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${grailsApplication.config.bootstrap4.themeExtension}"
-        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${scssFileName}"
-        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}"
-        SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileURI )
-        String output
+        String themeDirectory = grailsApplication.config.getProperty("bootstrap4.themeDirectory", String.class)
+        String themeFileName = grailsApplication.config.getProperty("bootstrap4.themeFileName", String.class)
+        String themeExtension = grailsApplication.config.getProperty("bootstrap4.themeExtension", String.class)
+        String tempDir = grailsApplication.config.getProperty("temp.dir", String.class)
 
-        if (hub && hub.templateConfiguration?.styles ) {
+        String themeDir = "${tempDir}${themeDirectory}"
+        String scssFileName = "${themeFileName}.${themeExtension}"
+        String scssFileString = "${tempDir}${themeDirectory}${File.separator}${scssFileName}"
+        def scssPath = Paths.get(scssFileString).normalize()
+        String scssFileURI = scssPath.toUri().toString()
+
+        SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(scssPath.bytes) }, path: scssFileURI)
+        String output = null
+
+        if (hub && hub.templateConfiguration?.styles) {
             Map styles = hub.templateConfiguration?.styles
             String urlPath = hub.urlPath
-            Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
-            String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss"
+            Long lastUpdated = DateUtils.parse(hub.lastUpdated).toDate().getTime()
 
-            String cssFileURI = "${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}"
-            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}.css"
+            String cssFileName = "${themeFileName}.${urlPath}.${lastUpdated}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()){
@@ -365,7 +374,7 @@ class SettingService {
                 }
             }
         } else {
-            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${hub.urlPath}.css"
+            String cssFileName = "${themeFileName}.${hub.urlPath}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()) {
