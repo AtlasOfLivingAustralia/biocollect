@@ -1,5 +1,6 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.CacheService
 import au.org.ala.biocollect.merit.RoleService
 import au.org.ala.biocollect.merit.WebService
 import au.org.ala.biocollect.permissions.AppUserDetails
@@ -15,6 +16,7 @@ class PermissionService {
     RoleService roleService
     UtilService utilService
     WebService webService
+    CacheService cacheService
 
     /*
      * Ecodata Entity Types used for permissions checks.
@@ -36,18 +38,35 @@ class PermissionService {
 
     /**
      * Get all the Ecodata UserPermissions for this given userId.
+     *
+     *
+     * Cached to allow for getting the updated user permissions if they change,
+     * but also allow this method to be very fast, even for users with lots of permissions.
+     *
+     * That seems to be a good middle road between making sure updates are available,
+     * and requesting possibly 100's of user permission entries for each user on every call.
+     *
+     * It also seems better than making lots of separate Ecodata api calls to check each aspect of a user's access.
+     *
      * @param userId The user id.
      * @return All the UserPermissions for the user.
      */
     def getUserRolesForUserId(String userId) {
-        // TODO: also add caching. For 5 minutes.
-        // That will allow for getting the updated user permissions if they change,
-        // but also allow this method to be very fast, even for users with lots of permissions.
-        // That seems to be a good middle road between making sure updates are available,
-        // and requesting possibly 100's of user permission entries for each user on every call.
-        // It also seems better than making lots of separate Ecodata api calls to check each aspect of a user's access.
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getUserRolesForUserId/${userId}"
-        webService.getJson(url, null, true)
+        if (!userId) return null
+        def cacheAgeInDays = (1 / (24 * 60)) * 10  // 10 minutes
+        return cacheService.get("permissionService-getUserRolesForUserId-${userId}", {
+
+            String url = grailsApplication.config.ecodata.service.url + "/permissions/getUserRolesForUserId/${userId}"
+            webService.getJson(url, null, true)
+        }, cacheAgeInDays)
+    }
+
+    /**
+     * Clear the cached Ecodata access levels for the given user.
+     * @param userId Clear the cache for this user id.
+     */
+    void clearCachedUserRolesForUserId(String userId){
+        cacheService.clear("permissionService-getUserRolesForUserId-${userId}")
     }
 
     /**
@@ -92,8 +111,25 @@ class PermissionService {
         // or the 'roles' key is null (an empty list is success)
         def accessLevelsApiSuccess = false
 
+        // to be logged in, a user must not be null and must have a valid userId (an integer greater than 0)
+        def userIdCheck = user?.userId?.toString()?.trim()
+        def isLoggedIn
+        try {
+            isLoggedIn = user != null && userIdCheck
+            if (isLoggedIn) {
+                def isGreaterThanZero = userIdCheck?.toBigInteger() > 0
+                if (!isGreaterThanZero) {
+                    log.error("Invalid user id '${user?.userId}'.")
+                    isLoggedIn = false
+                }
+            }
+        } catch (Exception e) {
+            log.error("Invalid user id '${user?.userId}'.", e)
+            isLoggedIn = false
+        }
+
         // get the user's Ecodata access levels
-        if (userId) {
+        if (userId && isLoggedIn) {
             def accessLevelsResponse = getUserRolesForUserId(userId)
             accessLevelsApiSuccess = [
                     accessLevelsResponse,
@@ -104,23 +140,6 @@ class PermissionService {
             if (accessLevelsApiSuccess && accessLevelsResponse?.roles) {
                 accessLevels = accessLevelsResponse?.roles
             }
-        }
-
-        // to be logged in, a user must not be null and must have a valid userId (an integer greater than 0)
-        def userIdCheck = user?.userId?.toString()?.trim()
-        def isLoggedIn
-        try {
-            isLoggedIn = user != null && userIdCheck
-            if (isLoggedIn) {
-                def isGreaterThanZero = userIdCheck?.toBigInteger() > 0
-                if (!isGreaterThanZero) {
-                    log.error("Invalid user id '${user?.userId}': must be greater than 0.")
-                    isLoggedIn = false
-                }
-            }
-        } catch (Exception e) {
-            log.error("Invalid user id '${user?.userId}': ${e.class.name} - ${e.message}.")
-            isLoggedIn = false
         }
 
         // if a user is not logged in, but has roles or access levels, this is a sign the auth system is not working correctly
@@ -161,12 +180,20 @@ class PermissionService {
             }
         }
 
+        // for debugging
+        // def logDetails = [
+        //         userId                : userId,
+        //         accessLevels          : accessLevels,
+        //         rolesApiSuccess       : rolesApiSuccess,
+        //         accessLevelsApiSuccess: accessLevelsApiSuccess,
+        // ]
+        // log.warn("Creating app user permissions ${logDetails}.")
+
         return createUserPermissions(user, rolesApiSuccess, rolesResult, accessLevelsApiSuccess, accessLevelsResult)
     }
 
     /**
      * Create an application user permissions instance that can calculate the permissions for the given roles and access levels.
-     *
      * NOTE: This method may be overridden in a PermissionService subclass to return an AppUserPermissions subclass.
      * This is done to allow changing how roles and access levels map to permissions.
      *
@@ -177,7 +204,6 @@ class PermissionService {
      * @param accessLevelsApiSuccess Did the access levels api call succeed?
      * @return The application user permissions.
      */
-    @SuppressWarnings('GrMethodMayBeStatic')
     protected AppUserPermissions createUserPermissions(
             AppUserDetails user,
             boolean rolesApiSuccess, Map<String, Boolean> roles,
@@ -185,4 +211,5 @@ class PermissionService {
     ) {
         return new AppUserPermissions(user, rolesApiSuccess, roles, accessLevelsApiSuccess, accessLevels)
     }
+
 }

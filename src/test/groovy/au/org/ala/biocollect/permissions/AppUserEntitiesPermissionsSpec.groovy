@@ -13,23 +13,27 @@ class AppUserEntitiesPermissionsSpec extends Specification {
         def appUserPermissions = TestingHelpers.createUserPermissions(null, [], [], true, true)
         def boolProps = TestingHelpers.getAllMethodsBooleanNoArgs(AppUserEntitiesPermissions).collectEntries { [it, false] }
         def expected = TestingHelpers.mergeWith({ a, b -> a || b }, boolProps, [
-                getCanViewProjectAbout           : true,
-                getCanViewProjectNews            : true,
-                getCanViewProjectResourcesPublic : true,
-                getCanViewOrganisationAbout      : true,
-                getCanViewProjectActivities      : true,
-                getCanViewProjectDashboardAnyPart: true,
+                getCanViewProjectAboutAnyPart              : true,
+                getCanViewProjectAboutTabAboutTheProject   : true,
+                getCanViewProjectAboutTabProjectInformation: true,
+                getCanViewProjectAboutTabAssociatedOrgs    : true,
+                getCanViewProjectNews                      : true,
+                getCanViewProjectResourcesPublic           : true,
+                getCanViewOrganisationAbout                : true,
+                getCanViewProjectResourcesAnyPart          : true,
+                getCanViewProjectArea                      : true,
+                getCanAccessProjectAnyPart                 : true,
         ])
 
         when:
-        def permissions = new AppUserEntitiesPermissions(appUserPermissions, null, null, null, null)
+        def permissions = new AppUserEntitiesPermissions(appUserPermissions, null)
         def actual = boolProps.collectEntries { [it.key, permissions."${it.key}"()] }
 
         then:
         0 * _
         noExceptionThrown()
         permissions.userPermissions == appUserPermissions
-        boolProps.size() == 56
+        boolProps.size() == 69
         actual.size() == expected.size()
         actual.collect { it }.sort() == expected.collect { it }.sort()
     }

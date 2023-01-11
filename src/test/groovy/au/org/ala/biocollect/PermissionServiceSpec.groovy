@@ -1,7 +1,9 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.CacheService
 import au.org.ala.biocollect.merit.RoleService
 import au.org.ala.biocollect.merit.WebService
+import au.org.ala.biocollect.permissions.AppEntitiesDetails
 import au.org.ala.biocollect.permissions.AppUserDetails
 import au.org.ala.biocollect.permissions.AppUserEntitiesPermissions
 import grails.testing.services.ServiceUnitTest
@@ -11,15 +13,16 @@ import spock.lang.Unroll
 class PermissionServiceSpec extends Specification implements ServiceUnitTest<PermissionService> {
 
     def realRoleService = new RoleService()
-
+    def cacheService = Mock(CacheService)
     def roleService = Mock(RoleService)
     def utilService = Mock(UtilService)
     def webService = Mock(WebService)
 
     def setup() {
-        service.roleService = roleService
         service.utilService = utilService
         service.webService = webService
+        service.roleService = roleService
+        service.cacheService = cacheService
         realRoleService.grailsApplication = grailsApplication
     }
 
@@ -41,15 +44,18 @@ class PermissionServiceSpec extends Specification implements ServiceUnitTest<Per
         def result = service.getCurrentUserPermissions()
 
         then:
+        noExceptionThrown()
+
         1 * utilService.getCurrentUser() >> user
-        1 * webService.getJson("null/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: []]
+        1 * webService.getJson("http://devt.ala.org.au:8080/ws/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: []]
         1 * roleService.getRoleUserdetailsUser() >> userRoleName
         1 * roleService.getRoleUserdetailsAdmin() >> adminRoleName
         1 * roleService.getRoleUserdetailsAppReadOnly() >> appReadOnlyRoleName
         1 * roleService.getRoleUserdetailsAppOfficer() >> appOfficerRoleName
         1 * roleService.getRoleUserdetailsAppAdmin() >> appAdminRoleName
+        1 * cacheService.get(_, _, _) >> { args -> return args.get(1).call() }
         0 * _
-        noExceptionThrown()
+
         result != null
         result.getUser() == user
         result.countAccessLevels == 0
@@ -80,15 +86,18 @@ class PermissionServiceSpec extends Specification implements ServiceUnitTest<Per
         def result = service.getUserPermissions(userId)
 
         then:
+        noExceptionThrown()
+
         1 * utilService.getUserById(userId) >> user
-        1 * webService.getJson("null/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: []]
+        1 * webService.getJson("http://devt.ala.org.au:8080/ws/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: []]
         1 * roleService.getRoleUserdetailsUser() >> userRoleName
         1 * roleService.getRoleUserdetailsAdmin() >> adminRoleName
         1 * roleService.getRoleUserdetailsAppReadOnly() >> appReadOnlyRoleName
         1 * roleService.getRoleUserdetailsAppOfficer() >> appOfficerRoleName
         1 * roleService.getRoleUserdetailsAppAdmin() >> appAdminRoleName
+        1 * cacheService.get(_, _, _) >> { args -> return args.get(1).call() }
         0 * _
-        noExceptionThrown()
+
         result != null
         result.getUser() == user
         result.countAccessLevels == 0
@@ -121,6 +130,7 @@ class PermissionServiceSpec extends Specification implements ServiceUnitTest<Per
         def projectId = TestingHelpers.randomId
         def siteId = TestingHelpers.randomId
         def organisationId = TestingHelpers.randomId
+        def entitiesDetails = new AppEntitiesDetails(hubId: hubId, projectId: projectId, siteId: siteId, organisationId: organisationId)
 
         // one medium complexity example to test permission service transforms the data structure correctly
         def accessLevels = [
@@ -142,6 +152,12 @@ class PermissionServiceSpec extends Specification implements ServiceUnitTest<Per
                 getIsOrganisationStarredLevel    : false,
 
                 // site - none
+                getIsSiteAdminLevel              : false,
+                getIsSiteCaseManagerLevel        : false,
+                getIsSiteModeratorLevel          : false,
+                getIsSiteEditorLevel             : false,
+                getIsSiteParticipantLevel        : false,
+                getIsSiteReadOnlyLevel           : false,
                 getIsSiteStarredLevel            : false,
 
                 // hub - from hub admin access level
@@ -155,24 +171,27 @@ class PermissionServiceSpec extends Specification implements ServiceUnitTest<Per
 
         when:
         def aup = service.getUserPermissions(userId)
-        def result = aup.getEntitiesPermissions(hubId, projectId, siteId, organisationId)
+        def result = aup.getEntitiesPermissions(entitiesDetails)
         def actual = boolProps.collectEntries { [it.key, result."${it.key}"()] }
 
         then:
+        noExceptionThrown()
+
         1 * utilService.getUserById(userId) >> user
-        1 * webService.getJson("null/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: accessLevels]
+        1 * webService.getJson("http://devt.ala.org.au:8080/ws/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: accessLevels]
         1 * roleService.getRoleUserdetailsUser() >> userRoleName
         1 * roleService.getRoleUserdetailsAdmin() >> adminRoleName
         1 * roleService.getRoleUserdetailsAppReadOnly() >> appReadOnlyRoleName
         1 * roleService.getRoleUserdetailsAppOfficer() >> appOfficerRoleName
         1 * roleService.getRoleUserdetailsAppAdmin() >> appAdminRoleName
+        1 * cacheService.get(_, _, _) >> { args -> return args.get(1).call() }
         0 * _
-        noExceptionThrown()
 
         aup.getUser() == user
         aup.countAccessLevels == 6
         aup.countRoles == 3
 
+        then:
         result != null
         actual.size() == expected.size()
         actual.collect { it }.sort() == expected.collect { it }.sort()
@@ -193,19 +212,20 @@ class PermissionServiceSpec extends Specification implements ServiceUnitTest<Per
         def result = service.getUserPermissions(userId)
 
         then:
+        noExceptionThrown()
+
         1 * utilService.getUserById(userId) >> user
-        if (userId) {
-            1 * webService.getJson("null/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: []]
-        }
         if (loggedIn) {
+            1 * webService.getJson("http://devt.ala.org.au:8080/ws/permissions/getUserRolesForUserId/${userId}", null, true) >> [roles: []]
             1 * roleService.getRoleUserdetailsUser() >> userRoleName
             1 * roleService.getRoleUserdetailsAdmin() >> adminRoleName
             1 * roleService.getRoleUserdetailsAppReadOnly() >> appReadOnlyRoleName
             1 * roleService.getRoleUserdetailsAppOfficer() >> appOfficerRoleName
             1 * roleService.getRoleUserdetailsAppAdmin() >> appAdminRoleName
+            1 * cacheService.get(_, _, _) >> { args -> return args.get(1).call() }
         }
         0 * _
-        noExceptionThrown()
+
         result != null
         result.getUser() == user
         result.countAccessLevels == 0

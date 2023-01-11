@@ -29,31 +29,21 @@ import org.apache.commons.lang.NullArgumentException
  *
  * Instances of this class must be created using an AppUserPermissions instance.
  */
-@SuppressWarnings('GrMethodMayBeStatic')
 class AppUserEntitiesPermissions {
     protected AppUserPermissions userPermissions
-    protected String hubId
-    protected String projectId
-    protected String siteId
-    protected String organisationId
+    protected AppEntitiesDetails entitiesDetails
 
     /**
      * Create a user entities permissions state object.
      * @param userPermissions The user permissions.
-     * @param hubId The hub id to use for this user permissions object.
-     * @param projectId The project id to use for this user permissions object.
-     * @param siteId The site id to use for this user permissions object.
-     * @param organisationId The organisation id to use for this user permissions object.
+     * @param entitiesDetails The entities details to use for this user permissions object.
      */
-    AppUserEntitiesPermissions(AppUserPermissions userPermissions, String hubId = null, String projectId = null, String siteId = null, String organisationId = null) {
+    AppUserEntitiesPermissions(AppUserPermissions userPermissions, AppEntitiesDetails entitiesDetails) {
         if (!userPermissions) {
             throw new NullArgumentException("userPermissions")
         }
         this.userPermissions = userPermissions
-        this.hubId = hubId
-        this.projectId = projectId
-        this.siteId = siteId
-        this.organisationId = organisationId
+        this.entitiesDetails = entitiesDetails
     }
 
     /*
@@ -120,7 +110,7 @@ class AppUserEntitiesPermissions {
      * @return True if the user has this permission.
      */
     boolean getCanCreateHubProjects() {
-        hubId && this.userPermissions.isLoggedInRole
+        this.userPermissions.isLoggedInRole && entitiesDetails?.hubId
     }
 
     /**
@@ -152,7 +142,7 @@ class AppUserEntitiesPermissions {
      * @return True if user has this access level.
      */
     boolean getIsHubAdminLevel() {
-        hasPermissionForEntity(RoleService.PROJECT_ADMIN_ROLE, PermissionService.ENTITY_HUB, hubId)
+        hasPermissionForEntity(RoleService.PROJECT_ADMIN_ROLE, PermissionService.ENTITY_HUB, entitiesDetails?.hubId)
     }
 
     /*
@@ -160,10 +150,37 @@ class AppUserEntitiesPermissions {
      */
 
     /**
-     * Can the user view the project about?
+     * Can the user view any part of the project about tab?
      * @return True if the user has this permission.
      */
-    boolean getCanViewProjectAbout() {
+    boolean getCanViewProjectAboutAnyPart() {
+        canViewProjectAboutTabAboutTheProject || canViewProjectAboutTabProjectInformation ||
+                canViewProjectAboutTabAssociatedOrgs || canViewProjectArea
+    }
+
+    /**
+     * Can the user view the project about tab 'About the Project' section?
+     * @return True if the user has this permission.
+     */
+    boolean getCanViewProjectAboutTabAboutTheProject() {
+        // available to anon and logged in users
+        true
+    }
+
+    /**
+     * Can the user view the project about tab 'Project Information' section?
+     * @return True if the user has this permission.
+     */
+    boolean getCanViewProjectAboutTabProjectInformation() {
+        // available to anon and logged in users
+        true
+    }
+
+    /**
+     * Can the user view the project about tab 'run in association with' section?
+     * @return True if the user has this permission.
+     */
+    boolean getCanViewProjectAboutTabAssociatedOrgs() {
         // available to anon and logged in users
         true
     }
@@ -203,6 +220,14 @@ class AppUserEntitiesPermissions {
     }
 
     /**
+     * Can the user view any project resources?
+     * @return True if the user has this permission.
+     */
+    boolean getCanViewProjectResourcesAnyPart() {
+        canViewProjectResourcesPublic || canViewProjectResourcesPrivate
+    }
+
+    /**
      * Can the user edit the project resources?
      * @return True if the user has this permission.
      */
@@ -214,12 +239,11 @@ class AppUserEntitiesPermissions {
      * Can the user view the project activities?
      * Includes Surveys and Data tabs for 'survey' projects, and Work Schedule tab for 'works' projects
      * Also for dashboard tab (Milestones are a type of activity).
-     * Vew and edit are also for targets and metrics, which are based on activities.
+     * Also for targets and metrics, which are based on activities.
      * @return True if the user has this permission.
      */
     boolean getCanViewProjectActivities() {
-        // available to anon and logged in users
-        true
+        this.userPermissions?.isLoggedInRole && !this.entitiesDetails?.projectIsExternal
     }
 
     /**
@@ -231,12 +255,29 @@ class AppUserEntitiesPermissions {
     }
 
     /**
+     * Can the user edit the project activities outputs?
+     * @return True if the user has this permission.
+     */
+    boolean getCanEditProjectActivitiesOutput() {
+        isAdminOrAppAdminOrAppOfficerRolesOrProjectEditorOrHubAdminLevels
+    }
+
+    /**
+     * Can the user view the project geographic area?
+     * @return True if the user has this permission.
+     */
+    boolean getCanViewProjectArea() {
+        // available to anon and logged in users
+        true
+    }
+
+    /**
      * Can the user view the project sites?
      * project sites - view: can see existing sites but not change
      * @return True if the user has this permission.
      */
     boolean getCanViewProjectSites() {
-        isAdminOrAppAdminOrAppReadOnlyRolesOrProjectEditorOrHubAdminLevels
+        !this.entitiesDetails?.projectIsExternal && isAdminOrAppAdminOrAppReadOnlyRolesOrProjectEditorOrHubAdminLevels
     }
 
     /**
@@ -294,7 +335,7 @@ class AppUserEntitiesPermissions {
 
     /**
      * Can the user view the project outcomes?
-     * project outcomes includes outcomes, outcomes monitoring
+     * project outcomes includes outcomes (objectives), outcomes monitoring
      * view is also for dashboard tab
      * @return True if the user has this permission.
      */
@@ -332,7 +373,10 @@ class AppUserEntitiesPermissions {
      * @return True if the user has this permission.
      */
     boolean getCanViewProjectFundingBudget() {
-        this.userPermissions.isAdminOrAppAdminOrAppReadOnlyRoles || isProjectCaseManagerLevel || isHubAdminLevel
+        !this.entitiesDetails?.projectIsExternal && (
+                this.userPermissions?.isAdminOrAppAdminOrAppReadOnlyRoles ||
+                        isProjectCaseManagerLevel ||
+                        isHubAdminLevel)
     }
 
     /**
@@ -385,24 +429,26 @@ class AppUserEntitiesPermissions {
      * @return True if the user has this permission.
      */
     boolean getCanViewProjectAdminAnyPart() {
-        def result = [
-                canEditProjectNews,
-                canEditProjectResources,
-                canEditProjectActivities,
-                canEditProjectSites,
-                canManageProjectSites,
-                canEditProjectPlan,
-                canEditProjectRisks,
-                canEditProjectOutcomes,
-                canEditProjectOutcomesProgress,
-                canEditProjectFundingBudget,
-                canViewProjectAudit,
-                canViewProjectReport,
-                canEditProjectAccess,
-                canEditProjectDetails,
+        // view
+        canViewProjectAudit ||
+                canViewProjectReport ||
+                // edit
+                canEditProjectNews ||
+                canEditProjectResources ||
+                canEditProjectActivities ||
+                canEditProjectSites ||
+                canEditProjectPlan ||
+                canEditProjectRisks ||
+                canEditProjectOutcomes ||
+                canEditProjectOutcomesProgress ||
+                canEditProjectFundingBudget ||
+                canEditProjectAccess ||
+                canEditProjectDetails ||
+                // manage
+                canManageProjectSites ||
+                // delete
                 canDeleteProject
-        ].any()
-        return result
+
     }
 
     /**
@@ -414,12 +460,50 @@ class AppUserEntitiesPermissions {
      * @return True if the user has this permission.
      */
     boolean getCanViewProjectDashboardAnyPart() {
-        [
-                canViewProjectActivities,
-                canViewProjectRisks,
-                canViewProjectOutcomes,
-                canViewProjectOutcomesProgress
-        ].any()
+        !this.entitiesDetails?.projectIsExternal &&
+                (canViewProjectActivities ||
+                        canViewProjectRisks ||
+                        canViewProjectOutcomes ||
+                        canViewProjectOutcomesProgress)
+    }
+
+    /**
+     * Can the user access any part of the project?
+     * @return True if the user has this permission.
+     */
+    boolean getCanAccessProjectAnyPart() {
+        !this.entitiesDetails?.projectIsExternal &&
+                // view
+                (canViewProjectAboutAnyPart ||
+                        canViewProjectNews ||
+                        canViewProjectResourcesAnyPart ||
+                        canViewProjectActivities ||
+                        canViewProjectSites ||
+                        canViewProjectPlan ||
+                        canViewProjectRisks ||
+                        canViewProjectOutcomes ||
+                        canViewProjectOutcomesProgress ||
+                        canViewProjectFundingBudget ||
+                        canViewProjectAudit ||
+                        canViewProjectReport ||
+                        canViewProjectAdminAnyPart ||
+                        canViewProjectDashboardAnyPart ||
+                        // edit
+                        canEditProjectNews ||
+                        canEditProjectResources ||
+                        canEditProjectActivities ||
+                        canEditProjectActivitiesOutput ||
+                        canEditProjectSites ||
+                        canEditProjectPlan ||
+                        canEditProjectRisks ||
+                        canEditProjectOutcomes ||
+                        canEditProjectOutcomesProgress ||
+                        canEditProjectFundingBudget ||
+                        canEditProjectAccess ||
+                        canEditProjectDetails ||
+                        // others
+                        canManageProjectSites ||
+                        canDeleteProject)
     }
 
     /**
@@ -435,51 +519,51 @@ class AppUserEntitiesPermissions {
      * @return True if user has this access level.
      */
     boolean getIsProjectAdminLevel() {
-        hasPermissionForEntity(RoleService.PROJECT_ADMIN_ROLE, PermissionService.ENTITY_PROJECT, projectId)
+        hasPermissionForEntity(RoleService.PROJECT_ADMIN_ROLE, PermissionService.ENTITY_PROJECT, entitiesDetails?.projectId)
     }
 
     /**
-     * Does the user have Ecodata project grant manager / case manager access?
+     * Does the user have Ecodata project grant manager / case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsProjectCaseManagerLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.GRANT_MANAGER_ROLE, PermissionService.ENTITY_PROJECT, projectId)
+        def hasAccess = hasPermissionForEntity(RoleService.GRANT_MANAGER_ROLE, PermissionService.ENTITY_PROJECT, entitiesDetails?.projectId)
         hasAccess || isProjectAdminLevel
     }
 
     /**
-     * Does the user have Ecodata project moderator access?
+     * Does the user have Ecodata project moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsProjectModeratorLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_MODERATOR_ROLE, PermissionService.ENTITY_PROJECT, projectId)
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_MODERATOR_ROLE, PermissionService.ENTITY_PROJECT, entitiesDetails?.projectId)
         hasAccess || isProjectCaseManagerLevel
     }
 
     /**
-     * Does the user have Ecodata project editor access?
+     * Does the user have Ecodata project editor or moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsProjectEditorLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_EDITOR_ROLE, PermissionService.ENTITY_PROJECT, projectId)
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_EDITOR_ROLE, PermissionService.ENTITY_PROJECT, entitiesDetails?.projectId)
         hasAccess || isProjectModeratorLevel
     }
 
     /**
-     * Does the user have Ecodata project participant access?
+     * Does the user have Ecodata project participant or editor or moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsProjectParticipantLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_PARTICIPANT_ROLE, PermissionService.ENTITY_PROJECT, projectId)
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_PARTICIPANT_ROLE, PermissionService.ENTITY_PROJECT, entitiesDetails?.projectId)
         hasAccess || isProjectEditorLevel
     }
 
     /**
-     * Does the user have Ecodata project read-only access?
+     * Does the user have Ecodata project read-only or participant or editor or moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsProjectReadOnlyLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.READ_ONLY_ROLE, PermissionService.ENTITY_PROJECT, projectId)
+        def hasAccess = hasPermissionForEntity(RoleService.READ_ONLY_ROLE, PermissionService.ENTITY_PROJECT, entitiesDetails?.projectId)
         hasAccess || isProjectParticipantLevel
     }
 
@@ -489,7 +573,7 @@ class AppUserEntitiesPermissions {
      * @return True if user has this access level.
      */
     boolean getIsProjectStarredLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.STARRED_ROLE, PermissionService.ENTITY_PROJECT, projectId)
+        def hasAccess = hasPermissionForEntity(RoleService.STARRED_ROLE, PermissionService.ENTITY_PROJECT, entitiesDetails?.projectId)
         hasAccess
     }
 
@@ -498,12 +582,65 @@ class AppUserEntitiesPermissions {
      */
 
     /**
+     * Does the user have Ecodata site admin access?
+     * @return True if user has this access level.
+     */
+    boolean getIsSiteAdminLevel() {
+        hasPermissionForEntity(RoleService.PROJECT_ADMIN_ROLE, PermissionService.ENTITY_SITE, entitiesDetails?.siteId)
+    }
+
+    /**
+     * Does the user have Ecodata site grant manager / case manager or admin access?
+     * @return True if user has this access level.
+     */
+    boolean getIsSiteCaseManagerLevel() {
+        def hasAccess = hasPermissionForEntity(RoleService.GRANT_MANAGER_ROLE, PermissionService.ENTITY_SITE, entitiesDetails?.siteId)
+        hasAccess || isSiteAdminLevel
+    }
+
+    /**
+     * Does the user have Ecodata site moderator or case manager or admin access?
+     * @return True if user has this access level.
+     */
+    boolean getIsSiteModeratorLevel() {
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_MODERATOR_ROLE, PermissionService.ENTITY_SITE, entitiesDetails?.siteId)
+        hasAccess || isSiteCaseManagerLevel
+    }
+
+    /**
+     * Does the user have Ecodata site editor or moderator or case manager or admin access?
+     * @return True if user has this access level.
+     */
+    boolean getIsSiteEditorLevel() {
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_EDITOR_ROLE, PermissionService.ENTITY_SITE, entitiesDetails?.siteId)
+        hasAccess || isSiteModeratorLevel
+    }
+
+    /**
+     * Does the user have Ecodata site participant or editor or moderator or case manager or admin access?
+     * @return True if user has this access level.
+     */
+    boolean getIsSiteParticipantLevel() {
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_PARTICIPANT_ROLE, PermissionService.ENTITY_SITE, entitiesDetails?.siteId)
+        hasAccess || isSiteEditorLevel
+    }
+
+    /**
+     * Does the user have Ecodata site read-only or participant or editor or moderator or case manager or admin access?
+     * @return True if user has this access level.
+     */
+    boolean getIsSiteReadOnlyLevel() {
+        def hasAccess = hasPermissionForEntity(RoleService.READ_ONLY_ROLE, PermissionService.ENTITY_SITE, entitiesDetails?.siteId)
+        hasAccess || isSiteParticipantLevel
+    }
+
+    /**
      * Does the user have Ecodata site starred level?
      * The starred access level does not check the access levels with higher code number.
      * @return True if user has this access level.
      */
     boolean getIsSiteStarredLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.STARRED_ROLE, PermissionService.ENTITY_SITE, siteId)
+        def hasAccess = hasPermissionForEntity(RoleService.STARRED_ROLE, PermissionService.ENTITY_SITE, entitiesDetails?.siteId)
         hasAccess
     }
 
@@ -577,11 +714,7 @@ class AppUserEntitiesPermissions {
      * @return True if the user has this permission.
      */
     boolean getCanViewOrganisationAdminAnyPart() {
-        [
-                canEditOrganisationDetails,
-                canEditOrganisationAccess,
-                canDeleteOrganisation,
-        ].any()
+        canEditOrganisationDetails || canEditOrganisationAccess || canDeleteOrganisation
     }
 
     /**
@@ -589,51 +722,51 @@ class AppUserEntitiesPermissions {
      * @return True if user has this access level.
      */
     boolean getIsOrganisationAdminLevel() {
-        hasPermissionForEntity(RoleService.PROJECT_ADMIN_ROLE, PermissionService.ENTITY_ORGANISATION, organisationId)
+        hasPermissionForEntity(RoleService.PROJECT_ADMIN_ROLE, PermissionService.ENTITY_ORGANISATION, entitiesDetails?.organisationId)
     }
 
     /**
-     * Does the user have Ecodata organisation grant manager / case manager access?
+     * Does the user have Ecodata organisation grant manager / case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsOrganisationCaseManagerLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.GRANT_MANAGER_ROLE, PermissionService.ENTITY_ORGANISATION, organisationId)
+        def hasAccess = hasPermissionForEntity(RoleService.GRANT_MANAGER_ROLE, PermissionService.ENTITY_ORGANISATION, entitiesDetails?.organisationId)
         hasAccess || isOrganisationAdminLevel
     }
 
     /**
-     * Does the user have Ecodata organisation moderator access?
+     * Does the user have Ecodata organisation moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsOrganisationModeratorLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_MODERATOR_ROLE, PermissionService.ENTITY_ORGANISATION, organisationId)
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_MODERATOR_ROLE, PermissionService.ENTITY_ORGANISATION, entitiesDetails?.organisationId)
         hasAccess || isOrganisationCaseManagerLevel
     }
 
     /**
-     * Does the user have Ecodata organisation editor access?
+     * Does the user have Ecodata organisation editor or moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsOrganisationEditorLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_EDITOR_ROLE, PermissionService.ENTITY_ORGANISATION, organisationId)
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_EDITOR_ROLE, PermissionService.ENTITY_ORGANISATION, entitiesDetails?.organisationId)
         hasAccess || isOrganisationModeratorLevel
     }
 
     /**
-     * Does the user have Ecodata organisation participant access?
+     * Does the user have Ecodata organisation participant or editor or moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsOrganisationParticipantLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_PARTICIPANT_ROLE, PermissionService.ENTITY_ORGANISATION, organisationId)
+        def hasAccess = hasPermissionForEntity(RoleService.PROJECT_PARTICIPANT_ROLE, PermissionService.ENTITY_ORGANISATION, entitiesDetails?.organisationId)
         hasAccess || isOrganisationEditorLevel
     }
 
     /**
-     * Does the user have Ecodata organisation read-only access?
+     * Does the user have Ecodata organisation read-only or participant or editor or moderator or case manager or admin access?
      * @return True if user has this access level.
      */
     boolean getIsOrganisationReadOnlyLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.READ_ONLY_ROLE, PermissionService.ENTITY_ORGANISATION, organisationId)
+        def hasAccess = hasPermissionForEntity(RoleService.READ_ONLY_ROLE, PermissionService.ENTITY_ORGANISATION, entitiesDetails?.organisationId)
         hasAccess || isOrganisationParticipantLevel
     }
 
@@ -643,7 +776,7 @@ class AppUserEntitiesPermissions {
      * @return True if user has this access level.
      */
     boolean getIsOrganisationStarredLevel() {
-        def hasAccess = hasPermissionForEntity(RoleService.STARRED_ROLE, PermissionService.ENTITY_ORGANISATION, organisationId)
+        def hasAccess = hasPermissionForEntity(RoleService.STARRED_ROLE, PermissionService.ENTITY_ORGANISATION, entitiesDetails?.organisationId)
         hasAccess
     }
 }

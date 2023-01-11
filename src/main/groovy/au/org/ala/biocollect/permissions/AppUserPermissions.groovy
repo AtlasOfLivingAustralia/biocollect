@@ -33,7 +33,7 @@ class AppUserPermissions {
      * @param user The user details.
      * @param roles The roles for the user [RoleService.(CAS role name): (is user in role?)].
      * @param rolesApiSuccess True if the api call to get the user CAS / Userdetails roles succeeded.
-     * @param accessLevels The access levels for the user [RoleService.(Ecodata access level): [PermissionService.(entity type): [(entity id}, ...]]].
+     * @param accessLevels The access levels for the user [RoleService.(Ecodata access level): [PermissionService.(entity type): [(entity id), ...]]].
      * @param accessLevelsApiSuccess True if the api call to get the user Ecodata access levels succeeded.
      */
     AppUserPermissions(AppUserDetails user,
@@ -94,14 +94,10 @@ class AppUserPermissions {
 
     /**
      * Get the entities permissions using the given entity ids.
-     * @param hubId The hub id to use for this user permissions object.
-     * @param projectId The project id to use for this user permissions object.
-     * @param siteId The site id to use for this user permissions object.
-     * @param organisationId The organisation id to use for this user permissions object.
-     * @return Application user permissions for the entities.
+     * @param entitiesDetails The entities details to use for this user permissions object.
      */
-    AppUserEntitiesPermissions getEntitiesPermissions(String hubId = null, String projectId = null, String siteId = null, String organisationId = null) {
-        new AppUserEntitiesPermissions(this, hubId, projectId, siteId, organisationId)
+    AppUserEntitiesPermissions getEntitiesPermissions(AppEntitiesDetails entitiesDetails) {
+        new AppUserEntitiesPermissions(this, entitiesDetails)
     }
 
     /**
@@ -112,6 +108,11 @@ class AppUserPermissions {
      * @return True if the user has the access level for the entity.
      */
     boolean hasAccessLevelForEntity(String accessLevel, String entityType, String entityId) {
+        // guard against String != GString
+        accessLevel = accessLevel?.toString()
+        entityType = entityType?.toString()
+        entityId = entityId?.toString()
+
         if (!accessLevel?.trim()) {
             throw new NullArgumentException("accessLevel")
         }
