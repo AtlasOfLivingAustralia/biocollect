@@ -67,12 +67,12 @@
                 xhr.setRequestHeader('authKey', "${authKey}");
                 xhr.setRequestHeader('userName', "${userName}");
             </g:elseif>
-            window.incrementAsyncCounter && window.incrementAsyncCounter();
-        },
-        complete: function () {
-            window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         }
     });
+
+    $(document).ajaxSend(window.incrementAsyncCounter);
+
+    $(document).ajaxComplete(window.decreaseAsyncCounter);
 </script>
 <asset:deferredScripts/>
 </body>

@@ -33,15 +33,17 @@ jobs:
       - run: pwd
       - run: ls
 
-      - name: Clone ecodata-client-plugin repo to parent directory
-        uses: GuillaumeFalourd/clone-github-repo-action@v2
-        working-directory: ..
-        with:
-          owner: 'AtlasOfLivingAustralia'
-          repository: 'ecodata-client-plugin'
+      - name: Change directory
+        run: cd ..
 
-      - run: pwd
-      - run: ls
+      - name: Clone Git repo
+        uses: actions/checkout@v2
+        with:
+          repository: https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin.git
+          ref: dev
+
+      - name: Go back to old directory
+        run: cd -
 
       - name: Read the biocollect version from the gradle.properties file
         id: read_property
