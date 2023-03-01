@@ -30,11 +30,6 @@ jobs:
           node-version: 16
 
       - run: npm install
-      - run: pwd
-      - run: ls
-
-      - name: Change directory
-        run: cd ..
 
       - name: Clone Git repo
         uses: actions/checkout@v2
@@ -42,8 +37,8 @@ jobs:
           repository: AtlasOfLivingAustralia/ecodata-client-plugin
           ref: dev
 
-      - name: Go back to old directory
-        run: cd -
+      - run: pwd
+      - run: ls -l ..
 
       - name: Read the biocollect version from the gradle.properties file
         id: read_property
