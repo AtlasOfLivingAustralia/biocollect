@@ -595,6 +595,8 @@
             facetConfig = ${ hubConfig.getFacetConfigForPage('myprojectrecords') };
         } else if (view === 'userprojectactivityrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('userprojectactivityrecords') };
+        } else if (view === 'bulkimport') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('bulkimport') };
         } else {
             console.warn("[Facets] Unrecognised view name '" + view + "', using allRecords facet config.");
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };

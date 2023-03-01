@@ -293,11 +293,13 @@ class BioActivityController {
             params.hub = grailsApplication.config.app.mobile.hub
         }
 
+        addXFrameOptionsHeader()
         Map model = addActivity(id, true)
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
         model.authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
+        model.bulkUpload = params.getBoolean('bulkUpload', false)
         render (view: model.error ? 'error' : 'edit', model: model)
     }
 
@@ -307,6 +309,7 @@ class BioActivityController {
             params.hub = grailsApplication.config.app.mobile.hub
         }
 
+        addXFrameOptionsHeader()
         Map model = editActivity(id, true)
         model.mobile = true
         model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
@@ -580,6 +583,25 @@ class BioActivityController {
     }
 
     /**
+     * List all activities uploaded by an import.
+     * @param id activity id
+     * @return
+     */
+    def bulkImport(String id) {
+        Boolean userIsAdmin = userService.userIsAlaOrFcAdmin()
+        render(view: 'list',
+                model: [
+                        view: 'bulkimport',
+                        bulkImportId: id,
+                        contentURI: '/bioActivity/bulkimport',
+                        title: messageSource.getMessage('bulkimport.title', [].toArray(), '', Locale.default),
+                        userIsAdmin: userIsAdmin,
+                        returnTo: g.createLink(controller: 'bulkImport', action: 'index', params: [id: id])
+                ]
+        )
+    }
+
+    /**
      * List all activity associated to a project.
      * @param id activity id
      * @return
@@ -825,7 +847,15 @@ class BioActivityController {
                             description = "Page on which activities will be rendered. To get all activities for a hub use 'allrecords'. To get activities belonging to a project use 'project'. etc. ",
                             schema = @Schema(
                                     type = "string",
-                                    allowableValues = ['myrecords', 'project', 'projectrecords', 'myprojectrecords', 'userprojectactivityrecords', 'allrecords']
+                                    allowableValues = ['myrecords', 'project', 'projectrecords', 'myprojectrecords', 'userprojectactivityrecords', 'allrecords', 'bulkimport']
+                            )
+                    ),
+                    @Parameter(
+                            name = "bulkImportId",
+                            in = ParameterIn.QUERY,
+                            description = "Get activities generated from a bulk import. Access is only provided to user with project admin access or higher.",
+                            schema = @Schema(
+                                    type = "string"
                             )
                     ),
                     @Parameter(
@@ -1244,7 +1274,23 @@ class BioActivityController {
         model
     }
 
-    def defaultData
+    @SSO
+    def convertExcelToOutputData() {
+        String pActivityId = params.pActivityId
+        String type = params.type
+        def file
+        if (request.respondsTo('getFile')) {
+            file = request.getFile('data')
+        }
+
+        if (pActivityId && type && file) {
+            def content = activityService.convertExcelToOutputData(pActivityId, type, file)
+            render text: content as JSON
+        }
+        else {
+            render text: [message: "Missing required parameters - pActivityId, type & data (excel file)"] as JSON, status: HttpStatus.SC_BAD_REQUEST
+        }
+    }
 
     def extractDataFromExcelTemplate() {
 
@@ -1627,5 +1673,11 @@ class BioActivityController {
         List columns = grailsApplication.config.datapage.allColumns
         columns += activityService.getDynamicIndexNamesAsColumnConfig()
         render text: [columns: columns] as JSON, contentType: 'application/json'
+    }
+
+    private addXFrameOptionsHeader() {
+        if(params.embedded == 'true'){
+            response.setHeader("X-Frame-Options", "SAMEORIGIN")
+        }
     }
 }

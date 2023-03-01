@@ -139,6 +139,15 @@
                             <i class="fas fa-download mr-1"></i>
                             <g:message code="project.survey.downloadTemplate"/>
                         </a>
+                        <g:if test="${fc.userIsAlaAdmin()}">
+                        <a class="btn btn-sm btn-dark"
+                           data-bind="attr: { href: bulkImportUrl}"
+                           title="<g:message code="project.survey.bulkupload.title"/>">
+                            <i class="fas fa-upload"></i>
+                            <g:message code="project.survey.bulkupload"/>
+                        </a>
+                        </g:if>
+
                     </g:if>
                     <g:if test="${grailsApplication.config.aekosEnabled}">
                         <!-- ko if: transients.isAekosData -->

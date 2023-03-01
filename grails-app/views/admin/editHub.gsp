@@ -659,6 +659,14 @@
                     <!-- /ko -->
                 </div>
             </div>
+
+            <div class="mb-4 border-bottom-4">
+                <h4><strong>Configure facets on bulk import records page</strong></h4>
+                <div class="overflow-x">
+                    <!-- ko template: { name: 'templateDataPageFacetConfiguration', data: pages.bulkImport } -->
+                    <!-- /ko -->
+                </div>
+            </div>
         </div>
         <div class="tab-pane" id="hubData">
             <div class="border-bottom-4">

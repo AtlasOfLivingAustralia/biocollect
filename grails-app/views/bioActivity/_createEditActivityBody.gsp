@@ -185,7 +185,10 @@
         });
 
         $('#cancel').on('click',function () {
-            document.location.href = fcConfig.returnTo;
+            if (fcConfig.bulkUpload)
+                $(document).trigger('activitycreatecancelled')
+            else
+                document.location.href = fcConfig.returnTo;
         });
 
         $('#reset').on('click',function () {
@@ -209,6 +212,7 @@
             siteId: siteId,
             speciesConfig : speciesConfig
         };
+        master.setViewModel(viewModel);
 
         outputModelConfig = _.extend(fcConfig, outputModelConfig);
 
@@ -275,6 +279,8 @@
         }, 0);
     </g:if>
 </g:each>
+
+        master.listenForResolution()
 });
 </asset:script>
 </div>

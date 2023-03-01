@@ -284,6 +284,7 @@ ko.bindingHandlers.stagedImageUpload = {
         }).on('fileuploadadd', function (e, data) {
             complete(false);
             progress(1);
+            window.incrementAsyncCounter && window.incrementAsyncCounter();
         }).on('fileuploadprocessalways', function (e, data) {
             if (data.files[0].preview) {
                 if (config.previewSelector !== undefined) {
@@ -309,9 +310,10 @@ ko.bindingHandlers.stagedImageUpload = {
             else {
                 error(result.error);
             }
-
+            window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         }).on('fileuploadfail', function (e, data) {
             error(data.errorThrown);
+            window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         });
 
         ko.applyBindingsToDescendants(innerContext, element);
@@ -701,7 +703,14 @@ ko.bindingHandlers.fileUploadNoImage = {
         var defaults = {autoUpload: true};
         var settings = {};
         $.extend(settings, defaults, options());
-        $(element).fileupload(settings);
+        $(element).fileupload(settings
+        ).on('fileuploadadd', function (e, data) {
+            window.incrementAsyncCounter && window.incrementAsyncCounter();
+        }).on('fileuploaddone', function (e, data) {
+            window.decreaseAsyncCounter && window.decreaseAsyncCounter();
+        }).on('fileuploadfail', function (e, data) {
+            window.decreaseAsyncCounter && window.decreaseAsyncCounter();
+        });
     }
 };
 
