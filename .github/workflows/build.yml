@@ -39,7 +39,7 @@ jobs:
       - name: Clone Git repo
         uses: actions/checkout@v2
         with:
-          repository: https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin.git
+          repository: AtlasOfLivingAustralia/ecodata-client-plugin
           ref: dev
 
       - name: Go back to old directory
