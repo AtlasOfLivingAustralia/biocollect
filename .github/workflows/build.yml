@@ -36,6 +36,7 @@ jobs:
         with:
           repository: AtlasOfLivingAustralia/ecodata-client-plugin
           ref: dev
+          path: '../'
 
       - run: pwd
       - run: ls -l ..
