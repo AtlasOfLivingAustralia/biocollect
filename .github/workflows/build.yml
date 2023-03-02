@@ -31,16 +31,6 @@ jobs:
 
       - run: npm install
 
-      - name: Clone Git repo
-        uses: actions/checkout@v2
-        with:
-          repository: AtlasOfLivingAustralia/ecodata-client-plugin
-          ref: dev
-          path: '../'
-
-      - run: pwd
-      - run: ls -l ..
-
       - name: Read the biocollect version from the gradle.properties file
         id: read_property
         uses: christian-draeger/read-properties@1.1.0
