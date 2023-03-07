@@ -309,6 +309,7 @@ function BulkUploadViewModel(activityImport) {
     }
 
     self.convertExcelToJSON = function () {
+        self.activityImport.transients.clear();
         var formData = new FormData();
         formData.append('data', self.file());
         formData.append('type', activityImport.formName());
@@ -577,6 +578,9 @@ function ActivityImport(activityImport) {
         userName: undefined,
         toJSON: function (){
             return ko.mapping.toJSON(self, {ignore: 'transients'})
+        },
+        clear: function ()  {
+            self.dataToLoad([]);
         },
         peek: function (indexType) {
             switch (indexType) {

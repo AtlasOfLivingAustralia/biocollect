@@ -630,7 +630,8 @@
                         searchTerm: '',
                         projectId: fcConfig.projectId || '',
                         spotterId: fcConfig.spotterId,
-                        projectActivityId: fcConfig.projectActivityId
+                        projectActivityId: fcConfig.projectActivityId,
+                        bulkImportId: fcConfig.bulkImportId
                     },
                     viewModel: activitiesAndRecordsViewModel
                 }
