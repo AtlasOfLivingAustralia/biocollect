@@ -1,8 +1,9 @@
 var parentWindow, origin, savePromise, asyncPromiseResolvedChecker, numberOfIntervalCheck = 0;
-const MAX_INTERVAL_CHECK = 5;
+var MAX_INTERVAL_CHECK = 5,
+    MAX_INITIAL_CHECK_DELAY_IN_MS = 4000,
+    MAX_VALIDATE_DELAY_IN_MS = 4000;
 
 function loadData(event) {
-    debugger
     var data = event.data.data;
     for (var i = 0; i < data.length; i++) {
         var outputName = data[i].outputName,
@@ -12,7 +13,7 @@ function loadData(event) {
     }
 }
 
-window.addEventListener("message", (event) => {
+window.addEventListener("message", function (event) {
     console.log(event);
 
     if (event.origin !== fcConfig.originUrl)
@@ -28,17 +29,19 @@ window.addEventListener("message", (event) => {
             master.getViewModel().embargoed(true);
 
             if (master) {
-                setInterval(saveAndInformParent, 2000);
+                asyncPromiseResolvedChecker = setInterval(saveAndInformParent, MAX_INITIAL_CHECK_DELAY_IN_MS);
             }
             break;
         case 'validate':
             loadData(event);
             if (master) {
-                setTimeout(validateAndInformParent, 3000);
+                asyncPromiseResolvedChecker = setInterval(validateAndInformParent, MAX_VALIDATE_DELAY_IN_MS);
             }
             break;
         case 'fixinvalid':
             loadData(event);
+            master.getViewModel().bulkImportId(event.data.bulkImportId);
+            master.getViewModel().embargoed(true);
 
             $(document).on('activitycreated', activityCreateHandler);
             $(document).on('activitycreatefailed', activityCreateFailedHandler);
@@ -102,7 +105,15 @@ function saveAndInformParent() {
 }
 
 function validateAndInformParent() {
-    parentWindow.postMessage({eventName: 'validate', isValid: isFormValid()}, origin);
+    if ((getAsyncCounter() == 0)) {
+        parentWindow.postMessage({eventName: 'validate', isValid: isFormValid()}, origin);
+    } else if (isMaxIntervalCheck()) {
+        // cancel set interval
+        asyncPromiseResolvedChecker && clearInterval(asyncPromiseResolvedChecker);
+        parentWindow.postMessage({eventName: 'validate', isValid: false}, origin);
+    }
+
+    incrementIntervalCheck();
 }
 
 function isFormValid() {
@@ -115,12 +126,12 @@ function incrementAsyncCounter() {
     }
 
     window.numberOfAjaxRequests(window.numberOfAjaxRequests() + 1);
-    console.trace("increment - " + window.numberOfAjaxRequests());
+    console.log("increment - " + window.numberOfAjaxRequests());
 }
 
 function decreaseAsyncCounter() {
     window.numberOfAjaxRequests(window.numberOfAjaxRequests() - 1);
-    console.trace("decrement - " + window.numberOfAjaxRequests());
+    console.log("decrement - " + window.numberOfAjaxRequests());
 }
 
 function getAsyncCounter() {

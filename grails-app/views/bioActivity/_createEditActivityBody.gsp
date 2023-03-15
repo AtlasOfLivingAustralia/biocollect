@@ -96,10 +96,8 @@
         <g:if test="${!preview}">
             <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> Submit</button>
         </g:if>
-        <g:if test="${showCreate && !mobile}">
-            <g:if test="${!preview}">
-                <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> Cancel</button>
-            </g:if>
+        <g:if test="${bulkUpload || (showCreate && !mobile && !preview)}">
+            <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> Cancel</button>
         </g:if>
     </div>
 </g:if>

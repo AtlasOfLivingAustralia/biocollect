@@ -1,4 +1,4 @@
-const STATE_INVALID = 'invalid',
+var STATE_INVALID = 'invalid',
     STATE_ITERATION = 'iteration',
     STATE_VIEW = 'view',
     STATE_IMPORT =  'import',
@@ -6,7 +6,7 @@ const STATE_INVALID = 'invalid',
     STATE_FIXINVALID =  'fixinvalid';
 
 function message (msg) {
-    alert(msg);
+    bootbox.alert(msg);
 }
 
 function showLoading() {
@@ -21,11 +21,12 @@ function BulkUploadViewModel(activityImport) {
     var self = this;
     var createWindow, data, index = 0, viewIndex = 0, createdActivities = [];
     var createRequest, updateRequest, nextData, convertExcelToJSONRequest, iframeMessageSubscriber,
-        iframeId = 'createIframe', iframeContainer = 'iframeContainer', iframeHeading = 'iframeTitle', iframeBlocked = false;
+        iframeId = 'createIframe', iframeContainer = 'iframeContainer', iframeHeading = 'iframeTitle', iframeBlocked = false,
+        dataTableId = 'actOnData';
     self.file = ko.observable();
     self.activityImport = activityImport;
     self.phase = ko.observable(STATE_VIEW);
-    const PHASE_STATES = [STATE_VIEW, STATE_IMPORT, STATE_VALIDATE, STATE_FIXINVALID],
+    var PHASE_STATES = [STATE_VIEW, STATE_IMPORT, STATE_VALIDATE, STATE_FIXINVALID],
         Y_BUFFER = 20;
 
     self.iframeMessage = ko.observable("");
@@ -47,7 +48,7 @@ function BulkUploadViewModel(activityImport) {
 
     self.viewButtonHandler = function () {
         if (self.activityImport.bulkImportId()) {
-            window.location = fcConfig.bulkImportUrl + '/' + self.activityImport.bulkImportId() + '/activity/list'
+            window.open(fcConfig.bulkImportUrl + '/' + self.activityImport.bulkImportId() + '/activity/list', '_blank');
         }
         else {
             message("You have not imported any activity.");
@@ -55,41 +56,30 @@ function BulkUploadViewModel(activityImport) {
     };
 
     self.importButtonHandler = function () {
-        var promise;
-        self.phase(STATE_IMPORT);
-
-        if(activityImport.transients.numberOfActivitiesLoaded() > 0) {
-            promise = self.importAfterDeleting(function (){
-                self.activityImport.transients.reset();
+        if(self.activityImport.transients.hasBulkImportExecutedPreviously()) {
+            bootbox.confirm("Please note that the import process will delete all activities created by previous import and create new activities. Click OK to continue.", function (result) {
+                if (result) {
+                    self.iframeMessage("Deleting existing activities. Please wait...");
+                    self.runImport();
+                }
+                else {
+                    bootbox.alert("Import cancelled.");
+                }
             });
+        } else {
+            self.runImport();
         }
-        else {
-            self.activityImport.transients.reset();
-            promise = self.saveBulkImport();
-        }
-
-        promise.then(function () {
-            self.iterateData();
-        });
     };
 
     self.validateButtonHandler = function () {
         self.phase(STATE_VALIDATE);
         self.activityImport.transients.reset();
-        self.iterateData();
+        self.iterateData(undefined, "Validating activities. Please wait...");
     };
 
     self.invalidButtonHandler = function () {
         self.phase(STATE_FIXINVALID);
-        self.nextButtonHandler();
-    };
-
-    self.previousButtonHandler = function () {
-        self.iterateData(STATE_INVALID);
-    };
-
-    self.nextButtonHandler = function () {
-        self.iterateData(STATE_INVALID);
+        self.nextButtonHandler("Loading activity to fix errors. Once errors are fixed, scroll to bottom of page and click Submit button. Or, click Cancel button to skip this activity.");
     };
 
     self.publishButtonHandler = function () {
@@ -104,16 +94,30 @@ function BulkUploadViewModel(activityImport) {
         self.saveBulkImport();
     }
 
+    self.runImport = function runImport() {
+        self.phase(STATE_IMPORT);
+        self.activityImport.transients.reset();
+
+        self.importAfterDeleting().then(function () {
+            self.hideIframeMessage();
+            self.iterateData();
+        });
+    }
+
     self.showEmbargoBtn = self.showPublishBtn = self.showDeleteBtn = self.showViewBtn = ko.pureComputed(function () {
-        return !!self.activityImport.bulkImportId();
+        return !!self.activityImport.bulkImportId() && self.activityImport.transients.hasBulkImportExecutedPreviously();
     });
 
     self.showFixInvalid = ko.pureComputed(function () {
-        return self.activityImport.invalidActivities().length > 0;
+        return (self.activityImport.invalidActivities().length > 0) && (self.phase() != STATE_FIXINVALID);
     });
 
-    self.showValidateBtn = self.showImportBtn = ko.pureComputed(function () {
-        return self.activityImport.dataToLoad() && (self.activityImport.dataToLoad().length > 0);
+    self.showValidateBtn = ko.pureComputed(function () {
+        return self.activityImport.dataToLoad() && (self.activityImport.dataToLoad().length > 0)  && (self.phase() != STATE_VALIDATE);
+    });
+
+    self.showImportBtn = ko.pureComputed(function () {
+        return self.activityImport.dataToLoad() && (self.activityImport.dataToLoad().length > 0) && (self.phase() != STATE_IMPORT);
     });
 
     self.showIframe = ko.pureComputed(function () {
@@ -160,15 +164,23 @@ function BulkUploadViewModel(activityImport) {
         iframeBlocked = false;
     };
 
+    self.scrollTableToView = function () {
+        self.scrollToElement(dataTableId);
+    };
+
     self.scrollIframeToView = function () {
-        var offset = $("#" + iframeHeading).offset();
+        self.scrollToElement(iframeHeading);
+    };
+
+    self.scrollToElement = function (elementId) {
+        var offset = $("#" + elementId).offset();
 
         if (offset) {
             $("html, body").animate({
                 scrollTop: offset.top + 'px'
             });
         }
-    };
+    }
 
     self.previousButtonEnabled = ko.pureComputed(function () {
         return self.activityImport.transients.hasPrevious(STATE_INVALID);
@@ -180,18 +192,25 @@ function BulkUploadViewModel(activityImport) {
 
     self.fileInputChangeHandler = function (data, event) {
         var file = event.target.files && event.target.files[0];
-        self.file(file);
+        if (file) {
+            self.file(file);
+            // clear the file input value so that the same file can be selected again
+            event.target.value = null;
+        }
     }
 // add a function to update iframe url
     self.updateIframeUrl = function (url) {
         $('#iframe').attr('src', url);
     }
 
-    self.adjustIframeHeight = adjustIframeHeight;
+    self.iframeRenderHandler = function () {
+        adjustIframeHeight();
+        self.iframeMessage("Loading...");
+    }
 
     // add a function to get a reference to the iframe and listen to load event
     self.loadIframe = function (message) {
-        message = message || "Loading next row... Please wait...";
+        message = message || "Starting bulk import of data. Loading first activity. Please wait...";
         // get a reference to the iframe window object
         if (!createWindow) {
             var iframe = document.getElementById('createIframe');
@@ -234,8 +253,12 @@ function BulkUploadViewModel(activityImport) {
         self.activityImport.transients.updateActivityValidity(isValid);
     };
 
-    self.fixedInvalidActivity = function () {
-        self.activityImport.transients.fixedInvalidActivity();
+    self.updateCheckDataActivityValidity = function (isValid) {
+        self.activityImport.transients.updateCheckDataActivityValidity(isValid);
+    }
+
+    self.fixedInvalidActivity = function (activityId) {
+        self.activityImport.transients.fixedInvalidActivity(activityId);
     };
 
     self.addErroredActivity = function () {
@@ -258,43 +281,79 @@ function BulkUploadViewModel(activityImport) {
         if (nextData) {
             self.loadIframe(message);
         } else {
+            self.displaySummary();
+            self.scrollTableToView();
             self.saveBulkImport();
             self.phase(STATE_VIEW);
             createWindow = null;
         }
     }
 
+    self.displaySummary = function () {
+        var msg;
+        switch (self.phase()) {
+            case STATE_IMPORT:
+                msg = "Completed importing data. <br>" +
+                    "Total activities: " + self.activityImport.transients.numberOfActivities() + "<br>" +
+                    "Activities created: " + self.activityImport.transients.numberOfActivitiesLoaded() + "<br>" +
+                    "Activities with errors: " + self.activityImport.transients.numberOfActivitiesNotLoaded();
+                break;
+            case STATE_VALIDATE:
+                msg = "Completed validating data. <br>" +
+                    "Total activities checked: " + self.activityImport.transients.totalActivitiesChecked() + "<br>" +
+                    "Activities valid: " + self.activityImport.transients.checkDataValid().length + "<br>" +
+                    "Activities invalid: " + self.activityImport.transients.checkDataInvalid().length;
+                break;
+            case STATE_FIXINVALID:
+                msg = "Completed fixing errors. <br>" +
+                    "Total activities in data: " + self.activityImport.transients.numberOfActivities() + "<br>" +
+                    "Activities created by import: " + self.activityImport.transients.numberOfActivitiesLoaded() + "<br>" +
+                    "Activities invalid: " + self.activityImport.transients.numberOfActivitiesInvalid();
+                break;
+        }
+
+        msg && message(msg);
+    }
+
     self.messageHandler = function (event) {
         if (event.origin !== fcConfig.originUrl)
             return
 
-        var message = event.data.eventName;
+        var message = event.data.eventName,
+            iframeMessage;
         switch (message) {
             case 'next':
                 self.addCreatedActivity(event.data.activityId, event.data.isValid);
-                self.iterateData(undefined, "Uploaded data successfully. Loading next row...");
+                self.iterateData(undefined, "Uploaded data successfully. Loading next activity...");
                 break;
             case 'error':
                 self.iframeMessage();
                 self.addErroredActivity();
-                self.iterateData(undefined, "Could not save data due to an error. You can try fixing it later. Loading next row...");
+                self.iterateData(undefined, "Could not save data due to an error. You can try fixing it later. Loading next activity...");
                 break;
             case STATE_VALIDATE:
-                self.updateActivityValidity(event.data.isValid)
-                self.iterateData(undefined, "Successfully validated data. Loading next row...");
+                self.updateCheckDataActivityValidity(event.data.isValid)
+                if (event.data.isValid) {
+                    iframeMessage = "Activity is valid. Loading next activity...";
+                }
+                else {
+                    iframeMessage = "Activity is invalid. Loading next activity...";
+                }
+                self.iterateData(undefined, iframeMessage);
                 break;
             case 'invalidfixed':
-                self.fixedInvalidActivity(event.data.activityId, true);
-                self.loadIframe("Successfully fixed invalid data. Click next button to fix the next row...");
+                self.fixedInvalidActivity(event.data.activityId);
+                self.iterateData(STATE_INVALID, "Successfully fixed invalid data. Loading next activity...");
                 break;
             case 'invalidnotfixed':
                 self.addErroredActivity();
-                self.loadIframe("Could not fix invalid data. Loading next row...");
+                self.iterateData(STATE_INVALID, "Could not fix invalid activity. Loading next activity...");
                 break;
             case 'invalidcancel':
-                self.loadIframe("Cancelled fixing invalid data. Loading next row...");
+                self.iterateData(STATE_INVALID, "Cancelled fixing invalid activity. Loading next activity...");
                 break;
             case 'viewmodelloadded':
+                // fired by the iframe when the view model is loaded
                 if (nextData) {
                     self.postData(nextData);
                 }
@@ -365,7 +424,7 @@ function BulkUploadViewModel(activityImport) {
                 hideLoading();
             },
             error: function (jqXHR, status, error) {
-                alert('Failed to save data - ' + error.error);
+                message('Failed to save data - ' + error.error);
                 hideLoading();
             }
         });
@@ -382,12 +441,11 @@ function BulkUploadViewModel(activityImport) {
         }
     }
 
-    self.importAfterDeleting = function (callback) {
+    self.importAfterDeleting = function () {
         var deleteAjax = self.deleteActivitiesImported();
         var whenImportSaved = $.Deferred();
 
         deleteAjax.then(function() {
-            callback && callback();
             self.saveBulkImport().then(function (data) {
                 whenImportSaved.resolveWith(data);
             });
@@ -529,7 +587,9 @@ function ActivityImport(activityImport) {
     activityImport = activityImport || {};
     var self = this,
         index = -1,
-        viewIndex = -1;
+        viewIndex = -1,
+        checkDataValid = ko.observableArray([]),
+        checkDataInvalid = ko.observableArray([]);
 
     self.bulkImportId = ko.observable();
     self.projectActivityId = ko.observable();
@@ -564,6 +624,9 @@ function ActivityImport(activityImport) {
         }),
         numberOfActivitiesValidated = ko.computed(function () {
             return numberOfActivitiesValid() + numberOfActivitiesInvalid();
+        }),
+        totalActivitiesChecked = ko.pureComputed(function () {
+            return checkDataValid().length + checkDataInvalid().length;
         });
 
     self.transients = {
@@ -573,14 +636,22 @@ function ActivityImport(activityImport) {
         numberOfActivitiesValid: numberOfActivitiesValid,
         numberOfActivitiesInvalid: numberOfActivitiesInvalid,
         numberOfActivitiesValidated: numberOfActivitiesValidated,
+        totalActivitiesChecked:  totalActivitiesChecked,
         projectName: undefined,
         projectActivityName: undefined,
         userName: undefined,
+        checkDataValid: checkDataValid,
+        checkDataInvalid: checkDataInvalid,
         toJSON: function (){
             return ko.mapping.toJSON(self, {ignore: 'transients'})
         },
         clear: function ()  {
             self.dataToLoad([]);
+            self.createdActivities([]);
+            self.validActivities([]);
+            self.invalidActivities([]);
+            self.transients.checkDataValid.removeAll();
+            self.transients.checkDataInvalid.removeAll();
         },
         peek: function (indexType) {
             switch (indexType) {
@@ -626,7 +697,6 @@ function ActivityImport(activityImport) {
                 case STATE_INVALID:
                     if ((viewIndex - 1) >= 0) {
                         return self.invalidActivities()[viewIndex - 1];
-                        // return self.transients.findBySerialNumber(serial);
                     }
                     break;
             }
@@ -638,7 +708,6 @@ function ActivityImport(activityImport) {
                     return self.dataToLoad()[index];
                 case STATE_INVALID:
                     return self.invalidActivities()[viewIndex];
-                    // return self.transients.findBySerialNumber(serial);
             }
         },
         hasNext: function (indexType) {
@@ -676,10 +745,27 @@ function ActivityImport(activityImport) {
         },
         fixedInvalidActivity: function (activityId) {
             removeItemFromInvalidActivities()
+            self.transients.updateActivityValidity(true);
             self.transients.addCreatedActivity(activityId);
         },
         addErroredActivity: function () {
             self.transients.updateActivityValidity(false);
+        },
+        updateCheckDataActivityValidity: function (valid) {
+            var data = self.transients.getCurrent();
+            if (!data || ((valid != true) && (valid != false)))
+                return;
+
+            if ( valid ) {
+                if (self.transients.checkDataValid.indexOf(data[0].data.serial) == -1 ) {
+                    self.transients.checkDataValid.push(data[0].data.serial);
+                }
+            }
+            else {
+                if (self.transients.checkDataInvalid.indexOf(data[0].data.serial) == -1) {
+                    self.transients.checkDataInvalid.push(data[0].data.serial);
+                }
+            }
         },
         updateActivityValidity: function (valid) {
             var data = self.transients.getCurrent();
@@ -715,6 +801,9 @@ function ActivityImport(activityImport) {
                 }
             }
         },
+        hasBulkImportExecutedPreviously: function () {
+            return self.createdActivities().length > 0;
+        },
         getSerialNumber: function (outputs) {
             outputs = outputs || self.transients.getCurrent();
             var output = outputs[0];
@@ -736,6 +825,8 @@ function ActivityImport(activityImport) {
             self.createdActivities.removeAll();
             self.validActivities.removeAll();
             self.invalidActivities.removeAll();
+            self.transients.checkDataValid.removeAll();
+            self.transients.checkDataInvalid.removeAll();
         },
         getViewIndex: function () {
             return viewIndex;

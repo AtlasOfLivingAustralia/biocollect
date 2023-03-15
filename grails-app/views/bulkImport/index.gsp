@@ -24,6 +24,7 @@
         formName: "${pActivityFormName}",
         createActivityUrl: '${createLink(controller: 'bioActivity', action: 'mobileCreate', params: [id: "${projectActivityId}", bulkUpload: true, embedded: true], absolute: true)}',
         projectActivityId: "${projectActivityId}",
+        downloadTemplateFormUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate', params: [type: pActivityFormName, expandList: true, includeDataPathHeader: true])}",
         originUrl: "${grailsApplication.config.server.serverURL}",
         returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index') + "/" + projectId)}"
         </g:applyCodec>
@@ -41,25 +42,39 @@
     <h2><g:message code="bulkimport.stepone.title" /></h2>
     <div>
         <div class="form-group">
-            <label for="description"><g:message code="bulkimport.stepone.describe"/> <span class="req-field"/></label>
-            <textarea id="description" class="form-control" data-bind="value: activityImport.description"></textarea>
+            <label for="template"><g:message code="bulkimport.stepone.describe"/> </label>
+            <a id="template" class="btn btn-dark" data-bind="attr: { href: fcConfig.downloadTemplateFormUrl }"
+                title="<g:message code="project.survey.downloadTemplate.title"/>" target="_blank">
+                <i class="fas fa-download mr-1"></i>
+                <g:message code="project.survey.downloadTemplate"/>
+            </a>
         </div>
-        <div class="form-group">
-            <label for="spreadsheetFile"><g:message code="bulkimport.stepone.spreadsheet"/> </label>
-            <input id="spreadsheetFile" class="form-control-file" type="file" name="data" data-bind="event: {change: fileInputChangeHandler}"/>
-        </div>
-        <div class="form-group">
-            <label class="form-check-label" for="jsonData"><g:message code="bulkimport.stepone.json"/> <span class="req-field"/></label>
-            <pre id="jsonData" class="h-200px p-2 border mt-2" data-bind="text: JSON.stringify(activityImport.dataToLoad() || [], null, 2)">
-
-            </pre>
-        </div>
-        <button type="submit" class="btn btn-primary" data-bind="click: submitButtonHandler"><i class="fas fa-upload"></i> Submit</button>
     </div>
 </div>
 
 <div class="mt-5">
     <h2><g:message code="bulkimport.steptwo.title" /></h2>
+    <div>
+        <div class="form-group">
+            <label for="description"><g:message code="bulkimport.steptwo.describe"/> <span class="req-field"/></label>
+            <textarea id="description" class="form-control" data-bind="value: activityImport.description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="spreadsheetFile"><g:message code="bulkimport.steptwo.spreadsheet"/> </label>
+            <input id="spreadsheetFile" class="form-control-file" type="file" name="data" data-bind="event: {change: fileInputChangeHandler}"/>
+        </div>
+        <div class="form-group">
+            <label class="form-check-label" for="jsonData"><g:message code="bulkimport.steptwo.json"/> <span class="req-field"/></label>
+            <pre id="jsonData" class="h-200px p-2 border mt-2" data-bind="text: JSON.stringify(activityImport.dataToLoad() || [], null, 2)">
+
+            </pre>
+        </div>
+        <button type="submit" class="btn btn-primary" data-bind="click: submitButtonHandler"><i class="fas fa-hdd"></i> <g:message code="bulkimport.submit.title" default="Save import data"/> </button>
+    </div>
+</div>
+
+<div id="actOnData" class="mt-5">
+    <h2><g:message code="bulkimport.stepthree.title" /></h2>
     <table class="table">
         <thead>
         <tr>
@@ -70,7 +85,7 @@
         </thead>
         <tbody>
         <tr>
-            <th scope="row"><g:message code="bulkimport.data.total.title" default="Total number of rows in data"/></th>
+            <th scope="row"><g:message code="bulkimport.data.total.title" default="Total importable activities"/></th>
             <td data-bind="text: activityImport.transients.numberOfActivities"></td>
             <td>
                 <button class="btn btn-dark" data-bind="click: importButtonHandler, enable: showImportBtn"><i
@@ -82,7 +97,7 @@
             </td>
         </tr>
         <tr>
-            <th scope="row"><g:message code="bulkimport.data.imported.title" default="Total number of rows imported"/></th>
+            <th scope="row"><g:message code="bulkimport.data.imported.title" default="Total activities imported"/></th>
             <td data-bind="text: activityImport.transients.numberOfActivitiesLoaded"></td>
             <td>
                 <button class="btn btn-dark" data-bind="click: viewButtonHandler, enable: showViewBtn"><i
@@ -101,20 +116,39 @@
             </td>
         </tr>
         <tr>
-            <th scope="row"><g:message code="bulkimport.data.invalid.title" default="Total number of rows with error"/></th>
+            <th scope="row"><g:message code="bulkimport.data.invalid.title" default="Total errored activities"/></th>
             <td data-bind="text: activityImport.transients.numberOfActivitiesInvalid"></td>
             <td>
                 <button class="btn btn-dark" data-bind="click: invalidButtonHandler, enable: showFixInvalid">
                 <i class="fas fa-tools"></i>
                 <g:message
-                        code="projectActivity.bulkupload.fix.invalid.btn" default="Fix invalid"/></button>
+                        code="projectActivity.bulkupload.fix.invalid.btn" default="Fix error"/></button>
             </td>
+        </tr>
+        <tr>
+            <th colspan="3"><g:message code="bulkimport.checkdata.title" default="Check data results"/></th>
+        </tr>
+        <tr>
+            <td><g:message code="bulkimport.data.valid.title" default="Total activities checked"/></td>
+            <td data-bind="text: activityImport.transients.totalActivitiesChecked"></td>
+            <td></td>
+        </tr>
+
+        <tr>
+            <td><g:message code="bulkimport.data.valid.title" default="Total valid activities"/></td>
+            <td data-bind="text: activityImport.transients.checkDataValid().length"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><g:message code="bulkimport.data.invalid.title" default="Total invalid activities"/></td>
+            <td data-bind="text: activityImport.transients.checkDataInvalid().length"></td>
+            <td></td>
         </tr>
         </tbody>
     </table>
 </div>
 <div class="mt-5">
-<!-- ko template: {name: 'iframeTemplate', if: showIframe, afterRender: adjustIframeHeight } -->
+<!-- ko template: {name: 'iframeTemplate', if: showIframe, afterRender: iframeRenderHandler } -->
 <!-- /ko -->
 </div>
 <asset:script>
@@ -125,7 +159,7 @@
 %{--    });--}%
 </asset:script>
 <script id="iframeTemplate" type="text/html">
-<h2 id="iframeTitle"><g:message code="bulkimport.stepthree.title" /></h2>
+<h2 id="iframeTitle"><g:message code="bulkimport.stepfour.title" /></h2>
 <div id="iframeContainer">
     <iframe id="createIframe" width="100%" height="800px"></iframe>
 </div>
