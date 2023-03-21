@@ -41,7 +41,8 @@ class ALA {
                 dateCreated: doc.dateCreated,
                 urlWeb     : doc.urlWeb,
                 urlImage   : doc.imageUrl,
-                url        : params.url + "/project/index/" + doc.projectId
+                url        : params.url + "/project/index/" + doc.projectId,
+                containsActivity       : doc.containsActivity
             ]
         }
     }

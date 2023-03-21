@@ -887,6 +887,17 @@ class ProjectController {
                                     maximum = "500",
                                     defaultValue = "15"
                             )
+                    ),
+                    @Parameter(
+                            name = "initiator",
+                            in = ParameterIn.QUERY,
+                            description = "Convert the search result to a format that is compatible with the specified initiator.",
+                            schema = @Schema(
+                                    name = "initiator",
+                                    type = "string",
+                                    allowableValues =  ["ala", "scistarter", "biocollect", "seed"],
+                                    defaultValue = "biocollect"
+                            )
                     )
             ],
             responses = [
