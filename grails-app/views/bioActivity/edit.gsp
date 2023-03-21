@@ -53,6 +53,8 @@
         returnToMobile: "${createLink(controller: 'mobile', action: 'status')}#successfully-posted",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        originUrl: "${grailsApplication.config.server.serverURL}",
+        bulkUpload: ${bulkUpload?:false}
         </g:applyCodec>
         },
         here = document.location.href;
@@ -61,6 +63,10 @@
     <asset:javascript src="common-bs4.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
+    <g:if test="${bulkUpload}">
+        <asset:javascript src="bulk-import-activity-create-controller.js"/>
+    </g:if>
+
 </head>
 
 

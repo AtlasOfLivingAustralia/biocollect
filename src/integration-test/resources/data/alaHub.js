@@ -398,6 +398,9 @@ var alaHub = {
         "projectRecords" : {
             "facets" : []
         },
+        "bulkImport" : {
+            "facets" : []
+        },
         "myProjectRecords" : {
             "facets" : []
         }

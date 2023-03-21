@@ -771,6 +771,15 @@ class ProjectController {
                             )
                     ),
                     @Parameter(
+                            name = "fq",
+                            in = ParameterIn.QUERY,
+                            description = "Filter projects based on attributes. For example, fq=containsActivity:true",
+                            schema = @Schema(
+                                    name = "fq",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
                             name = "organisationName",
                             in = ParameterIn.QUERY,
                             description = "Filter projects by organisation name",

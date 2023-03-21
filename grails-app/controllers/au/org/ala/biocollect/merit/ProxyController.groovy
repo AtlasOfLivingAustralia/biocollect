@@ -132,13 +132,14 @@ class ProxyController {
         String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate"
         String expandList = params.expandList?:""
         String listName = params.listName?:null
+        String includeDataPathHeader = params.includeDataPathHeader ?: false
 
         if (params.data) {
             webService.proxyPostRequest(response, url,
-                    [listName:params.listName, type:params.type, data:params.data, editMode:params.editMode, allowExtraRows:params.allowExtraRows, autosizeColumns:false, expandList: expandList])
+                    [listName:params.listName, type:params.type, data:params.data, editMode:params.editMode, allowExtraRows:params.allowExtraRows, autosizeColumns:false, expandList: expandList, includeDataPathHeader: includeDataPathHeader])
         }
         else {
-            url += "?type=${params.type?.encodeAsURL()}&expandList=${expandList?.encodeAsURL()}"
+            url += "?type=${params.type?.encodeAsURL()}&expandList=${expandList?.encodeAsURL()}&includeDataPathHeader=${includeDataPathHeader}"
             if(listName){
                 url += "&listName=${params.listName.encodeAsURL()}"
             }

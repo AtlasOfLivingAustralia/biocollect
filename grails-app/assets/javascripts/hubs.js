@@ -114,6 +114,7 @@ var HubSettings = function (settings, config) {
         projectRecords : new FacetConfigurationViewModel(settings.pages.projectRecords, hubConfigs.availableDataFacets),
         userProjectActivityRecords : new FacetConfigurationViewModel(settings.pages.userProjectActivityRecords, hubConfigs.availableDataFacets),
         myProjectRecords : new FacetConfigurationViewModel(settings.pages.myProjectRecords, hubConfigs.availableDataFacets),
+        bulkImport : new FacetConfigurationViewModel(settings.pages.bulkImport, hubConfigs.availableDataFacets),
         projectFinder: new FacetConfigurationViewModel(settings.pages.projectFinder, hubConfigs.availableProjectFacets)
     };
     self.dataColumns = ko.observableArray();

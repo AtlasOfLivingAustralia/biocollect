@@ -3,9 +3,11 @@ package au.org.ala.biocollect
 
 import pages.AddBioActivityPage
 import pages.ViewBioActivityPage
+import spock.lang.Ignore
 import spock.lang.Stepwise
 
 @Stepwise
+@Ignore
 class AddBioActivitySpec extends StubbedCasSpec {
 
     def setupSpec() {

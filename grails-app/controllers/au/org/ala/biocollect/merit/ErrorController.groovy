@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import grails.converters.JSON
+
 class ErrorController {
 
     def settingService, cookieService
@@ -15,14 +17,22 @@ class ErrorController {
     }
 
     def response500() {
-        try {
-            loadRecentHub()
-        }
-        catch (Throwable ex) {
-            log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
-        }
+        // handle IllegalArugmentException and send a JSON message back with 500 status code
+        def exception = request.exception?.cause?.target
+        if ((exception instanceof IllegalArgumentException) && (params.format == 'json')) {
+            response.status = 500
+            render([message: exception.message, status: 'error'] as JSON)
+            return
+        } else {
+            try {
+                loadRecentHub()
+            }
+            catch (Throwable ex) {
+                log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
+            }
 
-        render view:'/error'
+            render view:'/error'
+        }
     }
 
     /**

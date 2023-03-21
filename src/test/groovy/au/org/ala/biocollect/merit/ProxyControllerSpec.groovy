@@ -3,9 +3,6 @@ package au.org.ala.biocollect.merit
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
-
-import javax.servlet.http.HttpServletResponse
-
 /**
  * Tests the ProxyController class.
  */
@@ -27,7 +24,7 @@ class ProxyControllerSpec extends Specification implements ControllerUnitTest<Pr
         controller.excelOutputTemplate()
 
         then:
-        1 * webServiceStub.proxyGetRequest(response, "http://test/metadata/excelOutputTemplate?type=test&expandList=true&listName=test")
+        1 * webServiceStub.proxyGetRequest(response, "http://test/metadata/excelOutputTemplate?type=test&expandList=true&includeDataPathHeader=false&listName=test")
         response.status == HttpStatus.SC_OK
     }
 
@@ -39,7 +36,7 @@ class ProxyControllerSpec extends Specification implements ControllerUnitTest<Pr
         controller.excelOutputTemplate()
 
         then:
-        1 * webServiceStub.proxyGetRequest(response, "http://test/metadata/excelOutputTemplate?type=test&expandList=true")
+        1 * webServiceStub.proxyGetRequest(response, "http://test/metadata/excelOutputTemplate?type=test&expandList=true&includeDataPathHeader=false")
         response.status == HttpStatus.SC_OK
     }
 }

@@ -56,7 +56,8 @@
             spatialUrl: "${spatialUrl}",
             mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
             excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}"
+            absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
+            bulkImportId: "${bulkImportId}"
             </g:applyCodec>
         },
         here = document.location.href;

@@ -289,3 +289,9 @@ ko.extenders.set = function (target) {
 
     return target
 };
+
+ko.isObservableArray = function (instance) {
+    return ko.isObservable(instance)
+        && typeof instance["remove"] == "function"
+        && typeof instance["push"] == "function";
+};

@@ -511,6 +511,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             url += '&projectId=' + fcConfig.projectId;
         }
 
+        if (fcConfig.bulkImportId && (view == 'bulkimport')) {
+            url += '&bulkImportId=' + fcConfig.bulkImportId;
+        }
+
         fq = self.urlFacetParameter();
 
         fq.forEach(function (filter, index) {
@@ -774,6 +778,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             flimit: flimit || fcConfig.flimit,
             view: self.view,
             spotterId: fcConfig.spotterId,
+            bulkImportId: fcConfig.bulkImportId,
             projectActivityId: fcConfig.projectActivityId,
             clientTimezone : moment.tz.guess()
         },

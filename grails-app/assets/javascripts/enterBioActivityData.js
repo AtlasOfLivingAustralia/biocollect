@@ -11,8 +11,10 @@ function validateDateField(dateField) {
 
 /* Master controller for page. This handles saving each model as required. */
 function Master(activityId, config) {
-    var self = this;
+    var self = this,
+        viewModel;
     self.subscribers = [];
+    self.deferredObjects = [];
 
     // client models register their name and methods to participate in saving
     self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
@@ -115,6 +117,17 @@ function Master(activityId, config) {
 
     }
 
+    self.addDeferredObject = function (deferredObject) {
+        self.deferredObjects.push(deferredObject);
+    }
+
+    self.listenForResolution = function () {
+        $.when.apply($, self.deferredObjects).then(function () {
+            if (fcConfig.bulkUpload)
+                window.parent.postMessage({eventName: 'viewmodelloadded', data: {}}, fcConfig.originUrl);
+        });
+    }
+
 
     /**
      * Makes an ajax call to save any sections that have been modified. This includes the activity
@@ -167,6 +180,10 @@ function Master(activityId, config) {
                         self.saved();
                     }
                     amplify.store('activity-' + config.activityId, null);
+                    if (activityId)
+                        $(document).trigger('activitycreated', {activityId: activityId})
+                    else
+                        $(document).trigger('activitycreatefailed', {errors: data.errors, error: data.error})
                 },
                 error: function (jqXHR, status, error) {
 
@@ -178,6 +195,8 @@ function Master(activityId, config) {
                     else {
                         alert('An unhandled error occurred: ' + error);
                     }
+
+                    $(document).trigger('activitycreatefailed', {error: error})
                 },
                 complete: function () {
                     if (unblock) {
@@ -198,12 +217,17 @@ function Master(activityId, config) {
                 });
             }
 
-            $.ajax(ajaxRequestParams);
+            return $.ajax(ajaxRequestParams);
         }
     };
 
     self.saved = function () {
-        if (config.isMobile) {
+        if (fcConfig.bulkUpload) {
+            setTimeout(function () {
+                $.unblockUI();
+            }, 2000);
+        }
+        else if (config.isMobile) {
             location.href = config.returnToMobile;
         } else {
             document.location.href = config.returnTo;
@@ -226,6 +250,16 @@ function Master(activityId, config) {
         }
     };
 
+    self.setViewModel = function (vm) {
+        if (vm) {
+            viewModel =  vm;
+        }
+    }
+
+    self.getViewModel = function () {
+        return viewModel;
+    }
+
     autoSaveModel(self, null, {preventNavigationIfDirty: true});
 };
 
@@ -238,6 +272,8 @@ function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, conf
     self.projectStage = ko.observable(act.projectStage || "");
     self.mainTheme = ko.observable(act.mainTheme);
     self.type = ko.observable(act.type);
+    self.bulkImportId = ko.observable(act.bulkImportId);
+    self.embargoed = ko.observable(false);
     self.projectId = act.projectId;
 
     // check if project activity requires manual verification by admin 
@@ -357,7 +393,9 @@ function initialiseOutputViewModel(outputViewModelName, dataModel, elementId, ac
         pActivity: config.pActivity
     };
     ecodata.forms[viewModelInstance] = new ecodata.forms[outputViewModelName](output, dataModel, context, config);
-    ecodata.forms[viewModelInstance].initialise(output.data);
+    var deferred = ecodata.forms[viewModelInstance].initialise(output.data);
+    // add deferred object into a list and call when all deferred objects are resolved
+    master.addDeferredObject(deferred);
 
     // dirtyFlag must be defined after data is loaded
     ecodata.forms[viewModelInstance].dirtyFlag = ko.simpleDirtyFlag(ecodata.forms[viewModelInstance], false);

@@ -9,6 +9,7 @@ import org.joda.time.Period
 import org.joda.time.format.DateTimeFormat
 
 class ActivityService {
+    static final BATCH_SIZE = 20
 
     GrailsApplication grailsApplication
     WebService webService
@@ -115,9 +116,27 @@ class ActivityService {
         webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/' + id)
     }
 
-    def bulkDelete(List ids) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/activityBulkDelete', [ids: ids])
+    def bulkDelete(List ids, boolean destory) {
+        String url = grailsApplication.config.ecodata.service.url + '/activityBulkDelete'
+        if(destory)
+            url += '?destroy=true'
+        webService.doPost(url, [ids: ids])
     }
+
+    boolean batchedBulkDelete (List activityIds) {
+        boolean success = true
+        int offset = 0
+        while (offset < activityIds.size()) {
+            int end = offset + BATCH_SIZE
+            end = end <= activityIds.size() ? end : activityIds.size()
+            List ids = activityIds.subList(offset, end)
+            success &= bulkDelete(ids, true)?.resp?.details?.success
+            offset += BATCH_SIZE
+        }
+
+        success
+    }
+
 
     def bulkEmbargo(List ids) {
         if (ids) {
@@ -126,11 +145,51 @@ class ActivityService {
         }
     }
 
+    def batchedBulkEmbargo (List activityIds) {
+        int offset = 0
+        boolean success = true
+        while (offset < activityIds.size()) {
+            int end = offset + BATCH_SIZE
+            end = end <= activityIds.size() ? end : activityIds.size()
+            List ids = activityIds.subList(offset, end)
+            Map result = bulkEmbargo(ids)
+            if (result.resp) {
+                success &= true
+            } else {
+                success &= false
+            }
+
+            offset += BATCH_SIZE
+        }
+
+        success
+    }
+
     def bulkRelease(List ids) {
         if (ids) {
             String params = "id=" + ids.join('&id=')
             webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false])
         }
+    }
+
+    boolean batchedBulkRelease (List activityIds) {
+        int offset = 0
+        boolean success = true
+        while (offset < activityIds.size()) {
+            int end = offset + BATCH_SIZE
+            end = end <= activityIds.size() ? end : activityIds.size()
+            List ids = activityIds.subList(offset, end)
+            Map result = bulkRelease(ids)
+            if (result.resp) {
+                success &= true
+            } else {
+                success &= false
+            }
+
+            offset += BATCH_SIZE
+        }
+
+        success
     }
 
     def isUserOwnerForActivity(userId, id) {
@@ -376,5 +435,10 @@ class ActivityService {
         }
 
         result
+    }
+
+    def convertExcelToOutputData(String id, String type, def file){
+        def result =  webService.postMultipart(grailsApplication.config.ecodata.service.url + "/metadata/extractOutputDataFromActivityExcelTemplate", [pActivityId: id, type: type], file, 'data')
+        result.content?.subMap('data')  ?: result
     }
 }
