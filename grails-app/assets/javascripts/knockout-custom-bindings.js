@@ -280,6 +280,7 @@ ko.bindingHandlers.stagedImageUpload = {
         // Expected to be a ko.observableArray
         $(element).fileupload({
             url: config.url,
+            pasteZone: null,
             autoUpload: true
         }).on('fileuploadadd', function (e, data) {
             complete(false);
@@ -701,7 +702,9 @@ ko.bindingHandlers.fileUploadNoImage = {
     init: function (element, options) {
 
         var defaults = {autoUpload: true};
-        var settings = {};
+        var settings = {
+            pasteZone: null
+        };
         $.extend(settings, defaults, options());
         $(element).fileupload(settings
         ).on('fileuploadadd', function (e, data) {
