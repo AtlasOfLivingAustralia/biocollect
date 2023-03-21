@@ -286,3 +286,9 @@ select[name=project-list_length]{
     margin-bottom: 0px;
 }
 /* END system banner message */
+
+/* bulk import index*/
+.h-200px {
+    height: 200px;
+}
+/* END bulk import index*/

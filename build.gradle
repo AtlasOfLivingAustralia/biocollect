@@ -16,7 +16,7 @@ buildscript {
 }
 
 
-version "6.5-SNAPSHOT"
+version "$biocollectVersion"
 group "au.org.ala"
 
 apply plugin: "eclipse"
@@ -39,6 +39,12 @@ repositories {
    //maven { url "https://mvnrepository.com" }
     maven { url "https://repo.osgeo.org/repository/release/" }
     maven { url "https://repo.grails.org/grails/core" }
+    maven { url = uri("https://maven.pkg.github.com/atlasoflivingaustralia/ecodata-client-plugin")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv('GPR_USER')
+            password = project.findProperty("gpr.token") ?: System.getenv('GPR_TOKEN')
+        }
+    }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
     mavenCentral()
 }
@@ -140,7 +146,7 @@ dependencies {
 
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:4.1"
+        implementation "org.grails.plugins:ecodata-client-plugin:4.2-bulkupload-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"

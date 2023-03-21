@@ -1,0 +1,73 @@
+name: biocollect build
+
+on:
+  push:
+    branches:
+      - dev
+      - master
+      - feature/**
+      - hotfix/**
+
+env:
+  TZ: Australia/Canberra
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Install nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - run: npm install
+
+      - name: Read the biocollect version from the gradle.properties file
+        id: read_property
+        uses: christian-draeger/read-properties@1.1.0
+        with:
+          path: './gradle.properties'
+          properties: 'biocollectVersion'
+
+      - name: Get the package id for the version read from the properties file
+        uses: castlabs/get-package-version-id-action@v2.0
+        id: versions
+        with:
+          version:  ${{steps.read_property.outputs.biocollectVersion}}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete the github package with the id we just retrieved (all SNAPSHOT versions are considered part of the same package)
+        uses: actions/delete-package-versions@v2
+        if: ${{ steps.versions.outputs.ids != '' }}
+        with:
+          package-version-ids: "${{ steps.versions.outputs.ids }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: build biocollect before running js unit test to compile dependent js templates
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: build
+
+      - name: Run javascript unit tests
+        run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
+
+      - name: Clean to remove clover instrumentation
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: clean
+
+      - name: Publish the JAR to the repository
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        with:
+          arguments: publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

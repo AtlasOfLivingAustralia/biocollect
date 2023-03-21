@@ -25,8 +25,8 @@ var pActivityInfo = function(o, selected, startDate, organisationName, pActivity
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
     self.methodUrl = ko.observable(o.methodUrl);
-    self.downloadFormTemplateUrl = ko.observable(o.pActivityFormName ? fcConfig.downloadTemplateFormUrl + "?type=" + o.pActivityFormName + "&expandList=true" : "")
-
+    self.downloadFormTemplateUrl = ko.observable(o.pActivityFormName ? fcConfig.downloadTemplateFormUrl + "?type=" + o.pActivityFormName + "&expandList=true&includeDataPathHeader=true" : "")
+    self.bulkImportUrl = ko.observable(  fcConfig.bulkImportUrl +  "&projectActivityId=" + o.projectActivityId);
  /*   self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
     self.submissionDoi = ko.observable(o.submissionDoi ? o.submissionDoi : "");
     self.submissionPublicationDate = ko.observable(o.submissionPublicationDate ? o.submissionPublicationDate : "");
