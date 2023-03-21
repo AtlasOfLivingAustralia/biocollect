@@ -79,7 +79,7 @@ function BulkUploadViewModel(activityImport) {
 
     self.invalidButtonHandler = function () {
         self.phase(STATE_FIXINVALID);
-        self.nextButtonHandler("Loading activity to fix errors. Once errors are fixed, scroll to bottom of page and click Submit button. Or, click Cancel button to skip this activity.");
+        self.iterateData(STATE_INVALID, "Loading activity to fix errors. Once errors are fixed, scroll to bottom of page and click Submit button. Or, click Cancel button to skip this activity.");
     };
 
     self.publishButtonHandler = function () {
@@ -702,12 +702,15 @@ function ActivityImport(activityImport) {
             }
         },
         getCurrent: function (indexType) {
+            var newIndex
             switch (indexType) {
                 default:
                 case STATE_ITERATION:
-                    return self.dataToLoad()[index];
+                    newIndex = index >= 0 ? index : 0;
+                    return self.dataToLoad()[newIndex];
                 case STATE_INVALID:
-                    return self.invalidActivities()[viewIndex];
+                    newIndex = viewIndex >= 0 ? viewIndex : 0;
+                    return self.invalidActivities()[newIndex];
             }
         },
         hasNext: function (indexType) {

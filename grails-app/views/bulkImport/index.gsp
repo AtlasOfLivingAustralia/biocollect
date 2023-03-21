@@ -42,7 +42,6 @@
     <h2><g:message code="bulkimport.stepone.title" /></h2>
     <div>
         <div class="form-group">
-            <label for="template"><g:message code="bulkimport.stepone.describe"/> </label>
             <a id="template" class="btn btn-dark" data-bind="attr: { href: fcConfig.downloadTemplateFormUrl }"
                 title="<g:message code="project.survey.downloadTemplate.title"/>" target="_blank">
                 <i class="fas fa-download mr-1"></i>
@@ -57,6 +56,9 @@
     <div>
         <div class="form-group">
             <label for="description"><g:message code="bulkimport.steptwo.describe"/> <span class="req-field"/></label>
+            <small id="descriptionHelpBlock" class="form-text text-muted">
+                <g:message code="bulkimport.steptwo.describe.helptext" />
+            </small>
             <textarea id="description" class="form-control" data-bind="value: activityImport.description"></textarea>
         </div>
         <div class="form-group">
@@ -85,7 +87,7 @@
         </thead>
         <tbody>
         <tr>
-            <th scope="row"><g:message code="bulkimport.data.total.title" default="Total importable activities"/></th>
+            <th scope="row"><g:message code="bulkimport.data.total.title" default="Total importable records"/></th>
             <td data-bind="text: activityImport.transients.numberOfActivities"></td>
             <td>
                 <button class="btn btn-dark" data-bind="click: importButtonHandler, enable: showImportBtn"><i
@@ -97,26 +99,26 @@
             </td>
         </tr>
         <tr>
-            <th scope="row"><g:message code="bulkimport.data.imported.title" default="Total activities imported"/></th>
+            <th scope="row"><g:message code="bulkimport.data.imported.title" default="Total records imported"/></th>
             <td data-bind="text: activityImport.transients.numberOfActivitiesLoaded"></td>
             <td>
                 <button class="btn btn-dark" data-bind="click: viewButtonHandler, enable: showViewBtn"><i
                     class="far fa-eye"></i> <g:message code="projectActivity.bulkupload.view.btn"
-                                                       default="View activities"/></button>
+                                                       default="View records"/></button>
                 <button class="btn btn-success" data-bind="click: publishButtonHandler, enable: showPublishBtn"><i
                         class="fas fa-upload"></i> <g:message code="projectActivity.bulkupload.publish.btn"
-                                                              default="Publish activities"/></button>
+                                                              default="Publish records"/></button>
                 <button class="btn btn-dark" data-bind="click: embargoButtonHandler, enable: showEmbargoBtn"><i
                         class="fas fa-lock"></i> <g:message code="projectActivity.bulkupload.publish.btn"
-                                                            default="Embargo activities"/></button>
+                                                            default="Embargo records"/></button>
                 <button class="btn btn-danger" data-bind="click: deleteButtonHandler, enable: showDeleteBtn"><i
                         class="far fa-trash-alt"></i> <g:message code="projectActivity.bulkupload.delete.btn"
-                                                                 default="Delete activities"/></button>
+                                                                 default="Delete records"/></button>
 
             </td>
         </tr>
         <tr>
-            <th scope="row"><g:message code="bulkimport.data.invalid.title" default="Total errored activities"/></th>
+            <th scope="row"><g:message code="bulkimport.data.invalid.title" default="Total errored records"/></th>
             <td data-bind="text: activityImport.transients.numberOfActivitiesInvalid"></td>
             <td>
                 <button class="btn btn-dark" data-bind="click: invalidButtonHandler, enable: showFixInvalid">
@@ -129,18 +131,18 @@
             <th colspan="3"><g:message code="bulkimport.checkdata.title" default="Check data results"/></th>
         </tr>
         <tr>
-            <td><g:message code="bulkimport.data.valid.title" default="Total activities checked"/></td>
+            <td><g:message code="bulkimport.data.valid.title" default="Total records checked"/></td>
             <td data-bind="text: activityImport.transients.totalActivitiesChecked"></td>
             <td></td>
         </tr>
 
         <tr>
-            <td><g:message code="bulkimport.data.valid.title" default="Total valid activities"/></td>
+            <td><g:message code="bulkimport.data.valid.title" default="Total valid records"/></td>
             <td data-bind="text: activityImport.transients.checkDataValid().length"></td>
             <td></td>
         </tr>
         <tr>
-            <td><g:message code="bulkimport.data.invalid.title" default="Total invalid activities"/></td>
+            <td><g:message code="bulkimport.data.invalid.title" default="Total invalid records"/></td>
             <td data-bind="text: activityImport.transients.checkDataInvalid().length"></td>
             <td></td>
         </tr>

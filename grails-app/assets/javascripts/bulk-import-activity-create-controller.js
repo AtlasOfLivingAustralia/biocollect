@@ -1,5 +1,5 @@
 var parentWindow, origin, savePromise, asyncPromiseResolvedChecker, numberOfIntervalCheck = 0;
-var MAX_INTERVAL_CHECK = 5,
+var MAX_INTERVAL_CHECK = 15, // max one minute
     MAX_INITIAL_CHECK_DELAY_IN_MS = 4000,
     MAX_VALIDATE_DELAY_IN_MS = 4000;
 
@@ -45,7 +45,7 @@ window.addEventListener("message", function (event) {
 
             $(document).on('activitycreated', activityCreateHandler);
             $(document).on('activitycreatefailed', activityCreateFailedHandler);
-            $(document).on('activitycreatecancelled', activityCreateCancelHandler)
+            $(document).on('activitycreatecancelled', activityCreateCancelHandler);
             break;
     }
 });
