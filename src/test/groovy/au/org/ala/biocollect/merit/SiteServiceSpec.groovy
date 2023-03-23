@@ -43,14 +43,10 @@ class SiteServiceSpec extends Specification implements AutowiredTest{
                         "coordinates": [[[0, 0], [0, 3], [1, 10], [5, 10], [0, 0]]]
                 ]
         ]
-        projectSiteWithPid =  [
-                extent: [
-                        geometry: [
-                                type: "pid",
-                                pid: "123"
-                        ]
+        projectSiteWithPid = [
+                        "type"       : "Polygon",
+                        "coordinates": [[[0, 0], [0, 3], [1, 10], [5, 10], [0, 0]]]
                 ]
-        ]
         defineBeans(new ConvertersGrailsPlugin())
     }
 
@@ -88,8 +84,7 @@ class SiteServiceSpec extends Specification implements AutowiredTest{
         then:
         1 * service.commonService.buildUrlParamsFromMap(_) >> ""
         1 * service.projectService.get(_) >> [projectSiteId: 'site1']
-        1 * service.webService.getJson("/site/site1") >> projectSiteWithPid
-        1 * service.webService.getJson("/ws/shape/geojson/123") >> projectSite
+        1 * service.webService.getJson("/site/site1.geojson") >> projectSiteWithPid
         response.isPointInsideProjectArea == true
         response.address == null
     }
