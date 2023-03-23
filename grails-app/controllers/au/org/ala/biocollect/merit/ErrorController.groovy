@@ -17,21 +17,25 @@ class ErrorController {
     }
 
     def response500() {
-        // handle IllegalArugmentException and send a JSON message back with 500 status code
-        def exception = request.exception?.cause?.target
-        if ((exception instanceof IllegalArgumentException) && (params.format == 'json')) {
-            response.status = 500
-            render([message: exception.message, status: 'error'] as JSON)
-            return
-        } else {
-            try {
-                loadRecentHub()
-            }
-            catch (Throwable ex) {
-                log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
-            }
+        try {
+            // handle IllegalArugmentException and send a JSON message back with 500 status code
+            if(request.exception?.cause?.hasProperty('target')){
+                def exception = request.exception?.cause?.target
+                if ((exception instanceof IllegalArgumentException) && (params.format == 'json')) {
+                    response.status = 500
+                    render([message: exception.message, status: 'error'] as JSON)
+                    return
+                } else {
 
-            render view:'/error'
+                    loadRecentHub()
+
+                    render view:'/error'
+                    return
+                }
+            }
+        }
+        catch (Throwable ex) {
+            log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
         }
     }
 
