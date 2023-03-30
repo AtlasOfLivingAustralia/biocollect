@@ -207,7 +207,7 @@ class SpeciesService {
             }
         } else {
             // when no guid, append unmatched taxon string
-            name = "${data.name} (Unmatched taxon)"
+            name = "${data.rawScientificName?:''} (Unmatched taxon)"
         }
 
         name

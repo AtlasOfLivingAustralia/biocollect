@@ -30,9 +30,6 @@
                         <li class="page-item"><a
                                 class="page-link" href="#" data-bind="click:pagination.next"><i
                                     class="fa fa-angle-right"></i></a></li>
-                        <li class="page-item"><a
-                                class="page-link" href="#" data-bind="click:pagination.last"><i
-                                    class="fas fa-angle-double-right"></i></a></li>
                         <!-- /ko -->
                     </ul>
                 </nav>

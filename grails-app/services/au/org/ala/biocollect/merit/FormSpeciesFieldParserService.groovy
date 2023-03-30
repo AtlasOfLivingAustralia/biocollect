@@ -51,7 +51,12 @@ class FormSpeciesFieldParserService {
                     viewModelItems(attrs, viewModel.rows)
                     break;
                 default:
-                    addIfSpeciesDatatype(attrs, viewModel, "")
+                    // if more view types are added and they are not handled above, they will be caught by the if condition below
+                    if (viewModel.items) {
+                        viewModelItems(attrs, viewModel.items)
+                    } else {
+                        addIfSpeciesDatatype(attrs, viewModel, "")
+                    }
                     break;
             }
         }
