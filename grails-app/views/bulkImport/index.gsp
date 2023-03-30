@@ -25,6 +25,8 @@
         createActivityUrl: '${createLink(controller: 'bioActivity', action: 'mobileCreate', params: [id: "${projectActivityId}", bulkUpload: true, embedded: true], absolute: true)}',
         projectActivityId: "${projectActivityId}",
         downloadTemplateFormUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate', params: [type: pActivityFormName, expandList: true, includeDataPathHeader: true])}",
+        listBulkImportUrl: "${createLink(controller: 'bulkImport', action: 'list')}",
+        bulkImportCreateUrl: "${createLink(uri: "/${hubConfig.urlPath}/bulkImport/create", params: [projectId: projectId, projectActivityId: projectActivityId])}",
         originUrl: "${grailsApplication.config.server.serverURL}",
         returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index') + "/" + projectId)}"
         </g:applyCodec>
@@ -37,7 +39,17 @@
 </head>
 
 <body>
-<h1><g:message code="bulkimport.index.title" /></h1>
+<div class="row">
+    <div class="col-sm-6">
+        <h1><g:message code="bulkimport.index.title" /></h1>
+    </div>
+    <div class="col-sm-6">
+        <div class="float-right">
+            <g:render template="adminActions"/>
+        </div>
+    </div>
+</div>
+
 <div class="mt-5">
     <h2><g:message code="bulkimport.stepone.title" /></h2>
     <div>
@@ -153,6 +165,13 @@
 <!-- ko template: {name: 'iframeTemplate', if: showIframe, afterRender: iframeRenderHandler } -->
 <!-- /ko -->
 </div>
+
+<g:if test="${fc.userIsAlaAdmin()}">
+    <div id="adminActions" class="mt-5">
+        <h2><g:message code="bulkimport.admin.actions.title" /></h2>
+        <g:render template="adminActions" />
+    </div>
+</g:if>
 <asset:script>
 %{--    $(function(){--}%
     var model = new ActivityImport({projectActivityId: fcConfig.projectActivityId, formName: fcConfig.formName, projectId: fcConfig.projectId}),

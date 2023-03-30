@@ -25,7 +25,6 @@
 <body>
 <h1>${messageSource.getMessage('projectActivity.create.bulkload.list', [].toArray(), '', Locale.default)}</h1>
 <table class="table">
-    <caption>List of bulk imports</caption>
     <thead>
     <tr>
         <th colspan="3"></th>
