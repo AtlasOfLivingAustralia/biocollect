@@ -375,7 +375,7 @@
 </div>
 <asset:script type="text/javascript">
     $(function(){
-        var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+        var mapFeatures = $.parseJSON('${(mapFeatures as JSON).toString()?.encodeAsJavaScript()}');
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
 

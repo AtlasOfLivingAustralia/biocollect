@@ -282,6 +282,7 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
 
     $(uiSelector).fileupload({
         url:uploadUrl,
+        pasteZone: null,
         formData:function(form) {
             return [{name:'document', value:documentViewModel.toJSONString()}]
         },

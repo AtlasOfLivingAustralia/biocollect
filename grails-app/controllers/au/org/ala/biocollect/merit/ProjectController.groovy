@@ -767,6 +767,15 @@ class ProjectController {
                             )
                     ),
                     @Parameter(
+                            name = "fq",
+                            in = ParameterIn.QUERY,
+                            description = "Filter projects based on attributes. For example, fq=containsActivity:true",
+                            schema = @Schema(
+                                    name = "fq",
+                                    type = "string"
+                            )
+                    ),
+                    @Parameter(
                             name = "organisationName",
                             in = ParameterIn.QUERY,
                             description = "Filter projects by organisation name",
@@ -873,6 +882,17 @@ class ProjectController {
                                     minimum = "0",
                                     maximum = "500",
                                     defaultValue = "15"
+                            )
+                    ),
+                    @Parameter(
+                            name = "initiator",
+                            in = ParameterIn.QUERY,
+                            description = "Convert the search result to a format that is compatible with the specified initiator.",
+                            schema = @Schema(
+                                    name = "initiator",
+                                    type = "string",
+                                    allowableValues =  ["ala", "scistarter", "biocollect", "seed"],
+                                    defaultValue = "biocollect"
                             )
                     )
             ],

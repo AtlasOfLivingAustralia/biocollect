@@ -69,6 +69,10 @@
             </g:elseif>
         }
     });
+
+    $(document).ajaxSend(window.incrementAsyncCounter);
+
+    $(document).ajaxComplete(window.decreaseAsyncCounter);
 </script>
 <asset:deferredScripts/>
 </body>

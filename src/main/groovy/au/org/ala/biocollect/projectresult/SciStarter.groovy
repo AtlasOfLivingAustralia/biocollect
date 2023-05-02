@@ -77,7 +77,8 @@ class SciStarter {
                 coverage               : siteGeom,
                 links                  : trimmedLinks,
                 startDate              : doc.plannedStartDate,
-                url                    : params.url + "/acsa/project/index/" + doc.projectId
+                url                    : params.url + "/acsa/project/index/" + doc.projectId,
+                containsActivity       : doc.containsActivity
             ]
         }
     }

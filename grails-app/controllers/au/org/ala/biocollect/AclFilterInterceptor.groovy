@@ -150,7 +150,7 @@ class AclFilterInterceptor {
                 flash.message = errorMsg
                 if (params.returnTo) {
                     redirect(url: params.returnTo)
-                } else if (projectId){
+                } else if (projectId && pa.redirectController() && pa.redirectAction()){
                     redirect(controller: pa.redirectController(), action: pa.redirectAction(), id: projectId)
                 } else {
                     render text: [error: errorMsg] as JSON, status: HttpStatus.UNAUTHORIZED
