@@ -402,6 +402,6 @@ class TemplateTagLib {
     }
 
     private String getCurrentURL(Map hubConfig){
-        grailsApplication.config.getProperty("grails.serverURL") + request.forwardURI + "?hub=" + hubConfig.urlPath
+        g.createLink(absolute: true, uri: '/').toString()
     }
 }

@@ -1,13 +1,10 @@
 package au.org.ala.biocollect
 
-
 import pages.AddBioActivityPage
 import pages.ViewBioActivityPage
-import spock.lang.Ignore
 import spock.lang.Stepwise
 
 @Stepwise
-@Ignore
 class AddBioActivitySpec extends StubbedCasSpec {
 
     def setupSpec() {
@@ -15,7 +12,7 @@ class AddBioActivitySpec extends StubbedCasSpec {
     }
 
     def cleanupSpec() {
-        logout(browser, ViewBioActivityPage)
+        logout(browser)
     }
 
     def projectId = "project_1"
@@ -23,7 +20,7 @@ class AddBioActivitySpec extends StubbedCasSpec {
     def site = "site_1"
 
     def "Add an activity"() {
-
+        setup:
         loginAsUser('1', browser)
 
         when: "go to new activity page"
