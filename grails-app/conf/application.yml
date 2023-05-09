@@ -19,39 +19,6 @@ app:
       userId: "X-ALA-userId"
       hostName: "X-ALA-hostname"
 
-auth:
-  baseURL: "https://auth.ala.org.au"
-
-casUrl: "${auth.baseURL}/cas/logout"
-appUrl: "http://devt.ala.org.au:8087/"
-
-security:
-  cas:
-    enabled: false
-    uriExclusionFilterPattern: ['/assets/.*','/uploads/.*']
-    uriFilterPattern: []
-    readOnlyOfficerRole: "ROLE_FC_READ_ONLY"
-    alaAdminRole : "ROLE_ADMIN"
-    officerRole : "ROLE_FC_OFFICER"
-    adminRole : "ROLE_FC_ADMIN"
-    casServerName: "${auth.baseURL}"
-    casServerLoginUrl: "${auth.baseURL}/cas/login"
-    casServerUrlPrefix: "${auth.baseURL}/cas"
-    logoutUrl: "${security.cas.casServerUrlPrefix}/logout"
-    loginUrl: "${security.cas.casServerUrlPrefix}/login"
-
-  oidc:
-    enabled: true
-    discoveryUri: "${auth.baseURL}/cas/oidc/.well-known"
-    clientId: "changeMe"
-    secret: "changeMe"
-    scope: "openid,profile,email,ala,roles"
-    allowUnsignedIdTokens: true
-  jwt:
-    enabled: true
-    discoveryUri: "${auth.baseURL}/cas/oidc/.well-known"
-    fallbackToLegacyBehaviour: true
-
 #External URL
 aekosEnabled: false
 enableReporting: true

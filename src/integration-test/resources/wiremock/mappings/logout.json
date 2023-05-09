@@ -8,7 +8,7 @@
     "status": 302,
     "headers": {
       "Set-Cookie": "ALA-Auth=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Domain=ala.org.au; Path=/; HttpOnly",
-      "Location": "{{request.query.url}}"
+      "Location": "{{{request.requestLine.query.url}}}"
     }
   }
 }

@@ -28,7 +28,11 @@ environments {
     // run as grails -Dgeb.env=chrome test-app
     chrome {
 
-        driver = { new ChromeDriver() }
+        driver = {
+            ChromeOptions options = new ChromeOptions()
+            options.addArguments("--remote-allow-origins=*")
+            new ChromeDriver(options)
+        }
     }
 
     firefox {
@@ -58,6 +62,7 @@ environments {
             o.addArguments('headless')
             o.addArguments("window-size=1920,1080")
             o.addArguments('--disable-dev-shm-usage')
+            o.addArguments("--remote-allow-origins=*")
             new ChromeDriver(o)
         }
     }
