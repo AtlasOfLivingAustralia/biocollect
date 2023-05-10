@@ -43,7 +43,7 @@ cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest &
-sleep 200
+sleep 240
 
 cd $BIOCOLLECT_DIR
 echo "Starting wire mock"
