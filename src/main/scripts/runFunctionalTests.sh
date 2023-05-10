@@ -1,6 +1,6 @@
 #!/bin/bash -v
 
-MERIT_DIR=$PWD
+BIOCOLLECT_DIR=$PWD
 
 GEB_ENV=$1
 if [ -z $GEB_ENV ]; then
@@ -33,22 +33,25 @@ fi
 echo "Dropping database"
 mongosh ecodata-functional-test --eval 'db.dropDatabase();'
 mongosh ecodata-functional-test --eval 'db.project.count();'
-cd src/integration-test/resources/data_common/
+cd "$BIOCOLLECT_DIR/src/integration-test/resources/data_common/"
 mongosh ecodata-functional-test loadAlaHub.js
 
+echo "Hosts file configuration"
+cat /etc/hosts
+
+cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest &
-sleep 60
+sleep 200
 
-cd $MERIT_DIR
+cd $BIOCOLLECT_DIR
 echo "Starting wire mock"
-./gradlew startWireMock &
-sleep 30
+./gradlew startWireMock
 
 echo "Starting biocollect"
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087 &
-sleep 60
+sleep 200
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
 
 echo "Running functional tests"
@@ -56,7 +59,6 @@ GRADLE_OPTS="-Xmx1g" ./gradlew integrationTest "-Dorg.gradle.jvmargs=-Xmx1g" --s
 
 RETURN_VALUE=$?
 
-kill %3
 kill %2
 kill %1
 
