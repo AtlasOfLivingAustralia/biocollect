@@ -136,15 +136,8 @@ grails:
     codegen:
         defaultPackage: au.org.ala.biocollect
     cache:
-       defaults:
-          eternal: true
-          overflowToDisk: false
-          maxElementsInMemory: 20000
-          timeToLiveSeconds: 3600
-          name: 'vocabListCache'
        ehcache:
-            cacheManagerName : "${appName}-ehcache"
-            reloadable : false
+            ehcacheXmlLocation: 'classpath:biocollect-ehcache.xml'
     mime:
         file:
           extensions: true
@@ -308,3 +301,9 @@ bootstrap4:
 # used by ala-admin-plugin
 skin:
   layout: "bs4"
+
+---
+
+grails:
+  cors:
+    enabled: true

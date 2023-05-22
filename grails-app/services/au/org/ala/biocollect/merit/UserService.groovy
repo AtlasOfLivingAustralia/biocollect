@@ -38,6 +38,11 @@ class UserService {
 
         if (u?.userId) {
             user = new UserDetails(u.getDisplayName(), u.email, u.userId)
+        } else {
+            u = userInfoService.getCurrentUser()
+            if (u) {
+                user = new UserDetails(u)
+            }
         }
 
         return user
