@@ -85,6 +85,9 @@ dependencies {
     implementation "org.grails:grails-plugin-url-mappings"
     implementation "org.grails:grails-plugin-interceptors"
     implementation "org.grails.plugins:cache"
+    implementation "org.grails.plugins:cache-ehcache:3.0.0"
+    runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
+    runtimeOnly "org.glassfish.jaxb:jaxb-runtime:2.3.1"
     implementation "org.grails.plugins:async"
     implementation "org.grails:grails-async-gpars"
     implementation "org.grails.plugins:scaffolding"
@@ -134,13 +137,14 @@ dependencies {
 
     implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
     implementation ("org.grails.plugins:ala-auth:$alaSecurityLibsVersion")
+    implementation ("org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion")
     implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
+    implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
     runtimeOnly "org.grails.plugins:ala-bootstrap3:4.1.0"
 
     //    swagger API
     implementation 'au.org.ala.plugins:openapi:1.1.0'
 
-    implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
     implementation "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
     implementation 'au.org.ala:ala-cas-client:2.5'
     runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
@@ -150,7 +154,7 @@ dependencies {
 
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:6.0"
+        implementation "org.grails.plugins:ecodata-client-plugin:6.1-COGNITO-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"

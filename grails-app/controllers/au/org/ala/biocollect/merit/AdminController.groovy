@@ -2,6 +2,8 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
+import org.grails.plugin.cache.GrailsCacheManager
+
 //import grails.plugin.cache.CacheEvict
 import org.springframework.cache.annotation.CacheEvict
 import grails.util.Environment
@@ -31,6 +33,7 @@ class AdminController {
     def webService
     grails.core.GrailsApplication grailsApplication
     def roleService
+    GrailsCacheManager grailsCacheManager
 
     def index() {}
 
@@ -514,6 +517,20 @@ class AdminController {
         //It's a async task..
         webService.get("${grailsApplication.config.ecodata.service.url}/admin/initiateSpeciesRematch")
         render text: [message:'Species rematch initiated.'] as JSON, contentType: 'application/json'
+    }
+
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def cacheManagement() {
+        [cacheRegions:grailsCacheManager.getCacheNames()]
+    }
+
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def clearCache() {
+        if (params.cache) {
+            grailsCacheManager.getCache(params.cache).clear()
+        }
+
+        redirect action: 'cacheManagement'
     }
 
 }
