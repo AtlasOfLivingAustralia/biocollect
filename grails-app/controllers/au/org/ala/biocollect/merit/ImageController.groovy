@@ -212,7 +212,7 @@ class ImageController {
     @Path("ws/attachment/upload")
     @NoSSO
     def upload() {
-        def user = userService.getCurrentUserId(request)
+        def user = userService.getCurrentUserId()
 
         def result = []
         if (request.respondsTo('getFile') && user) {

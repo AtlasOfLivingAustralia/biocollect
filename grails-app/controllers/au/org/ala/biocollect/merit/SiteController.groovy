@@ -543,7 +543,7 @@ class SiteController {
     @NoSSO
     def ajaxUpdate(String id) {
         def result = [:]
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
 
         def postBody = request.JSON
         Boolean isCreateSiteRequest = !id
