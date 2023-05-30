@@ -2,7 +2,6 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.*
 import au.org.ala.biocollect.merit.hub.HubSettings
-import au.org.ala.web.AuthService
 import org.springframework.context.MessageSource
 
 import java.nio.file.Files
@@ -33,7 +32,6 @@ class ProjectActivityService {
     MetadataService metadataService
     MessageSource messageSource
     UtilService utilService
-    AuthService authService
     CacheService cacheService
     SettingService settingService
 

@@ -3,10 +3,10 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.swagger.model.SiteAjaxUpdate
 import au.org.ala.biocollect.swagger.model.SiteCreateUpdateResponse
 import au.org.ala.plugins.openapi.Path
-import au.org.ala.web.AuthService
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
 import grails.converters.JSON
+import grails.web.servlet.mvc.GrailsParameterMap
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
-import grails.web.servlet.mvc.GrailsParameterMap
+
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
@@ -28,7 +28,6 @@ class SiteController {
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
         searchService, importService, webService
 
-    AuthService authService
     CommonService commonService
 
     static defaultAction = "index"
@@ -131,7 +130,7 @@ class SiteController {
             redirect(controller: 'home', action: 'index')
         } else {
             String projectIds = result.site.projects.toList().join(',')
-            String userId = authService.getUserId()
+            String userId = userService.getCurrentUserId()
             result.userCanEdit = projectService.isUserEditorForProjects(userId, projectIds)
             result
         }
@@ -735,7 +734,7 @@ class SiteController {
         List results
         if (params.id) {
             GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
-            mParams.userId = authService.getUserId()
+            mParams.userId = userService.getCurrentUserId()
             try {
                 results = siteService.getImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')
@@ -760,7 +759,7 @@ class SiteController {
         Map results
         if (params.siteId && params.poiId) {
             GrailsParameterMap mParams = new GrailsParameterMap(commonService.parseParams(params), request);
-            mParams.userId = authService.getUserId()
+            mParams.userId = userService.getCurrentUserId()
             try {
                 results = siteService.getPoiImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')

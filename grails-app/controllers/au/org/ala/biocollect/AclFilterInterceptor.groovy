@@ -3,12 +3,14 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.PreAuthorise
 import au.org.ala.biocollect.merit.ProjectController
 import au.org.ala.biocollect.merit.RoleService
+import au.org.ala.ecodata.forms.UserInfoService
 import grails.converters.JSON
 import org.springframework.http.HttpStatus
 
 class AclFilterInterceptor {
     int order = 3
     def userService, projectService, roleService
+    UserInfoService userInfoService
 
     def roles = []
 
@@ -21,6 +23,8 @@ class AclFilterInterceptor {
 
 
     boolean before() {
+        userInfoService.setCurrentUser()
+
         if (!controllerName)
             return true
         def controller = grailsApplication.getArtefactByLogicalPropertyName("Controller", controllerName)
@@ -38,7 +42,7 @@ class AclFilterInterceptor {
         }
 
         def roles = roleService.getAugmentedRoles()
-        def userId = userService.getCurrentUserId(request)
+        def userId = userService.getCurrentUserId()
         def projectId = params.projectId
 
         if(!projectId){
@@ -205,6 +209,6 @@ class AclFilterInterceptor {
     }
 
     void afterView() {
-        // no-op
+        userInfoService.clearCurrentUser()
     }
 }
