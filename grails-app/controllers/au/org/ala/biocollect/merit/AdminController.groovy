@@ -19,7 +19,6 @@ class AdminController {
 
     def cacheService
     def metadataService
-    def authService
     def projectService
     def importService
     def adminService
@@ -31,6 +30,7 @@ class AdminController {
     def documentService
     def projectActivityService
     def webService
+    UserService userService
     grails.core.GrailsApplication grailsApplication
     def roleService
     GrailsCacheManager grailsCacheManager
@@ -47,7 +47,7 @@ class AdminController {
      * @return
      */
     def users() {
-        def user = authService.userDetails()
+        def user = userService.getUser()
         def projects = projectService.list(true)
         def roles = metadataService.getAccessLevels().collect {
             it.name
@@ -63,7 +63,7 @@ class AdminController {
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def bulkLoadUserPermissions() {
-        def user = authService.userDetails()
+        def user = userService.getUser()
         [user:user]
     }
 
@@ -79,7 +79,7 @@ class AdminController {
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def uploadUserPermissionsCSV() {
 
-        def user = authService.userDetails()
+        def user = userService.getUser()
 
         def results
 

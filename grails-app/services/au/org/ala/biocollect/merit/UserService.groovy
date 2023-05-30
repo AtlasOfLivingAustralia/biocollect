@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.ecodata.forms.UserInfoService
 import au.org.ala.userdetails.UserDetailsFromIdListResponse
+import au.org.ala.web.UserDetails
 
 class UserService {
     def grailsApplication, authService, webService
@@ -28,24 +29,12 @@ class UserService {
         getUser()?.displayName?:""
     }
 
-    def getCurrentUserId(request = null) {
-        userInfoService.getCurrentUser()?.userId
+    def getCurrentUserId() {
+        getUser()?.userId
     }
 
-    public UserDetails getUser() {
-        def u = authService.userDetails()
-        def user
-
-        if (u?.userId) {
-            user = new UserDetails(u.getDisplayName(), u.email, u.userId)
-        } else {
-            u = userInfoService.getCurrentUser()
-            if (u) {
-                user = new UserDetails(u)
-            }
-        }
-
-        return user
+    UserDetails getUser() {
+        userInfoService.getCurrentUser()
     }
 
     /**
@@ -72,23 +61,23 @@ class UserService {
     }
 
     def userInRole(role) {
-        authService.userInRole(role)
+        userInfoService.getCurrentUser()?.hasRole(role)
     }
 
     def userIsSiteAdmin() {
-        authService.userInRole(grailsApplication.config.security.cas.officerRole) || authService.userInRole(grailsApplication.config.security.cas.adminRole) || authService.userInRole(grailsApplication.config.security.cas.alaAdminRole)
+        userInRole(grailsApplication.config.security.cas.officerRole) || userInRole(grailsApplication.config.security.cas.adminRole) || userInRole(grailsApplication.config.security.cas.alaAdminRole)
     }
 
     Boolean  userIsAlaAdmin() {
-        authService.userInRole(grailsApplication.config.security.cas.alaAdminRole)
+        userInRole(grailsApplication.config.security.cas.alaAdminRole)
     }
 
     def userIsAlaOrFcAdmin() {
-        authService.userInRole(grailsApplication.config.security.cas.adminRole) || authService.userInRole(grailsApplication.config.security.cas.alaAdminRole)
+        userInRole(grailsApplication.config.security.cas.adminRole) || userInRole(grailsApplication.config.security.cas.alaAdminRole)
     }
 
     def userHasReadOnlyAccess() {
-        authService.userInRole(grailsApplication.config.security.cas.readOnlyOfficerRole)
+        userInRole(grailsApplication.config.security.cas.readOnlyOfficerRole)
     }
 
     def getRecentEditsForUserId(userId) {

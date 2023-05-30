@@ -10,6 +10,7 @@ import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.AuthService
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
+import au.org.ala.web.UserDetails
 import grails.converters.JSON
 import grails.web.servlet.mvc.GrailsParameterMap
 import io.swagger.v3.oas.annotations.Operation
@@ -1314,7 +1315,7 @@ class ProjectController {
     }
 
     def auditMessageDetails() {
-        String userId = authService.getUserId()
+        String userId = userService.getCurrentUserId()
         String projectId = params.projectId
         String compareId= params.compareId
         String skin
@@ -1342,7 +1343,7 @@ class ProjectController {
     }
 
     def getAuditMessagesForProject(){
-        String userId = authService.getUserId()
+        String userId = userService.getCurrentUserId()
         String projectId = params.id
         Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
         if(isAdmin) {
@@ -1383,7 +1384,7 @@ class ProjectController {
             Map payload = request.JSON
             payload.max = payload.max ?: 10;
             payload.offset = payload.offset ?: 0;
-            payload.userId = authService.getUserId()
+            payload.userId = userService.getCurrentUserId()
             payload.order = payload.order ?: 'DESC';
             payload.sort = payload.sort ?: 'lastUpdated';
             payload.fq = payload.fq ?: []
