@@ -167,6 +167,33 @@ class UrlMappings {
                         format = 'json'
                 }
 
+                "/pwa" {
+                        controller = 'bioActivity'
+                        action = 'pwa'
+                }
+
+                "/pwa/sw.js" (uri: '/assets/sw.js')
+
+                "/pwa/bioActivity/edit/$projectActivityId" (controller: 'bioActivity', action: 'createOrEdit')
+
+                "/pwa/createOrEditFragment/$projectActivityId" {
+                        controller = 'bioActivity'
+                        action = 'createOrEditFragment'
+                }
+
+                "/pwa/bioActivity/index/$projectActivityId" {
+                        controller = 'bioActivity'
+                        action = 'getIndex'
+                }
+
+                "/pwa/indexFragment/$projectActivityId" {
+                        controller = 'bioActivity'
+                        action = 'getIndexFragment'
+                }
+
+                "/pwa/offlineList" ( controller: 'bioActivity', action: 'offlineList' )
+
+
                 "500"(controller:'error', action:'response500')
                 "404"(controller:'error', action:'response404')
 
@@ -183,6 +210,32 @@ class UrlMappings {
                 "/ws/bioactivity/delete/$id"(controller:  "bioActivity", action: 'delete')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
                 "/ws/bioactivity/map"(controller:  "bioActivity", action: 'getProjectActivitiesRecordsForMapping')
+                "/ws/project/$id" {
+                        controller = 'project'
+                        action = 'ajaxGet'
+                }
+                "/ws/projectActivity/$id" {
+                        controller = 'projectActivity'
+                        action = 'ajaxGet'
+                }
+                "/ws/projectActivity/activity" {
+                        controller = 'bioActivity'
+                        action = 'getProjectActivityMetadata'
+                }
+                "/ws/activity/$id" {
+                        controller = 'bioActivity'
+                        action = 'ajaxGet'
+                }
+                "/ws/site/$id" {
+                        controller = 'site'
+                        action = 'index'
+                        format = 'json'
+                        levelOfDetail = 'brief'
+                }
+                "/ws/document/$id" {
+                        controller = 'document'
+                        action = 'get'
+                }
         }
 }
 

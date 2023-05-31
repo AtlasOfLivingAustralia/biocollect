@@ -1,3 +1,6 @@
+// from plugin
+//= require utils.js
+
 // leaflet
 //= require leaflet-manifest.js
 
@@ -66,5 +69,9 @@
 
 // comments
 //= require comment.js
+
+// indexDB
+//= require dexiejs/dexie.js
+//= require entities.js
 
 // audio to be included
