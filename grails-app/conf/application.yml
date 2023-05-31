@@ -307,3 +307,42 @@ skin:
 grails:
   cors:
     enabled: true
+
+---
+#pwa
+pwa:
+  appUrl: "http://localhost:8087"
+  cache:
+    ignore: ["/image/upload", "/ws/attachment/upload"]
+  baseMapUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+  maxAreaInKm: 25
+  mapConfig:
+    baseLayers:
+      - code: 'worldimagery'
+        displayText: 'Satellite'
+        isSelected: true
+    overlays: []
+---
+speciesCatalog:
+  url: "To be set"
+  fileName: "combined.zip"
+  vernacularFileName: "vernacularname.txt"
+  taxonFileName: "taxon.txt"
+  totalFileName: "total.json"
+  dir: "/data/biocollect/speciesCatalog"
+  filters:
+    language: "en"
+    exclude:
+      unrankedValue: "unranked"
+  taxon:
+    headerNames:
+      guid: "taxonID"
+      scientificName: "scientificName"
+      rankString: "taxonRank"
+      name: "scientificName"
+  vernacular:
+    headerNames:
+      taxonID: "taxonID"
+      vernacularName: "vernacularName"
+      language: "language"
+      preferred: "isPreferredName"

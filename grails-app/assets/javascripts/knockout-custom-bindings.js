@@ -700,10 +700,10 @@ ko.bindingHandlers.ticks = {
 
 ko.bindingHandlers.fileUploadNoImage = {
     init: function (element, options) {
-
+        var dropzone = $(element).parent();
         var defaults = {autoUpload: true};
         var settings = {
-            pasteZone: null
+            pasteZone: null, dropZone: dropzone
         };
         $.extend(settings, defaults, options());
         $(element).fileupload(settings

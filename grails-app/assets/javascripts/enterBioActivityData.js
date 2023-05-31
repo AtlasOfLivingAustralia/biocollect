@@ -87,6 +87,32 @@ function Master(activityId, config) {
         return activityData;
     };
 
+    /**
+     * Does not check if model is dirty.
+     * @returns {{}|undefined}
+     */
+    self.getAllModelAsJS = function () {
+        var activityData, outputs = [];
+        $.each(this.subscribers, function(i, obj) {
+            if (obj.model === 'activityModel') {
+                activityData = obj.get();
+            }
+            else {
+                outputs.push(obj.get());
+            }
+        });
+
+        if (activityData === undefined && outputs.length == 0) {
+            return undefined;
+        }
+        if (!activityData) {
+            activityData = {};
+        }
+        activityData.outputs = outputs;
+
+        return activityData;
+    };
+
     self.modelAsJSON = function() {
         var jsData = self.modelAsJS();
 
@@ -123,8 +149,13 @@ function Master(activityId, config) {
 
     self.listenForResolution = function () {
         $.when.apply($, self.deferredObjects).then(function () {
-            if (fcConfig.bulkUpload)
-                window.parent.postMessage({eventName: 'viewmodelloadded', data: {}}, fcConfig.originUrl);
+            if (fcConfig.bulkUpload || fcConfig.isCaching) {
+                // event and eventName for backward compatibility
+                window.parent.postMessage({eventName: 'viewmodelloadded', event:'viewmodelloadded', data: {}}, fcConfig.originUrl);
+            }
+            else if (fcConfig.isPWA) {
+                window.parent.postMessage({eventName: 'viewmodelloadded', event:'viewmodelloadded', data: {}}, fcConfig.pwaAppUrl);
+            }
         });
     }
 
@@ -141,6 +172,34 @@ function Master(activityId, config) {
      * Validates the entire page before saving.
      */
     self.save = function () {
+        if (isOffline() && config.isPWA) {
+            self.offlineSave();
+        }
+        else {
+            self.onlineSave();
+        }
+    },
+
+    self.offlineSave = function () {
+        if ($('#validation-container').validationEngine('validate')) {
+            var toSave = this.getAllModelAsJS();
+            toSave.entityUpdated = true;
+            var projectId = toSave.projectId;
+            var projectActivityId = toSave.projectActivityId;
+            toSave = JSON.stringify(toSave);
+            toSave = JSON.parse(toSave);
+
+            entities.saveActivity(toSave).then(function (result) {
+                var activityId = result.data;
+                if (config.isPWA) {
+                    document.location.href = config.returnTo;
+                } else
+                    document.location.href = fcConfig.activityViewURL + "/" + projectActivityId + "?activityId=" + activityId + "&projectId=" + projectId;
+            });
+        }
+    },
+
+    self.onlineSave = function () {
         if ($('#validation-container').validationEngine('validate')) {
             var toSave = this.modelAsJS();
             toSave = JSON.stringify(toSave);
@@ -174,7 +233,8 @@ function Master(activityId, config) {
                     } else {
                         unblock = false; // We will be transitioning off this page.
                         activityId = config.activityId || data.resp.activityId;
-                        config.returnTo = config.bioActivityView + activityId;
+                        if (!config.isPWA)
+                            config.returnTo = config.bioActivityView + activityId;
                         blockUIWithMessage("Successfully submitted the record.");
                         self.reset();
                         self.saved();
@@ -229,7 +289,8 @@ function Master(activityId, config) {
         }
         else if (config.isMobile) {
             location.href = config.returnToMobile;
-        } else {
+        }
+        else {
             document.location.href = config.returnTo;
         }
     };
@@ -275,6 +336,7 @@ function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, conf
     self.bulkImportId = ko.observable(act.bulkImportId);
     self.embargoed = ko.observable(false);
     self.projectId = act.projectId;
+    self.projectActivityId = pActivity ? pActivity.projectActivityId : null;
 
     // check if project activity requires manual verification by admin 
     var verificationStatus = pActivity.adminVerification ? 'not verified' : 'not applicable';
