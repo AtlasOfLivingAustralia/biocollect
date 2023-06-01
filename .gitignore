@@ -12,3 +12,6 @@ out/
 .classpath
 .asscache
 grails-app/assets/components/compile/*
+
+node_modules/
+coverage/

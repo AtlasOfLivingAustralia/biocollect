@@ -635,7 +635,12 @@ class ProjectService {
     List addSpeciesFieldsToActivityTypesList(List activityTypes){
         activityTypes.each { category ->
             category?.list?.each { type ->
-                type.speciesFields = formSpeciesFieldParserService.getSpeciesFieldsForSurvey(type.name)?.result
+                String typeName = type.name
+                def cacheKey = "activityTypes-category-type-speciesFields-by-name-${typeName}"
+                def cachedValue = cacheService.get(cacheKey, {
+                    return formSpeciesFieldParserService.getSpeciesFieldsForSurvey(typeName)?.result
+                })
+                type.speciesFields = cachedValue
             }
         }
     }
@@ -1112,5 +1117,59 @@ class ProjectService {
 
     List sanitiseRecipientList (List userIDs, List whiteList, List blackList) {
         userIDs?.findAll { whiteList?.contains(it) && !blackList?.contains(it) }
+    }
+
+    def financeDataDisplay() {
+        def raw = grailsApplication.config.content.financeDataDisplay
+
+        // add the title for the column headers
+        raw.funding.headersByName = [:]
+        raw.funding.headers.each { Map it ->
+            def name = it.name.toString()
+            it.title = getMessage("project.details.funding", name, "label") ?: name
+            it.required = it.get('required', false)
+            raw.funding.headersByName[name] = it
+        }
+        raw.budget.headersByName = [:]
+        raw.budget.headers.each { Map it ->
+            def name = it.name.toString()
+            it.title = getMessage("project.plan.budget", name, "label") ?: name
+            it.required = it.get('required', false)
+            raw.budget.headersByName[name] = it
+        }
+
+        // add the title for the dropdown options headers
+        raw.funding.optionsByName = [:]
+        raw.funding.options.each { String key, List<Map> options ->
+            raw.funding.optionsByName[key] = [:]
+            options.each { Map it ->
+                def name = it.name.toString()
+                it.title = getMessage("project.details.funding.options", key, name) ?: name
+                raw.funding.optionsByName[key][name] = it
+            }
+        }
+        raw.budget.headersByName = [:]
+        raw.budget.options.each { String key, List<Map> options ->
+            raw.budget.optionsByName[key] = [:]
+            options.each { Map it ->
+                def name = it.name.toString()
+                it.title = getMessage("project.plan.budget.options", key.toString(), it.name.toString()) ?: name
+                raw.budget.optionsByName[key][name] = it
+            }
+        }
+
+        return raw
+    }
+
+    private String getMessage(String[] codes) {
+        def msgNoArgs = [].toArray()
+        def msgValueMissing = null
+        def msgLocale = Locale.default
+        def code = codes.join('.')
+        def msg = messageSource.getMessage(code, msgNoArgs, msgValueMissing, msgLocale)
+        if (!msg || msg == msgValueMissing) {
+            return ""
+        }
+        return msg
     }
 }

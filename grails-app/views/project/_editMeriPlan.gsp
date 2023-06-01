@@ -1,7 +1,8 @@
 <asset:stylesheet src="forms-manifest.css"/>
 <asset:stylesheet src="common-bs4.css"/>
 <div class="container-fluid validationEngineContainer edit-view-meri-plan"  id="edit-meri-plan">
-	<p data-bind="if:detailsLastUpdated">Last updated <span data-bind="if:detailsLastUpdatedDisplayName"> by <span data-bind="text:detailsLastUpdatedDisplayName"></span></span> at <span data-bind="text:detailsLastUpdated.formattedDate"></span></p>
+	<g:render template="dateLastUpdatedDateCurrent"
+			  model="[canEditDateCurrent: true, dateCurrentProp: 'details.dateCurrent']"/>
 
 	<div class="row">
 		<div class="col-sm-12">
@@ -207,76 +208,6 @@
 		</div>
 	</div>
 
-	<!-- Budget table -->
-	<div class="row space-after mt-3">
-		<div class="col-sm-12">
-			<div>
-				<label><b>Project Budget</b><fc:iconHelp title="Project Budget">Include the planned budget expenditure against each programme objective. This information will be used to report on the use of public money.</fc:iconHelp></label>
-				<table class="budget table table-bordered">
-					<thead class="thead-dark">
-					<tr>
-						<th class="index"></th>
-						<th class="category">Investment/Priority Area <fc:iconHelp title="Investment/Priority Area">Select the appropriate investment area and indicate the funding distribution across the project to this. Add rows as required for different investment priority areas.</fc:iconHelp></th>
-                        <th class="payment-number">Payment number</th>
-                        <th class="funding-source">Funding source</th>
-                        <th class="payment-status">Status <fc:iconHelp title="Payment Status">(P) Processing, (C) Complete</fc:iconHelp></th>
-                        <th class="description">Description <fc:iconHelp title="Description">Describe how funding distribution will address this investment priority</fc:iconHelp></th>
-						<th class="due-date">Date due</th>
-						<!-- ko foreach: details.budget.headers -->
-						<th style="text-align: center;" width="10%" ><div style="text-align: center;" data-bind="text:data"></div>$</th>
-						<!-- /ko -->
-						<th  style="text-align: center;" width="10%">Total</th>
-						<th width="4%"></th>
-					</tr>
-					</thead>
-					<tbody data-bind="foreach : details.budget.rows">
-					<tr>
-						<td class="index"><span data-bind="text:$index()+1"></span></td>
-						<td class="category"><select class="form-control" data-bind="options: $parent.projectThemes, optionsCaption: 'Please select', value:shortLabel, disable: $parent.isProjectDetailsLocked()"> </select></td>
-						<td class="payment-number"><input class="form-control" data-bind="value:paymentNumber"></td>
-                        <td class="funding-source"><input class="form-control" data-bind="value:fundingSource"></td>
-                        <td class="payment-status"><select class="form-control" data-bind="value:paymentStatus, options:paymentStatus.options"></select></td>
-                        <td class="description"><textarea class="form-control" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea></td>
-						<td class="due-date mt-4" style="border: none !important;">
-							<div class="input-group">
-								<fc:datePicker class="form-control" targetField="dueDate.date" name="dueDate" bs4="true" theme="btn-dark"/>
-							</div>
-						</td>
-						<!-- ko foreach: costs -->
-						<td><div style="text-align: center;">
-							<input class="form-control" type="number" step="any" style="text-align: center; width: 98%;" data-bind="value: dollar, disable: $root.isProjectDetailsLocked()" data-validation-engine="validate[custom[number]]"/>
-						</div>
-						</td>
-						<!-- /ko -->
-
-						<td style="text-align: center;" ><span style="text-align: center;" data-bind="text: rowTotal.formattedCurrency, disable: $parent.isProjectDetailsLocked()"></span></td>
-						<td>
-							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()" ><i class="fas fa-times" data-bind="click: $parent.removeBudget"></i></span>
-						</td>
-					</tr>
-					</tbody>
-					<tfoot>
-					<tr>
-						<td></td>
-						<td colspan="0" style="text-align:left;">
-							<button type="button" class="btn btn-dark btn-sm" data-bind="disable: isProjectDetailsLocked(), click: addBudget">
-								<i class="fas fa-plus"></i> Add a row</button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-						<td></td>
-						<td style="text-align: right;" ><b>Total </b></td>
-						<!-- ko foreach: details.budget.columnTotal -->
-						<td style="text-align: center;" width="10%"><span data-bind="text:data.formattedCurrency"></span></td>
-						<!-- /ko -->
-						<td style="text-align: center;"><b><span data-bind="text:details.budget.overallTotal.formattedCurrency"></span></b></td>
-					</tr>
-					</tfoot>
-				</table>
-			</div>
-		</div>
-	</div>
-
 	<div class="mt-3">
 		<!-- ko with: details -->
 		<g:render template="riskTable"></g:render>
@@ -300,10 +231,5 @@
 			</div>
 
 		</div>
-	</div>
-
-	<div id="floating-save" style="display:none;">
-		<div class="transparent-background"></div>
-		<div><button class="right btn btn-info" data-bind="click: saveMeriPlan"><i class="fas fa-hdd"></i> Save changes</button></div>
 	</div>
 </div>

@@ -266,12 +266,13 @@ function stringToDate(date) {
             var widget = $(element).data("datepicker");
             //when the view model is updated, update the widget
             if (widget) {
-                var date = ko.utils.unwrapObservable(valueAccessor());
-                widget.date = date;
+                const value = valueAccessor();
+                const valueUnwrapped = ko.utils.unwrapObservable(value);
+                widget.date = valueUnwrapped;
                 if (!isNaN(widget.date)) {
                     widget.setDate(widget.date);
                 } else {
-                    console.log('reset')
+                    console.warn(`[DatePicker] Invalid value '${valueUnwrapped}' (${typeof valueUnwrapped}).`)
                 }
             }
         },
@@ -351,7 +352,6 @@ ko.bindingHandlers.clickToPickDate = {
 };
 
 
-
 /**
  * Creates a flag that indicates whether the model has been modified.
  *
@@ -366,10 +366,10 @@ ko.dirtyFlag = function(root, isInitiallyChanged) {
     var result = function() {};
     var _isInitiallyChanged = ko.observable(isInitiallyChanged || false);
     // this allows for models that do not have a modelAsJSON method
-    var getRepresentation = function () {
+    const getRepresentation = function () {
         return (typeof root.modelAsJSON === 'function') ? root.modelAsJSON() : ko.toJSON(root);
     };
-    var _initialState = ko.observable(getRepresentation());
+    const _initialState = ko.observable(getRepresentation());
 
     /**
      * Compare two objects and find the differences.
@@ -525,7 +525,7 @@ ko.dirtyFlag = function(root, isInitiallyChanged) {
         return hasChanges;
     });
 
-    result.reset = function() {
+    result.reset = function () {
         _initialState(getRepresentation());
         _isInitiallyChanged(false);
     };

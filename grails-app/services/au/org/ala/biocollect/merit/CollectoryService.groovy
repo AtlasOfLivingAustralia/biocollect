@@ -5,8 +5,7 @@ import grails.core.GrailsApplication
 
 /**
  * Licences provided by Collectory service are not fully supported by BioCollect.
- * Combine information from Biocollect and Collectory.
- */
+ * Combine information from Biocollect and Collectory.*/
 class CollectoryService {
 
     private static List getSupported() {

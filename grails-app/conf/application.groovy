@@ -631,3 +631,73 @@ if (!app.file.script.path) {
         app.file.script.path = "/data/biocollect/scripts"
 }
 script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
+
+content.financeDataDisplay = [
+        funding: [
+                headers: [
+                        [name: 'rowNumber'],
+                        [name: 'fundingDate', required: false],
+                        [name: 'fundingSource', hidden: false],
+                        [name: 'fundingType', required: false, options: 'fundingType'],
+                        [name: 'fundClass', required: false, options: 'fundClass'],
+                        [name: 'description', required: false],
+                        [name: 'fundingInternalAmount', required: false],
+                        [name: 'fundingExternalAmount', required: false],
+                        [name: 'fundingSourceAmount'],
+                        [name: 'rowActions'],
+                ],
+                options: [
+                        fundingType: [
+                                [name: 'Public - commonwealth'],
+                                [name: 'Public - state'],
+                                [name: 'Public - local'],
+                                [name: 'Public - in-kind'],
+                                [name: 'Private - in-kind'],
+                                [name: 'Private - industry'],
+                                [name: 'Private - philanthropic'],
+                                [name: 'Private - bequeath/other'],
+                                [name: 'Private - NGO'],
+                        ],
+                        fundClass  : [
+                                // none by default
+                        ],
+                ]
+        ],
+        budget : [
+                headers: [
+                        [name: 'rowNumber'],
+                        [name: 'shortLabel', required: true, options: 'budgetCategory'],
+                        [name: 'fundClass', required: true, options: 'budgetClass'],
+                        [name: 'fundingSource', required: true],
+                        [name: 'paymentNumber', required: true],
+                        [name: 'paymentStatus', required: true, options: 'budgetPaymentStatus'],
+                        [name: 'description', required: true],
+                        [name: 'dueDate', required: true],
+                        [name: 'financialYearAmount', required: true],
+                        [name: 'rowTotal'],
+                        [name: 'riskStatus', required: true, options: 'budgetRiskStatus'],
+                        [name: 'rowActions'],
+                ],
+                options: [
+                        budgetCategory     : [
+                                [name: 'Milestone'],
+                                [name: 'Variation'],
+                                [name: 'MERI & Admin'],
+                                [name: 'Others'],
+                        ],
+                        budgetClass        : [
+                                // none by default
+                        ],
+                        budgetPaymentStatus: [
+                                [name: 'P'],
+                                [name: 'C'],
+                        ],
+                        budgetRiskStatus   : [
+                                [name: 'High'],
+                                [name: 'Significant'],
+                                [name: 'Medium'],
+                                [name: 'Low'],
+                        ],
+                ]
+        ]
+]

@@ -143,57 +143,6 @@ table.outcomes-progress {
     width: 100%;
 }
 
-table.budget {
-    width: 100%;
-}
-
-table.budget th {
-    white-space: normal;
-}
-
-table.budget .index {
-    width:2%;
-}
-
-table.budget .category {
-    width:5%;
-}
-
-table.budget .payment-number {
-    width:5%;
-}
-
-table.budget .payment-status {
-    width:2%;
-}
-
-
-table.budget .funding-source {
-    width: 10%;
-}
-
-table.budget .due-date {
-    width:6em;
-    padding-right: 30px;
-}
-
-.budget-table-read-only table.budget .due-date {
-    width:7%;
-    padding-right: 5px;
-}
-
-table.budget select, table.budget textarea, table.budget input {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-table.budget input {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 0;
-}
-
-
 .project-dashboard .project-statistics {
     page-break-before: always;
 }
@@ -215,3 +164,197 @@ table.budget input {
 .project-dashboard .outcome-progress, .project-dashboard .milestone-progress, .project-dashboard .milestone-description {
     white-space: pre;
 }
+
+
+/* Start editable table styles */
+
+.editable-table-header-controls-displayed-rows select {
+    width: 60px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.editable-table-footer-controls-add-row select {
+    width: 60px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+/* End editable table styles */
+
+
+/* Start budget table styles */
+
+.project-budget-container {
+    width: 100%;
+    overflow-y: inherit;
+    overflow-x: scroll;
+}
+
+table.project-budget-table tr {
+    text-align: center;
+}
+
+table.project-budget-table td.project-budget-item-number > span {
+    width: 15px;
+}
+
+table.project-budget-table .project-budget-item-category > select {
+    width: 125px;
+}
+
+table.project-budget-table .project-budget-item-category > span {
+    width: 95px;
+}
+
+table.project-budget-table .project-budget-item-payment-number input {
+    width: 100px;
+}
+table.project-budget-table .project-budget-item-payment-number select {
+    width: 100px;
+}
+
+table.project-budget-table .project-budget-item-payment-number > span {
+    width: 95px;
+}
+
+table.project-budget-table .project-budget-item-fund-class > select {
+    width: 120px;
+}
+
+table.project-budget-table .project-budget-item-fund-class > span {
+    width: 75px;
+}
+
+table.project-budget-table .project-budget-item-funding-source input {
+    width: 100px;
+}
+table.project-budget-table .project-budget-item-funding-source select {
+    width: 100px;
+}
+
+table.project-budget-table .project-budget-item-funding-source > span {
+    width: 95px;
+}
+
+table.project-budget-table .project-budget-item-payment-status > select {
+    width: 150px;
+}
+
+table.project-budget-table .project-budget-item-payment-status > span {
+    width: 135px;
+}
+
+table.project-budget-table td.project-budget-item-description > textarea {
+    width: 200px;
+}
+
+table.project-budget-table td.project-budget-item-description > span {
+    /* size to content */
+}
+
+table.project-budget-table td.project-budget-item-due-date input {
+    /* size to datepicker */
+}
+
+table.project-budget-table td.project-budget-item-due-date > span {
+    width: 80px;
+}
+
+table.project-budget-table td.project-budget-item-year input {
+    width: 125px;
+}
+
+table.project-budget-table td.project-budget-item-year > span {
+    width: 70px;
+    max-width: 115px;
+}
+
+table.project-budget-table td.project-budget-item-total > span {
+    width: 180px;
+}
+
+table.project-budget-table .project-budget-item-risk-status > select {
+    width: 115px;
+}
+
+table.project-budget-table .project-budget-item-risk-status > span {
+    width: 110px;
+}
+
+/* End budget table styles */
+
+/* Start funding table styles */
+
+.project-funding-container {
+    width: 100%;
+    overflow-y: inherit;
+    overflow-x: scroll;
+}
+
+table.project-funding-table tr {
+    text-align: center;
+}
+
+table.project-funding-table td.project-funding-item-number > span {
+    width: 15px;
+}
+
+table.project-funding-table td.project-funding-item-date input {
+    /* size to datepicker */
+}
+
+table.project-funding-table td.project-funding-item-date > span {
+    width: 80px;
+}
+table.project-funding-table td.project-funding-item-fund-source input {
+    width: 125px;
+}
+
+table.project-funding-table td.project-funding-item-fund-source > span {
+    width: 120px;
+}
+
+table.project-funding-table .project-funding-item-fund-type > select {
+    width: 190px;
+}
+
+table.project-funding-table .project-funding-item-fund-type > span {
+    width: 75px;
+}
+
+table.project-funding-table .project-funding-item-fund-class > select {
+    width: 100px;
+}
+
+table.project-funding-table .project-funding-item-fund-class > span {
+    width: 95px;
+}
+
+table.project-funding-table td.project-funding-item-description > textarea {
+    width: 300px;
+}
+
+table.project-funding-table td.project-funding-item-description > span {
+    /* size to content */
+}
+
+table.project-funding-table td.project-funding-item-internal-amount input {
+    width: 125px;
+}
+
+table.project-funding-table td.project-funding-item-internal-amount > span {
+    width: 70px;
+    max-width: 115px;
+}
+
+table.project-funding-table td.project-funding-item-external-amount input {
+    width: 125px;
+}
+
+table.project-funding-table td.project-funding-item-external-amount > span {
+    width: 70px;
+    max-width: 115px;
+}
+
+/* Start funding table styles */

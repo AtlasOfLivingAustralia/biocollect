@@ -1,5 +1,5 @@
 <h3>Progress against outcomes</h3>
-<table class="outcomes-progress table table-striped">
+<table id="outcomes-progress" class="outcomes-progress table table-striped validationEngineContainer">
     <thead>
     <tr>
         <td class="date">Date</td>

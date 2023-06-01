@@ -7,7 +7,8 @@
                     <g:set var="activeClass" value=""/>
                 </g:if>
                 <li class="nav-item text-left"><a href="#reports" id="reports-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Project Reports</a> </li>
-                <li class="nav-item text-left"><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Edit Project Plan</a></li>
+                <li class="nav-item text-left"><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab" class="nav-link" data-meri-feature="floating-save"><i class="fas fa-chevron-right"></i> Edit Project Plan</a></li>
+                <li class="nav-item text-left"><a href="#editFundingBudget" id="editFundingBudget-tab" data-toggle="tab" data-meri-feature="floating-save"><i class="fas fa-chevron-right"></i> Edit Project Funding &amp; Budget</a></li>
                 <li class="nav-item text-left"><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Edit Blog</a></li>
                 <g:if test="${hasLegacyNewsAndEvents}">
                     <li class="nav-item text-left"><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> News and events</a></li>
@@ -39,6 +40,10 @@
                 <div id="editMeriPlan" class="tab-pane">
                     <h3>Edit Project Plan</h3>
                     <g:render template="editMeriPlan"></g:render>
+                </div>
+                <div id="editFundingBudget" class="tab-pane">
+                    <h3>Edit Project Funding &amp; Budget</h3>
+                    <g:render template="editFundingBudget"/>
                 </div>
                 <div id="editProjectBlog" class="tab-pane">
                     <h3>Edit Project Blog</h3>
@@ -84,5 +89,17 @@
                 </g:if>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="floating-save">
+    <p>This project has unsaved changes. Please save the changes or cancel the changes.</p>
+    <div class="form-actions">
+        <button class="btn btn-info" data-bind="click: saveMeriPlan">
+            <g:message code="g.save" />
+        </button>
+        <button type="button" class="btn" data-bind="click: cancelMeriPlanEdits">
+            <g:message code="g.cancel" />
+        </button>
     </div>
 </div>

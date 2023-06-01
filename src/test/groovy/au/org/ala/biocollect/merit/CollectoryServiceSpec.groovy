@@ -26,13 +26,13 @@ class CollectoryServiceSpec extends Specification implements ServiceUnitTest<Col
         def licences = service.licence()
 
         then:
-        1 * cacheServiceStub.get('collectory-licence-names', _) >> collectoryResponse
+        1 * cacheServiceStub.get('collectory-licence-names', _, _) >> collectoryResponse
         0 * _
         licences.size() == 4
         licences.every { l ->
-                def found = collectoryResponse.find { f ->
+            def found = collectoryResponse.find { f ->
                 f.url == l.url
-        }
+            }
             l.url && l.logo && l.description && l.name == found.name
         }
     }
@@ -42,7 +42,7 @@ class CollectoryServiceSpec extends Specification implements ServiceUnitTest<Col
         def licences = service.licence()
 
         then:
-        1 * cacheServiceStub.get('collectory-licence-names', _) >> []
+        1 * cacheServiceStub.get('collectory-licence-names', _, _) >> []
         0 * _
         licences.size() == 4
         licences.every { it.url && it.logo && it.description && !it.name }

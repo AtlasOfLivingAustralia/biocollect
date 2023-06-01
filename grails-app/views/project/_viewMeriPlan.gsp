@@ -4,7 +4,10 @@
 	</div>
 
 	<div class="edit-view-meri-plan" data-bind="if: details.status() == 'active'">
-		<span style="float:right;" data-bind="if:detailsLastUpdated">Last updated <span data-bind="if:detailsLastUpdatedDisplayName"> by <span data-bind="text:detailsLastUpdatedDisplayName"></span></span> at <span data-bind="text:detailsLastUpdated.formattedDate"></span></span>
+
+	<g:render template="dateLastUpdatedDateCurrent"
+			  model="[canEditDateCurrent: false, dateCurrentProp: 'details.dateCurrent']"/>
+
 			<h3>Project Plan Information</h3>
 			<div class="row space-after">
 					<div class="col-sm-6">
@@ -131,14 +134,6 @@
 					</table>
 				</div>
 			</div>
-
-			<g:if test="${user?.isAdmin}">
-			<div class="row space-after">
-				<div class="col-12 required mt-3">
-					<g:render template="budgetTableReadOnly"/>
-				</div>
-			</div>
-			</g:if>
 
 			<g:if test="${projectContent.meriPlan.canViewRisks}">
 			<!-- ko with: details -->

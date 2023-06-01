@@ -362,7 +362,7 @@ var HubSettings = function (settings, config) {
         }
     };
 
-    self.loadSettings(settings);
+    self.loadSettings(settings, config);
 
 
 };
@@ -823,8 +823,7 @@ function FacetViewModel(config){
     self.facetTermType = ko.observable(config.facetTermType||'Default');
     self.interval = ko.observable(config.interval || 10);
     self.chartjsType = ko.observable(config.chartjsType || 'none');
-    self.chartjsConfig = ko.observable(config.chartjsConfig || '');
-    self.adminOnly = ko.observable(config.adminOnly || false);
+    self.chartjsConfig = ko.observable(config.chartjsConfig || '');self.adminOnly = ko.observable(config.adminOnly || false);
 
     self.formattedName = ko.computed(function () {
         return self.title() + ' (' + self.name() + ')'
