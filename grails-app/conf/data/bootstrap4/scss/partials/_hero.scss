@@ -22,6 +22,9 @@
         }
     }
 
+    .swiper-slide[style^="background-image"]:after {
+        background-color: rgba(0, 0, 0, 0);
+    }
 
     .slide-overlay {
         position: relative;
@@ -36,7 +39,8 @@
         font-size: 20px;
 
         h1, h2, h3, h4, h5, h6, p {
-            text-shadow: 0 5px 30px #000;
+            text-shadow: 0 5px 30px $inset-background-color;
+            color: $inset-text-color;
         }
 
         h1 {
@@ -148,10 +152,27 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.25);
     }
+
+    .banner-title {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        top: 0;
+        z-index: 1;
+
+        h1 {
+            text-shadow: 0 5px 30px $inset-background-color;
+            color: $inset-text-color;
+        }
+    }
     @include media-breakpoint-down(md) {
-        height: 300px;
+        height: 400px;
     }
     @include media-breakpoint-down(sm) {
-        height: 200px;
+        height: 500px;
     }
 }

@@ -6,6 +6,8 @@ import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.WebService
 import au.org.ala.biocollect.merit.MetadataService
 
+import java.text.SimpleDateFormat
+
 class ProjectActivityServiceSpec extends Specification implements AutowiredTest{
     Closure doWithSpring() {{ ->
         service ProjectActivityService
@@ -168,5 +170,51 @@ class ProjectActivityServiceSpec extends Specification implements AutowiredTest{
 
         then:
         message == null
+    }
+
+    void "PA embargoed if embargoForDays is ahead of current date" () {
+        setup:
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        def pa =  [visibility: [alaAdminEnforcedEmbargo: true, embargoForDays: 100, embargoOption: "DAYS", embargoUntil: (new Date().plus(100)).format("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC"))]]
+
+        when:
+        def result = service.isEmbargoed(pa)
+
+        then:
+        result == true
+    }
+
+
+    void "PA not embargoed if embargoForDays is behind current date" () {
+        setup:
+        def pa =  [visibility: [alaAdminEnforcedEmbargo: false, embargoForDays: -10, embargoOption: "DAYS", embargoUntil: (new Date().plus(-10)).format("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC"))]]
+
+        when:
+        def result = service.isEmbargoed(pa)
+
+        then:
+        result == false
+    }
+
+    void "PA not embargoed if embargoUntil is behind current date" () {
+        setup:
+        def pa =  [visibility: [alaAdminEnforcedEmbargo: false, embargoOption: "DATE", embargoUntil: (new Date().plus(-10)).format("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC"))]]
+
+        when:
+        def result = service.isEmbargoed(pa)
+
+        then:
+        result == false
+    }
+
+    void "PA embargoed if embargoUntil is ahead of current date" () {
+        setup:
+        def pa =  [visibility: [alaAdminEnforcedEmbargo: false, embargoOption: "DATE", embargoUntil: (new Date().plus(10)).format("yyyy-MM-dd'T'HH:mm:ssZ", TimeZone.getTimeZone("UTC"))]]
+
+        when:
+        def result = service.isEmbargoed(pa)
+
+        then:
+        result == true
     }
 }

@@ -1,7 +1,7 @@
 <div>
     <div class="row" id="project-member-list">
         <div class="col-12 table-responsive">
-            <table class="table table-striped table-bordered table-hover not-stacked-table" id="member-list">
+            <table class="table table-striped table-bordered table-hover not-stacked-table w-100" id="member-list">
                 <thead>
                 <th>User Id</th>
                 <th>User Name</th>
@@ -23,7 +23,7 @@
     </div>
 </div>
 <asset:script type="text/javascript">
-    $(window).on('load', function () {
-        initialise(${raw(roles.inspect())}, ${raw(user?.userId)}, "${raw(project.projectId)}");
+    $(document).ready(function () {
+        initialise(${raw(roles.inspect())}, "${raw(user?.userId)}", "${raw(project.projectId)}");
      })
 </asset:script>

@@ -1,3 +1,94 @@
+aekosSubmission.url = "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
+aekosMintedDoi.url= "http://shared-uat.aekos.org.au:8080/AEKOS.AekosSearchPortal/dataset"
+
+acsaUrl= 'http://csna.gaiaresources.com.au/wordpress/'
+
+bie.baseURL= "https://bie.ala.org.au"
+bieWs.baseURL= "https://bie-ws.ala.org.au"
+
+biocache.baseURL= "https://biocache.ala.org.au"
+
+biocollect.support.email.address= "biocollect-support@ala.org.au"
+
+collectory.service.url= "https://collections.ala.org.au"
+
+
+ecodata.baseURL= "https://ecodata.ala.org.au/"
+
+
+google {
+        maps.base= "https://maps.googleapis.com/maps/api/js?key="
+        geocode.url= "https://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng="
+}
+
+environments {
+        development {
+                grails.config.locations = ["file:///data/biocollect/config/biocollect-config.properties"]
+                temp.dir = "/data/biocollect/temp"
+//              system level config
+                server.port = 8087
+                serverURL = "http://devt.ala.org.au:8087"
+                biocollect.system.email.replyTo = "biocollect-dev<no-reply>@ala.org.au"
+                sender = "biocollect-dev@ala.org.au"
+                debugUI = true
+                loggerLevel = "DEBUG"
+        }
+
+        test {
+                debugUI: false
+                loggerLevel: "DEBUG"
+                server.port = "8087"
+                grails.host = "http://devt.ala.org.au"
+                serverName = "${grails.host}:${server.port}"
+                grails.serverURL = serverName
+                server.serverURL = serverName
+                layout.skin = "bs4"
+                app.default.hub='ala'
+                runWithNoExternalConfig = true
+                wiremock.port = 8018
+                def casBaseUrl = "http://devt.ala.org.au:${wiremock.port}"
+
+                security.cas.appServerName=serverName
+                security.cas.contextPath=
+                security.cas.casServerName="${casBaseUrl}"
+                security.cas.casServerUrlPrefix="${casBaseUrl}/cas"
+                security.cas.loginUrl="${security.cas.casServerUrlPrefix}/login"
+                security.cas.casLoginUrl="${security.cas.casServerUrlPrefix}/login"
+                security.cas.logoutUrl="${security.cas.casServerUrlPrefix}/logout"
+                userDetails.url = "${casBaseUrl}/userdetails/userDetails/"
+                userDetailsSingleUrl = "${userDetails.Url}getUserDetails"
+                userDetailsUrl = "${userDetatails.url}getUserListFull"
+                logging.dir = '.'
+                upload.images.path = '/tmp'
+                upload.images.url = grails.serverURL+'/image/'
+                ecodata.baseUrl = 'http://devt.ala.org.au:8080/'
+                ecodata.baseURL = 'http://devt.ala.org.au:8080'
+                ecodata.service.url = 'http://devt.ala.org.au:8080/ws'
+                pdfgen.baseURL = "http://devt.ala.org.au:${wiremock.port}/"
+                api_key='testapikey'
+                spatial.baseUrl = "http://localhost:${wiremock.port}"
+                spatial.baseURL = "http://localhost:${wiremock.port}"
+                spatial.geoserverUrl= spatial.baseUrl + "/geoserver"
+                spatial.layersUrl = spatial.baseUrl + "/ws"
+                bie.baseURL="http://localhost:${wiremock.port}"
+                biocache.baseURL="http://localhost:${wiremock.port}"
+                pdfgen.baseURL="http://localhost:${wiremock.port}"
+                images.baseURL="http://localhost:${wiremock.port}"
+                lists.baseURL="http://localhost:${wiremock.port}"
+                grails.mail.port = 3025 // com.icegreen.greenmail.util.ServerSetupTest.SMTP.port
+                temp.dir="/tmp/stylesheet"
+                google.maps.apiKey="testGoogleApi"
+        }
+
+        production {
+                grails.config.locations = ["file:///data/biocollect/config/biocollect-config.properties"]
+                biocollect.system.email.replyTo = "biocollect<no-reply>@ala.org.au"
+                sender = "biocollect-local@ala.org.au"
+                debugUI = false
+                loggerLevel = "INFO"
+        }
+}
+
 dataAccessMethods = [
         "oasrdfs",
         "oaordfs",
@@ -161,6 +252,11 @@ datapage.allColumns = datapage.defaultColumns + [
                 type: "property",
                 propertyName: "activityOwnerNameFacet",
                 displayName: "Owner"
+        ],
+        [
+                type: "property",
+                propertyName: "verificationStatusFacet",
+                displayName: "Verification status"
         ]
 ]
 
@@ -183,7 +279,9 @@ activitypropertypath = [
         associatedSubProgramFacet: ['projectActivity', 'associatedSubProgram'],
         spatialAccuracy: ['projectActivity', 'spatialAccuracy'],
         methodType: ['projectActivity', 'methodType'],
-        activityOwnerNameFacet: ['projectActivity', 'activityOwnerName']
+        activityOwnerNameFacet: ['projectActivity', 'activityOwnerName'],
+        verificationStatusFacet: ['verificationStatus']
+
 ]
 
 
@@ -251,6 +349,22 @@ content.defaultOverriddenLabels = [
                 defaultText: 'Project Area',
                 customText:'',
                 notes: 'Section heading for Map.'
+        ],
+        [
+                id: 9,
+                showCustomText: false,
+                page: 'Project > "Resources" tab',
+                defaultText: 'Resources',
+                customText:'',
+                notes: 'Section heading on project\'s resources tab.'
+        ],
+        [
+                id: 10,
+                showCustomText: false,
+                page: 'Hub > "Charts" tab',
+                defaultText: 'Dashboard',
+                customText:'',
+                notes: 'Section heading on project\'s charts tab.'
         ]
 ]
 
@@ -324,7 +438,7 @@ if(!map.overlays) {
                         userAccessRestriction: 'anyUser',
                         inLayerShapeList     : true,
                         opacity: 0.5,
-                        
+
                         display     : [
                                 cqlFilter     : defaultCqlFilter,
                                 propertyName  : 'NAME_1'
@@ -516,7 +630,7 @@ settings.surveyMethods="fielddata.survey.methods"
 if (!app.file.script.path) {
         app.file.script.path = "/data/biocollect/scripts"
 }
-script.read.extensions.list = ['js','min.js','png', 'json']
+script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
 
 content.financeDataDisplay = [
         funding: [

@@ -15,6 +15,7 @@ function ProjectFinder(config) {
     var self = this;
     /* holds all projects */
     var allProjects = [];
+    var projectContainerId = 'project-finder-container';
 
     /* holds current filtered list */
     var projects;
@@ -24,7 +25,7 @@ function ProjectFinder(config) {
 
     /* size of current filtered list */
     var total = 0;
-    var projectsPerPage = 20;
+    var projectsPerPage = 30;
 
     /* The map must only be initialised once, so keep track of when that has happened */
     var mapInitialised = false;
@@ -32,6 +33,9 @@ function ProjectFinder(config) {
     /* Stores selected project id when a link is selected */
     var selectedProjectId;
     var spatialFilter = null;
+
+    // boolean flag used to clear filter map after it is visible on a modal.
+    var clearMapFilter = false;
 
     var geoSearch = {};
 
@@ -51,6 +55,7 @@ function ProjectFinder(config) {
 
     var alaMap;
     var pfMapId = "#map-tab";
+    var mapFilterSelector = "#mapModal"
 
     /* window into current page */
     function PageVM(config) {
@@ -69,6 +74,7 @@ function ProjectFinder(config) {
         this.clearGeoSearch = function () {
             this.isGeoSearchEnabled(false);
             clearGeoSearch();
+            this.doSearch();
         };
         this.doSearch = function () {
 
@@ -178,7 +184,7 @@ function ProjectFinder(config) {
 
         this.filterViewModel.selectedFacets.subscribe(this.doSearch)
     }
-    
+
     /**
      * check if button has active flag
      * @param $button
@@ -212,7 +218,7 @@ function ProjectFinder(config) {
                 allowSearchRegionByAddress: false,
                 wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
                 wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
-                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " of my location",
+                myLocationControlTitle: "Within " + fcConfig.defaultSearchRadiusMetersForPoint + " KM of my location",
                 baseLayer: baseLayersAndOverlays.baseLayer,
                 otherLayers: baseLayersAndOverlays.otherLayers,
                 overlays: baseLayersAndOverlays.overlays,
@@ -221,7 +227,6 @@ function ProjectFinder(config) {
 
             var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
             spatialFilter.addControl(regionSelector);
-            spatialFilter.subscribe(geoSearchChanged);
             mapInitialised = true;
         } else {
             spatialFilter.getMapImpl().invalidateSize();
@@ -259,7 +264,7 @@ function ProjectFinder(config) {
     }
 
     pageWindow = new PageVM(config);
-    ko.applyBindings(pageWindow, document.getElementById('project-finder-container'));
+    ko.applyBindings(pageWindow, document.getElementById(projectContainerId))   ;
 
     this.getParams = function () {
         var fq = [];
@@ -390,13 +395,6 @@ function ProjectFinder(config) {
         map.max =  pageWindow.pagination.resultsPerPage() // Page size
         map.sort = pageWindow.sortBy();
 
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                var checked = isButtonChecked($('#pt-search-program-' + program.name.replace(/ /g, '-')))
-                if (checked) map["isProgram" + program.name.replace(/ /g, '-')] = true
-            });
-        }
-
         return map
     };
 
@@ -456,7 +454,8 @@ function ProjectFinder(config) {
                 setTimeout(scrollToProject, 500);
                 // Issue map search in parallel to 'standard' search
                 // standard search is required to drive facet display
-                self.doMapSearch(projectVMs);
+                // todo : uncomment when all project area can be shown without pagination
+                // self.doMapSearch(projectVMs);
             },
             error: function () {
                 console.error("Could not load project data.");
@@ -464,6 +463,7 @@ function ProjectFinder(config) {
             },
             complete: function () {
                 $('.search-spinner').addClass('d-none');
+                $("#" + projectContainerId).trigger('resizefilters');
             }
         })
     };
@@ -502,7 +502,7 @@ function ProjectFinder(config) {
             traditional: true
         });
     };
-    
+
     this.searchAndShowFirstPage = function () {
         self.pago.firstPage();
         return true
@@ -511,9 +511,13 @@ function ProjectFinder(config) {
 
     this.reset = function () {
         $('#pt-search').val('');
-        if (spatialFilter) {
+        if (spatialFilter && isMapFilterVisible()) {
             spatialFilter.resetMap();
+            clearMapFilter = false;
+        } else {
+            clearMapFilter = true
         }
+
         geoSearch = {};
         pageWindow.isGeoSearchEnabled(false);
         pageWindow.filterViewModel.selectedFacets.removeAll();
@@ -543,7 +547,7 @@ function ProjectFinder(config) {
         vm.transients.searchText = (vm.name() + ' ' + vm.aim() + ' ' + vm.description() + ' ' + vm.keywords() + ' ' + vm.transients.scienceTypeDisplay() + ' ' + vm.transients.locality + ' ' + vm.transients.state + ' ' + vm.organisationName()).toLowerCase();
         vm.transients.indexUrl = vm.isMERIT() ? fcConfig.meritProjectUrl + '/' + vm.transients.projectId : fcConfig.projectIndexBaseUrl + vm.transients.projectId;
         vm.transients.orgUrl = vm.organisationId() && (fcConfig.organisationBaseUrl + vm.organisationId());
-        vm.transients.imageUrl = fcConfig.meritProjectLogo && vm.isMERIT() ? fcConfig.meritProjectLogo : vm.imageUrl();
+        vm.transients.imageUrl = fcConfig.meritProjectLogo && vm.isMERIT() ? fcConfig.meritProjectLogo : vm.fullSizeImageUrl();
         if (!vm.transients.imageUrl) {
             x = vm.primaryImages();
             if (x && x.length > 0) vm.transients.imageUrl = x[0].url;
@@ -776,33 +780,44 @@ function ProjectFinder(config) {
         // }
 
     });
-    
+
     $("#pt-aus-world").on('statechange', function(){
         var viewMode = getActiveButtonValues($("#pt-view"));
     })
 
 
-    $("#mapModal").on('shown.bs.modal', function () {
+    $(mapFilterSelector).on('shown.bs.modal', function () {
         initialiseMap();
+        spatialFilter.getMapImpl().invalidateSize();
+        clearMapFilter && spatialFilter.resetMap();
     });
 
-    $("#mapModal").on('hide.bs.modal', function () {
+    $(mapFilterSelector).on('hide.bs.modal', function () {
         geoSearchChanged();
         if(refreshSearch) {
             self.doSearch();
         }
     });
 
+    function isMapFilterVisible() {
+        return !$(mapFilterSelector).is(":hidden");
+    }
+
     function clearGeoSearch() {
         geoSearch = {};
         pageWindow.isGeoSearchEnabled(false);
-        spatialFilter.resetMap();
+        if(isMapFilterVisible()) {
+            spatialFilter.resetMap();
+            clearMapFilter = false;
+        } else {
+            clearMapFilter = true;
+        }
     }
 
-    $("#clearFilterByRegionButton").click(clearGeoSearch);
+    $("#clearFilterByRegionButton").on('click',clearGeoSearch);
 
 
-    $('#pt-search-link').click(function () {
+    $('#pt-search-link').on('click',function () {
         self.setTextSearchSettings();
         self.resetPageOffSet();
         self.doSearch();
@@ -816,16 +831,16 @@ function ProjectFinder(config) {
         }
     });
 
-    $('#pt-reset').click(function () {
+    $('#pt-reset').on('click',function () {
         self.reset()
     });
 
-    $("#btnShowTileView").click(function () {
+    $("#btnShowTileView").on('click',function () {
         pageWindow.showTileView();
-        
+
     });
 
-    $("#btnShowListView").click(function () {
+    $("#btnShowListView").on('click',function () {
         pageWindow.showListView();
 
     });
@@ -906,16 +921,10 @@ function ProjectFinder(config) {
         offset = Number.parseInt(params.offset || offset);
         selectedProjectId = params.projectId;
 
-        if (fcConfig.associatedPrograms) {
-            $.each(fcConfig.associatedPrograms, function (i, program) {
-                toggleButton($('#pt-search-program-' + program.name.replace(/ /g, '-')), toBoolean(params["isProject" + program.name]));
-            });
-        }
-
         pageWindow.sortBy( params.sort || 'dateCreatedSort');
-        pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '20'));
+        pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '30'));
         pageWindow.isWorldWide( params.isWorldWide || 'false');
-        
+
         $('#pt-search').val(params.queryText).focus();
         pageWindow.filterViewModel.switchOffSearch(false);
     }
@@ -927,10 +936,13 @@ function ProjectFinder(config) {
 
     function setGeoSearch(geoSearchHash) {
         if (geoSearchHash && typeof geoSearchHash !== 'undefined') {
-            geoSearch = JSON.parse(LZString.decompressFromBase64(geoSearchHash));
+            var geoSearchString = LZString.decompressFromBase64(geoSearchHash);
+            geoSearch = JSON.parse(geoSearchString);
+            // Creating a clone since ALA.MapUtils.getStandardGeoJSONForCircleGeometry modifies the geoSearch object
+            // making subsequent searches to malfunction. This only happens for Point GeoJSON type.
+            var geoSearchCloned = JSON.parse(geoSearchString);
 
-
-            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearch);
+            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geoSearchCloned);
             geoJson = ALA.MapUtils.getStandardGeoJSONForCircleGeometry(geoJson);
             if (geoSearch.pointSearch) {
                 geoJson.features[0].properties = {};

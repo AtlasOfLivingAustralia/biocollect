@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
-
+import asset.pipeline.AssetPipelineConfigHolder
+import asset.pipeline.fs.FileSystemAssetResolver
 import asset.pipeline.jsass.SassAssetFile
 import asset.pipeline.jsass.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
@@ -10,10 +11,10 @@ import grails.util.Environment
 import groovy.text.GStringTemplateEngine
 import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
-import org.springframework.cache.annotation.Cacheable
+import org.springframework.scheduling.annotation.Async
 import org.springframework.web.context.request.RequestAttributes
 
-import static grails.async.Promises.task
+import static groovyx.gpars.GParsPool.withPool
 
 //import grails.plugin.cache.Cacheable
 
@@ -24,7 +25,7 @@ class SettingService {
     private static final String HUB_CACHE_KEY_SUFFIX = '_hub'
     public static final String HUB_CONFIG_ATTRIBUTE_NAME = 'hubConfig'
     public static final String LAST_ACCESSED_HUB = 'recentHub'
-
+    private static final int THREAD_COUNT = 4
 
     public static void setHubConfig(HubSettings hubSettings) {
         localHubConfig.set(hubSettings)
@@ -54,10 +55,10 @@ class SettingService {
 
         switch (Environment.current) {
             case Environment.PRODUCTION:
-            case Environment.TEST:
                 sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
                 targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
                 break
+            case Environment.TEST:
             case Environment.DEVELOPMENT:
                 sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
                 targetDir = "${grailsApplication.config.temp.dir}"
@@ -69,7 +70,25 @@ class SettingService {
 
         // copy bootstrap4 directory
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
-        generateStyleSheetForHubs()
+
+        // resolve bootstrap 4 scss file from temp directory.
+        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}", true)
+        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolver)
+
+        // resolve bootstrap 4 scss file from temp directory.
+        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}/scss", true)
+        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolverChild)
+
+        switch (Environment.current) {
+            case Environment.DEVELOPMENT:
+                // do nothing
+                break
+            case Environment.PRODUCTION:
+            case Environment.TEST:
+            default:
+                generateStyleSheetForHubs()
+                break
+        }
     }
 
     /**
@@ -84,10 +103,6 @@ class SettingService {
 
         if (!hub) {
             hub = grailsApplication.config.app.default.hub?:'default'
-            String previousHub = cookieService.getCookie(LAST_ACCESSED_HUB)
-            if (!previousHub) {
-                cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
-            }
         }
         else {
             // Hub value in multiple places like url path and in parameter causes Array to be passed instead of String.
@@ -95,19 +110,20 @@ class SettingService {
             if (hub && ((hub instanceof List) || hub.getClass().isArray())) {
                 hub = hub[0]
             }
-
-            // Store the most recently accessed hub in a cookie so that 404 errors can be presented with the
-            // correct skin.
-            cookieService.setCookie(LAST_ACCESSED_HUB, hub, -1 /* -1 means the cookie expires when the browser is closed */)
         }
 
-        GrailsWebRequest.lookup().params.hub = hub
-        def settings = getHubSettings(hub)
+        def settings
+        try {
+            settings = getHubSettings(hub)
+        } catch (Throwable ex) {
+            log.error("Could not find hub - ${hub}")
+        }
+
         if (!settings) {
             log.warn("no settings returned for hub ${hub}!")
             settings = new HubSettings(
                     title:'Default',
-                    skin:'ala2',
+                    skin:'bs4',
                     urlPath:grailsApplication.config.app.default.hub?:'default',
                     availableFacets: ['isExternal','status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','mainThemeFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','otherFacet', 'gerSubRegionFacet','electFacet'],
                     adminFacets: ['electFacet'],
@@ -115,6 +131,8 @@ class SettingService {
             )
         }
 
+        cookieService.setCookie(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */)
+        GrailsWebRequest.lookup().params.hub = settings?.urlPath
         SettingService.setHubConfig(settings)
     }
 
@@ -228,57 +246,6 @@ class SettingService {
         })
     }
 
-    @Cacheable("styleSheetCache")
-    public Map getConfigurableHubTemplate1(String urlPath, Map styles) {
-        Map config = [
-        "menubackgroundcolor": styles?.menuBackgroundColor,
-        "menutextcolor": styles?.menuTextColor,
-        "bannerbackgroundcolor": styles?.bannerBackgroundColor,
-        "insetbackgroundcolor": styles?.insetBackgroundColor,
-        "insettextcolor": styles?.insetTextColor,
-        "bodybackgroundcolor": styles?.bodyBackgroundColor?:'#fff',
-        "bodytextcolor": styles?.bodyTextColor?:'#637073',
-        "footerbackgroundcolor": styles?.footerBackgroundColor,
-        "footertextcolor": styles?.footerTextColor,
-        "socialtextcolor": styles?.socialTextColor,
-        "titletextcolor": styles?.titleTextColor,
-        "headerbannerspacebackgroundcolor": styles?.headerBannerBackgroundColor,
-        "navbackgroundcolor":  styles?.navBackgroundColor?:'#e5e6e7',
-        "navtextcolor":  styles?.navTextColor?:'#5f5d60',
-        "primarybackgroundcolor": styles?.primaryButtonBackgroundColor?:'#009080',
-        "primarytextcolor": styles?.primaryButtonTextColor?:'#fff',
-        "gettingStartedButtonBackgroundColor": styles?.gettingStartedButtonBackgroundColor?:'',
-        "gettingStartedButtonTextColor": styles?.gettingStartedButtonTextColor?:'',
-        "whatIsThisButtonBackgroundColor": styles?.whatIsThisButtonBackgroundColor?:'',
-        "whatIsThisButtonTextColor": styles?.whatIsThisButtonTextColor?:'',
-        "addARecordButtonBackgroundColor": styles?.addARecordButtonBackgroundColor ?: '',
-        "addARecordButtonTextColor": styles?.addARecordButtonTextColor ?: '',
-        "viewRecordsButtonBackgroundColor": styles?.viewRecordsButtonBackgroundColor ?: '',
-        "viewRecordsButtonTextColor": styles?.viewRecordsButtonTextColor ?: '',
-        "primaryButtonOutlineTextHoverColor": styles?.primaryButtonOutlineTextHoverColor?:'#fff',
-        "primaryButtonOutlineTextColor": styles?.primaryButtonOutlineTextColor?:'#000',
-        "makePrimaryButtonAnOutlineButton": styles?.makePrimaryButtonAnOutlineButton?: false,
-        "defaultbackgroundcolor": styles?.defaultButtonBackgroundColor?:'#f5f5f5',
-        "defaulttextcolor": styles?.defaultButtonTextColor?:'#000',
-        "makeDefaultButtonAnOutlineButton": styles?.makeDefaultButtonAnOutlineButton?: false,
-        "defaultButtonOutlineTextColor": styles?.defaultButtonOutlineTextColor?:'#343a40',
-        "defaultButtonOutlineTextHoverColor": styles?.defaultButtonOutlineTextHoverColor?:'#000',
-        "tagBackgroundColor": styles?.tagBackgroundColor ?: 'orange',
-        "tagTextColor": styles?.tagTextColor?: 'white',
-        "hrefcolor": styles?.hrefColor?:'#009080',
-        "facetbackgroundcolor": styles?.facetBackgroundColor?: '#f5f5f5',
-        "tilebackgroundcolor": styles?.tileBackgroundColor?: '#f5f5f5',
-        "wellbackgroundcolor": styles?.wellBackgroundColor?: '#f5f5f5',
-        "defaultbtncoloractive": styles?.defaultButtonColorActive?: '#fff',
-        "defaultbtnbackgroundcoloractive": styles?.defaultButtonBackgroundColorActive?: '#000',
-        "breadcrumbbackgroundcolour": styles?.breadCrumbBackGroundColour ?: '#E7E7E7',
-        "primarycolor": '#009080',
-        "primarycolorhover": '#007777'
-        ];
-
-        return config
-    }
-
     /**
      * Is the current hub a works hub
      * @return
@@ -320,10 +287,11 @@ class SettingService {
         item?.breadCrumbs
     }
 
+    @Async
     void generateStyleSheetForHubs() {
         List hubs = listHubs()
-        task {
-            hubs?.each {  hubMap ->
+        withPool(THREAD_COUNT) {
+            hubs?.eachParallel {  hubMap ->
                 HubSettings hub = new HubSettings(new HashMap(hubMap))
                 generateStyleSheetForHub(hub)
             }
@@ -363,8 +331,8 @@ class SettingService {
                 ${styles?.titleTextColor ? "\$headings-color: ${styles?.titleTextColor};" : ''}
                 ${styles?.breadCrumbBackGroundColour ? "\$breadcrumb-bg: ${styles?.breadCrumbBackGroundColour};" : ''}
                 ${styles?.hrefColor ? "\$link-color: ${styles?.hrefColor};" : ''}
-                ${styles?.navbackgroundcolor ? "\$nav-background-color: ${styles?.navbackgroundcolor};" : ''}
-                ${styles?.navtextcolor ? "\$nav-text-color: ${styles?.navtextcolor};" : ''}
+                ${styles?.navbackgroundcolor ? "\$nav-background-color: ${styles?.navBackgroundColor};" : ''}
+                ${styles?.navtextcolor ? "\$nav-text-color: ${styles?.navTextColor};" : ''}
                 ${styles?.facetBackgroundColor ? "\$facet-background-color: ${styles?.facetBackgroundColor};" : ''}
                 ${styles?.tileBackgroundColor ? "\$tile-background-color: ${styles?.tileBackgroundColor};" : ''}
                 ${styles?.tagBackgroundColor ? "\$tag-background-color: ${styles?.tagBackgroundColor};" : ''}
@@ -373,14 +341,15 @@ class SettingService {
                 ${styles?.footerTextColor ? "\$footer-text-color: ${styles?.footerTextColor};" : ''}
                 ${styles?.socialTextColor ? "\$social-text-color: ${styles?.socialTextColor};" : ''}
                 ${styles?.insetTextColor ? "\$inset-text-color: ${styles?.insetTextColor};" : ''}
+                ${styles?.insetBackgroundColor ? "\$inset-background-color: ${styles?.insetBackgroundColor};" : ''}
                 ${styles?.menuBackgroundColor ? "\$menu-background-color: ${styles?.menuBackgroundColor};" : ''}
                 ${styles?.menuTextColor ? "\$menu-text-color: ${styles?.menuTextColor};" : ''}
-                ${styles?.whatIsThisButtonBackgroundColor ? "\$what-is-btn: true;\$what-is-this-button-background-color: ${styles?.whatIsThisButtonBackgroundColor};" : "\$what-is-btn: false;"}
-                ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : "\$getting-started-btn: false;"}
-                ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : "\$add-a-record-btn: false;"}
-                ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : "\$view-records-btn: false;"}
-                ${styles?.makePrimaryButtonAnOutlineButton ? "\$make-primary-btn: true;\$primary-button-outline-text-color: ${styles?.primaryButtonOutlineTextColor};" : "\$make-primary-btn: false;"}
-                ${styles?.makeDefaultButtonAnOutlineButton ? "\$make-default-btn: true;\$default-button-outline-text-color: ${styles?.defaultButtonOutlineTextColor};" : "\$make-default-btn: false;"}
+                ${styles?.whatIsThisButtonBackgroundColor ? "\$what-is-btn: true;\$what-is-this-button-background-color: ${styles?.whatIsThisButtonBackgroundColor};" : ""}
+                ${styles?.gettingStartedButtonBackgroundColor ? "\$getting-started-btn: true;\$getting-started-button-background-color: ${styles?.gettingStartedButtonBackgroundColor};" : ""}
+                ${styles?.addARecordButtonBackgroundColor ? "\$add-a-record-btn: true;\$add-a-record-button-background-color: ${styles?.addARecordButtonBackgroundColor};" : ""}
+                ${styles?.viewRecordsButtonBackgroundColor ? "\$view-records-btn: true;\$view-records-button-background-color: ${styles?.viewRecordsButtonBackgroundColor};" : ""}
+                ${styles?.homepageButtonBackgroundColor ? "\$homepage-background-btn: true;\$homepage-background-btn: ${styles?.homepageButtonBackgroundColor};" : ""}
+                ${styles?.homepageButtonTextColor ? "\$homepage-text-btn: true;\$homepage-text-btn: ${styles?.homepageButtonTextColor};" : ""}
                 ${input.getInputStream().text}
                 """
 
@@ -396,7 +365,7 @@ class SettingService {
                 }
             }
         } else {
-            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.css"
+            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${hub.urlPath}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()) {

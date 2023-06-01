@@ -1,9 +1,10 @@
-var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig, facetConfig) {
+var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap, doNotInit, doNotStoreFacetFiltering, columnConfig, facetConfig, boundElementSelector) {
     var self = this;
 
     var features, featureType = 'record', alaMap, results, radio;
     self.view = view ? view : 'allrecords';
     var DEFAULT_EMAIL_DOWNLOAD_THRESHOLD = 500;
+    var downloadElementID = '#download-data';
 
     // These parameters are used when activity is instantiated from sites page.
     // It is used to disable certain aspects like map and auto load feature
@@ -17,7 +18,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
     self.orderOptions = [{id: 'ASC', name: 'ASC'}, {id: 'DESC', name: 'DESC'}];
     self.activities = ko.observableArray();
-    self.pagination = new PaginationViewModel({}, self);
+    self.pagination = new PaginationViewModel({numberPerPage: 30}, self);
     self.facets = ko.observableArray();
     self.total = ko.observable(0);
     self.filter = ko.observable(false);
@@ -220,6 +221,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var asyncDownloadThreshold = DEFAULT_EMAIL_DOWNLOAD_THRESHOLD;
         if (elem) {
                 asyncDownloadThreshold = $(elem).data("email-threshold");
+                if(!asyncDownloadThreshold) {
+                    asyncDownloadThreshold = $(elem).closest(downloadElementID).data("email-threshold") || DEFAULT_EMAIL_DOWNLOAD_THRESHOLD;
+                }
         }
 
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
@@ -277,6 +281,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 $('.main-content').show();
                 self.transients.loading(false);
                 $('.activities-search-panel').removeClass('searching-opacity');
+                boundElementSelector && $(boundElementSelector).trigger('resizefilters');
             }
         });
     };
@@ -504,6 +509,10 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         if(fcConfig.projectId){
             url += '&projectId=' + fcConfig.projectId;
+        }
+
+        if (fcConfig.bulkImportId && (view == 'bulkimport')) {
+            url += '&bulkImportId=' + fcConfig.bulkImportId;
         }
 
         fq = self.urlFacetParameter();
@@ -769,6 +778,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             flimit: flimit || fcConfig.flimit,
             view: self.view,
             spotterId: fcConfig.spotterId,
+            bulkImportId: fcConfig.bulkImportId,
             projectActivityId: fcConfig.projectActivityId,
             clientTimezone : moment.tz.guess()
         },
@@ -929,7 +939,7 @@ var ActivityRecordViewModel = function (activity) {
     self.transients.editUrl = ko.observable((self.isWorksProject() ? fcConfig.worksActivityEditUrl : fcConfig.activityEditUrl) + "/" + self.activityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.addUrl = ko.observable(fcConfig.activityAddUrl + "/" + self.projectActivityId()).extend({returnTo: fcConfig.returnTo});
     self.transients.parent = activity.parent;
-    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "no-image-2.png");
+    self.transients.thumbnailUrl = ko.observable(activity.thumbnailUrl ||  fcConfig.imageLocation + "font-awesome/5.15.4/svgs/regular/image.svg");
     self.transients.imageTitle = ko.observable(activity.thumbnailUrl? '' : 'No image' );
 
     self.records = ko.observableArray();

@@ -12,7 +12,7 @@ var ProjectActivity = function (params) {
     var tabDocumentId = params.tabDocumentId || "#documents-tab";
     var stats = pActivity.stats || {};
 
-    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName));
+    var self = $.extend(this, new pActivityInfo(pActivity, selected, startDate, organisationName, this));
     self.project = project;
     self.projectId = ko.observable(pActivity.projectId ? pActivity.projectId : projectId);
     self.restrictRecordToSites = ko.observable(pActivity.restrictRecordToSites);
@@ -46,10 +46,13 @@ var ProjectActivity = function (params) {
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
     self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense || "");
+    self.publishProject = ko.observable("Yes");
     self.spatialAccuracy = ko.observable(pActivity.spatialAccuracy || "");
     self.speciesIdentification = ko.observable(pActivity.speciesIdentification || "");
     self.temporalAccuracy = ko.observable(pActivity.temporalAccuracy || "");
     self.nonTaxonomicAccuracy = ko.observable(pActivity.nonTaxonomicAccuracy || "");
+    self.adminVerification = ko.observable(pActivity.adminVerification || false);
+    self.showVerificationStatus = ko.observable(pActivity.showVerificationStatus || false);
     self.dataQualityAssuranceMethods = ko.observableArray(pActivity.dataQualityAssuranceMethods || []);
     self.dataAccessMethods = ko.observableArray(pActivity.dataAccessMethods || []);
     self.dataAccessExternalURL = ko.observable(pActivity.dataAccessExternalURL || "");
@@ -65,6 +68,7 @@ var ProjectActivity = function (params) {
     self.transients.activityLastUpdated = stats.activityLastUpdated;
     self.transients.speciesRecorded = ko.observable(stats.speciesRecorded).extend({integer:0});
     self.transients.activityCount = ko.observable(stats.activityCount).extend({integer:0});
+    self.transients.metadataToggle = ko.observable(true);
     self.transients.isDataManagementPolicyDocumented = ko.computed({
         read: function () {
             if(self.isDataManagementPolicyDocumented() === false) {
@@ -125,6 +129,14 @@ var ProjectActivity = function (params) {
         return true;
     };
 
+    self.transients.areSitesNotAvailableForSelection = ko.pureComputed(function () {
+        var sites = $.grep(self.sites(), function (site){
+            return !site.isProjectArea();
+        }) || [];
+
+        return sites.length == 0;
+    });
+
     function diffArrays(a, b) {
         var diff = [];
         a && a.forEach(function (item) {
@@ -176,6 +188,10 @@ var ProjectActivity = function (params) {
     self.transients.areAllSitesSelected.subscribe(function(value){
         self.transients.isSelectAllSites(value);
     });
+
+    self.transients.toggleMetadata = function(value){
+        self.transients.metadataToggle(!self.transients.metadataToggle());
+    };
 
     /**
      * Does sanity check when switching between options. Makes sure certain options are cleared when survey site option
@@ -662,7 +678,7 @@ var ProjectActivity = function (params) {
         var count = 0;
         var sites = self.sites();
         sites.forEach(function(site){
-            if(site.added()){
+            if(site.added() && !site.isProjectArea()){
                 count ++;
             }
         });

@@ -114,6 +114,7 @@ var HubSettings = function (settings, config) {
         projectRecords : new FacetConfigurationViewModel(settings.pages.projectRecords, hubConfigs.availableDataFacets),
         userProjectActivityRecords : new FacetConfigurationViewModel(settings.pages.userProjectActivityRecords, hubConfigs.availableDataFacets),
         myProjectRecords : new FacetConfigurationViewModel(settings.pages.myProjectRecords, hubConfigs.availableDataFacets),
+        bulkImport : new FacetConfigurationViewModel(settings.pages.bulkImport, hubConfigs.availableDataFacets),
         projectFinder: new FacetConfigurationViewModel(settings.pages.projectFinder, hubConfigs.availableProjectFacets)
     };
     self.dataColumns = ko.observableArray();
@@ -477,13 +478,11 @@ function ContentViewModel(config) {
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
-    self.isContainer = ko.observable(config.isContainer || false);
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
     self.bushfireCategories = ko.observable(config.bushfireCategories || false);
     self.hideProjectFinderHelpButtons = ko.observable(config.hideProjectFinderHelpButtons || false);
-    self.hideProjectFinderStatusIndicatorTile = ko.observable(config.hideProjectFinderStatusIndicatorTile || false);
     self.hideProjectFinderStatusIndicatorList = ko.observable(config.hideProjectFinderStatusIndicatorList || false);
     self.hideProjectFinderProjectTags = ko.observable(config.hideProjectFinderProjectTags || false);
     self.hideProjectFinderNoImagePlaceholderList = ko.observable(config.hideProjectFinderNoImagePlaceholderList || false);
@@ -639,24 +638,13 @@ var StyleViewModel = function (config) {
     self.headerBannerBackgroundColor = ko.observable(config.headerBannerBackgroundColor || '');
     self.navBackgroundColor = ko.observable(config.navBackgroundColor || '');
     self.navTextColor = ko.observable(config.navTextColor || '');
-    self.gettingStartedButtonTextColor = ko.observable(config.gettingStartedButtonTextColor || '');
+    self.titleOnImageTextColor = ko.observable(config.titleOnImageTextColor || '');
     self.gettingStartedButtonBackgroundColor = ko.observable(config.gettingStartedButtonBackgroundColor || '');
-    self.whatIsThisButtonTextColor= ko.observable(config.whatIsThisButtonTextColor || '');
     self.whatIsThisButtonBackgroundColor= ko.observable(config.whatIsThisButtonBackgroundColor || '');
     self.addARecordButtonBackgroundColor = ko.observable(config.addARecordButtonBackgroundColor || '');
-    self.addARecordButtonTextColor = ko.observable(config.addARecordButtonTextColor || '');
     self.viewRecordsButtonBackgroundColor= ko.observable(config.viewRecordsButtonBackgroundColor || '');
-    self.viewRecordsButtonTextColor= ko.observable(config.viewRecordsButtonTextColor || '');
-    self.primaryButtonBackgroundColor= ko.observable(config.primaryButtonBackgroundColor || '');
-    self.primaryButtonTextColor= ko.observable(config.primaryButtonTextColor || '');
-    self.primaryButtonOutlineTextColor= ko.observable(config.primaryButtonOutlineTextColor || '');
-    self.primaryButtonOutlineTextHoverColor= ko.observable(config.primaryButtonOutlineTextHoverColor || '');
-    self.makePrimaryButtonAnOutlineButton= ko.observable(config.makePrimaryButtonAnOutlineButton || false);
-    self.defaultButtonBackgroundColor= ko.observable(config.defaultButtonBackgroundColor || '');
-    self.defaultButtonTextColor= ko.observable(config.defaultButtonTextColor || '');
-    self.defaultButtonOutlineTextColor= ko.observable(config.defaultButtonOutlineTextColor || '');
-    self.defaultButtonOutlineTextHoverColor= ko.observable(config.defaultButtonOutlineTextHoverColor || '');
-    self.makeDefaultButtonAnOutlineButton= ko.observable(config.makeDefaultButtonAnOutlineButton || false);
+    self.homepageButtonBackgroundColor= ko.observable(config.homepageButtonBackgroundColor || '');
+    self.homepageButtonTextColor= ko.observable(config.homepageButtonTextColor || '');
     self.tagBackgroundColor= ko.observable(config.tagBackgroundColor || '');
     self.tagTextColor= ko.observable(config.tagTextColor || '');
     self.hrefColor= ko.observable(config.hrefColor || '');
@@ -811,6 +799,7 @@ function FacetConfigurationViewModel(config, availableFacets) {
             facetVM.interval(facet.interval || facetVM.interval());
             facetVM.chartjsType(facet.chartjsType);
             facetVM.chartjsConfig(facet.chartjsConfig);
+            facetVM.adminOnly(facet.adminOnly || facetVM.adminOnly());
 
             var index = self.transients.facetList.indexOf(facetVM);
             if(index >= 0){
@@ -834,7 +823,7 @@ function FacetViewModel(config){
     self.facetTermType = ko.observable(config.facetTermType||'Default');
     self.interval = ko.observable(config.interval || 10);
     self.chartjsType = ko.observable(config.chartjsType || 'none');
-    self.chartjsConfig = ko.observable(config.chartjsConfig || '');
+    self.chartjsConfig = ko.observable(config.chartjsConfig || '');self.adminOnly = ko.observable(config.adminOnly || false);
 
     self.formattedName = ko.computed(function () {
         return self.title() + ' (' + self.name() + ')'
@@ -935,18 +924,13 @@ var colorScheme = {
     headerBannerBackgroundColor: '#ffffff',
     navBackgroundColor: '#e5e6e7',
     navTextColor: '#5f5d60',
+    titleOnImageTextColor: '#fff',
     gettingStartedButtonBackgroundColor: '#009080',
-    gettingStartedButtonTextColor: '#fff',
     whatIsThisButtonBackgroundColor: '#009080',
-    whatIsThisButtonTextColor: '#fff',
     primaryButtonBackgroundColor: '#009080',
     primaryButtonTextColor: '#fff',
-    primaryButtonOutlineTextColor: '#007bff',
-    primaryButtonOutlineTextHoverColor: '#000',
     defaultButtonBackgroundColor: '#f5f5f5',
     defaultButtonTextColor: '#000',
-    defaultButtonOutlineTextColor: '#343a40',
-    defaultButtonOutlineTextHoverColor: '#000',
     tagBackgroundColor: 'orange',
     tagTextColor: 'white',
     hrefColor:'#009080',

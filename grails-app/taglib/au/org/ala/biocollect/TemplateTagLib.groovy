@@ -2,12 +2,14 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
+import org.springframework.context.MessageSource
 
 class TemplateTagLib {
     static namespace = "config"
 
     UserService userService
     SettingService settingService
+    MessageSource messageSource
 
     def createAButton = { attrs ->
         Map link = attrs.config;
@@ -15,20 +17,30 @@ class TemplateTagLib {
             return
         }
         if(link){
-            String classes = getSpanClassForColumnNumber(attrs.layout)?:'col-md-4';
+            String classes = attrs.classes + " "
+            classes += getSpanClassForColumnNumber(attrs.layout)?:'col-md-4'
             String url = getLinkUrl(link)
             out << """
             <div class="${classes} homePageNav">
-                <div class="w-100 h-100 border border-dark text-center bg-light" onclick="window.location = '${url}'">
-                    <button class="p-5 border-0">
+                <div class="w-100 h-100 border text-center rounded-lg homepage-button" onclick="window.location = '${url}'">
+                    <div class="p-3 border-0">
                         <h3 class="p-0 m-0">${link?.displayName}</h3>
-                    </button>
+                    </div>
                 </div>
             </div>
             """
         }
     }
 
+    boolean isUrlActivePage(String url) {
+        if(url) {
+            String qString = request.getQueryString()
+            qString = qString ? '?' + qString : ''
+            String rUrl = "${request.requestURI}${qString}"
+            String fUrl =  "${request.forwardURI}${qString}"
+            rUrl?.endsWith(url) || fUrl?.endsWith(url)
+        }
+    }
 
     /**
      * Generate links for header and footer based on config options.
@@ -38,11 +50,15 @@ class TemplateTagLib {
         if(attrs.config){
             Map link = attrs.config
             String classes = attrs?.classes ?: ""
+            String activeClass = attrs?.activeClass ?: "current-menu-item"
             Boolean bs4 = Boolean.parseBoolean(attrs.bs4  ?: "false")
             if (link.role && !userService.doesUserHaveHubRole(link.role)) {
                 return
             }
             String url = getLinkUrl(link)
+            if (isUrlActivePage(url)) {
+                classes += " ${activeClass}"
+            }
 
             switch (link.contentType){
                 case 'external':
@@ -118,14 +134,23 @@ class TemplateTagLib {
                     }
                     break;
                 case 'login':
-                    Map loginOrLogout = printLoginOrLogoutButton(attrs.hubConfig);
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"btn btn-primary btn-sm nav-button\" title=\"${loginOrLogout.displayName}\" href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
+                        out << auth.loginLogout(
+                                ignoreCookie: "true", cssClass: "btn btn-primary btn-sm nav-button custom-header-login-logout",
+                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+                                loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
+                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                        )
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${loginOrLogout.href}\">${loginOrLogout.displayName}</a>";
+                        out << auth.loginLogout(
+                                ignoreCookie: "true",
+                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+                                loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
+                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                        )
                         out << "</li>";
                     }
                     break;
@@ -148,6 +173,17 @@ class TemplateTagLib {
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
                         out << "<a href=\"${url}\">${link.displayName?:'Sites'}</a>";
+                        out << "</li>";
+                    }
+                    break;
+                case 'resources':
+                    if (bs4) {
+                        out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Resources'}\" href=\"${url}\">${link.displayName?:'Resources'}</a>";
+                        out << "</li>";
+                    } else {
+                        out << "<li class=\"main-menu ${classes}\">";
+                        out << "<a href=\"${url}\">${link.displayName?:'Resources'}</a>";
                         out << "</li>";
                     }
                     break;
@@ -179,6 +215,11 @@ class TemplateTagLib {
                         out << "</li>"
                     }
                     break;
+                    break;
+                case 'charts':
+                    out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
+                    out << "<a class=\"nav-link\" title=\"${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}\" href=\"${url}\">${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}</a>";
+                    out << "</li>";
             }
         }
     }
@@ -242,15 +283,6 @@ class TemplateTagLib {
         }
 
         out << icon
-    }
-
-    def getStyleSheet = { attrs ->
-        if(attrs.file){
-            def scss = grailsApplication.parentContext.getResource("css/template/${attrs.file}")
-            if(scss.exists()){
-                out << scss.inputStream.text;
-            }
-        }
     }
 
     def optionalContent = { attrs, body ->
@@ -318,6 +350,9 @@ class TemplateTagLib {
             case 'sites':
                 url = "${createLink(controller: 'site', action: 'list')}";
                 break;
+            case 'resources':
+                url = "${createLink(controller: 'resource', action: 'list')}";
+                break;
             case 'biocacheexplorer':
                 String fq = ''
                 if(request.forwardURI?.contains('/bioActivity/myProjectRecords')){
@@ -329,6 +364,9 @@ class TemplateTagLib {
             case 'recordSighting':
                 url = "${createLink(uri: link.href)}"
                 break;
+                break;
+            case 'charts':
+                url = "${createLink(controller: 'report', action: 'chartList')}";
         }
 
         return url;
@@ -363,13 +401,7 @@ class TemplateTagLib {
         return ''
     }
 
-    private Map printLoginOrLogoutButton(Map hubConfig){
-        if(!fc.userIsLoggedIn()){
-            String loginUrl = grailsApplication.config.security.cas.loginUrl + "?service=" + grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Login', href: loginUrl, contentType:'external']
-        } else {
-            String logoutUrl = grailsApplication.config.grails.serverURL + "/logout/logout?casUrl=" + grailsApplication.config.security.cas.logoutUrl + "&appUrl=" +  grailsApplication.config.security.cas.appServerName + request.forwardURI + "?hub=" + hubConfig.urlPath
-            return [displayName: 'Logout', href: logoutUrl, contentType:'external']
-        }
+    private String getCurrentURL(Map hubConfig){
+        grailsApplication.config.getProperty("grails.serverURL") + request.forwardURI + "?hub=" + hubConfig.urlPath
     }
 }

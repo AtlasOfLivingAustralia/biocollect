@@ -21,7 +21,7 @@
 // emitter
 //= require emitter/emitter.js
 
-//= require jquery.fileDownload/jQuery.fileDownload
+//= require jquery.filedownload/jQuery.fileDownload.js
 
 // image-viewer
 //= require fancybox/jquery.fancybox.js

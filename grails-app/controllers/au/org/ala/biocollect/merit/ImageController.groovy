@@ -1,6 +1,12 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.FileUtils
+import au.org.ala.biocollect.swagger.model.FileUpload
+import au.org.ala.biocollect.swagger.model.FileUploadErrorResponse
+import au.org.ala.biocollect.swagger.model.UploadResponse
+import au.org.ala.plugins.openapi.Path
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.GeoLocation
 import com.drew.metadata.Directory
@@ -8,6 +14,17 @@ import com.drew.metadata.Metadata
 import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.exif.GpsDirectory
 import grails.converters.JSON
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.headers.Header
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
 import org.imgscalr.Scalr
 import org.springframework.web.multipart.MultipartFile
@@ -17,6 +34,11 @@ import java.awt.image.BufferedImage
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
+@SecurityScheme(name = "auth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer"
+)
+@SSO
 class ImageController {
 
     def webService, userService
@@ -134,6 +156,61 @@ class ImageController {
      * Uploads image file or survey method supporting file to staging area
      * @return file metadata for rending in view
      */
+    @Operation(
+        method = "POST",
+        tags = "biocollect",
+        operationId = "uploadimage",
+        summary = "Stage an image or document to BioCollect server.",
+        requestBody = @RequestBody(
+                description = "File to upload",
+                content = @Content(
+                        mediaType = "multipart/form-data",
+                        schema = @Schema(
+                                implementation = FileUpload.class
+                        )
+                )
+        ),
+        parameters = [
+            @Parameter(
+                    name = "role",
+                    in = ParameterIn.QUERY,
+                    description = "Role of the document.",
+                    schema = @Schema(
+                            name = "role",
+                            type = "string",
+                            allowableValues = [
+                                    "banner", "blogImage", "image", "information", "logo",
+                                    "mainImage", "methodDoc", "other", "photo", "photoPoint", "primary",
+                                    "programmeLogic", "projectHighlightReport", "projectPlan", "projectVariation",
+                                    "rssFeed", "stageReport", "surveyImage"
+                            ]
+                    )
+            )
+        ],
+        responses = [
+                @ApiResponse(
+                        description = "Images upload result or error message.",
+                        responseCode = "200",
+                        content = @Content(
+                                mediaType = "application/json",
+                                schema =  @Schema(
+                                        oneOf = [
+                                                UploadResponse.class,
+                                                FileUploadErrorResponse.class
+                                        ]
+                                )
+                        ),
+                        headers = [
+                                @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                        ]
+                )
+        ],
+        security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/attachment/upload")
+    @NoSSO
     def upload() {
         def user = userService.getCurrentUserId(request)
 
@@ -215,6 +292,7 @@ class ImageController {
      * A convenience method to help serve files in the dev. environment.
      * The content type of the file is derived purely from the file extension.
      */
+    @NoSSO
     def get() {
         String filename = FilenameUtils.getName(params.id)
         if (filename != params.id) {

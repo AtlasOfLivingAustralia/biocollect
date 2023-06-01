@@ -37,7 +37,7 @@ class CollectoryServiceSpec extends Specification implements ServiceUnitTest<Col
         }
     }
 
-    void "should be able to get licences when collectory is not available"() {
+    void "should be able to get licences when cached value is empty list"() {
         when:
         def licences = service.licence()
 
@@ -57,7 +57,7 @@ class CollectoryServiceSpec extends Specification implements ServiceUnitTest<Col
         def licences = service.licence()
 
         then:
-        1 * webServiceStub.getJson("${grailsApplication.config.collectory.service.url}/licence/") >> []
+        1 * webServiceStub.getJson("${grailsApplication.config.collectory.service.url}/licence/") >> { throw new Exception() }
         0 * _
         licences.size() == 4
         licences.every { it.url && it.logo && it.description && !it.name }

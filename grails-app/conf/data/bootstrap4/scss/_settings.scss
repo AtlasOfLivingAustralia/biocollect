@@ -163,8 +163,8 @@ $pagination-padding-x-lg: 20px;
 $pagination-line-height: 1.25;
 
 $pagination-color: $white;
-$pagination-bg: $c-text-light;
-$pagination-border-color: $c-text-light;
+$pagination-bg: $gray-600;
+$pagination-border-color: $gray-600;
 
 $pagination-hover-color: $white;
 $pagination-hover-bg: $c-text;
@@ -207,7 +207,7 @@ $custom-select-height: 50px;
 $custom-select-height-sm: 40px;
 $custom-select-height-lg: 50px;
 
-$navbar-nav-link-padding-x: 1rem;
+$navbar-nav-link-padding-x: 0.5rem;
 
 // Tables
 //
@@ -265,3 +265,15 @@ $input-height-lg: $input-height;
 $input-height-inner-lg: $input-height-inner;
 
 $input-transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out ;
+$input-font-size-sm: $font-size-base;
+
+//popover
+$popover-font-size: 1rem;
+
+// banner
+$inset-background-color: #000 !default;
+$inset-text-color: #fff !default;
+
+// footer
+$footer-background-color: black !default;
+$footer-text-color: white !default;

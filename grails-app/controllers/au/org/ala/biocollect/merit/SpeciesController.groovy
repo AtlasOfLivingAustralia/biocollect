@@ -31,10 +31,12 @@ class SpeciesController {
         if (url) {
             addCachingHeaders(response)
             webService.proxyGetRequest(response, url)
+            return null
         }
         else {
-            String noImageUrl = asset.assetPath(src:'no-image-2.png', absolute:true)
-            response.sendRedirect(noImageUrl)
+            response.contentType = "image/png"
+            response.outputStream << getClass().getResourceAsStream("/data/images/image.png")
+            return null
         }
 
     }

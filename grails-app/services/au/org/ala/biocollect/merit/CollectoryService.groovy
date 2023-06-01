@@ -4,8 +4,8 @@ import grails.core.GrailsApplication
 
 
 /**
- * Licences provided by Collectory service are not fully supported by BioCollect,
- * Neither enough information for licences needed by BioCollect*/
+ * Licences provided by Collectory service are not fully supported by BioCollect.
+ * Combine information from Biocollect and Collectory.*/
 class CollectoryService {
 
     private static List getSupported() {
@@ -35,7 +35,7 @@ class CollectoryService {
                 log.error("Could not get licences from collectory.", e)
             }
             return []
-        }, 1)
+        })
 
         supported.collect { supported ->
             def found = collectoryNames.find { retrieved ->
@@ -47,4 +47,6 @@ class CollectoryService {
             supported
         }
     }
+
+
 }

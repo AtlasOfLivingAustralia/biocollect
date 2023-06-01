@@ -296,12 +296,13 @@ function isValid(p, a) {
 }
 
 function ProjectViewModel(project, isUserEditor) {
-    const self = $.extend(this, new Documents());
+    const self = $.extend(this, new AllDocListViewModel(project.projectId));
 
     if (isUserEditor === undefined) {
         isUserEditor = false;
     }
 
+    self.projLifecycleStatus = 'unpublished';
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
     self.description = ko.observable(project.description).extend({markdown:true});
@@ -357,7 +358,7 @@ function ProjectViewModel(project, isUserEditor) {
     });
 
     self.transients.truncatedAim = ko.computed(function () {
-        return truncate(self.aim(), 80);
+        return truncate(self.aim(), 200);
     });
 
     self.transients.truncatedName = ko.computed(function () {
@@ -424,6 +425,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.contractStartDate = ko.observable(project.contractStartDate).extend({simpleDate: false});
     self.contractEndDate = ko.observable(project.contractEndDate).extend({simpleDate: false});
     self.imageUrl = ko.observable(project.urlImage);
+    self.fullSizeImageUrl = ko.observable(project.fullSizeImageUrl);
     self.baseLayer = ko.observable(project.baseLayer || '');
     self.mapLayersConfig = project.mapLayersConfig || {};
     self.termsOfUseAccepted = ko.observable(project.termsOfUseAccepted || false);
@@ -688,6 +690,11 @@ function ProjectViewModel(project, isUserEditor) {
         return subPrograms[projectProgram];
     });
     self.transients.difficultyLevels = [ "Easy", "Medium", "Hard" ];
+    self.transients.canShowBackButton = function() {
+        var result = amplify.store('traffic-from-project-finder-page');
+        amplify.store('traffic-from-project-finder-page', false);
+        return result;
+    }
 
     var scienceTypesList = [
         {name:'Biodiversity', value:'biodiversity'},
@@ -956,6 +963,26 @@ function ProjectViewModel(project, isUserEditor) {
         'Geography and spatial data',
         'Other'
     ];
+
+    self.transients.hasPublishedProjectActivities = false;
+
+    self.checkPublishedProjectActivities = function (projectActivities) {
+        if (projectActivities && Object.keys(projectActivities).length > 0) {
+            for (var i = 0; i < projectActivities.length; i++) {
+                if (projectActivities[i].published) {
+                    self.transients.hasPublishedProjectActivities = true;
+                    break;
+                }
+            }
+        }
+    };
+
+    self.publishUnpublish = function () {
+        if (project.projLifecycleStatus == 'unpublished')
+            return "Publish"
+        else if (project.projLifecycleStatus == 'published')
+            return "Unpublish"
+    }
 
     self.loadPrograms = function (programsModel) {
         const projectAssociatedProgram = self.associatedProgram();

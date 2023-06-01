@@ -27,6 +27,7 @@ class DownloadController {
     def file() {
         if (params.id) {
             webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/document/${params.id}/file", true, true)
+            return null
         } else if (params.filename) {
             String path = grailsApplication.config.upload.images.path
             File file = new File(FileUtils.fullPath(params.filename, path))
@@ -49,17 +50,17 @@ class DownloadController {
      * @return
      */
     def getScriptFile() {
-        if (params.filename && params.hub && params.model) {
+        if (params.filename && (params?.hubDir ?: params.hub) && params.model) {
             log.debug("Script name: " + params.filename)
-            log.debug("Hub: " + params.hub)
+            log.debug("Hub: " + params?.hubDir ?: params.hub)
             log.debug("Model: " + params.model)
             String filename = FilenameUtils.getName(params.filename)
-            String hub = FilenameUtils.getName(params.hub)
+            String hub = FilenameUtils.getName(params?.hubDir ?: params.hub)
             String model = FilenameUtils.getName(params.model)
             String path = "${grailsApplication.config.app.file.script.path}${File.separator}${hub}${File.separator}${model}${File.separator}${filename}"
             log.debug("Script path: " + path)
 
-            if (filename != params.filename || hub != params.hub || model != params.model || FilenameUtils.normalize(path) != path) {
+            if (filename != params.filename || hub != (params?.hubDir ?: params.hub) || model != params.model || FilenameUtils.normalize(path) != path) {
                 response.status = 404
                 return
             }
@@ -86,6 +87,9 @@ class DownloadController {
             }
             else if(extension == 'png'){
                 response.setContentType('image/png')
+            }
+            else if(extension in ['jpg', 'jpeg']){
+                response.setContentType('image/jpeg')
             }
             response.outputStream << new FileInputStream(file)
             response.outputStream.flush()

@@ -49,9 +49,9 @@ module.exports = function (config) {
             'node_modules/leaflet/dist/leaflet.js',
             'grails-app/assets/vendor/leaflet-plugins-2.0.0/layer/tile/Google.js',
             'grails-app/assets/javascripts/MapUtilities.js',
-            '../ecodata-client-plugin/grails-app/assets/vendor/select2/4.0.3/js/select2.full.js',
-            '../ecodata-client-plugin/grails-app/assets/vendor/typeahead/0.11.1/bloodhound.js',
-            '../ecodata-client-plugin/grails-app/assets/javascripts/speciesModel.js',
+            'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/select2/4.0.3/js/select2.full.js',
+            'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/typeahead/0.11.1/bloodhound.js',
+            'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/javascripts/speciesModel.js',
             'grails-app/assets/javascripts/projectActivityInfo.js',
             'grails-app/assets/javascripts/projectActivity.js',
             'grails-app/assets/javascripts/projectActivities.js',
@@ -103,7 +103,7 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome','ChromeHeadless'],
+        browsers: ['Chrome'],
 
 
         // Continuous Integration mode

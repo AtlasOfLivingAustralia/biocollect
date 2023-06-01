@@ -23,9 +23,9 @@
 				<tbody data-bind="foreach : details.objectives.rows1">
 				<tr>
 					<td class="index"> <span data-bind="text:$index()+1"></span></td>
-					<td class="baseline"><textarea data-bind="value: baseline, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
-					<td class="target"><textarea  data-bind="value: target, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
-					<td class="assets"><select style="width: 99%;float:right;"
+					<td class="baseline"><textarea class="form-control" data-bind="value: baseline, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+					<td class="target"><textarea class="form-control" data-bind="value: target, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
+					<td class="assets"><select class="form-control"
 											data-bind="options: $parent.protectedNaturalAssests, selectedOptions: assets, disable: $parent.isProjectDetailsLocked()" size="5" multiple="true"></select></td>
 					<td class="controls">
 						<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()"><i class="fas fa-times" data-bind="click: $parent.removeObjectivesOutcome"></i></span>
@@ -35,7 +35,7 @@
 				<tfoot>
 				<tr>
 					<td></td>
-					<td colspan="0" style="text-align:left;">
+					<td colspan="4" style="text-align:left;">
 						<button type="button" class="btn btn-dark btn-sm" data-bind="disable:isProjectDetailsLocked(), click: addOutcome">
 							<i class="fas fa-plus"></i> Add a row</button>
 					</td>
@@ -55,8 +55,8 @@
 				<tbody data-bind="foreach : details.objectives.rows">
 				<tr>
 					<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-					<td width="30%"> <textarea style="width: 97%;" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"> </textarea></td>
-					<td width="64%"> <textarea style="width: 97%;" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea> </td>
+					<td width="30%"> <textarea class="form-control" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"> </textarea></td>
+					<td width="64%"> <textarea class="form-control" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea> </td>
 					<td width="4%">
 						<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()"><i class="fas fa-times" data-bind="click: $parent.removeObjectives"></i></span>
 					</td>
@@ -65,7 +65,7 @@
 				<tfoot>
 				<tr>
 					<td></td>
-					<td colspan="0" style="text-align:left;">
+					<td colspan="3" style="text-align:left;">
 						<button type="button" class="btn btn-dark btn-sm" data-bind="disable:isProjectDetailsLocked(), click: addObjectives">
 							<i class="fas fa-plus"></i> Add a row</button>
 					</td>
@@ -93,9 +93,9 @@
 					<tbody data-bind="foreach : details.priorities.rows">
 					<tr>
 						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-						<td width="30%"> <textarea style="width: 97%;" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"> </textarea></td>
-						<td width="32%"> <textarea style="width: 97%;" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
-						<td width="32%"> <textarea style="width: 97%;" data-bind="value: data3, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
+						<td width="30%"> <textarea class="form-control" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"> </textarea></td>
+						<td width="32%"> <textarea class="form-control" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
+						<td width="32%"> <textarea class="form-control" data-bind="value: data3, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
 						<td width="4%">
 							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()"><i class="fas fa-times" data-bind="click: $parent.removeNationalAndRegionalPriorities"></i></span>
 						</td>
@@ -104,7 +104,7 @@
 					<tfoot>
 					<tr>
 						<td></td>
-						<td colspan="0" style="text-align:left;">
+						<td colspan="4" style="text-align:left;">
 							<button type="button" class="btn btn-dark btn-sm" data-bind="disable: isProjectDetailsLocked(), click: addNationalAndRegionalPriorities">
 								<i class="fas fa-plus"></i> Add a row</button></td>
 					</tr>
@@ -120,7 +120,7 @@
 			<div id="project-implementation">
 				<label><b>Project implementation / delivery mechanism</b></label>
 				<p>Explain how the project will be implemented, including methods, approaches, collaborations, etc. (5000 character limit) <b><fc:iconHelp title="Project implementation / delivery mechanism">How is the project to be delivered? Briefly describe the high level method/s to be used. The delivery mechanism/s should provide sufficient detail to understand how the project's outcomes will be achieved.</fc:iconHelp></b></p>
-				<textarea style="width: 98%;" maxlength="5000"
+				<textarea class="form-control" maxlength="5000"
 						  data-bind="value:details.implementation.description, disable: isProjectDetailsLocked()"
 						  id="implementation" rows="10" ></textarea>
 			</div>
@@ -145,9 +145,9 @@
 				<tbody data-bind="foreach : details.partnership.rows">
 				<tr>
 					<td width="2%"> <span data-bind="text:$index()+1"></span></td>
-					<td width="20%"> <textarea style="width: 97%;" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"></textarea> </td>
-					<td width="54%"><textarea style="width: 97%;" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
-					<td width="20%"><select style="width: 97%;" data-bind="options: $parent.organisations, value:data3,optionsCaption: 'Please select',disable: $parent.isProjectDetailsLocked()"></select></td>
+					<td width="20%"> <textarea class="form-control" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"></textarea> </td>
+					<td width="54%"><textarea class="form-control" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
+					<td width="20%"><select class="form-control" data-bind="options: $parent.organisations, value:data3,optionsCaption: 'Please select',disable: $parent.isProjectDetailsLocked()"></select></td>
 					<td width="4%">
 						<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()" ><i class="fas fa-times" data-bind="click: $parent.removePartnership"></i></span>
 					</td>
@@ -184,11 +184,11 @@
 					<tr>
 						<td width="2%"> <span data-bind="text:$index()+1"></span></td>
 						<td width="32%">
-							<textarea style="width: 97%;" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5">
+							<textarea class="form-control" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5">
 							</textarea>
 						</td>
 						<td width="52%">
-							<textarea style="width: 97%;" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea>
+							<textarea class="form-control" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea>
 						</td>
 						<td width="4%">
 							<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()" ><i class="fas fa-times" data-bind="click: $parent.removeKEQ"></i></span>
@@ -198,7 +198,7 @@
 					<tfoot>
 					<tr>
 						<td></td>
-						<td colspan="0" style="text-align:left;">
+						<td colspan="3" style="text-align:left;">
 							<button type="button" class="btn btn-dark btn-sm" data-bind="disable: isProjectDetailsLocked(), click: addKEQ">
 								<i class="fas fa-plus"></i> Add a row</button></td>
 					</tr>

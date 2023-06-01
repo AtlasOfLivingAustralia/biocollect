@@ -139,7 +139,7 @@ class SpeciesService {
         }
 
         def encodedQuery = URLEncoder.encode(searchTerm ?: '', "UTF-8")
-        String url = "${grailsApplication.config.bie.baseURL}/ws"
+        String url = "${grailsApplication.config.bieWs.baseURL}/ws"
          if (fq) {
             String encodedFacetQuery = URLEncoder.encode(fq, 'UTF-8')
             url += "/search.json?q=${encodedQuery}&fq=${encodedFacetQuery}&pageSize=${limit}"
@@ -207,7 +207,7 @@ class SpeciesService {
             }
         } else {
             // when no guid, append unmatched taxon string
-            name = "${data.name} (Unmatched taxon)"
+            name = "${data.rawScientificName?:''} (Unmatched taxon)"
         }
 
         name
@@ -261,11 +261,11 @@ class SpeciesService {
         }
 
         // While the BIE is in the process of being cut over to the new version we have to handle both APIs.
-        def url = "${grailsApplication.config.bie.baseURL}/ws/species/${id}.json"
+        def url = "${grailsApplication.config.bieWs.baseURL}/ws/species/${id}.json"
         Map result = webService.getJson(url)
 
         if (!result || result.error || result.statusCode != 200) {
-            url = "${grailsApplication.config.bie.baseURL}/ws/species/shortProfile/${id}.json"
+            url = "${grailsApplication.config.bieWs.baseURL}/ws/species/shortProfile/${id}.json"
             result = webService.getJson(url)
         }
 
@@ -285,7 +285,7 @@ class SpeciesService {
     Map speciesProfile(String id) {
 
         // While the BIE is in the process of being cut over to the new version we have to handle both APIs.
-        def url = "${grailsApplication.config.bie.baseURL}/ws/species/shortProfile/${id}"
+        def url = "${grailsApplication.config.bieWs.baseURL}/ws/species/shortProfile/${id}"
         webService.getJson(url)
     }
 }

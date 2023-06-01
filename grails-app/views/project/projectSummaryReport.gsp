@@ -4,8 +4,6 @@
     <meta name="layout" content="bs4"/>
     <title>Project Summary | ${project.name}</title>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:stylesheet src="projects-manifest.css"/>
     <asset:javascript src="common.js"/>
     <asset:javascript src="projects-manifest.js"/>

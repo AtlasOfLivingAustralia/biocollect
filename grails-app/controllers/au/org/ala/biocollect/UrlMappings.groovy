@@ -25,7 +25,7 @@ class UrlMappings {
 
                 }
 
-                "/"(controller: 'home', action: 'index')
+                "/"(controller: 'hub', action: 'index')
 
 
                 "/$hub/$controller/$id?"(parseRequest:true) {
@@ -72,12 +72,12 @@ class UrlMappings {
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
 
-                "/$hub/"(controller: 'home', action: 'index') {
+                "/$hub/"(controller: 'hub', action: 'index') {
                         constraints {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
                 }
-                "/$hub"(controller: 'home', action: 'index') {
+                "/$hub"(controller: 'hub', action: 'index') {
                         constraints {
                                 hub validator: {val, obj -> isHubValid( val)}
                         }
@@ -121,6 +121,52 @@ class UrlMappings {
                         action = 'download'
                 }
 
+                "/$hub/bulkImport" {
+                        controller = 'bulkImport'
+                        action = [GET: 'list', POST:'create']
+                        format = 'json'
+                }
+                "/$hub/bulkImport/list" {
+                        controller = 'bulkImport'
+                        action = [GET: 'listings']
+                        format = 'html'
+                }
+                "/$hub/bulkImport/create" {
+                        controller = 'bulkImport'
+                        action = [GET: 'createPage']
+                        format = 'html'
+                }
+                "/$hub/bulkImport/index/$id" {
+                        controller = 'bulkImport'
+                        action = [GET: 'index']
+                        format = 'html'
+                }
+                "/$hub/bulkImport/$id" {
+                        controller = 'bulkImport'
+                        action = [GET: 'get', PUT:'update']
+                        format = 'json'
+                }
+                "/$hub/bulkImport/$id/activity" {
+                        controller = 'bulkImport'
+                        action = [DELETE: 'deleteActivitiesImported']
+                        format = 'json'
+                }
+                "/$hub/bulkImport/$id/activity/list" {
+                        controller = 'bioActivity'
+                        action = [GET: 'bulkImport']
+                        format = 'html'
+                }
+                "/$hub/bulkImport/$id/activity/publish" {
+                        controller = 'bulkImport'
+                        action = [POST: 'publishActivitiesImported', PUT: 'publishActivitiesImported']
+                        format = 'json'
+                }
+                "/$hub/bulkImport/$id/activity/embargo" {
+                        controller = 'bulkImport'
+                        action = [POST: 'embargoActivitiesImported', PUT: 'embargoActivitiesImported']
+                        format = 'json'
+                }
+
                 "500"(controller:'error', action:'response500')
                 "404"(controller:'error', action:'response404')
 
@@ -133,6 +179,7 @@ class UrlMappings {
                 "/ws/bioactivity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
                 "/ws/species/uniqueId"(controller:  "output", action: 'getOutputSpeciesIdentifier')
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
+                "/ws/bioactivity/site"(controller:  "site", action: 'ajaxUpdate')
                 "/ws/bioactivity/delete/$id"(controller:  "bioActivity", action: 'delete')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
                 "/ws/bioactivity/map"(controller:  "bioActivity", action: 'getProjectActivitiesRecordsForMapping')

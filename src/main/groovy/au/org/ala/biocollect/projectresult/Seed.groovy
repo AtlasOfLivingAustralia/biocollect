@@ -53,7 +53,8 @@ class Seed {
                         dataAccessMethod : it.dataAccessMethods?.collect {
                             messageSource?.getMessage("facets.dataAccessMethods." + it, [].toArray(), it, Locale.default)?:it
                         },
-                        datasetExternalURL:  serverURL + '/bioActivity/projectRecords/' + it.projectActivityId
+                        datasetExternalURL:  serverURL + '/bioActivity/projectRecords/' + it.projectActivityId,
+                        containsActivity: it.containsActivity
                 ]
                 pActivity.putAll(it.stats?:[:])
                 pActivity
@@ -90,7 +91,8 @@ class Seed {
                 contactName            : doc.managerEmail,
                 contactDetails         : doc.manager,
                 projectTask            : doc.task,
-                datasets               : projectActivities
+                datasets               : projectActivities,
+                containsActivity       : doc.containsActivity
 
             ]
         }

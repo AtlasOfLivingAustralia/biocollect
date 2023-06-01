@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
+import au.org.ala.web.SSO
 
 class ProxyController {
 
@@ -46,6 +47,7 @@ class ProxyController {
         render result
     }
 
+    @SSO
     def speciesListPost() {
         def postBody = request.JSON
         def druidParam = (postBody.druid) ? "/${postBody.druid}" : "" // URL part
@@ -69,6 +71,7 @@ class ProxyController {
      * @param id the id of the document to update (if not supplied, a create operation will be assumed).
      * @return the result of the update.
      */
+    @SSO
     def documentUpdate(String id) {
 
         def url = grailsApplication.config.ecodata.service.url + "/document" + (id ? "/" + id : '')
@@ -114,6 +117,7 @@ class ProxyController {
      * @param id the id of the document to delete.
      * @return the result of the deletion.
      */
+    @SSO
     def deleteDocument(String id) {
         println 'deleting doc with id:'+id
         def url = grailsApplication.config.ecodata.service.url + "/document/" + id
@@ -128,13 +132,14 @@ class ProxyController {
         String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate"
         String expandList = params.expandList?:""
         String listName = params.listName?:null
+        String includeDataPathHeader = params.includeDataPathHeader ?: false
 
         if (params.data) {
             webService.proxyPostRequest(response, url,
-                    [listName:params.listName, type:params.type, data:params.data, editMode:params.editMode, allowExtraRows:params.allowExtraRows, autosizeColumns:false, expandList: expandList])
+                    [listName:params.listName, type:params.type, data:params.data, editMode:params.editMode, allowExtraRows:params.allowExtraRows, autosizeColumns:false, expandList: expandList, includeDataPathHeader: includeDataPathHeader])
         }
         else {
-            url += "?type=${params.type?.encodeAsURL()}&expandList=${expandList?.encodeAsURL()}"
+            url += "?type=${params.type?.encodeAsURL()}&expandList=${expandList?.encodeAsURL()}&includeDataPathHeader=${includeDataPathHeader}"
             if(listName){
                 url += "&listName=${params.listName.encodeAsURL()}"
             }

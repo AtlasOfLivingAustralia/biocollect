@@ -7,6 +7,7 @@ describe("ProjectActivityViewModel Spec", function () {
             projectViewUrl: "/biocollect/sightings/project/index/",
             siteViewUrl: "/biocollect/sightings/site/index/",
             bieUrl: "https://bie.ala.org.au",
+            bieWsUrl: "https://bie-ws.ala.org.au",
             imageLocation:"/biocollect/assets/",
             createCommentUrl : "/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",
             commentListUrl:"/biocollect/bioActivity/ba30ab70-a126-44e6-ac23-31774acd7144/comment",

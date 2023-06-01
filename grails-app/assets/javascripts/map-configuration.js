@@ -11,7 +11,7 @@
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
- * 
+ *
  * Created by Temi on 8/12/17.
  */
 function MapConfiguration(config, project)
@@ -42,7 +42,7 @@ function MapConfiguration(config, project)
      */
     self.surveySiteOption = ko.observable(config.surveySiteOption);
     self.defaultZoomArea = ko.observable(config.defaultZoomArea || project.projectSiteId);
-    self.sites = ko.observableArray(config.sites || []);
+    self.sites = ko.observableArray($.grep(config.sites || [], isProjectArea));
     self.toJS = function () {
         return ko.mapping.toJS(self, {ignore: ['transients']});
     };
@@ -95,6 +95,8 @@ function MapConfiguration(config, project)
 
             sites.push.apply(sites, unSelectedSites);
             self.sites(sites);
+            // project area should not be in selected site list
+            self.sites.remove(project.projectSiteId);
         } else {
             self.sites.removeAll();
         }
@@ -106,7 +108,7 @@ function MapConfiguration(config, project)
     self.transients.areAllSitesSelected = ko.computed(function () {
         var sites = self.sites() || [],
             allSites = self.transients.sites || [];
-        return sites.length == allSites.length;
+        return sites.length == allSites.length - 1;
     });
 
     self.transients.areAllSitesSelected.subscribe(function(value){
@@ -117,13 +119,16 @@ function MapConfiguration(config, project)
         return fcConfig.siteViewUrl + '/' + site.siteId
     };
     self.transients.addSite = function (site) {
-        if (self.sites.indexOf(site.siteId) == -1)
+        if ((self.sites.indexOf(site.siteId) == -1) && (!self.transients.isProjectArea(site.siteId)))
             self.sites.push(site.siteId);
     };
     self.transients.removeSite = function (site) {
         self.sites.remove(site.siteId);
     };
-
+    function isProjectArea(siteId) {
+        return siteId == project.projectSiteId;
+    };
+    self.transients.isProjectArea = isProjectArea;
     self.transients.setSurveySiteOption = function () {
         if(this.value != self.surveySiteOption())
             self.surveySiteOption(this.value);
@@ -197,17 +202,6 @@ function MapConfiguration(config, project)
         return results && results.length > 0
     };
 
-    self.transients.toggleSiteOptionPanel = function() {
-        var id = this.accordionLinkId;
-        // Need to trigger a click event to have consistent accordion behaviour.
-        // Programatically calling collapse function does not close open accordion panel.
-        setTimeout(function () {
-            $(id).trigger('click');
-        }, 0);
-
-        return true;
-    };
-
     self.isUserSiteCreationConfigValid = function () {
         if (!(self.allowPolygons() || self.allowPoints() || self.allowLine())) {
             return "Configuration not valid - Either points, polygon or line drawing should be enabled."
@@ -219,6 +213,25 @@ function MapConfiguration(config, project)
             return "Configuration not valid - At least one site must be selected."
         }
     };
+
+    self.isSiteConfigValid = function () {
+        var msg
+        if (['sitecreate', 'sitepickcreate'].indexOf(self.surveySiteOption()) > -1) {
+            msg = self.isUserSiteCreationConfigValid();
+            if (msg) {
+                return false;
+            }
+        }
+
+        if (['sitepick', 'sitepickcreate'].indexOf(self.surveySiteOption()) > -1) {
+            msg = self.isSiteSelectionConfigValid();
+            if (msg) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     self.surveySiteOption.subscribe(function(newOption) {
         switch (newOption) {

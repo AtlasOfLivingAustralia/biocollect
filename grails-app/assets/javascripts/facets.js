@@ -22,6 +22,7 @@ var BIOCOLLECT_ALA_FACET_MAPPING = {
     'organisationNameFacet':undefined,
     'projectActivityNameFacet':undefined,
     'embargoedFacet':undefined,
+    'verificationStatusFacet':undefined,
     'surveyMonthFacet': {
         'name': 'month',
         'transform': function (month) {
@@ -377,6 +378,7 @@ function FacetViewModel(facet) {
         return self.title || cleanName(self.name()) || 'Unknown';
     });
     self.type = facet.type;
+    self.adminOnly = ko.observable(facet.adminOnly || false);
 
     if(facet.ref.isFacetSelected(self)){
         state = 'Expanded'
@@ -786,13 +788,21 @@ function DatePickerViewModel(config) {
     self.doNotUpdate = ko.observable(false);
 
     self.fromDate.subscribe(function () {
-        self.term.from(getYearMonthDate(self.fromDate.date()));
-        self.updateSelectedFacets();
+        var fromDate = getYearMonthDate(self.fromDate.date()),
+            termFromDate = self.term.from();
+        if (fromDate !== termFromDate) {
+            self.term.from(getYearMonthDate(self.fromDate.date()));
+            self.updateSelectedFacets();
+        }
     });
 
     self.toDate.subscribe(function () {
-        self.term.to(getYearMonthDate(self.toDate.date()));
-        self.updateSelectedFacets();
+        var toDate = getYearMonthDate(self.toDate.date()),
+            termToDate = self.term.to();
+        if (toDate !== termToDate) {
+            self.term.to(getYearMonthDate(self.toDate.date()));
+            self.updateSelectedFacets();
+        }
     });
 
     self.setTermState = function () {

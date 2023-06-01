@@ -9,6 +9,7 @@
 %{--    <asset:stylesheet src="project-finder.css" />--}%
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
@@ -45,19 +46,18 @@
         projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params:[initiator:'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         meritProjectUrl: "${grailsApplication.config.merit.project.url}",
         hideWorldWideBtn: ${!hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.showProjectRegionSwitch},
         flimit: ${grailsApplication.config.facets.flimit},
-        noImageUrl: '${asset.assetPath(src: "no-image-2.png")}',
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false},
         downloadWorksProjectsUrl: "${createLink(controller:'project', action:'downloadWorksProjects')}",
-        <g:applyCodec encodeAs="none">
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
         </g:applyCodec>
   }
     </asset:script>
@@ -76,25 +76,28 @@
     <g:else>
         <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
             <button class="btn btn-primary-dark btn-gettingstarted"
-                    onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}'">
+                    onclick="window.location = '<g:createLink controller="home" action="gettingStarted" />'">
                 <i class="fas fa-info"></i> Getting started</button>
             <button class="btn btn-primary-dark btn-whatisthis"
-                    onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}'">
+                    onclick="window.location = '<g:createLink controller='home' action='whatIsThis' />'">
                 <i class="fas fa-question"></i> What is this?</button>
         </g:if>
     </g:else>
 </content>
-<section class="text-center section-padding">
-    <div class="container">
+<content tag="bannertitle">
+    ${hubConfig.title}
+</content>
+<g:render template="/shared/bannerHub"/>
+<g:set var="intro" value="${fc.homePageIntro()}"/>
+<g:if test="intro">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-12 col-md-10 offset-0 offset-md-1" id="heading">
-                <h1>
-                    ${hubConfig.title}
-                </h1>
+            <div class="col-12">
+                ${intro}
             </div>
         </div>
     </div>
-</section>
+</g:if>
 <section id="catalogueSection">
     <div id="project-finder-container">
         <div class="container-fluid show expander projects-container">
@@ -102,7 +105,6 @@
             <g:render template="/shared/projectFinderResultPanel"/>
         </div>
         <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch: false]}"/>
-        <!-- /#filters -->
     </div>
 </section>
 
@@ -117,5 +119,8 @@
     }
     var projectFinder = new ProjectFinder(fcConfig);
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '#project-finder-container .projects-container',
+                                                  target: '#project-finder-container #filters',
+                                                  listenTo: '#project-finder-container']" />
 </body>
 </html>

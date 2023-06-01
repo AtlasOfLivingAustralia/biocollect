@@ -1,8 +1,9 @@
-var pActivityInfo = function(o, selected, startDate, organisationName){
+var pActivityInfo = function(o, selected, startDate, organisationName, pActivityObservable){
     var self = $.extend(this, new Documents());
     if(!o) o = {};
     if(!selected) selected = false;
     if(!organisationName) organisationName = "";
+    pActivityObservable = pActivityObservable || {};
 
     self.formatAttribution = function(organisationName, surveyName) {
         return organisationName + (surveyName ? (", " + surveyName) : "");
@@ -24,8 +25,8 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.methodName = ko.observable(o.methodName);
     self.methodAbstract = ko.observable(o.methodAbstract);
     self.methodUrl = ko.observable(o.methodUrl);
-    self.downloadFormTemplateUrl = ko.observable(o.pActivityFormName ? fcConfig.downloadTemplateFormUrl + "?type=" + o.pActivityFormName + "&expandList=true" : "")
-
+    self.downloadFormTemplateUrl = ko.observable(o.pActivityFormName ? fcConfig.downloadTemplateFormUrl + "?type=" + o.pActivityFormName + "&expandList=true&includeDataPathHeader=true" : "")
+    self.bulkImportUrl = ko.observable(  fcConfig.bulkImportUrl +  "&projectActivityId=" + o.projectActivityId);
  /*   self.datasetVersion = ko.observable(o.datasetVersion ? o.datasetVersion : "");
     self.submissionDoi = ko.observable(o.submissionDoi ? o.submissionDoi : "");
     self.submissionPublicationDate = ko.observable(o.submissionPublicationDate ? o.submissionPublicationDate : "");
@@ -83,7 +84,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     self.transients.methoddocumentUpdateUrl  = ko.observable(fcConfig.methoddocumentUpdateUrl);
 
     self.transients.logoUrl = ko.pureComputed(function(){
-        return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "no-image-2.png";
+        return self.logoUrl() ? self.logoUrl() : fcConfig.imageLocation + "font-awesome/5.15.4/svgs/regular/image.svg";
     });
 
     self.methodDocUrl = ko.pureComputed(function(){
@@ -152,7 +153,10 @@ var pActivityInfo = function(o, selected, startDate, organisationName){
     }
 
     self.isInfoValid = function () {
-        return self.name() && self.description() && self.attribution() && self.startDate() && self.isEndDateAfterStartDate();
+        return self.name() && self.description() && self.attribution() && self.startDate() && self.isEndDateAfterStartDate()
+            && ko.unwrap(pActivityObservable.dataSharingLicense || o.dataSharingLicense) && self.methodType() && self.methodName() && ko.unwrap(pActivityObservable.legalCustodianOrganisation || o.legalCustodianOrganisation)
+            && ko.unwrap(pActivityObservable.spatialAccuracy || o.spatialAccuracy) && ko.unwrap(pActivityObservable.speciesIdentification || o.speciesIdentification) && ko.unwrap(pActivityObservable.temporalAccuracy || o.temporalAccuracy)
+            && ko.unwrap(pActivityObservable.nonTaxonomicAccuracy || o.nonTaxonomicAccuracy) && ko.unwrap(pActivityObservable.dataQualityAssuranceMethods || o.dataQualityAssuranceMethods) && (ko.unwrap(pActivityObservable.isDataManagementPolicyDocumented || o.isDataManagementPolicyDocumented) != undefined);
     };
 
     self.isEndDateAfterStartDate = function () {

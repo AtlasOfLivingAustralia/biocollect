@@ -338,9 +338,22 @@ class ProjectService {
      * @param projectId
      * @return
      */
-    def getMembersForProjectId(projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProject/${projectId}"
+    def getMembersForProjectId(projectId, List roles = null) {
+        def role = roles?.join("&role=")
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProject/${projectId}?${role ? 'role=' + role : ''}"
         webService.getJson(url)
+    }
+
+    /**
+     * Does the current user have caseManager permission for the requested projectId?
+     *
+     * @param userId
+     * @param projectId
+     * @return
+     */
+    def isUserMemberOfProject(userId, projectId) {
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserMemberOfProject?projectId=${projectId}&userId=${userId}"
+        webService.getJson(url)?.access // either will be true or false
     }
 
     def getMembersForProjectPerPage(projectId, pageStart, pageSize) {
@@ -913,8 +926,20 @@ class ProjectService {
                     if(index >= facets?.size()){
                         index = facets.size()
                         facets.add(index, specialFacet.clone())
-                    } else {
-                        facets.putAt(index, specialFacet.clone())
+                    }
+                    else {
+                        if (index == 0) {
+                            facets.add(0, specialFacet.clone())
+                        }
+                        else {
+                            def item = hubFacets[index - 1]
+                            int facetIndex = facets.findIndexOf { it.name == item.name }
+
+                            if (facetIndex >= 0)
+                                facets.add(facetIndex + 1, specialFacet.clone())
+                            else if (facetIndex == -1)
+                                facets.add(facets.size(), specialFacet.clone())
+                        }
                     }
                 }
             }

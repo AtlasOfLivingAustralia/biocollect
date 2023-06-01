@@ -78,7 +78,7 @@
                     %{--The modal view containing the contents for a modal dialog used to attach a document--}%
                     <g:render template="/shared/attachDocument"/>
                     <div class="row attachDocumentModal">
-                        <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="icon-white icon-plus"></i> Attach Document</button>
+                        <button class="btn btn-small btn-primary" id="doAttach" data-bind="click:attachDocument"><i class="fas fa-plus"></i>  Attach Document</button>
                     </div>
                 </div>
                 <!--AUDIT-->

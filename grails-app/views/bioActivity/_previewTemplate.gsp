@@ -1,13 +1,11 @@
-<div class="modal fade previewModal hide" id="previewModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" >
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
+<div class="modal fade previewModal hide h-100" id="previewModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" >
+    <div class="modal-dialog modal-xl h-100">
+        <div class="modal-content h-100">
             <div class="modal-header">
-                <div>
-                    <h3 align="center">
+                    <h3 class="w-100">
                         <span data-bind="text: pActivityFormName()"></span> Template
-                        <button type="button" class="close" data-bind="click: hideModal" aria-hidden="true">&times;</button>
+                        <button type="button" class="close float-right" data-bind="click: hideModal" aria-hidden="true">&times;</button>
                     </h3>
-                </div>
             </div>
 
             <div class="modal-body" id="previewModalBody">

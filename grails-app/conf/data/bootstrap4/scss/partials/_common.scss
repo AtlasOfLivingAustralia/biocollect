@@ -20,7 +20,7 @@ img {
 
 
 // Custom numbered list bullet styles
-ol {
+ol.homepage-style {
   counter-reset: item;
   margin: 0 0 1em;
   padding: 0;
@@ -175,8 +175,6 @@ ul.menu {
 
   th, td {
     vertical-align: middle;
-    border-top: none !important;
-    border-bottom: none !important;
   }
 
   thead {
@@ -185,14 +183,6 @@ ul.menu {
       position: relative;
       padding-right: 35px;
       font-size: 16px;
-
-      &:first-child {
-        border-left: none;
-      }
-
-      &:last-child {
-        border-right: none;
-      }
     }
   }
 
@@ -202,14 +192,6 @@ ul.menu {
 
       p {
         margin-bottom: 8px;
-      }
-
-      &:first-child {
-        border-left: none;
-      }
-
-      &:last-child {
-        border-right: none;
       }
     }
   }
@@ -460,7 +442,8 @@ ul.menu {
       display: block;
       width: 20px;
       height: 20px;
-      //border:           1px solid $gray-400;
+      border: 1px solid $gray-400;
+      border-radius: $border-radius;
       background-color: $c-page-background;
       position: absolute;
       left: 0;
@@ -548,13 +531,13 @@ ul.menu {
   }
 
   #filters & {
-    padding: 15px 20px;
+    padding: 5px 20px;
     &:after {
-      content: '\f078';
+      content: '\f077';
     }
     &.collapsed {
       &:after {
-        content: '\f077';
+        content: '\f078';
       }
     }
   }
@@ -581,7 +564,7 @@ ul.menu {
   }
 
   #filters & {
-    padding: 15px 20px 10px;
+    padding: 5px 20px 10px;
     @include media-breakpoint-down(sm) {
       padding: 18px 20px 10px;
     }
@@ -718,56 +701,6 @@ ul.menu {
     bottom: -42px;
     left: 50%;
     transform: rotate(45deg) translateX(-70%);
-  }
-}
-
-.card {
-  padding: 0 30px 30px;
-
-  .dropdown-close {
-    border: none;
-    background: none;
-    padding: 0;
-    margin: 0;
-    float: right;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.7;
-    }
-  }
-
-  .card-header {
-    color: $c-text-light;
-    border-bottom: 1px solid $gray-400;
-    padding: 18px 0 20px;
-    margin: 0;
-  }
-
-  .card-body {
-    color: $c-text-light;
-    padding: 25px 0 0;
-  }
-
-  label {
-    font-weight: 900;
-    font-size: 18px;
-    font-family: 'Lato', sans-serif;
-  }
-
-  input[type=text], input[type=search], input[type=number], input[type=tel] {
-    border: none;
-    height: 50px;
-  }
-
-  [type=submit] {
-    font-family: $font-family-base;
-    font-weight: normal;
-    font-size: 16px;
-
-    svg {
-      margin-right: 5px;
-    }
   }
 }
 
@@ -1017,6 +950,67 @@ ul.links {
   }
 }
 
+// to prevent two drop down selectors from being shown on Safari
 .custom-select {
+  -webkit-appearance: none;
+}
 
+.facebook {
+  color: #1877f2;
+}
+
+.blackberry {
+  color: #000000d9;
+}
+
+.android {
+  color: #3dda84;
+}
+
+.flickr {
+  color: #ff0084;
+}
+
+.googlePlus {
+  color: #fbbc03;
+}
+
+.instagram {
+  color: #262626;
+}
+
+.itunes, .iTunes {
+  color: #fe7335;
+}
+
+.linkedIn {
+  color: #0a66c2;
+}
+
+.pinterest {
+  color: #e60023;
+}
+
+.rssFeed {
+  color: #f79735;
+}
+
+.tumblr {
+  color: #00b8ff;
+}
+
+.twitter {
+  color: #1d9bf0;
+}
+
+.vimeo {
+  color: #00adef;
+}
+
+.windowsPhone {
+  color: #eb1223;
+}
+
+.youtube {
+  color: #f00;
 }

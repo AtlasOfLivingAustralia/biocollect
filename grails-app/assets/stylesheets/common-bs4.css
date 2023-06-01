@@ -66,7 +66,7 @@
 .project-logo {
     width: 200px;
     height: 150px;
-    /*line-height: 146px;*/
+    line-height: 146px;
     overflow: hidden;
     padding: 3px;
     text-align: center;
@@ -107,6 +107,7 @@
     background: orange;
     color: white;
     padding: 4px;
+    margin-right: 6px;
     white-space: nowrap;
 }
 
@@ -146,6 +147,18 @@
     min-height: 600px;
 }
 /* END project resources */
+
+/* dashboard */
+.customChart {
+    padding-bottom: 33px !important;
+}
+
+.customChartCanvas {
+    background-color: #f6f6f6;
+    border-radius: 25px;
+}
+
+/* end dashboard */
 
 /**
  * used in project activities for colour coding reliability tags
@@ -193,7 +206,11 @@
  *= require jquery.validationEngine/3.1.0/validationEngine.jquery.css
 */
 /* END needed by project index, edit pages */
-
+/*search sites*/
+div.dataTables_wrapper div.dataTables_filter input{
+    margin-left: 0;
+}
+/*end search sites*/
 /** Permissions table */
 .dataTables_length > label{
     width: 100%;
@@ -221,12 +238,22 @@ select[name=project-list_length]{
     display: inline;
 }
 
+/* Start floating save */
+
 #floating-save {
     position: fixed;
     bottom:0;
     left:0;
     width:100%;
     height:40px;
+
+    /* TODO: new floating save button
+    height: 60px;
+
+    border-top: 2px solid black;
+    background-color: #FFFFFF;
+    opacity: 0.8;
+     */
 }
 #floating-save .transparent-background {
     background-color:#000000;
@@ -246,6 +273,35 @@ select[name=project-list_length]{
 #floating-save button {
     top:5px;
 }
+
+/* TODO: new floating save button
+#floating-save .form-actions {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 100%;
+    height: 25px;
+
+    padding: 0 5px;
+    margin: 0;
+    text-align: center;
+}
+
+#floating-save p {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 100%;
+
+    text-align: center;
+    font-size: 16px;
+    margin: 0;
+}
+*/
+
+/* End floating save */
+
 /** END Permissions table */
 
 /** form field **/
@@ -269,3 +325,9 @@ select[name=project-list_length]{
     margin-bottom: 0px;
 }
 /* END system banner message */
+
+/* bulk import index*/
+.h-200px {
+    height: 200px;
+}
+/* END bulk import index*/

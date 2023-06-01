@@ -32,7 +32,7 @@
                         <a data-bind="click: $root.addSite" class="btn btn-dark" title="Create a new site for your project"><i class="fa fa-plus"></i> New</a>
                         <a data-bind="click: $root.uploadShapefile" type="button" class="btn btn-dark" title="Create sites for your project by uploading a shapefile"><i class="fa fa-upload"></i> Upload</a>
                         <a data-bind="click: $root.downloadShapefile" type="button" class="btn btn-dark" title="Download your project sites in shapefile format"><i class="fa fa-download"></i> Download</a>
-                        <button data-bind="click: $root.removeSelectedSites, enable:$root.selectedSiteIds().length > 0" type="button" class="btn btn-dark" title="Delete selected sites"><i class="fa fa-trash"></i> Delete</button>
+                        <button data-bind="click: $root.removeSelectedSites, enable:$root.selectedSiteIds().length > 0" type="button" class="btn btn-danger" title="Delete selected sites"><i class="far fa-trash-alt"></i> Delete</button>
                     </span>
                     </div>
                 </div>
@@ -56,9 +56,9 @@
                         <td class="col-3">
                             <g:if test="${canEditSites}">
                                 <span class="btn-group">
-                                    <a type="button" data-bind="click:$root.editSite" type="button" class="btn btn-sm btn-light"><i class="fas fa-pencil-alt" title="Edit ${wordForSite.capitalize()}"></i></a>
-                                    <a type="button" data-bind="click:$root.viewSite" type="button" class="btn btn-sm btn-light"><i class="far fa-eye" title="View ${wordForSite.capitalize()}"></i></a>
-                                    <a type="button" data-bind="click:$root.deleteSite" type="button" class="btn btn-sm btn-light"><i class="far fa-trash-alt" title="Delete ${wordForSite.capitalize()}"></i></a>
+                                    <a data-bind="click:$root.editSite" type="button" class="btn btn-sm btn-dark"><i class="fas fa-pencil-alt" title="Edit ${wordForSite.capitalize()}"></i></a>
+                                    <a data-bind="click:$root.viewSite" type="button" class="btn btn-sm btn-dark"><i class="far fa-eye" title="View ${wordForSite.capitalize()}"></i></a>
+                                    <a data-bind="click:$root.deleteSite" type="button" class="btn btn-sm btn-danger"><i class="far fa-trash-alt" title="Delete ${wordForSite.capitalize()}"></i></a>
                                 </span>
                             </g:if>
                         </td>

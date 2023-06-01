@@ -64,12 +64,14 @@ class BioCollect {
                 ecoScienceType         : doc.ecoScienceType,
                 startDate              : doc.plannedStartDate,
                 urlImage               : doc.imageUrl,
+                fullSizeImageUrl       : doc.fullSizeImageUrl,
                 urlWeb                 : doc.urlWeb,
                 plannedStartDate       : doc.plannedStartDate,
                 plannedEndDate         : doc.plannedEndDate,
                 projectType            : doc.projectType,
                 isMERIT                : doc.isMERIT,
-                tags                   : doc.tags
+                tags                   : doc.tags,
+                containsActivity       : doc.containsActivity
             ]
         }
     }

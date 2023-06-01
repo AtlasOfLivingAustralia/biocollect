@@ -1,41 +1,30 @@
 @import 'settings';
 @import "bootstrap/bootstrap";
-
-@import 'partials/swiper';
-//@import "partials/jqueryui-datepicker";
-
-@import "partials/header";
-@import "partials/footer";
-@import "partials/common";
-@import "partials/hero";
-@import "partials/modal";
-@import "partials/posts";
-@import "partials/catalogue";
-@import "partials/project";
+@import 'partials/partials';
 
 .btn-space>.btn {
   margin-top: .25rem;
   margin-bottom: .25rem;
 }
 
-@if $what-is-btn {
+@if variable-exists("what-is-btn") {
   .btn-whatisthis {
     @include button-variant($what-is-this-button-background-color, $what-is-this-button-background-color);
   }
 }
 
-@if $getting-started-btn {
+@if variable-exists("getting-started-btn") {
   .btn-gettingstarted {
     @include button-variant($getting-started-button-background-color, $getting-started-button-background-color);
   }
 }
 
-@if $add-a-record-btn {
+@if variable-exists("add-a-record-btn") {
   .btn-addarecord {
     @include button-variant($add-a-record-button-background-color, $add-a-record-button-background-color);
   }
 }
-@if $view-records-btn {
+@if variable-exists("view-records-btn") {
   .btn-viewrecords {
     @include button-variant($view-records-button-background-color, $view-records-button-background-color);
   }
@@ -67,35 +56,39 @@ $tag-text-color: white !default;
   color: $tag-text-color;
 }
 
-$footer-background-color: $c-text !default;
+$footer-background-color: black !default;
 $footer-text-color: white !default;
-#footer .footer-top {
+#custom-footer {
   background-color: $footer-background-color;
   color: $footer-text-color;
 }
 
 $social-text-color: white !default;
-#footer .footer-top .social a {
+#custom-footer .social a {
   color: $social-text-color;
 }
 
 $menu-text-color: white !default;
 $menu-background-color: black !default;
-#page .wrapper-nav-bar .nav-bar {
-  background-color: rgba($menu-background-color, 0.6);
-  color: $menu-text-color;
+@include media-breakpoint-up(lg) {
+  #page #wrapper-navbar .navbar {
+    background-color: $menu-background-color;
+    color: $menu-text-color;
+  }
 }
-//@if $make-primary-btn {
-//  .btn-primary-dark {
-//    //@include button-outline-variant($primary-button-outline-text-color);
-//  }
-//}
+#page #wrapper-navbar .navbar {
+  background-color: rgba($menu-background-color, 0.6);
+}
 
-//@if $make-default-btn {
-//  .btn-dark {
-//    //@include button-outline-variant($default-button-outline-text-color);
-//  }
-//}
+$homepage-background-btn: $menu-background-color !default;
+$homepage-text-btn: $menu-text-color !default;
+.homePageNav .homepage-button {
+  cursor: pointer;
+  background-color: $homepage-background-btn;
+  h3 {
+    color: $homepage-text-btn;
+  }
+}
 
 // carousel #hubCarouselBanner
 

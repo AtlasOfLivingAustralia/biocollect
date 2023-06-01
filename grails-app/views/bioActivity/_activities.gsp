@@ -1,5 +1,5 @@
 <%@ page import="grails.converters.JSON" %>
-<g:set var="noImageUrl" value="${asset.assetPath([src: "no-image-2.png"])}"/>
+<g:set var="noImageUrl" value="${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}"/>
 <!-- ko stopBinding: true -->
 <div id="projectData" class="my-4 my-md-5">
     <div id="survey-all-activities-and-records-content">
@@ -20,12 +20,12 @@
                     <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
                         <div class="btn-group">
                             <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a class="btn btn-outline-dark active" id="data-grid-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark" id="data-grid-tab" data-toggle="tab" type="button"
                                    href="#dataGrid" title="<g:message code="data.grid.title"/>"
                                    role="tab" aria-controls="<g:message code="data.grid.title"/>">
                                     <i class="fas fa-th-large"></i>
                                 </a>
-                                <a class="btn btn-outline-dark" id="data-list-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark active" id="data-list-tab" data-toggle="tab" type="button"
                                    href="#recordVis" title="<g:message code="data.list.title"/>"
                                    role="tab" aria-controls="<g:message code="data.list.title"/>" aria-selected="true">
                                     <i class="fas fa-list"></i>
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-4 text-center text-md-right order-0 order-md-2">
-                        <button class="btn btn-dark padding-top-1"
+                        <button id="download-data" class="btn btn-dark padding-top-1"
                                 data-bind="click: download, disable: transients.loading"
                                 data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
                             <i class="fas fa-download">&nbsp;</i> <g:message code="g.download"/>
@@ -61,14 +61,16 @@
                 <div class="filter-bar d-flex align-items-center">
                     <h4>Applied Filters: </h4>
                     <!-- ko foreach: filterViewModel.selectedFacets -->
-                    <span class="filter-item">
+                    <button class="filter-item btn btn-sm btn-outline-dark">
                         <strong data-bind="visible: exclude " title="Exclude">[EXCLUDE]</strong>
                         <!-- ko text: displayNameWithoutCount() --> <!-- /ko -->
-                        <button class="remove" data-bind="click: remove"><i class="far fa-times-circle"></i></button>
-                    </span>
-                    <!-- /ko -->
-                    <button type="button" class="btn btn-sm btn-dark clear-filters" aria-label="Clear all filters"><i class="far fa-times-circle"></i> Clear All
+                        <span class="remove" data-bind="click: remove"><i class="far fa-trash-alt"></i></span>
                     </button>
+                    <!-- /ko -->
+                    <!-- ko if: (filterViewModel.selectedFacets() && (filterViewModel.selectedFacets().length > 0)) -->
+                    <button type="button" class="btn btn-sm btn-dark clear-filters"  data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-trash-alt"></i> Clear All
+                    </button>
+                    <!-- /ko -->
                 </div>
 
                 <div class="records-found">
@@ -92,19 +94,12 @@
                     </div>
                     <div class="row" data-bind="visible: transients.showEmailDownloadPrompt()">
                         <div class="col-12">
-                            <div class="mb-2">
+                            <div class="mb-2 alert alert-info" role="alert">
                                 <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
                             </div>
                             <div class="form-group">
                                 <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-form-label col-sm-2" for="email">Email address</label>
-                                <div class="col-sm-10">
-                                    <g:textField class="input-xxlarge" type="email" data-bind="value: transients.downloadEmail" name="email"/>
-                                </div>
+                                <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
                             </div>
                             <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                         </div>
@@ -135,7 +130,7 @@
                     </g:if>
                 </div>
                 <div class="tab-content activities-search-panel">
-                    <div class="tab-pane active" id="dataGrid" role="tabpanel">
+                    <div class="tab-pane" id="dataGrid" role="tabpanel">
                         <g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
                         <!-- .pagination -->
                         <div class="records-list row d-flex flex-wrap mt-4 mt-md-4 mb-3">
@@ -155,8 +150,8 @@
                             <div class="col-12 col-lg-6 col-xl-4 d-flex">
                                 <div class="record flex-grow-1">
                                     <div class="row">
-                                        <div class="col-12 col-sm-5 pb-3 pb-sm-0">
-                                            <img onload="findLogoScalingClass(this, 200, 150)" data-bind="attr:{src: thumbnailUrl}"
+                                        <div class="col-12 col-sm-5 pb-3 pb-sm-0 d-flex justify-content-center align-items-center">
+                                            <img onload="findLogoScalingClass(this, 200, 150);addClassForImage(this, '${noImageUrl}', 'w-25')" data-bind="attr:{src: thumbnailUrl}"
                                                  onerror="imageError(this, '${noImageUrl}');"/>
                                         </div>
                                         <div class="col-12 col-sm-7 pl-sm-1">
@@ -177,15 +172,14 @@
                                                    title="<g:message code="data.activity.view.title"/>"
                                                    role="button">
                                                     <i class="far fa-eye"></i>
-                                                    <g:message code="btn.view"/>
                                                 </a>
                                                 <!-- ko if: $parent.showCrud() && !$parent.readOnly()-->
                                                 <a class="btn btn-sm editBtn btn-dark"
                                                    data-bind="attr: {href: $parent.transients.editUrl }"
-                                                   title="Edit record"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
-                                                <button class="btn btn-sm btn-dark"
+                                                   title="Edit record"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn btn-sm btn-danger"
                                                         data-bind="click: $parent.delete"
-                                                        title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                                        title="Delete record"><i class="far fa-trash-alt"></i></button>
                                                 <!-- /ko -->
                                             </div>
                                         </div>
@@ -221,14 +215,13 @@
                                                    title="<g:message code="data.activity.view.title"/>"
                                                    role="button">
                                                     <i class="far fa-eye"></i>
-                                                    <g:message code="btn.view"/>
                                                 </a>
                                                 <!-- ko if: showCrud() && !readOnly() -->
                                                 <a class="btn btn-sm btn-dark editBtn"
                                                    data-bind="attr: {href: transients.editUrl}"
-                                                   title="Edit record"><i class="fas fa-pencil-alt"></i>&nbsp;Edit</a>
-                                                <button class="btn btn-sm btn-dark" data-bind="click: $data.delete"
-                                                        title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                                   title="Edit record"><i class="fas fa-pencil-alt"></i></a>
+                                                <button class="btn btn-sm btn-danger" data-bind="click: $data.delete"
+                                                        title="Delete record"><i class="far fa-trash-alt"></i></button>
                                                 <!-- /ko -->
                                             </div>
                                         </div>
@@ -241,15 +234,17 @@
                         <g:render template="/shared/pagination" model="[bs:4]"/>
                         <!-- .pagination -->
                     </div>
-                    <div class="tab-pane fade" id="recordVis">
+                    <div class="tab-pane active" id="recordVis">
                         <!-- ko if: activities().length == 0 -->
                         <div class="row">
-                            <h3 class="text-left mb-1">
-                                <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
-                                    No data has been recorded for this project yet
-                                </span>
-                                <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
-                            </h3>
+                            <div class="col-12"
+                                <h3 class="text-left mb-1">
+                                    <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
+                                        No data has been recorded for this project yet
+                                    </span>
+                                    <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
+                                </h3>
+                            </div>
                         </div>
                         <!-- /ko -->
 
@@ -306,7 +301,7 @@
                                 <!-- ko foreach: $root.columnConfig -->
                                 <!-- ko if: type == 'image' -->
                                 <td class="align-top">
-                                    <div class="projectLogo">
+                                    <div class="projectLogo project-logo">
                                         <a data-bind="attr: {href: $parents[1].transients.viewUrl}">
                                             <!-- ko if: $parent.multimedia[0] && $parent.multimedia[0].identifier -->
                                             <img class="image-logo image-window" data-bind="attr:{title:($parent.multimedia[0] && $parent.multimedia[0].title) || 'No Image', src:($parent.multimedia[0] && $parent.multimedia[0].identifier) || '${noImageUrl}'}"  onload="findLogoScalingClass(this, 200, 150)">
@@ -398,12 +393,12 @@
                                 <!-- ko if: type == 'action' -->
                                 <td class="align-top">
                                     <div class="btn-space">
-                                        <a class="btn btn-sm btn-primary-dark editBtn" data-bind="attr: {href: $parents[1].transients.viewUrl}" title="View record"><i class="far fa-eye"></i> View</a>
+                                        <a class="btn btn-sm btn-primary-dark editBtn" data-bind="attr: {href: $parents[1].transients.viewUrl}" title="View record"><i class="far fa-eye"></i></a>
                                         <!-- ko if: !$parents[1].readOnly() &&  $parents[1].showCrud() -->
-                                        <a  class="btn btn-sm editBtn btn-dark" data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record"><i class="fas fa-pencil-alt"></i> Edit</a>
+                                        <a  class="btn btn-sm editBtn btn-dark" data-bind="attr: {href: $parents[1].transients.editUrl }" title="Edit record"><i class="fas fa-pencil-alt"></i></a>
                                         <!-- /ko -->
                                         <!-- ko if: !$parents[1].readOnly() && $parents[1].showCrud() -->
-                                        <button class="btn btn-sm btn-dark" data-bind="click: $parents[1].delete" title="Delete record"><i class="far fa-trash-alt"></i>&nbsp;Delete</button>
+                                        <button class="btn btn-sm btn-danger" data-bind="click: $parents[1].delete" title="Delete record"><i class="far fa-trash-alt"></i></button>
                                         <!-- /ko -->
                                     </div>
                                 </td>
@@ -432,7 +427,7 @@
                                 <!-- ko foreach: $root.columnConfig -->
                                 <!-- ko if:  type == 'image' -->
                                 <td class="align-top">
-                                    <div class="projectLogo">
+                                    <div class="projectLogo project-logo">
                                         <img class="image-logo wide" data-bind="attr:{title:$parent.transients.imageTitle, src:$parent.transients.thumbnailUrl} " />
                                     </div>
                                 </td>
@@ -498,18 +493,17 @@
                                            title="<g:message code="data.activity.view.title"/>"
                                            class="btn btn-sm editBtn btn-primary-dark">
                                             <i class="far fa-eye"></i>
-                                            <g:message code="btn.view"/>
                                         </a>
                                         <!-- ko if: $parent.showCrud() && !$parent.readOnly() -->
                                         <a data-bind="attr:{'href': $parent.transients.editUrl}"
                                            title="Edit record"
                                            class="btn btn-sm editBtn btn-dark">
-                                            <i class="fas fa-pencil-alt"></i> Edit
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-dark"
+                                        <button class="btn btn-sm btn-danger"
                                                 data-bind="click: $parent.delete"
                                                 title="Delete record">
-                                            <i class="far fa-trash-alt"></i>&nbsp;Delete
+                                            <i class="far fa-trash-alt"></i>
                                         </button>
                                         <!-- /ko -->
                                     </div>
@@ -587,7 +581,7 @@
 
         var columnConfig =${ hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON}
 
-        var facetConfig; 
+        var facetConfig;
 
         if(view === 'allrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
@@ -601,6 +595,8 @@
             facetConfig = ${ hubConfig.getFacetConfigForPage('myprojectrecords') };
         } else if (view === 'userprojectactivityrecords') {
             facetConfig = ${ hubConfig.getFacetConfigForPage('userprojectactivityrecords') };
+        } else if (view === 'bulkimport') {
+            facetConfig = ${ hubConfig.getFacetConfigForPage('bulkimport') };
         } else {
             console.warn("[Facets] Unrecognised view name '" + view + "', using allRecords facet config.");
             facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
@@ -608,29 +604,45 @@
 
         var hubConfig = ${ hubConfig }
 
-        activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig);
-        ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
+        // on project page, show listings only when data tab is active.
+        // in other context like all records, show listing as soon as possible
+        if($('#data-tab').length == 1) {
+            $('#data-tab').on('shown.bs.tab', initialiseActivityListing)
+        }
+        else {
+            initialiseActivityListing()
+        }
+
+
+        function initialiseActivityListing(){
+            if (!activitiesAndRecordsViewModel) {
+                activitiesAndRecordsViewModel = new ActivitiesAndRecordsViewModel('data-result-placeholder', view, user, false, false, ${doNotStoreFacetFilters?:false}, columnConfig, facetConfig, '#survey-all-activities-and-records-content');
+                ko.applyBindings(activitiesAndRecordsViewModel, document.getElementById('survey-all-activities-and-records-content'));
+
+                configImageGallery = {
+                    recordUrl: fcConfig.recordImageListUrl,
+                    poiUrl: fcConfig.poiImageListUrl,
+                    method: 'POST',
+                    element: document.getElementById('imageGallery'),
+                    data: {
+                        view: fcConfig.view,
+                        fq: [],
+                        searchTerm: '',
+                        projectId: fcConfig.projectId || '',
+                        spotterId: fcConfig.spotterId,
+                        projectActivityId: fcConfig.projectActivityId,
+                        bulkImportId: fcConfig.bulkImportId
+                    },
+                    viewModel: activitiesAndRecordsViewModel
+                }
+
+                activitiesAndRecordsViewModel.imageGallery = initialiseImageGallery(configImageGallery);
+            }
+        }
+
         $('#data-map-tab').on('shown.bs.tab',function(){
             activitiesAndRecordsViewModel.transients.alaMap.redraw();
         })
-
-        configImageGallery = {
-            recordUrl: fcConfig.recordImageListUrl,
-            poiUrl: fcConfig.poiImageListUrl,
-            method: 'POST',
-            element: document.getElementById('imageGallery'),
-            data: {
-                view: fcConfig.view,
-                fq: [],
-                searchTerm: '',
-                projectId: fcConfig.projectId || '',
-                spotterId: fcConfig.spotterId,
-                projectActivityId: fcConfig.projectActivityId
-            },
-            viewModel: activitiesAndRecordsViewModel
-        }
-
-        activitiesAndRecordsViewModel.imageGallery = initialiseImageGallery(configImageGallery);
     }
 
     // initialise tab
@@ -657,3 +669,4 @@
     tabId && $(tabId).tab('show');
     </g:applyCodec>
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '.data-expander.data-container', target: '#survey-all-activities-and-records-content #filters', listenTo: '#survey-all-activities-and-records-content']" />

@@ -50,11 +50,12 @@
         // $(".combobox").combobox();
 
         // Click event on "add" button to add new user to project
-        $('#addUserRoleBtn').click(function(e) {
+        $('#addUserRoleBtn').on('click',function(e) {
             e.preventDefault();
             var email = $('#emailAddress').val();
             var role = $('#addUserRole').val();
             var entityId = $('#entityId').val();
+            entityId = entityId ||  $('#projectId').val();
 
             if ($('#userAccessForm').validationEngine('validate')) {
                 $("#spinner1").show();

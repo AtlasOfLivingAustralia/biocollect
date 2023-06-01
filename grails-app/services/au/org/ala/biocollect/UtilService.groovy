@@ -1,5 +1,7 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.merit.SettingService
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
@@ -84,6 +86,7 @@ class UtilService {
 
     /**
      * Convert facet names and terms to a human understandable text.
+     * add adminOnly property to control visibility of facets
      * @param facets
      * @return
      */
@@ -108,6 +111,7 @@ class UtilService {
             Map facetSetting = facetConfig.find { it.name == facet.name }
             facet.title = facetSetting?.title
             facet.helpText = facetSetting?.helpText
+            facet.adminOnly = facetSetting?.adminOnly || false
         }
     }
 
@@ -146,5 +150,20 @@ class UtilService {
         }
 
         document?.thumbnailUrl ?: document?.url
+    }
+
+    Map getHeaderLinkForContentTypeOrURI(String contentType, String uri){
+        HubSettings hubSettings = SettingService.getHubConfig()
+        List links = hubSettings.templateConfiguration?.header?.links
+        Map result
+        if (links) {
+            result = links?.find {it.contentType == contentType}
+
+            if (!result) {
+                result = links?.findAll {it.contentType == 'content'}?.find { it.href?.contains(uri) }
+            }
+        }
+
+        result
     }
 }

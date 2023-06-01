@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.PreAuthorise
 import au.org.ala.biocollect.merit.ProjectController
+import au.org.ala.biocollect.merit.RoleService
 import grails.converters.JSON
 import org.springframework.http.HttpStatus
 
@@ -99,6 +100,11 @@ class AclFilterInterceptor {
                         errorMsg = "Access denied: User does not have <b>admin</b> permission ${projectId?'for project':''}"
                     }
                     break
+                case 'hubAdmin':
+                    if (!userService.doesUserHaveHubRole(RoleService.ADMIN_ROLE)) {
+                        errorMsg = "Access denied: User does not have admin permission for hub"
+                    }
+                    break
                 case 'moderator':
                     if (!projectService.canUserModerateProjects(userId, projectId)) {
                         errorMsg = "Access denied: User does not have <b>moderator</b> permission ${projectId?'for project(s)':''}"
@@ -144,7 +150,7 @@ class AclFilterInterceptor {
                 flash.message = errorMsg
                 if (params.returnTo) {
                     redirect(url: params.returnTo)
-                } else if (projectId){
+                } else if (projectId && pa.redirectController() && pa.redirectAction()){
                     redirect(controller: pa.redirectController(), action: pa.redirectAction(), id: projectId)
                 } else {
                     render text: [error: errorMsg] as JSON, status: HttpStatus.UNAUTHORIZED

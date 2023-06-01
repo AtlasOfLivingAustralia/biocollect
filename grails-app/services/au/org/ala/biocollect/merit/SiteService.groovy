@@ -6,11 +6,11 @@ import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Point
 import com.vividsolutions.jts.io.WKTReader
 import grails.converters.JSON
-import org.grails.web.json.JSONArray
 import grails.web.mapping.LinkGenerator
 import grails.web.servlet.mvc.GrailsParameterMap
-import org.geotools.kml.v22.KMLConfiguration
-import org.geotools.xml.Parser
+import org.geotools.kml.KMLConfiguration
+import org.geotools.referencing.wkt.Parser
+import org.grails.web.json.JSONArray
 import org.opengis.feature.simple.SimpleFeature
 
 class SiteService {
@@ -100,9 +100,9 @@ class SiteService {
         webService.doPost(url, poi)
     }
 
-    def get(id, Map urlParams = [:]) {
+    def get(id, Map urlParams = [:], String format = '') {
         if (!id) return null
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/site/' + id +
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/site/' + id + format +
                 commonService.buildUrlParamsFromMap(urlParams))
     }
 
@@ -323,8 +323,7 @@ class SiteService {
                 featuresMap = [:]
         }
 
-        def asJSON = featuresMap as JSON
-        asJSON
+        featuresMap
     }
 
     /**
@@ -775,15 +774,8 @@ class SiteService {
     boolean isPointInsideProjectArea(String lat, String lng, String projectId) {
         Map projectArea = getProjectAreaForProject(projectId)
         Map pointGeoJSON = createGeoJSONFromPoint(lat, lng)
-        if ((projectArea?.extent?.geometry?.type == "pid") && pointGeoJSON) {
-            def pidURL =  "${grailsApplication.config.spatial.baseURL}/ws/shape/geojson/${projectArea?.extent?.geometry?.pid}"
-            def geoJSON = webService.getJson(pidURL)
-            if (!geoJSON?.error) {
-                return  GeometryUtils.doShapesIntersect(geoJSON, pointGeoJSON)
-            }
-        }
-        else if (projectArea?.geoIndex && pointGeoJSON) {
-            return GeometryUtils.doShapesIntersect(projectArea.geoIndex, pointGeoJSON)
+        if (projectArea && pointGeoJSON) {
+            return GeometryUtils.doShapesIntersect(projectArea, pointGeoJSON)
         }
 
         false
@@ -793,7 +785,7 @@ class SiteService {
         Map project = projectService.get(projectId)
         if (!project?.error) {
             String siteId = project.projectSiteId
-            Map projectArea = get(siteId)
+            Map projectArea = get(siteId, [:], '.geojson')
             if (!projectArea?.error) {
                 return projectArea
             }

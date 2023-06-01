@@ -2,12 +2,11 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${hubConfig.skin}"/>
+    <meta name="layout" content="bs4"/>
     <title><g:message code="project.works.heading"/> | <g:message code="project.works.heading"/></title>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600,700"/>
-    <link rel="stylesheet" src="https://fonts.googleapis.com/css?family=Oswald:300"/>
     <asset:script type="text/javascript">
     var fcConfig = {
+        <g:applyCodec encodeAs="none">
         baseUrl: "${grailsApplication.config.grails.serverURL}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
@@ -23,7 +22,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100km"}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
         dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
@@ -36,6 +35,7 @@
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         associatedPrograms: ${associatedPrograms},
         flimit: ${grailsApplication.config.facets.flimit}
+        </g:applyCodec>
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
@@ -51,19 +51,17 @@
     <asset:javascript src="project-finder.js"/>
 </head>
 <body>
+<content tag="bannertitle">
+    <g:message code="project.works.heading"/>
+</content>
+<g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
+    <content tag="pagefinderbuttons">
+        <button class="btn btn-info btn-getttingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}"><i class="fas fa-info"></i> Getting started</button>
+        <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}"><i class="fas fa-question"></i> What is this?</button>
+    </content>
+</g:if>
 <div id="wrapper" class="content container-fluid">
     <g:render template="/shared/projectFinderQueryPanel" model="${[showSearch:false]}"/>
-    <div class="row-fluid">
-        <div class="span12 padding10-small-screen" id="heading">
-            <h1 class="pull-left"><g:message code="project.works.heading"/></h1>
-            <g:if test="${!hubConfig.content?.hideProjectFinderHelpButtons}">
-            <div class="pull-right">
-                <button class="btn btn-info btn-getttingstarted" onclick="window.location = '${createLink(controller: 'home', action: 'gettingStarted')}"><i class="icon-info-sign icon-white"></i> Getting started</button>
-                <button class="btn btn-info btn-whatisthis" onclick="window.location = '${createLink(controller: 'home', action: 'whatIsThis')}"><i class="icon-question-sign icon-white"></i> What is this?</button>
-            </div>
-            </g:if>
-        </div>
-    </div>
 
     <g:render template="/shared/projectFinderResultPanel"></g:render>
 
@@ -77,5 +75,8 @@
     var projectFinder = new ProjectFinder({enablePartialSearch: ${hubConfig.content.enablePartialSearch?:false}});
 
 </asset:script>
+<g:render template="/shared/resizeFilter" model="[dependentDiv: '#project-finder-container .projects-container',
+                                                  target: '#project-finder-container #filters',
+                                                  listenTo: '#project-finder-container']" />
 </body>
 </html>

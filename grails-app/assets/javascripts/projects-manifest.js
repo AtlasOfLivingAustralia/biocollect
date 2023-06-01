@@ -48,3 +48,6 @@
 
 // jquery gantt chart
 //= require jquery-gantt/js/jquery.fn.gantt.js
+
+// forms
+//= require forms.js
