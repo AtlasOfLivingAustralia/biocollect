@@ -341,3 +341,6 @@ bootstrap4:
 # used by ala-admin-plugin
 skin:
   layout: "bs4"
+
+fathom:
+  enabled: true

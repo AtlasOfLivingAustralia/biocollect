@@ -131,7 +131,7 @@ dependencies {
     implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
     implementation ("org.grails.plugins:ala-auth:5.1.1")
     implementation "org.grails.plugins:ala-ws-security-plugin:4.1.2"
-    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.1.0"
+    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.2.0-SNAPSHOT"
 
     //    swagger API
     implementation 'au.org.ala.plugins:openapi:1.1.0'
