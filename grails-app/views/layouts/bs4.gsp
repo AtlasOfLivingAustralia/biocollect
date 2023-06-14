@@ -187,6 +187,12 @@
         </footer>
     %{-- Adding GA script here since it is not included anywhere when custom footer is used. --}%
     %{-- Ala footer does not need it since it comes with GA script included. --}%
+        <g:if test="${grailsApplication.config.getProperty('fathom.enabled', Boolean, true)}">
+        <!-- Fathom analytics -->
+        <script src="https://cdn.usefathom.com/script.js" data-site="${grailsApplication.config.getProperty('fathom.site-id')}" defer></script>
+        <!-- END Fathom analytics -->
+        </g:if>
+        <g:else>
         <!-- Google Analytics -->
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -198,6 +204,7 @@
             ga('send', 'pageview');
         </script>
         <!-- End Google Analytics -->
+        </g:else>
 
     </g:elseif>
 </div>
