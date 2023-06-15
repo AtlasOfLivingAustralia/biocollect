@@ -39,7 +39,7 @@
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         sites: <fc:modelAsJavascript model="${project?.sites ?: []}"/>,
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         addCreatedSiteToListOfSelectedSites: ${canEditSites}
         </g:applyCodec>

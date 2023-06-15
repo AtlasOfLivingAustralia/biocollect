@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON;"%>
 <g:set var="mapService" bean="mapService"></g:set>
 <g:set var="utilService" bean="utilService"></g:set>
+<g:set var="projectActivityService" bean="projectActivityService"></g:set>
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,9 +43,9 @@
         activiyCountUrl: "${createLink(controller: 'bioActivity', action: 'getProjectActivityCount')}",
         sitesWithDataForProjectActivity: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProjectActivity')}",
         speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-        searchProjectActivitiesUrl: "${raw(createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId, version: params.version]))}",
+        searchProjectActivitiesUrl: "${raw(createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId]))}",
         downloadProjectDataUrl: "${raw(createLink(controller: 'bioActivity', action: 'downloadProjectData',params: [projectId:project.projectId]))}",
-        getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params:[version: params.version]))}",
+        getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping'))}",
         siteCreateUrl: "${raw(createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId]))}",
         siteSelectUrl: "${raw(createLink(controller: 'site', action: 'select', params:[projectId:project.projectId]))}&returnTo=${raw(createLink(controller: 'project', action: 'index', id: project.projectId))}",
         siteUploadUrl: "${raw(createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId]))}&returnTo=${raw(createLink(controller: 'project', action: 'index', id: project.projectId))}",
@@ -95,10 +96,9 @@
         auditMessageUrl: "${raw(createLink( controller: 'project', action:'auditMessageDetails', params:[projectId: project.projectId]))}",
         projectId: "${project.projectId}",
         projectLinkPrefix: "${createLink(controller: 'project')}/",
-        recordImageListUrl: '${raw(createLink(controller: "project", action: "listRecordImages", params:[version: params.version]))}',
+        recordImageListUrl: '${raw(createLink(controller: "project", action: "listRecordImages"))}',
         view: 'project',
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-        version: "${params.version}",
         aekosSubmissionUrl: "${createLink(controller: 'bioActivity', action: 'aekosSubmission')}",
         createBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
         editBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
@@ -117,11 +117,12 @@
         projectNotificationUrl: "${raw(createLink(controller: 'project', action: 'sendEmailToMembers', params: [id: project.projectId]))}",
         projectTestNotificationUrl: "${raw(createLink(controller: 'project', action: 'sendTestEmail', params: [id: project.projectId]))}",
         opportunisticDisplayName: "<g:message code="facets.methodType.opportunistic"/>",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
-        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        surveyMethods: <fc:getSurveyMethods/>
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
+        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}" />,
+        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}" />,
+        surveyMethods: <fc:modelAsJavascript model="${projectActivityService.getSurveyMethods()}"/>,
         </g:applyCodec>
+        version: "${params.version}",
         },
         here = window.location.href;
 

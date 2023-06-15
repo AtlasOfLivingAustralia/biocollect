@@ -263,9 +263,7 @@
 function initSiteViewModel(allowPointsOfInterest, edit) {
     // server side generated paths & properties
     var SERVER_CONF = {
-        <g:applyCodec encodeAs="none">
-            siteData: ${site ?: [] as grails.converters.JSON},
-        </g:applyCodec>
+        siteData: <fc:modelAsJavascript model="${site ?: []}" />,
         spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
         regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
@@ -283,27 +281,23 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
     };
 
     var savedSiteData = {
-        <g:applyCodec encodeAs="none">
             siteId: "${site?.siteId}",
             name : "${site?.name?.encodeAsJavaScript()}",
             externalId : "${site?.externalId}",
             catchment: "${site?.catchment}",
             context : "${site?.context}",
             type : "${site?.type}",
-            extent: ${site?.extent ?: 'null'},
-            poi: ${site?.poi ?: '[]'},
+            extent: <fc:modelAsJavascript model="${site?.extent ?: 'null'}" />,
+            poi: <fc:modelAsJavascript model="${site?.poi ?: '[]'}" />,
             area : "${site?.area}",
             description : "${site?.description?.encodeAsJavaScript()}",
             notes : "${site?.notes?.encodeAsJavaScript()}",
             documents : JSON.parse('${(siteDocuments ?: documents).encodeAsJavaScript() ?: '{}'}'),
-        </g:applyCodec>
     <g:if test="${project}">
         projects : ['${project.projectId}'],
     </g:if>
     <g:else>
-        <g:applyCodec encodeAs="none">
-            projects : ${site?.projects ?: '[]'}
-        </g:applyCodec>
+            projects : <fc:modelAsJavascript model="${site?.projects ?: '[]'}" />
     </g:else>
     };
 

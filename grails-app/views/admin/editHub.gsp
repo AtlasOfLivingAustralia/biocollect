@@ -18,8 +18,8 @@
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}"/>,
+            allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}"/>,
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
             </g:applyCodec>
         };
