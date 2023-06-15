@@ -15,7 +15,7 @@
     <asset:script type="text/javascript">
         var fcConfig = {
             <g:applyCodec encodeAs="none">
-                intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+            intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
@@ -41,12 +41,10 @@
             bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
             view: "${view}",
-            returnTo: "${returnTo}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             imageLocation:"${asset.assetPath(src:'')}",
-            version: "${params?.version}",
             projectId: "${projectId}",
             projectActivityId: "${projectActivityId}",
             spotterId: ${spotterId?:'undefined'},
@@ -54,11 +52,13 @@
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
             occurrenceUrl: "${raw(occurrenceUrl)}",
             spatialUrl: "${spatialUrl}",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, pActivity)}"/>,
             excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
-            bulkImportId: "${bulkImportId}"
+            bulkImportId: "${bulkImportId}",
             </g:applyCodec>
+            version: "${params?.version}",
+            returnTo: "${returnTo}"
         },
         here = document.location.href;
     </asset:script>
