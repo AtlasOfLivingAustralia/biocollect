@@ -108,6 +108,13 @@
             </div>
 
             <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="description">Fathom site id</label>
+                <div class="col-md-8 required">
+                    <input type="text" class="form-control" data-bind="value:fathomSiteId" placeholder="Fathom analytics site id"></input>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label class="col-md-4 col-form-label" for="supported-programs">Supported Programs (Projects in this hub can only select from these programs)</label>
                 <div class="col-md-8">
                     <ul class="list-unstyled" id="supported-programs" data-bind="foreach:$parent.transients.programNames">

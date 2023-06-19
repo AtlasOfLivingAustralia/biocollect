@@ -125,7 +125,7 @@
         </main>
     </div>
     <g:if test="${hubConfig.templateConfiguration.footer.type == 'ala'}">
-        <hf:footer/>
+        <hf:footer fathomSiteId="${hubConfig.fathomSiteId}" />
     </g:if>
     <g:elseif test="${hubConfig.templateConfiguration.footer.type == 'custom'}">
         <footer class="site-footer footer-alt" id="custom-footer">
@@ -189,7 +189,7 @@
     %{-- Ala footer does not need it since it comes with GA script included. --}%
         <g:if test="${grailsApplication.config.getProperty('fathom.enabled', Boolean, true)}">
         <!-- Fathom analytics -->
-        <script src="https://cdn.usefathom.com/script.js" data-site="${grailsApplication.config.getProperty('fathom.site-id')}" defer></script>
+        <script src="https://cdn.usefathom.com/script.js" data-site="${hubConfig?.fathomSiteId ?: grailsApplication.config.getProperty('fathom.site-id')}" defer></script>
         <!-- END Fathom analytics -->
         </g:if>
         <g:else>
