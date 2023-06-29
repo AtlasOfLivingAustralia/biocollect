@@ -16,8 +16,8 @@
             organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
             organisationViewUrl: "${createLink(action: 'index')}",
             documentUpdateUrl: "${createLink(controller: "proxy", action: "documentUpdate")}",
-            returnTo: "${params.returnTo}"
         </g:applyCodec>
+            returnTo: "${params.returnTo}"
             };
     </asset:script>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>

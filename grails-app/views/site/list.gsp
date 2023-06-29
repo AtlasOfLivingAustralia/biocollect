@@ -25,7 +25,7 @@
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
             myFavourites: "${myFavourites}"
             </g:applyCodec>
     }

@@ -18,8 +18,8 @@
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
-            allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-            allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
+            allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}"/>,
+            allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}"/>,
             leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
             </g:applyCodec>
         };
@@ -104,6 +104,13 @@
                 <label class="col-md-4 col-form-label" for="description">Home Page Path</label>
                 <div class="col-md-8 required">
                     <input type="text" class="form-control" data-bind="value:homePagePath" placeholder="Relative path to home page (leave blank for default)"></input>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="description">Fathom site id</label>
+                <div class="col-md-8 required">
+                    <input type="text" class="form-control" data-bind="value:fathomSiteId" placeholder="Fathom analytics site id"></input>
                 </div>
             </div>
 

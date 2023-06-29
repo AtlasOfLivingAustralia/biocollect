@@ -28,7 +28,7 @@
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         serverUrl: "${grailsApplication.config.grails.serverURL}",
         createUrl: "${createLink(action: 'create')}/",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/"
         </g:applyCodec>
@@ -120,7 +120,7 @@
         }
 
         <g:applyCodec encodeAs="none">
-            var viewModel = new ViewModel(${(activityTypes as JSON).toString()}, '${project?.projectId}');
+            var viewModel = new ViewModel(<fc:modelAsJavascript model="${activityTypes}" />, '${project?.projectId}');
             ko.applyBindings(viewModel,document.getElementById('koActivityMainBlock'));
         </g:applyCodec>
     });
