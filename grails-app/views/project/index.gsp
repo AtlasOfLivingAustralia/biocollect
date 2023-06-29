@@ -64,9 +64,9 @@
         editBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
         deleteBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId]))}",
         flimit: ${grailsApplication.config.facets.flimit},
-        allBaseLayers: ${grailsApplication.config.map.baseLayers as grails.converters.JSON},
-        allOverlays: ${grailsApplication.config.map.overlays as grails.converters.JSON},
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}" />,
+        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}" />,
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
         leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
         </g:applyCodec>
         },
@@ -220,11 +220,11 @@
                     </div>
                     <div data-bind="visible:newsAndEvents()">
                         <h4>News and events</h4>
-                        <div id="newsAndEventsDiv" data-bind="html:newsAndEvents" class="well"></div>
+                        <div id="newsAndEventsDiv" data-bind="html:newsAndEvents.markdownToHtml()" class="well"></div>
                     </div>
                     <div data-bind="visible:projectStories()">
                         <h4>Project stories</h4>
-                        <div id="projectStoriesDiv" data-bind="html:projectStories" class="well"></div>
+                        <div id="projectStoriesDiv" data-bind="html:projectStories.markdownToHtml()" class="well"></div>
                     </div>
                 </div>
             </div>
@@ -409,7 +409,7 @@
                         baseLayer: baseLayerConfig.baseLayer,
                         otherLayers: baseLayerConfig.otherLayers
                     });
-                    var mapFeatures = ${mapFeatures};
+                    var mapFeatures = <fc:modelAsJavascript model="${mapFeatures}"/>;
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false});
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
 

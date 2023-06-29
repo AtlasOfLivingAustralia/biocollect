@@ -12,7 +12,7 @@
     <asset:script type="text/javascript">
         var fcConfig = {
                 <g:applyCodec encodeAs="none">
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
+                serverUrl: "${grailsApplication.config.grails.serverURL}",
                 spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
                 spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
                 spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",

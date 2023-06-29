@@ -22,8 +22,8 @@
             blogUpdateUrl: "${grailsApplication.config.grails.serverURL}/blog/update?id=${blogEntry.blogEntryId}",
             blogViewUrl: "${grailsApplication.config.grails.serverURL}/blog/index",
             documentUpdateUrl: "${grailsApplication.config.grails.serverURL}/document/documentUpdate",
-            returnTo: "${params.returnTo}"
             </g:applyCodec>
+            returnTo: "${params.returnTo}"
             };
     </asset:script>
     <asset:javascript src="blog-manifest.js"/>

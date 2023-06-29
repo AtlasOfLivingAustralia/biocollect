@@ -22,10 +22,10 @@
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
-        returnTo: "${params.returnTo}"
         </g:applyCodec>
+        returnTo: "${params.returnTo}"
         },
         here = document.location.href;
     </asset:script>

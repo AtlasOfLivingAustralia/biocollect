@@ -49,13 +49,13 @@
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
         bioActivityView: "${createLink(controller: 'bioActivity', action: 'index')}/",
         activityId: "${id}",
-        returnTo: "${returnTo}",
         returnToMobile: "${createLink(controller: 'mobile', action: 'status')}#successfully-posted",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, pActivity)}"/>,
         originUrl: "${grailsApplication.config.server.serverURL}",
-        bulkUpload: ${bulkUpload?:false}
+        bulkUpload: ${bulkUpload?:false},
         </g:applyCodec>
+        returnTo: "${returnTo}"
         },
         here = document.location.href;
     </asset:script>

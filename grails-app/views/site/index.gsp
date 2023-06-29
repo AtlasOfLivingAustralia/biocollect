@@ -49,7 +49,7 @@
             bieUrl: "${grailsApplication.config.bie.baseURL}",
             bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
             speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />
             </g:applyCodec>
         },
         here = "${createLink(controller: 'site', action: 'index', id: site.siteId)}";

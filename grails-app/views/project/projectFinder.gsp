@@ -49,7 +49,6 @@
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         imageLocation:"${asset.assetPath(src: '')}",
         logoLocation:"${asset.assetPath(src: 'filetypes')}",
-        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
         projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller: 'project', action: 'index')}/",
         organisationBaseUrl : "${createLink(controller: 'organisation', action: 'index')}/",
@@ -62,7 +61,7 @@
         paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false},
         downloadWorksProjectsUrl: "${createLink(controller: 'project', action: 'downloadWorksProjects')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
                 isUserWorksPage: true,
@@ -80,18 +79,19 @@
                 isCitizenScience: false,
                 isBiologicalScience: true,
                 hideWorldWideBtn: true,
-                associatedPrograms: ${associatedPrograms},
+                associatedPrograms: <fc:modelAsJavascript model="${associatedPrograms}"/>,
             </g:if>
             <g:elseif test="${isWorks}">
                 isCitizenScience: false,
-                associatedPrograms: ${associatedPrograms},
+                associatedPrograms: <fc:modelAsJavascript model="${associatedPrograms}"/>,
             </g:elseif>
             <g:elseif test="${isCitizenScience}">
                 isCitizenScience: true,
             </g:elseif>
-            showAllProjects: false
+            showAllProjects: false,
         </g:else>
         </g:applyCodec>
+        dashboardUrl: "${createLink(controller: 'report', action: 'dashboardReport', params: params)}"
         }
         <g:if test="${grailsApplication.config.merit.projectLogo}">
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${raw(grailsApplication.config.merit.projectLogo)}";

@@ -45,11 +45,11 @@
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, pActivity)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
-        returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index')+ "/" + pActivity.projectId)}"
         </g:applyCodec>
+        returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index')+ "/" + pActivity.projectId)}"
         },
         here = document.location.href;
     </asset:script>
