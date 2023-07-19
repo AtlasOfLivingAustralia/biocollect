@@ -316,8 +316,8 @@ class BioActivityController {
     }
 
 
-    private def validateAndAddMobileUserCredentials(Map model) {
-        UserDetails user
+    private Map validateAndAddMobileUserCredentials(Map model) {
+        def user
         String userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
         String authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
         String authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
@@ -335,6 +335,8 @@ class BioActivityController {
                 model.authorization = authorization
             }
         }
+
+        model
     }
 
 
