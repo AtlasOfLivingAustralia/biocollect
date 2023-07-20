@@ -663,7 +663,7 @@ class ProjectService {
     }
 
 
-    public JSON userProjects(UserDetails user) {
+    public JSON userProjects(def user) {
         if (user) {
             def projects = userService.getProjectsForUserId(8443)
             def starredProjects = userService.getStarredProjectsForUserId(8443)

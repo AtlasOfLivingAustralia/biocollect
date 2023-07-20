@@ -1,12 +1,15 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.UtilService
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.biocollect.permissions.AppUserDetails
 import au.org.ala.ecodata.forms.UserInfoService
 import au.org.ala.userdetails.UserDetailsFromIdListResponse
 
 class UserService {
     def grailsApplication, authService, webService
     UserInfoService userInfoService
+    UtilService utilService
     //def auditBaseUrl = ""
 
     static String USER_NAME_HEADER_FIELD = "userName"
@@ -32,15 +35,8 @@ class UserService {
         userInfoService.getCurrentUser()?.userId
     }
 
-    public UserDetails getUser() {
-        def u = authService.userDetails()
-        def user
-
-        if (u?.userId) {
-            user = new UserDetails(u.getDisplayName(), u.email, u.userId)
-        }
-
-        return user
+    AppUserDetails getUser() {
+        return utilService.getCurrentUser()
     }
 
     /**

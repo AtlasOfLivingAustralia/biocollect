@@ -134,12 +134,8 @@ class ProjectController {
         def start, end
         start = System.currentTimeMillis()
         def project = projectService.get(id, ProjectService.PRIVATE_SITES_REMOVED, false, params?.version)
-        end = System.currentTimeMillis()
-        log.debug("Project fetch time (ms) = " + (end - start) )
-        start = System.currentTimeMillis()
-        def roles = roleService.getRoles()
-        end = System.currentTimeMillis()
-        log.debug("Role fetch time (ms) = " + (end - start) )
+        def roles = roleService.getEcodataRolesForBiocollect()
+
         if (!project || project.error) {
             flash.message = "Project not found with id: ${id}"
             if (project?.error) {
@@ -1308,7 +1304,7 @@ class ProjectController {
     }
 
     def getUserProjects(){
-        UserDetails user = userService.user;
+        def user = userService.user;
         JSON projects = projectService.userProjects(user);
         render(text: projects);
     }

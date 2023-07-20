@@ -1,5 +1,6 @@
 package au.org.ala.biocollect
 
+import au.org.ala.biocollect.permissions.AppUserDetails
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
@@ -150,6 +151,35 @@ class UtilService {
         }
 
         document?.thumbnailUrl ?: document?.url
+    }
+
+    /**
+     * Get details for the current user.
+     * @return An Application user details object representing the user, or null if there was a problem.
+     */
+    AppUserDetails getCurrentUser() {
+        def u = authService.userDetails()
+        return getAppUserDetailsFromUserDetails(u)
+    }
+
+    /**
+     * Get details for the given user id.
+     * @return An Application user details object representing the user, or null if there was a problem.
+     */
+    AppUserDetails getUserById(String userId) {
+        def u = authService.getUserForUserId(userId, false)
+        return getAppUserDetailsFromUserDetails(u)
+    }
+
+    private static AppUserDetails getAppUserDetailsFromUserDetails(def u) {
+        if (!u || !u?.userId) {
+            return null
+        }
+        def displayName = u.displayName ?: ("${u.firstName} ${u.lastName}".trim()) ?: null
+        return new AppUserDetails(
+                firstName: u.firstName, lastName: u.lastName, displayName: displayName,
+                userName: u.email, userId: u.userId, roles: u.roles
+        )
     }
 
     Map getHeaderLinkForContentTypeOrURI(String contentType, String uri){

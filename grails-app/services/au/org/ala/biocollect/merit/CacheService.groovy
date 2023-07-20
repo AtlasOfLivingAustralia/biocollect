@@ -20,7 +20,7 @@ class CacheService {
      * @param maxAgeInDays the maximum age of the cached results
      * @return the results
      */
-    def get(String key, Closure source, int maxAgeInDays = 1) {
+    def get(String key, Closure source, float maxAgeInDays = 1.0) {
         def cached = cache[key]
         if (cached && cached.resp && !(new Date().after(cached.time + maxAgeInDays))) {
             return cached.resp
