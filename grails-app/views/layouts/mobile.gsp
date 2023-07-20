@@ -61,11 +61,11 @@
         },
         beforeSend: function (xhr) {
             <g:if test="${authorization}">
-                xhr.setRequestHeader('Authorization', "${authorization}");
+                xhr.setRequestHeader('Authorization', "${raw(authorization)}");
             </g:if>
             <g:elseif test="${grailsApplication.config.getProperty("mobile.authKeyEnabled", Boolean) && authKey && userName}">
-                xhr.setRequestHeader('authKey', "${authKey}");
-                xhr.setRequestHeader('userName', "${userName}");
+                xhr.setRequestHeader('authKey', "${raw(authKey)}");
+                xhr.setRequestHeader('userName', "${raw(userName)}");
             </g:elseif>
         }
     });
