@@ -324,15 +324,15 @@ class BioActivityController {
         if (authKey && userName) {
             user = userInfoService.getUserFromAuthKey(userName, authKey)
             if (user) {
-                model.userName = userName
-                model.authKey = authKey
+                model[UserService.USER_NAME_HEADER_FIELD] = userName
+                model[UserService.AUTH_KEY_HEADER_FIELD] = authKey
             }
         }
 
         if (authorization) {
             user = userInfoService.getUserFromJWT(authorization)
             if (user) {
-                model.authorization = authorization
+                model[UserInfoService.AUTHORIZATION_HEADER_FIELD] = authorization
             }
         }
 
