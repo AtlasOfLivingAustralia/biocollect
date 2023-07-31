@@ -78,7 +78,8 @@ class BioCollect {
                     contactName            : doc.managerEmail,
                     contactDetails         : doc.manager,
                     projectTask            : doc.task,
-                    containsActivity       : doc.containsActivity
+                    containsActivity       : doc.containsActivity,
+                    activities             : doc.activities
             ]
         }
     }
