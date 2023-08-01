@@ -648,12 +648,6 @@ var entities = (function () {
         return result.promise();
     }
 
-    function offlineGetMetaModel(modelName) {
-        return dbOpen.then(function () {
-            return convertToJqueryPromise(db.table('metaModel').where('name').equals(modelName).first());
-        });
-    }
-
     function bulkDeleteDocuments(documentIds) {
         return bulkDelete(documentIds, 'document');
     }

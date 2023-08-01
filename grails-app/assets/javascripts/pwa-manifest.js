@@ -1,0 +1,10 @@
+//= require base-bs4.js
+//= require knockout/3.4.0/knockout-3.4.0.js
+//= require knockout-custom-bindings.js
+//= require knockout-custom-extenders.js
+//= require utils.js
+//= require dexiejs/dexie.js
+//= require ala-map-no-jquery-us.js
+//= require entities.js
+//= require pwa-messages.js
+//= require pwa-index.js

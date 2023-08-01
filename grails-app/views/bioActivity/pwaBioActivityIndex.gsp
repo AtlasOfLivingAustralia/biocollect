@@ -8,9 +8,7 @@
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
-    <asset:stylesheet src="forms-manifest.css"/>
-    <asset:stylesheet src="mobile_activity.css"/>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+    <asset:stylesheet src="pwa-bio-activity-index-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
         <g:applyCodec encodeAs="none">
@@ -50,19 +48,16 @@
         mapLayersConfig: ${ grailsApplication.config.getProperty('pwa.mapConfig', Map) as JSON },
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}",
+        bulkUpload: false,
+        isPWA: true,
+        isCaching: ${params.getBoolean('cache', false)},
         returnTo: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}'
         ${(params?.version) ? ',version: ' + params?.version : ''}
         </g:applyCodec>
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common-bs4.js"/>
-    <asset:javascript src="knockout-custom-bindings.js"/>
-    <asset:javascript src="forms-manifest.js"/>
-    <asset:javascript src="enterBioActivityData.js"/>
-    <asset:javascript src="biocollect-utils.js"/>
-    <asset:javascript src="pwa-messages.js"/>
-    <asset:javascript src="pwa-form-initialisation-script.js"/>
+    <asset:javascript src="pwa-bio-activity-index-manifest.js"/>
 </head>
 
 <body>
@@ -71,7 +66,7 @@
         <bc:koLoading>
             <div id="form-placeholder"></div>
         </bc:koLoading>
-        <a class="btn btn-primary" href="${createLink(controller: 'bioActivity', action: 'offlineList', params: [projectActivityId: projectActivityId])}"><i class="far fa-arrow-alt-circle-left"></i> <g:message code="pwa.btn.back"/> </a>
+        <a class="btn btn-primary" href="${createLink(controller: 'bioActivity', action: 'pwaOfflineList', params: [projectActivityId: projectActivityId])}"><i class="far fa-arrow-alt-circle-left"></i> <g:message code="pwa.btn.back"/> </a>
     </div>
     <script type="text/javascript">
         var urlObject = new URL(window.location.href)
@@ -245,7 +240,12 @@
         }
 
         window.addEventListener("load", function () {
-            window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, fcConfig.originUrl);
+            if(fcConfig.bulkUpload) {
+                window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, fcConfig.originUrl);
+            }
+            else if (fcConfig.isPWA) {
+                window.parent.postMessage({eventName: 'viewmodelloadded', event:'viewmodelloadded', data: {}}, fcConfig.pwaAppUrl);
+            }
         });
     </script>
 </body>

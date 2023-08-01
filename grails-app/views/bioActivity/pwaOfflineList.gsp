@@ -4,19 +4,7 @@
     <meta name="layout" content="pwa"/>
     <title>List activities</title>
     <asset:stylesheet src="common-bs4.css"/>
-    <asset:javascript src="jquery/3.4.1/jquery-3.4.1.min.js"/>
-    <asset:javascript src="knockout/3.4.0/knockout-3.4.0.js"/>
-    <asset:javascript src="dexiejs/dexie.js"/>
-    <asset:javascript src="emitter/emitter.js"/>
-    <asset:javascript src="fieldcapture-application.js"/>
-    <asset:javascript src="enterBioActivityData.js"/>
-    <asset:javascript src="images.js"/>
-    <asset:javascript src="entities.js"/>
-    <asset:javascript src="metamodel.js" />
-    <asset:javascript src="utils.js" />
-    <asset:javascript src="pagination.js" />
-    <asset:javascript src="pwa-messages.js"/>
-    <asset:javascript src="offline-list.js" />
+    <asset:javascript src="pwa-offline-list-manifest.js"/>
     <asset:script>
         var fcConfig = {
             siteUrl: "/ws/site",

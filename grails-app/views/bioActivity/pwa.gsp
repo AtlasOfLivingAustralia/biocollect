@@ -1,20 +1,8 @@
 <html>
 <head>
     <meta name="layout" content="pwa" />
-    <asset:stylesheet src="font-awesome/5.15.4/css/all.css"/>
-    <asset:stylesheet src="font-awesome/5.15.4/css/v4-shims.css"/>
-    <asset:stylesheet src="ala-map.css"/>
-    <asset:stylesheet src="Control.FullScreen.css"/>
-    <asset:javascript src="jquery-3.4.1.js"/>
-    <asset:javascript src="knockout/3.4.0/knockout-3.4.0.js"/>
-    <asset:javascript src="knockout-custom-bindings.js"/>
-    <asset:javascript src="knockout-custom-extenders.js"/>
-    <asset:javascript src="utils.js"/>
-    <asset:javascript src="dexiejs/dexie.js"/>
-    <asset:javascript src="ala-map-no-jquery-us.js"/>
-    <asset:javascript src="entities.js"/>
-    <asset:javascript src="pwa-messages.js"/>
-    <asset:javascript src="pwa-index.js"/>
+    <asset:stylesheet src="pwa-manifest.css"/>
+    <asset:javascript src="pwa-manifest.js"/>
     <asset:script type="text/javascript">
         var params = getParams();
         var fcConfig = {
