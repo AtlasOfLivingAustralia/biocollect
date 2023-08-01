@@ -5,8 +5,7 @@
 <head>
     <meta name="layout" content="pwa"/>
     <title>Create | <g:message code="g.biocollect"/></title>
-    <asset:stylesheet src="forms-manifest.css"/>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
+    <asset:stylesheet src="pwa-bio-activity-create-or-edit-manifest.css"/>
     <asset:script type="text/javascript">
         var currentURL = window.location.href,
             url = new URL(currentURL),
@@ -66,12 +65,7 @@
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common-bs4.js"/>
-    <asset:javascript src="forms-manifest.js"/>
-    <asset:javascript src="enterBioActivityData.js"/>
-    <asset:javascript src="biocollect-utils.js"/>
-    <asset:javascript src="pwa-messages.js"/>
-    <asset:javascript src="pwa-form-initialisation-script.js"/>
+    <asset:javascript src="pwa-bio-activity-create-or-edit-manifest.js"/>
 </head>
 
 <body>

@@ -167,31 +167,19 @@ class UrlMappings {
                         format = 'json'
                 }
 
-                "/pwa" {
-                        controller = 'bioActivity'
-                        action = 'pwa'
-                }
+                "/pwa" (controller: 'bioActivity', action: 'pwa')
 
                 "/pwa/sw.js" (uri: '/assets/sw.js')
 
-                "/pwa/bioActivity/edit/$projectActivityId" (controller: 'bioActivity', action: 'createOrEdit')
+                "/pwa/bioActivity/edit/$projectActivityId" (controller: 'bioActivity', action: 'pwaCreateOrEdit')
 
-                "/pwa/createOrEditFragment/$projectActivityId" {
-                        controller = 'bioActivity'
-                        action = 'createOrEditFragment'
-                }
+                "/pwa/createOrEditFragment/$projectActivityId" (controller: 'bioActivity', action: 'pwaCreateOrEditFragment')
 
-                "/pwa/bioActivity/index/$projectActivityId" {
-                        controller = 'bioActivity'
-                        action = 'getIndex'
-                }
+                "/pwa/bioActivity/index/$projectActivityId" (controller: 'bioActivity', action: 'pwaIndex')
 
-                "/pwa/indexFragment/$projectActivityId" {
-                        controller = 'bioActivity'
-                        action = 'getIndexFragment'
-                }
+                "/pwa/indexFragment/$projectActivityId" (controller: 'bioActivity', action: 'pwaIndexFragment')
 
-                "/pwa/offlineList" ( controller: 'bioActivity', action: 'offlineList' )
+                "/pwa/offlineList" ( controller: 'bioActivity', action: 'pwaOfflineList' )
 
 
                 "500"(controller:'error', action:'response500')

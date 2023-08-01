@@ -243,7 +243,7 @@ class BioActivityController {
         model
     }
 
-    def createOrEdit (String projectActivityId) {
+    def pwaCreateOrEdit(String projectActivityId) {
         Map model = [projectActivityId: projectActivityId, activityId: ""]
         if(projectActivityId) {
             Map pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
@@ -258,7 +258,7 @@ class BioActivityController {
                     model.type = pActivity.pActivityFormName
                     // disable showing verification status on pwa
                     model.isUserAdminModeratorOrEditor = false
-                    render view: "createOrEdit", model: model
+                    render view: "pwaBioActivityCreateOrEdit", model: model
                     return
                 } else {
                     flash.message = "Project associated with project activity not found"
@@ -277,7 +277,7 @@ class BioActivityController {
     }
 
     @PreAuthorise(accessLevel = "loggedInUser")
-    def createOrEditFragment (String projectActivityId) {
+    def pwaCreateOrEditFragment(String projectActivityId) {
         Map model = [projectActivityId: projectActivityId, activityId: ""]
         if(projectActivityId) {
             Map pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
@@ -293,7 +293,7 @@ class BioActivityController {
                     // disable showing verification status on pwa
                     model.isUserAdminModeratorOrEditor = false
                     addOutputModel(model, model.type)
-                    render view: "createOrEditFragment", model: model
+                    render view: "pwaBioActivityCreateOrEditFragment", model: model
                     return
                 } else {
                     flash.message = "Project associated with project activity not found"
@@ -355,7 +355,7 @@ class BioActivityController {
     }
 
     @PreAuthorise(accessLevel = "loggedInUser")
-    def getIndexFragment (String projectActivityId) {
+    def pwaIndexFragment(String projectActivityId) {
         String projectId
         def model = [:]
         def pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
@@ -377,10 +377,10 @@ class BioActivityController {
         addOutputModel(model, type)
         model.project = project
         model.id = projectActivityId
-        render view: 'pwaIndexFragment', model: model
+        render view: 'pwaBioActivityIndexFragment', model: model
     }
 
-    def getIndex (String projectActivityId) {
+    def pwaIndex(String projectActivityId) {
         String projectId
         def model = [:]
         def pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
@@ -401,14 +401,13 @@ class BioActivityController {
 
         model.project = project
         model.id = projectActivityId
-        render view: 'pwaIndex', model: model
+        render view: 'pwaBioActivityIndex', model: model
     }
 
-    def offlineList () {
+    def pwaOfflineList() {
     }
 
     def pwa () {
-        render view: '/pwa/index'
     }
 
     /**

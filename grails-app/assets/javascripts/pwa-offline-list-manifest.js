@@ -1,0 +1,13 @@
+//= require jquery/3.4.1/jquery-3.4.1.min.js
+//= require knockout/3.4.0/knockout-3.4.0.js
+//= require dexiejs/dexie.js
+//= require emitter/emitter.js
+//= require fieldcapture-application.js
+//= require enterBioActivityData.js
+//= require images.js
+//= require entities.js
+//= require metamodel.js
+//= require utils.js
+//= require pagination.js
+//= require pwa-messages.js
+//= require offline-list.js
