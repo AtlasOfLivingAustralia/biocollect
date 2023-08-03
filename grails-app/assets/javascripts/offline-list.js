@@ -18,13 +18,13 @@ function ActivitiesViewModel (config) {
 
     self.load = function(offset) {
         if (projectActivityId) {
-            self.getActivitiesOfProjectActivity(self.pagination.resultsPerPage() ,offset);
+            return self.getActivitiesOfProjectActivity(self.pagination.resultsPerPage() ,offset);
         }
         else if (projectId) {
-            self.getActivitiesForProject(self.pagination.resultsPerPage(), offset);
+            return  self.getActivitiesForProject(self.pagination.resultsPerPage(), offset);
         }
         else {
-            self.getAllActivities(self.pagination.resultsPerPage(), offset);
+            return self.getAllActivities(self.pagination.resultsPerPage(), offset);
         }
     };
 
@@ -33,7 +33,7 @@ function ActivitiesViewModel (config) {
     }
 
     self.getAllActivities = function(max, offset) {
-        entities.offlineGetAllActivities(max, offset).then(function(result) {
+        return entities.offlineGetAllActivities(max, offset).then(function(result) {
             var activities = result.data.activities,
                 total = result.data.total,
                 container = [];
@@ -48,7 +48,7 @@ function ActivitiesViewModel (config) {
     }
 
     self.getActivitiesForProject = function(max, offset) {
-        entities.offlineGetActivitiesForProject(projectId, max, offset).then(function(result) {
+        return entities.offlineGetActivitiesForProject(projectId, max, offset).then(function(result) {
             var activities = result.data.activities,
                 total = result.data.total,
                 container = [];
@@ -63,7 +63,7 @@ function ActivitiesViewModel (config) {
     }
 
     self.getActivitiesOfProjectActivity = function(max, offset) {
-        entities.getActivitiesForProjectActivity(projectActivityId, max, offset).then(function(result) {
+        return entities.getActivitiesForProjectActivity(projectActivityId, max, offset).then(function(result) {
             var activities = result.data.activities,
                 total = result.data.total,
                 container = [];
@@ -78,7 +78,28 @@ function ActivitiesViewModel (config) {
     }
 
     self.uploadAllHandler = function() {
-        // todo
+        var activities = self.activities(),
+            index = 0;
+
+        self.uploadAnActivity(activities, index);
+    }
+
+    self.uploadAnActivity = function (activities, index) {
+        if (index < activities.length) {
+            activities[index].upload().then(function () {
+                self.uploadAnActivity(activities, index + 1);
+            }, function (error) {
+                console.error(error);
+                self.uploadAnActivity(activities, index + 1);
+            });
+        } else {
+            // calling load with offset 0 will load the next batch of activities since current batch of activities are
+            // deleted from db.
+            if (self.pagination.totalResults() !== 0)
+                self.load(0).then(self.uploadAllHandler, function (error) {
+                    console.error("Error loading next page of activities" + error);
+                });
+        }
     }
 
     self.remove = function(activity) {
@@ -97,12 +118,13 @@ function ActivitiesViewModel (config) {
 };
 
 function ActivityViewModel (activity, parent) {
-    var self = this, images;
+    var self = this, images, loadPromise;
     self.activityId = activity.activityId;
     self.projectId = activity.projectId;
     self.projectActivityId = activity.projectActivityId;
     self.featureImage = ko.observable();
     self.species = ko.observableArray();
+    self.uploading = ko.observable(false);
     self.metaModel;
     self.imageViewModels = [];
     self.transients = {
@@ -115,7 +137,7 @@ function ActivityViewModel (activity, parent) {
     }
 
     self.load = function() {
-        entities.offlineGetMetaModel(activity.type).done(function(result) {
+        loadPromise = entities.offlineGetMetaModel(activity.type).done(function(result) {
             var metaModel = result.data,
                 imageViewModel;
             self.metaModel = new MetaModel(metaModel);
@@ -136,21 +158,29 @@ function ActivityViewModel (activity, parent) {
     }
 
     self.upload = function() {
-        var forceOnline = false;
+        var promises = [],
+            deferred = $.Deferred(),
+            forceOnline = false;
         if (!isOffline() || forceOnline) {
-            var promises = [],
-                deferred = $.Deferred();
-            promises.push(self.uploadImages().then(self.deleteImages));
-            promises.push(self.uploadSite().then(self.updateActivityWithSiteId).then(self.saveAsNewSite).then(self.deleteOldSite));
-            $.when.apply($, promises).then(function () {
-                self.saveActivityToDB().then(self.uploadActivity).then(self.deleteActivityFromDB).then(self.removeMeFromList).then(function () {
-                    deferred.resolve({data: { activityId: activity.activityId} });
+            loadPromise.then(function (){
+                self.uploading(true);
+                promises.push(self.uploadImages().then(self.deleteImages));
+                promises.push(self.uploadSite().then(self.updateActivityWithSiteId).then(self.saveAsNewSite).then(self.deleteOldSite));
+                $.when.apply($, promises).then(function () {
+                    self.saveActivityToDB().then(self.uploadActivity).then(self.deleteActivityFromDB).then(self.removeMeFromList).then(function () {
+                        self.uploading(false);
+                        deferred.resolve({data: { activityId: activity.activityId} });
+                    });
+                }, function (error) {
+                    self.saveActivityToDB().then(function () {
+                        self.uploading(false);
+                        deferred.reject({data: { activityId: activity.activityId}, message: "There was an error uploading activity", error: error});
+                    });
                 });
-            }, function (error) {
-                self.saveActivityToDB().then(function () {
-                    deferred.reject({data: { activityId: activity.activityId}, message: "There was an error uploading activity", error: error});
-                });
-            })
+            }, function () {
+                deferred.reject();
+                alert("There was an error fetching metadata for activity");
+            });
         }
         else {
             alert("You are offline. Please connect to the internet and try again.");
@@ -190,8 +220,6 @@ function ActivityViewModel (activity, parent) {
                     deferred.reject({data: {activity: activity.activityId, error: error}})
                 }
             };
-
-        // todo: add user credentials to ajax request
 
         $.ajax(ajaxRequestParams);
         return deferred.promise();
@@ -347,12 +375,7 @@ document.addEventListener("credential-failed", function () {
 window.addEventListener('load', function (){
     setTimeout(startInitialising, 2000)
     // two event attributes for backward compatibility
-    if (fcConfig.isCaching) {
-        window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, fcConfig.originUrl);
-    }
-    else if (fcConfig.isPWA) {
-        window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, fcConfig.pwaAppUrl);
-    }
+    window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, "*");
 });
 
 function startInitialising () {

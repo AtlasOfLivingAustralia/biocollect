@@ -240,12 +240,7 @@
         }
 
         window.addEventListener("load", function () {
-            if(fcConfig.bulkUpload) {
-                window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, fcConfig.originUrl);
-            }
-            else if (fcConfig.isPWA) {
-                window.parent.postMessage({eventName: 'viewmodelloadded', event:'viewmodelloadded', data: {}}, fcConfig.pwaAppUrl);
-            }
+            window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, "*");
         });
     </script>
 </body>
