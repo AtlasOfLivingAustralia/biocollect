@@ -3,7 +3,7 @@
 <head>
     <meta name="layout" content="pwa"/>
     <title>List activities</title>
-    <asset:stylesheet src="common-bs4.css"/>
+    <asset:stylesheet src="pwa-offline-list-manifest.css"/>
     <asset:javascript src="pwa-offline-list-manifest.js"/>
     <asset:script>
         var fcConfig = {
@@ -26,44 +26,46 @@
         <h1><g:message code="pwa.unpublished.heading"/></h1>
         <bc:koLoading>
         <!-- ko template: {name: 'page-actions-buttons', data: $data } --><!-- /ko -->
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Image</th>
-                <th>Species</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- ko foreach: activities -->
-            <tr data-bind="">
-                <td>
-                    <div class="project-logo" data-bind="if: featureImage()">
-                        <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150)"
-                             data-bind="attr: {src: featureImage().thumbnailUrl}"/>
-                    </div>
-                </td>
-                <td>
-                    <ol data-bind="foreach: species">
-                        <li data-bind="text: name"></li>
-                    </ol>
-                </td>
-                <td>
-                    <a class="btn btn-primary" data-bind="attr: {href: transients.viewActivityUrl()}">View</a>
-                    <a class="btn btn-dark" data-bind="attr: {href: transients.editActivityUrl()}">Edit</a>
-                    <button class="btn btn-dark" data-bind="click: upload, enable: $parent.online">Upload</button>
-                </td>
-            </tr>
-            <!-- /ko -->
-            <tr data-bind="if : activities().length == 0">
-                <td colspan="3">
-                    <div class="alert alert-info" role="alert">
-                        <g:message code="pwa.activities.empty.msg"/>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Species</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- ko foreach: activities -->
+                <tr data-bind="style: { opacity: uploading() ? 0.5 : 1 }">
+                    <td>
+                        <div class="project-logo" data-bind="if: featureImage()">
+                            <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150)"
+                                 data-bind="attr: {src: featureImage().thumbnailUrl}"/>
+                        </div>
+                    </td>
+                    <td>
+                        <ol data-bind="foreach: species">
+                            <li data-bind="text: name"></li>
+                        </ol>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" data-bind="attr: {href: transients.viewActivityUrl()}, disable: uploading">View</a>
+                        <a class="btn btn-dark" data-bind="attr: {href: transients.editActivityUrl()}, disable: uploading">Edit</a>
+                        <button class="btn btn-dark" data-bind="click: upload, enable: $parent.online, disable: uploading">Upload</button>
+                    </td>
+                </tr>
+                <!-- /ko -->
+                <tr data-bind="if : activities().length == 0">
+                    <td colspan="3">
+                        <div class="alert alert-info" role="alert">
+                            <g:message code="pwa.activities.empty.msg"/>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
         <g:render template="/shared/pagination" model="[bs:4]"/>
         <!-- ko template: {name: 'page-actions-buttons', data: $data } --><!-- /ko -->
         </bc:koLoading>

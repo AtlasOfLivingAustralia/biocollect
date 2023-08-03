@@ -149,13 +149,7 @@ function Master(activityId, config) {
 
     self.listenForResolution = function () {
         $.when.apply($, self.deferredObjects).then(function () {
-            if (fcConfig.bulkUpload || fcConfig.isCaching) {
-                // event and eventName for backward compatibility
-                window.parent.postMessage({eventName: 'viewmodelloadded', event:'viewmodelloadded', data: {}}, fcConfig.originUrl);
-            }
-            else if (fcConfig.isPWA) {
-                window.parent.postMessage({eventName: 'viewmodelloadded', event:'viewmodelloadded', data: {}}, fcConfig.pwaAppUrl);
-            }
+            window.parent.postMessage({eventName: 'viewmodelloadded', event:'viewmodelloadded', data: {}}, "*");
         });
     }
 
