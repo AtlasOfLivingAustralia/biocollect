@@ -79,7 +79,7 @@ class BioCollect {
                     contactDetails         : doc.manager,
                     projectTask            : doc.task,
                     containsActivity       : doc.containsActivity,
-                    activities             : doc.activities
+                    projectActivities      : doc.projectActivities
             ]
         }
     }
