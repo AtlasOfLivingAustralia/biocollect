@@ -161,7 +161,10 @@ function ActivityViewModel (activity, parent) {
         var promises = [],
             deferred = $.Deferred(),
             forceOnline = false;
-        if (!isOffline() || forceOnline) {
+        isOffline().then(function () {
+            alert("You are offline. Please connect to the internet and try again.");
+            deferred.reject();
+        }, function () {
             loadPromise.then(function (){
                 self.uploading(true);
                 promises.push(self.uploadImages().then(self.deleteImages));
@@ -181,11 +184,7 @@ function ActivityViewModel (activity, parent) {
                 deferred.reject();
                 alert("There was an error fetching metadata for activity");
             });
-        }
-        else {
-            alert("You are offline. Please connect to the internet and try again.");
-            deferred.reject();
-        }
+        });
 
         return deferred.promise();
     }

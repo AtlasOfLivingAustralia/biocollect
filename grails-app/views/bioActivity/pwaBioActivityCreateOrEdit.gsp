@@ -60,6 +60,7 @@
         bulkUpload: false,
         isPWA: true,
         isCaching: ${params.getBoolean('cache', false)},
+        preventNavigationIfDirty: ${params.getBoolean('cache', false) ? false : true},
         returnTo: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}'
         </g:applyCodec>
         },

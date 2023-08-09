@@ -12,7 +12,8 @@ function validateDateField(dateField) {
 /* Master controller for page. This handles saving each model as required. */
 function Master(activityId, config) {
     var self = this,
-        viewModel;
+        viewModel,
+        preventNavigationIfDirty = config.preventNavigationIfDirty === undefined ? true : config.preventNavigationIfDirty;
     self.subscribers = [];
     self.deferredObjects = [];
 
@@ -315,7 +316,7 @@ function Master(activityId, config) {
         return viewModel;
     }
 
-    autoSaveModel(self, null, {preventNavigationIfDirty: true});
+    autoSaveModel(self, null, {preventNavigationIfDirty: preventNavigationIfDirty});
 };
 
 function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, config) {

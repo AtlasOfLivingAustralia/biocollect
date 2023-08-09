@@ -18,29 +18,33 @@ async function downloadMapTiles(bounds, tileUrl, minZoom, maxZoom, callback) {
 
                 for (let x = xMin; x <= xMax; x++) {
                     for (let y = yMin; y <= yMax; y++) {
-                        const requestUrl = tileUrl.replace('{z}', zoom).replace('{x}', x).replace('{y}', y);
+                        try {
+                            const requestUrl = tileUrl.replace('{z}', zoom).replace('{x}', x).replace('{y}', y);
 
-                        // Open the cache
-                        const cache = await caches.open(cacheName);
+                            // Open the cache
+                            const cache = await caches.open(cacheName);
 
-                        // Check if the tile is already cached
-                        const cachedResponse = await cache.match(requestUrl);
+                            // Check if the tile is already cached
+                            const cachedResponse = await cache.match(requestUrl);
 
-                        if (!cachedResponse) {
-                            console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} not found in cache. Fetching and caching...`);
+                            if (!cachedResponse) {
+                                console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} not found in cache. Fetching and caching...`);
 
-                            // Fetch the tile from the server
-                            const response = await fetch(requestUrl);
+                                // Fetch the tile from the server
+                                const response = await fetch(requestUrl);
 
-                            // Clone the response, as it can only be consumed once
-                            const responseClone = response.clone();
+                                // Clone the response, as it can only be consumed once
+                                const responseClone = response.clone();
 
-                            // Cache the response
-                            await cache.put(requestUrl, responseClone);
+                                // Cache the response
+                                await cache.put(requestUrl, responseClone);
 
-                            console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} cached.`);
-                        } else {
-                            console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} found in cache.`);
+                                console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} cached.`);
+                            } else {
+                                console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} found in cache.`);
+                            }
+                        } catch (e) {
+                            console.error("Error fetching tiles" + e);
                         }
 
                         callback && callback();
@@ -51,7 +55,7 @@ async function downloadMapTiles(bounds, tileUrl, minZoom, maxZoom, callback) {
             console.log('Vector basemap tiles cached for the bounding box.');
             deferred.resolve();
         } catch (error) {
-            console.error('Error caching vector basemap:', error);
+            console.error('Error caching vector basemap: ' + error);
             deferred.reject();
         }        // Call the function to cache the vector basemap tiles for the bounding box
     } else {
@@ -98,7 +102,7 @@ async function deleteMapTiles(bounds, tileUrl, minZoom, maxZoom, callback) {
             console.log('Vector basemap tiles cached for the bounding box.');
             deferred.resolve();
         } catch (error) {
-            console.error('Error caching vector basemap:', error);
+            console.error('Error caching vector basemap: ' +  error);
             deferred.reject();
         }        // Call the function to cache the vector basemap tiles for the bounding box
     } else {
@@ -201,11 +205,12 @@ function OfflineViewModel(config) {
         project = null,
         mapSection = config.mapSection || "mapSection";
 
-    self.stages = {metadata: 'metadata', species: 'species', map: 'map', form: 'form'};
+    self.stages = {metadata: 'metadata', species: 'species', map: 'map', form: 'form', sites: "sites"};
     self.statuses = {done: 'downloaded', doing: 'downloading', error: 'error', wait: 'waiting'};
     self.currentStage = ko.observable();
     self.metadataStatus = ko.observable(self.statuses.wait);
     self.speciesStatus = ko.observable(self.statuses.wait);
+    self.sitesStatus = ko.observable(self.statuses.wait);
     self.mapStatus = ko.observable(self.statuses.wait);
     self.formStatus = ko.observable(self.statuses.wait);
     self.isOnline = ko.observable(true);
@@ -224,16 +229,21 @@ function OfflineViewModel(config) {
     self.numberOfFormsDownloaded = ko.observable(0);
     self.totalFormDownload = ko.observable(1);
     self.loadMetadata = ko.observable(false);
+    self.totalSiteTilesDownload = ko.observable(1);
+    self.numberOfSiteTilesDownloaded = ko.observable(0);
     self.percentageFormDownloaded = ko.pureComputed(function (){
         return Math.round(self.numberOfFormsDownloaded() / self.totalFormDownload() * 100);
     });
-    self.isSurveyOfflineCapable = ko.pureComputed(function () {
-        var statuses = [self.metadataStatus(), self.formStatus(), self.speciesStatus(), self.mapStatus()]
+    self.percentageSitesDownloaded = ko.pureComputed(function (){
+        return Math.round(self.numberOfSiteTilesDownloaded() / self.totalSiteTilesDownload() * 100);
+    });
+    self.isSurveyOfflineCapable = ko.computed(function () {
+        var statuses = [self.metadataStatus(), self.formStatus(), self.speciesStatus(), self.mapStatus(), self.sitesStatus()]
         if (statuses.every(item => item === self.statuses.done)) {
-            window.parent && window.parent.postMessage && window.parent.postMessage({event: "download-complete"}, fcConfig.originUrl);
+            window.parent && window.parent.postMessage && window.parent.postMessage({event: "download-complete"}, "*");
         }
         else {
-            window.parent && window.parent.postMessage && window.parent.postMessage({event: "download-removed"}, fcConfig.originUrl);
+            window.parent && window.parent.postMessage && window.parent.postMessage({event: "download-removed"}, "*");
         }
     });
 
@@ -269,6 +279,9 @@ function OfflineViewModel(config) {
                 break;
             case self.stages.species:
                 startDownloadingSpecies();
+                break;
+            case self.stages.sites:
+                startDownloadingSites();
                 break;
             case self.stages.map:
                 offlineMapCheck();
@@ -379,19 +392,62 @@ function OfflineViewModel(config) {
         return area;
     }
 
+    async function startDownloadingSites() {
+        var sites = pa.sites || [], zoom = 15;
+        self.currentStage(self.stages.sites);
+        self.sitesStatus(self.statuses.doing);
+        try {
+            self.numberOfSiteTilesDownloaded(0);
+            self.totalSiteTilesDownload(sites.length);
+            for (var i = 0; i < sites.length; i++) {
+                var site = sites[i],
+                    geoJson = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry),
+                    layer = L.geoJson(geoJson),
+                    bounds = layer.getBounds();
+
+                alaMap.addLayer(layer);
+                alaMap.fitBounds();
+                zoom = mapImpl.getZoom();
+                alaMap.removeLayer(layer);
+                await downloadMapTiles(bounds, config.baseMapUrl, zoom, zoom);
+                self.numberOfSiteTilesDownloaded(self.numberOfSiteTilesDownloaded() + 1);
+            }
+
+            completedSitesDownload();
+        } catch (e) {
+            errorSitesDownload();
+        }
+    }
+
+    function completedSitesDownload() {
+        updateSitesProgressBar(self.totalCount(), self.totalCount());
+        self.sitesStatus(self.statuses.done);
+        if (self.mapStatus() != self.statuses.done) {
+            self.mapStatus(self.statuses.doing);
+            self.currentStage(self.stages.map);
+        }
+    }
+
+    function errorSitesDownload() {
+        self.sitesStatus(self.statuses.error);
+    }
+
     function startDownloadingSpecies() {
         self.currentStage(self.stages.species);
         self.speciesStatus(self.statuses.doing);
         entities.getSpeciesForProjectActivity(pa, updateSpeciesProgressBar).then(completedSpeciesDownload, errorSpeciesDownload);
     }
 
+    function updateSitesProgressBar (total, count) {
+        self.totalCount(total);
+        self.progress(count);
+    }
+
     function completedSpeciesDownload() {
         updateSpeciesProgressBar(self.totalCount(), self.totalCount());
         self.speciesStatus(self.statuses.done);
-        if (self.mapStatus() != self.statuses.done) {
-            self.mapStatus(self.statuses.doing);
-            self.currentStage(self.stages.map);
-        }
+        self.sitesStatus(self.statuses.doing);
+        self.currentStage(self.stages.sites);
     }
 
     function errorSpeciesDownload() {
@@ -461,7 +517,7 @@ function OfflineViewModel(config) {
 function downloadProjectActivityArtefacts(viewModel) {
     var IFRAME_ID = 'form-content',
         iframeWindow,
-        delay = 1 * 60 * 1000, // one minute
+        delay = 4 * 60 * 1000, // four minutes
         deferred = $.Deferred();
 
     var urls = [fcConfig.createActivityUrl, fcConfig.indexActivityUrl, fcConfig.offlineListUrl],
@@ -483,7 +539,6 @@ function downloadProjectActivityArtefacts(viewModel) {
             increaseFormDownloadedCount();
         } else {
             console.info("Finished downloading artefacts!");
-            window.parent && window.parent.postMessage && window.parent.postMessage({event: "download-complete"}, fcConfig.pwaAppUrl);
             deferred.resolve();
         }
     }

@@ -26,9 +26,11 @@ function renderPage() {
                     'Authorization': authorization
                 },
                 success: function (html) {
+                    // makes sure comments are not removed. Important from KnockoutJS perspective.
+                    const constHtml = html;
                     initialisedSuccessfully = true;
                     var element = document.querySelector("#form-placeholder");
-                    element.innerHTML = html;
+                    element.innerHTML = constHtml;
                     nodeScriptReplace(element);
                     getMetadataAndInitialise();
                 },
