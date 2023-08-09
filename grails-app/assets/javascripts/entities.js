@@ -7,11 +7,11 @@ var entities = (function () {
     downloadingAllSpecies = false;
 
     function getProject() {
-        if (isOffline()) {
+        return isOffline().then(function () {
             return offlineFetchProject();
-        } else {
+        }, function () {
             return onlineFetchProject();
-        }
+        });
     }
 
     function onlineFetchProject(isSave) {
@@ -43,11 +43,11 @@ var entities = (function () {
     }
 
     function getProjectActivity(pActivityId) {
-        if (isOffline()) {
+        return isOffline().then(function () {
             return offlineFetchProjectActivity(pActivityId);
-        } else {
+        }, function () {
             return onlineFetchProjectActivity(pActivityId);
-        }
+        });
     }
 
     function onlineFetchProjectActivity(pActivityId) {
@@ -141,9 +141,9 @@ var entities = (function () {
     }
 
     function getActivity(activityId) {
-        if (isOffline()) {
+        return isOffline().then(function () {
             return offlineGetActivity(activityId);
-        } else {
+        }, function () {
             return onlineGetActivity(activityId).then(null, function () {
                 // dexie will return not get activity if it is of the wrong type.
                 try {
@@ -153,7 +153,7 @@ var entities = (function () {
                 }
                 return offlineGetActivity(activityId);
             });
-        }
+        });
     }
 
     function onlineGetActivity(activityId) {
@@ -244,11 +244,11 @@ var entities = (function () {
     }
 
     function getSite(siteId) {
-        if (isOffline()) {
+        return isOffline().then(function () {
             return offlineGetSite(siteId);
-        } else {
+        }, function () {
             return onlineGetSite(siteId);
-        }
+        });
     }
 
     function onlineGetSite(siteId) {
@@ -410,7 +410,7 @@ var entities = (function () {
         total = 1,
         deferred = $.Deferred();
         if (downloadingAllSpecies)
-            return
+            return deferred.resolved().promise();
 
         downloadingAllSpecies = true;
         function fetchNext () {
@@ -427,6 +427,7 @@ var entities = (function () {
                 });
             }
             else {
+                downloadingAllSpecies = false;
                 deferred.resolve();
             }
 
@@ -460,15 +461,18 @@ var entities = (function () {
     }
 
 
-    function deleteFetchedSpeciesEntriesAndGetSpeciesForProjectActivityAndFieldInOutput(projectActivityId, dataFieldName, outputName) {
-        var offset = 0, deferred = $.Deferred();
+    function deleteFetchedSpeciesEntriesAndGetSpeciesForProjectActivityAndFieldInOutput(projectActivityId, dataFieldName, outputName, callback) {
+        var offset = 0, deferred = $.Deferred(), counter = 1, total = 100;
 
         function fetchNext(data) {
             data = data || [];
             if (data.length != 0 || offset === 0) {
                 onlineGetSpeciesForProjectActivityAndFieldInOutput(offset, projectActivityId, dataFieldName, outputName, SPECIES_MAX_FETCH).then(function (result) {
+                    callback(total, counter);
+                    counter = (counter + 1) % total;
                     return saveSpecies(result, dataFieldName, outputName, projectActivityId);
                 }).then(fetchNext).fail(function () {
+                    callback(total, total);
                     deferred.reject({
                         offset: offset,
                         projectActivityId: projectActivityId,
@@ -480,13 +484,14 @@ var entities = (function () {
                 })
                 offset += SPECIES_MAX_FETCH;
             } else {
+                callback(total, total);
                 deferred.resolve({
                     offset: offset,
                     projectActivityId: projectActivityId,
                     dataFieldName: dataFieldName,
                     outputName: outputName,
                     completed: true,
-                    message: "Fetched all spcies for " + dataFieldName + " " + outputName
+                    message: "Fetched all species for " + dataFieldName + " " + outputName
                 });
             }
         }
@@ -520,11 +525,11 @@ var entities = (function () {
     }
 
     function getDocument(documentId) {
-        if (isOffline()) {
+        return isOffline().then(function () {
             return offlineGetDocument(documentId);
-        } else {
+        }, function () {
             return onlineGetDocument(documentId);
-        }
+        });
     }
 
     function offlineGetDocument(documentId) {

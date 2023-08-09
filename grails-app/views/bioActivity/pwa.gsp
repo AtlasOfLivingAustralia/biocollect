@@ -107,11 +107,11 @@
                 <g:message code="pwa.form.download.error"/>
                 <!-- /ko -->
             </p>
-            <small>
+            <div>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bind="style: {width: percentageFormDownloaded() + '%'}, text: percentageFormDownloaded() + '%'"></div>
                 </div>
-            </small>
+            </div>
         </a>
         <a href="#" class="list-group-item list-group-item-action" data-bind="css: {active: speciesStatus() == 'downloading', 'list-group-item-danger': speciesStatus() == 'error', 'list-group-item-success': speciesStatus() == 'downloaded'}">
             <div class="d-flex w-100 justify-content-between">
@@ -128,11 +128,32 @@
                 <g:message code="pwa.species.download.error" />
                 <!-- /ko -->
             </p>
-            <small class="text-muted">
+            <div class="text-muted">
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bind="style: {width: speciesDownloadPercentageComplete() + '%'}, text: speciesDownloadPercentageComplete() + '%'"></div>
                 </div>
-            </small>
+            </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action list-group-item-success" data-bind="css: {active: sitesStatus() == 'downloading', 'list-group-item-danger': sitesStatus() == 'error', 'list-group-item-success': sitesStatus() == 'downloaded'}">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"><g:message code="pwa.sites.cache.title"/></h5>
+                <small class="text-muted">
+                    <!-- ko template: {name: 'status-icons', data: sitesStatus} --><!-- /ko -->
+                </small>
+            </div>
+            <p class="mb-1">
+                <!-- ko if: sitesStatus() != 'error' -->
+                <g:message code="pwa.sites.download.intro" />
+                <!-- /ko -->
+                <!-- ko if: sitesStatus() == 'error' -->
+                <g:message code="pwa.sites.download.error" />
+                <!-- /ko -->
+            </p>
+            <div>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped bg-success progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bind="style: {width: percentageSitesDownloaded() + '%'}, text: percentageSitesDownloaded() + '%'"></div>
+                </div>
+            </div>
         </a>
         <a href="#" class="list-group-item list-group-item-action list-group-item-success" data-bind="css: {active: mapStatus() == 'downloading', 'list-group-item-danger': mapStatus() == 'error', 'list-group-item-success': mapStatus() == 'downloaded'}">
             <div class="d-flex w-100 justify-content-between">

@@ -323,13 +323,13 @@ ko.bindingHandlers.imageUpload = {
             }
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         }).on('fileuploadfail', function(e, data) {
-            if (isOffline()) {
+            isOffline().then(function () {
                 var file = data.files[0];
                 file && readDocument(file).then(saveDocument).then(fetchDocument).then(addToViewModel);
-            }
-            else {
+            },
+            function () {
                 error(data.errorThrown);
-            }
+            });
 
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         });
@@ -399,7 +399,7 @@ ko.bindingHandlers.imageUpload = {
                 filename: file.name,
                 name: file.name,
                 filesize: file.size,
-                dateTaken: file.lastModifiedDate.toISOStringNoMillis(),
+                dateTaken: new Date(file.lastModified).toISOStringNoMillis(),
                 staged: false,
                 attribution: "",
                 licence: "",

@@ -5,6 +5,7 @@
 //= require utils.js
 //= require dexiejs/dexie.js
 //= require ala-map-no-jquery-us.js
+//= require MapUtilities.js
 //= require entities.js
 //= require pwa-messages.js
 //= require pwa-index.js
