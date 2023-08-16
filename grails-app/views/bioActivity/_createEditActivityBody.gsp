@@ -259,10 +259,10 @@
 
 <g:each in="${metaModel?.outputs}" var="outputName">
     <g:if test="${outputName != 'Photo Points'}">
-        <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
+        <g:set var="blockId" value="${raw(fc.toSingleWord([name: outputName]))}"/>
         var viewModelName = "${blockId}ViewModel",
             elementId = "ko${blockId}",
-            outputName = "${outputName}";
+            outputName = "${raw(outputName)}";
 
         var output = $.grep(activity.outputs || [], function(it){return it.name == outputName})[0] || { name: outputName};
         var config = $.grep(metaModel.outputConfig || [], function(it){return it.outputName == outputName})[0] || {};
