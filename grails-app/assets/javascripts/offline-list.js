@@ -378,16 +378,18 @@ document.addEventListener("credential-failed", function () {
 });
 
 window.addEventListener('load', function (){
-    setTimeout(startInitialising, 2000)
+    setTimeout(startInitialising, 2000);
     // two event attributes for backward compatibility
     window.parent && window.parent.postMessage({eventName: 'viewmodelloadded', event: 'viewmodelloadded', data: {}}, "*");
 });
 
 function startInitialising () {
+    window.uninitialised = window.uninitialised || false;
     entities.getCredentials().then(function (result) {
         var config = getParameters(),
             activitiesViewModel = new ActivitiesViewModel(config);
 
-        ko.applyBindings(activitiesViewModel);
+        !window.uninitialised && ko.applyBindings(activitiesViewModel);
+        window.uninitialised = true;
     })
 }
