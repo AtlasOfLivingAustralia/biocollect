@@ -169,7 +169,8 @@ class UrlMappings {
 
                 "/pwa" (controller: 'bioActivity', action: 'pwa')
 
-                "/pwa/sw.js" (uri: '/assets/sw.js')
+                "/sw.js" (uri: '/assets/sw.js')
+                "/pwa/config.js" (controller: 'bioActivity', action: 'pwaConfig')
 
                 "/pwa/bioActivity/edit/$projectActivityId" (controller: 'bioActivity', action: 'pwaCreateOrEdit')
 

@@ -124,6 +124,7 @@ function ActivityViewModel (activity, parent) {
     self.projectActivityId = activity.projectActivityId;
     self.featureImage = ko.observable();
     self.species = ko.observableArray();
+    self.surveyDate = ko.observable().extend({simpleDate: false});
     self.uploading = ko.observable(false);
     self.metaModel;
     self.imageViewModels = [];
@@ -132,19 +133,24 @@ function ActivityViewModel (activity, parent) {
             return fcConfig.activityViewUrl + "/" + self.projectActivityId + "?projectId=" + self.projectId + "&activityId=" + self.activityId;
         },
         editActivityUrl: function() {
-            return fcConfig.activityEditUrl + "/" + self.projectActivityId + "?projectId=" + self.projectId + "&activityId=" + self.activityId;
+            return fcConfig.activityEditUrl + "/" + self.projectActivityId + "?unpublished=true&projectId=" + self.projectId + "&activityId=" + self.activityId;
         }
     }
 
     self.load = function() {
         loadPromise = entities.offlineGetMetaModel(activity.type).done(function(result) {
             var metaModel = result.data,
-                imageViewModel;
+                imageViewModel, surveyDate;
             self.metaModel = new MetaModel(metaModel);
             self.species(self.metaModel.getDataForType("species", activity));
+            surveyDate = self.metaModel.getDataForType("date", activity)
+            surveyDate = surveyDate && surveyDate[0]
+            if (surveyDate) {
+                self.surveyDate(surveyDate);
+            }
+
             self.imageViewModels = [];
             images = self.metaModel.getDataForType("image", activity);
-
             if (images && images.length > 0) {
                 images.forEach(function(image) {
                     imageViewModel = new ImageViewModel(image, true);

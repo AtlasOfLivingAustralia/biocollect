@@ -11,7 +11,8 @@
             url = new URL(currentURL),
             projectId = url.searchParams.get("projectId"),
             projectActivityId = url.searchParams.get("projectActivityId"),
-            activityId = url.searchParams.get("activityId");
+            activityId = url.searchParams.get("activityId"),
+            unpublished = url.searchParams.get("unpublished") || false;
 
         var fcConfig = {
         <g:applyCodec encodeAs="none">
@@ -58,7 +59,7 @@
         originUrl: "${grailsApplication.config.getProperty('server.serverURL')}",
         pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}",
         bulkUpload: false,
-        isPWA: true,
+        enableOffline: true,
         isCaching: ${params.getBoolean('cache', false)},
         preventNavigationIfDirty: ${params.getBoolean('cache', false) ? false : true},
         returnTo: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}'

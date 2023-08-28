@@ -314,14 +314,21 @@ pwa:
   appUrl: "http://localhost:8087"
   cache:
     ignore: ["/image/upload", "/ws/attachment/upload"]
-  baseMapUrl: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+  baseMapUrl: "https://api.maptiler.com/maps/hybrid/256/{z}/{x}/{y}.jpg?key=O11Deo7fBLatChkUYGIH"
   maxAreaInKm: 25
   mapConfig:
     baseLayers:
-      - code: 'worldimagery'
+      - code: 'maptilersatellite'
         displayText: 'Satellite'
         isSelected: true
     overlays: []
+  cacheVersion: "v3"
+  serviceWorkerConfig:
+      pathsToIgnoreCache: [ "/image/upload", "/ws/attachment/upload", "/ajax/keepSessionAlive", "/noop", '/pwa/sw.js', '/pwa/config.js' ]
+      cachePathForRequestsStartingWith: [ "/pwa/bioActivity/edit/", "/pwa/createOrEditFragment/", "/pwa/bioActivity/index/", "/pwa/indexFragment/", "/pwa/offlineList" ]
+      filesToPreCache: ["webjars/leaflet/0.7.7/dist/images/layers.png", "webjars/leaflet/0.7.7/dist/images/layers-2x.png", "webjars/leaflet/0.7.7/dist/images/marker-icon.png", "webjars/leaflet/0.7.7/dist/images/marker-icon-2x.png", "webjars/leaflet/0.7.7/dist/images/marker-shadow.png", "map-not-cached.png", "font-awesome/5.15.4/svgs/regular/image.svg"]
+      baseMapPrefixUrl: "https://api.maptiler.com/maps/hybrid/256"
+      noCacheTileFile: "map-not-cached.png"
 ---
 speciesCatalog:
   url: "To be set"

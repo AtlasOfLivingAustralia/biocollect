@@ -52,6 +52,11 @@
                     master.removeTemporarySite();
                 });
 
+                $('#saveOffline').on('click',function () {
+                    master.offlineSave();
+                });
+
+
                 $('#cancel').on('click',function () {
                     if (fcConfig.bulkUpload)
                         $(document).trigger('activitycreatecancelled')

@@ -167,8 +167,12 @@ function Master(activityId, config) {
      * Validates the entire page before saving.
      */
     self.save = function () {
-        if (isOffline() && config.isPWA) {
-            self.offlineSave();
+        if (config.enableOffline) {
+            isOffline().then(function(){
+                self.offlineSave();
+            }, function() {
+                self.onlineSave();
+            });
         }
         else {
             self.onlineSave();
@@ -186,7 +190,7 @@ function Master(activityId, config) {
 
             entities.saveActivity(toSave).then(function (result) {
                 var activityId = result.data;
-                if (config.isPWA) {
+                if (config.enableOffline) {
                     document.location.href = config.returnTo;
                 } else
                     document.location.href = fcConfig.activityViewURL + "/" + projectActivityId + "?activityId=" + activityId + "&projectId=" + projectId;
@@ -228,7 +232,7 @@ function Master(activityId, config) {
                     } else {
                         unblock = false; // We will be transitioning off this page.
                         activityId = config.activityId || data.resp.activityId;
-                        if (!config.isPWA)
+                        if (!config.enableOffline)
                             config.returnTo = config.bioActivityView + activityId;
                         blockUIWithMessage("Successfully submitted the record.");
                         self.reset();
