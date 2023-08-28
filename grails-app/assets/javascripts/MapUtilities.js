@@ -186,6 +186,18 @@ Biocollect.MapUtilities = {
                 };
                 layer = L.tileLayer(option.url, option.options);
                 break;
+            case 'maptilersatellite':
+                option = {
+                    url: 'https://api.maptiler.com/maps/hybrid/256/{z}/{x}/{y}.jpg?key=O11Deo7fBLatChkUYGIH',
+                    options: {
+                        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
+                        maxZoom: 21,
+                        maxNativeZoom: 13
+                    }
+                };
+                layer = L.tileLayer(option.url, option.options);
+                break;
+
             case 'detailed':
                 option = {
                     // see https://wiki.openstreetmap.org/wiki/Standard_tile_layer

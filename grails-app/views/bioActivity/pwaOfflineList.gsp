@@ -14,9 +14,10 @@
             imageUploadUrl: "/ws/attachment/upload",
             bioActivityUpdate: "/ws/bioactivity/save",
             updateSiteUrl: "/ws/bioactivity/site",
+            noImageUrl: "${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}",
             pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}",
             isCaching: ${params.getBoolean('cache', false)},
-            isPWA: true
+            enableOffline: true
         };
     </asset:script>
 </head>
@@ -30,19 +31,31 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Image</th>
-                        <th>Species</th>
-                        <th>Actions</th>
+                        <th><g:message code="pwa.offlinelist.image.heading"/></th>
+                        <th><g:message code="pwa.offlinelist.surveydate.heading"/></th>
+                        <th><g:message code="pwa.offlinelist.species.heading"/></th>
+                        <th><g:message code="pwa.offlinelist.actions.heading"/></th>
                     </tr>
                 </thead>
                 <tbody>
                 <!-- ko foreach: activities -->
                 <tr data-bind="style: { opacity: uploading() ? 0.5 : 1 }">
                     <td>
-                        <div class="project-logo" data-bind="if: featureImage()">
+                        <!-- ko if: featureImage() -->
+                        <div class="project-logo" data-bind="">
                             <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150)"
-                                 data-bind="attr: {src: featureImage().thumbnailUrl}"/>
+                                 data-bind="attr: {src: featureImage().thumbnailUrl}" alt="<g:message code="pwa.offlinelist.record.image.alt"/>"/>
                         </div>
+                        <!-- /ko -->
+                        <!-- ko ifnot: featureImage() -->
+                        <div class="project-logo">
+                            <img class="image-logo image-window" onload="findLogoScalingClass(this, 200, 150);"
+                                 data-bind="attr: {src: fcConfig.noImageUrl}" alt="<g:message code="pwa.offlinelist.record.noimage.alt"/>"/>
+                        </div>
+                        <!-- /ko -->
+                    </td>
+                    <td>
+                        <span data-bind="text: convertToSimpleDate(surveyDate())"></span>
                     </td>
                     <td>
                         <ol data-bind="foreach: species">
@@ -50,9 +63,9 @@
                         </ol>
                     </td>
                     <td>
-                        <a class="btn btn-primary" data-bind="attr: {href: transients.viewActivityUrl()}, disable: uploading">View</a>
-                        <a class="btn btn-dark" data-bind="attr: {href: transients.editActivityUrl()}, disable: uploading">Edit</a>
-                        <button class="btn btn-dark" data-bind="click: upload, enable: $parent.online, disable: uploading">Upload</button>
+                        <a class="btn btn-primary btn-sm" data-bind="attr: {href: transients.viewActivityUrl()}, disable: uploading"><i class="far fa-eye"></i> <g:message code="label.view"/></a>
+                        <a class="btn btn-dark btn-sm" data-bind="attr: {href: transients.editActivityUrl()}, disable: uploading"><i class="fas fa-pencil-alt"></i> <g:message code="label.edit"/></a>
+                        <button class="btn btn-dark btn-sm" data-bind="click: upload, enable: $parent.online, disable: uploading"><i class="fas fa-upload"></i> <g:message code="label.upload"/></button>
                     </td>
                 </tr>
                 <!-- /ko -->
@@ -72,7 +85,6 @@
     </div>
     <script id="page-actions-buttons" type="text/html">
         <div class="my-2 float-right">
-%{--            <label class="form-check-label"><g:message code="pwa.buttons.actions"/></label>--}%
             <button type="button" class="btn btn-primary" data-bind="click: uploadAllHandler, disable: activities().length == 0"><i class="fas fa-upload"></i> <g:message code="pwa.upload.all"/></button>
             <!-- ko if: transients.isProjectActivity -->
             <a class="btn btn-primary" id="create-activity" data-bind="attr: {href: transients.addActivityUrl()}">	<i class="fas fa-plus"></i> <g:message code="pwa.add.records"/></a>

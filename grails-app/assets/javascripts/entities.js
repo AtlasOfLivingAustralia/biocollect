@@ -726,7 +726,6 @@ var entities = (function () {
     function setupAjax(credentials) {
         var authorization = "Bearer " + credentials.token;
         $.ajaxSetup({
-            cache: false,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', authorization);
             }

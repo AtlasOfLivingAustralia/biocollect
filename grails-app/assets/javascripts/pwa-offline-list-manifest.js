@@ -2,6 +2,9 @@
 //= require knockout/3.4.0/knockout-3.4.0.js
 //= require dexiejs/dexie.js
 //= require emitter/emitter.js
+//= require moment/moment.min.js
+//= require moment/moment-timezone-with-data.min.js
+//= require knockout-dates.js
 //= require fieldcapture-application.js
 //= require enterBioActivityData.js
 //= require images.js

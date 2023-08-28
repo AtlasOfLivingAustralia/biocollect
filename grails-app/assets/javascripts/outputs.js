@@ -323,13 +323,18 @@ ko.bindingHandlers.imageUpload = {
             }
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         }).on('fileuploadfail', function(e, data) {
-            isOffline().then(function () {
-                var file = data.files[0];
-                file && readDocument(file).then(saveDocument).then(fetchDocument).then(addToViewModel);
-            },
-            function () {
+            if (fcConfig.enableOffline) {
+                isOffline().then(function () {
+                    var file = data.files[0];
+                    file && readDocument(file).then(saveDocument).then(fetchDocument).then(addToViewModel);
+                },
+                function () {
+                    error(data.errorThrown);
+                });
+            }
+            else {
                 error(data.errorThrown);
-            });
+            }
 
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         });

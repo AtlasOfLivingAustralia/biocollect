@@ -327,6 +327,7 @@ class SpeciesService {
         File file = getSpeciesCatalogFile()
         ZipFile zipFile = new ZipFile(file)
         try {
+            Map speciesAddedToList = [:]
             def isPreferred
             ZipEntry entry = zipFile.getEntry(taxonFileName)
             List header
@@ -352,7 +353,7 @@ class SpeciesService {
                 scientificNameIndex = header.findIndexOf { it == scientificNameHeaderName }
 
                 while (line = csvReader.readNext()) {
-                    (count, scientificNames, page) = addScientificNameToFile(header, line, count, guidIndex, scientificNames, rankStringIndex, scientificNameIndex, BATCH_SIZE, config, page, commonName)
+                    (count, scientificNames, page, speciesAddedToList) = addScientificNameToFile(header, line, count, guidIndex, scientificNames, rankStringIndex, scientificNameIndex, BATCH_SIZE, config, page, commonName, speciesAddedToList)
                 }
 
                 if (scientificNames) {
@@ -381,43 +382,52 @@ class SpeciesService {
         new File(fileName).exists()
     }
 
-    List addScientificNameToFile(List header, String[] line, int count, int guidIndex, ArrayList<Map<String, String>> scientificNames, int rankStringIndex, int scientificNameIndex, int BATCH_SIZE, config, int page, String commonName) {
+    List addScientificNameToFile(List header, String[] line, int count, int guidIndex, ArrayList<Map<String, String>> scientificNames, int rankStringIndex, int scientificNameIndex, int BATCH_SIZE, config, int page, String commonName, Map speciesAddedToList = [:]) {
         String taxonID
         String unranked = config.getProperty('speciesCatalog.filters.exclude.unrankedValue')
         try {
             if (header.size() != line.size()) {
                 log.error("Error parsing line: ${line} ${count}")
-                return [count, scientificNames, page]
+                return [count, scientificNames, page, speciesAddedToList]
             }
 
             // skip unranked taxa
             if (line[rankStringIndex] == unranked) {
-                return [count, scientificNames, page]
+                return [count, scientificNames, page, speciesAddedToList]
             }
 
             taxonID = line[guidIndex]
             commonName = getCommonName(taxonID)
-            scientificNames.add([
-                    guid          : taxonID,
-                    commonName    : commonName,
-                    listId        : "all",
-                    rankString    : line[rankStringIndex],
-                    scientificName: line[scientificNameIndex],
-                    name          : commonName ? "${line[scientificNameIndex]} (${commonName})" : line[scientificNameIndex]
-            ])
+            String scientificName = line[scientificNameIndex],
+                   scientificNameLower = scientificName?.toLowerCase()?.trim()
 
-            if (count % BATCH_SIZE == 0) {
-                saveSpeciesBatchToDisk(config, page, scientificNames)
-                scientificNames = []
-                page++
+            if (!speciesAddedToList[scientificNameLower]) {
+                scientificNames.add([
+                        guid          : taxonID,
+                        commonName    : commonName,
+                        listId        : "all",
+                        rankString    : line[rankStringIndex],
+                        scientificName: scientificName,
+                        name          : commonName ? "${scientificName} (${commonName})" : scientificName
+                ])
+
+                speciesAddedToList[scientificNameLower] = true
+                count++
+
+                if (count % BATCH_SIZE == 0) {
+                    saveSpeciesBatchToDisk(config, page, scientificNames)
+                    scientificNames = []
+                    page++
+                }
             }
-
-            count++
+            else {
+                log.debug("duplicate found - ${scientificName}")
+            }
         } catch (Exception ex) {
             log.error("Error parsing line: ${line} ${count}")
         }
 
-        [count, scientificNames, page]
+        [count, scientificNames, page, speciesAddedToList]
     }
 
     public void saveSpeciesBatchToDisk(config, int page, ArrayList<Map<String, String>> scientificNames) {

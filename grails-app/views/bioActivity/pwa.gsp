@@ -4,7 +4,26 @@
     <asset:stylesheet src="pwa-manifest.css"/>
     <asset:javascript src="pwa-manifest.js"/>
     <asset:script type="text/javascript">
-        var params = getParams();
+        window.addEventListener('load', function () {
+            if('serviceWorker' in navigator) {
+                navigator.serviceWorker.register("/sw.js", {scope: "/pwa", updateViaCache: 'none'})
+                    .then(function (registration) {
+                        console.log("Registration successful " + registration.scope);
+                    })
+                    .catch(function (error) {
+                        console.log("Service worker failed " + error);
+                    });
+
+                navigator.serviceWorker.onerror = function (error) {
+                    console.log("Service worker error " + error.message);
+                    console.log(JSON.stringify(error));
+                };
+            }
+
+        });
+    </asset:script>
+    <asset:script type="text/javascript">
+        var params = getParams(), initialized = false;
         var fcConfig = {
                 createActivityUrl: "/pwa/bioActivity/edit/" + params.projectActivityId + "?cache=true",
                 indexActivityUrl: "/pwa/bioActivity/index/" + params.projectActivityId+ "?cache=true",
@@ -20,7 +39,7 @@
                 pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}",
                 maxAreaInKm: ${grailsApplication.config.getProperty("pwa.maxAreaInKm")},
                 isCaching: ${params.getBoolean('cache', false)},
-                isPWA: true
+                enableOffline: true
             };
 
        const crs = L.CRS.EPSG3857,
@@ -42,21 +61,31 @@
         };
 
         function startInitialising() {
-            entities.getCredentials().then(function (){
-                var vm = new OfflineViewModel({
-                    projectActivityId: params.projectActivityId,
-                    mapId: 'map',
-                    baseMapUrl: fcConfig.baseMapUrl,
-                    totalUrl: fcConfig.totalUrl,
-                    downloadSpeciesUrl: fcConfig.downloadSpeciesUrl,
-                    baseMapOptions: {
-                        attribution: '<a target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Tiles from Esri</a> &mdash; Sources: Esri, DigitalGlobe, Earthstar Geographics, CNES/Airbus DS, GeoEye, USDA FSA, USGS, Aerogrid, IGN, IGP, and the GIS User Community',
-                        maxZoom: 20
-                    }
-                });
+            if(navigator.serviceWorker.controller) {
+                initialise();
+            } else {
+                navigator.serviceWorker.addEventListener('controllerchange', initialise);
+            }
+        };
 
-                ko.applyBindings(vm);
-            })
+        function initialise() {
+
+            !initialized && entities.getCredentials().then(function (){
+                        var vm = new OfflineViewModel({
+                            projectActivityId: params.projectActivityId,
+                            mapId: 'map',
+                            baseMapUrl: fcConfig.baseMapUrl,
+                            totalUrl: fcConfig.totalUrl,
+                            downloadSpeciesUrl: fcConfig.downloadSpeciesUrl,
+                            baseMapOptions: {
+                                attribution: '<a target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Tiles from Esri</a> &mdash; Sources: Esri, DigitalGlobe, Earthstar Geographics, CNES/Airbus DS, GeoEye, USDA FSA, USGS, Aerogrid, IGN, IGP, and the GIS User Community',
+                                maxZoom: 20
+                            }
+                        });
+
+                        ko.applyBindings(vm);
+                        initialized = true;
+            });
         };
 
         document.addEventListener("credential-saved", startInitialising);
@@ -291,16 +320,5 @@
     <i class="fas fa-exclamation fa-lg"></i>
     <!-- /ko -->
 </script>
-<asset:script>
-    if('serviceWorker' in navigator) {
-        navigator.serviceWorker.register("/pwa/sw.js", {})
-            .then(function (registration) {
-                console.log("Registration successful " + registration.scope);
-            })
-            .catch(function (error) {
-                console.log("Service worker failed " + error);
-            });
-    }
-</asset:script>
 </body>
 </html>
