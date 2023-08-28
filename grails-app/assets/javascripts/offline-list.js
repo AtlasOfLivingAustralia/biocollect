@@ -1,17 +1,23 @@
 function ActivitiesViewModel (config) {
     var self = this;
     var projectActivityId = config.projectActivityId;
-    var projectId = config.projectId;
+    var projectId = config.projectId,
+        cancelOfflineCheck;
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({}, self);
     self.online = ko.observable(true);
+    self.disableUpload = ko.computed(function () {
+        return self.activities().length === 0 || !self.online();
+    });
+
 
     self.init = function() {
-        window.addEventListener("online", function() {
+         cancelOfflineCheck = checkOfflineForIntervalAndTriggerEvents();
+        document.addEventListener("online", function() {
             self.online(true);
         });
 
-        window.addEventListener("offline", function() {
+        document.addEventListener("offline", function() {
             self.online(false);
         });
     }
@@ -126,6 +132,9 @@ function ActivityViewModel (activity, parent) {
     self.species = ko.observableArray();
     self.surveyDate = ko.observable().extend({simpleDate: false});
     self.uploading = ko.observable(false);
+    self.disableUpload = ko.computed(function () {
+        return self.uploading() || !parent.online();
+    });
     self.metaModel;
     self.imageViewModels = [];
     self.transients = {
