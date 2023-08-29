@@ -203,11 +203,11 @@ assets {
     maxThreads = 6
     minifyOptions = [
             languageMode  : 'ES6', //languageIn
-            targetLanguage: 'ES5', // languageOut
+//            targetLanguage: 'ES5', // languageOut
     ]
 
     includes = []
-    excludes = ["sw.js", "**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
+    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
 }
 
 if (Boolean.valueOf(inplace)) {
