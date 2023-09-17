@@ -66,11 +66,12 @@
                         <a class="btn btn-primary btn-sm" data-bind="attr: {href: transients.viewActivityUrl()}, disable: uploading"><i class="far fa-eye"></i> <g:message code="label.view"/></a>
                         <a class="btn btn-dark btn-sm" data-bind="attr: {href: transients.editActivityUrl()}, disable: uploading"><i class="fas fa-pencil-alt"></i> <g:message code="label.edit"/></a>
                         <button class="btn btn-dark btn-sm" data-bind="click: upload, enable: $parent.online, disable: disableUpload"><i class="fas fa-upload"></i> <g:message code="label.upload"/></button>
+                        <button class="btn btn-danger btn-sm" data-bind="click: upload, enable: $parent.online, disable: uploading"><i class="fas fa-upload"></i> <g:message code="label.delete"/></button>
                     </td>
                 </tr>
                 <!-- /ko -->
                 <tr data-bind="if : activities().length == 0">
-                    <td colspan="3">
+                    <td colspan="4">
                         <div class="alert alert-info" role="alert">
                             <g:message code="pwa.activities.empty.msg"/>
                         </div>

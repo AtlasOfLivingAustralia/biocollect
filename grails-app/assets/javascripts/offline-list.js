@@ -12,14 +12,14 @@ function ActivitiesViewModel (config) {
 
 
     self.init = function() {
-         cancelOfflineCheck = checkOfflineForIntervalAndTriggerEvents();
         document.addEventListener("online", function() {
             self.online(true);
         });
-
         document.addEventListener("offline", function() {
             self.online(false);
         });
+
+        cancelOfflineCheck = checkOfflineForIntervalAndTriggerEvents();
     }
 
     self.load = function(offset) {
@@ -202,6 +202,16 @@ function ActivityViewModel (activity, parent) {
         });
 
         return deferred.promise();
+    }
+
+    self.deleteActivity = function() {
+        bootbox.confirm("This operation cannot be reversed. Are you sure you want to delete this activity?", function (result) {
+            if (result) {
+                entities.deleteActivity().then(function () {
+                    parent.refreshPage();
+                });
+            }
+        })
     }
 
     self.removeMeFromList = function() {

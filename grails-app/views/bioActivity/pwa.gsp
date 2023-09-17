@@ -43,7 +43,7 @@
             };
 
        const crs = L.CRS.EPSG3857,
-            tileSize = 256,
+            tileSize = ${grailsApplication.config.getProperty("pwa.tileSize", Integer, 512)},
             minNumberOfTilesPerZoom = 25,
             maxArea = fcConfig.maxAreaInKm * 1000 * 1000, // 25 sq km
             maxTilesPerAxis = 5,

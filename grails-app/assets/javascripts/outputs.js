@@ -234,7 +234,6 @@ ko.bindingHandlers.imageUpload = {
         var progress = ko.observable();
         var error = ko.observable();
         var complete = ko.observable(true);
-        var db;
 
         var config = valueAccessor();
         config = $.extend({}, config, defaultConfig);
@@ -251,9 +250,6 @@ ko.bindingHandlers.imageUpload = {
         var innerContext = bindingContext.createChildContext(bindingContext);
         ko.utils.extend(innerContext, uploadProperties);
         var previewElem = $(element).parent().find(config.previewSelector);
-        if (typeof getDB === 'function') {
-            db = getDB();
-        }
 
 // Expected to be a ko.observableArray
         $(element).fileupload({
@@ -326,7 +322,7 @@ ko.bindingHandlers.imageUpload = {
             if (fcConfig.enableOffline) {
                 isOffline().then(function () {
                     var file = data.files[0];
-                    file && readDocument(file).then(saveDocument).then(fetchDocument).then(addToViewModel);
+                    file && biocollect.utils.readDocument(file).then(biocollect.utils.saveDocument).then(biocollect.utils.fetchDocument).then(addToViewModel);
                 },
                 function () {
                     error(data.errorThrown);
@@ -339,78 +335,14 @@ ko.bindingHandlers.imageUpload = {
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         });
 
-        function readDocument(file) {
-            var deferred = $.Deferred();
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var contents = e.target.result;
-                    deferred.resolve({data:{blob: contents, file: file}});
-                };
-
-                reader.onerror = function (e) {
-                    deferred.reject({message: "Failed to read file" + file.name});
-                };
-
-                reader.readAsArrayBuffer(file);
-            } else {
-                deferred.reject();
-            }
-
-            return deferred.promise();
-        }
-
-        function saveDocument(result) {
-            var deferred = $.Deferred(),
-                file = result.data.file,
-                blob = result.data.blob,
-                document = createDocument(file, blob);
-
-            db.document.put(document).then(function (documentId) {
-                deferred.resolve({data:documentId});
-            }).catch(function (error) {
-                deferred.reject({data: document, error: error});
-            });
-
-            return deferred.promise();
-        }
-
-        function fetchDocument (result) {
-            var documentId = result.data;
-            return convertToJqueryPromise(db.document.where("documentId").equals(documentId).first())
-        }
-
         function addToViewModel(result) {
             var viewModel;
-            addObjectURL(result.data);
+            biocollect.utils.addObjectURL(result.data);
             viewModel = new ImageViewModel(result.data, true);
             target.push(viewModel);
             complete(true);
             return viewModel;
         };
-
-        function addObjectURL(document){
-            var url = ImageViewModel.createObjectURL(document);
-            if (url) {
-                document.thumbnailUrl = document.url = url;
-            }
-        }
-
-
-        function createDocument(file, blob) {
-            return {
-                blob: blob,
-                contentType: file.type,
-                filename: file.name,
-                name: file.name,
-                filesize: file.size,
-                dateTaken: new Date(file.lastModified).toISOStringNoMillis(),
-                staged: false,
-                attribution: "",
-                licence: "",
-                entityUpdated: true
-            };
-        }
 
         ko.applyBindingsToDescendants(innerContext, element);
 
