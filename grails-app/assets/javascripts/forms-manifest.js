@@ -34,6 +34,7 @@
 //= require forms.js
 
 // activity
+//= require biocollect-utils.js
 //= require outputs.js
 //= require parser.js
 

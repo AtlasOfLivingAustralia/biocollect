@@ -314,8 +314,9 @@ pwa:
   appUrl: "http://localhost:8087"
   cache:
     ignore: ["/image/upload", "/ws/attachment/upload"]
-  baseMapUrl: "https://api.maptiler.com/maps/hybrid/256/{z}/{x}/{y}.jpg?key=O11Deo7fBLatChkUYGIH"
+  baseMapUrl: "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=WlLML7VfJfVwucTTgdcR"
   maxAreaInKm: 25
+  tileSize: 512
   mapConfig:
     baseLayers:
       - code: 'maptilersatellite'

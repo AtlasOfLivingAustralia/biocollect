@@ -31,7 +31,7 @@ function renderPage() {
                     initialisedSuccessfully = true;
                     var element = document.querySelector("#form-placeholder");
                     element.innerHTML = constHtml;
-                    nodeScriptReplace(element);
+                    biocollect.utils.nodeScriptReplace(element);
                     getMetadataAndInitialise();
                 },
                 error: function (){

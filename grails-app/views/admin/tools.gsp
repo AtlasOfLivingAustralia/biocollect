@@ -135,7 +135,7 @@
                     $.ajax(
                         "${createLink(controller: 'species', action:'refreshSpeciesCatalog')}?force=true"
                     ).done(function(result) {
-                        alert(result.message);
+                        alert(result.success);
                     }).fail(function (result) {
                         alert(result.statusText);
                     });

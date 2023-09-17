@@ -118,10 +118,10 @@ function getTileCoordinatesForBoundsAtZoom (bounds, zoom) {
         sLat = bounds.getSouth(),
         wLng = bounds.getWest(),
         eLng = bounds.getEast(),
-        xWest =  tileCoordinateFromLongitude(nLat, wLng, zoom),
-        xEast = tileCoordinateFromLongitude(sLat, eLng, zoom),
-        yNorth =  tileCoordinateFromLatitude(nLat, eLng, zoom),
-        ySouth = tileCoordinateFromLatitude(sLat, wLng, zoom),
+        xWest =  tileXCoordinateFromLatLng(nLat, wLng, zoom),
+        xEast = tileXCoordinateFromLatLng(sLat, eLng, zoom),
+        yNorth =  tileYCoordinateFromLatLng(nLat, eLng, zoom),
+        ySouth = tileYCoordinateFromLatLng(sLat, wLng, zoom),
         xMin = Math.min(xWest, xEast),
         xMax = Math.max(xWest, xEast),
         yMin = Math.min(yNorth, ySouth),
@@ -168,13 +168,13 @@ function totalTilesForBounds(bounds, minZoom, maxZoom) {
 }
 
 // Function to convert longitude to tile coordinate
-function tileCoordinateFromLongitude(lat, lng, zoom) {
+function tileXCoordinateFromLatLng(lat, lng, zoom) {
     var latLng = L.latLng(lat, lng);
     return Math.floor(crs.latLngToPoint(latLng, zoom).x / tileSize);
 }
 
 // Function to convert latitude to tile coordinate
-function tileCoordinateFromLatitude(lat, lng, zoom) {
+function tileYCoordinateFromLatLng(lat, lng, zoom) {
     var latLng = L.latLng(lat, lng);
     return Math.floor(crs.latLngToPoint(latLng, zoom).y / tileSize);
 }
@@ -199,8 +199,6 @@ function OfflineViewModel(config) {
         },
         alaMap = new ALA.Map(mapId, mapOptions),
         mapImpl = alaMap.getMapImpl(),
-        totalUrl = config.totalUrl,
-        downloadSpeciesUrl = config.downloadSpeciesUrl,
         pa = null,
         project = null,
         mapSection = config.mapSection || "mapSection";
@@ -503,14 +501,16 @@ function OfflineViewModel(config) {
         self.metadataStatus(self.statuses.error);
     }
 
-    (function init() {
-        alaMap.registerListener('zoomend', function () {
-            self.bounds(mapImpl.getBounds());
-        })
+    if (!config.doNotInit) {
+        (function init() {
+            alaMap.registerListener('zoomend', function () {
+                self.bounds(mapImpl.getBounds());
+            })
 
-        self.getOfflineMaps();
-        self.currentStage(self.stages.metadata);
-    })();
+            self.getOfflineMaps();
+            self.currentStage(self.stages.metadata);
+        })();
+    }
 }
 
 
