@@ -16,6 +16,7 @@
 package au.org.ala.biocollect.projectresult
 
 import grails.web.servlet.mvc.GrailsParameterMap
+import grails.util.Holders
 
 class SciStarter {
 
@@ -27,6 +28,8 @@ class SciStarter {
      * @return
      */
     static List build(List projects, GrailsParameterMap params) {
+        def grailsApplication = Holders.applicationContext.getBean('grailsApplication')
+        def baseUrl = grailsApplication.config.getProperty('grails.serverURL')
 
         projects.collect {
             Map doc = it._source;
@@ -77,7 +80,7 @@ class SciStarter {
                 coverage               : siteGeom,
                 links                  : trimmedLinks,
                 startDate              : doc.plannedStartDate,
-                url                    : params.url + "/acsa/project/index/" + doc.projectId,
+                url                    : baseUrl + "/acsa/project/index/" + doc.projectId,
                 containsActivity       : doc.containsActivity
             ]
         }

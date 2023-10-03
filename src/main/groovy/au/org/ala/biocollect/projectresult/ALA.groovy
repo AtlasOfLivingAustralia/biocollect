@@ -15,6 +15,7 @@
 
 package au.org.ala.biocollect.projectresult
 
+import grails.util.Holders
 import grails.web.servlet.mvc.GrailsParameterMap
 
 class ALA {
@@ -27,6 +28,8 @@ class ALA {
      * @return
      */
     static List build(List projects, GrailsParameterMap params) {
+        def grailsApplication = Holders.applicationContext.getBean('grailsApplication')
+        def baseUrl = grailsApplication.config.getProperty('grails.serverURL')
 
         projects.collect {
             Map doc = it._source;
@@ -41,7 +44,7 @@ class ALA {
                 dateCreated: doc.dateCreated,
                 urlWeb     : doc.urlWeb,
                 urlImage   : doc.imageUrl,
-                url        : params.url + "/project/index/" + doc.projectId,
+                url        : baseUrl + "/project/index/" + doc.projectId,
                 containsActivity       : doc.containsActivity
             ]
         }
