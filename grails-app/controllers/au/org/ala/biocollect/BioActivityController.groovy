@@ -149,7 +149,7 @@ class BioActivityController {
         log.debug("projectId = ${projectId}")
         log.debug((postBody as JSON).toString())
 
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         if (!userId) {
             flash.message = "Access denied: User has not been authenticated."
             response.status = 401
@@ -341,7 +341,7 @@ class BioActivityController {
 
 
     private def addActivity(String id, boolean mobile = false) {
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         Map pActivity = projectActivityService.get(id, "all")
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName
@@ -378,7 +378,7 @@ class BioActivityController {
     }
 
     private editActivity(String id, boolean mobile = false){
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
         String projectId = activity?.projectId
         def model = [:]
@@ -463,7 +463,7 @@ class BioActivityController {
     @Path("/ws/bioactivity/delete/{id}")
     def delete(String id) {
         def activity = activityService.get(id)
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
 
         Map result
 
@@ -528,7 +528,7 @@ class BioActivityController {
      * @return
      */
     def index(String id) {
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         def activity = activityService.get(id, params?.version, userId, true)
         if (activity.error){
             redirect(controller: "error", action:'response404', params: [status: 404, errMsg: activity.error])
@@ -768,7 +768,7 @@ class BioActivityController {
     private GrailsParameterMap constructDefaultSearchParams(Map params) {
         GrailsParameterMap queryParams = new GrailsParameterMap([:], request)
         Map parsed = commonService.parseParams(params)
-        parsed.userId = userService.getCurrentUserId(parsed.mobile ? request : null)
+        parsed.userId = userService.getCurrentUserId()
 
         parsed.each { key, value ->
             if (value != null && value) {
@@ -1494,7 +1494,7 @@ class BioActivityController {
     )
     @Path("ws/bioactivity/data/{id}")
     def getOutputForActivity(String id){
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
         String projectId = activity?.projectId
         def model = [:]
@@ -1578,7 +1578,7 @@ class BioActivityController {
     )
     @Path("ws/bioactivity/model/{id}")
     def getActivityModel(String id){
-        String userId = userService.getCurrentUserId(request)
+        String userId = userService.getCurrentUserId()
         Map model = [:]
 
         if(userId){

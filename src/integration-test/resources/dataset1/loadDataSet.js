@@ -1,5 +1,5 @@
 print("This script is expected to be executed with a working directory containing this script");
-print("Current working dir: "+pwd());
+print("Current working dir: "+process.cwd());
 load('../data_common/loadAlaHub.js');
 load("../data_common/insertData.js");
 loadActivityForms();

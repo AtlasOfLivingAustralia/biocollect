@@ -11,7 +11,7 @@ AUTH_OPTS=
 if [ "$2" ]
   then
     AUTH_OPTS="-u $2 -p $3"
-    echo "mongo $DATABASE_NAME $AUTH_OPTS --eval " >>  /tmp/blah
+    echo "mongosh $DATABASE_NAME $AUTH_OPTS --eval " >>  /tmp/blah
 fi
 
 DATABASE_NAME=ecodata-functional-test
@@ -20,7 +20,7 @@ DATA_PATH=$1
 cd $DATA_PATH
 echo $PWD
 
-mongo $DATABASE_NAME $AUTH_OPTS --eval "db.dropDatabase()"
-mongo $DATABASE_NAME $AUTH_OPTS loadDataSet.js
+mongosh $DATABASE_NAME $AUTH_OPTS --eval "db.dropDatabase()"
+mongosh $DATABASE_NAME $AUTH_OPTS loadDataSet.js
 
 

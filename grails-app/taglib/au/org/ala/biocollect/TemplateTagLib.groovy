@@ -356,7 +356,7 @@ class TemplateTagLib {
             case 'biocacheexplorer':
                 String fq = ''
                 if(request.forwardURI?.contains('/bioActivity/myProjectRecords')){
-                    fq = "&fq=alau_user_id:${userService.getCurrentUserId(request)}";
+                    fq = "&fq=alau_user_id:${userService.getCurrentUserId()}";
                 }
 
                 url = grailsApplication.config.biocache.baseURL + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364)' + fq
@@ -402,6 +402,6 @@ class TemplateTagLib {
     }
 
     private String getCurrentURL(Map hubConfig){
-        grailsApplication.config.getProperty("grails.serverURL") + request.forwardURI + "?hub=" + hubConfig.urlPath
+        g.createLink(absolute: true, uri: '/').toString()
     }
 }
