@@ -22,7 +22,7 @@
             spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+            mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
             sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
             </g:applyCodec>
         },
@@ -37,7 +37,7 @@
 
 <body>
 <div class="container-fluid">
-    <h1>Add sites to <a href="${params.returnTo}">${project.name}</a></h1>
+    <h1>Add sites to <a href="${params.returnTo}">${project.name?.encodeAsHTML()}</a></h1>
 
     <div class="row">
         <div class="col-12 order-1 col-md-6 order-md-0">

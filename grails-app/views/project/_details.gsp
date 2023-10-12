@@ -1066,14 +1066,14 @@
         <input type="checkbox" name="scienceType" class="validate[required]"
                data-validation-engine="validate[minCheckbox[1]]"
                data-bind="value: $data, attr:{id:'checkbox'+$index()}, checked: $root.transients.isScienceTypeChecked($data), event:{change:$root.transients.addScienceType}"/>
-        <label data-bind="html: $data, attr:{for:'checkbox'+$index()}"></label>
+        <label data-bind="text: $data, attr:{for:'checkbox'+$index()}"></label>
     </div>
     </script>
     <script id="ecoScienceTypeTemplate" type="text/html">
     <div class="custom-checkbox">
         <input type="checkbox" name="ecoScienceType"
                data-bind="value: $data.toLowerCase(), attr:{id:'checkbox'+$index()}, checked: $root.transients.isEcoScienceTypeChecked($data), event:{change:$root.transients.addEcoScienceType}"/>
-        <label data-bind="html: $data, attr:{for:'checkbox'+$index()}"></label>
+        <label data-bind="text: $data, attr:{for:'checkbox'+$index()}"></label>
     </div>
     </script>
 
@@ -1081,7 +1081,7 @@
     <div class="custom-checkbox">
         <input type="checkbox" name="industries"
                data-bind="value: $data, attr:{id:'industry-'+$index()}, checked: $root.industries"/>
-        <label data-bind="html: $data, attr:{for:'industry-'+$index()}"></label>
+        <label data-bind="text: $data, attr:{for:'industry-'+$index()}"></label>
     </div>
     </script>
 
@@ -1089,7 +1089,7 @@
     <div class="custom-checkbox">
         <input type="checkbox" name="bushfireCategories"
                data-bind="value: $data, attr:{id:'bushfireCategories-'+$index()}, checked: $root.bushfireCategories"/>
-        <label data-bind="html: $data, attr:{for:'bushfireCategories-'+$index()}"></label>
+        <label data-bind="text: $data, attr:{for:'bushfireCategories-'+$index()}"></label>
     </div>
     </script>
 </bc:koLoading>

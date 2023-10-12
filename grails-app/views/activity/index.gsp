@@ -42,7 +42,7 @@
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         project:${raw(fc.modelAsJavascript(model: project))},
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, null) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         sites: ${raw(fc.modelAsJavascript(model: project?.sites))}
         </g:applyCodec>

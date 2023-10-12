@@ -15,8 +15,8 @@
         <g:applyCodec encodeAs="none">
             projectUrl: "${createLink(controller: 'project', action: 'index')}",
             bulkImportUrl: "${createLink(controller: 'bulkImport')}",
-            returnTo: "${returnTo ?: (createLink(uri: '/', params: [hub: hubConfig.urlPath]))}"
         </g:applyCodec>
+            returnTo: "${returnTo ?: (createLink(uri: '/', params: [hub: hubConfig.urlPath]))}"
         },
         here = document.location.href;
     </asset:script>

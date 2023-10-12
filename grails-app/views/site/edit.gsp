@@ -36,19 +36,19 @@
         geocodeUrl: "${grailsApplication.config.google.geocode.url}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         <g:if test="${project}">
-            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
-            projectUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'project', action:'index', id:project.projectId)}",
+            pageUrl : "${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
+            projectUrl : "${createLink(controller:'project', action:'index', id:project.projectId)}",
         </g:if>
         <g:elseif test="${site}">
-            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'edit', id: site?.siteId, params:[checkForState:true])}",
+            pageUrl : "${createLink(controller:'site', action:'edit', id: site?.siteId, params:[checkForState:true])}",
         </g:elseif>
         <g:else>
-            pageUrl : "${ grailsApplication.config.security.cas.appServerName}${createLink(controller:'site', action:'create', params:[checkForState:true])}",
+            pageUrl : "${createLink(controller:'site', action:'create', params:[checkForState:true])}",
         </g:else>
         sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
         ajaxUpdateUrl: "${createLink(action: 'ajaxUpdate', id: site?.siteId)}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}"
         </g:applyCodec>
         },

@@ -22,8 +22,8 @@
             blogUpdateUrl: "${grailsApplication.config.grails.serverURL}/blog/update",
             blogViewUrl: "${grailsApplication.config.grails.serverURL}/blog/index",
             documentUpdateUrl: "${grailsApplication.config.grails.serverURL}/document/documentUpdate",
-            returnTo: "${params.returnTo?:g.createLink(controller:'project', id:params.projectId)}"
         </g:applyCodec>
+            returnTo: "${params.returnTo?:g.createLink(controller:'project', id:params.projectId)}"
             };
     </asset:script>
     <asset:javascript src="blog-manifest.js"/>

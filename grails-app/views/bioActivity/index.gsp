@@ -47,10 +47,10 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
-        mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON},
+        mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, pActivity)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        ${(params?.version) ? ',version: ' + params?.version : ''}
         </g:applyCodec>
+        ${(params?.version) ? ',version: ' + params?.version : ''}
         },
         here = document.location.href;
     </asset:script>
