@@ -311,7 +311,7 @@ grails:
 ---
 #pwa
 pwa:
-  appUrl: "http://localhost:8087"
+  appUrl: "http://localhost:5173"
   cache:
     ignore: ["/image/upload", "/ws/attachment/upload"]
   baseMapUrl: "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=WlLML7VfJfVwucTTgdcR"

@@ -108,6 +108,10 @@ function ActivitiesViewModel (config) {
         }
     }
 
+    /**
+     * Soft delete an activity from list
+     * @param activity
+     */
     self.remove = function(activity) {
         self.activities.remove(activity);
     }
@@ -204,14 +208,32 @@ function ActivityViewModel (activity, parent) {
         return deferred.promise();
     }
 
+    /**
+     * Hard delete an activity from the database
+     */
     self.deleteActivity = function() {
         bootbox.confirm("This operation cannot be reversed. Are you sure you want to delete this activity?", function (result) {
             if (result) {
-                entities.deleteActivity().then(function () {
-                    parent.refreshPage();
+                self.uploading(true);
+                images = images || [];
+                var documentIds = images.map(image => image.documentId);
+                self.deleteImages({data:documentIds}).then(self.deleteSite).then(self.deleteActivityById).then(function (){
+                    parent.refreshPage(0);
+                }).then(function () {
+                    self.uploading(false);
+                }, function () {
+                    self.uploading(false);
                 });
             }
         })
+    }
+
+    self.deleteSite = function () {
+        return entities.deleteSites([activity.siteId]);
+    }
+
+    self.deleteActivityById = function () {
+        return self.deleteActivityFromDB({data: {oldActivityId: activity.activityId}});
     }
 
     self.removeMeFromList = function() {
