@@ -41,7 +41,7 @@ class RecordController {
     }
 
     def listProjectActivityAndUserRecords(String id) {
-        def userId = userService.getCurrentUserId(request)
+        def userId = userService.getCurrentUserId()
         if (!userId) {
             return forbidden("Sorry mate, can't help you.")
         }

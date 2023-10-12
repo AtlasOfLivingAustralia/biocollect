@@ -1,22 +1,22 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.web.AuthService
+
 import grails.testing.web.controllers.ControllerUnitTest
-import org.apache.http.HttpStatus
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 class SiteControllerSpec extends Specification implements ControllerUnitTest<SiteController> {
 
     SiteService siteService = Stub(SiteService)
-    AuthService authService = Stub(AuthService)
     CommonService commonService = Stub(CommonService)
+    UserService userService = Stub(UserService)
 
     def setup() {
         controller.siteService = siteService
-        controller.authService = authService
         controller.commonService = commonService
-        authService.getUserId() >> '1'
+        controller.userService = userService
+        userService.getCurrentUserId() >> '1'
     }
 
     def cleanup() {

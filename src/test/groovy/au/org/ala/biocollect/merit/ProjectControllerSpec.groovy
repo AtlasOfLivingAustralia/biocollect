@@ -5,6 +5,7 @@ import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.VocabService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
+import au.org.ala.web.UserDetails
 import grails.testing.web.controllers.ControllerUnitTest
 import org.apache.http.HttpStatus
 import spock.lang.Specification
@@ -59,7 +60,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         userServiceStub.getOrganisationIdsForUserId(_) >> []
         userServiceStub.isProjectStarredByUser(_, _) >> [isProjectStarredByUser:true]
         roleServiceStub.getRoles() >> []
-        authServiceStub.getUserId() >> ''
+        userServiceStub.getCurrentUserId() >> ''
         blogServiceStub.get(_, _) >> []
         organisationStub.get(_) >> [organisationId: "ABC123", name: "organisation name"]
         vocabServiceStub.getVocabValues() >> []
@@ -70,7 +71,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     void "creating a citizen science project should pre-populate the citizen science project type"() {
 
         when:
-        userServiceStub.getUser() >> [userId:'1234']
+        userServiceStub.getUser() >> new UserDetails(1, '', '', '', '', '1234', false, true, null)
 
         params.citizenScience = true
         def model = controller.create()
@@ -82,7 +83,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "creating a project should pre-populate the organisation if the user is a member of exactly one organisation"() {
         when:
-        userServiceStub.getUser() >> [userId:'1234']
+        userServiceStub.getUser() >> new UserDetails(1, '', '', '', '', '1234', false, true, null)
 
         def model = controller.create()
 
@@ -93,7 +94,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "when creating a project, the current hub's default program should be assigned to the new project"() {
         when:
-        userServiceStub.getUser() >> [userId:'1234']
+        userServiceStub.getUser() >> new UserDetails(1, '', '', '', '', '1234', false, true, null)
         SettingService.setHubConfig(new HubSettings([defaultProgram:'my program']))
 
         def model = controller.create()
@@ -107,7 +108,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
         when:
         def projectId = 'project1'
-        userServiceStub.getUser() >> [userId:'1234']
+        userServiceStub.getUser() >> new UserDetails(1, '', '', '', '', '1234', false, true, null)
         projectServiceStub.get(projectId, _) >> [organisationId:'org1', projectId:projectId, name:'Test', projectSiteId:siteId]
 
         params.organisationId = 'org2'
@@ -396,7 +397,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
 
     void "get my Citizen Science Projects"() {
         setup:
-        userServiceStub.getUser() >> [userId:'1234', userName:"test", displayName:"test"]
+        userServiceStub.getUser() >> new UserDetails(1, 'test', 'test', 'test', 'test', '1234', false, true, null)
         SettingService.setHubConfig(new HubSettings([defaultProgram:'my program', defaultFacetQuery:"isCitizenScience:true"]))
 
         when:
@@ -407,7 +408,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         view == "/project/projectFinder"
         model.user.userId == "1234"
         model.user.userName == "test"
-        model.user.displayName == "test"
+        model.user.displayName == "test test"
         model.showTag == true
         model.downloadLink == "/ws/project/search?initiator=biocollect&download=true"
         model.isUserPage == true

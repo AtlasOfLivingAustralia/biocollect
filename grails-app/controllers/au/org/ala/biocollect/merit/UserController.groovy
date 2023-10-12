@@ -7,7 +7,7 @@ import au.org.ala.web.SSO
  */
 @SSO
 class UserController {
-    def userService, authService, projectService, organisationService
+    def userService, projectService, organisationService
 
     /**
      * Default view for user controller - show user dashboard page.
@@ -62,7 +62,7 @@ class UserController {
         String userId = params.userId
         String projectId = params.entityId
         String role = params.role
-        def adminUser = authService.userDetails()
+        def adminUser = userService.getUser()
 
         if (adminUser && userId && projectId && role) {
             if (role == 'caseManager' && !userService.userIsSiteAdmin()) {
@@ -81,7 +81,7 @@ class UserController {
         String userId = params.userId
         String organisationId = params.entityId
         String role = params.role
-        def adminUser = authService.userDetails()
+        def adminUser = userService.getUser()
 
         if (adminUser && userId && organisationId && role) {
             if (role == 'caseManager' && !userService.userIsSiteAdmin()) {
@@ -105,7 +105,7 @@ class UserController {
         String userId = params.userId
         String role = params.role
         String projectId = params.entityId
-        def adminUser = authService.userDetails()
+        def adminUser = userService.getUser()
 
         if (adminUser && projectId && role && userId) {
             if (projectService.isUserAdminForProject(adminUser.userId, projectId)) {
@@ -127,7 +127,7 @@ class UserController {
         String userId = params.userId
         String role = params.role
         String organisationId = params.entityId
-        def adminUser = authService.userDetails()
+        def adminUser = userService.getUser()
 
         if (adminUser && organisationId && role && userId) {
             if (organisationService.isUserAdminForOrganisation(organisationId)) {
@@ -148,7 +148,7 @@ class UserController {
     def viewPermissionsForUserId() {
         String userId = params.userId
 
-        if (authService.userDetails() && (authService.userInRole(grailsApplication.config.security.cas.alaAdminRole) || authService.userInRole(grailsApplication.config.security.cas.officerRole)) && userId) {
+        if (userService.getUser() && (userService.userInRole(grailsApplication.config.security.cas.alaAdminRole) || userService.userInRole(grailsApplication.config.security.cas.officerRole)) && userId) {
             render userService.getProjectsForUserId(userId) as JSON
         } else if (!userId) {
             render status:400, text: 'Required params not provided: userId, role, projectId'

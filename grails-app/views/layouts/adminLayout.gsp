@@ -27,7 +27,7 @@
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'tools')}" title="Tools" />
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'settings')}" title="Settings" />
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action:'manageHubs')}" title="Manage Hubs"/>
-
+                        <fc:breadcrumbItem href="${createLink(controller: 'admin', action:'cacheManagement')}" title="Caches"/>
                     </g:if>
                 </div>
                 <div class="mt-5 text-align-center"><g:pageProperty name="page.adminButtonBar"/></div>

@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v3
@@ -30,6 +30,30 @@ jobs:
           node-version: 16
 
       - run: npm install
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1.0.6
+
+      - name: Install and start elasticsearch
+        run: |
+          curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3-amd64.deb -o elasticsearch.deb
+          sudo dpkg -i --force-confnew elasticsearch.deb
+          sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+          sudo sh -c 'echo ES_JAVA_OPTS=\"-Xmx1g -Xms1g\" >> /etc/default/elasticsearch'
+          sudo service elasticsearch restart
+
+      - name: Setup required MERIT folders
+        run: |
+          sudo mkdir -p /data/fieldcapture/cache
+          sudo chmod o+xw /data
+          sudo chmod o+xw /data/fieldcapture
+          sudo chmod o+xw /data/fieldcapture/cache
+
+      - name: Install and start mongodb
+        uses: supercharge/mongodb-github-action@1.7.0
+        with:
+          mongodb-version: '5.0'
+
 
       - name: Read the biocollect version from the gradle.properties file
         id: read_property
@@ -53,22 +77,28 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: build biocollect before running js unit test to compile dependent js templates
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        uses: gradle/gradle-build-action@v2.4.0
         with:
-          arguments: build
+          arguments: _Events
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run javascript unit tests
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
 
+      - name: Run BioCollect functional tests
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/cognito
+        env:
+          GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
       - name: Clean to remove clover instrumentation
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        uses: gradle/gradle-build-action@v2.4.0
         with:
           arguments: clean
 
       - name: Publish the JAR to the repository
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+        uses: gradle/gradle-build-action@v2.4.0
         with:
           arguments: publish
         env:

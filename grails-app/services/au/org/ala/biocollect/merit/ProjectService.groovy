@@ -5,6 +5,7 @@ import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import org.springframework.context.MessageSource
+import au.org.ala.web.UserDetails
 
 class ProjectService {
 
@@ -663,10 +664,10 @@ class ProjectService {
     }
 
 
-    public JSON userProjects(UserDetails user) {
+    JSON userProjects(UserDetails user) {
         if (user) {
-            def projects = userService.getProjectsForUserId(8443)
-            def starredProjects = userService.getStarredProjectsForUserId(8443)
+            def projects = userService.getProjectsForUserId(user?.userId)
+            def starredProjects = userService.getStarredProjectsForUserId(user?.userId)
             ['active': projects, 'starred': starredProjects] as JSON;
         } else {
             [:] as JSON

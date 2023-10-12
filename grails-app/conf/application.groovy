@@ -32,11 +32,13 @@ environments {
                 sender = "biocollect-dev@ala.org.au"
                 debugUI = true
                 loggerLevel = "DEBUG"
+                auth.baseURL = "https://auth-test.ala.org.au"
         }
 
         test {
-                debugUI: false
-                loggerLevel: "DEBUG"
+                spring.autoconfigure.exclude="au.org.ala.ws.security.AlaWsSecurityConfiguration"
+                debugUI = false
+                loggerLevel = "DEBUG"
                 server.port = "8087"
                 grails.host = "http://devt.ala.org.au"
                 serverName = "${grails.host}:${server.port}"
@@ -46,15 +48,20 @@ environments {
                 app.default.hub='ala'
                 runWithNoExternalConfig = true
                 wiremock.port = 8018
+                grails.config.locations = []
+                security.oidc.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
+                security.oidc.allowUnsignedIdTokens = true
                 def casBaseUrl = "http://devt.ala.org.au:${wiremock.port}"
 
                 security.cas.appServerName=serverName
                 security.cas.contextPath=
                 security.cas.casServerName="${casBaseUrl}"
+                auth.baseURL = "${casBaseUrl}"
                 security.cas.casServerUrlPrefix="${casBaseUrl}/cas"
                 security.cas.loginUrl="${security.cas.casServerUrlPrefix}/login"
                 security.cas.casLoginUrl="${security.cas.casServerUrlPrefix}/login"
                 security.cas.logoutUrl="${security.cas.casServerUrlPrefix}/logout"
+                security.jwt.discoveryUri="${casBaseUrl}/cas/oidc/.well-known"
                 userDetails.url = "${casBaseUrl}/userdetails/userDetails/"
                 userDetailsSingleUrl = "${userDetails.Url}getUserDetails"
                 userDetailsUrl = "${userDetatails.url}getUserListFull"
@@ -66,6 +73,14 @@ environments {
                 ecodata.service.url = 'http://devt.ala.org.au:8080/ws'
                 pdfgen.baseURL = "http://devt.ala.org.au:${wiremock.port}/"
                 api_key='testapikey'
+                grails.cache.config = {
+                        diskStore {
+                                path '/tmp'
+                        }
+                        defaultCache {
+                                overflowToDisk false
+                        }
+                }
                 spatial.baseUrl = "http://localhost:${wiremock.port}"
                 spatial.baseURL = "http://localhost:${wiremock.port}"
                 spatial.geoserverUrl= spatial.baseUrl + "/geoserver"
@@ -86,8 +101,36 @@ environments {
                 sender = "biocollect-local@ala.org.au"
                 debugUI = false
                 loggerLevel = "INFO"
+                auth.baseURL = "https://auth.ala.org.au"
         }
 }
+
+casUrl = "${auth.baseURL}/cas/logout"
+appUrl = grails.serverURL
+
+security.cas.enabled = false
+security.cas.uriExclusionFilterPattern = ['/assets/.*','/uploads/.*']
+security.cas.uriFilterPattern = []
+security.cas.readOnlyOfficerRole= "ROLE_FC_READ_ONLY"
+security.cas.alaAdminRole = "ROLE_ADMIN"
+security.cas.officerRole = "ROLE_FC_OFFICER"
+security.cas.adminRole = "ROLE_FC_ADMIN"
+security.cas.casServerName= "${auth.baseURL}"
+security.cas.casServerLoginUrl= "${auth.baseURL}/cas/login"
+security.cas.casServerUrlPrefix= "${auth.baseURL}/cas"
+security.cas.logoutUrl= "${security.cas.casServerUrlPrefix}/logout"
+security.cas.loginUrl= "${security.cas.casServerUrlPrefix}/login"
+
+security.oidc.enabled= true
+security.oidc.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
+security.oidc.clientId= "changeMe"
+security.oidc.secret= "changeMe"
+security.oidc.scope= "openid,profile,email,ala,roles"
+security.oidc.allowUnsignedIdTokens= true
+
+security.jwt.enabled= true
+security.jwt.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
+security.jwt.fallbackToLegacyBehaviour= true
 
 dataAccessMethods = [
         "oasrdfs",

@@ -2,6 +2,8 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
+import org.grails.plugin.cache.GrailsCacheManager
+
 //import grails.plugin.cache.CacheEvict
 import org.springframework.cache.annotation.CacheEvict
 import grails.util.Environment
@@ -17,7 +19,6 @@ class AdminController {
 
     def cacheService
     def metadataService
-    def authService
     def projectService
     def importService
     def adminService
@@ -29,8 +30,10 @@ class AdminController {
     def documentService
     def projectActivityService
     def webService
+    UserService userService
     grails.core.GrailsApplication grailsApplication
     def roleService
+    GrailsCacheManager grailsCacheManager
 
     def index() {}
 
@@ -44,7 +47,7 @@ class AdminController {
      * @return
      */
     def users() {
-        def user = authService.userDetails()
+        def user = userService.getUser()
         def projects = projectService.list(true)
         def roles = metadataService.getAccessLevels().collect {
             it.name
@@ -60,7 +63,7 @@ class AdminController {
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def bulkLoadUserPermissions() {
-        def user = authService.userDetails()
+        def user = userService.getUser()
         [user:user]
     }
 
@@ -76,7 +79,7 @@ class AdminController {
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def uploadUserPermissionsCSV() {
 
-        def user = authService.userDetails()
+        def user = userService.getUser()
 
         def results
 
@@ -514,6 +517,20 @@ class AdminController {
         //It's a async task..
         webService.get("${grailsApplication.config.ecodata.service.url}/admin/initiateSpeciesRematch")
         render text: [message:'Species rematch initiated.'] as JSON, contentType: 'application/json'
+    }
+
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def cacheManagement() {
+        [cacheRegions:grailsCacheManager.getCacheNames()]
+    }
+
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def clearCache() {
+        if (params.cache) {
+            grailsCacheManager.getCache(params.cache).clear()
+        }
+
+        redirect action: 'cacheManagement'
     }
 
 }
