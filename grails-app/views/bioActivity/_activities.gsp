@@ -567,42 +567,35 @@
 
 <asset:javascript src="chartjs/chart.min.js"/>
 <asset:script type="text/javascript">
-    <g:applyCodec encodeAs="none">
-
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {
-        var user = '${user ? user as grails.converters.JSON : "{}"}',
+        var user = <fc:modelAsJavascript model="${user ?: "{}"}"/>,
         configImageGallery;
-        if (user) {
-            user = JSON.parse(user);
-        } else {
-            user = null;
-        }
 
-        var columnConfig =${ hubConfig.getDataColumns(grailsApplication) as grails.converters.JSON}
+        var columnConfig = <fc:modelAsJavascript model="${hubConfig.getDataColumns(grailsApplication)}" />
 
         var facetConfig;
 
         if(view === 'allrecords') {
-            facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('allRecords') }" />;
         } else if (view === 'myrecords') {
-            facetConfig = ${ hubConfig.getFacetConfigForPage('myRecords') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('myRecords') }" />;
         } else if (view === 'project') {
-            facetConfig = ${ hubConfig.getFacetConfigForPage('project') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('project') }" />;
         } else if (view === 'projectrecords') {
-            facetConfig = ${ hubConfig.getFacetConfigForPage('projectrecords') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('projectrecords') }" />;
         } else if (view === 'myprojectrecords') {
-            facetConfig = ${ hubConfig.getFacetConfigForPage('myprojectrecords') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('myprojectrecords') }" />;
         } else if (view === 'userprojectactivityrecords') {
-            facetConfig = ${ hubConfig.getFacetConfigForPage('userprojectactivityrecords') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('userprojectactivityrecords') }" />;
         } else if (view === 'bulkimport') {
-            facetConfig = ${ hubConfig.getFacetConfigForPage('bulkimport') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('bulkimport') }" />;
         } else {
             console.warn("[Facets] Unrecognised view name '" + view + "', using allRecords facet config.");
-            facetConfig = ${ hubConfig.getFacetConfigForPage('allRecords') };
+            facetConfig = <fc:modelAsJavascript model="${ hubConfig.getFacetConfigForPage('allRecords') }" />;
         }
 
-        var hubConfig = ${ hubConfig }
+        var hubConfig = <fc:modelAsJavascript model="${ hubConfig }" />;
 
         // on project page, show listings only when data tab is active.
         // in other context like all records, show listing as soon as possible
@@ -667,6 +660,5 @@
     }
 
     tabId && $(tabId).tab('show');
-    </g:applyCodec>
 </asset:script>
 <g:render template="/shared/resizeFilter" model="[dependentDiv: '.data-expander.data-container', target: '#survey-all-activities-and-records-content #filters', listenTo: '#survey-all-activities-and-records-content']" />

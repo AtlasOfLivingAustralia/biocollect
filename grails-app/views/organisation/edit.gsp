@@ -22,8 +22,8 @@
             organisationListUrl: '${g.createLink(action: "list")}',
             organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
             imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
-            returnTo: "${params.returnTo ?: createLink(action: 'index', id: organisation.organisationId)}"
             </g:applyCodec>
+            returnTo: "${params.returnTo ?: createLink(action: 'index', id: organisation.organisationId)}"
             };
     </asset:script>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>

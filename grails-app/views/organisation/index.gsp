@@ -60,7 +60,6 @@
             bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
-            getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: [version: params.version]))}",
             worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
             worksActivityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
             downloadProjectDataUrl: "${createLink(controller: 'bioActivity', action: 'downloadProjectData')}",
@@ -72,15 +71,16 @@
             activityListUrl: "${createLink(controller: 'bioActivity', action: 'ajaxList')}",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-            version: "${params.version ?: ''}",
             hideWorldWideBtn: true,
             flimit: ${grailsApplication.config.facets.flimit},
             occurrenceUrl: "",
             spatialUrl: "",
             paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
-            mapLayersConfig: ${mapService.getMapLayersConfig(project, pActivity) as JSON}
+            mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
             </g:applyCodec>
+            getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping'))}",
+            version: "${params.version ?: ''}"
         };
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
