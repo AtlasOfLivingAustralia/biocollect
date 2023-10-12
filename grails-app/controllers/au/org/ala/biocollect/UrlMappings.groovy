@@ -181,6 +181,7 @@ class UrlMappings {
                 "/pwa/indexFragment/$projectActivityId" (controller: 'bioActivity', action: 'pwaIndexFragment')
 
                 "/pwa/offlineList" ( controller: 'bioActivity', action: 'pwaOfflineList' )
+                "/pwa/settings" (controller: 'bioActivity', action: 'pwaSettings')
 
 
                 "500"(controller:'error', action:'response500')

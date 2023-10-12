@@ -140,6 +140,7 @@ describe("PwaIndexSpec", function (){
         beforeAll(function() {
             window.maxArea = 25 * 1000 * 1000;
             window.L.Google = function(){};
+            window.L.Google.isGoogleMapsReady = function () {return false};
             window.ALA = {
                 MapConstants : {
                     /**

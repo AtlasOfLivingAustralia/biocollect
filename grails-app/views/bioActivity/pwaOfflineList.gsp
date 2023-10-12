@@ -62,21 +62,23 @@
                             <li data-bind="text: name"></li>
                         </ol>
                     </td>
-                    <td>
+                    <td class="btn-space">
+                        <button class="btn btn-success btn-sm" data-bind="click: upload, enable: $parent.online, disable: disableUpload"><i class="fas fa-upload"></i> <g:message code="label.upload"/></button>
                         <a class="btn btn-primary btn-sm" data-bind="attr: {href: transients.viewActivityUrl()}, disable: uploading"><i class="far fa-eye"></i> <g:message code="label.view"/></a>
                         <a class="btn btn-dark btn-sm" data-bind="attr: {href: transients.editActivityUrl()}, disable: uploading"><i class="fas fa-pencil-alt"></i> <g:message code="label.edit"/></a>
-                        <button class="btn btn-dark btn-sm" data-bind="click: upload, enable: $parent.online, disable: disableUpload"><i class="fas fa-upload"></i> <g:message code="label.upload"/></button>
-                        <button class="btn btn-danger btn-sm" data-bind="click: upload, enable: $parent.online, disable: uploading"><i class="fas fa-upload"></i> <g:message code="label.delete"/></button>
+                        <button class="btn btn-danger btn-sm" data-bind="click: deleteActivity, enable: $parent.online, disable: uploading"><i class="far fa-trash-alt"></i> <g:message code="label.delete"/></button>
                     </td>
                 </tr>
                 <!-- /ko -->
-                <tr data-bind="if : activities().length == 0">
+                <!-- ko if: activities().length == 0 -->
+                <tr>
                     <td colspan="4">
                         <div class="alert alert-info" role="alert">
                             <g:message code="pwa.activities.empty.msg"/>
                         </div>
                     </td>
                 </tr>
+                <!-- /ko -->
                 </tbody>
             </table>
         </div>
@@ -86,7 +88,7 @@
     </div>
     <script id="page-actions-buttons" type="text/html">
         <div class="my-2 float-right">
-            <button type="button" class="btn btn-primary" data-bind="click: uploadAllHandler, disable: disableUpload()"><i class="fas fa-upload"></i> <g:message code="pwa.upload.all"/></button>
+            <button type="button" class="btn btn-success" data-bind="click: uploadAllHandler, disable: disableUpload()"><i class="fas fa-upload"></i> <g:message code="pwa.upload.all"/></button>
             <!-- ko if: transients.isProjectActivity -->
             <a class="btn btn-primary" id="create-activity" data-bind="attr: {href: transients.addActivityUrl()}">	<i class="fas fa-plus"></i> <g:message code="pwa.add.records"/></a>
             <!-- /ko -->
