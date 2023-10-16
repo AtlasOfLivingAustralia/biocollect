@@ -337,6 +337,7 @@ speciesCatalog:
   vernacularFileName: "vernacularname.txt"
   taxonFileName: "taxon.txt"
   totalFileName: "total.json"
+  batchSize: 1000
   dir: "/data/biocollect/speciesCatalog"
   filters:
     language: "en"

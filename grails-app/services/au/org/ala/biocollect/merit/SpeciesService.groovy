@@ -332,7 +332,7 @@ class SpeciesService {
             ZipEntry entry = zipFile.getEntry(taxonFileName)
             List header
             String[] line, previous
-            int count = 1, BATCH_SIZE = 100, page = 1
+            int count = 1, BATCH_SIZE = grailsApplication.config.getProperty('speciesCatalog.batchSize', Integer), page = 1
             int guidIndex, scientificNameIndex, rankStringIndex
             if (entry) {
                 InputStream is = zipFile.getInputStream(entry)
