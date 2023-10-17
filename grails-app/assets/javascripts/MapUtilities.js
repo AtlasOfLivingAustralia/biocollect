@@ -133,7 +133,7 @@ Biocollect.MapUtilities = {
         var options = {baseLayer: undefined, otherLayers: {}};
         baseLayers = baseLayers || [];
         baseLayers.forEach(function (baseLayer) {
-            var baseConfig = Biocollect.MapUtilities.getBaseLayer(baseLayer.code);
+            var baseConfig = Biocollect.MapUtilities.getBaseLayer(baseLayer.code, baseLayer);
             var title = baseConfig.title || baseLayer.displayText;
             if (baseLayer.isSelected) {
                 options.baseLayer = baseConfig;
@@ -156,15 +156,18 @@ Biocollect.MapUtilities = {
     /**
      * Get {L.tileLayer | L.Google} base map for a given code.
      * @param code
+     * @param config - used to get basemap url
      * @returns {L.tileLayer | L.Google}
      */
-    getBaseLayer: function (code) {
-        var option, layer;
+    getBaseLayer: function (code, config) {
+        config = config || {};
+        var option, layer,
+            url = config.url;
         switch (code) {
             case 'minimal':
                 option = {
                     // See https://cartodb.com/location-data-services/basemaps/
-                    url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+                    url: url || 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
                     options: {
                         subdomains: "abcd",
                         attribution: 'Map data &copy; <a target="_blank" rel="noopener noreferrer" href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, imagery &copy; <a target="_blank" rel="noopener noreferrer" href="http://cartodb.com/attributions">CartoDB</a>',
@@ -177,7 +180,7 @@ Biocollect.MapUtilities = {
             case 'worldimagery':
                 option = {
                     // see https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9
-                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                    url: url || 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     options: {
                         attribution: '<a target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Tiles from Esri</a> &mdash; Sources: Esri, DigitalGlobe, Earthstar Geographics, CNES/Airbus DS, GeoEye, USDA FSA, USGS, Aerogrid, IGN, IGP, and the GIS User Community',
                         maxZoom: 21,
@@ -188,7 +191,7 @@ Biocollect.MapUtilities = {
                 break;
             case 'maptilersatellite':
                 option = {
-                    url: 'https://api.maptiler.com/maps/hybrid/256/{z}/{x}/{y}.jpg?key=O11Deo7fBLatChkUYGIH',
+                    url:  url || 'https://api.maptiler.com/maps/hybrid/256/{z}/{x}/{y}.jpg?key=O11Deo7fBLatChkUYGIH',
                     options: {
                         attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
                         maxZoom: 21,
@@ -201,7 +204,7 @@ Biocollect.MapUtilities = {
             case 'detailed':
                 option = {
                     // see https://wiki.openstreetmap.org/wiki/Standard_tile_layer
-                    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    url: url || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     options: {
                         subdomains: "abc",
                         attribution: '&copy; <a target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
@@ -214,7 +217,7 @@ Biocollect.MapUtilities = {
             case 'topographic':
                 option = {
                     // see https://www.arcgis.com/home/item.html?id=30e5fe3149c34df1ba922e6f5bbf808f
-                    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+                    url: url || 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
                     options: {
                         attribution: '<a target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=30e5fe3149c34df1ba922e6f5bbf808f">Tiles from Esri</a> &mdash; Sources: Esri, HERE, Garmin, Intermap, INCREMENT P, GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), &copy; OpenStreetMap contributors, GIS User Community',
                         maxZoom: 21,

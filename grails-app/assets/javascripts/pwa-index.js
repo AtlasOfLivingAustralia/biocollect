@@ -428,6 +428,7 @@ function OfflineViewModel(config) {
 
     function errorSitesDownload() {
         self.sitesStatus(self.statuses.error);
+        showReloadPrompt();
     }
 
     function startDownloadingSpecies() {
@@ -450,6 +451,7 @@ function OfflineViewModel(config) {
 
     function errorSpeciesDownload() {
         self.speciesStatus(self.statuses.error);
+        showReloadPrompt();
     }
 
     function updateSpeciesProgressBar (total, count) {
@@ -477,6 +479,27 @@ function OfflineViewModel(config) {
 
     function errorFormDownload() {
         self.formStatus(self.statuses.error);
+        showReloadPrompt();
+    }
+
+    function showReloadPrompt () {
+        bootbox.confirm({
+            title: 'Failed to take survey offline',
+            message: 'Encountered an error while taking survey offline. Click reload to try again. Contact administrator if problem persists.',
+            buttons: {
+                cancel: {
+                    label: '<i class="far fa-times-circle"></i> Cancel'
+                },
+                confirm: {
+                    label: '<i class="fas fa-sync"></i> Reload'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    window.location.reload();
+                }
+            }
+        });
     }
 
     function getProjectActivityMetadata() {
@@ -499,6 +522,7 @@ function OfflineViewModel(config) {
 
     function errorMetadataDownload() {
         self.metadataStatus(self.statuses.error);
+        showReloadPrompt();
     }
 
     if (!config.doNotInit) {

@@ -226,6 +226,14 @@ class UrlMappings {
                         controller = 'document'
                         action = 'get'
                 }
+                "/ws/species/speciesDownload" {
+                        controller = 'species'
+                        action = 'speciesDownload'
+                }
+                "/ws/species/totalSpecies" {
+                        controller = 'species'
+                        action = 'totalSpecies'
+                }
         }
 }
 

@@ -146,7 +146,7 @@ dependencies {
     implementation ("org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion")
     implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
     implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
-    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.1.0"
+    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.2.0"
 
     //    swagger API
     implementation 'au.org.ala.plugins:openapi:1.1.0'

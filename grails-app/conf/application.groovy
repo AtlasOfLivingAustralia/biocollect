@@ -674,3 +674,8 @@ if (!app.file.script.path) {
         app.file.script.path = "/data/biocollect/scripts"
 }
 script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
+
+// yml interpreter doesn't evaluate expression in deep nested objects such as baseLayers below
+if (pwa.mapConfig.baseLayers?.size() > 1) {
+        pwa.mapConfig.baseLayers[0].url = pwa.baseMapUrl
+}
