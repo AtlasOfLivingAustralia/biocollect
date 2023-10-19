@@ -37,6 +37,7 @@ function StorageViewModel() {
             if (result) {
                 self.deleteCache().then(self.deleteDBEntries).then(function () {
                     self.deleteProgress(self.deleteSteps());
+                    notifyParent();
                 });
             }
         });
@@ -61,6 +62,10 @@ function StorageViewModel() {
                 self.deleteProgress(self.deleteProgress() + 1);
             });
         });
+    }
+
+    function notifyParent() {
+        window.parent && window.parent.postMessage({event: "surveys-removed"}, "*");
     }
 
     document.addEventListener('offline', function () {
