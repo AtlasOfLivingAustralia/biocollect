@@ -36,7 +36,7 @@ apply from: "${project.projectDir}/gradle/publish.gradle"
 repositories {
     mavenLocal()
     //for missing jai_core.jar
-   //maven { url "https://mvnrepository.com" }
+    //maven { url "https://mvnrepository.com" }
     maven { url "https://repo.osgeo.org/repository/release/" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url = uri("https://maven.pkg.github.com/atlasoflivingaustralia/ecodata-client-plugin")
@@ -129,15 +129,14 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
 
     implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
-    implementation ("org.grails.plugins:ala-auth:$alaSecurityLibsVersion")
-    implementation ("org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion")
-    implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
-    implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
+    implementation ("org.grails.plugins:ala-auth:5.1.1")
+    implementation "org.grails.plugins:ala-ws-security-plugin:4.1.2"
     runtimeOnly "org.grails.plugins:ala-bootstrap3:4.2.0"
 
     //    swagger API
     implementation 'au.org.ala.plugins:openapi:1.1.0'
 
+    implementation "au.org.ala:userdetails-service-client:1.5.0"
     implementation "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
     implementation 'au.org.ala:ala-cas-client:2.5'
     runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
