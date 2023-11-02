@@ -36,7 +36,7 @@ apply from: "${project.projectDir}/gradle/publish.gradle"
 repositories {
     mavenLocal()
     //for missing jai_core.jar
-   //maven { url "https://mvnrepository.com" }
+    //maven { url "https://mvnrepository.com" }
     maven { url "https://repo.osgeo.org/repository/release/" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url = uri("https://maven.pkg.github.com/atlasoflivingaustralia/ecodata-client-plugin")
