@@ -10,7 +10,8 @@ import static org.apache.http.HttpStatus.*
 class MetadataService {
     static DateFormat ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
 
-    def grailsApplication, webService, cacheService, settingService, modelService
+    def grailsApplication, cacheService, settingService, modelService
+    WebService webService
 
     def activitiesModel() {
         return cacheService.get('activity-model',{
@@ -247,14 +248,14 @@ class MetadataService {
             def facetConfig = webService.getJson(grailsApplication.config.ecodata.service.url + "/metadata/getGeographicFacetConfig")
             facetConfig.grouped.each { k, v ->
                 v.each { name, fid ->
-                    def objects = webService.getJson(grailsApplication.config.spatial.baseURL + '/ws/objects/'+fid)
+                    def objects = webService.getJson(grailsApplication.config.spatial.baseURL + '/ws/objects/'+fid, null, true, false, true)
                     results[k] << [(objects[0].fieldname):objects[0]] // Using the fieldname instead of the name for grouped facets is a temp workaround for the GER.
                 }
 
             }
 
             facetConfig.contextual.each { name, fid ->
-                def objects = webService.getJson(grailsApplication.config.spatial.baseURL + '/ws/objects/'+fid)
+                def objects = webService.getJson(grailsApplication.config.spatial.baseURL + '/ws/objects/'+fid, null, true, false, true)
                 objects.each {
                     results[name] << [(it.name):it]
                 }
