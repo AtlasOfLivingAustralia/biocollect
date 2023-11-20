@@ -466,7 +466,7 @@ class WebService {
             }
 
             addHubUrlPath(headers)
-            headers."Authorization" = grailsApplication.config.getProperty("api_key")
+            headers."Authorization" = getAuthHeader()
             if (user) {
                 headers[grailsApplication.config.app.http.header.userId] = user.userId
             }
