@@ -187,12 +187,16 @@ class WebService {
         tokenService.getAuthToken(false).toAuthorizationHeader()
     }
 
-    def getJson(String url, Integer timeout = null, boolean includeApiKey = false, boolean includeUserId = true) {
+    def getJson(String url, Integer timeout = null, boolean includeApiKey = false, boolean includeUserId = true, boolean useToken = false) {
         def conn = null
         try {
             conn = configureConnection(url, includeUserId, timeout)
             if (includeApiKey) {
-                conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+                if (useToken) {
+                    conn.setRequestProperty("Authorization", getAuthHeader())
+                } else {
+                    conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+                }
             }
             conn.setRequestProperty(ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             def json = responseText(conn)
@@ -434,9 +438,9 @@ class WebService {
      * @param file the Multipart file object to forward.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    def postMultipart(url, Map params, MultipartFile file, fileParam = 'files') {
+    def postMultipart(url, Map params, MultipartFile file, fileParam = 'files', boolean useToken = false) {
 
-        postMultipart(url, params, file.inputStream, file.contentType, file.originalFilename, fileParam)
+        postMultipart(url, params, file.inputStream, file.contentType, file.originalFilename, fileParam, useToken)
     }
 
     /**
@@ -449,7 +453,7 @@ class WebService {
      * @param fileParamName the name of the HTTP parameter that will be used for the post.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    def postMultipart(url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files') {
+    def postMultipart(url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files', boolean useToken = false) {
 
         def result = [:]
         def user = userService.getUser()
@@ -466,7 +470,12 @@ class WebService {
             }
 
             addHubUrlPath(headers)
-            headers."Authorization" = getAuthHeader()
+            if (useToken) {
+                headers."Authorization" = getAuthHeader()
+            } else {
+                headers."Authorization" = grailsApplication.config.getProperty("api_key")
+            }
+
             if (user) {
                 headers[grailsApplication.config.app.http.header.userId] = user.userId
             }
