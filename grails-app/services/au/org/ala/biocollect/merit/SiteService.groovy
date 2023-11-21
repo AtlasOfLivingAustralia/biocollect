@@ -179,7 +179,7 @@ class SiteService {
         def baseUrl = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp"
         def userId = userService.getUser().userId
 
-        def site = [name:name, description: description, user_id:userId]
+        def site = [name:name, description: description, user_id:userId, api_key:grailsApplication.config.api_key]
 
         def url = "${baseUrl}/${shapeFileId}/${siteId}"
 
@@ -245,7 +245,7 @@ class SiteService {
             Geometry geom = placemark.getDefaultGeometry()
             def site = [name:name, description: description, user_id:userId, api_key:grailsApplication.config.api_key, wkt:geom.toText()]
 
-            def result = webService.doPost(url, site)
+            def result = webService.doPost(url, site, true)
             if (!result.error) {
                 def id = result.resp.id
                 if (!result.resp.error) {
