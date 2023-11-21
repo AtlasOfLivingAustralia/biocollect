@@ -179,11 +179,11 @@ class SiteService {
         def baseUrl = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp"
         def userId = userService.getUser().userId
 
-        def site = [name:name, description: description, user_id:userId, api_key:grailsApplication.config.api_key]
+        def site = [name:name, description: description, user_id:userId]
 
         def url = "${baseUrl}/${shapeFileId}/${siteId}"
 
-        def result = webService.doPost(url, site)
+        def result = webService.doPost(url, site, true)
 
         String error
         if (!result?.resp?.id) {

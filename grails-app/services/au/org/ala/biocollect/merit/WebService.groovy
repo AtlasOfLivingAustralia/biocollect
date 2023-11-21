@@ -192,12 +192,13 @@ class WebService {
         try {
             conn = configureConnection(url, includeUserId, timeout)
             if (includeApiKey) {
-                if (useToken) {
-                    conn.setRequestProperty("Authorization", getAuthHeader())
-                } else {
-                    conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
-                }
+                conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
             }
+
+            if (useToken) {
+                conn.setRequestProperty("Authorization", getAuthHeader())
+            }
+
             conn.setRequestProperty(ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             def json = responseText(conn)
             def result = JSON.parse(json)
@@ -285,14 +286,20 @@ class WebService {
         }
     }
 
-    def doPost(String url, Map postBody) {
+    def doPost(String url, Map postBody, boolean useToken = false) {
         def conn = null
         def charEncoding = 'utf-8'
         try {
             conn = new URL(url).openConnection()
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}")
-            conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+
+            if (useToken) {
+                conn.setRequestProperty("Authorization", getAuthHeader())
+            } else {
+                conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+            }
+
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
