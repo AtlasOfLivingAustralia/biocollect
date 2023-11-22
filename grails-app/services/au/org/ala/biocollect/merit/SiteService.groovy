@@ -15,7 +15,7 @@ import org.opengis.feature.simple.SimpleFeature
 
 class SiteService {
 
-    def webService, grailsApplication, commonService, metadataService, userService
+    def grailsApplication, commonService, metadataService, userService
     def documentService
     ActivityService activityService
     ProjectService projectService
@@ -23,7 +23,7 @@ class SiteService {
     ReportService reportService
     ProjectActivityService projectActivityService
     SiteService siteService
-
+    WebService webService
     def list() {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/site/').list
     }
@@ -162,7 +162,7 @@ class SiteService {
         def userId = userService.getUser().userId
         def url = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp?user_id=${userId}&api_key=${grailsApplication.config.api_key}"
 
-        return webService.postMultipart(url, [:], shapefile)
+        return webService.postMultipart(url, [:], shapefile, 'files', true)
     }
 
     /**
@@ -183,7 +183,7 @@ class SiteService {
 
         def url = "${baseUrl}/${shapeFileId}/${siteId}"
 
-        def result = webService.doPost(url, site)
+        def result = webService.doPost(url, site, true)
 
         String error
         if (!result?.resp?.id) {
@@ -245,7 +245,7 @@ class SiteService {
             Geometry geom = placemark.getDefaultGeometry()
             def site = [name:name, description: description, user_id:userId, api_key:grailsApplication.config.api_key, wkt:geom.toText()]
 
-            def result = webService.doPost(url, site)
+            def result = webService.doPost(url, site, true)
             if (!result.error) {
                 def id = result.resp.id
                 if (!result.resp.error) {
