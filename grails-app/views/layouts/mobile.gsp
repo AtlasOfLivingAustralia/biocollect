@@ -60,8 +60,8 @@
             withCredentials: true
         },
         beforeSend: function (xhr) {
-            <g:if test="${authorization}">
-                xhr.setRequestHeader('Authorization', "${raw(authorization)}");
+            <g:if test="${Authorization}">
+                xhr.setRequestHeader('Authorization', "${raw(Authorization)}");
             </g:if>
             <g:elseif test="${grailsApplication.config.getProperty("mobile.authKeyEnabled", Boolean) && authKey && userName}">
                 xhr.setRequestHeader('authKey', "${raw(authKey)}");

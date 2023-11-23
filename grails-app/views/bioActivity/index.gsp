@@ -127,7 +127,7 @@
 
     <!-- ko stopBinding:true -->
         <g:each in="${metaModel?.outputs}" var="outputName">
-            <g:set var="blockId" value="${fc.toSingleWord([name: outputName])}"/>
+            <g:set var="blockId" value="${raw(fc.toSingleWord([name: outputName]))}"/>
             <g:set var="model" value="${outputModels[outputName]}"/>
             <g:set var="output" value="${activity.outputs.find { it.name == outputName }}"/>
             <g:if test="${!output}">
@@ -148,7 +148,7 @@
                     $(function(){
                         var viewModelName = "${blockId}ViewModel",
                             elementId = "ko${blockId}",
-                            outputName = "${outputName}",
+                            outputName = "${raw(outputName)}",
                             viewModelInstance = viewModelName + "Instance";
 
                         var output = $.grep(activity.outputs || [], function(it){return it.name == outputName})[0] || { name: outputName};
