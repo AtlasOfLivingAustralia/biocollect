@@ -565,7 +565,7 @@ function ProjectFinder(config) {
 
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
-        savedViewMode = savedViewMode || "#grid-tab"; //Default is the new map-popup view
+        savedViewMode = savedViewMode || "grid-tab"; //Default is the new map-popup view
         $('.project-finder-tab a#'+savedViewMode).tab('show');
 
         // Filters view

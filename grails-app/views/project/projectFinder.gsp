@@ -72,7 +72,7 @@
             isUserPage: true,
             hideWorldWideBtn: true,
             isCitizenScience: false,
-            showAllProjects: true
+            showAllProjects: true,
         </g:if>
         <g:else>
             <g:if test="${isEcoScience}">
