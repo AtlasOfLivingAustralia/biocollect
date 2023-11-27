@@ -39,6 +39,10 @@ mongosh ecodata-functional-test loadAlaHub.js
 echo "Hosts file configuration"
 cat /etc/hosts
 
+cd $BIOCOLLECT_DIR
+echo "Starting wire mock"
+./gradlew startWireMock &
+
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
@@ -46,9 +50,6 @@ GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.en
 sleep 240
 
 cd $BIOCOLLECT_DIR
-echo "Starting wire mock"
-./gradlew startWireMock
-
 echo "Starting biocollect"
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087 &
 sleep 200
