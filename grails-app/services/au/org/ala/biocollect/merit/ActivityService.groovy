@@ -116,9 +116,9 @@ class ActivityService {
         webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/' + id)
     }
 
-    def bulkDelete(List ids, boolean destory) {
+    def bulkDelete(List ids, boolean destroy = false) {
         String url = grailsApplication.config.ecodata.service.url + '/activityBulkDelete'
-        if(destory)
+        if(destroy)
             url += '?destroy=true'
         webService.doPost(url, [ids: ids])
     }
