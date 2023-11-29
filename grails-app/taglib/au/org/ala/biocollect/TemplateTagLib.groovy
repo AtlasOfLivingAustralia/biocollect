@@ -134,22 +134,30 @@ class TemplateTagLib {
                     }
                     break;
                 case 'login':
+                    def logoutReturnToUrl = getCurrentURL( attrs.hubConfig )
+                    if (grailsApplication.config.getProperty("security.oidc.logoutAction",String, "CAS") == "cognito") {
+                        //                                cannot use createLink since it adds hub query parameter and cognito will not consider it valid
+                        logoutReturnToUrl = grailsApplication.config.getProperty("grails.serverURL") + grailsApplication.config.getProperty("logoutReturnToUrl",String, "/hub/index")
+                    }
+
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << auth.loginLogout(
                                 ignoreCookie: "true", cssClass: "btn btn-primary btn-sm nav-button custom-header-login-logout",
-                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+//                                cannot use createLink since it adds hub query parameter and eventually creates malformed URL with two ? characters
+                                logoutUrl: "/logout",
                                 loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
-                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                                logoutReturnToUrl: logoutReturnToUrl
                         )
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
                         out << auth.loginLogout(
                                 ignoreCookie: "true",
-                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+//                                cannot use createLink since it adds hub query parameter and eventually creates malformed URL with two ? characters
+                                logoutUrl: "/logout",
                                 loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
-                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                                logoutReturnToUrl: logoutReturnToUrl
                         )
                         out << "</li>";
                     }
@@ -319,6 +327,21 @@ class TemplateTagLib {
         }
     }
 
+    String getCurrentURLFromRequest() {
+        String requestURL = request.getRequestURL().toString()
+        // Construct the complete URL
+        StringBuilder url = new StringBuilder()
+        url.append(requestURL)
+
+        String queryString = request.getQueryString()
+        // Include the query string if present
+        if (queryString != null) {
+            url.append("?").append(queryString)
+        }
+
+        url.toString()
+    }
+
 
     private String getLinkUrl (Map link){
         String url;
@@ -402,6 +425,6 @@ class TemplateTagLib {
     }
 
     private String getCurrentURL(Map hubConfig){
-        g.createLink(absolute: true, uri: '/').toString()
+        getCurrentURLFromRequest()
     }
 }
