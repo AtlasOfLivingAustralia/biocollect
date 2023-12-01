@@ -27,7 +27,7 @@ environments {
                 temp.dir = "/data/biocollect/temp"
 //              system level config
                 server.port = 8087
-                serverURL = "http://devt.ala.org.au:8087"
+                serverURL = "http://localhost:8087"
                 biocollect.system.email.replyTo = "biocollect-dev<no-reply>@ala.org.au"
                 sender = "biocollect-dev@ala.org.au"
                 debugUI = true
@@ -40,7 +40,7 @@ environments {
                 debugUI = false
                 loggerLevel = "DEBUG"
                 server.port = "8087"
-                grails.host = "http://devt.ala.org.au"
+                grails.host = "http://localhost"
                 serverName = "${grails.host}:${server.port}"
                 grails.serverURL = serverName
                 server.serverURL = serverName
@@ -51,7 +51,7 @@ environments {
                 grails.config.locations = []
                 security.oidc.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
                 security.oidc.allowUnsignedIdTokens = true
-                def casBaseUrl = "http://devt.ala.org.au:${wiremock.port}"
+                def casBaseUrl = "http://localhost:${wiremock.port}"
 
                 security.cas.appServerName=serverName
                 security.cas.contextPath=
@@ -64,14 +64,13 @@ environments {
                 security.jwt.discoveryUri="${casBaseUrl}/cas/oidc/.well-known"
                 userDetails.url = "${casBaseUrl}/userdetails/userDetails/"
                 userDetailsSingleUrl = "${userDetails.Url}getUserDetails"
-                userDetailsUrl = "${userDetatails.url}getUserListFull"
                 logging.dir = '.'
                 upload.images.path = '/tmp'
                 upload.images.url = grails.serverURL+'/image/'
-                ecodata.baseUrl = 'http://devt.ala.org.au:8080/'
-                ecodata.baseURL = 'http://devt.ala.org.au:8080'
-                ecodata.service.url = 'http://devt.ala.org.au:8080/ws'
-                pdfgen.baseURL = "http://devt.ala.org.au:${wiremock.port}/"
+                ecodata.baseUrl = 'http://localhost:8080/'
+                ecodata.baseURL = 'http://localhost:8080'
+                ecodata.service.url = 'http://localhost:8080/ws'
+                pdfgen.baseURL = "http://localhost:${wiremock.port}/"
                 api_key='testapikey'
                 grails.cache.config = {
                         diskStore {
