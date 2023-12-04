@@ -152,6 +152,7 @@ ko.bindingHandlers.photoPointUpload = {
         $(element).fileupload({
             url:config.url,
             pasteZone: null,
+            dropZone: null,
             autoUpload:true
         }).on('fileuploadadd', function(e, data) {
             complete(false);
@@ -360,6 +361,7 @@ ko.bindingHandlers.fileUploadWithProgress = {
         $(element).fileupload({
             url: config.url,
             pasteZone: null,
+            dropZone: null,
             autoUpload: true
         }).on('fileuploadadd', function (e, data) {
             complete(false);
