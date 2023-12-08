@@ -318,6 +318,7 @@ pwa:
   tileSize: 512
   apiKey: ""
   cacheVersion: "v3"
+  doNotDeleteCaches: ["v3"]
   serviceWorkerConfig:
       pathsToIgnoreCache: [ "/image/upload", "/ws/attachment/upload", "/ajax/keepSessionAlive", "/noop", '/pwa/sw.js', '/pwa/config.js', "/ws/species/speciesDownload" ]
       cachePathForRequestsStartingWith: [ "/pwa/bioActivity/edit/", "/pwa/createOrEditFragment/", "/pwa/bioActivity/index/", "/pwa/indexFragment/", "/pwa/offlineList" ]

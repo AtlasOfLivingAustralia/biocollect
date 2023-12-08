@@ -8,7 +8,7 @@ self.addEventListener('install', e => {
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cache => {
-                    if (cache !== pwaConfig.cacheName) {
+                    if (!pwaConfig.doNotDeleteCaches.includes(cache)) {
                         console.log('Service Worker: Clearing Old Cache');
                         return caches.delete(cache);
                     }
