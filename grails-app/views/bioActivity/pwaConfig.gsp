@@ -1,7 +1,7 @@
 <%@ page import="grails.converters.JSON;" contentType="text/javascript;charset=UTF-8" %>
 const pwaConfig = {
     "cacheName": "${grailsApplication.config.getProperty('pwa.cacheVersion')}",
-    "doNotDeleteCaches": ${grailsApplication.config.getProperty('pwa.doNotDeleteCaches', List) as JSON },
+    "oldCacheToDelete": ${grailsApplication.config.getProperty('pwa.oldCacheToDelete', List) as JSON },
     "pathsToIgnoreCache": ${grailsApplication.config.getProperty('pwa.serviceWorkerConfig.pathsToIgnoreCache', List) as JSON },
     "cachePathForRequestsStartingWith": ${grailsApplication.config.getProperty('pwa.serviceWorkerConfig.cachePathForRequestsStartingWith', List) as JSON },
     "filesToPreCache": <config:getFilesToPreCacheForPWA/>,
