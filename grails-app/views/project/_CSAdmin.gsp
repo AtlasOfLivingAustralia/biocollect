@@ -15,6 +15,7 @@
                     <g:if test="${hasLegacyProjectStories}">
                         <li class="nav-item text-left"><a class="nav-link" href="#edit-project-stories" id="editprojectstories-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.stories"/></a></li>
                     </g:if>
+                    <li class="nav-item text-left"><a class="nav-link" href="#project-reference-assessment" id="project-reference-assessment-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.referenceAssessment"/></a></li>
                 </g:if>
 
                 <li class="nav-item text-left"><a class="nav-link" href="#permissions" id="permissions-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.members"/></a></li>
@@ -67,6 +68,10 @@
                     <div id="project-activity" class="tab-pane" role="tabpanel">
                         <g:render template="/projectActivity/settings" model="[projectActivities:projectActivities]" />
                     </div>
+
+                    <div id="project-reference-assessment" class="tab-pane" role="tabpanel">
+                        Reference assessment tab!
+                    </div>
                 </g:if>
 
                 <div id="permissions" class="tab-pane" role="tabpanel">
@@ -86,7 +91,6 @@
                     </div>
                     </g:if>
                 </g:if>
-
             </div>
         </div>
     </div>
