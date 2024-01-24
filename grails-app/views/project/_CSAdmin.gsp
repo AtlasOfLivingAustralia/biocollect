@@ -70,7 +70,7 @@
                     </div>
 
                     <div id="project-reference-assessment" class="tab-pane" role="tabpanel">
-                        Reference assessment tab!
+                        <g:render template="/referenceAssessment/settings" model="[projectActivities:projectActivities]" />
                     </div>
                 </g:if>
 
