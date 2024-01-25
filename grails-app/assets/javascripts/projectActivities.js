@@ -6,7 +6,13 @@ var ProjectActivitiesViewModel = function (params, projectViewModel) {
     self.projectViewModel = projectViewModel;
 
     self.organisationName = params.organisationName;
-    self.pActivityForms = params.pActivityForms;
+    self.pActivityForms = params.pActivityForms.sort((a,b) => a.name.localeCompare(b.name))
+
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
+
+
     self.sites = params.sites;
     self.projectStartDate = params.projectStartDate;
     self.project = params.project;
@@ -161,7 +167,7 @@ var ProjectActivitiesDataViewModel = function (pActivitiesVM) {
 };
 
 
-var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
+var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder, query) {
 
     var self = $.extend(this, pActivitiesVM);
     var surveyInfoTab = '#survey-info-tab';
@@ -169,8 +175,10 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     var errorMsgSurveyInfo = "Failed to save survey. Are you sure all mandatory fields in 'Survey Info' tab is filled?";
     self.placeHolder = placeHolder;
     self.datesOptions = [60, 90, 120, 180];
+    self.query = query;
     self.formNames = ko.observableArray($.map(self.pActivityForms ? self.pActivityForms : [], function (obj, i) {
         return obj.name;
+        // return obj.name.filter(i => (i === query));
     }));
 
     self.addProjectActivity = function () {
@@ -591,5 +599,20 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     })
 
     self.getSitesWithDataForProjectActivitiesInProject();
+
+    // $('body').on('shown.bs.modal', '.modal', function() {
+    //     $(this).find('select').each(function() {
+    //         var dropdownParent = $(document.body);
+    //         if ($(this).parents('.modal.in:first').length !== 0)
+    //             dropdownParent = $(this).parents('.modal.in:first');
+    //         $(this).select2({
+    //             dropdownParent: dropdownParent
+    //             // ...
+    //         });
+    //     });
+    // });
+
+
+
 };
 
