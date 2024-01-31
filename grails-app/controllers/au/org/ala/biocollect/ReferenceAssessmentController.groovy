@@ -8,28 +8,37 @@ class ReferenceAssessmentController {
     UserService userService
     ProjectService projectService
     RecordService recordService
+    ProjectActivityService projectActivityService
+    ActivityService activityService
     SearchService searchService
+    OutputService outputService
+
+
+    // Get details about the supplied project
 
     def requestRecords(String projectId) {
         def result
 
-        // Retrieve reference image records from reference project
-        GrailsParameterMap params = new GrailsParameterMap([:], request)
-        params["hub"] = "acsa"
-        // params["max"] = "30"
-        params["fq"] = "projectActivityNameFacet:The Dead Tree Detective"
+        // Get details about the supplied project
+        def projectResult = projectService.get(projectId)
 
+        // Ensure the project is a reference assessment project
+        if (!projectResult || !projectResult.refAssessEnabled) {
+            response.status = 400
+            result = [message: 'The supplied project is not configured for reference assessments']
+            render result as JSON
+            return
+        }
 
-
-        Map searchResult = searchService.searchProjectActivity(params)
-        List activities = searchResult?.hits?.hits
+        // Get the activity records for the reference survey
+        def referenceActivities = activityService.activitiesForProjectActivity(projectResult.refAssessReferenceProjectActivityId)
 
         // Ensure records exist
-        if (activities?.size() == 0) {
+        if (referenceActivities?.size() == 0) {
             response.status = 404
             result = [message: 'No records found in assessment image reference survey']
         } else {
-            result = searchResult
+            result = referenceActivities
         }
 
         render result as JSON
