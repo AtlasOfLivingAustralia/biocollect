@@ -172,7 +172,7 @@ class UrlMappings {
 
 
                 // Following api's are used by external mobile clients
-                "/ws/referenceAssessment/requestRecords"(controller: "referenceAssessment", action: "requestRecords")
+                "/ws/referenceAssessment/requestRecords/$projectId"(controller: "referenceAssessment", action: "requestRecords")
 
                 "/ws/project/search"(controller: "project", action: 'search')
                 "/ws/survey/list/$id"(controller:  "project", action: 'listSurveys')
