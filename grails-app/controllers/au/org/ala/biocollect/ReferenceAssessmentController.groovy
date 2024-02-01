@@ -19,6 +19,8 @@ class ReferenceAssessmentController {
     def requestRecords(String projectId) {
         def result
 
+        GrailsParameterMap queryParams = params
+
         // Get details about the supplied project
         def projectResult = projectService.get(projectId)
 
@@ -33,14 +35,18 @@ class ReferenceAssessmentController {
         // Get the activity records for the reference survey
         def referenceActivities = activityService.activitiesForProjectActivity(projectResult.refAssessReferenceProjectActivityId)
 
-        // Ensure records exist
+        // Ensure the reference records exist
         if (referenceActivities?.size() == 0) {
             response.status = 404
             result = [message: 'No records found in assessment image reference survey']
-        } else {
-            result = referenceActivities
+            render result as JSON
+            return
         }
 
-        render result as JSON
+        // Sort the reference activities by
+        // referenceActivities.sort { it.outputs[0].data.taxaRichness }
+        // referenceActivities.findAll { it.outputs[0].data.recordedBy == "Bruno Ferronato" }
+
+        render referenceActivities as JSON
     }
 }
