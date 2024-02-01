@@ -25,9 +25,15 @@
     <asset:script type="text/javascript">
         var params = getParams(), initialized = false;
         var fcConfig = {
+                intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
+                featuresService: "${createLink(controller: 'proxy', action: 'features')}",
+                featureService: "${createLink(controller: 'proxy', action: 'feature')}",
+                spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+                layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
                 createActivityUrl: "/pwa/bioActivity/edit/" + params.projectActivityId + "?cache=true",
                 indexActivityUrl: "/pwa/bioActivity/index/" + params.projectActivityId+ "?cache=true",
-                baseMapUrl: "${grailsApplication.config.getProperty("pwa.baseMapUrl")}",
+                baseMapUrl: "${grailsApplication.config.getProperty("pwa.baseMapUrl")}${grailsApplication.config.getProperty("pwa.apiKey")}",
+                baseMapAttribution: "${grailsApplication.config.getProperty("pwa.mapConfig.baseLayers", List)?.getAt(0)?.attribution?.encodeAsJavaScript()}",
                 fetchSpeciesUrl: "${createLink(controller: 'search', action: 'searchSpecies')}",
                 metadataURL: "/ws/projectActivity/activity",
                 siteUrl: '${createLink(controller: 'site', action: 'index' )}',
@@ -78,7 +84,7 @@
                             totalUrl: fcConfig.totalUrl,
                             downloadSpeciesUrl: fcConfig.downloadSpeciesUrl,
                             baseMapOptions: {
-                                attribution: '<a target="_blank" rel="noopener noreferrer" href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Tiles from Esri</a> &mdash; Sources: Esri, DigitalGlobe, Earthstar Geographics, CNES/Airbus DS, GeoEye, USDA FSA, USGS, Aerogrid, IGN, IGP, and the GIS User Community',
+                                attribution: fcConfig.baseMapAttribution,
                                 maxZoom: 20
                             }
                         });

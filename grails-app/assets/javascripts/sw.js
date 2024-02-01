@@ -54,7 +54,11 @@ self.addEventListener('fetch', e => {
                             return res;
                         }
                         else if (isFetchingBaseMap(e.request.url)) {
-                            return  fetch(pwaConfig.noCacheTileFile);
+                            return caches.match(pwaConfig.noCacheTileFile).then(res => {
+                                if (res) {
+                                    return res;
+                                }
+                            });
                         }
                     });
                 }
@@ -97,6 +101,11 @@ function isFetchingBaseMap (url) {
 
 async function precache() {
     const cache = await caches.open(pwaConfig.cacheName);
+
+    for(var i = 0; i < pwaConfig.filesToPreCache.length; i++) {
+        await cache.delete(pwaConfig.filesToPreCache[i]);
+    }
+
     return cache.addAll(pwaConfig.filesToPreCache);
 }
 console.debug("SW Script: end reading");

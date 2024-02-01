@@ -44,7 +44,7 @@
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
-        mapLayersConfig: ${ grailsApplication.config.getProperty('pwa.mapConfig', Map) as JSON },
+        mapLayersConfig: ${ grailsApplication.config.getProperty('pwaMapConfig', Closure)(grailsApplication.config) as JSON },
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}",
         bulkUpload: false,

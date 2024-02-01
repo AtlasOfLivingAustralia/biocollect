@@ -191,11 +191,11 @@ Biocollect.MapUtilities = {
                 break;
             case 'maptilersatellite':
                 option = {
-                    url:  url || 'https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=O11Deo7fBLatChkUYGIH',
+                    url:  url || 'https://api.maptiler.com/maps/hybrid/256/{z}/{x}/{y}.jpg?key=O11Deo7fBLatChkUYGIH',
                     options: {
                         attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>',
                         maxZoom: 21,
-                        maxNativeZoom: 13
+                        maxNativeZoom: 21
                     }
                 };
                 layer = L.tileLayer(option.url, option.options);
