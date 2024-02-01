@@ -53,7 +53,7 @@
         getOutputSpeciesIdUrl : "${createLink(controller: 'output', action: 'getOutputSpeciesIdentifier')}",
         getGuidForOutputSpeciesUrl : "${createLink(controller: 'record', action: 'getGuidForOutputSpeciesIdentifier')}",
         imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
-        mapLayersConfig: ${ grailsApplication.config.getProperty('pwa.mapConfig', Map) as JSON },
+        mapLayersConfig: ${ grailsApplication.config.getProperty('pwaMapConfig', Closure)(grailsApplication.config) as JSON },
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         originUrl: "${grailsApplication.config.getProperty('server.serverURL')}",

@@ -1,8 +1,9 @@
 async function downloadMapTiles(bounds, tileUrl, minZoom, maxZoom, callback) {
     minZoom = minZoom || 0;  // Minimum zoom level
     maxZoom = maxZoom || 20; // Maximum zoom level
+    const MAX_PARALLEL_REQUESTS = 10;
 
-    var deferred = $.Deferred();
+    var deferred = $.Deferred(), requestArray = [];
     // Check if the browser supports the Cache API
     if ('caches' in window) {
         // Function to fetch and cache the vector basemap tiles for a bounding box at different zoom levels
@@ -30,14 +31,19 @@ async function downloadMapTiles(bounds, tileUrl, minZoom, maxZoom, callback) {
                             if (!cachedResponse) {
                                 console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} not found in cache. Fetching and caching...`);
 
-                                // Fetch the tile from the server
-                                const response = await fetch(requestUrl);
+                                // run x number of queries in parallel
+                                if (requestArray.length <= MAX_PARALLEL_REQUESTS) {
+                                    requestArray.push(fetch(requestUrl).then(function (response) {
+                                        // Clone the response, as it can only be consumed once
+                                        const responseClone = response.clone();
 
-                                // Clone the response, as it can only be consumed once
-                                const responseClone = response.clone();
-
-                                // Cache the response
-                                await cache.put(requestUrl, responseClone);
+                                        // Cache the response
+                                        cache.put(requestUrl, responseClone);
+                                    }));
+                                } else {
+                                    await Promise.all(requestArray);
+                                    requestArray = [];
+                                }
 
                                 console.log(`Tile at zoom ${zoom}, x ${x}, y ${y} cached.`);
                             } else {
@@ -52,6 +58,9 @@ async function downloadMapTiles(bounds, tileUrl, minZoom, maxZoom, callback) {
                 }
             }
 
+            if (requestArray.length > 0) {
+                await Promise.all(requestArray);
+            }
             console.log('Vector basemap tiles cached for the bounding box.');
             deferred.resolve();
         } catch (error) {
@@ -184,18 +193,25 @@ function OfflineViewModel(config) {
         minZoom = config.minZoom || 0,
         maxZoom = config.maxZoom || 20,
         mapId = config.mapId,
+        overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig(),
         mapOptions = {
             autoZIndex: false,
+            zoomToObject: true,
             preserveZIndex: true,
             addLayersControlHeading: false,
             drawControl: false,
             showReset: false,
             draggableMarkers: false,
             useMyLocation: true,
+            maxAutoZoom: maxZoom,
+            maxZoom: maxZoom,
+            minZoom: minZoom,
             allowSearchLocationByAddress: true,
             allowSearchRegionByAddress: true,
             trackWindowHeight: false,
-            baseLayer: L.tileLayer(config.baseMapUrl, config.baseMapOptions)
+            baseLayer: L.tileLayer(config.baseMapUrl, config.baseMapOptions),
+            wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+            wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
         },
         alaMap = new ALA.Map(mapId, mapOptions),
         mapImpl = alaMap.getMapImpl(),
@@ -390,31 +406,88 @@ function OfflineViewModel(config) {
         return area;
     }
 
+    /**
+     * Downloads base map tiles and wms layer of a site for offline use.
+     * It is done for all sites of a project activity.
+     * @returns {Promise<void>}
+     */
     async function startDownloadingSites() {
-        var sites = pa.sites || [], zoom = 15;
+        const TIMEOUT = 3000, // 3 seconds
+            MAP_LOAD_TIMEOUT = 2000, // 2 seconds
+            MAX_ZOOM=20,
+            MIN_ZOOM= 10;
+        var sites = pa.sites || [], zoom = 15, mapZoomedInIndicator, tileLoadedPromise, cancelTimer,
+            callback = function () {
+                cancelTimer && clearTimeout(cancelTimer);
+                cancelTimer = null;
+                // resolve it in the next event loop
+                if(mapZoomedInIndicator && mapZoomedInIndicator.state() == 'pending') {
+                    // setTimeout(function () {
+                        mapZoomedInIndicator && mapZoomedInIndicator.resolve();
+                    // }, 0);
+                }
+            };
         self.currentStage(self.stages.sites);
         self.sitesStatus(self.statuses.doing);
+        alaMap.registerListener('dataload', callback);
+
         try {
             self.numberOfSiteTilesDownloaded(0);
             self.totalSiteTilesDownload(sites.length);
             for (var i = 0; i < sites.length; i++) {
                 var site = sites[i],
+                    zoomIntoMap = true,
                     geoJson = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry),
-                    layer = L.geoJson(geoJson),
-                    bounds = layer.getBounds();
+                    geoJsonLayer = alaMap.setGeoJSON(geoJson, {
+                        wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                        wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
+                        maxZoom: MAX_ZOOM
+                    });
 
-                alaMap.addLayer(layer);
-                alaMap.fitBounds();
-                zoom = mapImpl.getZoom();
-                alaMap.removeLayer(layer);
-                await downloadMapTiles(bounds, config.baseMapUrl, zoom, zoom);
+                geoJsonLayer.on('tileload', function () {
+                    if(tileLoadedPromise && tileLoadedPromise.state() == 'pending') {
+                        tileLoadedPromise.resolve();
+                    }
+                });
+                // so that layer zooms beyond default max zoom of 18
+                geoJsonLayer.options.maxZoom = MAX_ZOOM;
+                mapZoomedInIndicator = $.Deferred();
+                // cancel waiting for map to load feature data
+                cancelTimer = setTimeout(function (){
+                    zoomIntoMap = false;
+                    mapZoomedInIndicator && mapZoomedInIndicator.resolve();
+                }, TIMEOUT);
+
+                // no need to wait if promise is resolved.
+                if (mapZoomedInIndicator && mapZoomedInIndicator.state() == 'pending') {
+                    // wait for map layer to load feature data from spatial server for pid.
+                    await mapZoomedInIndicator.promise();
+                }
+
+                if (zoomIntoMap) {
+                    // zoom into to map to get tiles and feature from spatial server
+                    for (zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+                        tileLoadedPromise = $.Deferred();
+                        mapImpl.setZoom(zoom, {animate: false});
+                        timer(MAP_LOAD_TIMEOUT, tileLoadedPromise);
+                        await tileLoadedPromise.promise();
+                    }
+                }
+
+                alaMap.clearLayers();
                 self.numberOfSiteTilesDownloaded(self.numberOfSiteTilesDownloaded() + 1);
             }
 
+            alaMap.removeListener('dataload', callback);
             completedSitesDownload();
         } catch (e) {
+            console.error(e);
             errorSitesDownload();
         }
+    }
+
+    function timer(ms, deferred) {
+        return setTimeout(deferred.resolve, ms);
     }
 
     function completedSitesDownload() {

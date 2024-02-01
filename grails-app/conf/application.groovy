@@ -676,6 +676,9 @@ if (!app.file.script.path) {
 script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
 
 // yml interpreter doesn't evaluate expression in deep nested objects such as baseLayers below
-if (pwa.mapConfig.baseLayers?.size() > 1) {
-        pwa.mapConfig.baseLayers[0].url = pwa.baseMapUrl
+pwaMapConfig = { def config ->
+        Map pwa = config.getProperty('pwa', Map)
+        Map mapConfig = pwa.mapConfig
+        mapConfig.baseLayers.getAt(0).url = pwa.baseMapUrl + pwa.apiKey
+        mapConfig
 }
