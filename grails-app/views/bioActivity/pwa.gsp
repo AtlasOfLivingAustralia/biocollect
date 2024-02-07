@@ -32,6 +32,7 @@
                 layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
                 createActivityUrl: "/pwa/bioActivity/edit/" + params.projectActivityId + "?cache=true",
                 indexActivityUrl: "/pwa/bioActivity/index/" + params.projectActivityId+ "?cache=true",
+                settingsUrl: "/pwa/settings",
                 baseMapUrl: "${grailsApplication.config.getProperty("pwa.baseMapUrl")}${grailsApplication.config.getProperty("pwa.apiKey")}",
                 baseMapAttribution: "${grailsApplication.config.getProperty("pwa.mapConfig.baseLayers", List)?.getAt(0)?.attribution?.encodeAsJavaScript()}",
                 fetchSpeciesUrl: "${createLink(controller: 'search', action: 'searchSpecies')}",

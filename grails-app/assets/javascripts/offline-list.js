@@ -128,6 +128,7 @@ function ActivitiesViewModel (config) {
 };
 
 function ActivityViewModel (activity, parent) {
+    const IMAGE_DELETED_STATUS = 'deleted'
     var self = this, images, loadPromise;
     self.activityId = activity.activityId;
     self.projectId = activity.projectId;
@@ -186,11 +187,13 @@ function ActivityViewModel (activity, parent) {
         }, function () {
             loadPromise.then(function (){
                 self.uploading(true);
-                promises.push(self.uploadImages().then(self.deleteImages));
-                promises.push(self.uploadSite().then(self.updateActivityWithSiteId).then(self.saveAsNewSite).then(self.deleteOldSite));
-                $.when.apply($, promises).then(function () {
-                    self.saveActivityToDB().then(self.uploadActivity).then(self.deleteActivityFromDB).then(self.removeMeFromList).then(function () {
+                promises.push(self.uploadImages());
+                promises.push(self.uploadSite().then(self.updateActivityWithSiteId).then(self.saveAsNewSite));
+                $.when.apply($, promises).then(function (imagesToDelete, oldSitesToDelete) {
+                    self.saveActivityToDB().then(self.uploadActivity).then(self.deleteActivityFromDB).then(self.removeMeFromList).then(async function () {
                         self.uploading(false);
+                        await self.deleteImages(imagesToDelete);
+                        await self.deleteOldSite(oldSitesToDelete);
                         deferred.resolve({data: { activityId: activity.activityId} });
                     });
                 }, function (error) {
@@ -343,20 +346,26 @@ function ActivityViewModel (activity, parent) {
         });
     }
 
-    self.uploadImages = function() {
+    self.uploadImages = async function() {
         var uploadedImages = [],
             promises = [], deferred = $.Deferred();
 
-        self.imageViewModels.forEach(function (imageVM, index) {
+        for (var index = 0 ; index < self.imageViewModels.length; index++) {
+            var imageVM = self.imageViewModels[index];
             if (imageVM.isBlobDocument()) {
-                var image = images[index];
+                var image = images[index], promise;
                 if (image.documentId && entities.utils.isDexieEntityId(image.documentId)) {
-                    uploadedImages.push(image.documentId);
+                    if (imageVM.status() !== IMAGE_DELETED_STATUS)
+                        uploadedImages.push(image.documentId);
                 }
 
-                promises.push(self.uploadImage(imageVM).then(self.updateImageMetadata.bind(self, imageVM, image)))
+                if (imageVM.status() !== IMAGE_DELETED_STATUS)
+                    promise = self.uploadImage(imageVM).then(self.updateImageMetadata.bind(self, imageVM, image))
+                promises.push(promise)
+                await promise;
             }
-        });
+
+        }
 
         $.when.apply($, promises).then(function () {
             deferred.resolve({data:uploadedImages});
@@ -369,7 +378,7 @@ function ActivityViewModel (activity, parent) {
 
     self.updateImageMetadata = function(imageVM, image, stagedMetadata) {
         $.extend(image, stagedMetadata);
-        imageVM.load(image);
+        imageVM.load(image, true);
         if (entities.utils.isDexieEntityId(image.documentId)) {
             // clear documentId so that BioCollect will create a new document for the image
             image.documentId = undefined;

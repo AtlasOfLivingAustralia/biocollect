@@ -5,7 +5,7 @@
     <title>PWA settings</title>
     <asset:stylesheet src="pwa-settings-manifest.css"/>
     <asset:javascript src="pwa-settings-manifest.js"/>
-    <asset:script>
+    <asset:script type="text/javascript">
         var fcConfig = {
             siteUrl: "/ws/site",
             addActivityUrl: "/pwa/bioActivity/edit",
@@ -19,6 +19,9 @@
             isCaching: ${params.getBoolean('cache', false)},
             enableOffline: true
         };
+        window.addEventListener('load', function () {
+            window.parent && window.parent.postMessage({event: 'viewmodelloadded', data: {}}, "*");
+        });
     </asset:script>
 </head>
 
