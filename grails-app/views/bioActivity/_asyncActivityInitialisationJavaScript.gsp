@@ -42,6 +42,8 @@
             window.activityLevelData = new ActivityLevelData();
 
             $(function() {
+                if (window.viewModel)
+                    return;
 
                 $('#validation-container').validationEngine('attach', {scroll: true});
 
@@ -60,6 +62,8 @@
                 $('#cancel').on('click',function () {
                     if (fcConfig.bulkUpload)
                         $(document).trigger('activitycreatecancelled')
+                    else if (window.history && window.history.length > 1)
+                        window.history.back();
                     else
                         document.location.href = fcConfig.returnTo;
                 });

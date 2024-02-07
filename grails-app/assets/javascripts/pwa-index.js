@@ -413,7 +413,7 @@ function OfflineViewModel(config) {
      */
     async function startDownloadingSites() {
         const TIMEOUT = 3000, // 3 seconds
-            MAP_LOAD_TIMEOUT = 2000, // 2 seconds
+            MAP_LOAD_TIMEOUT = 1000, // 1 seconds
             MAX_ZOOM=20,
             MIN_ZOOM= 10;
         var sites = pa.sites || [], zoom = 15, mapZoomedInIndicator, tileLoadedPromise, cancelTimer,
@@ -444,11 +444,6 @@ function OfflineViewModel(config) {
                         maxZoom: MAX_ZOOM
                     });
 
-                geoJsonLayer.on('tileload', function () {
-                    if(tileLoadedPromise && tileLoadedPromise.state() == 'pending') {
-                        tileLoadedPromise.resolve();
-                    }
-                });
                 // so that layer zooms beyond default max zoom of 18
                 geoJsonLayer.options.maxZoom = MAX_ZOOM;
                 mapZoomedInIndicator = $.Deferred();
@@ -617,7 +612,7 @@ function downloadProjectActivityArtefacts(viewModel) {
         delay = 4 * 60 * 1000, // four minutes
         deferred = $.Deferred();
 
-    var urls = [fcConfig.createActivityUrl, fcConfig.indexActivityUrl, fcConfig.offlineListUrl],
+    var urls = [fcConfig.createActivityUrl, fcConfig.indexActivityUrl, fcConfig.offlineListUrl, fcConfig.settingsUrl],
         urlsIndex = 0;
 
     document.addEventListener('view-model-loaded',function () {

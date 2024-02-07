@@ -65,10 +65,18 @@
         <bc:koLoading>
             <div id="form-placeholder"></div>
         </bc:koLoading>
-        <a class="btn btn-primary" href="${createLink(controller: 'bioActivity', action: 'pwaOfflineList', params: [projectActivityId: projectActivityId])}"><i class="far fa-arrow-alt-circle-left"></i> <g:message code="pwa.btn.back"/> </a>
+        <a id="backButton" class="btn btn-primary" href="#"><i class="far fa-arrow-alt-circle-left"></i> <g:message code="pwa.btn.back"/> </a>
         <script type="text/javascript">
             var urlObject = new URL(window.location.href)
             var activityId = getActivityId();
+
+            $("#backButton").on('click', function () {
+                if (window.history && window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    document.location.href = "${createLink(controller: 'bioActivity', action: 'pwaOfflineList', params: [projectActivityId: projectActivityId])}";
+                }
+            })
 
             function getMetadataAndInitialise () {
                 var projectActivityMetadataPromise = entities.getProjectActivityMetadata(fcConfig.projectActivityId, activityId);
@@ -129,6 +137,9 @@
                 window.activityLevelData = new ActivityLevelData();
 
                 $(function () {
+                    if (window.viewModel)
+                        return
+
                     $('.helphover').popover({animation: true, trigger: 'hover'});
 
                     $('#cancel').on('click', function () {
@@ -176,7 +187,7 @@
                         }
                     }
 
-                    var viewModel = new ViewModel(
+                    window.viewModel = new ViewModel(
                         activity,
                         site,
                         project,

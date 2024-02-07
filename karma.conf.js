@@ -36,6 +36,8 @@ module.exports = function (config) {
             'grails-app/assets/vendor/knockout/3.4.0/knockout-3.4.0.js',
             'grails-app/assets/vendor/knockout.js/knockout.mapping-latest.js',
             'grails-app/assets/vendor/underscore/underscore-1.8.3.min.js',
+            'grails-app/assets/vendor/bootstrap4/js/bootstrap.bundle.min.js',
+            'grails-app/assets/vendor/bootbox/bootbox.min.js',
             'node_modules/jasmine-ajax/lib/mock-ajax.js',
             'grails-app/assets/javascripts/knockout-dates.js',
             'grails-app/assets/vendor/wmd/showdown.js',

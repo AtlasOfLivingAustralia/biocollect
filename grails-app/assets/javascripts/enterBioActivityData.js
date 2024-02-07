@@ -191,7 +191,10 @@ function Master(activityId, config) {
             entities.saveActivity(toSave).then(function (result) {
                 var activityId = result.data;
                 if (config.enableOffline) {
-                    document.location.href = config.returnTo;
+                    if (window.history)
+                        window.history.back();
+                    else
+                        document.location.href = config.returnTo;
                 } else
                     document.location.href = fcConfig.activityViewURL + "/" + projectActivityId + "?activityId=" + activityId + "&projectId=" + projectId;
             });
@@ -358,29 +361,8 @@ function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, conf
         }
         return true;
     };
+
     self.siteId = ko.vetoableObservable(act.siteId, self.confirmSiteChange);
-
-    self.siteId.subscribe(function (siteId) {
-
-        var matchingSite = $.grep(self.transients.pActivitySites, function (site) {
-            return siteId == site.siteId
-        })[0];
-
-        if (matchingSite && matchingSite.extent && matchingSite.extent.geometry) {
-            var geometry = matchingSite.extent.geometry;
-            if (geometry.pid) {
-                activityLevelData.siteMap.addWmsLayer(geometry.pid);
-            } else {
-                var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
-                activityLevelData.siteMap.setGeoJSON(geoJson);
-            }
-        }
-        self.transients.site(matchingSite);
-
-        if (metaModel.supportsPhotoPoints) {
-            self.updatePhotoPointModel(matchingSite);
-        }
-    });
 
     self.goToProject = function () {
         if (self.projectId) {
