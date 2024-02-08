@@ -62,8 +62,6 @@
                 $('#cancel').on('click',function () {
                     if (fcConfig.bulkUpload)
                         $(document).trigger('activitycreatecancelled')
-                    else if (window.history && window.history.length > 1)
-                        window.history.back();
                     else
                         document.location.href = fcConfig.returnTo;
                 });

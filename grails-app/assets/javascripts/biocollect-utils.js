@@ -100,6 +100,16 @@ var biocollect = {
                 licence: "",
                 entityUpdated: true
             };
+        },
+        getReturnToAddressForPWA: function getReturnToAddressForPWA() {
+            const context = new URL(window.location.href).searchParams.get('context');
+            switch (context) {
+                case 'global':
+                    return fcConfig.globalReturnToAddress;
+                case 'survey':
+                default:
+                    return fcConfig.surveyReturnToAddress;
+            }
         }
     }
 }

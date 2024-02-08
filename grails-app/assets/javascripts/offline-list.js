@@ -2,6 +2,7 @@ function ActivitiesViewModel (config) {
     var self = this;
     var projectActivityId = config.projectActivityId;
     var projectId = config.projectId,
+        calledFromContext = getParameters().projectActivityId === undefined ? "global" : "survey",
         cancelOfflineCheck;
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({}, self);
@@ -118,7 +119,7 @@ function ActivitiesViewModel (config) {
 
     self.transients = {
         addActivityUrl: function() {
-            return fcConfig.addActivityUrl + "/" + projectActivityId;
+            return fcConfig.addActivityUrl + "/" + projectActivityId + "?context=" + calledFromContext;
         },
         isProjectActivity: !!projectActivityId
     }
@@ -129,7 +130,8 @@ function ActivitiesViewModel (config) {
 
 function ActivityViewModel (activity, parent) {
     const IMAGE_DELETED_STATUS = 'deleted'
-    var self = this, images, loadPromise;
+    var self = this, images, loadPromise,
+        calledFromContext = getParameters().projectActivityId === undefined ? "global" : "survey";
     self.activityId = activity.activityId;
     self.projectId = activity.projectId;
     self.projectActivityId = activity.projectActivityId;
@@ -144,10 +146,10 @@ function ActivityViewModel (activity, parent) {
     self.imageViewModels = [];
     self.transients = {
         viewActivityUrl: function() {
-            return fcConfig.activityViewUrl + "/" + self.projectActivityId + "?projectId=" + self.projectId + "&activityId=" + self.activityId;
+            return fcConfig.activityViewUrl + "/" + self.projectActivityId + "?projectId=" + self.projectId + "&activityId=" + self.activityId + "&context=" + calledFromContext;
         },
         editActivityUrl: function() {
-            return fcConfig.activityEditUrl + "/" + self.projectActivityId + "?unpublished=true&projectId=" + self.projectId + "&activityId=" + self.activityId;
+            return fcConfig.activityEditUrl + "/" + self.projectActivityId + "?unpublished=true&projectId=" + self.projectId + "&activityId=" + self.activityId + "&context=" + calledFromContext;
         }
     }
 

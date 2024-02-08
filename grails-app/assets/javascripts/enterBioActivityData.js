@@ -187,14 +187,12 @@ function Master(activityId, config) {
             var projectActivityId = toSave.projectActivityId;
             toSave = JSON.stringify(toSave);
             toSave = JSON.parse(toSave);
+            blockUIWithMessage("Saving activity data...");
 
             entities.saveActivity(toSave).then(function (result) {
                 var activityId = result.data;
                 if (config.enableOffline) {
-                    if (window.history)
-                        window.history.back();
-                    else
-                        document.location.href = config.returnTo;
+                    document.location.href = config.returnTo;
                 } else
                     document.location.href = fcConfig.activityViewURL + "/" + projectActivityId + "?activityId=" + activityId + "&projectId=" + projectId;
             });

@@ -62,10 +62,13 @@
         enableOffline: true,
         isCaching: ${params.getBoolean('cache', false)},
         preventNavigationIfDirty: ${params.getBoolean('cache', false) ? false : true},
-        returnTo: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}'
+        globalReturnToAddress: '${createLink(uri: "/pwa/offlineList")}',
+        surveyReturnToAddress: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}'
         </g:applyCodec>
         },
         here = document.location.href;
+
+        fcConfig.returnTo = biocollect.utils.getReturnToAddressForPWA();
     </asset:script>
     <asset:javascript src="pwa-bio-activity-create-or-edit-manifest.js"/>
 </head>
