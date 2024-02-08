@@ -9,6 +9,7 @@
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
     <meta name="breadcrumb" content="${pActivity.name}"/>
     <asset:stylesheet src="pwa-bio-activity-index-manifest.css"/>
+    <asset:javascript src="pwa-bio-activity-index-manifest.js"/>
     <asset:script type="text/javascript">
     var fcConfig = {
         <g:applyCodec encodeAs="none">
@@ -50,13 +51,14 @@
         bulkUpload: false,
         enableOffline: true,
         isCaching: ${params.getBoolean('cache', false)},
-        returnTo: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}'
+        globalReturnToAddress: '${createLink(uri: "/pwa/offlineList")}',
+        surveyReturnToAddress: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}',
         ${(params?.version) ? ',version: ' + params?.version : ''}
         </g:applyCodec>
         },
         here = document.location.href;
+        fcConfig.returnTo = biocollect.utils.getReturnToAddressForPWA()
     </asset:script>
-    <asset:javascript src="pwa-bio-activity-index-manifest.js"/>
 </head>
 
 <body>
@@ -71,11 +73,8 @@
             var activityId = getActivityId();
 
             $("#backButton").on('click', function () {
-                if (window.history && window.history.length > 1) {
-                    window.history.back();
-                } else {
-                    document.location.href = "${createLink(controller: 'bioActivity', action: 'pwaOfflineList', params: [projectActivityId: projectActivityId])}";
-                }
+                // "${createLink(controller: 'bioActivity', action: 'pwaOfflineList', params: [projectActivityId: projectActivityId])}"
+                document.location.href = fcConfig.returnTo;
             })
 
             function getMetadataAndInitialise () {
