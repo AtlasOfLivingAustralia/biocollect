@@ -2,7 +2,7 @@ function ActivitiesViewModel (config) {
     var self = this;
     var projectActivityId = config.projectActivityId;
     var projectId = config.projectId,
-        calledFromContext = getParameters().projectActivityId === undefined ? "global" : "survey",
+        calledFromContext = projectActivityId === undefined ? "global" : "survey",
         cancelOfflineCheck;
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({}, self);
