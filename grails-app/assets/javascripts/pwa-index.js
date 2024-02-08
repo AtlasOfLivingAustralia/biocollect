@@ -436,7 +436,6 @@ function OfflineViewModel(config) {
             self.totalSiteTilesDownload(sites.length);
             for (var i = 0; i < sites.length; i++) {
                 var site = sites[i],
-                    zoomIntoMap = true,
                     geoJson = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry),
                     geoJsonLayer = alaMap.setGeoJSON(geoJson, {
                         wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
@@ -449,7 +448,6 @@ function OfflineViewModel(config) {
                 mapZoomedInIndicator = $.Deferred();
                 // cancel waiting for map to load feature data
                 cancelTimer = setTimeout(function (){
-                    zoomIntoMap = false;
                     mapZoomedInIndicator && mapZoomedInIndicator.resolve();
                 }, TIMEOUT);
 
@@ -459,14 +457,12 @@ function OfflineViewModel(config) {
                     await mapZoomedInIndicator.promise();
                 }
 
-                if (zoomIntoMap) {
-                    // zoom into to map to get tiles and feature from spatial server
-                    for (zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
-                        tileLoadedPromise = $.Deferred();
-                        mapImpl.setZoom(zoom, {animate: false});
-                        timer(MAP_LOAD_TIMEOUT, tileLoadedPromise);
-                        await tileLoadedPromise.promise();
-                    }
+                // zoom into to map to get tiles and feature from spatial server
+                for (zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+                    tileLoadedPromise = $.Deferred();
+                    mapImpl.setZoom(zoom, {animate: false});
+                    timer(MAP_LOAD_TIMEOUT, tileLoadedPromise);
+                    await tileLoadedPromise.promise();
                 }
 
                 alaMap.clearLayers();
