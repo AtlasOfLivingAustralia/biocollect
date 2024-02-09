@@ -218,7 +218,7 @@
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label"><g:message code="pwa.species.download.offline"/></label>
                     <div class="col-sm-8">
-                        <button type="submit" class="btn btn-primary" data-bind="click: clickSpeciesDownload"><i class="fas fa-redo"></i> <g:message code="pwa.species.refresh"/></button>
+                        <button type="submit" class="btn btn-primary" data-bind="click: clickSpeciesDownload, enable: speciesStatus() == 'downloaded'"><i class="fas fa-redo"></i> <g:message code="pwa.species.refresh"/></button>
                     </div>
                 </div>
             </form>
@@ -235,7 +235,7 @@
     </div>
 
     <h3 id="mapSection" class="mt-3"><g:message code="pwa.map.cache.title"/></h3>
-    <div class="row">
+    <div class="row" data-bind="style: {opacity : sitesStatus() === 'downloading' ? 0.4 : 1}">
         <div class="col-12 col-md-6">
             <!-- ko stopBinding: true -->
             <m:map id="map" width="100%"/>
@@ -256,7 +256,7 @@
                     <input type="text" class="form-control" id="map-name" required aria-describedby="map-name-help" data-bind="value: name">
                     <small id="map-name-help" class="form-text text-muted"><g:message code="pwa.map.name.help"/></small>
                 </div>
-                <button type="submit" class="btn btn-primary" data-bind="enable: canDownload, click: clickDownload">Download map</button>
+                <button type="submit" class="btn btn-primary" data-bind="enable: canDownload, click: clickDownload"><i class="fas fa-download"></i> <g:message code="pwa.map.btn.download"/></button>
             </form>
             <div class="row">
                 <div class="col-12">
@@ -326,6 +326,34 @@
     <!-- ko if: $data == 'error' -->
     <i class="fas fa-exclamation fa-lg"></i>
     <!-- /ko -->
+</script>
+
+<script type="text/html" id="ChooseSites">
+<div class="modal hide fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Choose sites to download</h3>
+                <button type="button" class="close" data-bind="click: cancel" aria-hidden="true">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><g:message code="pwa.sites.choose.download.msg"/></p>
+                <div class="row h-75" data-bind="foreach: sites">
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <input type="checkbox" data-bind="checkedValue: $data, checked: $root.chosenSites"/>
+                        <span data-bind="text: name"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bind="click: cancel"><i class="far fa-times-circle"></i> Cancel</button>
+                <button type="button" class="btn btn-primary-dark" data-bind="click: ok, enable: chosenSites() && chosenSites().length > 0"><i class="fas fa-download"></i> Download</button>
+            </div>
+        </div>
+    </div>
+</div>
 </script>
 </body>
 </html>
