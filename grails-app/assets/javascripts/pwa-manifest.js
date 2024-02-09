@@ -8,5 +8,6 @@
 //= require ala-map-no-jquery-us.js
 //= require MapUtilities.js
 //= require entities.js
+//= require modals.js
 //= require pwa-messages.js
 //= require pwa-index.js

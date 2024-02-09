@@ -315,7 +315,9 @@ function OfflineViewModel(config) {
     self.clickSpeciesDownload = function () {
         self.progress(0);
         self.totalCount(1);
-        entities.deleteAllSpecies().then(startDownloadingSpecies);
+        entities.deleteSpeciesForProjectActivity(pa).then(function () {
+            entities.getSpeciesForProjectActivity(pa, updateSpeciesProgressBar).then(completedSpeciesDownload, errorSpeciesDownload);
+        });
     }
 
     self.clickDownload = function () {
@@ -406,6 +408,28 @@ function OfflineViewModel(config) {
         return area;
     }
 
+    function SiteSelectionViewModel(sites){
+        var self = this,
+            deferred = $.Deferred();
+        self.chosenSites = ko.observableArray();
+        self.sites = ko.observableArray(sites);
+        self.ok = function () {
+            self.close();
+            deferred.resolve(self.chosenSites());
+        }
+
+        self.cancel = function () {
+            self.close();
+            deferred.resolve();
+        }
+
+        self.close = function () {
+            self.modal && self.modal.close();
+        }
+
+        self.promise = deferred.promise();
+    }
+
     /**
      * Downloads base map tiles and wms layer of a site for offline use.
      * It is done for all sites of a project activity.
@@ -415,8 +439,10 @@ function OfflineViewModel(config) {
         const TIMEOUT = 3000, // 3 seconds
             MAP_LOAD_TIMEOUT = 1000, // 1 seconds
             MAX_ZOOM=20,
-            MIN_ZOOM= 10;
+            MIN_ZOOM= 10,
+            MAX_SITES_DOWNLOADABLE = 30;
         var sites = pa.sites || [], zoom = 15, mapZoomedInIndicator, tileLoadedPromise, cancelTimer,
+            selectedSites = [],
             callback = function () {
                 cancelTimer && clearTimeout(cancelTimer);
                 cancelTimer = null;
@@ -431,11 +457,24 @@ function OfflineViewModel(config) {
         self.sitesStatus(self.statuses.doing);
         alaMap.registerListener('dataload', callback);
 
+        if (sites.length > MAX_SITES_DOWNLOADABLE) {
+            var selectionModel = new SiteSelectionViewModel(sites);
+            var modal = Biocollect.Modals.showModal({
+                viewModel: selectionModel,
+                template: 'ChooseSites'
+            });
+
+            selectedSites = await selectionModel.promise;
+            selectedSites = selectedSites || [];
+        } else {
+            selectedSites = sites;
+        }
+
         try {
             self.numberOfSiteTilesDownloaded(0);
-            self.totalSiteTilesDownload(sites.length);
-            for (var i = 0; i < sites.length; i++) {
-                var site = sites[i],
+            self.totalSiteTilesDownload(selectedSites.length);
+            for (var i = 0; i < selectedSites.length; i++) {
+                var site = selectedSites[i],
                     geoJson = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry),
                     geoJsonLayer = alaMap.setGeoJSON(geoJson, {
                         wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
