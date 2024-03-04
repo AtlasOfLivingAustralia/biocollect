@@ -674,3 +674,13 @@ if (!app.file.script.path) {
         app.file.script.path = "/data/biocollect/scripts"
 }
 script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
+
+
+
+refAssess.hub = 'hcat'
+refAssess.title = 'Image Assessment'
+refAssess.reference.filterName = 'Vegetation Type'
+refAssess.reference.filterTypes = ['Vegetation Type One', 'Vegetation Type Two', 'Another Vegetation Type']
+refAssess.reference.projectActivityId = 'e0ce9fcc-77f2-4349-825f-9ea442c1c239'
+refAssess.assessment.projectActivityId = 'e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb'
+refAssess.assessment.recordsToCreate = 3
