@@ -71,4 +71,8 @@ class HubController {
 
         render text: result.css, contentType: 'text/css', status: result.status
     }
+
+    def requestAssessmentRecords() {
+        render view: '/referenceAssessment/requestRecords'
+    }
 }
