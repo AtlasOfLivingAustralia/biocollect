@@ -1,0 +1,23 @@
+
+
+.ref-assess-filters-list {
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.ref-assess-filters-list > div {
+    cursor: pointer;
+}
+
+.ref-assess-filters-list > div.disabled {
+    cursor: default;
+}
+
+.ref-assess-identify-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+}
+
+.ref-assess-identify-card {
+    transition: all cubic-bezier(0, 0, 0.15, 1) 250ms;
+}
