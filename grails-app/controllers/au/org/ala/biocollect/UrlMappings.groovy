@@ -83,7 +83,7 @@ class UrlMappings {
                         }
                 }
 
-                "/$hub/requestAssessmentRecords"(controller: 'hub', action: 'requestAssessmentRecords') {
+                "/$hub/requestAssessmentRecords"(controller: 'referenceAssessment', action: 'show') {
                         constraints {
                                 hub validator: {val, obj -> isHubValid(val) && val == grailsApplication.config.refAssess.hub}
                         }
