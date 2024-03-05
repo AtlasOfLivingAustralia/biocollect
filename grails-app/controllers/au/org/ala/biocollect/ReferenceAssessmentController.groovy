@@ -118,4 +118,13 @@ class ReferenceAssessmentController {
 
         render assessActivities as JSON
     }
+
+    def show() {
+        def user = userService.getUser()
+        if (!user) {
+            redirect(controller: 'hub')
+        } else {
+            render view: 'requestAssessmentRecords'
+        }
+    }
 }
