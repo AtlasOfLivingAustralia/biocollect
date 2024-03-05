@@ -679,8 +679,34 @@ script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
 
 refAssess.hub = 'hcat'
 refAssess.title = 'Image Assessment'
-refAssess.reference.filterName = 'Vegetation Type'
-refAssess.reference.filterTypes = ['Vegetation Type One', 'Vegetation Type Two', 'Another Vegetation Type']
+refAssess.reference.filterName = 'vegetation groups'
+refAssess.reference.filterTypes = [
+        "Acacia Forests and Woodlands": "Open forest and woodland",
+        "Acacia Open Woodlands": "Shrublands",
+        "Acacia Shrublands": "Shrublands",
+        "Callitris Forests and Woodlands": "Open forest and woodland",
+        "Casuarina Forests and Woodlands": "Open forest and woodland",
+        "Chenopod Shrublands, Samphire Shrublands and Forblands": "Grasslands",
+        "Eucalypt Low Open Forests": "Open forest and woodland",
+        "Eucalypt Open Forests": "Open forest and woodland",
+        "Eucalypt Open Woodlands": "Open forest and woodland",
+        "Eucalypt Tall Open Forests": "Wet and closed forests and thickets",
+        "Eucalypt Woodlands": "Open forest and woodland",
+        "Heathlands": "Shrublands",
+        "Hummock Grasslands": "Grasslands",
+        "Low Closed Forests and Tall Closed Shrublands": "Shrublands",
+        "Mallee Open Woodlands and Sparse Mallee Shrublands": "Shrublands",
+        "Mallee Woodlands and Shrublands": "Shrublands",
+        "Mangroves": "Shrublands",
+        "Melaleuca Forests and Woodlands": "Open forest and woodland",
+        "Naturally Bare - sand, rock, claypan, mudflat": "Grasslands",
+        "Other Forests and Woodlands": "Open forest and woodland",
+        "Other Grasslands, Herblands, Sedgelands and Rushlands": "Grasslands",
+        "Other Shrublands": "Shrublands",
+        "Rainforests and Vine Thickets": "Wet and closed forests and thickets",
+        "Tropical Eucalypt Woodlands/Grasslands": "Open forest and woodland",
+        "Tussock Grasslands": "Grasslands"
+]
 refAssess.reference.projectActivityId = 'e0ce9fcc-77f2-4349-825f-9ea442c1c239'
 refAssess.assessment.projectActivityId = 'e61eb018-02a9-4e3b-a4b3-9d6be33d9cbb'
 refAssess.assessment.recordsToCreate = 3
