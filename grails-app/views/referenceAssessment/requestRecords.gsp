@@ -4,6 +4,9 @@
 <head>
     <meta name="layout" content="bs4"/>
     <title>${config.title}</title>
+
+    <asset:javascript src="requestAssessmentRecordsModel.js"/>
+    <asset:stylesheet src="reference-assessment.css" />
 </head>
 <body>
 <content tag="bannertitle">
@@ -12,39 +15,51 @@
 
 <div class="container" id="hubRequestAssessmentRecords">
     <div class="row my-4">
-        <div class="col-6">
+        <div class="col-12">
             <div class="f-flex flex-column h-100 p-3">
-                <h1>Step One</h1>
-                <h3 class="text-secondary">Select the type of assessment records you&apos;d like to assess</h3>
-                <div class="w-100 dropdown">
-                    <button class="btn btn-link btn-primary dropdown-toggle text-white w-100 mt-4" type="button" data-toggle="dropdown">
-                        <i class="fa fa-tree mr-2"></i>
-                        Select ${config.reference.filterName}
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <g:each in="${config.reference.filterTypes}" var="filterType">
-                            <li class="dropdown-item">
-                                <a class="dropdown-item-text user-select-none">
-                                    %{--<span class="fa fa-search"></span>--}%
-                                    ${filterType}
-                                </a>
-                            </li>
-                        </g:each>
-                    </ul>
+                <h2 class="text-secondary">Select the ${config.reference.filterName} you&apos;d like to assess</h2>
+                <div class="d-flex flex-column card bg-white ref-assess-filters-list">
+                    <!-- ko foreach: filters -->
+                    <div data-bind="click: $parent.onFilterSelect, css: { disabled: $parent.isLoading() }" class="d-flex flex-row dropdown-item align-items-center">
+                        <span data-bind="style: { opacity: $parent.isFilterSelected($data) ? 1 : 0 }" class="fa fa-check mr-3"></span>
+                        <p data-bind="text: $data" style="text-wrap: wrap; margin-bottom: 0px"></p>
+                    </div>
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
         <div class="col-6">
-           <div class="d-flex flex-column w-100 h-100 p-3">
-               <h1>Step Two</h1>
-               <h3 class="text-secondary">Request the records</h3>
-               <a class="btn btn-primary mt-auto justify-self-end disabled mt-4">
-                   <i class="far fa-copy mr-2"></i>
-                   Request Records
-               </a>
-           </div>
+            <div class="py-3 pl-3">
+                <button type="button" data-bind="click: function() { deIdentify(false) }, css: { 'bg-secondary': !deIdentify() }, enable: !isLoading()" class="card w-100 d-flex flex-column px-4 py-3 ref-assess-identify-card">
+                    <span data-bind="css: { 'text-white': !deIdentify() }" class="fa fa-user fa-2x"></span>
+                    <span data-bind="css: { 'text-white': !deIdentify() }" class="mt-3 ref-assess-identify-text">Identify my data</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="py-3 pr-3">
+                <button type="button" data-bind="click: function() { deIdentify(true) }, css: { 'bg-secondary': deIdentify() }, enable: !isLoading()" class="card w-100 d-flex flex-column px-4 py-3 ref-assess-identify-card">
+                    <span data-bind="css: { 'text-white': deIdentify() }" class="fa fa-user-secret fa-2x"></span>
+                    <span data-bind="css: { 'text-white': deIdentify() }" class="mt-3 ref-assess-identify-text">De-identify my data</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-12 pt-2">
+            <div class="d-flex justify-content-center p-3">
+                <button data-bind="click: onRequestRecords, css: {disabled: selected().length === 0 || isLoading()}, enable: selected().length > 0 && !isLoading()" class="btn btn-primary justify-self-end full-width">
+                    <i data-bind="visible: !isLoading()" class="far fa-copy mr-2"></i>
+                    <span data-bind="visible: isLoading()" class="fa fa-spin fa-spinner mr-2"></span>
+                    Request Records
+                </button>
+            </div>
+        </div>
     </div>
-</div>
+    <asset:script type="text/javascript">
+        const requestAssessmentRecordsVM = new RequestAssessmentRecordsModel(
+            <fc:modelAsJavascript model="${config.reference.filterTypes}" />
+        );
+
+        ko.applyBindings(requestAssessmentRecordsVM);
+    </asset:script>
 </body>
 </html>
