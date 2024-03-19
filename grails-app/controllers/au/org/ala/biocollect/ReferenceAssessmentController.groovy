@@ -13,41 +13,33 @@ class ReferenceAssessmentController {
     ActivityService activityService
 
 
-    private def mapReferenceToAssessment(Object referenceActivity, Object assessProjectActivity) {
-        def assessActivity = referenceActivity
+    private def createAssessmentRecordFromReference(Object referenceActivity, Object assessProjectActivity) {
+        def assessActivity = [
+                outputs: [
+                        [
+                                outputId: "",
+                                outputNotCompleted: false,
+                                data: [
+                                        recordedBy: userService.getCurrentUserDisplayName(),
+                                        upperConditionBound: "0",
+                                        lowerConditionBound: "0",
+                                        overallConditionBestEstimate: "0",
+                                        mvgGroup: referenceActivity.outputs[0].data.vegetationStructureGroup,
+                                        huchinsonGroup: referenceActivity.outputs[0].data.huchinsonGroup
+                                ],
+                                name: assessProjectActivity["pActivityFormName"]
+                        ]
+                ],
+                projectActivityId: assessProjectActivity["projectActivityId"],
+                userId: userService.getCurrentUserId(),
+                projectStage: "",
+                embargoed: false,
+                type: assessProjectActivity["pActivityFormName"],
+                projectId: assessProjectActivity["projectId"],
+                mainTheme: ""
+        ]
 
-        // Remove irrelevant fields
-        ["assessment", "complete", "dateCreated", "id", "lastUpdated", "progress", "status"]
-                .each {
-                    assessActivity.remove(it)
-                }
-
-        // Overwrite activity record IDs
-        assessActivity.activityId = ""
-        assessActivity.projectActivityId = assessProjectActivity["projectActivityId"]
-        assessActivity.type = assessProjectActivity["pActivityFormName"]
-        assessActivity.userId = userService.getCurrentUserId()
-
-        // Overwrite activity outputs
-        assessActivity.outputs.each {
-            output -> {
-                output.remove("id")
-                output.remove("activityId")
-                output.remove("lastUpdated")
-                output.remove("dateCreated")
-                output.remove("status")
-
-                // Overwrite properties
-                output.outputId = ""
-                output.outputNotCompleted = true
-                output.name = assessProjectActivity["pActivityFormName"]
-
-                ["lastUpdated", "dateCreated", "id"].each({ output.remove(it) })
-
-                // Output data
-                output.data.recordedBy = userService.getCurrentUserDisplayName()
-            }
-        }
+        activityService.update("", assessActivity)
 
         assessActivity
     }
@@ -59,7 +51,14 @@ class ReferenceAssessmentController {
         def config = grailsApplication.config.refAssess
         def result
 
-        // GrailsParameterMap queryParams = params
+        // Ensure we're provided with a filter query item
+        GrailsParameterMap queryParams = params
+        if (!queryParams[config.reference.filterKey]) {
+            response.status = 500
+            result = [message: "Missing '${config.reference.filterKey}' parameter!"]
+            render result as JSON
+            return
+        }
 
         // Ensure BioCollect is configured for reference assessment projects
         if (!config) {
@@ -101,15 +100,22 @@ class ReferenceAssessmentController {
         }
 
         // Sort the reference activities by
-        // referenceActivities.sort { it.outputs[0].data.numTimesReferenced }
-        // referenceActivities.findAll { it.outputs[0].data.recordedBy == "Bruno Ferronato" }
+        refActivities = refActivities.sort { it.outputs[0].data.numTimesReferenced }
+        refActivities = refActivities.findAll { it.outputs[0].data[config.reference.filterKey] == queryParams[config.reference.filterKey]}
 
+        // Ensure there are reference records after filtering
+        if (refActivities.size() < config.assessment.recordsToCreate) {
+            response.status = 400
+            result = [message: "Insufficient number of reference records for '${config.reference.filterKey}' filter (${queryParams[config.reference.filterKey]})"]
+            render result as JSON
+            return
+        }
 
         def assessProjectActivity = projectActivityService.get(config.assessment.projectActivityId)
         def assessActivities = []
         for (int projectIndex = 0; projectIndex < config.assessment.recordsToCreate; projectIndex++) {
             assessActivities.push(
-                    mapReferenceToAssessment(
+                    createAssessmentRecordFromReference(
                             refActivities[projectIndex],
                             assessProjectActivity
                     )
