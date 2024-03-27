@@ -679,6 +679,5 @@ script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
 
 refAssess.hub = 'hcat'
 refAssess.reference.projectActivityId = 'e5a03b7e-17e3-4ea0-872f-d2a58a1becd7'
-refAssess.reference.filterKey = 'vegetationStructureGroup'
 refAssess.assessment.projectActivityId = '5da93123-96b3-4209-b3ca-527749cd7970'
-refAssess.assessment.recordsToCreate = 3
+refAssess.assessment.maxRecordsToCreate = 8
