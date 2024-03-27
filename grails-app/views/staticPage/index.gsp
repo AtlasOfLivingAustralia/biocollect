@@ -21,7 +21,7 @@
 <head>
     <meta name="layout" content="${mobile ? "mobile" : "bs4"}"/>
     <title></title>
-    <asset:javascript src="knockout-core.js"/>
+    <asset:javascript src="common.js"/>
 </head>
 
 <body>
