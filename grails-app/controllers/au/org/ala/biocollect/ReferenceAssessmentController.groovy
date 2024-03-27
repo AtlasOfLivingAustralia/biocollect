@@ -8,12 +8,29 @@ import java.time.Instant
 
 class ReferenceAssessmentController {
     UserService userService
-    ProjectService projectService
     ProjectActivityService projectActivityService
     ActivityService activityService
 
 
     private def createAssessmentRecordFromReference(Object referenceActivity, Object assessProjectActivity) {
+        def refDoc = referenceActivity.documents[0]
+        def assessPhoto = [
+                licence: refDoc["licence"],
+                notes: refDoc["notes"],
+                filesize: refDoc["filesize"],
+                staged: true,
+                url: grailsApplication.config.serverURL + refDoc["url"],
+                filename: refDoc["filename"],
+                attribution: referenceActivity.outputs[0].data["imageAttribution"],
+                name: refDoc["name"],
+                documentId: '',
+                contentType: refDoc["contentType"],
+                dateTaken: refDoc["dateTaken"],
+                formattedSize: refDoc["formattedSize"],
+                thumbnailUrl: grailsApplication.config.serverURL + refDoc["thumbnailUrl"],
+                status: "active"
+        ]
+
         def assessActivity = [
                 outputs: [
                         [
@@ -25,7 +42,8 @@ class ReferenceAssessmentController {
                                         lowerConditionBound: "0",
                                         overallConditionBestEstimate: "0",
                                         mvgGroup: referenceActivity.outputs[0].data.vegetationStructureGroup,
-                                        huchinsonGroup: referenceActivity.outputs[0].data.huchinsonGroup
+                                        huchinsonGroup: referenceActivity.outputs[0].data.huchinsonGroup,
+                                        sitePhoto: [assessPhoto]
                                 ],
                                 name: assessProjectActivity["pActivityFormName"]
                         ]
@@ -112,13 +130,6 @@ class ReferenceAssessmentController {
         // Combine the two lists
         refActivities = priorityRecords + otherRecords
 
-//        if (true) {
-//            response.status = 200
-//            result = [message: 'Test!']
-//            render result as JSON
-//            return
-//        }
-
         // Ensure there are reference records after filtering
         if (refActivities.size() == 0) {
             response.status = 400
@@ -129,7 +140,11 @@ class ReferenceAssessmentController {
 
         def assessProjectActivity = projectActivityService.get(config.assessment.projectActivityId)
         def assessActivities = []
-        for (int projectIndex = 0; projectIndex < min(config.assessment.maxRecordsToCreate, refActivities.size()); projectIndex++) {
+        for (
+                int projectIndex = 0;
+                projectIndex < Math.min(config.assessment.maxRecordsToCreate, refActivities.size());
+                projectIndex++
+        ) {
             assessActivities.push(
                     createAssessmentRecordFromReference(
                             refActivities[projectIndex],
@@ -138,6 +153,8 @@ class ReferenceAssessmentController {
             )
         }
 
-        render assessActivities as JSON
+        response.status = 200
+        result = [message: "Found ${assessActivities.size()} images for assessment, please standby..."]
+        render result as JSON
     }
 }
