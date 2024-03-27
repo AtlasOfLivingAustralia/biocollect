@@ -39,31 +39,35 @@ class ReferenceAssessmentController {
                 mainTheme: ""
         ]
 
+        // Create the new assessment activity record
         activityService.update("", assessActivity)
 
+        // Update the numTimesReferenced field on the reference record
+        referenceActivity.outputs[0].data.numTimesReferenced =
+                referenceActivity.outputs[0].data.numTimesReferenced as Integer + 1
+        activityService.update(referenceActivity.activityId, referenceActivity)
+
+        // Return the assessment activity
         assessActivity
     }
 
-
-    // Get details about the supplied project
-
-    def requestRecords(String projectId) {
+    def requestRecords() {
         def config = grailsApplication.config.refAssess
+        def body = request.JSON
         def result
-
-        // Ensure we're provided with a filter query item
-        GrailsParameterMap queryParams = params
-        if (!queryParams[config.reference.filterKey]) {
-            response.status = 500
-            result = [message: "Missing '${config.reference.filterKey}' parameter!"]
-            render result as JSON
-            return
-        }
 
         // Ensure BioCollect is configured for reference assessment projects
         if (!config) {
             response.status = 500
             result = [message: 'The application is not configured for reference assessment projects']
+            render result as JSON
+            return
+        }
+
+        // Ensure the body of the request contains the required fields
+        if (!body['vegetationStructureGroups'] || !body['climateGroups'] || !body.keySet().contains('deIdentify')) {
+            response.status = 400
+            result = [message: 'Please ensure the assessment record request contains all relevant fields']
             render result as JSON
             return
         }
@@ -76,44 +80,56 @@ class ReferenceAssessmentController {
             return
         }
 
-        // Get details about the supplied project
-        def projectResult = projectService.get(projectId)
-
-        // Ensure the project is a reference assessment project
-        if (!projectResult) {
-            response.status = 400
-            result = [message: 'The supplied project is not configured for reference assessments']
-            render result as JSON
-            return
-        }
-
         // Get the activity records for the reference survey
         def refActivities = activityService.activitiesForProjectActivity(config.reference.projectActivityId)
 
         // Ensure the reference records exist
         def numRefActivities = refActivities?.size()
-        if (numRefActivities == 0 || numRefActivities < config.assessment.recordsToCreate) {
+        if (numRefActivities == 0 || numRefActivities < config.assessment.maxRecordsToCreate) {
             response.status = 404
             result = [message: 'Insufficient number of reference records found in reference survey']
             render result as JSON
             return
         }
 
-        // Sort the reference activities by
-        refActivities = refActivities.sort { it.outputs[0].data.numTimesReferenced }
-        refActivities = refActivities.findAll { it.outputs[0].data[config.reference.filterKey] == queryParams[config.reference.filterKey]}
+        // Filter out reference activities by the supplied vegetation structure groups & climate groups
+        refActivities = refActivities.findAll {
+            body["vegetationStructureGroups"].contains(it.outputs[0].data["vegetationStructureGroup"]) &&
+            body["climateGroups"].contains(it.outputs[0].data["huchinsonGroup"])
+        }
+
+        // Split & sort the reference activities into:
+        // Priority records (assessed <= 3 times), prioritising records assessed the MOST
+        // Other records (assessed > 3 times), prioritising records assessed the LEAST
+
+        def priorityRecords = refActivities
+                .findAll { it.outputs[0].data.numTimesReferenced as Integer <= 3 }
+                .sort{ -(it.outputs[0].data.numTimesReferenced as Integer) }
+        def otherRecords = refActivities
+                .findAll { it.outputs[0].data.numTimesReferenced as Integer > 3 }
+                .sort{ it.outputs[0].data.numTimesReferenced as Integer }
+
+        // Combine the two lists
+        refActivities = priorityRecords + otherRecords
+
+//        if (true) {
+//            response.status = 200
+//            result = [message: 'Test!']
+//            render result as JSON
+//            return
+//        }
 
         // Ensure there are reference records after filtering
-        if (refActivities.size() < config.assessment.recordsToCreate) {
+        if (refActivities.size() == 0) {
             response.status = 400
-            result = [message: "Insufficient number of reference records for '${config.reference.filterKey}' filter (${queryParams[config.reference.filterKey]})"]
+            result = [message: "No reference images matching your criteria could be found."]
             render result as JSON
             return
         }
 
         def assessProjectActivity = projectActivityService.get(config.assessment.projectActivityId)
         def assessActivities = []
-        for (int projectIndex = 0; projectIndex < config.assessment.recordsToCreate; projectIndex++) {
+        for (int projectIndex = 0; projectIndex < min(config.assessment.maxRecordsToCreate, refActivities.size()); projectIndex++) {
             assessActivities.push(
                     createAssessmentRecordFromReference(
                             refActivities[projectIndex],
