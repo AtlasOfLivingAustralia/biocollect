@@ -12,7 +12,7 @@ class ReferenceAssessmentController {
     ActivityService activityService
 
 
-    private def createAssessmentRecordFromReference(Object referenceActivity, Object assessProjectActivity) {
+    private def createAssessmentRecordFromReference(Object referenceActivity, Object assessProjectActivity, boolean deIdentify) {
         def refDoc = referenceActivity.documents[0]
         def assessPhoto = [
                 licence: refDoc["licence"],
@@ -43,7 +43,8 @@ class ReferenceAssessmentController {
                                         overallConditionBestEstimate: "0",
                                         mvgGroup: referenceActivity.outputs[0].data.vegetationStructureGroup,
                                         huchinsonGroup: referenceActivity.outputs[0].data.huchinsonGroup,
-                                        sitePhoto: [assessPhoto]
+                                        sitePhoto: [assessPhoto],
+                                        deIdentify: deIdentify ? "Yes" : "No"
                                 ],
                                 name: assessProjectActivity["pActivityFormName"]
                         ]
@@ -148,7 +149,8 @@ class ReferenceAssessmentController {
             assessActivities.push(
                     createAssessmentRecordFromReference(
                             refActivities[projectIndex],
-                            assessProjectActivity
+                            assessProjectActivity,
+                            body['deIdentify']
                     )
             )
         }
