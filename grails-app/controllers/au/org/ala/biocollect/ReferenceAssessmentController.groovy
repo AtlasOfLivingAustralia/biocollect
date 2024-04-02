@@ -101,12 +101,13 @@ class ReferenceAssessmentController {
 
         // Get the activity records for the reference survey
         def refActivities = activityService.activitiesForProjectActivity(config.reference.projectActivityId)
+        def maxRecordsToCreate = config.assessment.maxRecordsToCreate as Integer
 
         // Ensure the reference records exist
         def numRefActivities = refActivities?.size()
-        if (numRefActivities == 0 || numRefActivities < config.assessment.maxRecordsToCreate) {
+        if (numRefActivities == 0) {
             response.status = 404
-            result = [message: 'Insufficient number of reference records found in reference survey']
+            result = [message: 'No reference records found in reference survey']
             render result as JSON
             return
         }
@@ -143,7 +144,7 @@ class ReferenceAssessmentController {
         def assessActivities = []
         for (
                 int projectIndex = 0;
-                projectIndex < Math.min(config.assessment.maxRecordsToCreate, refActivities.size());
+                projectIndex < Math.min(maxRecordsToCreate, refActivities.size());
                 projectIndex++
         ) {
             assessActivities.push(
