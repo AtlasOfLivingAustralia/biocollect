@@ -674,10 +674,3 @@ if (!app.file.script.path) {
         app.file.script.path = "/data/biocollect/scripts"
 }
 script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
-
-
-
-refAssess.hub = 'hcat'
-refAssess.reference.projectActivityId = 'e5a03b7e-17e3-4ea0-872f-d2a58a1becd7'
-refAssess.assessment.projectActivityId = '5da93123-96b3-4209-b3ca-527749cd7970'
-refAssess.assessment.maxRecordsToCreate = 8
