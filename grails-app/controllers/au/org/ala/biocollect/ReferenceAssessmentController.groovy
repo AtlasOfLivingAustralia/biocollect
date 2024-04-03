@@ -100,7 +100,10 @@ class ReferenceAssessmentController {
         }
 
         // Get the activity records for the reference survey
-        def refActivities = activityService.activitiesForProjectActivity(config.reference.projectActivityId)
+        def refActivitiesSearch = activityService.search([
+            projectActivityId: config.reference.projectActivityId
+        ])
+        def refActivities = refActivitiesSearch.resp.activities
         def maxRecordsToCreate = config.assessment.maxRecordsToCreate as Integer
 
         // Ensure the reference records exist
