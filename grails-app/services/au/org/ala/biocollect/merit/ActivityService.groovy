@@ -215,10 +215,6 @@ class ActivityService {
         list
     }
 
-    def activitiesForProjectActivity(String id) {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/activitiesForProjectActivity/' + id)?.list
-    }
-
     def submitActivitiesForPublication(activityIds) {
         updatePublicationStatus(activityIds, 'pendingApproval')
     }
