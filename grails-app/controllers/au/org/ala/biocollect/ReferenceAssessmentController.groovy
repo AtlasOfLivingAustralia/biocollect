@@ -33,7 +33,7 @@ class ReferenceAssessmentController {
                 contentType: refDoc["contentType"],
                 dateTaken: refDoc["dateTaken"],
                 formattedSize: refDoc["formattedSize"],
-                thumbnailUrl: baseUr + refDoc["thumbnailUrl"],
+                thumbnailUrl: baseUrl + refDoc["thumbnailUrl"],
                 status: "active"
         ]
 
