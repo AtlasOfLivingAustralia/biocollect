@@ -115,6 +115,12 @@ class ReferenceAssessmentController {
             return
         }
 
+        // Filter out any records without data or documents
+        refActivities = refActivities.findAll {
+            it.outputs[0].keySet().contains('data') &&
+            it.documents.size() > 0
+        }
+
         // Filter out reference activities by the supplied vegetation structure groups & climate groups
         refActivities = refActivities.findAll {
             body["vegetationStructureGroups"].contains(it.outputs[0].data["vegetationStructureGroup"]) &&
