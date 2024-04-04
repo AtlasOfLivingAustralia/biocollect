@@ -14,12 +14,18 @@ class ReferenceAssessmentController {
 
     private def createAssessmentRecordFromReference(Object referenceActivity, Object assessProjectActivity, boolean deIdentify) {
         def refDoc = referenceActivity.documents[0]
+
+        def baseUrl = ''
+        if (!refDoc["url"].startsWith('http')) {
+            baseUrl = grailsApplication.config.grails.serverURL
+        }
+
         def assessPhoto = [
                 licence: refDoc["licence"],
                 notes: refDoc["notes"],
                 filesize: refDoc["filesize"],
                 staged: true,
-                url: grailsApplication.config.serverURL + refDoc["url"],
+                url: baseUrl + refDoc["url"],
                 filename: refDoc["filename"],
                 attribution: referenceActivity.outputs[0].data["imageAttribution"],
                 name: refDoc["name"],
@@ -27,7 +33,7 @@ class ReferenceAssessmentController {
                 contentType: refDoc["contentType"],
                 dateTaken: refDoc["dateTaken"],
                 formattedSize: refDoc["formattedSize"],
-                thumbnailUrl: grailsApplication.config.serverURL + refDoc["thumbnailUrl"],
+                thumbnailUrl: baseUr + refDoc["thumbnailUrl"],
                 status: "active"
         ]
 
