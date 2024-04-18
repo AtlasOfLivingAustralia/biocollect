@@ -64,7 +64,7 @@
         "refresh_token"
       ],
       "id_token_signing_alg_values_supported": [
-        "none"
+        "RS256", "none"
       ],
       "id_token_encryption_alg_values_supported": [
         "none"
@@ -73,7 +73,7 @@
         "none"
       ],
       "userinfo_signing_alg_values_supported": [
-        "none"
+        "RS256", "none"
       ],
       "userinfo_encryption_alg_values_supported": [
         "none"
@@ -82,7 +82,7 @@
         "none"
       ],
       "request_object_signing_alg_values_supported": [
-        "none"
+        "RS256", "none"
       ],
       "request_object_encryption_alg_values_supported": [
         "none"
