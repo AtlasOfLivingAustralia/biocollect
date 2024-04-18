@@ -175,7 +175,7 @@
             <g:if test="${hasEditRights}">
                 <a class="btn btn-primary-dark btn-lg" href="${createLink(controller: 'bioActivity', action: 'edit')}/${activity.activityId}"><span class="fas fa-pencil-alt"></span> Edit</a>
             </g:if>
-            <g:if test="${userIsProjectMember}">
+            <g:if test="${userIsProjectMember && (!hubConfig.content?.hideNewButtonOnRecordView)}">
                 <a class="btn btn-primary-dark  btn-lg" href="${createLink(controller: 'bioActivity', action: 'create')}/${pActivity.projectActivityId}"><span class="fas fa-plus"></span> Add new record</a>
             </g:if>
         </div>
