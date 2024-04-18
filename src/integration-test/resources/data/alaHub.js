@@ -112,6 +112,7 @@ var alaHub = {
         "hideProjectSurveyDownloadXLSX" : false,
         "hideBreadCrumbs" : false,
         "hideCancelButtonOnForm" : false,
+        "hideNewButtonOnRecordView" : false,
         "industries" : true,
         "enablePartialSearch" : false,
         "overriddenLabels" : [

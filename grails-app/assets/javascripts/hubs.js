@@ -480,6 +480,7 @@ function ContentViewModel(config) {
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
+    self.hideNewButtonOnRecordView = ko.observable(config.hideNewButtonOnRecordView || false);
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);
