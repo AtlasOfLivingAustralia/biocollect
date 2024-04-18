@@ -36,7 +36,6 @@ environments {
         }
 
         test {
-                spring.autoconfigure.exclude="au.org.ala.ws.security.AlaWsSecurityConfiguration"
                 debugUI = false
                 loggerLevel = "DEBUG"
                 server.port = "8087"
@@ -52,7 +51,7 @@ environments {
                 security.oidc.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
                 security.oidc.allowUnsignedIdTokens = true
                 def casBaseUrl = "http://localhost:${wiremock.port}"
-
+                ehcache.directory = './ehcache'
                 security.cas.appServerName=serverName
                 security.cas.contextPath=
                 security.cas.casServerName="${casBaseUrl}"
@@ -61,9 +60,10 @@ environments {
                 security.cas.loginUrl="${security.cas.casServerUrlPrefix}/login"
                 security.cas.casLoginUrl="${security.cas.casServerUrlPrefix}/login"
                 security.cas.logoutUrl="${security.cas.casServerUrlPrefix}/logout"
+                userDetails.api.url = "${casBaseUrl}/userdetails/userDetails/"
                 security.jwt.discoveryUri="${casBaseUrl}/cas/oidc/.well-known"
                 userDetails.url = "${casBaseUrl}/userdetails/userDetails/"
-                userDetailsSingleUrl = "${userDetails.Url}getUserDetails"
+                userDetailsSingleUrl = "${userDetails.url}getUserDetails"
                 logging.dir = '.'
                 upload.images.path = '/tmp'
                 upload.images.url = grails.serverURL+'/image/'
