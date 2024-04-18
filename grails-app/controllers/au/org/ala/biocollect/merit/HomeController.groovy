@@ -14,6 +14,7 @@ class HomeController {
     def settingService
     def metadataService
     def userService
+    CommonService commonService
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     @SSO
@@ -59,6 +60,13 @@ class HomeController {
     }
 
     def works() {
+    }
+
+    def i18n() {
+        if (request.isGet()) {
+            Map props = commonService.i18n(request.locale)
+            render props as JSON
+        }
     }
 
     /**
