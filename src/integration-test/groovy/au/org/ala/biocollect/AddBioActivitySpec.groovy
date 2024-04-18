@@ -12,7 +12,7 @@ class AddBioActivitySpec extends StubbedCasSpec {
     }
 
     def cleanupSpec() {
-        logout(browser)
+        logout(browser, ViewBioActivityPage)
     }
 
     def projectId = "project_1"
