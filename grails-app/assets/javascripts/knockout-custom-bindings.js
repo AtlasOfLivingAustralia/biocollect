@@ -281,6 +281,7 @@ ko.bindingHandlers.stagedImageUpload = {
         $(element).fileupload({
             url: config.url,
             pasteZone: null,
+            dropZone: null,
             autoUpload: true
         }).on('fileuploadadd', function (e, data) {
             complete(false);
@@ -703,11 +704,11 @@ ko.bindingHandlers.fileUploadNoImage = {
 
         var defaults = {autoUpload: true};
         var settings = {
-            pasteZone: null
+            pasteZone: null,
+            dropZone: null
         };
         $.extend(settings, defaults, options());
-        $(element).fileupload(settings
-        ).on('fileuploadadd', function (e, data) {
+        $(element).fileupload(settings).on('fileuploadadd', function (e, data) {
             window.incrementAsyncCounter && window.incrementAsyncCounter();
         }).on('fileuploaddone', function (e, data) {
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
