@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
+import grails.web.mapping.LinkGenerator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.context.MessageSource
 
@@ -11,6 +12,7 @@ class TemplateTagLib {
     UserService userService
     SettingService settingService
     MessageSource messageSource
+    LinkGenerator grailsLinkGenerator
 
     def createAButton = { attrs ->
         Map link = attrs.config;
@@ -335,18 +337,7 @@ class TemplateTagLib {
     }
 
     String getCurrentURLFromRequest() {
-        String requestURL = request.getRequestURL().toString()
-        // Construct the complete URL
-        StringBuilder url = new StringBuilder()
-        url.append(requestURL)
-
-        String queryString = request.getQueryString()
-        // Include the query string if present
-        if (queryString != null) {
-            url.append("?").append(queryString)
-        }
-
-        url.toString()
+        grailsLinkGenerator.link(absolute: true, params: request.params, uri: request.forwardURI)
     }
 
 
