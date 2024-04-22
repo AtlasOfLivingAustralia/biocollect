@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
+import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.context.MessageSource
 
 class TemplateTagLib {
@@ -134,6 +135,11 @@ class TemplateTagLib {
                     }
                     break;
                 case 'login':
+                    // HubAwareLinkGenerator adds hub parameter to the link which causes subsequent URL parsing to return null in Pac4J filter.
+                    // This causes the app to redirect to root page. And, BioCollect root page is redirected to Wordpress.
+                    // Taking the user outside the application. This is a workaround to fix the issue. First, remove the
+                    // hub parameter before link is generated and set it afterwards.
+                    def hub = clearHubParameter()
                     def logoutReturnToUrl = getCurrentURL( attrs.hubConfig )
                     if (grailsApplication.config.getProperty("security.oidc.logoutAction",String, "CAS") == "cognito") {
                         //                                cannot use createLink since it adds hub query parameter and cognito will not consider it valid
@@ -161,6 +167,7 @@ class TemplateTagLib {
                         )
                         out << "</li>";
                     }
+                    setHubParameter(hub)
                     break;
                 case 'newproject':
                     if (bs4) {
@@ -426,5 +433,22 @@ class TemplateTagLib {
 
     private String getCurrentURL(Map hubConfig){
         getCurrentURLFromRequest()
+    }
+
+    private String clearHubParameter(){
+        def request = GrailsWebRequest.lookup()
+        def hub  = request?.params?.hub
+        if(hub){
+            request.params.remove('hub')
+        }
+
+        hub
+    }
+
+    private void setHubParameter(String hub) {
+        def request = GrailsWebRequest.lookup()
+        if (hub && request.params) {
+            request.params.hub = hub
+        }
     }
 }
