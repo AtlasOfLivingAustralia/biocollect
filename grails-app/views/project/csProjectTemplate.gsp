@@ -230,8 +230,6 @@
 
         <g:if test="${!project.isExternal}">
             var pActivitiesVM = new ProjectActivitiesViewModel(params, projectViewModel);
-            var pAssessmentActivitiesVM = new ProjectActivitiesViewModel(params, projectViewModel);
-            console.log(params, projectViewModel, pAssessmentActivitiesVM);
             initialiseProjectActivitiesList(pActivitiesVM);
             initialiseData('project');
             <g:if test="${projectContent.admin.visible}">initialiseProjectActivitiesSettings(pActivitiesVM);</g:if>
