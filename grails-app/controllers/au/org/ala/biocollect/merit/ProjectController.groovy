@@ -930,7 +930,7 @@ class ProjectController {
         List facets
 
         // format facets to a way acceptable for JS view model
-        if (searchResult.facets) {
+        if(searchResult.facets){
             HubSettings hub = SettingService.hubConfig
             List allFacetConfig = hub.getFacetConfigForPage('projectFinder') ?: projectService.getDefaultFacets()
             List facetConfig = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)

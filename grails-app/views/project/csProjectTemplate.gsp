@@ -235,7 +235,6 @@
             initialiseProjectActivitiesList(pActivitiesVM);
             initialiseData('project');
             <g:if test="${projectContent.admin.visible}">initialiseProjectActivitiesSettings(pActivitiesVM);</g:if>
-            <g:if test="${projectContent.admin.visible}">initialiseProjectAssessmentActivitiesSettings(pAssessmentActivitiesVM);</g:if>
         </g:if>
         <g:if test="${projectContent.admin.visible}">
             <g:if test="${!project.isExternal}">
