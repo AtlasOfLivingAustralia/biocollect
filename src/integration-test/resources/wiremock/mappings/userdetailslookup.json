@@ -9,6 +9,12 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "body": "{\"userName\":\"user.{{request.query.userName}}@nowhere.com.au\", \"userId\":\"{{request.query.userName}}\"}"
+    "jsonBody": {
+        "userName":"user.{{request.query.userName}}@nowhere.com.au",
+        "email":"user.{{request.query.userName}}@nowhere.com.au",
+        "userId":"{{request.query.userName}}",
+        "firstName": "First {{request.query.userName}}",
+        "lastName": "Last {{request.query.userName}}"
+    }
   }
 }
