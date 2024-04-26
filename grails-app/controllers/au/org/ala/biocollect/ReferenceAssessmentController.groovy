@@ -17,7 +17,7 @@ class ReferenceAssessmentController {
 
         def baseUrl = ''
         if (!refDoc["url"].startsWith('http')) {
-            baseUrl = grailsApplication.config.grails.serverURL
+            baseUrl = grailsApplication.config.getProperty("grails.serverURL", String)
         }
 
         def assessPhoto = [
@@ -77,7 +77,7 @@ class ReferenceAssessmentController {
     }
 
     def requestRecords() {
-        def config = grailsApplication.config.refAssess
+        def config = grailsApplication.config.getProperty("refAssess", Map)
         def body = request.JSON
         def result
 
