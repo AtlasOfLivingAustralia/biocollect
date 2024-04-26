@@ -1,13 +1,15 @@
 package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
-import au.org.ala.web.AlaSecured
+import au.org.ala.biocollect.merit.UserService
+import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
 
 @SSO
 class StaticPageController {
     SettingService settingService
+    UserService userService
     @NoSSO
     def index() {
         String page = params.page;
@@ -44,13 +46,14 @@ class StaticPageController {
     /**
      * Save static page text
      */
-    @AlaSecured(value = ['ROLE_ADMIN'])
     def saveTextAreaSetting() {
         String text = params.textValue
         String settingKey = params.settingKey
         String returnUrl = params.returnUrl ?: g.createLink(controller: 'staticPage', action: 'index', absolute: true, params: [page: settingKey])
 
-        if (settingKey) {
+        if (!userService.doesUserHaveHubRole("admin")) {
+            flash.errorMessage = "You do not have correct permissions to perform this action"
+        } else if (settingKey) {
             settingService.setSettingText(settingKey, text)
             flash.message = "Successfully saved."
         } else {
