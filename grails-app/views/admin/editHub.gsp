@@ -486,7 +486,11 @@
 
                 <h5>Data entry page</h5>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideCancelButtonOnForm"> Hide cancel button on form create page
+                    <input type="checkbox" data-bind="checked: hideCancelButtonOnForm"> Hide 'Cancel' button on form create page
+                </div>
+                <h5>Record view page</h5>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideNewButtonOnRecordView"> Hide 'Add new record' button on form create page
                 </div>
                 <!-- /ko -->
                 <h3>Quick links</h3>
