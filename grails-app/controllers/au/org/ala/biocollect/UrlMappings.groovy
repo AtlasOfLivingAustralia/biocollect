@@ -167,11 +167,14 @@ class UrlMappings {
                         format = 'json'
                 }
 
+                "/referenceAssessment/requestRecords"(controller: "referenceAssessment", action: [POST: "requestRecords"])
+
                 "500"(controller:'error', action:'response500')
                 "404"(controller:'error', action:'response404')
 
 
                 // Following api's are used by external mobile clients
+
                 "/ws/project/search"(controller: "project", action: 'search')
                 "/ws/survey/list/$id"(controller:  "project", action: 'listSurveys')
                 "/ws/attachment/upload"(controller:  "image", action: 'upload')
