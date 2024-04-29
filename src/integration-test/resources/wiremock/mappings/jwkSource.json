@@ -1,0 +1,25 @@
+{
+  "request": {
+    "urlPath": "/cas/oidc/jwks",
+    "method": "GET"
+  },
+  "response" : {
+    "status": 200,
+    "headers": {
+      "content-Type": "application/json"
+    },
+    "jsonBody": {
+      "keys": [
+        {
+          "kty":"RSA",
+          "e":"AQAB",
+          "use":"sig",
+          "alg": "RS256",
+          "kid":"localhost:8018",
+          "n": "h5XN-_LL1yXb8oPWHOTNMby0Y6olpByVCNJGo1mjhk9PUoX8bfu6wNr4G7oR7O0NfIQVNLykqE7Q04RrP7JfexI97UuH5B0xBjHVo-S5SxeyUrVSQBpRu6EisQzxxF3a038a0GHYJpA5YUAZWD7Pux0yqJ5ly1y2Sn7uGb_JJ_bJ86EVWs3AxE1RZHmeY975A1kk470ylDAyfQuW_GU-gUzG5vdE1wAEIKe6GFtg5ulA_n_XVsrz9qio7ZtEyWZDAOCtk0jfg8iTJf5eLP2Q3D8ePy_6IvYvFDuQLmvKHn1jg5MnnDWZHV3GBRnfU8CtPu2ChFKhXedcrhQhhAWfKQ"
+        }
+      ]
+    }
+
+  }
+}

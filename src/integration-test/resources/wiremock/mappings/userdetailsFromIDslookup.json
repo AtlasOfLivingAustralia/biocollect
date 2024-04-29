@@ -14,21 +14,25 @@
       "users": {
         "1": {
           "userName":"user1@user.com",
+          "email":"user1@user.com",
           "firstName":"test1",
           "lastName": "user1"
         },
         "10": {
           "userName": "user10@user.com",
+          "email": "user10@user.com",
           "firstName":"test10",
           "lastName": "user10"
         },
         "30": {
           "userName":"user30@user.com",
+          "email":"user30@user.com",
           "firstName":"test30",
           "lastName": "user30"
         },
         "1000": {
           "userName":"user1000@user.com",
+          "email":"user1000@user.com",
           "firstName":"test1000",
           "lastName": "user1000"
         },
@@ -39,11 +43,13 @@
         },
         "1002": {
           "userName":"user1002@user.com",
+          "email":"user1002@user.com",
           "firstName":"test1002",
           "lastName": "user1002"
         },
         "2": {
           "userName":"user2@user.com",
+          "email":"user2@user.com",
           "firstName":"test2",
           "lastName": "user2"
         }

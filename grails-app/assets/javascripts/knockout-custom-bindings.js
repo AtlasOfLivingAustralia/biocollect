@@ -281,6 +281,7 @@ ko.bindingHandlers.stagedImageUpload = {
         $(element).fileupload({
             url: config.url,
             pasteZone: null,
+            dropZone: null,
             autoUpload: true
         }).on('fileuploadadd', function (e, data) {
             complete(false);
@@ -703,11 +704,11 @@ ko.bindingHandlers.fileUploadNoImage = {
 
         var defaults = {autoUpload: true};
         var settings = {
-            pasteZone: null
+            pasteZone: null,
+            dropZone: null
         };
         $.extend(settings, defaults, options());
-        $(element).fileupload(settings
-        ).on('fileuploadadd', function (e, data) {
+        $(element).fileupload(settings).on('fileuploadadd', function (e, data) {
             window.incrementAsyncCounter && window.incrementAsyncCounter();
         }).on('fileuploaddone', function (e, data) {
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
@@ -1149,3 +1150,48 @@ ko.bindingHandlers.debug = {
         console.log(ko.toJS(valueAccessor()));
     }
 };
+
+
+/**
+ * This binding requires i18n.js to be loaded. It also requires fcConfig.i18nURL to be set.
+ * Params can be a string or an object. If string, it is treated as key and translated to text. Object parameter has the
+ * following properties:
+ * @contentType can be 'text' or 'html' (default is 'text')
+ * @key is the key to be translated
+ * @defaultValue is the default value to be used if the key is not found
+ *
+ * Usage examples:
+ * <div data-bind="i18n: 'g.cancel'"></div>
+ * <div data-bind="i18n: {key: 'record.edit.verificationStatusTypes.help', contentType: 'html', defaultValue: '<b>simple help</b>'}"></div>
+ *
+ */
+ko.bindingHandlers.i18n = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var value = valueAccessor();
+        value = ko.unwrap(value);
+        var contentType = value && value.contentType || 'text'
+
+        // $i18nAsync is required to be defined
+        if(typeof $i18nAsync === 'undefined')
+            return
+
+        if( typeof value === 'string') {
+            $i18nAsync(value, '',function(text) {
+                $(element).text(text);
+            });
+        }
+        else if (typeof value === 'object') {
+            $i18nAsync(value.key, value.defaultValue,function(text) {
+                switch (contentType) {
+                    default:
+                    case 'text':
+                        $(element).text(text);
+                        break;
+                    case 'html':
+                        $(element).html(text);
+                        break;
+                }
+            });
+        }
+    }
+}
