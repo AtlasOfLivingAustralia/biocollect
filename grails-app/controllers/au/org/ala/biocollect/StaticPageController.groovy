@@ -17,7 +17,7 @@ class StaticPageController {
             String setting = "${page}";
             render view: 'index', model: ["setting": setting, "mobile": params.mobile ?:false];
         } else {
-            render view: "404";
+            redirect (controller: "hub", action: "index")
         }
     }
 
