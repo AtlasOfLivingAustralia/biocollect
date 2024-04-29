@@ -17,6 +17,7 @@
 //= require knockout-dates.js
 //= require knockout-custom-bindings.js
 //= require knockout-custom-extenders.js
+//= require knockout-utils.js
 //= require wmd/wmd.js
 //= require wmd/showdown.js
 //= require pagination.js
