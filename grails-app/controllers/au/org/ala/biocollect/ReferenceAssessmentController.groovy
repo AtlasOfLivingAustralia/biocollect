@@ -65,7 +65,7 @@ class ReferenceAssessmentController {
         ]
 
         // Create the new assessment activity record
-        activityService.update("", assessActivity)
+        def outActivity = activityService.update("", assessActivity)
 
         // Update the numTimesReferenced field on the reference record
         referenceActivity.outputs[0].data.numTimesReferenced =
@@ -73,7 +73,7 @@ class ReferenceAssessmentController {
         activityService.update(referenceActivity.activityId, referenceActivity)
 
         // Return the assessment activity
-        assessActivity
+        outActivity
     }
 
     def requestRecords() {
