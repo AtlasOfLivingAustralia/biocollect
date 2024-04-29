@@ -337,7 +337,8 @@ class TemplateTagLib {
     }
 
     String getCurrentURLFromRequest() {
-        grailsLinkGenerator.link(absolute: true, params: request.params, uri: request.forwardURI)
+        def grailsRequest = GrailsWebRequest.lookup()
+        grailsLinkGenerator.link(absolute: true, params: grailsRequest.originalParams, uri: request.forwardURI)
     }
 
 
