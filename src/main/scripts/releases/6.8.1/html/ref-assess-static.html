@@ -1,0 +1,343 @@
+<style>
+  .ref-assess-filters-list {
+    max-height: 200px;
+    overflow-y: scroll;
+  }
+
+  .ref-assess-filters-list > div {
+    cursor: pointer;
+  }
+
+  .ref-assess-filters-list > div.disabled {
+    cursor: default;
+  }
+
+  .ref-assess-identify-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+  }
+
+  .ref-assess-identify-card {
+    transition: all cubic-bezier(0, 0, 0.15, 1) 250ms;
+  }
+</style>
+<script type="text/javascript">
+  var RequestAssessmentRecordsModel = function (mvgMapping, hutchGroups) {
+    const self = this;
+
+    this.mvgs = Object.keys(mvgMapping);
+    this.mvgSelected = ko.observableArray([]);
+    this.climates = hutchGroups;
+    this.climateSelected = ko.observableArray([]);
+    this.deIdentify = ko.observable(false);
+    this.privacyPolicy = ko.observable(false);
+    this.isLoading = ko.observable(false);
+
+    this.isMvgSelected = function (filter) {
+      return self.mvgSelected.indexOf(filter) > -1;
+    };
+
+    this.isClimateSelected = function (filter) {
+      return self.climateSelected.indexOf(filter) > -1;
+    };
+
+    this.onMvgSelect = function (filter) {
+      // Only allow for user interaction if we're not already loading a request
+      if (!self.isLoading()) {
+        if (self.isMvgSelected(filter)) {
+          self.mvgSelected.remove(filter);
+        } else {
+          self.mvgSelected.push(filter);
+        }
+      }
+    };
+
+    this.onClimateSelect = function (filter) {
+      // Only allow for user interaction if we're not already loading a request
+      if (!self.isLoading()) {
+        if (self.isClimateSelected(filter)) {
+          self.climateSelected.remove(filter);
+        } else {
+          self.climateSelected.push(filter);
+        }
+      }
+    };
+
+    this.onRequestRecords = function () {
+      // Update the loading flag
+      self.isLoading(true);
+
+      const selectedMvgGroups = self
+        .mvgSelected()
+        .map((filter) => mvgMapping[filter]);
+      const vegetationStructureGroups = Array.from(new Set(selectedMvgGroups));
+      const climateGroups = self.climateSelected();
+
+      $.ajax('/referenceAssessment/requestRecords', {
+        method: 'POST',
+        data: JSON.stringify({
+          vegetationStructureGroups,
+          climateGroups,
+          deIdentify: self.deIdentify(),
+        }),
+        contentType: 'application/json',
+        success: ({ message }) => {
+          if (message) bootbox.alert(message);
+          setTimeout(window.location.replace('/hcat/bioActivity/list'), 3000);
+        },
+        error: ({ responseJSON }) => {
+          if (responseJSON && responseJSON.message) {
+            bootbox.alert(responseJSON.message);
+          } else {
+            bootbox.alert('An unknown error occurred, please try again later.');
+          }
+          self.isLoading(false);
+        },
+      });
+
+      console.log(
+        vegetationStructureGroups,
+        climateGroups,
+        self.privacyPolicy(),
+        self.deIdentify()
+      );
+    };
+  };
+</script>
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="f-flex flex-column h-100 p-3">
+        <h2>Select your areas of expertise</h2>
+        <h4 class="text-secondary">Major Vegetation Groups</h4>
+        <p>
+          For the Image Assessment task, we ask that you provide an ecosystem
+          condition score for a suite of photographic images of different
+          habitats allocated to you based on the Major Vegetation Groups and
+          Hutchison geographic agro-climatic classifications that you nominate
+          as being within your area of expertise. Scoring these images will
+          enable your Site Condition Assessments to be calibrated with other
+          participants.
+        </p>
+        <p>
+          Please select all of the Major Vegetation Groups (MVG) and Hutchison
+          geographic agro-climatic classifications in which you have expertise.
+        </p>
+        <p>
+          After nominating your areas of expertise, please indicate if you would
+          like your assessments to be de-identified and confirm you have read,
+          understood, and accepted the privacy, IP and ethics arrangements for
+          this project. These arrangements are included in the HCAT instructions
+          manual accessible via the HCAT homepage.
+        </p>
+        <div class="d-flex justify-content-center w-100 mb-4">
+          <img
+            src="https://biocollect.ala.org.au/document/download/2024-03/mvgs.png"
+          />
+        </div>
+        <div class="d-flex flex-column card bg-white ref-assess-filters-list">
+          <!-- ko foreach: mvgs -->
+          <div
+            data-bind="click: $parent.onMvgSelect, css: { disabled: $parent.isLoading() }"
+            class="d-flex flex-row dropdown-item align-items-center"
+          >
+            <span
+              data-bind="style: { opacity: $parent.isMvgSelected($data) ? 1 : 0 }"
+              class="fa fa-check mr-3"
+            ></span>
+            <p
+              data-bind="text: $data"
+              style="text-wrap: wrap; margin-bottom: 0px"
+            ></p>
+          </div>
+          <!-- /ko -->
+        </div>
+        <h4 class="text-secondary mt-4">Agro-climatic Classifications</h4>
+        <div class="d-flex justify-content-center w-100 mb-4">
+          <img
+            width="375"
+            src="https://biocollect.ala.org.au/document/download/2024-03/agroclimate.png"
+          />
+        </div>
+        <div class="d-flex flex-column card bg-white ref-assess-filters-list">
+          <!-- ko foreach: climates -->
+          <div
+            data-bind="click: $parent.onClimateSelect, css: { disabled: $parent.isLoading() }"
+            class="d-flex flex-row dropdown-item align-items-center"
+          >
+            <span
+              data-bind="style: { opacity: $parent.isClimateSelected($data) ? 1 : 0 }"
+              class="fa fa-check mr-3"
+            ></span>
+            <p
+              data-bind="text: $data"
+              style="text-wrap: wrap; margin-bottom: 0px"
+            ></p>
+          </div>
+          <!-- /ko -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <div class="py-3 pl-3">
+        <button
+          type="button"
+          data-bind="click: function() { deIdentify(false) }, css: { 'bg-secondary': !deIdentify() }, enable: !isLoading()"
+          class="card w-100 d-flex flex-column px-4 py-3 ref-assess-identify-card"
+        >
+          <span
+            data-bind="css: { 'text-white': !deIdentify() }"
+            class="fa fa-user fa-2x"
+          ></span>
+          <span
+            data-bind="css: { 'text-white': !deIdentify() }"
+            class="mt-3 ref-assess-identify-text"
+            >Identify my data</span
+          >
+        </button>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="py-3 pr-3">
+        <button
+          type="button"
+          data-bind="click: function() { deIdentify(true) }, css: { 'bg-secondary': deIdentify() }, enable: !isLoading()"
+          class="card w-100 d-flex flex-column px-4 py-3 ref-assess-identify-card"
+        >
+          <span
+            data-bind="css: { 'text-white': deIdentify() }"
+            class="fa fa-user-secret fa-2x"
+          ></span>
+          <span
+            data-bind="css: { 'text-white': deIdentify() }"
+            class="mt-3 ref-assess-identify-text"
+            >De-identify my data</span
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="px-3 mt-2">
+        <p class="text-secondary" data-bind="if: deIdentify()">
+          Only members of the HCAT project team will be able to see your name
+          associated with the condition assessments you provide. When HCAT data
+          is included in publicly available material (e.g. publications,
+          reports, presentations, or data repositories) your contributions will
+          be anonymised. Your Image Aassessments will not be made public
+          regardless of your selection - they are used for calibration purposes
+          only
+        </p>
+        <p class="text-secondary" data-bind="ifnot: deIdentify()">
+          Your individual Site Condition Assessments will be credited in
+          publicly available material. Your Image Aassessments will not be made
+          public regardless of your selection - they are used for calibration
+          purposes only
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <hr />
+      <div class="px-4 mt-3">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          data-bind="checked:privacyPolicy"
+        />
+        <label>
+          <small>
+            I agree to be a part of this project and have read, understood and
+            accept the privacy, IP and ethics arrangements for this project.
+            These arrangements are included in the HCAT instructions manual
+            accessible via the HCAT homepage.</small
+          >
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 pt-2">
+      <div class="d-flex justify-content-center p-3">
+        <button
+          data-bind="click: onRequestRecords, css: {disabled: mvgSelected().length === 0 || climateSelected().length === 0 || !privacyPolicy() || isLoading()}, enable: mvgSelected().length > 0 && climateSelected().length > 0 && !isLoading() && privacyPolicy()"
+          class="btn btn-primary justify-self-end full-width"
+        >
+          <i data-bind="visible: !isLoading()" class="far fa-copy mr-2"></i>
+          <span
+            data-bind="visible: isLoading()"
+            class="fa fa-spin fa-spinner mr-2"
+          ></span>
+          Request Records
+        </button>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    const mvgMapping = {
+      '1 - Rainforests and Vine Thickets':
+        'G1 - Wet and closed forests and thickets',
+      '2 - Eucalypt Tall Open Forests':
+        'G1 - Wet and closed forests and thickets',
+      '3 - Eucalypt Open Forests': 'G2 - Open forest and woodland',
+      '4 - Eucalypt Low Open Forests': 'G2 - Open forest and woodland',
+      '5 - Eucalypt Woodlands': 'G2 - Open forest and woodland',
+      '6 - Acacia Forests and Woodlands': 'G2 - Open forest and woodland',
+      '7 - Callitris Forests and Woodlands': 'G2 - Open forest and woodland',
+      '8 - Casuarina Forests and Woodlands': 'G2 - Open forest and woodland',
+      '9 - Melaleuca Forests and Woodlands': 'G2 - Open forest and woodland',
+      '10 - Other Forests and Woodlands': 'G2 - Open forest and woodland',
+      '11 - Eucalypt Open Woodlands': 'G2 - Open forest and woodland',
+      '12 - Tropical Eucalypt Woodlands/Grasslands':
+        'G2 - Open forest and woodland',
+      '13 - Acacia Open Woodlands': 'G3 - Shrublands',
+      '14 - Mallee Woodlands and Shrublands': 'G3 - Shrublands',
+      '15 - Low Closed Forests and Tall Closed Shrublands': 'G3 - Shrublands',
+      '16 - Acacia Shrublands': 'G3 - Shrublands',
+      '17 - Other Shrublands': 'G3 - Shrublands',
+      '18 - Heathlands': 'G3 - Shrublands',
+      '19 - Tussock Grasslands': 'G4 - Grasslands',
+      '20 - Hummock Grasslands': 'G4 - Grasslands',
+      '21 - Other Grasslands, Herblands, Sedgelands and Rushlands':
+        'G4 - Grasslands',
+      '22 - Chenopod Shrublands, Samphire Shrublands and Forblands':
+        'G4 - Grasslands',
+      '23 - Mangroves': 'G3 - Shrublands',
+      '27 - Naturally Bare - sand, rock, claypan, mudflat': 'G4 - Grasslands',
+      '32 - Mallee Open Woodlands and Sparse Mallee Shrublands':
+        'G3 - Shrublands',
+      '99 - Unknown/No Data': 'G2 - Open forest and woodland',
+    };
+
+    const hutchGroups = [
+      'B1 - Very cold winters with summers too short for crop growth',
+      'B2 - Less severe winters and longer moist summers suitable for some crops',
+      'D5 - Moisture availability high in winter-spring, moderate in summer, most plant growth in spring',
+      'E1 - Classic "Mediterranean" climate with peaks of growth in winter and spring and moderate growth in winter',
+      'E2 - "Mediterranean" climate, but with drier cooler winters and less growth than E1',
+      'E3 - Most plant growth in summer, although summers are moisture limiting. Temperature limits growth in winter',
+      'E4 - Growth is limited by moisture rather than temperature and the winters are mild. Growth is relatively even through the year',
+      'E6 - Semi-arid climate that is too dry to support field crops. Soil moisture tends to be greatest in winter',
+      'E7 - Moisture is the main limit on crop growth. Growth index lowest in spring',
+      'F3 - Cooler end of the warm, wet sub-tropical climates',
+      'F4 - Warmer and wetter than F3',
+      'G - Desert, supporting very little plant growth due to water limitation',
+      'H - Semi-arid, with some growth in the warm season, but too dry for cropping',
+      'I1 - Strongly developed wet and dry seasons with plant growth determined by moisture availability',
+      'I2 - Temperature and moisture are more seasonal than for I1 and the growing season is shorter',
+      'I3 - This has cooler winters than I1 and I2 with a growing season lasting at least six months',
+      'J1 - Moisture and temperature regime supports growth for 8-9 months of the year, with a 3-4 month dry season',
+    ];
+
+    const requestAssessmentRecordsVM = new RequestAssessmentRecordsModel(
+      mvgMapping,
+      hutchGroups
+    );
+
+    ko.applyBindings(requestAssessmentRecordsVM);
+  </script>
+</div>
