@@ -153,6 +153,7 @@
                 }
 
                 master.listenForResolution()
+                $(document).trigger('form-initialised');
             });
         };
     };
