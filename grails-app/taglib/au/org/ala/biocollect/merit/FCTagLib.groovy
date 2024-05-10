@@ -831,8 +831,4 @@ class FCTagLib {
         }
     }
 
-    def getSurveyMethods =  {
-        List methods = projectActivityService.getSurveyMethods()
-        out << (methods as JSON).toString()
-    }
 }

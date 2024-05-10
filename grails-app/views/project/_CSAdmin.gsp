@@ -86,7 +86,6 @@
                     </div>
                     </g:if>
                 </g:if>
-
             </div>
         </div>
     </div>

@@ -107,6 +107,7 @@ var HubSettings = function (settings, config) {
     self.content = ko.observable();
     self.quickLinks = ko.observableArray();
     self.customBreadCrumbs = ko.observableArray();
+    self.fathomSiteId = ko.observable();
     self.pages = {
         allRecords : new FacetConfigurationViewModel(settings.pages.allRecords, hubConfigs.availableDataFacets),
         myRecords : new FacetConfigurationViewModel(settings.pages.myRecords, hubConfigs.availableDataFacets),
@@ -236,6 +237,7 @@ var HubSettings = function (settings, config) {
         self.urlPath(settings.urlPath);
         self.skin(settings.skin);
         self.title(settings.title);
+        self.fathomSiteId(settings.fathomSiteId);
         self.supportedPrograms(self.orEmptyArray(settings.supportedPrograms));
         self.defaultProgram(settings.defaultProgram);
         self.bannerUrl(self.orBlank(settings.bannerUrl));
@@ -478,6 +480,7 @@ function ContentViewModel(config) {
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
+    self.hideNewButtonOnRecordView = ko.observable(config.hideNewButtonOnRecordView || false);
     self.showNote = ko.observable(config.showNote || false);
     self.recordNote = ko.observable(config.recordNote || '');
     self.industries = ko.observable(config.industries || false);

@@ -77,7 +77,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: build biocollect before running js unit test to compile dependent js templates
-        uses: gradle/gradle-build-action@v2.4.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: _Events
         env:
@@ -86,19 +86,19 @@ jobs:
       - name: Run javascript unit tests
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
 
-#      - name: Run BioCollect functional tests
-#        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/cognito
-#        env:
-#          GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
-#          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Run BioCollect functional tests
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata master
+        env:
+          GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Clean to remove clover instrumentation
-        uses: gradle/gradle-build-action@v2.4.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: clean
 
       - name: Publish the JAR to the repository
-        uses: gradle/gradle-build-action@v2.4.0
+        uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: publish
         env:
