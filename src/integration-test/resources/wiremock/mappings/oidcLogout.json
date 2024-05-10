@@ -1,0 +1,15 @@
+{
+  "request": {
+    "urlPath": "/cas/oidc/oidcLogout",
+    "method": "GET"
+  },
+  "response": {
+    "status": 302,
+    "headers": {
+      "location": "{{{request.requestLine.query.post_logout_redirect_uri}}}"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

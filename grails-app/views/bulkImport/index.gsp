@@ -28,8 +28,8 @@
         listBulkImportUrl: "${createLink(controller: 'bulkImport', action: 'list')}",
         bulkImportCreateUrl: "${createLink(uri: "/${hubConfig.urlPath}/bulkImport/create", params: [projectId: projectId, projectActivityId: projectActivityId])}",
         originUrl: "${grailsApplication.config.server.serverURL}",
-        returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index') + "/" + projectId)}"
         </g:applyCodec>
+        returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index') + "/" + projectId)}"
         },
         here = document.location.href;
     </asset:script>

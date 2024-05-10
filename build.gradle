@@ -44,7 +44,7 @@ apply from: "${project.projectDir}/gradle/publish.gradle"
 repositories {
     mavenLocal()
     //for missing jai_core.jar
-   //maven { url "https://mvnrepository.com" }
+    //maven { url "https://mvnrepository.com" }
     maven { url "https://repo.osgeo.org/repository/release/" }
     maven { url "https://repo.grails.org/grails/core" }
     maven { url = uri("https://maven.pkg.github.com/atlasoflivingaustralia/ecodata-client-plugin")
@@ -146,7 +146,11 @@ dependencies {
     implementation ("org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion")
     implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
     implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
+<<<<<<< HEAD
     runtimeOnly "org.grails.plugins:ala-bootstrap3:4.2.0"
+=======
+    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.4.0"
+>>>>>>> master
 
     //    swagger API
     implementation 'au.org.ala.plugins:openapi:1.1.0'
@@ -163,7 +167,7 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:0.11.5"
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:6.1-PWA-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:6.3-PWA-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"

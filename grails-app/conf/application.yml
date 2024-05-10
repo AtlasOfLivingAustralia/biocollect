@@ -187,12 +187,12 @@ grails:
         encoding: UTF-8
     views:
         default:
-            codec: none
+            codec: html
         gsp:
             encoding: UTF-8
             htmlcodec: xml
             codecs:
-                expression: none  #${ } will be html encoded if set to default to html
+                expression: html
                 scriptlets: html
                 taglib: none
                 staticparts: none
@@ -359,3 +359,6 @@ speciesCatalog:
       vernacularName: "vernacularName"
       language: "language"
       preferred: "isPreferredName"
+
+fathom:
+  enabled: true

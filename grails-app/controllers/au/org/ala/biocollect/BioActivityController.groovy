@@ -55,6 +55,7 @@ class BioActivityController {
     AuthService authService
     UtilService utilService
     ActivityFormService activityFormService
+    UserInfoService userInfoService
 
     static int MAX_FLIMIT = 500
     static allowedMethods = ['bulkDelete': 'POST', bulkRelease: 'POST', bulkEmbargo: 'POST']
@@ -470,9 +471,7 @@ class BioActivityController {
         addXFrameOptionsHeader()
         Map model = addActivity(id, true)
         model.mobile = true
-        model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
-        model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-        model.authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
+        validateAndAddMobileUserCredentials(model)
         model.bulkUpload = params.getBoolean('bulkUpload', false)
         render (view: model.error ? 'error' : 'edit', model: model)
     }
@@ -486,10 +485,32 @@ class BioActivityController {
         addXFrameOptionsHeader()
         Map model = editActivity(id, true)
         model.mobile = true
-        model.userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
-        model.authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
-        model.authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
+        validateAndAddMobileUserCredentials(model)
         render (view: model.error ? 'error' : 'edit', model: model)
+    }
+
+
+    private Map validateAndAddMobileUserCredentials(Map model) {
+        def user
+        String userName = request.getHeader(UserService.USER_NAME_HEADER_FIELD)
+        String authKey = request.getHeader(UserService.AUTH_KEY_HEADER_FIELD)
+        String authorization = request.getHeader(UserInfoService.AUTHORIZATION_HEADER_FIELD)
+        if (authKey && userName) {
+            user = userInfoService.getUserFromAuthKey(userName, authKey)
+            if (user) {
+                model[UserService.USER_NAME_HEADER_FIELD] = userName
+                model[UserService.AUTH_KEY_HEADER_FIELD] = authKey
+            }
+        }
+
+        if (authorization) {
+            user = userInfoService.getUserFromJWT(authorization)
+            if (user) {
+                model[UserInfoService.AUTHORIZATION_HEADER_FIELD] = authorization
+            }
+        }
+
+        model
     }
 
 

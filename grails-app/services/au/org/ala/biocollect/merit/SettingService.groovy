@@ -100,9 +100,10 @@ class SettingService {
     }
 
     def loadHubConfig(hub) {
-
+        def defaultHub = grailsApplication.config.getProperty('app.default.hub', String, 'default')
         if (!hub) {
-            hub = grailsApplication.config.app.default.hub?:'default'
+            hub = cookieService.getCookie(LAST_ACCESSED_HUB)
+            hub = hub ?: defaultHub
         }
         else {
             // Hub value in multiple places like url path and in parameter causes Array to be passed instead of String.
@@ -131,7 +132,10 @@ class SettingService {
             )
         }
 
-        cookieService.setCookie(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */)
+        // Do not set cookie value to default hub since it overwrites genuine hub selection when calls are made with default hub.
+        // This usually happens when calls are made without hub parameter like downloading images.
+        if (settings?.urlPath != defaultHub)
+            cookieService.setCookie(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */, '/')
         GrailsWebRequest.lookup().params.hub = settings?.urlPath
         SettingService.setHubConfig(settings)
     }

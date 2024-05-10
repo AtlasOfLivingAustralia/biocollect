@@ -25,7 +25,6 @@
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
-        dashboardUrl: "${raw(g.createLink(controller: 'report', action: 'dashboardReport', params: params))}",
         projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params:[initiator:'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
@@ -33,9 +32,10 @@
         isCitizenScience: false,
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
-        associatedPrograms: ${associatedPrograms},
-        flimit: ${grailsApplication.config.facets.flimit}
+        associatedPrograms: <fc:modelAsJavascript model="${associatedPrograms}"/>,
+        flimit: ${grailsApplication.config.facets.flimit},
         </g:applyCodec>
+        dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
     }
         <g:if test = "${grailsApplication.config.merit.projectLogo}" >
             fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";

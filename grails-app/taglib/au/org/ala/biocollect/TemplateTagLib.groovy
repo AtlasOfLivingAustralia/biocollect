@@ -3,6 +3,8 @@ package au.org.ala.biocollect
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
+import grails.web.mapping.LinkGenerator
+import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.context.MessageSource
 
 class TemplateTagLib {
@@ -11,6 +13,7 @@ class TemplateTagLib {
     UserService userService
     SettingService settingService
     MessageSource messageSource
+    LinkGenerator grailsLinkGenerator
 
     def createAButton = { attrs ->
         Map link = attrs.config;
@@ -135,25 +138,39 @@ class TemplateTagLib {
                     }
                     break;
                 case 'login':
+                    // HubAwareLinkGenerator adds hub parameter to the link which causes subsequent URL parsing to return null in Pac4J filter.
+                    // This causes the app to redirect to root page. And, BioCollect root page is redirected to Wordpress.
+                    // Taking the user outside the application. This is a workaround to fix the issue. First, remove the
+                    // hub parameter before link is generated and set it afterwards.
+                    def hub = clearHubParameter()
+                    def logoutReturnToUrl = getCurrentURL( attrs.hubConfig )
+                    if (grailsApplication.config.getProperty("security.oidc.logoutAction",String, "CAS") == "cognito") {
+                        //                                cannot use createLink since it adds hub query parameter and cognito will not consider it valid
+                        logoutReturnToUrl = grailsApplication.config.getProperty("grails.serverURL") + grailsApplication.config.getProperty("logoutReturnToUrl",String, "/hub/index")
+                    }
+
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << auth.loginLogout(
                                 ignoreCookie: "true", cssClass: "btn btn-primary btn-sm nav-button custom-header-login-logout",
-                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+//                                cannot use createLink since it adds hub query parameter and eventually creates malformed URL with two ? characters
+                                logoutUrl: "/logout",
                                 loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
-                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                                logoutReturnToUrl: logoutReturnToUrl
                         )
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
                         out << auth.loginLogout(
                                 ignoreCookie: "true",
-                                logoutUrl: "${createLink(controller: 'logout', action: 'logout')}",
+//                                cannot use createLink since it adds hub query parameter and eventually creates malformed URL with two ? characters
+                                logoutUrl: "/logout",
                                 loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
-                                logoutReturnToUrl: getCurrentURL( attrs.hubConfig )
+                                logoutReturnToUrl: logoutReturnToUrl
                         )
                         out << "</li>";
                     }
+                    setHubParameter(hub)
                     break;
                 case 'newproject':
                     if (bs4) {
@@ -331,6 +348,11 @@ class TemplateTagLib {
         out << (files as JSON).toString()
     }
 
+    String getCurrentURLFromRequest() {
+        def grailsRequest = GrailsWebRequest.lookup()
+        grailsLinkGenerator.link(absolute: true, params: grailsRequest.originalParams, uri: request.forwardURI)
+    }
+
 
     private String getLinkUrl (Map link){
         String url;
@@ -414,6 +436,23 @@ class TemplateTagLib {
     }
 
     private String getCurrentURL(Map hubConfig){
-        g.createLink(absolute: true, uri: '/').toString()
+        getCurrentURLFromRequest()
+    }
+
+    private String clearHubParameter(){
+        def request = GrailsWebRequest.lookup()
+        def hub  = request?.params?.hub
+        if(hub){
+            request.params.remove('hub')
+        }
+
+        hub
+    }
+
+    private void setHubParameter(String hub) {
+        def request = GrailsWebRequest.lookup()
+        if (hub && request.params) {
+            request.params.hub = hub
+        }
     }
 }
