@@ -211,7 +211,7 @@ assets {
     ]
 
     includes = []
-    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
+    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**', 'sw.js']
 }
 
 if (Boolean.valueOf(inplace)) {
