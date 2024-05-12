@@ -208,10 +208,11 @@ assets {
     minifyOptions = [
             languageMode  : 'ES6', //languageIn
 //            targetLanguage: 'ES5', // languageOut
+            excludes: ['sw.js', '**/*.min.js']
     ]
 
     includes = []
-    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**', 'sw.js']
+    excludes = ["**/*.scss", '**/*.less','**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
 }
 
 if (Boolean.valueOf(inplace)) {
