@@ -120,14 +120,14 @@ security.cas.casServerUrlPrefix= "${auth.baseURL}/cas"
 security.cas.logoutUrl= "${security.cas.casServerUrlPrefix}/logout"
 security.cas.loginUrl= "${security.cas.casServerUrlPrefix}/login"
 
-security.oidc.enabled= true
+security.oidc.enabled= false
 security.oidc.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
 security.oidc.clientId= "changeMe"
 security.oidc.secret= "changeMe"
 security.oidc.scope= "openid,profile,email,ala,roles"
 security.oidc.allowUnsignedIdTokens= true
 
-security.jwt.enabled= true
+security.jwt.enabled= false
 security.jwt.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
 security.jwt.fallbackToLegacyBehaviour= true
 
