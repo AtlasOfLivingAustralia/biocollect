@@ -1,9 +1,9 @@
-<%@ page import="grails.converters.JSON;" contentType="text/javascript;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON;" contentType="text/javascript;charset=UTF-8" defaultCodec="none" %>
 const pwaConfig = {
     "cacheName": "${grailsApplication.config.getProperty('pwa.cacheVersion')}",
-    "oldCacheToDelete": ${grailsApplication.config.getProperty('pwa.oldCacheToDelete', List) as JSON },
-    "pathsToIgnoreCache": ${grailsApplication.config.getProperty('pwa.serviceWorkerConfig.pathsToIgnoreCache', List) as JSON },
-    "cachePathForRequestsStartingWith": ${grailsApplication.config.getProperty('pwa.serviceWorkerConfig.cachePathForRequestsStartingWith', List) as JSON },
+    "oldCacheToDelete": <fc:modelAsJavascript model="${grailsApplication.config.getProperty('pwa.oldCacheToDelete', List, [])}" />,
+    "pathsToIgnoreCache": <fc:modelAsJavascript model="${grailsApplication.config.getProperty('pwa.serviceWorkerConfig.pathsToIgnoreCache', List, [])}" />,
+    "cachePathForRequestsStartingWith": <fc:modelAsJavascript model="${grailsApplication.config.getProperty('pwa.serviceWorkerConfig.cachePathForRequestsStartingWith', List, [])}" />,
     "filesToPreCache": <config:getFilesToPreCacheForPWA/>,
     "noCacheTileFile": "${asset.assetPath(src: grailsApplication.config.getProperty("pwa.serviceWorkerConfig.noCacheTileFile"))}",
     "baseMapPrefixUrl": "${grailsApplication.config.getProperty('pwa.serviceWorkerConfig.baseMapPrefixUrl')}"
