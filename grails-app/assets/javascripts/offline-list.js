@@ -322,7 +322,7 @@ function ActivityViewModel (activity, parent) {
                 },
                 id = siteId,
                 deferred = $.Deferred();
-            site['asyncUpdate'] = true;  // aysnc update Metadata service for performance improvement
+            site['asyncUpdate'] = true;  // aysnc update site metadata for performance improvement
             if (entities.utils.isDexieEntityId(site.siteId)) {
                 id = site.siteId = undefined;
             }
@@ -341,7 +341,15 @@ function ActivityViewModel (activity, parent) {
                     deferred.reject({data: result, error : "Site update failed."});
                 }
             }, function (jqXHR, status, error) {
-                deferred.reject({error : error});
+                // if site update fails, reject the promise only if it is a new site.
+                // if existing site is update is reject, resolve the promise with the site id. This helps sync the activity.
+                // update can be rejected if user does not have permission on all the project the site is associated.
+                if (entities.utils.isDexieEntityId(site.siteId)) {
+                    deferred.reject({error : error});
+                }
+                else {
+                    deferred.resolve({data: {siteId: siteId, oldSiteId: siteId, site: site}});
+                }
             });
 
             return deferred.promise();
