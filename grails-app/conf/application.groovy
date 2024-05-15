@@ -13,7 +13,7 @@ biocollect.support.email.address= "biocollect-support@ala.org.au"
 collectory.service.url= "https://collections.ala.org.au"
 
 
-ecodata.baseURL= "https://ecodata.ala.org.au/"
+ecodata.baseURL= "https://ecodata.biodivdev.at/"
 
 
 google {
@@ -23,16 +23,24 @@ google {
 
 environments {
         development {
-                grails.config.locations = ["file:///data/biocollect/config/biocollect-config.properties"]
-                temp.dir = "/data/biocollect/temp"
+                grails.config.locations = ["file:///..data/biocollect/biocollect-config.properties"]
+                //temp.dir = "/data/biocollect/temp"
+                temp.dir = "../../temp"
+
 //              system level config
                 server.port = 8087
                 serverURL = "http://localhost:8087"
+                //security.cas.appServerName="https://biocollect.biodivdev.at"
+                security.cas.appServerName="https://localhost"
                 biocollect.system.email.replyTo = "biocollect-dev<no-reply>@ala.org.au"
                 sender = "biocollect-dev@ala.org.au"
                 debugUI = true
                 loggerLevel = "DEBUG"
-                auth.baseURL = "https://auth-test.ala.org.au"
+                auth.baseURL = "https://auth.biodivdev.at"
+                api_key="39ae66c2-e719-4a62-a7db-438b4f79c421"
+                google.maps.apiKey="AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk"
+                google.api.key="AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk"
+                server.serverURL="http://localhost:8087"
         }
 
         test {
@@ -54,7 +62,7 @@ environments {
                 ehcache.directory = './ehcache'
                 security.cas.appServerName=serverName
                 security.cas.contextPath=
-                security.cas.casServerName="${casBaseUrl}"
+                        security.cas.casServerName="${casBaseUrl}"
                 auth.baseURL = "${casBaseUrl}"
                 security.cas.casServerUrlPrefix="${casBaseUrl}/cas"
                 security.cas.loginUrl="${security.cas.casServerUrlPrefix}/login"
@@ -103,11 +111,11 @@ environments {
                 auth.baseURL = "https://auth.ala.org.au"
         }
 }
-
+auth.baseURL = "https://auth.biodivdev.at"
 casUrl = "${auth.baseURL}/cas/logout"
 appUrl = grails.serverURL
 
-security.cas.enabled = false
+// security.cas.enabled = false
 security.cas.uriExclusionFilterPattern = ['/assets/.*','/uploads/.*']
 security.cas.uriFilterPattern = []
 security.cas.readOnlyOfficerRole= "ROLE_FC_READ_ONLY"
@@ -151,11 +159,11 @@ dataQualityAssuranceMethods = [
         "systemsupported",
         "nodqmethodsused",
         "na"
-    ]
+]
 
 methodType = [
-    'opportunistic',
-    'systematic'
+        'opportunistic',
+        'systematic'
 ]
 
 datapage.defaultColumns = [
