@@ -293,8 +293,8 @@ management:
 # bootstrap4 theme
 bootstrap4:
   # for Windows
-  themeDirectory: "\\bootstrap4\\scss"
-  # themeDirectory: "/bootstrap4/scss"
+  # themeDirectory: "\\bootstrap4\\scss"
+  themeDirectory: "/bootstrap4/scss"
   themeFileName: "styles"
   themeExtension: "scss"
   copyFromDir: "bootstrap4"

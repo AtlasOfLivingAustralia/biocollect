@@ -41,6 +41,9 @@ environments {
                 google.maps.apiKey="AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk"
                 google.api.key="AIzaSyAJDtEeoy7Sc9pij2TAoVnmTwA34Q-2VHk"
                 server.serverURL="http://localhost:8087"
+                bootstrap4.themeDirectory="\\bootstrap4\\scss"
+                layout.skin = "bs4"
+                app.default.hub='ala'
         }
 
         test {
@@ -111,11 +114,14 @@ environments {
                 auth.baseURL = "https://auth.ala.org.au"
         }
 }
+grails.host = "http://localhost"
+server.serverURL="http://localhost:8087"
+grails.serverURL = "http://localhost:8087/"
 auth.baseURL = "https://auth.biodivdev.at"
 casUrl = "${auth.baseURL}/cas/logout"
 appUrl = grails.serverURL
 
-// security.cas.enabled = false
+security.cas.enabled = true
 security.cas.uriExclusionFilterPattern = ['/assets/.*','/uploads/.*']
 security.cas.uriFilterPattern = []
 security.cas.readOnlyOfficerRole= "ROLE_FC_READ_ONLY"

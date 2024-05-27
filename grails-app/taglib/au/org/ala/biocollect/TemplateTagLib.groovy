@@ -142,7 +142,8 @@ class TemplateTagLib {
                     // Taking the user outside the application. This is a workaround to fix the issue. First, remove the
                     // hub parameter before link is generated and set it afterwards.
                     def hub = clearHubParameter()
-                    def logoutReturnToUrl = getCurrentURL( attrs.hubConfig )
+                    def logoutUrl = grailsApplication.config.getProperty("security.cas.logoutUrl",String, "")
+                    def logoutReturnToUrl = grailsApplication.config.getProperty("grails.serverURL",String, "/logout")
                     if (grailsApplication.config.getProperty("security.oidc.logoutAction",String, "CAS") == "cognito") {
                         //                                cannot use createLink since it adds hub query parameter and cognito will not consider it valid
                         logoutReturnToUrl = grailsApplication.config.getProperty("grails.serverURL") + grailsApplication.config.getProperty("logoutReturnToUrl",String, "/hub/index")
@@ -152,10 +153,10 @@ class TemplateTagLib {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << auth.loginLogout(
                                 ignoreCookie: "true", cssClass: "btn btn-primary btn-sm nav-button custom-header-login-logout",
-//                                cannot use createLink since it adds hub query parameter and eventually creates malformed URL with two ? characters
-                                logoutUrl: "/logout",
-                                loginReturnToUrl: getCurrentURL( attrs.hubConfig ),
-                                logoutReturnToUrl: logoutReturnToUrl
+                                loginReturnToUrl: getCurrentURLForLogin(),
+                                //controller does not exist for: logoutUrl: "/logout", instead the internal mechanisms from the ala-auth plugin is used
+                                logoutReturnToUrl: logoutReturnToUrl,
+                                logoutUrl: logoutUrl
                         )
                         out << "</li>";
                     } else {
@@ -338,8 +339,21 @@ class TemplateTagLib {
 
     String getCurrentURLFromRequest() {
         def grailsRequest = GrailsWebRequest.lookup()
-        grailsLinkGenerator.link(absolute: true, params: grailsRequest.originalParams, uri: request.forwardURI)
+        def url = grailsLinkGenerator.link(absolute: true, params: grailsRequest.originalParams, uri: request.forwardURI)
+        // encoding necessary, otherwise the embedded tomcat raises an error
+        java.net.URLEncoder.encode(url, "UTF-8")
     }
+
+    String getCurrentURLForLogin() {
+        def grailsRequest = GrailsWebRequest.lookup()
+        def url = grailsLinkGenerator.link(absolute: true, params: grailsRequest.originalParams, uri: request.forwardURI)
+        // current CAS-Server has problems with "?" at the end of a service-URL
+        if (url.indexOf("?") == url.length()-1)
+            url = url.substring(0, url.length()-1)
+        // encoding necessary, otherwise the embedded tomcat raises an error
+        java.net.URLEncoder.encode(url, "UTF-8")
+    }
+
 
 
     private String getLinkUrl (Map link){

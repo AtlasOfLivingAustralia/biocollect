@@ -303,9 +303,9 @@ class SettingService {
     }
 
     Map generateStyleSheetForHub(HubSettings hub) {
-        String scssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${grailsApplication.config.bootstrap4.themeExtension}"
-        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${scssFileName}"
-        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}"
+        String scssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${grailsApplication.config.bootstrap4.themeExtension}".replace("\\", "/")
+        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${scssFileName}".replace("\\", "/")
+        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}".replace("\\", "/")
         SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileURI )
         String output
 
@@ -313,11 +313,11 @@ class SettingService {
             Map styles = hub.templateConfiguration?.styles
             String urlPath = hub.urlPath
             Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
-            String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss"
+            String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss".replace("\\", "/")
 
-            String cssFileURI = "${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}"
+            String cssFileURI = "${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}".replace("\\", "/")
             String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}.css"
-            String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
+            String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}".replace("\\", "/")
 
             if(!new File(cssFileFullPath).exists()){
                 String contentScss = """
@@ -370,7 +370,7 @@ class SettingService {
             }
         } else {
             String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${hub.urlPath}.css"
-            String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
+            String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}".replace("\\", "/")
 
             if(!new File(cssFileFullPath).exists()) {
                 String contentScss = input.getInputStream().text
