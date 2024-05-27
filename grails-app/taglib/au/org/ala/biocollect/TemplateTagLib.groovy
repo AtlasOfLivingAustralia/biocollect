@@ -145,7 +145,7 @@ class TemplateTagLib {
                     def logoutUrl = grailsApplication.config.getProperty("security.cas.logoutUrl",String, "")
                     def logoutReturnToUrl = grailsApplication.config.getProperty("grails.serverURL",String, "/logout")
                     if (grailsApplication.config.getProperty("security.oidc.logoutAction",String, "CAS") == "cognito") {
-                        //                                cannot use createLink since it adds hub query parameter and cognito will not consider it valid
+                        // cannot use createLink since it adds hub query parameter and cognito will not consider it valid
                         logoutReturnToUrl = grailsApplication.config.getProperty("grails.serverURL") + grailsApplication.config.getProperty("logoutReturnToUrl",String, "/hub/index")
                     }
 
