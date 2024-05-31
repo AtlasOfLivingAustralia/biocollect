@@ -209,31 +209,6 @@
         </a>
     </div>
 
-
-    <h1 class="mt-5"><g:message code="pwa.offline.options"/></h1>
-    <h3 class="mt-3"><g:message code="pwa.species.download"/></h3>
-    <div class="row">
-        <div class="col-12">
-            <form>
-                <div class="form-group row">
-                    <label class="col-sm-4 col-form-label"><g:message code="pwa.species.download.offline"/></label>
-                    <div class="col-sm-8">
-                        <button type="submit" class="btn btn-primary" data-bind="click: clickSpeciesDownload, enable: speciesStatus() == 'downloaded'"><i class="fas fa-redo"></i> <g:message code="pwa.species.refresh"/></button>
-                    </div>
-                </div>
-            </form>
-            <div class="row" data-bind="slideVisible: showSpeciesProgressBar">
-                <div class="col-12">
-                    <h6><g:message code="pwa.map.download.species.progress"/> </h6>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bind="style: {width: speciesDownloadPercentageComplete() + '%'}, text: speciesDownloadPercentageComplete() + '%'"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <h3 id="mapSection" class="mt-3"><g:message code="pwa.map.cache.title"/></h3>
     <div class="row" data-bind="style: {opacity : sitesStatus() === 'downloading' ? 0.4 : 1}">
         <div class="col-12 col-md-6">
@@ -242,9 +217,6 @@
             <!-- /ko -->
         </div>
         <div class="col-12 col-md-6">
-            <div class="alert alert-info" role="alert">
-                <g:message code="pwa.map.download.help" args="${[grailsApplication.config.getProperty("pwa.maxAreaInKm")]}" />
-            </div>
             <form>
                 <div class="form-group">
                     <label for="map-area"><g:message code="pwa.map.area"/></label>
@@ -266,7 +238,9 @@
                     </div>
                 </div>
             </div>
-
+            <div class="alert alert-info" role="alert">
+                <g:message code="pwa.map.download.help" args="${[grailsApplication.config.getProperty("pwa.maxAreaInKm")]}" />
+            </div>
         </div>
     </div>
 
@@ -309,6 +283,29 @@
         </div>
     </div>
 
+    <h1 class="mt-5"><g:message code="pwa.offline.options"/></h1>
+    <h3 class="mt-3"><g:message code="pwa.species.download"/></h3>
+    <div class="row">
+        <div class="col-12">
+            <form>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label"><g:message code="pwa.species.download.offline"/></label>
+                    <div class="col-sm-8">
+                        <button type="submit" class="btn btn-primary" data-bind="click: clickSpeciesDownload, enable: speciesStatus() == 'downloaded'"><i class="fas fa-redo"></i> <g:message code="pwa.species.refresh"/></button>
+                    </div>
+                </div>
+            </form>
+            <div class="row" data-bind="slideVisible: showSpeciesProgressBar">
+                <div class="col-12">
+                    <h6><g:message code="pwa.map.download.species.progress"/> </h6>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" data-bind="style: {width: speciesDownloadPercentageComplete() + '%'}, text: speciesDownloadPercentageComplete() + '%'"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <!-- ko stopBinding: true -->
     <iframe id="form-content" style="opacity: 0" width="100%" height="25%"></iframe>
     <!-- /ko -->
@@ -330,7 +327,7 @@
 
 <script type="text/html" id="ChooseSites">
 <div class="modal hide fade" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Choose sites to download</h3>
@@ -340,10 +337,12 @@
             </div>
             <div class="modal-body">
                 <p><g:message code="pwa.sites.choose.download.msg"/></p>
-                <div class="row h-75" data-bind="foreach: sites">
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <input type="checkbox" data-bind="checkedValue: $data, checked: $root.chosenSites"/>
-                        <span data-bind="text: name"></span>
+                <div class="row h-75 overflow-y" data-bind="foreach: sites">
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" data-bind="checkedValue: $data, checked: $root.chosenSites, attr: {id: siteId}"/>
+                            <label class="form-check-label" data-bind="text: name, attr: {for: siteId}"></label>
+                        </div>
                     </div>
                 </div>
             </div>
