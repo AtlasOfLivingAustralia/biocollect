@@ -353,6 +353,20 @@ function OfflineViewModel(config) {
         });
     }
 
+    self.checkSiteInOfflineDownload = function (data) {
+        var deferred = $.Deferred();
+        entities.getMaps().then(function (result) {
+            var maps = result.data;
+            var found = maps.find(function (map) {
+                return map.name === data.name;
+            });
+
+            deferred.resolve(!!found, data);
+        }, deferred.reject);
+
+        return deferred.promise();
+    }
+
     self.getBoundsArray = function (bounds) {
         return [{lat: bounds.getNorth(), lng:bounds.getWest()}, {lat: bounds.getSouth(), lng:bounds.getEast()}];
     }
@@ -456,6 +470,11 @@ function OfflineViewModel(config) {
         self.currentStage(self.stages.sites);
         self.sitesStatus(self.statuses.doing);
         alaMap.registerListener('dataload', callback);
+        sites.sort(function (a, b) {
+            var aName = (a.name || "").trim(),
+                bName = (b.name || "").trim();
+            return aName.localeCompare(bName)
+        });
 
         if (sites.length > MAX_SITES_DOWNLOADABLE) {
             var selectionModel = new SiteSelectionViewModel(sites);
@@ -480,7 +499,8 @@ function OfflineViewModel(config) {
                         wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
                         wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
                         maxZoom: MAX_ZOOM
-                    });
+                    }),
+                    bounds;
 
                 // so that layer zooms beyond default max zoom of 18
                 geoJsonLayer.options.maxZoom = MAX_ZOOM;
@@ -501,11 +521,29 @@ function OfflineViewModel(config) {
                     tileLoadedPromise = $.Deferred();
                     mapImpl.setZoom(zoom, {animate: false});
                     timer(MAP_LOAD_TIMEOUT, tileLoadedPromise);
+                    if (zoom === MIN_ZOOM)
+                        bounds = mapImpl.getBounds();
                     await tileLoadedPromise.promise();
                 }
 
+                // save site to offline map list
+                self.checkSiteInOfflineDownload({
+                    name: site.name,
+                    bounds: self.getBoundsArray(bounds)
+                }).then(function (found, data) {
+                    if (!found) {
+                        entities.saveMap({
+                            name: data.name,
+                            bounds: data.bounds,
+                            baseMapUrl: config.baseMapUrl
+                        }).then(function (result) {
+                            self.getOfflineMaps();
+                        });
+                    }
+                })
                 alaMap.clearLayers();
                 self.numberOfSiteTilesDownloaded(self.numberOfSiteTilesDownloaded() + 1);
+                bounds = null;
             }
 
             alaMap.removeListener('dataload', callback);
