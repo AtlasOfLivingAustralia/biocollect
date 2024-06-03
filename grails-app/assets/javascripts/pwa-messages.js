@@ -1,5 +1,5 @@
 window.addEventListener('message', function(event) {
-    var origins = [fcConfig.originUrl, fcConfig.pwaAppUrl, "http://localhost:8081"]
+    var origins = [fcConfig.originUrl, fcConfig.pwaAppUrl]
     if (origins.indexOf(event.origin) == -1)
         return
 

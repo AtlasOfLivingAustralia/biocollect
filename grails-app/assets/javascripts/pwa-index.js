@@ -431,6 +431,20 @@ function OfflineViewModel(config) {
             self.close();
             deferred.resolve(self.chosenSites());
         }
+        self.siteSearchValue = ko.observable("");
+        self.tempSearchValue = ko.observable("");
+        self.searchSitesHandler = function () {
+            self.tempSearchValue(self.siteSearchValue());
+        }
+        self.clearSearch = function () {
+            self.siteSearchValue("");
+            self.tempSearchValue("");
+        }
+        self.isSiteVisible = function (site) {
+            var name = (site.name || "").trim().toLowerCase(),
+                query = self.tempSearchValue().trim().toLowerCase();
+            return name.indexOf(query) > -1;
+        };
 
         self.cancel = function () {
             self.close();
