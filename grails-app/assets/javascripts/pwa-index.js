@@ -507,57 +507,62 @@ function OfflineViewModel(config) {
             self.numberOfSiteTilesDownloaded(0);
             self.totalSiteTilesDownload(selectedSites.length);
             for (var i = 0; i < selectedSites.length; i++) {
-                var site = selectedSites[i],
-                    geoJson = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry),
-                    geoJsonLayer = alaMap.setGeoJSON(geoJson, {
-                        wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
-                        wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
-                        maxZoom: MAX_ZOOM
-                    }),
-                    bounds;
+                try {
+                    var site = selectedSites[i],
+                        geoJson = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry),
+                        geoJsonLayer = alaMap.setGeoJSON(geoJson, {
+                            wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                            wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
+                            maxZoom: MAX_ZOOM
+                        }),
+                        bounds;
 
-                // so that layer zooms beyond default max zoom of 18
-                geoJsonLayer.options.maxZoom = MAX_ZOOM;
-                mapZoomedInIndicator = $.Deferred();
-                // cancel waiting for map to load feature data
-                cancelTimer = setTimeout(function (){
-                    mapZoomedInIndicator && mapZoomedInIndicator.resolve();
-                }, TIMEOUT);
+                    // so that layer zooms beyond default max zoom of 18
+                    geoJsonLayer.options.maxZoom = MAX_ZOOM;
+                    mapZoomedInIndicator = $.Deferred();
+                    // cancel waiting for map to load feature data
+                    cancelTimer = setTimeout(function () {
+                        mapZoomedInIndicator && mapZoomedInIndicator.resolve();
+                    }, TIMEOUT);
 
-                // no need to wait if promise is resolved.
-                if (mapZoomedInIndicator && mapZoomedInIndicator.state() == 'pending') {
-                    // wait for map layer to load feature data from spatial server for pid.
-                    await mapZoomedInIndicator.promise();
-                }
-
-                // zoom into to map to get tiles and feature from spatial server
-                for (zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
-                    tileLoadedPromise = $.Deferred();
-                    mapImpl.setZoom(zoom, {animate: false});
-                    timer(MAP_LOAD_TIMEOUT, tileLoadedPromise);
-                    if (zoom === MIN_ZOOM)
-                        bounds = mapImpl.getBounds();
-                    await tileLoadedPromise.promise();
-                }
-
-                // save site to offline map list
-                self.checkSiteInOfflineDownload({
-                    name: site.name,
-                    bounds: self.getBoundsArray(bounds)
-                }).then(function (found, data) {
-                    if (!found) {
-                        entities.saveMap({
-                            name: data.name,
-                            bounds: data.bounds,
-                            baseMapUrl: config.baseMapUrl
-                        }).then(function (result) {
-                            self.getOfflineMaps();
-                        });
+                    // no need to wait if promise is resolved.
+                    if (mapZoomedInIndicator && mapZoomedInIndicator.state() == 'pending') {
+                        // wait for map layer to load feature data from spatial server for pid.
+                        await mapZoomedInIndicator.promise();
                     }
-                })
-                alaMap.clearLayers();
-                self.numberOfSiteTilesDownloaded(self.numberOfSiteTilesDownloaded() + 1);
-                bounds = null;
+
+                    // zoom into to map to get tiles and feature from spatial server
+                    for (zoom = MIN_ZOOM; zoom <= MAX_ZOOM; zoom++) {
+                        tileLoadedPromise = $.Deferred();
+                        mapImpl.setZoom(zoom, {animate: false});
+                        timer(MAP_LOAD_TIMEOUT, tileLoadedPromise);
+                        if (zoom === MIN_ZOOM)
+                            bounds = mapImpl.getBounds();
+                        await tileLoadedPromise.promise();
+                    }
+
+                    // save site to offline map list
+                    self.checkSiteInOfflineDownload({
+                        name: site.name,
+                        bounds: self.getBoundsArray(bounds)
+                    }).then(function (found, data) {
+                        if (!found) {
+                            entities.saveMap({
+                                name: data.name,
+                                bounds: data.bounds,
+                                baseMapUrl: config.baseMapUrl
+                            }).then(function (result) {
+                                self.getOfflineMaps();
+                            });
+                        }
+                    })
+                    alaMap.clearLayers();
+                    self.numberOfSiteTilesDownloaded(self.numberOfSiteTilesDownloaded() + 1);
+                    bounds = null;
+                }
+                catch (e) {
+                    console.log("Error downloading site " + selectedSites[i].siteId + " " + selectedSites[i].name);
+                }
             }
 
             alaMap.removeListener('dataload', callback);
