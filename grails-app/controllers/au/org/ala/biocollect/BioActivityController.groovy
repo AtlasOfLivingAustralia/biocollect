@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_OK
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
@@ -1306,10 +1307,14 @@ class BioActivityController {
 
         if (pActivityId && type && file) {
             def content = activityService.convertExcelToOutputData(pActivityId, type, file)
-            render text: content as JSON
+            def status = SC_OK
+            if (content.error) {
+                status = SC_INTERNAL_SERVER_ERROR
+            }
+            render text: content as JSON, status: status
         }
         else {
-            render text: [message: "Missing required parameters - pActivityId, type & data (excel file)"] as JSON, status: HttpStatus.SC_BAD_REQUEST
+            render text: [message: "Missing required parameters - pActivityId, type & data (excel file)"] as JSON, status: SC_BAD_REQUEST
         }
     }
 
