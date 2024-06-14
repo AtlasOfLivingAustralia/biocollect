@@ -443,11 +443,12 @@ class WebService {
      * @param url the URL to forward to.
      * @param params the (string typed) HTTP parameters to be attached.
      * @param file the Multipart file object to forward.
+     * @param includeFailureDetails if true, the return value will include response body. If content type is JSON, an object will be returned in `details` property.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    def postMultipart(url, Map params, MultipartFile file, fileParam = 'files', boolean useToken = false) {
+    def postMultipart(url, Map params, MultipartFile file, fileParam = 'files', boolean useToken = false, boolean includeFailureDetails = false) {
 
-        postMultipart(url, params, file.inputStream, file.contentType, file.originalFilename, fileParam, useToken)
+        postMultipart(url, params, file.inputStream, file.contentType, file.originalFilename, fileParam, useToken, includeFailureDetails)
     }
 
     /**
@@ -460,7 +461,7 @@ class WebService {
      * @param fileParamName the name of the HTTP parameter that will be used for the post.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    def postMultipart(url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files', boolean useToken = false) {
+    def postMultipart(url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files', boolean useToken = false, boolean includeFailureDetails = false) {
 
         def result = [:]
         def user = userService.getUser()
@@ -496,9 +497,11 @@ class WebService {
                 result.content = message
             }
 
-            response.failure = {resp ->
+            response.failure = {resp, reader ->
                 result.status = resp.status
                 result.error = "Error POSTing to ${url}"
+                if (includeFailureDetails)
+                    result.details = reader
             }
         }
         result
