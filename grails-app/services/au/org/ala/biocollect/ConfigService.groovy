@@ -36,12 +36,13 @@ class ConfigService {
             throw new Exception('You.Need.To.Add.A.Config.Property.Named.google.maps.apiKey')
 
         def ecodataBaseUrl = grailsApplication.config.getProperty("ecodata.baseURL")
-        if (ecodataBaseUrl){
-            grailsApplication.config.ecodata.service.url = ecodataBaseUrl + '/ws'
-            log.debug('Ecodata service URL:' + grailsApplication.config.ecodata.service.url)
-        }else
-            throw new Exception('You need to define ecodata base URL')
-
+        if(!grailsApplication.config.ecodata.service.url) {
+            if (ecodataBaseUrl) {
+                grailsApplication.config.ecodata.service.url = ecodataBaseUrl + '/ws'
+            } else
+                throw new Exception('You need to define ecodata base URL')
+        }
+        log.debug('Ecodata service URL:' + grailsApplication.config.ecodata.service.url)
         def meritBaseUrl = grailsApplication.config.getProperty("merit.baseURL")
         if (meritBaseUrl){
             grailsApplication.config.merit.project.url = meritBaseUrl + '/project/index'
