@@ -1,0 +1,547 @@
+{
+  "id": "668c7b7dac0eee3abb3cdf9a",
+  "dateCreated": "2024-07-09T10:04:03Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "",
+  "createdUserId": "56575",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Underwater weeding",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Underwater weeding",
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "supervisor",
+            "indexName": "supervisor",
+            "description": "",
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "indexName": "eventDate",
+            "description": "",
+            "validate": "required,max[${now}]"
+          },
+          {
+            "dataType": "number",
+            "name": "divers",
+            "indexName": "divers",
+            "description": "",
+            "validate": "required, min[1], integer"
+          },
+          {
+            "dataType": "number",
+            "name": "diversWeedingFirstTime",
+            "indexName": "diversWeedingFirstTime",
+            "description": "",
+            "validate": "integer"
+          },
+          {
+            "dataType": "time",
+            "name": "timeDiversIn",
+            "indexName": "timeDiversIn",
+            "description": "",
+            "validate": ""
+          },
+          {
+            "dataType": "time",
+            "name": "timeDiversOut",
+            "indexName": "timeDiversOut",
+            "description": "",
+            "validate": ""
+          },
+          {
+            "dataType": "text",
+            "name": "areaWeeded",
+            "description": "",
+            "indexName": "areaWeeded",
+            "validate": "required",
+            "constraints": [
+              "End of pier",
+              "End of pier and halfway to shore",
+              "10 piles on the northern side",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "otherAreaWeeded",
+            "indexName": "otherAreaWeeded",
+            "validate": "required",
+            "behaviour": [
+              {
+                "type": "enable",
+                "condition": "\"Other\" == areaWeeded"
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "anythingElseRemoved",
+            "description": "",
+            "indexName": "anythingElseRemoved",
+            "validate": "",
+            "constraints": [
+              "Ecklonia",
+              "Northern Pacific",
+              "Rubbish",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "otherElseRemoved",
+            "indexName": "otherElseRemoved",
+            "behaviour": [
+              {
+                "type": "enable",
+                "condition": "\"Other\" == anythingElseRemoved"
+              }
+            ]
+          },
+          {
+            "dataType": "boolean",
+            "name": "gpsDeviceUsed"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": false,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "allowRowDelete": false,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "length",
+                "indexName": "length",
+                "description": ""
+              },
+              {
+                "dataType": "number",
+                "name": "noPlantsNoSporophyte",
+                "description": "",
+                "validate": "min[1],integer"
+              }
+            ],
+            "dataType": "list",
+            "name": "noSporophytesTable"
+          },
+          {
+            "allowRowDelete": false,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "length",
+                "indexName": "length",
+                "description": ""
+              },
+              {
+                "dataType": "number",
+                "name": "noPlantsWithSporophyte",
+                "description": "",
+                "validate": "min[1],integer"
+              }
+            ],
+            "dataType": "list",
+            "name": "withSporophytesTable"
+          },
+          {
+            "dataType": "number",
+            "name": "numberPeopleThatAsked",
+            "indexName": "numberPeopleThatAsked",
+            "description": "",
+            "validate": "integer"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Underwater weeding data sheets</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Underwater Weeding Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "computed": null,
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Supervisor/s:",
+                                "source": "supervisor",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Date",
+                                "source": "eventDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Divers",
+                                "source": "divers",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Divers weeding for first time",
+                                "source": "diversWeedingFirstTime",
+                                "type": "number"
+                              },
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "preLabel": "Time divers in",
+                                    "source": "timeDiversIn",
+                                    "type": "time"
+                                  },
+                                  {
+                                    "preLabel": "Time divers out",
+                                    "source": "timeDiversOut",
+                                    "type": "time"
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "Area weeded",
+                                "source": "areaWeeded",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Other",
+                                "source": "otherAreaWeeded",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Anything else removed (accidental or on purpose)",
+                                "source": "anythingElseRemoved",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Other",
+                                "source": "otherElseRemoved",
+                                "type": "textarea"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Reef Name and Location",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<font style='color:blue; font-size:0.9em;'><i><b>Select existing reefs from the drop-down list. If your reef is not on the list, you can create one and add it to the list for future use, but please avoid creating duplicate reefs.<p>TO CREATE A NEW REEF LOCATION:</b><br>Zoom into the map, click on the pin marker tool (left), then find on the map the location of your survey and click on it. This should put a pin on the map. Please give the new location a unique descriptive name and save, e.g. GBR, Moore Reef or Moreton Bay, Flat Rock or Ningaloo Reef, Shark Bommie.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": false,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": false,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": false,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": false
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "I used a GPS device to obtain coordinates",
+                                "source": "gpsDeviceUsed",
+                                "type": "boolean"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Depth range of most plants",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "50%",
+                                "source": "length",
+                                "title": "Length (cm)",
+                                "type": "readonlyText"
+                              },
+                              {
+                                "width": "50%",
+                                "source": "noPlantsNoSporophyte",
+                                "title": "Number of plants with NO SPOROPHYTE",
+                                "type": "number"
+                              }
+                            ],
+                            "userAddedRows": false,
+                            "source": "noSporophytesTable",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": true,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "50%",
+                                "source": "length",
+                                "title": "Length (cm)",
+                                "type": "readonlyText"
+                              },
+                              {
+                                "width": "50%",
+                                "source": "noPlantsWithSporophyte",
+                                "title": "Number of plants with SPOROPHYTES",
+                                "type": "number"
+                              }
+                            ],
+                            "userAddedRows": false,
+                            "source": "withSporophytesTable",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "preLabel": "Number of people that ask what you are doing",
+                    "source": "numberPeopleThatAsked",
+                    "type": "number"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "pre-populate": [
+          {
+            "source": {
+              "type": "literal",
+              "literal": {
+                "noSporophytesTable": [
+                  {
+                    "length": "0-30"
+                  },
+                  {
+                    "length": "30+"
+                  }
+                ]
+              }
+            },
+            "mapping": [
+              {
+                "source-path": "noSporophytesTable",
+                "target": "noSporophytesTable",
+                "mapping": [
+                  {
+                    "source-path": "length",
+                    "target": "length"
+                  }
+                ]
+              }
+            ],
+            "merge": {
+              "noSporophytesTable": {
+                "keys": [
+                  "length"
+                ],
+                "addUnmatchedNewRows": true,
+                "deleteUnmatchedExistingRows": true
+              }
+            }
+          },
+          {
+            "source": {
+              "type": "literal",
+              "literal": {
+                "withSporophytesTable": [
+                  {
+                    "length": "0-30"
+                  },
+                  {
+                    "length": "30+"
+                  }
+                ]
+              }
+            },
+            "mapping": [
+              {
+                "source-path": "withSporophytesTable",
+                "target": "withSporophytesTable",
+                "mapping": [
+                  {
+                    "source-path": "length",
+                    "target": "length"
+                  }
+                ]
+              }
+            ],
+            "merge": {
+              "withSporophytesTable": {
+                "keys": [
+                  "length"
+                ],
+                "addUnmatchedNewRows": true,
+                "deleteUnmatchedExistingRows": true
+              }
+            }
+          }
+        ]
+        
+      },
+      "modelName": "Underwater weeding",
+      "templateName": "underwater_weeding",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Underwater weeding",
+      "description": null
+    }
+  ],
+  "type": "Activity",
+  "category": "Implementation actions",
+  "status": "active",
+  "lastUpdatedUserId": "56575",
+  "description": null,
+  "formVersion": 1
+}
