@@ -63,54 +63,24 @@
           },
           {
             "dataType": "text",
+            "description": "",
             "name": "areaWeeded",
-            "description": "",
             "indexName": "areaWeeded",
-            "validate": "required",
-            "constraints": [
-              "End of pier",
-              "End of pier and halfway to shore",
-              "10 piles on the northern side",
-              "Other"
-            ]
+            "validate": "required"
           },
           {
             "dataType": "text",
             "description": "",
-            "name": "otherAreaWeeded",
-            "indexName": "otherAreaWeeded",
-            "validate": "required",
-            "behaviour": [
-              {
-                "type": "enable",
-                "condition": "\"Other\" == areaWeeded"
-              }
-            ]
-          },
-          {
-            "dataType": "text",
             "name": "anythingElseRemoved",
-            "description": "",
             "indexName": "anythingElseRemoved",
-            "validate": "",
-            "constraints": [
-              "Ecklonia",
-              "Northern Pacific",
-              "Rubbish",
-              "Other"
-            ]
+            "validate": "required"
           },
           {
             "dataType": "text",
             "description": "",
-            "name": "otherElseRemoved",
-            "indexName": "otherElseRemoved",
-            "behaviour": [
-              {
-                "type": "enable",
-                "condition": "\"Other\" == anythingElseRemoved"
-              }
-            ]
+            "name": "depthRange",
+            "indexName": "depthRange",
+            "validate": "required"
           },
           {
             "dataType": "boolean",
@@ -203,7 +173,7 @@
             "type": "row",
             "items": [
               {
-                "source": "<h1>Underwater weeding data sheets</h1>",
+                "source": "<h1>Undaria Removal data sheet</h1>",
                 "type": "literal"
               }
             ]
@@ -267,22 +237,17 @@
                               {
                                 "preLabel": "Area weeded",
                                 "source": "areaWeeded",
-                                "type": "selectOne"
-                              },
-                              {
-                                "preLabel": "Other",
-                                "source": "otherAreaWeeded",
                                 "type": "textarea"
                               },
                               {
                                 "preLabel": "Anything else removed (accidental or on purpose)",
                                 "source": "anythingElseRemoved",
-                                "type": "selectOne"
+                                "type": "textarea"
                               },
                               {
-                                "preLabel": "Other",
-                                "source": "otherElseRemoved",
-                                "type": "textarea"
+                                "preLabel": "Depth range of most plants",
+                                "source": "depthRange",
+                                "type": "text"
                               }
                             ]
                           }
@@ -299,7 +264,7 @@
                 "items": [
                   {
                     "boxed": true,
-                    "title": "Reef Name and Location",
+                    "title": "Location",
                     "type": "section",
                     "items": [
                       {
@@ -314,7 +279,7 @@
                                 "type": "row",
                                 "items": [
                                   {
-                                    "source": "<font style='color:blue; font-size:0.9em;'><i><b>Select existing reefs from the drop-down list. If your reef is not on the list, you can create one and add it to the list for future use, but please avoid creating duplicate reefs.<p>TO CREATE A NEW REEF LOCATION:</b><br>Zoom into the map, click on the pin marker tool (left), then find on the map the location of your survey and click on it. This should put a pin on the map. Please give the new location a unique descriptive name and save, e.g. GBR, Moore Reef or Moreton Bay, Flat Rock or Ningaloo Reef, Shark Bommie.</i></font>",
+                                    "source": "<font style='color:blue; font-size:0.9em;'><i><b>Select existing location from the drop-down list. If your location is not on the list, you can create one and add it to the list for future use, but please avoid creating duplicate location.<p>TO CREATE A NEW LOCATION:</b><br>Zoom into the map, click on the pin marker tool (left), then find on the map the location of your survey and click on it. This should put a pin on the map. Please give the new location a unique descriptive name and save, e.g. Portsea Pier, Steeles Rocks, Frankston Pier, Brighton Baths</i></font>",
                                     "type": "literal"
                                   }
                                 ]
@@ -359,7 +324,7 @@
             "items": [
               {
                 "boxed": true,
-                "title": "Depth range of most plants",
+                "title": "Length and life stage of Undaria removed",
                 "type": "section",
                 "items": [
                   {
