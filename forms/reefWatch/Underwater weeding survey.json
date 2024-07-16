@@ -22,7 +22,6 @@
           {
             "dataType": "text",
             "name": "supervisor",
-            "indexName": "supervisor",
             "description": "",
             "validate": "required"
           },
@@ -36,14 +35,12 @@
           {
             "dataType": "number",
             "name": "divers",
-            "indexName": "divers",
             "description": "",
             "validate": "required, min[1], integer"
           },
           {
             "dataType": "number",
             "name": "diversWeedingFirstTime",
-            "indexName": "diversWeedingFirstTime",
             "description": "",
             "validate": "integer"
           },
@@ -65,21 +62,18 @@
             "dataType": "text",
             "description": "",
             "name": "areaWeeded",
-            "indexName": "areaWeeded",
             "validate": "required"
           },
           {
             "dataType": "text",
             "description": "",
             "name": "anythingElseRemoved",
-            "indexName": "anythingElseRemoved",
             "validate": "required"
           },
           {
             "dataType": "text",
             "description": "",
             "name": "depthRange",
-            "indexName": "depthRange",
             "validate": "required"
           },
           {
@@ -126,7 +120,6 @@
               {
                 "dataType": "text",
                 "name": "length",
-                "indexName": "length",
                 "description": ""
               },
               {
@@ -147,7 +140,6 @@
               {
                 "dataType": "text",
                 "name": "length",
-                "indexName": "length",
                 "description": ""
               },
               {
@@ -163,7 +155,6 @@
           {
             "dataType": "number",
             "name": "numberPeopleThatAsked",
-            "indexName": "numberPeopleThatAsked",
             "description": "",
             "validate": "integer"
           }
