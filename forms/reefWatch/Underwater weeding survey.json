@@ -125,8 +125,8 @@
               {
                 "dataType": "number",
                 "name": "noPlantsNoSporophyte",
-                "description": "",
-                "validate": "min[1],integer"
+                "defaultValue": "",
+                "validate": "required, min[0],integer"
               }
             ],
             "dataType": "list",
@@ -145,8 +145,8 @@
               {
                 "dataType": "number",
                 "name": "noPlantsWithSporophyte",
-                "description": "",
-                "validate": "min[1],integer"
+                "defaultValue": "",
+                "validate": "required, min[0],integer"
               }
             ],
             "dataType": "list",
@@ -155,8 +155,8 @@
           {
             "dataType": "number",
             "name": "numberPeopleThatAsked",
-            "description": "",
-            "validate": "integer"
+            "defaultValue": "",
+            "validate": "required, min[0],integer"
           }
         ],
         "viewModel": [
