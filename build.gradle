@@ -154,14 +154,16 @@ dependencies {
 
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:6.3-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:7.0-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
     testImplementation "org.grails:grails-gorm-testing-support"
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.grails:grails-web-testing-support"
-    testImplementation "org.grails.plugins:geb"
+    testImplementation ("org.grails.plugins:geb") {
+        exclude module: "grails-core"
+    }
     testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:2.28.0"
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
