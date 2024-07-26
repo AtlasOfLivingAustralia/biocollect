@@ -21,7 +21,7 @@ class AdminService {
      * Triggers a full site re-index.
      */
     def reIndexAll() {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/admin/reIndexAll', 50000, true)
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/admin/reIndexAll', 50000)
     }
 
     static outputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ")
@@ -195,8 +195,6 @@ class AdminService {
 
     def syncCollectoryOrgs() {
         def url = "${grailsApplication.config.ecodata.service.url}admin/syncCollectoryOrgs"
-        webService.doPost(url, [
-                api_key: grailsApplication.config.api_key
-        ])
+        webService.doPost(url)
     }
 }

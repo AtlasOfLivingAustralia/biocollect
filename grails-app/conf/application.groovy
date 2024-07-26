@@ -15,6 +15,8 @@ collectory.service.url= "https://collections.ala.org.au"
 
 ecodata.baseURL= "https://ecodata.ala.org.au/"
 
+webservice['jwt-scopes'] = "ala/internal users/read ala/attrs ecodata/read ecodata/write"
+webservice.jwtAllowedDomains = ['ala.org.au', 'localhost']
 
 google {
         maps.base= "https://maps.googleapis.com/maps/api/js?key="
@@ -71,7 +73,6 @@ environments {
                 ecodata.baseURL = 'http://localhost:8080'
                 ecodata.service.url = 'http://localhost:8080/ws'
                 pdfgen.baseURL = "http://localhost:${wiremock.port}/"
-                api_key='testapikey'
                 grails.cache.config = {
                         diskStore {
                                 path '/tmp'

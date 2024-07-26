@@ -23,6 +23,7 @@ import org.apache.http.entity.mime.content.InputStreamBody
 import org.apache.http.entity.mime.content.StringBody
 import org.grails.web.converters.exceptions.ConverterException
 import grails.web.http.HttpHeaders
+import org.springframework.core.env.Environment
 import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
 import au.org.ala.ws.tokens.TokenService
@@ -68,18 +69,31 @@ class WebService {
     }
 
     private URLConnection configureConnection(String url, boolean includeUserId, Integer timeout = null) {
-        URLConnection conn = new URL(url).openConnection()
+        def connUrl = new URL(url)
+        URLConnection conn = connUrl.openConnection()
 
         def readTimeout = timeout?:defaultTimeout()
         conn.setConnectTimeout(grailsApplication.config.getProperty("webservice.connectTimeout", Integer))
         conn.setReadTimeout(readTimeout)
         addHubUrlPath(conn)
+
         if (includeUserId) {
             def user = getUserService().getUser()
             if (user) {
                 conn.setRequestProperty(grailsApplication.config.getProperty("app.http.header.userId", String), user.userId)
             }
         }
+
+        def allowedDomains = grailsApplication.config.getProperty('webservice.jwtAllowedDomains').split(",")
+        def host = connUrl.getHost()
+
+        for (int domIndex = 0; domIndex < allowedDomains.size(); domIndex++) {
+            if (host.contains(allowedDomains[domIndex])) {
+                conn.setRequestProperty("Authorization", getAuthHeader())
+                break
+            }
+        }
+
         conn
     }
 
@@ -105,16 +119,12 @@ class WebService {
      * Proxies a request URL but doesn't assume the response is text based. (Used for proxying requests to
      * ecodata for excel-based reports)
      */
-    def proxyGetRequest(HttpServletResponse response, String url, boolean includeUserId = true, boolean includeApiKey = false, Integer timeout = null) {
+    def proxyGetRequest(HttpServletResponse response, String url, boolean includeUserId = true, Integer timeout = null) {
 
         HttpURLConnection conn = configureConnection(url, includeUserId)
         def readTimeout = timeout?:defaultTimeout()
         conn.setConnectTimeout(grailsApplication.config.webservice.connectTimeout as int)
         conn.setReadTimeout(readTimeout)
-
-        if (includeApiKey) {
-            conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
-        }
 
         def headers = [HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CACHE_CONTROL, HttpHeaders.EXPIRES, HttpHeaders.LAST_MODIFIED, HttpHeaders.ETAG]
         def resp = [status:conn.responseCode]
@@ -140,7 +150,7 @@ class WebService {
      * Proxies a request URL with post data but doesn't assume the response is text based. (Used for proxying requests to
      * ecodata for excel-based reports)
      */
-    def proxyPostRequest(HttpServletResponse response, String url, Map postBody, boolean includeUserId = true, boolean includeApiKey = false, Integer timeout = null) {
+    def proxyPostRequest(HttpServletResponse response, String url, Map postBody, boolean includeUserId = true, Integer timeout = null) {
 
         def charEncoding = 'utf-8'
 
@@ -152,10 +162,6 @@ class WebService {
         conn.setRequestMethod("POST")
         conn.setReadTimeout(readTimeout)
         conn.setDoOutput ( true );
-
-        if (includeApiKey) {
-            conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
-        }
 
         OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), charEncoding)
         wr.write((postBody as JSON).toString())
@@ -187,17 +193,10 @@ class WebService {
         tokenService.getAuthToken(false).toAuthorizationHeader()
     }
 
-    def getJson(String url, Integer timeout = null, boolean includeApiKey = false, boolean includeUserId = true, boolean useToken = false) {
+    def getJson(String url, Integer timeout = null, boolean includeUserId = true) {
         def conn = null
         try {
             conn = configureConnection(url, includeUserId, timeout)
-            if (includeApiKey) {
-                conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
-            }
-
-            if (useToken) {
-                conn.setRequestProperty("Authorization", getAuthHeader())
-            }
 
             conn.setRequestProperty(ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             def json = responseText(conn)
@@ -256,8 +255,8 @@ class WebService {
             conn = new URL(url+query).openConnection()
             conn.setRequestMethod("POST")
             conn.setDoOutput(true)
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            conn.setRequestProperty("Authorization", getAuthHeader())
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -286,19 +285,14 @@ class WebService {
         }
     }
 
-    def doPost(String url, Map postBody, boolean useToken = false) {
+    def doPost(String url, Map postBody) {
         def conn = null
         def charEncoding = 'utf-8'
         try {
             conn = new URL(url).openConnection()
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}")
-
-            if (useToken) {
-                conn.setRequestProperty("Authorization", getAuthHeader())
-            } else {
-                conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
-            }
+            conn.setRequestProperty("Authorization", getAuthHeader())
 
             addHubUrlPath(conn)
 
@@ -333,8 +327,8 @@ class WebService {
             conn = new URL(url).openConnection()
             conn.setRequestMethod("PUT")
             conn.setDoOutput(true)
-            conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}");
-            conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+            conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}")
+            conn.setRequestProperty("Authorization", getAuthHeader())
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -380,7 +374,7 @@ class WebService {
             conn.setDoOutput(true)
             conn.setRequestMethod("GET")
             conn.setRequestProperty("Content-Type", "${APPLICATION_JSON};charset=${StandardCharsets.UTF_8.toString()}");
-            conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+            conn.setRequestProperty("Authorization", getAuthHeader())
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -404,12 +398,11 @@ class WebService {
     }
 
     def doDelete(String url) {
-        url += (url.indexOf('?') == -1 ? '?' : '&') + "api_key=${grailsApplication.config.api_key}"
         def conn = null
         try {
             conn = new URL(url).openConnection()
             conn.setRequestMethod("DELETE")
-            conn.setRequestProperty("Authorization", grailsApplication.config.getProperty("api_key"))
+            conn.setRequestProperty("Authorization", getAuthHeader())
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -446,9 +439,9 @@ class WebService {
      * @param includeFailureDetails if true, the return value will include response body. If content type is JSON, an object will be returned in `details` property.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    def postMultipart(url, Map params, MultipartFile file, fileParam = 'files', boolean useToken = false, boolean includeFailureDetails = false) {
+    def postMultipart(url, Map params, MultipartFile file, fileParam = 'files', boolean includeFailureDetails = false) {
 
-        postMultipart(url, params, file.inputStream, file.contentType, file.originalFilename, fileParam, useToken, includeFailureDetails)
+        postMultipart(url, params, file.inputStream, file.contentType, file.originalFilename, fileParam, includeFailureDetails)
     }
 
     /**
@@ -461,7 +454,7 @@ class WebService {
      * @param fileParamName the name of the HTTP parameter that will be used for the post.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    def postMultipart(url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files', boolean useToken = false, boolean includeFailureDetails = false) {
+    def postMultipart(url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files', boolean includeFailureDetails = false) {
 
         def result = [:]
         def user = userService.getUser()
@@ -478,11 +471,7 @@ class WebService {
             }
 
             addHubUrlPath(headers)
-            if (useToken) {
-                headers."Authorization" = getAuthHeader()
-            } else {
-                headers."Authorization" = grailsApplication.config.getProperty("api_key")
-            }
+            headers."Authorization" = getAuthHeader()
 
             if (user) {
                 headers[grailsApplication.config.app.http.header.userId] = user.userId
