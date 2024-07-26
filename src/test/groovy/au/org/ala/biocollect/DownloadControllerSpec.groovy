@@ -163,7 +163,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         Map result = controller.downloadProjectDataFile()
 
         then:
-        1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/'+projectId+'?fileExtension='+expectedOutputFormat, true, true)
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/'+projectId+'?fileExtension='+expectedOutputFormat)
         result == null
 
         where:
@@ -218,7 +218,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.downloadProjectDataFile()
 
         then:
-        1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/1?fileExtension=zip', true, true)
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/1?fileExtension=zip')
         response.status == HttpStatus.SC_OK
     }
 
@@ -228,7 +228,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.file()
 
         then:
-        1 * webServiceStub.proxyGetRequest(response, 'http://test/document/1/file', true, true)
+        1 * webServiceStub.proxyGetRequest(response, 'http://test/document/1/file')
         response.status == HttpStatus.SC_OK
     }
 
