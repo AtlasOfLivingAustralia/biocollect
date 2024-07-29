@@ -16,7 +16,10 @@ collectory.service.url= "https://collections.ala.org.au"
 ecodata.baseURL= "https://ecodata.ala.org.au/"
 
 webservice['jwt-scopes'] = "ala/internal users/read ala/attrs ecodata/read ecodata/write"
-webservice.jwtAllowedDomains = ['ala.org.au', 'localhost']
+
+if(!app.domain.whiteList) {
+        app.domain.whiteList = "ala.org.au,localhost"
+}
 
 google {
         maps.base= "https://maps.googleapis.com/maps/api/js?key="
