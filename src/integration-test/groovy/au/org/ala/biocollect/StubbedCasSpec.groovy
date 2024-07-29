@@ -307,9 +307,9 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
                 audience          : clientId,
                 state             : "maybe_this_matters",
                 auth_time         : -1,
-                nbf               : DateUtils.toSecondsSinceEpoch(new Date().minus(365)),
-                exp               : DateUtils.toSecondsSinceEpoch(new Date().plus(365)),
-                iat               : DateUtils.toSecondsSinceEpoch(new Date()),
+                nbf               : com.nimbusds.jwt.util.DateUtils.toSecondsSinceEpoch(new Date().minus(365)),
+                exp               : com.nimbusds.jwt.util.DateUtils.toSecondsSinceEpoch(new Date().plus(365)),
+                iat               : com.nimbusds.jwt.util.DateUtils.toSecondsSinceEpoch(new Date()),
                 jti               : "id-system",
                 scope             : testConfig.webservice["jwt-scopes"]
         ]
