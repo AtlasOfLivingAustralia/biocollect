@@ -27,6 +27,8 @@ import org.springframework.core.env.Environment
 import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
 import au.org.ala.ws.tokens.TokenService
+
+import javax.annotation.PostConstruct
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import java.nio.charset.StandardCharsets
@@ -38,6 +40,8 @@ import static org.apache.http.HttpHeaders.*
  */
 class WebService {
     private static APPLICATION_JSON = 'application/json'
+    List WHITE_LISTED_DOMAINS = []
+
     // Used to avoid a circular dependency during initialisation
     def getUserService() {
         return grailsApplication.mainContext.userService
@@ -45,6 +49,12 @@ class WebService {
     
     def grailsApplication
     TokenService tokenService
+
+    @PostConstruct
+    void init() {
+        String whiteListed = grailsApplication.config.getProperty('app.domain.whiteList', "")
+        WHITE_LISTED_DOMAINS = Arrays.asList(whiteListed.split(','))
+    }
 
     def get(String url, boolean includeUserId) {
         def conn = null
@@ -84,11 +94,10 @@ class WebService {
             }
         }
 
-        def allowedDomains = grailsApplication.config.getProperty('webservice.jwtAllowedDomains').split(",")
         def host = connUrl.getHost()
 
-        for (int domIndex = 0; domIndex < allowedDomains.size(); domIndex++) {
-            if (host.contains(allowedDomains[domIndex])) {
+        for (int domIndex = 0; domIndex < WHITE_LISTED_DOMAINS.size(); domIndex++) {
+            if (host.endsWith(allowedDomains[domIndex])) {
                 conn.setRequestProperty("Authorization", getAuthHeader())
                 break
             }
