@@ -97,7 +97,7 @@ class WebService {
         def host = connUrl.getHost()
 
         for (int domIndex = 0; domIndex < WHITE_LISTED_DOMAINS.size(); domIndex++) {
-            if (host.endsWith(allowedDomains[domIndex])) {
+            if (host.endsWith(WHITE_LISTED_DOMAINS[domIndex])) {
                 conn.setRequestProperty("Authorization", getAuthHeader())
                 break
             }
