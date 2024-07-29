@@ -216,7 +216,7 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
         // The test config isn't a normal grails config object (probably need to to into why) so getProperty doesn't work.
         Map testConfig = getTestConfig()
         String clientId = testConfig.security.oidc.clientId
-        String clientSecret = testConfig.webservice["client-secret"]
+        String clientSecret = testConfig.security.oidc.secret
         String base64EncodedAuth = "Basic " + "${clientId}:${clientSecret}".bytes.encodeBase64().toString()
 
         List roles = ["ROLE_USER"]
