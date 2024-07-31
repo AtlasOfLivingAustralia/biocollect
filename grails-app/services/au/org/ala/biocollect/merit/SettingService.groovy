@@ -134,7 +134,7 @@ class SettingService {
 
         // Do not set cookie value to default hub since it overwrites genuine hub selection when calls are made with default hub.
         // This usually happens when calls are made without hub parameter like downloading images.
-        if (settings?.urlPath != defaultHub || cookieService.getCookie(LAST_ACCESSED_HUB) == null)
+        if (settings?.urlPath != defaultHub)
             cookieService.setCookie(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */, '/')
         GrailsWebRequest.lookup().params.hub = settings?.urlPath
         SettingService.setHubConfig(settings)

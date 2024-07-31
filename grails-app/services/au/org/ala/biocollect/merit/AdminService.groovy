@@ -195,6 +195,6 @@ class AdminService {
 
     def syncCollectoryOrgs() {
         def url = "${grailsApplication.config.ecodata.service.url}admin/syncCollectoryOrgs"
-        webService.doPost(url)
+        webService.doPost(url, [:])
     }
 }
