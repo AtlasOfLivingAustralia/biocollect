@@ -160,9 +160,9 @@ class SiteService {
     /** uploads a shapefile to the spatial portal */
     def uploadShapefile(shapefile) {
         def userId = userService.getUser().userId
-        def url = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp?user_id=${userId}&api_key=${grailsApplication.config.api_key}"
+        def url = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp?user_id=${userId}"
 
-        return webService.postMultipart(url, [:], shapefile, 'files', true)
+        return webService.postMultipart(url, [:], shapefile, 'files')
     }
 
     /**
@@ -179,11 +179,11 @@ class SiteService {
         def baseUrl = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp"
         def userId = userService.getUser().userId
 
-        def site = [name:name, description: description, user_id:userId, api_key:grailsApplication.config.api_key]
+        def site = [name:name, description: description, user_id:userId]
 
         def url = "${baseUrl}/${shapeFileId}/${siteId}"
 
-        def result = webService.doPost(url, site, true)
+        def result = webService.doPost(url, site)
 
         String error
         if (!result?.resp?.id) {
@@ -243,9 +243,9 @@ class SiteService {
             def description = placemark.getAttribute('description')
 
             Geometry geom = placemark.getDefaultGeometry()
-            def site = [name:name, description: description, user_id:userId, api_key:grailsApplication.config.api_key, wkt:geom.toText()]
+            def site = [name:name, description: description, user_id:userId, wkt:geom.toText()]
 
-            def result = webService.doPost(url, site, true)
+            def result = webService.doPost(url, site)
             if (!result.error) {
                 def id = result.resp.id
                 if (!result.resp.error) {
