@@ -56,7 +56,7 @@ class DocumentController {
 
                     if (documentService.canView(document)) {
                         String url = buildDownloadUrl(path, filename)
-                        webService.proxyGetRequest(response, url, false, true)
+                        webService.proxyGetRequest(response, url, false)
                         return null
                     }
                 }
