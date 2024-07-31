@@ -78,13 +78,20 @@ class WebService {
         grailsApplication.config.webservice.readTimeout as int
     }
 
-    private void addAuthForAllowedDomains(URLConnection conn) {
-        def host = conn.getURL().getHost()
+    private boolean isDomainWhitelisted(URL url) {
+        def host = url.getHost()
         for (int domIndex = 0; domIndex < WHITE_LISTED_DOMAINS.size(); domIndex++) {
             if (host.endsWith(WHITE_LISTED_DOMAINS[domIndex])) {
-                conn.setRequestProperty("Authorization", getAuthHeader())
-                break
+                return true
             }
+        }
+
+        return false
+    }
+
+    private void addAuthForAllowedDomains(URLConnection conn) {
+        if (isDomainWhitelisted(conn.getURL())) {
+            conn.setRequestProperty("Authorization", getAuthHeader())
         }
     }
 
@@ -475,6 +482,7 @@ class WebService {
         def user = userService.getUser()
 
         HTTPBuilder builder = new HTTPBuilder(url)
+
         builder.request(Method.POST) { request ->
             requestContentType : 'multipart/form-data'
             MultipartEntity content = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
@@ -485,8 +493,12 @@ class WebService {
                 }
             }
 
+            if (isDomainWhitelisted(new URL(url))) {
+                headers."Authorization" = getAuthHeader()
+            }
+
             addHubUrlPath(headers)
-            addAuthForAllowedDomains(conn)
+
 
             if (user) {
                 headers[grailsApplication.config.app.http.header.userId] = user.userId
