@@ -35,11 +35,11 @@ class ProxyController {
     }
 
     def features(){
-        render webService.get("${grailsApplication.config.spatial.layersUrl}/objects/${params.layerId}")
+        render webService.get("${grailsApplication.config.spatial.layersUrl}/objects/${params.layerId}", false)
     }
 
     def feature(){
-        render webService.get("${grailsApplication.config.spatial.layersUrl}/object/${params.featureId}")
+        render webService.get("${grailsApplication.config.spatial.layersUrl}/object/${params.featureId}", false)
     }
 
     def speciesProfile(String id) {

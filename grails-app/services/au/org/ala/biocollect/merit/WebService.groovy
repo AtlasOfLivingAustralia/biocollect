@@ -78,28 +78,30 @@ class WebService {
         grailsApplication.config.webservice.readTimeout as int
     }
 
+    private void addAuthForAllowedDomains(URLConnection conn) {
+        def host = conn.getURL().getHost()
+        for (int domIndex = 0; domIndex < WHITE_LISTED_DOMAINS.size(); domIndex++) {
+            if (host.endsWith(WHITE_LISTED_DOMAINS[domIndex])) {
+                conn.setRequestProperty("Authorization", getAuthHeader())
+                break
+            }
+        }
+    }
+
     private URLConnection configureConnection(String url, boolean includeUserId, Integer timeout = null) {
-        def connUrl = new URL(url)
-        URLConnection conn = connUrl.openConnection()
+        URLConnection conn = (new URL(url)).openConnection()
 
         def readTimeout = timeout?:defaultTimeout()
         conn.setConnectTimeout(grailsApplication.config.getProperty("webservice.connectTimeout", Integer))
         conn.setReadTimeout(readTimeout)
+
         addHubUrlPath(conn)
+        addAuthForAllowedDomains(conn)
 
         if (includeUserId) {
             def user = getUserService().getUser()
             if (user) {
                 conn.setRequestProperty(grailsApplication.config.getProperty("app.http.header.userId", String), user.userId)
-            }
-        }
-
-        def host = connUrl.getHost()
-
-        for (int domIndex = 0; domIndex < WHITE_LISTED_DOMAINS.size(); domIndex++) {
-            if (host.endsWith(WHITE_LISTED_DOMAINS[domIndex])) {
-                conn.setRequestProperty("Authorization", getAuthHeader())
-                break
             }
         }
 
@@ -265,7 +267,8 @@ class WebService {
             conn.setRequestMethod("POST")
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
-            conn.setRequestProperty("Authorization", getAuthHeader())
+
+            addAuthForAllowedDomains(conn)
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -301,8 +304,8 @@ class WebService {
             conn = new URL(url).openConnection()
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}")
-            conn.setRequestProperty("Authorization", getAuthHeader())
 
+            addAuthForAllowedDomains(conn)
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -337,7 +340,8 @@ class WebService {
             conn.setRequestMethod("PUT")
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}")
-            conn.setRequestProperty("Authorization", getAuthHeader())
+
+            addAuthForAllowedDomains(conn)
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -383,7 +387,8 @@ class WebService {
             conn.setDoOutput(true)
             conn.setRequestMethod("GET")
             conn.setRequestProperty("Content-Type", "${APPLICATION_JSON};charset=${StandardCharsets.UTF_8.toString()}");
-            conn.setRequestProperty("Authorization", getAuthHeader())
+
+            addAuthForAllowedDomains(conn)
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
@@ -411,7 +416,8 @@ class WebService {
         try {
             conn = new URL(url).openConnection()
             conn.setRequestMethod("DELETE")
-            conn.setRequestProperty("Authorization", getAuthHeader())
+
+            addAuthForAllowedDomains(conn)
             addHubUrlPath(conn)
 
             def user = getUserService().getUser()
