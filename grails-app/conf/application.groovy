@@ -141,7 +141,7 @@ security.jwt.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
 // security.jwt.fallbackToLegacyBehaviour= true
 
 webservice.jwt = true
-webservice['jwt-scopes'] = "ala/internal users/read ala/attrs ecodata/read ecodata/write"
+webservice['jwt-scopes'] = "ala/internal users/read ala/attrs ecodata/read_test ecodata/write_test"
 webservice['client-id']='changeMe'
 webservice['client-secret'] = 'changeMe'
 
