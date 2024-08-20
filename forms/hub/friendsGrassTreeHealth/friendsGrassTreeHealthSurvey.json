@@ -5,7 +5,7 @@
   "supportsSites": false,
   "tags": [],
   "lastUpdated": "2024-08-19T05:45:50Z",
-  "createdUserId": "4228",
+  "createdUserId": "56575",
   "external": false,
   "activationDate": null,
   "supportsPhotoPoints": false,
@@ -45,8 +45,37 @@
             "validate": "required"
           },
           {
+            "dataType": "text",
+            "name": "drainage",
+            "constraints": [
+              "No drainage line",
+              "Minor depression",
+              "Close to creek / water pool"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "disturbance",
+            "constraints": [
+              "Not evident",
+              "Track",
+              "Tree fallen",
+              "Fire"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "comments"
+          },
+          {
             "allowRowDelete": "false",
             "columns": [
+              {
+                "dataType": "species",
+                "name": "grasstreeSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
               {
                 "dataType": "number",
                 "name": "healthy",
@@ -121,6 +150,12 @@
             "allowRowDelete": "false",
             "columns": [
               {
+                "dataType": "species",
+                "name": "blueLilySpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
                 "dataType": "text",
                 "name": "estimatedLilyCount",
                 "constraints": [
@@ -129,7 +164,7 @@
                   "11-50",
                   "51-100",
                   "101-200",
-                  "> 200"
+                  "> 201"
                 ]
               },
               {
@@ -152,6 +187,12 @@
             "allowRowDelete": "false",
             "columns": [
               {
+                "dataType": "species",
+                "name": "daphneHeathSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
                 "dataType": "text",
                 "name": "estimatedDaphneHeathCount",
                 "constraints": [
@@ -160,7 +201,7 @@
                   "11-50",
                   "51-100",
                   "101-200",
-                  "> 200"
+                  "> 201"
                 ]
               },
               {
@@ -183,6 +224,12 @@
             "allowRowDelete": "false",
             "columns": [
               {
+                "dataType": "species",
+                "name": "eucalyptSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
                 "dataType": "text",
                 "name": "dieback",
                 "constraints": [
@@ -191,29 +238,6 @@
                   "Moderate",
                   "Severe"
                 ]
-              },
-              {
-                "dataType": "text",
-                "name": "drainage",
-                "constraints": [
-                  "No drainage line",
-                  "Minor depression",
-                  "Close to creek / water pool"
-                ]
-              },
-              {
-                "dataType": "text",
-                "name": "disturbance",
-                "constraints": [
-                  "Not evident",
-                  "Track",
-                  "Tree fallen",
-                  "Fire"
-                ]
-              },
-              {
-                "dataType": "text",
-                "name": "comments"
               }
             ],
             "dataType": "list",
@@ -271,6 +295,22 @@
                                 "preLabel": "Site code (date-track e.g. 010924-Sunrise):",
                                 "source": "siteCode",
                                 "type": "text"
+                              },
+                              {
+                                "source": "drainage",
+                                "preLabel": "Drainage",
+                                "type": "selectOne"
+                              },
+                              {
+                                "source": "disturbance",
+                                "preLabel": "Disturbance",
+                                "type": "selectOne"
+                              },
+                              {
+                                "source": "comments",
+                                "preLabel": "Comments",
+                                "type": "textarea",
+                                "rows": 4
                               }
                             ]
                           }
@@ -363,6 +403,13 @@
                             "columns": [
                               {
                                 "width": "10%",
+                                "min-width": "100px",
+                                "source": "grasstreeSpecies",
+                                "title": "Grasstree Species",
+                                "type": "speciesSelect"
+                              },
+                              {
+                                "width": "10%",
                                 "source": "healthy",
                                 "title": "Healthy",
                                 "type": "number"
@@ -422,6 +469,13 @@
                         "columns": [
                           {
                             "width": "10%",
+                            "min-width": "100px",
+                            "source": "blueLilySpecies",
+                            "title": "Nodding Blue Lily Species",
+                            "type": "speciesSelect"
+                          },
+                          {
+                            "width": "10%",
                             "source": "estimatedLilyCount",
                             "title": "Estimated number of plants",
                             "type": "selectOne"
@@ -460,6 +514,13 @@
                       {
                         "disableTableUpload": true,
                         "columns": [
+                          {
+                            "width": "10%",
+                            "min-width": "100px",
+                            "source": "daphneHeathSpecies",
+                            "title": "Daphne Heath Species",
+                            "type": "speciesSelect"
+                          },
                           {
                             "width": "10%",
                             "source": "estimatedDaphneHeathCount",
@@ -502,27 +563,16 @@
                         "columns": [
                           {
                             "width": "10%",
+                            "min-width": "100px",
+                            "source": "eucalyptSpecies",
+                            "title": "Eucalypt Species",
+                            "type": "speciesSelect"
+                          },
+                          {
+                            "width": "10%",
                             "source": "dieback",
                             "title": "Dieback",
                             "type": "selectOne"
-                          },
-                          {
-                            "width": "10%",
-                            "source": "drainage",
-                            "title": "Drainage",
-                            "type": "selectOne"
-                          },
-                          {
-                            "width": "10%",
-                            "source": "disturbance",
-                            "title": "Disturbance",
-                            "type": "selectOne"
-                          },
-                          {
-                            "width": "10%",
-                            "source": "comments",
-                            "title": "Comments",
-                            "type": "text"
                           }
                         ],
                         "source": "eucalyptDetails",
@@ -539,6 +589,7 @@
         "title": "Grasstree Health Survey"
       },
       "modelName": null,
+      "record": "true",
       "templateName": "grasstree_Health_Survey",
       "optional": false,
       "optionalQuestionText": null,
@@ -551,7 +602,7 @@
   "type": "Assessment",
   "category": "Assessment & monitoring",
   "status": "active",
-  "lastUpdatedUserId": "4228",
+  "lastUpdatedUserId": "56575",
   "description": null,
   "formVersion": 1
 }
