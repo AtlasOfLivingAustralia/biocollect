@@ -1,0 +1,608 @@
+{
+  "id": "66bc3659f62dc027ba21e634",
+  "dateCreated": "2024-08-14T04:45:13Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-08-19T05:45:50Z",
+  "createdUserId": "56575",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Grasstree Health Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Grasstree Health Survey",
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "siteDescription",
+            "description": "",
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "name": "surveyDate",
+            "indexName": "surveyDate",
+            "description": "",
+            "validate": "required,max[${now}]"
+          },
+          {
+            "dataType": "text",
+            "name": "participants",
+            "description": "",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "siteCode",
+            "description": "",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "drainage",
+            "constraints": [
+              "No drainage line",
+              "Minor depression",
+              "Close to creek / water pool"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "disturbance",
+            "constraints": [
+              "Not evident",
+              "Track",
+              "Tree fallen",
+              "Fire"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "comments"
+          },
+          {
+            "allowRowDelete": "false",
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "grasstreeSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "number",
+                "name": "healthy",
+                "defaultValue": 0,
+                "validate": "min[0]"
+              },
+              {
+                "dataType": "number",
+                "name": "minor",
+                "defaultValue": 0,
+                "validate": "min[0]"
+              },
+              {
+                "dataType": "number",
+                "name": "major",
+                "defaultValue": 0,
+                "validate": "min[0]"
+              },
+              {
+                "dataType": "number",
+                "name": "dead",
+                "defaultValue": 0,
+                "validate": "min[0]"
+              },
+              {
+                "dataType": "number",
+                "name": "collapsed",
+                "defaultValue": 0,
+                "validate": "min[0]"
+              }
+            ],
+            "dataType": "list",
+            "name": "grassTreeHealthDetails"
+          },
+          {
+            "dataType": "boolean",
+            "name": "gpsDeviceUsed"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": false,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "allowRowDelete": "false",
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "blueLilySpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "text",
+                "name": "estimatedLilyCount",
+                "constraints": [
+                  "0",
+                  "1-10",
+                  "11-50",
+                  "51-100",
+                  "101-200",
+                  "> 201"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "lilyHealthyPercentage",
+                "constraints": [
+                  "0%",
+                  "1-10%",
+                  "11-25%",
+                  "26-50%",
+                  "51-75%",
+                  "76-100%"
+                ]
+              }
+            ],
+            "dataType": "list",
+            "name": "lilyDetails"
+          },
+          {
+            "allowRowDelete": "false",
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "daphneHeathSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "text",
+                "name": "estimatedDaphneHeathCount",
+                "constraints": [
+                  "0",
+                  "1-10",
+                  "11-50",
+                  "51-100",
+                  "101-200",
+                  "> 201"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "daphneHeathHealthyPercentage",
+                "constraints": [
+                  "0%",
+                  "1-10%",
+                  "11-25%",
+                  "26-50%",
+                  "51-75%",
+                  "76-100%"
+                ]
+              }
+            ],
+            "dataType": "list",
+            "name": "daphneHeathDetails"
+          },
+          {
+            "allowRowDelete": "false",
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "eucalyptSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "text",
+                "name": "dieback",
+                "constraints": [
+                  "Not evident",
+                  "Isolated",
+                  "Moderate",
+                  "Severe"
+                ]
+              }
+            ],
+            "dataType": "list",
+            "name": "eucalyptDetails"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Friends Grasstree Health Data Sheet</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Survey Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "computed": null,
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Survey Date:",
+                                "source": "surveyDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Site description (track details):",
+                                "source": "siteDescription",
+                                "type": "textarea",
+                                "rows": 4
+                              },
+                              {
+                                "preLabel": "Participants:",
+                                "source": "participants",
+                                "type": "textarea",
+                                "rows": 4
+                              },
+                              {
+                                "preLabel": "Site code (date-track e.g. 010924-Sunrise):",
+                                "source": "siteCode",
+                                "type": "text"
+                              },
+                              {
+                                "source": "drainage",
+                                "preLabel": "Drainage",
+                                "type": "selectOne"
+                              },
+                              {
+                                "source": "disturbance",
+                                "preLabel": "Disturbance",
+                                "type": "selectOne"
+                              },
+                              {
+                                "source": "comments",
+                                "preLabel": "Comments",
+                                "type": "textarea",
+                                "rows": 4
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Location",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<font style='color:blue; font-size:0.9em;'><i><b>Select existing location from the drop-down list. If your location is not on the list, you can create one and add it to the list for future use, but please avoid creating duplicate location.<p>TO CREATE A NEW LOCATION:</b><br>Zoom into the map, click on the pin marker tool (left), then find on the map the location of your survey and click on it. This should put a pin on the map. Please give the new location a unique descriptive name and save, e.g. Portsea Pier, Steeles Rocks, Frankston Pier, Brighton Baths</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": false,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": false,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": false,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": false
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "I used a GPS device to obtain coordinates",
+                                "source": "gpsDeviceUsed",
+                                "type": "boolean"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Grasstree Health Count",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "10%",
+                                "min-width": "100px",
+                                "source": "grasstreeSpecies",
+                                "title": "Grasstree Species",
+                                "type": "speciesSelect"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "healthy",
+                                "title": "Healthy",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "minor",
+                                "title": "Minor",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "major",
+                                "title": "Major",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "dead",
+                                "title": "Dead",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "collapsed",
+                                "title": "Collapsed",
+                                "type": "number"
+                              }
+                            ],
+                            "source": "grassTreeHealthDetails",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "computed": null,
+            "type": "col",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Nodding Blue Lily",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "disableTableUpload": true,
+                        "columns": [
+                          {
+                            "width": "10%",
+                            "min-width": "100px",
+                            "source": "blueLilySpecies",
+                            "title": "Nodding Blue Lily Species",
+                            "type": "speciesSelect"
+                          },
+                          {
+                            "width": "10%",
+                            "source": "estimatedLilyCount",
+                            "title": "Estimated number of plants",
+                            "type": "selectOne"
+                          },
+                          {
+                            "width": "10%",
+                            "source": "lilyHealthyPercentage",
+                            "title": "% Healthy",
+                            "type": "selectOne"
+                          }
+
+                        ],
+                        "source": "lilyDetails",
+                        "type": "table"
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ]
+          },
+          {
+            "computed": null,
+            "type": "col",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Daphne Heath",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "disableTableUpload": true,
+                        "columns": [
+                          {
+                            "width": "10%",
+                            "min-width": "100px",
+                            "source": "daphneHeathSpecies",
+                            "title": "Daphne Heath Species",
+                            "type": "speciesSelect"
+                          },
+                          {
+                            "width": "10%",
+                            "source": "estimatedDaphneHeathCount",
+                            "title": "Estimated number of plants",
+                            "type": "selectOne"
+                          },
+                          {
+                            "width": "10%",
+                            "source": "daphneHeathHealthyPercentage",
+                            "title": "% Healthy",
+                            "type": "selectOne"
+                          }
+
+                        ],
+                        "source": "daphneHeathDetails",
+                        "type": "table"
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ]
+          },
+          {
+            "computed": null,
+            "type": "col",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Eucalypt",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "disableTableUpload": true,
+                        "columns": [
+                          {
+                            "width": "10%",
+                            "min-width": "100px",
+                            "source": "eucalyptSpecies",
+                            "title": "Eucalypt Species",
+                            "type": "speciesSelect"
+                          },
+                          {
+                            "width": "10%",
+                            "source": "dieback",
+                            "title": "Dieback",
+                            "type": "selectOne"
+                          }
+                        ],
+                        "source": "eucalyptDetails",
+                        "type": "table"
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ]
+          }
+        ],
+        "title": "Grasstree Health Survey"
+      },
+      "modelName": null,
+      "record": "true",
+      "templateName": "grasstree_Health_Survey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Grasstree Health Survey",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "56575",
+  "description": null,
+  "formVersion": 1
+}
