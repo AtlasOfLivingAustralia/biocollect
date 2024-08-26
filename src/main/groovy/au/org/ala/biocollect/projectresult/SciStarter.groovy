@@ -69,6 +69,7 @@ class SciStarter {
                 ecoScienceType         : doc.ecoScienceType,
                 isDIY                  : doc.isDIY?.toBoolean(),
                 isSciStarter           : doc.isSciStarter?.toBoolean(),
+                isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
                 hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
                 equipment              : doc.gear,
                 plannedStartDate       : doc.plannedStartDate,
