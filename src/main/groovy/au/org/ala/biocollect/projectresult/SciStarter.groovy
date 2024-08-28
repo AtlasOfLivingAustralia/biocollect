@@ -71,6 +71,7 @@ class SciStarter {
                 isSciStarter           : doc.isSciStarter?.toBoolean(),
                 isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
                 hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
+                origin                 : doc.origin,
                 equipment              : doc.gear,
                 plannedStartDate       : doc.plannedStartDate,
                 plannedEndDate         : doc.plannedEndDate,
