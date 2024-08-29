@@ -84,14 +84,14 @@ class SearchService {
     }
 
     def downloadProjectData(HttpServletResponse response, Map params) {
-        webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}", true, true)
+        webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}")
     }
 
     Map searchProjectActivity(GrailsParameterMap params, String q = null){
        // String url = grailsApplication.config.ecodata.service.url + '/search/elasticProjectActivity' + commonService.buildUrlParamsFromMap(params)
         String url = "${elasticSearchBaseUrl}/elasticProjectActivity" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
-        webService.getJson(url, null, true)
+        webService.getJson(url)
     }
 
     /**
@@ -180,14 +180,8 @@ class SearchService {
 
         def url = "${elasticSearchBaseUrl}/elasticHome" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
-        def jsonstring = webService.get(url)
-        try {
-            def jsonObj = new JsonSlurper().parseText(jsonstring)
-            jsonObj
-        } catch(Exception e){
-            log.error(e.getMessage(), e)
-            [error:'Problem retrieving home page facets from: ' + url]
-        }
+
+        webService.getJson(url)
     }
 
     def getProjectsForIds(params) {

@@ -15,7 +15,7 @@ class BulkImportService {
 
     Map get(String id) {
         String url = grailsApplication.config.getProperty('ecodata.service.url') + "/bulkImport/" + id
-        webService.getJson(url, null, true)
+        webService.getJson(url, null)
     }
 
     Map create (Map props) {

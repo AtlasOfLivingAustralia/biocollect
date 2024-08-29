@@ -59,7 +59,7 @@ class PdfGenerationService {
         String url = grailsApplication.config.pdfgen.baseURL + PDFGEN_PATH + commonService.buildUrlParamsFromMap(pdfGenParams)
         Map result
         try {
-            result = webService.proxyGetRequest(response, url, false, false, TIMEOUT)
+            result = webService.proxyGetRequest(response, url, false, TIMEOUT)
         }
         catch (Exception e) {
             result = [error: e.message]

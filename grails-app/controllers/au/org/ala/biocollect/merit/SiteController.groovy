@@ -25,7 +25,7 @@ import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
 @SSO
 class SiteController {
-
+    private static APPLICATION_JSON = 'application/json'
     def siteService, projectService, projectActivityService, activityService, metadataService, userService,
         searchService, importService, webService
 
@@ -412,10 +412,10 @@ class SiteController {
 
         if (!error) {
             progress.finished = true
-            render([message: 'success', progress: progress]) as JSON
+            render(text: [message: 'success', progress: progress] as JSON, contentType: APPLICATION_JSON)
         } else {
             progress.finished = false
-            render([message: 'error', progress: progress, error: error]) as JSON
+            render(text: [message: 'error', progress: progress, error: error] as JSON, contentType: APPLICATION_JSON)
         }
     }
 

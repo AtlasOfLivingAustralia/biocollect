@@ -76,6 +76,7 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
 
         // Configure the client
         configureFor("localhost", testConfig.wiremock.port)
+        setupTokenForSystem()
     }
 
     private void startWireMock() {
@@ -232,8 +233,13 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
      */
     String setupOidcAuthForUser(Map userDetails) {
         // The test config isn't a normal grails config object (probably need to to into why) so getProperty doesn't work.
-        String clientId = getTestConfig().security.oidc.clientId
+        Map testConfig = getTestConfig()
+        String clientId = testConfig.security.oidc.clientId
+        String clientSecret = testConfig.security.oidc.secret
+        String base64EncodedAuth = "Basic " + "${clientId}:${clientSecret}".bytes.encodeBase64().toString()
+
         List roles = ["ROLE_USER"]
+
         if (userDetails.role) {
             roles << userDetails.role
         }
@@ -251,6 +257,7 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
                 client_id:clientId,
                 sid:"test_sid",
                 aud:clientId,
+                audience:clientId,
                 name:userDetails.firstName+" "+userDetails.lastName,
                 state:"maybe_this_matters",
                 auth_time:-1,
@@ -259,7 +266,7 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
                 iat:com.nimbusds.jwt.util.DateUtils.toSecondsSinceEpoch(new Date()),
                 jti:"id",
                 email:userDetails.email,
-                scope             : "openid profile ala roles email"
+                scope             : testConfig.security.oidc.scope
         ]
         String idToken = new JwtGenerator(new RSASignatureConfiguration(pair)).generate(idTokenClaims)
         Map token = [:]
@@ -271,6 +278,7 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
         token.scope = "openid profile ala roles email"
 
         stubFor(post(urlPathEqualTo("/cas/oidc/oidcAccessToken"))
+                .withHeader("Authorization", equalTo(base64EncodedAuth))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
@@ -294,6 +302,54 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
                         .withHeader("Content-Type", "application/json")
                         .withBody((profile as JSON).toString())
                 ))
+        idToken
+    }
+
+    /**
+     * Sets up stubs with wiremock to authenticate the system. Used to authenticate calls from feildcapture to ecodata.
+     * @return an idToken for the system.
+     */
+    String setupTokenForSystem() {
+        // The test config isn't a normal grails config object (probably need to to into why) so getProperty doesn't work.
+        Map testConfig = getTestConfig()
+        String clientId = testConfig.webservice["client-id"]
+        String clientSecret = testConfig.webservice["client-secret"]
+        String base64EncodedAuth = "Basic " + "${clientId}:${clientSecret}".bytes.encodeBase64().toString()
+
+        Map idTokenClaims = [
+                at_hash           : "KX-L2Fj6Z9ow-gOpYfehRA",
+                sub               : clientId,
+                amr               : "DelegatedClientAuthenticationHandler",
+                iss               : "http://localhost:8018/cas/oidc",
+                client_id         : clientId,
+                aud               : clientId,
+                audience          : clientId,
+                state             : "maybe_this_matters",
+                auth_time         : -1,
+                nbf               : com.nimbusds.jwt.util.DateUtils.toSecondsSinceEpoch(new Date().minus(365)),
+                exp               : com.nimbusds.jwt.util.DateUtils.toSecondsSinceEpoch(new Date().plus(365)),
+                iat               : com.nimbusds.jwt.util.DateUtils.toSecondsSinceEpoch(new Date()),
+                jti               : "id-system",
+                scope             : testConfig.webservice["jwt-scopes"]
+        ]
+
+        String idToken = new JwtGenerator(new RSASignatureConfiguration(pair)).generate(idTokenClaims)
+        Map token = [:]
+        token.access_token = idToken
+        token.id_token = idToken
+        token.refresh_token = null
+        token.token_type = "bearer"
+        token.expires_in = 86400
+        token.scope = testConfig.webservice["jwt-scopes"]
+
+        stubFor(post(urlPathEqualTo("/cas/oidc/oidcAccessToken"))
+                .withHeader("Authorization", equalTo(base64EncodedAuth))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody((token as JSON).toString())
+                        .withTransformers("response-template")))
+
         idToken
     }
 

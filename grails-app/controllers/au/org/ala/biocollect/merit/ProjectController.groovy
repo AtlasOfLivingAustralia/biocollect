@@ -1471,7 +1471,7 @@ class ProjectController {
     def downloadShapefile(String id) {
 
         def url = grailsApplication.config.ecodata.baseURL + "/ws/project/${id}.shp"
-        def resp = webService.proxyGetRequest(response, url, true, true,960000)
+        def resp = webService.proxyGetRequest(response, url, true, 960000)
         if (resp.status != 200) {
             render view:'/error', model:[error:resp.error]
         }

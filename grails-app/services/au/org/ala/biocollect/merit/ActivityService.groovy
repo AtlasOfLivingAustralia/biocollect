@@ -438,7 +438,12 @@ class ActivityService {
     }
 
     def convertExcelToOutputData(String id, String type, def file){
-        def result =  webService.postMultipart(grailsApplication.config.ecodata.service.url + "/metadata/extractOutputDataFromActivityExcelTemplate", [pActivityId: id, type: type], file, 'data')
-        result.content?.subMap('data')  ?: result
+        def result =  webService.postMultipart(grailsApplication.config.ecodata.service.url + "/metadata/extractOutputDataFromActivityExcelTemplate", [pActivityId: id, type: type], file, 'data', true)
+        if (result.error) {
+            return result.details
+        }
+        else {
+            return result.content?.subMap('data')  ?: result
+        }
     }
 }

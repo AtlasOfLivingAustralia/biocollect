@@ -19,14 +19,14 @@ class DownloadController {
             render "A download ID is required"
         } else {
             String fileExtension = params.fileExtension ?: 'zip'
-            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadProjectDataFile/${params.id}?fileExtension=${fileExtension}", true, true)
+            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadProjectDataFile/${params.id}?fileExtension=${fileExtension}")
             return null
         }
     }
 
     def file() {
         if (params.id) {
-            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/document/${params.id}/file", true, true)
+            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/document/${params.id}/file")
             return null
         } else if (params.filename) {
             String path = grailsApplication.config.upload.images.path

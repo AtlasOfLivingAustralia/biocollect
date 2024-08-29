@@ -15,6 +15,9 @@ collectory.service.url= "https://collections.ala.org.au"
 
 ecodata.baseURL= "https://ecodata.ala.org.au/"
 
+if(!app.domain.whiteList) {
+        app.domain.whiteList = "ala.org.au,localhost"
+}
 
 google {
         maps.base= "https://maps.googleapis.com/maps/api/js?key="
@@ -50,6 +53,13 @@ environments {
                 grails.config.locations = []
                 security.oidc.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
                 security.oidc.allowUnsignedIdTokens = true
+                security.oidc.clientId="oidcId"
+                security.oidc.secret="oidcSecret"
+                webservice['client-id']="jwtId"
+                webservice['client-secret'] = "jwtSecret"
+                tokenURI = "http://localhost:${wiremock.port}/cas/oidc/oidcAccessToken"
+                jwkURI = "http://localhost:${wiremock.port}/cas/oidc/jwks"
+                issuerURI = "http://localhost:${wiremock.port}/cas/oidc"
                 def casBaseUrl = "http://localhost:${wiremock.port}"
                 ehcache.directory = './ehcache'
                 security.cas.appServerName=serverName
@@ -71,7 +81,6 @@ environments {
                 ecodata.baseURL = 'http://localhost:8080'
                 ecodata.service.url = 'http://localhost:8080/ws'
                 pdfgen.baseURL = "http://localhost:${wiremock.port}/"
-                api_key='testapikey'
                 grails.cache.config = {
                         diskStore {
                                 path '/tmp'
@@ -124,12 +133,17 @@ security.oidc.enabled= true
 security.oidc.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
 security.oidc.clientId= "changeMe"
 security.oidc.secret= "changeMe"
-security.oidc.scope= "openid,profile,email,ala,roles"
+security.oidc.scope= "openid profile email roles user_defined ala"
 security.oidc.allowUnsignedIdTokens= true
 
 security.jwt.enabled= true
 security.jwt.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
-security.jwt.fallbackToLegacyBehaviour= true
+// security.jwt.fallbackToLegacyBehaviour= true
+
+webservice.jwt = true
+webservice['jwt-scopes'] = "ala/internal users/read ala/attrs ecodata/read_test ecodata/write_test"
+webservice['client-id']='changeMe'
+webservice['client-secret'] = 'changeMe'
 
 dataAccessMethods = [
         "oasrdfs",
