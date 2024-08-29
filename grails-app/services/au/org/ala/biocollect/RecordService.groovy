@@ -15,11 +15,11 @@ class RecordService {
     }
 
     def listActivityRecords(id){
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForActivity/' + id, null, true)
+        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForActivity/' + id, null)
     }
 
     def listProjectActivityAndUserRecords(String projectActivityId, String userId) {
-        webService.getJson(grailsApplication.config.ecodata.service.url + "/record/listForProjectActivityAndUser/$projectActivityId?userId=$userId", null, true)
+        webService.getJson(grailsApplication.config.ecodata.service.url + "/record/listForProjectActivityAndUser/$projectActivityId?userId=$userId", null)
     }
 
     def get(id) {

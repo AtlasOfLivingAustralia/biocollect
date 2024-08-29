@@ -229,7 +229,7 @@ class SettingService {
 
         cacheService.get(hubCacheKey(urlPath), {
             String url = grailsApplication.config.ecodata.service.url + '/hub/findByUrlPath/' + urlPath
-            Map json = webService.getJson(url, null, true)
+            Map json = webService.getJson(url)
             json.hubId ? new HubSettings(new HashMap(json)) : null
         })
     }
@@ -245,7 +245,7 @@ class SettingService {
     List listHubs() {
         cacheService.get(HUB_LIST_CACHE_KEY, {
             String url = grailsApplication.config.ecodata.service.url+'/hub/'
-            Map resp = webService.getJson(url, null, true, false)
+            Map resp = webService.getJson(url, null, false)
             resp.list ?: []
         })
     }

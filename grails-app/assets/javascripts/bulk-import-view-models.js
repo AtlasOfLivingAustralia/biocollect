@@ -382,6 +382,10 @@ function BulkUploadViewModel(activityImport) {
             dataType: "json",
             success: function (response) {
                 activityImport.dataToLoad(response.data);
+            },
+            error: function (jqXHR, status, error) {
+                var resp = jqXHR.responseJSON && jqXHR.responseJSON.error || "";
+                message('Failed to convert file to data <br/>' + resp);
             }
         });
         return convertExcelToJSONRequest;
