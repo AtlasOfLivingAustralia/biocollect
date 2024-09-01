@@ -109,7 +109,7 @@
                                 method:"POST"
                             }
                     ).done(function(result) {
-                        alert("Successfully imported " + result.count + " SciStarter projects!");
+                        alert("SciStarter import complete: " + result.created + " created, " + result.updated + " updated, " + result.ignored + " ignored");
                         document.location.reload();
                     }).fail(function (result) {
                         alert(result.statusText);
