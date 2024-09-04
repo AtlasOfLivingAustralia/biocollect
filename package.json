@@ -1,6 +1,6 @@
 {
   "name": "biocollect",
-  "version": "6.0",
+  "version": "7.0",
   "description": "Karma / jasmine configuration for testing project javascript",
   "main": "test/unit/javascript",
   "directories": {
@@ -24,11 +24,31 @@
     "leaflet": "0.7.7",
     "lodash": "^4.17.21",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.35"
+    "moment-timezone": "^0.5.35",
+    "jasmine": "^5.0.0",
+    "@wdio/cli": "9.0.7",
+    "@wdio/globals": "9.0.7",
+    "@wdio/jasmine-framework": "9.0.7",
+    "@wdio/local-runner": "9.0.7",
+    "@wdio/sauce-service": "9.0.7",
+    "@wdio/spec-reporter": "9.0.7",
+    "eslint": "^8.56.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.4.0",
+    "webdriverio": "9.0.7",
+    "jsonwebtoken": "^9.0.2",
+    "crypto": "^1.0.1",
+    "axios": "^0.24.0",
+    "node-jose": "^2.2.0"
   },
   "scripts": {
     "test": "karma start karma.conf.js",
-    "debug": "karma start --debug --browsers=ChromeHeadless --single-run=false"
+    "debug": "karma start --debug --browsers=ChromeHeadless --single-run=false",
+    "integration-test": "wdio run wdio.local.conf.js",
+    "integration-test:local": "wdio run wdio.local.conf.js",
+    "integration-test:sauce": "wdio run wdio.sauce.conf.js"
   },
   "author": "",
   "license": ""
