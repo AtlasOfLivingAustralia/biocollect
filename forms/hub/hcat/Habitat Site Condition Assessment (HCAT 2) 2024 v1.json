@@ -1,0 +1,828 @@
+{
+  "id": "65f0d526c4908064dd100aba",
+  "dateCreated": "2024-03-12T22:20:22Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-07-12T06:36:26Z",
+  "createdUserId": "35",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Habitat Site Condition Assessment (HCAT 2) 2024",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Habitat Site Condition Assessment (HCAT 2) 2024",
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "validate": "required"
+          },
+          {
+            "primaryResult": "true",
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "submissionDate",
+            "description": "The date on which the record was entered into the Habitat Condition Assessment Tool.",
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "name": "surveyDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date the condition assessment commenced as accurately as possible. Use the following formats. Accurate to day: dd/mm/yyyy. Accurate to month: 01/mm/yyyy. Accurate to year: 01/01/yyyy.",
+            "validate": "required,past[now]"
+          },
+          {
+            "dataType": "text",
+            "name": "surveyDateAccuracy",
+            "description": "Indicate the accuracy of the date that the assessment commenced.",
+            "constraints": [
+              "Accurate to day",
+              "Accurate to month",
+              "Accurate to year"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "name": "assessmentPeriodEndDate",
+            "description": "The last date to which the assessment period applies, as accurately as possible. Use the following formats. Accurate to day: dd/mm/yyyy. Accurate to month: 01/mm/yyyy. Accurate to year: 01/01/yyyy."
+          },
+          {
+            "dataType": "text",
+            "name": "assessmentPeriodEndDateAccuracy",
+            "description": "Indicate the accuracy of the end date of the assessment period.",
+            "constraints": [
+              "Accurate to day",
+              "Accurate to month",
+              "Accurate to year"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "coordinatePositionInSite",
+            "description": "Enter the Latitude and Longitude (WGS84 decimal format) coordinate of one corner or the centre point (centroid) of the site. Select the appropriate vertex for the coordinates (i.e. SE, NE, SW, or NW corner), or if the coordinates are the centre of the plot, select centroid.",
+            "constraints": [
+              "NE corner",
+              "SE corner",
+              "SW corner",
+              "NW corner",
+              "Centroid"
+            ]
+          },
+          {
+            "dataType": "number",
+            "name": "siteAreaAmount",
+            "description": "Enter the area of the site (Site Area)",
+            "validate": "min[0]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "text",
+            "name": "siteAreaUnits",
+            "description": "Specify the units (m2 or ha) of area measured (Site Area Units)",
+            "constraints": [
+              "metres^2",
+              "hectares"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks"
+          },
+          {
+            "dataType": "text",
+            "name": "dominantMvg",
+            "description": "",
+            "constraints": [
+              "Acacia Open Woodlands",
+              "Acacia Shrublands",
+              "Acacia Forests and Woodlands",
+              "Callitris Forests and Woodlands",
+              "Casuarina Forests and Woodlands",
+              "Chenopod Shrublands, Samphire Shrublands and Forblands",
+              "Cleared, non-native vegetation, buildings",
+              "Eucalypt Low Open Forests",
+              "Eucalypt Open Forests",
+              "Eucalypt Open Woodlands",
+              "Eucalypt Woodlands",
+              "Eucalypt Tall Open Forests",
+              "Heathlands",
+              "Hummock Grasslands",
+              "Inland Aquatic - freshwater, salt lakes, lagoons",
+              "Low Closed Forests and Tall Closed Shrublands",
+              "Mallee Woodlands and Shrublands",
+              "Mallee Open Woodlands and Sparse Mallee Shrublands",
+              "Mangroves",
+              "Melaleuca Forests and Woodlands",
+              "Naturally bare - sand, rock, claypan, mudflat",
+              "Other Forests and Woodlands",
+              "Other Grasslands, Herblands, Sedgelands and Rushlands",
+              "Other Open Woodlands",
+              "Other Shrublands",
+              "Rainforests and Vine Thickets",
+              "Regrowth, modified native vegetation",
+              "Sea and estuaries",
+              "Tropical Eucalypt Woodlands/Grasslands",
+              "Tussock Grasslands",
+              "Unclassified forest",
+              "Unclassified native vegetation",
+              "Unknown",
+              "NA"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "image",
+            "name": "sitePhoto"
+          },
+          {
+            "dataType": "number",
+            "name": "overallConditionScore",
+            "description": "On a 0-1 scale (with best condition = 1) how would you rate the overall condition of the vegetation within the drawn polygon? The condition score must reflect the site’s current condition relative to reference states of 1 and 0. A score of ‘1’ applies when the ecosystem at the site is in its most natural form (or for highly dynamic systems, one of its natural forms), as might have existed prior to European settlement. A score of ‘0’ applies for a completely transformed site with all original indigenous biodiversity completely removed.",
+            "validate": "required,min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "upperConditionBoundScore",
+            "description": "",
+            "validate": "required,min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "lowerConditionBoundScore",
+            "description": "",
+            "validate": "required,min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "physicalProperties",
+            "description": "The physical and chemical properties of the soil and water (e.g. soil structure, nutrients, pH, salinity,hydrology, geomorphology) that sustain the ecosystem",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "speciesComposition",
+            "description": "The array and relative proportion of organisms (e.g. plants, animals and fungi)",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "structuralDiversity",
+            "description": "The physical organisation of all living and non-living structural elements of the ecosystem, including demographic stages, faunal trophic levels, vegetation strata, ground cover, and spatial diversity",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "ecosystemFunction",
+            "description": "The ecological processes and interactions among living and non-living elements within an ecosystem, that drive the flow of energy and matter",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "habitatClearanceAndFragmentation",
+            "description": "Clearing for residential, agricultural (including silvicultural), commercial, industrial or infrastructure development or use. Note that logging and harvesting of native forests is included under Biological resource use.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "grazingPressureChangeNonNative",
+            "description": "Grazing by domestic or semi-domesticated animals supported by native habitats (rangelands/ranching) and/or allowed to roam in the wild.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "biologicalResourceUse",
+            "description": "Consumptive use of ‘wild’ biological resources (e.g. hunting and collecting animals and plants; fishing and harvesting aquatic resources; logging and harvesting of native forests, collection of firewood and postwood). Includes accidental mortality/bycatch and off-target damage.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "humanIntrusion",
+            "description": "Human activities that alter, destroy or disturb native habitats and species (e.g. military, recreational, research, tourism, vandalism).  Includes accidental mortality/bycatch and off-target damage.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "fireRegimeChange",
+            "description": "Increase in or suppression of fire frequency, intensity, or size outside of its natural range of variation.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "hydrologicalChanges",
+            "description": "Changes to water patterns (e.g. flow) from their natural range of variation as a result of human activities (e.g. dams; weirs; water use, abstraction and diversion; flood pattern; impediments to tidal flow; changes to morphology) and salinity.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "invasiveFaunaNonNative",
+            "description": "Non-native and ecologically destructive species",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "invasiveFloraNonNative",
+            "description": "Non-native and ecologically destructive species",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "overabundantNativeSpecies",
+            "description": "Out-of-balance native species (e.g. excessive grazing pressure from over-abundant macropods, aggressive exclusion by over-abundant noisy miners) or native species introduced outside their native range.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "disease",
+            "description": "Parasites and pathogens either of non-native origin (e.g. Phytophthora cinnamomi, Myrtle rust, Psittacine beak and feather disease), or if native then occurring outside their natural range of variation. Note that for diseases, it is the infective agent which is considered to be the threat.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "nutrientChanges",
+            "description": "Exotic and/or excess materials, including garbage and solid waste (e.g. illegal dumping, oil spills, marine plastics); domestic and urban waste water (sewage and run-off); industrial, agricultural, forestry, and firefighting chemicals (e.g. fertilizers, PFAS) and effluents; airborne pollutants (e.g. acid rain, smog); noise and light.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "soilChanges",
+            "description": "Unnatural rates of soil erosion or sedimentation (e.g. erosion from overgrazing, increased run-off and hence sedimentation due to conversion of forests to agricultural lands).",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "climateChange",
+            "description": "Long-term climatic changes that may be linked to global warming (e.g. habitat loss, shifting and alteration). Other severe climatic or weather events outside the natural range of variation (e.g. droughts, temperature extremes, storms and flooding).",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "livestockGrazing",
+            "description": "Grazing by domestic or semi-domesticated animals supported by native habitats (rangelands/ranching) and/or allowed to roam in the wild.",
+            "validate": "min[0],max[1]",
+            "decimalPlaces": 2,
+            "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=hcat&filename=overallConditionScore.js&model=habitatSiteConditionAssessment"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": true,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Site Condition Assessment</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "col",
+                        "items": [
+                          {
+                            "boxed": true,
+                            "title": "Record Details",
+                            "type": "section",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "computed": null,
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "preLabel": "Assessor name",
+                                        "source": "recordedBy",
+                                        "type": "text"
+                                      },
+                                      {
+                                        "preLabel": "Date record entered",
+                                        "primaryResult": "true",
+                                        "source": "submissionDate",
+                                        "type": "date"
+                                      },
+                                      {
+                                        "source": "<h3>Condition Assessment Date</h3>",
+                                        "type": "literal"
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "source": "<font style='color:blue; font-size:0.8em;'><i>Complete as precisely as possible. If a precise assessment date cannot be given, please enter a date accurate to either month (01/mm/yyyy) or year (01/01/yyyy).</i></font>",
+                                            "type": "literal"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "preLabel": "Assessment date",
+                                        "source": "surveyDate",
+                                        "type": "date"
+                                      },
+                                      {
+                                        "preLabel": "Assessment date accuracy",
+                                        "source": "surveyDateAccuracy",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "source": "<font style='color:blue; font-size:0.8em;'><i>Complete this section if the assessment applies across a known period of time.</i></font>",
+                                            "type": "literal"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "preLabel": "Assessment end date",
+                                        "source": "assessmentPeriodEndDate",
+                                        "type": "date"
+                                      },
+                                      {
+                                        "preLabel": "Assessment end date accuracy",
+                                        "source": "assessmentPeriodEndDateAccuracy",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "source": "<h3>Dominant MVG</h3><font style='color:blue; font-size:0.8em;'><i>Select the dominant major vegetation group (MVG) of the site. If you do not know, you can select “Unknown”. If not applicable, select NA.</i></font> ",
+                                            "type": "literal"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "preLabel": "Dominant Major Vegetation Group (MVG)",
+                                        "source": "dominantMvg",
+                                        "type": "selectOne"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "col",
+                        "items": [
+                          {
+                            "boxed": true,
+                            "title": "Location",
+                            "type": "section",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "computed": null,
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "source": "<font style='color:blue; font-size:0.8em;'><i>You can define the spatial boundaries of the site by either using the mapping tool or by manually entering the Latitude and Longitude coordinates. The latter option is only available for sqaure sites with a North-South orientation.  To use the map, zoom and pan across the map to navigate to your site, click on the shape drawing tool and then click on the map at your survey site to start drawing the site polygon. Click a point for each vertex of the shape and double-click the last one to close the polygon. To enter coordinates manually, click the 'Add coordinates manually' button below the the map.</i></font>",
+                                            "type": "literal"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "computed": null,
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "includeNotes": false,
+                                            "orientation": "vertical",
+                                            "computed": null,
+                                            "autoLocalitySearch": false,
+                                            "readonly": false,
+                                            "includeSource": false,
+                                            "includeAccuracy": false,
+                                            "hideSiteSelection": true,
+                                            "source": "location",
+                                            "type": "geoMap",
+                                            "zoomToProjectArea": true,
+                                            "includeLocality": false
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "boxed": true,
+                                            "title": "Manual site details",
+                                            "type": "section",
+                                            "items": [
+                                              {
+                                                "type": "row",
+                                                "items": [
+                                                  {
+                                                    "type": "col",
+                                                    "items": [
+                                                      {
+                                                        "type": "row",
+                                                        "items": [
+                                                          {
+                                                            "source": "<font style='color:blue; font-size:0.8em;'><i>If manual coordinates entered, provide details of assessed area. Note: this will be assumed to be a square shaped area.</i></font>",
+                                                            "type": "literal"
+                                                          }
+                                                        ]
+                                                      },
+                                                      {
+                                                        "preLabel": "Coordinate position in site",
+                                                        "source": "coordinatePositionInSite",
+                                                        "type": "selectOne"
+                                                      },
+                                                      {
+                                                        "type": "row",
+                                                        "items": [
+                                                          {
+                                                            "preLabel": "Site area",
+                                                            "source": "siteAreaAmount",
+                                                            "type": "number"
+                                                          },
+                                                          {
+                                                            "preLabel": "Site area units",
+                                                            "source": "siteAreaUnits",
+                                                            "type": "selectOne"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ],
+                                            "class": ""
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "source": "<h3>Site photo</h3><font style='color:blue; font-size:0.8em;'><i>If you have a photos of the site and you would like to make them available to this project, you can upload them here.</i></font>",
+                                            "type": "literal"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "preLabel": "",
+                                            "source": "sitePhoto",
+                                            "type": "image"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "col",
+                        "items": [
+                          {
+                            "boxed": true,
+                            "title": "Condition Assessment",
+                            "type": "section",
+                            "items": [
+                              {
+                                "source": "<h1>Overall Condition Rating</h1>",
+                                "type": "literal"
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<h2>Site Condition Score</h2><font style='color:blue; font-size:0.8em;'><i>Provide your best estimate of the expected condition of this site on a scale of 1 ( habitat with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed habitat with all native species removed).  The condition score you provide should reflect your satisfaction with the probability (i.e. chance) of assigning the highest (1) or lowest (0) condition state to a site in a random lottery, based on your knowledge of the site. This score should apply to the site overall, not to the best condition available within the site. Condition within the site must be homogenous.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "preLabel": "Overall Condition Score",
+                                            "source": "overallConditionScore",
+                                            "type": "number"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "source": "<hr>",
+                                            "type": "literal"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "source": "upperConditionBoundScore",
+                                            "preLabel": "Upper condition bound score",
+                                            "type": "number"
+                                          },
+                                          {
+                                            "source": "lowerConditionBoundScore",
+                                            "preLabel": "Lower condition bound score",
+                                            "type": "number"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "type": "row",
+                                        "items": [
+                                          {
+                                            "source": "<hr>",
+                                            "type": "literal"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<h2>Ecosystem Characteristics</h2><font style='color:blue; font-size:0.8em;'><i>On a scale of 1 (intact within its natural range of variability) to 0 (completely transformed or removed), provide your best estimate of the overall condition of each of the following ecosystem characteristics. Note that if you enter an overall 'site condition score’ of 1, we will assume that the condition of each ecosystem characteristic is also 1 and scores will be auto-populated.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "source": "physicalProperties",
+                                        "preLabel": "Physical properties",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "source": "speciesComposition",
+                                        "preLabel": "Species composition",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "source": "structuralDiversity",
+                                        "preLabel": "Structural diversity",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "source": "ecosystemFunction",
+                                        "preLabel": "Ecosystem function",
+                                        "type": "number"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<b><h2>Drivers that negatively impact condition</h2></b><font style='color:blue; font-size:0.8em;'><i>If your overall site condition score is <1, you may wish to record the anthropogenic drivers that caused a decline in site condition. If so, please provide a score between 0 and 1 that is your best estimate of the impact of each driver on the overall condition of the site. You may enter a score between 0 (i.e. threat is absent or effectively absent) and 1 (i.e. threat has the highest possible impact that can be realised at the site). Like the site condition score, the impact score you provide for each driver should reflect the probability (i.e. chance) of getting a version of the site experiencing the highest (= 1) and lowest (= 0) level of impact in a random lottery draw. If you have entered an overall 'site condition score' of 1, we will assume that the impact of each driver on condition is 0 and scores will be auto-populated.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "habitatClearanceAndFragmentation",
+                                    "preLabel": "Habitat clearance and fragmentation",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "biologicalResourceUse",
+                                    "preLabel": "Biological Resource Use",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "humanIntrusion",
+                                    "preLabel": "Human Intrusion",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "fireRegimeChange",
+                                    "preLabel": "Fire regime change",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "hydrologicalChanges",
+                                    "preLabel": "Hydrological change",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "invasiveFaunaNonNative",
+                                    "preLabel": "Invasive non-native animals",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "invasiveFloraNonNative",
+                                    "preLabel": "Invasive non-native plants",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "overabundantNativeSpecies",
+                                    "preLabel": "Problematic or overabundant native species",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "disease",
+                                    "preLabel": "Disease",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "nutrientChanges",
+                                    "preLabel": "Pollution and nutrient enrichment",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "soilChanges",
+                                    "preLabel": "Soil erosion and sedimentation",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "climateChange",
+                                    "preLabel": "Climate change and severe weather",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "livestockGrazing",
+                                    "preLabel": "Livestock grazing of native habitats",
+                                    "type": "number"
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "<h3>Comments</h3>",
+                                    "type": "literal"
+                                  },
+                                  {
+                                    "preLabel": "Comments",
+                                    "source": "eventRemarks",
+                                    "dwcAttribute": "eventRemarks",
+                                    "type": "textarea"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Habitat Site Condition Assessment (HCAT 2) 2024"
+      },
+      "modelName": null,
+      "templateName": "Habitat Site Condition Assessment (HCAT 2) 2024",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Habitat Site Condition Assessment (HCAT 2) 2024",
+      "description": "This is the habitat site condition assessment template for HCAS phase 2 (2024). It is based on the \"Habitat Condition Assessment Tool\" template for site condition assessment from phase 1 of the HACAS project and includes several modifications and refinements based on learnings from the phase 1 project."
+    }
+  ],
+  "type": "Assessment",
+  "category": "Habitat Condition Assessment",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": "This is the habitat site condition assessment template for HCAS phase 2 (2024). It is based on the \"Habitat Condition Assessment Tool\" template for site condition assessment from phase 1 of the HACAS project and includes several modifications and refinements based on learnings from the phase 1 project.",
+  "formVersion": 1
+}
