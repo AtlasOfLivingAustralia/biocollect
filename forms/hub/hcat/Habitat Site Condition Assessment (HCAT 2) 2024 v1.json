@@ -147,23 +147,23 @@
           {
             "dataType": "number",
             "name": "overallConditionScore",
-            "description": "On a 0-1 scale (with best condition = 1) how would you rate the overall condition of the vegetation within the drawn polygon? The condition score must reflect the site’s current condition relative to reference states of 1 and 0. A score of ‘1’ applies when the ecosystem at the site is in its most natural form (or for highly dynamic systems, one of its natural forms), as might have existed prior to European settlement. A score of ‘0’ applies for a completely transformed site with all original indigenous biodiversity completely removed.",
+            "description": "",
             "validate": "required,min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "upperConditionBoundScore",
             "description": "",
             "validate": "required,min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "lowerConditionBoundScore",
             "description": "",
             "validate": "required,min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
@@ -196,7 +196,7 @@
           {
             "dataType": "number",
             "name": "habitatClearanceAndFragmentation",
-            "description": "Clearing for residential, agricultural (including silvicultural), commercial, industrial or infrastructure development or use. Note that logging and harvesting of native forests is included under Biological resource use.",
+            "description": "Habitat clearing for residential, agricultural (including silvicultural and grazing), commercial, industrial (e.g. mining) or infrastructure development or use. Note that logging and harvesting of native forests is included under ‘Biological resource use’",
             "validate": "min[0],max[1]",
             "decimalPlaces": 2
           },
@@ -238,14 +238,14 @@
           {
             "dataType": "number",
             "name": "invasiveFaunaNonNative",
-            "description": "Non-native and ecologically destructive species",
+            "description": "Non-native and ecologically destructive animal species (e.g. feral)",
             "validate": "min[0],max[1]",
             "decimalPlaces": 2
           },
           {
             "dataType": "number",
             "name": "invasiveFloraNonNative",
-            "description": "Non-native and ecologically destructive species",
+            "description": "Non-native and ecologically destructive plant and fungi species",
             "validate": "min[0],max[1]",
             "decimalPlaces": 2
           },
@@ -598,7 +598,7 @@
                                 "type": "row",
                                 "items": [
                                   {
-                                    "source": "<h2>Site Condition Score</h2><font style='color:blue; font-size:0.8em;'><i>Provide your best estimate of the expected condition of this site on a scale of 1 ( habitat with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed habitat with all native species removed).  The condition score you provide should reflect your satisfaction with the probability (i.e. chance) of assigning the highest (1) or lowest (0) condition state to a site in a random lottery, based on your knowledge of the site. This score should apply to the site overall, not to the best condition available within the site. Condition within the site must be homogenous.</i></font>",
+                                    "source": "<h2>Site Condition Score</h2><font style='color:blue; font-size:0.8em;'><i>Provide your estimate of the condition of this site on a scale of 1 (a site with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed site with all native species removed). The condition score you provide is defined as an equivalence between the condition of your site and the probability of instead getting either the highest (1) or lowest (0) condition for the site in a lottery. This score should apply to the site overall, not to the best condition available within the site. Condition within the site must be homogenous.</i></font>",
                                     "type": "literal"
                                   }
                                 ]
@@ -615,7 +615,7 @@
                                           {
                                             "preLabel": "Overall Condition Score",
                                             "source": "overallConditionScore",
-                                            "type": "number"
+                                            "type": "text"
                                           }
                                         ]
                                       },
@@ -634,12 +634,12 @@
                                           {
                                             "source": "upperConditionBoundScore",
                                             "preLabel": "Upper condition bound score",
-                                            "type": "number"
+                                            "type": "text"
                                           },
                                           {
                                             "source": "lowerConditionBoundScore",
                                             "preLabel": "Lower condition bound score",
-                                            "type": "number"
+                                            "type": "text"
                                           }
                                         ]
                                       },
@@ -660,7 +660,7 @@
                                 "type": "row",
                                 "items": [
                                   {
-                                    "source": "<h2>Ecosystem Characteristics</h2><font style='color:blue; font-size:0.8em;'><i>On a scale of 1 (intact within its natural range of variability) to 0 (completely transformed or removed), provide your best estimate of the overall condition of each of the following ecosystem characteristics. Note that if you enter an overall 'site condition score’ of 1, we will assume that the condition of each ecosystem characteristic is also 1 and scores will be auto-populated.</i></font>",
+                                    "source": "<h2>Ecosystem Characteristics</h2><font style='color:blue; font-size:0.8em;'><i> On a scale of 1 (intact within its natural range of variability) to 0 (completely transformed or removed), provide your estimate of the overall condition of each of the following ecosystem characteristics.</i></font>",
                                     "type": "literal"
                                   }
                                 ]
@@ -674,22 +674,22 @@
                                       {
                                         "source": "physicalProperties",
                                         "preLabel": "Physical properties",
-                                        "type": "number"
+                                        "type": "text"
                                       },
                                       {
                                         "source": "speciesComposition",
                                         "preLabel": "Species composition",
-                                        "type": "number"
+                                        "type": "text"
                                       },
                                       {
                                         "source": "structuralDiversity",
                                         "preLabel": "Structural diversity",
-                                        "type": "number"
+                                        "type": "text"
                                       },
                                       {
                                         "source": "ecosystemFunction",
                                         "preLabel": "Ecosystem function",
-                                        "type": "number"
+                                        "type": "text"
                                       }
                                     ]
                                   }
@@ -699,7 +699,7 @@
                                 "type": "row",
                                 "items": [
                                   {
-                                    "source": "<b><h2>Drivers that negatively impact condition</h2></b><font style='color:blue; font-size:0.8em;'><i>If your overall site condition score is <1, you may wish to record the anthropogenic drivers that caused a decline in site condition. If so, please provide a score between 0 and 1 that is your best estimate of the impact of each driver on the overall condition of the site. You may enter a score between 0 (i.e. threat is absent or effectively absent) and 1 (i.e. threat has the highest possible impact that can be realised at the site). Like the site condition score, the impact score you provide for each driver should reflect the probability (i.e. chance) of getting a version of the site experiencing the highest (= 1) and lowest (= 0) level of impact in a random lottery draw. If you have entered an overall 'site condition score' of 1, we will assume that the impact of each driver on condition is 0 and scores will be auto-populated.</i></font>",
+                                    "source": "<b><h2>Drivers that negatively impact condition</h2></b><font style='color:blue; font-size:0.8em;'><i>If your overall site condition score is <1, you may wish to record the anthropogenic drivers that caused a decline in site condition. If so, please provide a score between 0 and 1 that is your estimate of the impact of each driver on the overall condition of the site. You may enter a score between 0 (i.e. threat is absent or effectively absent) and 1 (i.e. threat has the highest possible impact that can be realised at the site). Like the site condition score, the impact score for each driver is defined as an equivalence between the impact of the driver at your site and the probability of instead getting the highest (1) or lowest (0) impact of the driver in a lottery.  Scoring can include both primary and secondary drivers.</i></font>",
                                     "type": "literal"
                                   }
                                 ]
@@ -739,7 +739,7 @@
                                   },
                                   {
                                     "source": "invasiveFloraNonNative",
-                                    "preLabel": "Invasive non-native plants",
+                                    "preLabel": "Invasive non-native plants and fungi",
                                     "type": "number"
                                   },
                                   {
