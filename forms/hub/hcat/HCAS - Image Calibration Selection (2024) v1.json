@@ -36,23 +36,23 @@
           {
             "dataType": "number",
             "name": "overallConditionBestEstimate",
-            "description": "On a scale of 1 (habitat with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed habitat with all native species removed), how would you rate the condition of the site in this image?",
+            "description": "",
             "validate": "required,min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "upperConditionBound",
             "description": "",
             "validate": "required,min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "lowerConditionBound",
             "description": "",
             "validate": "required,min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "text",
@@ -133,7 +133,7 @@
                             "type": "row",
                             "items": [
                               {
-                                "source": "<h3>Overall Condition Score</h3><font style='color:blue; font-size:0.8em;'><i>Provide your best estimate of the expected condition of the habitat in this image on a scale of 1 (habitat with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed habitat with all native species removed). The condition score you provide should reflect your satisfaction with the probability (i.e. chance) of assigning the highest (1) or lowest (0) condition state to this image in a random lottery.</i></font>",
+                                "source": "<h3>Overall Condition Score</h3><font style='color:blue; font-size:0.8em;'><i>Provide your estimate of the expected condition of the site in this image on a scale of 1 (a site with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed site with all native species removed). The condition score you provide is defined as an equivalence between the condition of your site and the probability of instead getting either the highest (1) or lowest (0) condition for the site in a lottery.</i></font>",
                                 "type": "literal"
                               }
                             ]
@@ -141,7 +141,8 @@
                           {
                             "preLabel": "Overall condition score",
                             "source": "overallConditionBestEstimate",
-                            "type": "number"
+                            "type": "text",
+                            "width": "2%"
                           },
                           {
                             "type": "row",
@@ -149,12 +150,12 @@
                               {
                                 "source": "lowerConditionBound",
                                 "preLabel": "Lower condition bound",
-                                "type": "number"
+                                "type": "text"
                               },
                               {
                                 "source": "upperConditionBound",
                                 "preLabel": "Upper condition bound",
-                                "type": "number"
+                                "type": "text"
                               }
                             ]
                           },
