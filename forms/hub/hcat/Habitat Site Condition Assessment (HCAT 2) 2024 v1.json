@@ -170,126 +170,126 @@
             "name": "physicalProperties",
             "description": "The physical and chemical properties of the soil and water (e.g. soil structure, nutrients, pH, salinity,hydrology, geomorphology) that sustain the ecosystem",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "speciesComposition",
             "description": "The array and relative proportion of organisms (e.g. plants, animals and fungi)",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "structuralDiversity",
             "description": "The physical organisation of all living and non-living structural elements of the ecosystem, including demographic stages, faunal trophic levels, vegetation strata, ground cover, and spatial diversity",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "ecosystemFunction",
             "description": "The ecological processes and interactions among living and non-living elements within an ecosystem, that drive the flow of energy and matter",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "habitatClearanceAndFragmentation",
             "description": "Habitat clearing for residential, agricultural (including silvicultural and grazing), commercial, industrial (e.g. mining) or infrastructure development or use. Note that logging and harvesting of native forests is included under ‘Biological resource use’",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "grazingPressureChangeNonNative",
             "description": "Grazing by domestic or semi-domesticated animals supported by native habitats (rangelands/ranching) and/or allowed to roam in the wild.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "biologicalResourceUse",
             "description": "Consumptive use of ‘wild’ biological resources (e.g. hunting and collecting animals and plants; fishing and harvesting aquatic resources; logging and harvesting of native forests, collection of firewood and postwood). Includes accidental mortality/bycatch and off-target damage.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "humanIntrusion",
             "description": "Human activities that alter, destroy or disturb native habitats and species (e.g. military, recreational, research, tourism, vandalism).  Includes accidental mortality/bycatch and off-target damage.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "fireRegimeChange",
             "description": "Increase in or suppression of fire frequency, intensity, or size outside of its natural range of variation.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "hydrologicalChanges",
             "description": "Changes to water patterns (e.g. flow) from their natural range of variation as a result of human activities (e.g. dams; weirs; water use, abstraction and diversion; flood pattern; impediments to tidal flow; changes to morphology) and salinity.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "invasiveFaunaNonNative",
             "description": "Non-native and ecologically destructive animal species (e.g. feral)",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "invasiveFloraNonNative",
             "description": "Non-native and ecologically destructive plant and fungi species",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "overabundantNativeSpecies",
             "description": "Out-of-balance native species (e.g. excessive grazing pressure from over-abundant macropods, aggressive exclusion by over-abundant noisy miners) or native species introduced outside their native range.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "disease",
             "description": "Parasites and pathogens either of non-native origin (e.g. Phytophthora cinnamomi, Myrtle rust, Psittacine beak and feather disease), or if native then occurring outside their natural range of variation. Note that for diseases, it is the infective agent which is considered to be the threat.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "nutrientChanges",
             "description": "Exotic and/or excess materials, including garbage and solid waste (e.g. illegal dumping, oil spills, marine plastics); domestic and urban waste water (sewage and run-off); industrial, agricultural, forestry, and firefighting chemicals (e.g. fertilizers, PFAS) and effluents; airborne pollutants (e.g. acid rain, smog); noise and light.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "soilChanges",
             "description": "Unnatural rates of soil erosion or sedimentation (e.g. erosion from overgrazing, increased run-off and hence sedimentation due to conversion of forests to agricultural lands).",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "climateChange",
             "description": "Long-term climatic changes that may be linked to global warming (e.g. habitat loss, shifting and alteration). Other severe climatic or weather events outside the natural range of variation (e.g. droughts, temperature extremes, storms and flooding).",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "livestockGrazing",
             "description": "Grazing by domestic or semi-domesticated animals supported by native habitats (rangelands/ranching) and/or allowed to roam in the wild.",
             "validate": "min[0],max[1]",
-            "decimalPlaces": 2
+            "decimalPlaces": 20
           },
           {
             "defaultAccuracy": 50,
@@ -709,67 +709,67 @@
                                   {
                                     "source": "habitatClearanceAndFragmentation",
                                     "preLabel": "Habitat clearance and fragmentation",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "biologicalResourceUse",
                                     "preLabel": "Biological Resource Use",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "humanIntrusion",
                                     "preLabel": "Human Intrusion",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "fireRegimeChange",
                                     "preLabel": "Fire regime change",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "hydrologicalChanges",
                                     "preLabel": "Hydrological change",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "invasiveFaunaNonNative",
                                     "preLabel": "Invasive non-native animals",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "invasiveFloraNonNative",
                                     "preLabel": "Invasive non-native plants and fungi",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "overabundantNativeSpecies",
                                     "preLabel": "Problematic or overabundant native species",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "disease",
                                     "preLabel": "Disease",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "nutrientChanges",
                                     "preLabel": "Pollution and nutrient enrichment",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "soilChanges",
                                     "preLabel": "Soil erosion and sedimentation",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "climateChange",
                                     "preLabel": "Climate change and severe weather",
-                                    "type": "number"
+                                    "type": "text"
                                   },
                                   {
                                     "source": "livestockGrazing",
                                     "preLabel": "Livestock grazing of native habitats",
-                                    "type": "number"
+                                    "type": "text"
                                   }
                                 ]
                               }
