@@ -617,39 +617,6 @@
                                             "type": "text"
                                           }
                                         ]
-                                      },
-                                      {
-                                        "type": "row",
-                                        "items": [
-                                          {
-                                            "source": "<hr>",
-                                            "type": "literal"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "type": "col",
-                                        "items": [
-                                          {
-                                            "source": "upperConditionBoundScore",
-                                            "preLabel": "Upper condition bound score",
-                                            "type": "text"
-                                          },
-                                          {
-                                            "source": "lowerConditionBoundScore",
-                                            "preLabel": "Lower condition bound score",
-                                            "type": "text"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "type": "row",
-                                        "items": [
-                                          {
-                                            "source": "<hr>",
-                                            "type": "literal"
-                                          }
-                                        ]
                                       }
                                     ]
                                   }
