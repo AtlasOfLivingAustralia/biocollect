@@ -29,6 +29,7 @@
           {
             "primaryResult": "true",
             "dataType": "date",
+            "defaultValue": "${now}",
             "name": "submissionDate",
             "description": "The date the assessment of this record was completed.",
             "validate": "required"
