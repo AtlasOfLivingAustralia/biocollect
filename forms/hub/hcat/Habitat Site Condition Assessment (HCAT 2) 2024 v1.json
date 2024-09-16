@@ -413,20 +413,6 @@
                                         "preLabel": "Assessment end date accuracy",
                                         "source": "assessmentPeriodEndDateAccuracy",
                                         "type": "selectOne"
-                                      },
-                                      {
-                                        "type": "row",
-                                        "items": [
-                                          {
-                                            "source": "<h3>Dominant MVG</h3><font style='color:blue; font-size:0.8em;'><i>Select the dominant major vegetation group (MVG) of the site. If you do not know, you can select “Unknown”. If not applicable, select NA.</i></font> ",
-                                            "type": "literal"
-                                          }
-                                        ]
-                                      },
-                                      {
-                                        "preLabel": "Dominant Major Vegetation Group (MVG)",
-                                        "source": "dominantMvg",
-                                        "type": "selectOne"
                                       }
                                     ]
                                   }
