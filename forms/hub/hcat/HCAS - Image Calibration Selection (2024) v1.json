@@ -145,21 +145,6 @@
                             "width": "2%"
                           },
                           {
-                            "type": "row",
-                            "items": [
-                              {
-                                "source": "lowerConditionBound",
-                                "preLabel": "Lower condition bound",
-                                "type": "text"
-                              },
-                              {
-                                "source": "upperConditionBound",
-                                "preLabel": "Upper condition bound",
-                                "type": "text"
-                              }
-                            ]
-                          },
-                          {
                             "source": "<hr>",
                             "type": "literal"
                           },
