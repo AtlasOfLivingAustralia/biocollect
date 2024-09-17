@@ -169,28 +169,28 @@
             "dataType": "number",
             "name": "physicalProperties",
             "description": "The physical and chemical properties of the soil and water (e.g. soil structure, nutrients, pH, salinity,hydrology, geomorphology) that sustain the ecosystem",
-            "validate": "min[0],max[1]",
+            "validate": "required,min[0],max[1]",
             "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "speciesComposition",
             "description": "The array and relative proportion of organisms (e.g. plants, animals and fungi)",
-            "validate": "min[0],max[1]",
+            "validate": "required,min[0],max[1]",
             "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "structuralDiversity",
             "description": "The physical organisation of all living and non-living structural elements of the ecosystem, including demographic stages, faunal trophic levels, vegetation strata, ground cover, and spatial diversity",
-            "validate": "min[0],max[1]",
+            "validate": "required,min[0],max[1]",
             "decimalPlaces": 20
           },
           {
             "dataType": "number",
             "name": "ecosystemFunction",
             "description": "The ecological processes and interactions among living and non-living elements within an ecosystem, that drive the flow of energy and matter",
-            "validate": "min[0],max[1]",
+            "validate": "required,min[0],max[1]",
             "decimalPlaces": 20
           },
           {
@@ -651,7 +651,7 @@
                                 "type": "row",
                                 "items": [
                                   {
-                                    "source": "<b><h2>Drivers that negatively impact condition</h2></b><font style='color:blue; font-size:0.8em;'><i>If your overall site condition score is <1, you may wish to record the anthropogenic drivers that caused a decline in site condition. If so, please provide a score between 0 and 1 that is your estimate of the impact of each driver on the overall condition of the site. You may enter a score between 0 (i.e. threat is absent or effectively absent) and 1 (i.e. threat has the highest possible impact that can be realised at the site). Like the site condition score, the impact score for each driver is defined as an equivalence between the impact of the driver at your site and the probability of instead getting the highest (1) or lowest (0) impact of the driver in a lottery.  Scoring can include both primary and secondary drivers.</i></font>",
+                                    "source": "<b><h2>Drivers that negatively impact condition</h2></b><font style='color:blue; font-size:0.8em;'><i>If you wish to do so, please provide a score between 0 and 1 that is your estimate of the impact of each driver on the overall condition of the site. You may enter a score between 0 (i.e. threat is absent or effectively absent) and 1 (i.e. threat has the highest possible impact that can be realised at the site). Like the site condition score, the impact score for each driver is defined as an equivalence between the impact of the driver at your site and the probability of instead getting the highest (1) or lowest (0) impact of the driver in a lottery. Scoring can include both primary and secondary drivers.</i></font>",
                                     "type": "literal"
                                   }
                                 ]
