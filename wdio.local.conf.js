@@ -4,6 +4,10 @@ const sharedConfig = require('./wdio.shared.conf.js').config;
 const config = {
     ...sharedConfig,
     ...{
+        // specs: [
+        //     './src/test/js/integration/specs/pwa/InstallationSpec.js'
+        // ],
+        maxInstances: 1,
         capabilities: [{
             browserName: 'chrome',
             'goog:chromeOptions': {
@@ -14,6 +18,7 @@ const config = {
             baseUrl: 'http://localhost:8087',
             serverUrl: 'http://localhost:8087',
             wireMockBaseUrl: 'http://localhost:8018',
+            pwaUrl: 'http://localhost:5173/pwa-mobile',
             dirName: __dirname,
             resourceDir: path.resolve(__dirname, 'src', 'integration-test', 'resources'),
             datasetLoadScript: path.resolve(__dirname, 'src', 'main', 'scripts', 'loadFunctionalTestData.sh'),
