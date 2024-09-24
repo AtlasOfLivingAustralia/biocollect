@@ -1,0 +1,827 @@
+{
+  "id": "64ffb3d8cd13e43eb3f4c062",
+  "dateCreated": "2023-09-12T00:42:00Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-05-13T12:33:53Z",
+  "createdUserId": "35",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Marine Metre Squared - Rocky Shore Photogrammetry Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Marine Metre Squared - Rocky Shore Photogrammetry Survey",
+        "record": true,
+        "dataModel": [
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "indexName": "eventDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date on which the survey was undertaken.",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "groupName",
+            "description": "Name of the school or other group participating in the survey",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The person who created the record or the leader of the search team.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "eventTime",
+            "description": "The time that the survey was undertaken"
+          },
+          {
+            "dataType": "text",
+            "name": "isAssociatedRecordTrue",
+            "description": "",
+            "constraints": [
+              "true",
+              "false"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "associatedMm2SurveyUrl",
+            "description": "Enter the URL of the Mm2 survey associated with this photogrammetry record."
+          },
+          {
+            "dataType": "text",
+            "name": "surveyType",
+            "description": "",
+            "constraints": [
+              "Quadrat",
+              "Transect"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "shoreLevel",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "shoreLevel",
+            "measurementType": "text",
+            "description": "",
+            "constraints": [
+              "High",
+              "Mid",
+              "Low"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "associatedPolycamModelId",
+            "description": "The URL for the polycam model associated with each measured shore level"
+          },
+          {
+            "dataType": "number",
+            "name": "totalSurveyAreaInSquareMetres",
+            "description": "Field description: Record the total area from which data is being collected. For example if you are using a 1m² quadrat the total area will be 1m². For surveys associated with transects you can use the Polycam area measurement tool to calculate the total survey area.",
+            "validate": "required,min[0]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "text",
+            "name": "habitat",
+            "dwcAttribute": "habitat",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "description": "General remarks about the survey event, including people (ideally names or initials), group associations and any other notes not yet recorded."
+          },
+          {
+            "dataType": "text",
+            "name": "siteExposure",
+            "description": "",
+            "constraints": [
+              "Very exposed",
+              "Exposed",
+              "Sheltered"
+            ]
+          },
+          {
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required",
+            "defaultAccuracy": 50
+          },
+          {
+            "indexName": "region",
+            "dataType": "text",
+            "name": "region",
+            "dwcAttribute": "locality",
+            "description": "",
+            "constraints": [
+              "Northland (Te Tai Tokerau)",
+              "Auckland (Tāmaki-makau-rau)",
+              "Waikato",
+              "Bay of Plenty (Te Moana-a-Toi)",
+              "Gisborne (Te Tairāwhiti)",
+              "Hawke's Bay (Te Matau-a-Māui)",
+              "Taranaki",
+              "Manawatū-Whanganui",
+              "Wellington (Te Whanga-nui-a-Tara)",
+              "Tasman (Te Tai-o-Aorere)",
+              "Nelson (Whakatū)",
+              "Marlborough (Te Tauihu-o-te-waka)",
+              "West Coast (Te Tai Poutini)",
+              "Canterbury (Waitaha)",
+              "Otago (Ōtākou)",
+              "Southland (Murihiku)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "locality",
+            "dwcAttribute": "locality",
+            "description": "The name of the locality where the survey was done."
+          },
+          {
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "plantsScientificName",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "number",
+                "name": "plantsAreaInSquareMetres1",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "plantsAreaInSquareMetres2",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "plantsAreaInSquareMetres3",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "plantsAreaInSquareMetres4",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "plantsAreaInSquareMetres5",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "plantsAreaInSquareMetresTotal",
+                "description": "Total area in square metres covered by individuals of a particular taxon.",
+                "computed": {
+                  "expression": "plantsAreaInSquareMetres1+plantsAreaInSquareMetres2+plantsAreaInSquareMetres3+plantsAreaInSquareMetres4+plantsAreaInSquareMetres5"
+                },
+                "noEdit": true,
+                "readOnly": true
+              },
+              {
+                "dataType": "number",
+                "name": "plantsPercentCover",
+                "description": "This calculation show how much of your total survey area is covered by each of the identified plant species.",
+                "computed": {
+                  "expression": "plantsAreaInSquareMetresTotal/totalSurveyAreaInSquareMetres*100"
+                },
+                "decimalPlaces": 2,
+                "noEdit": true,
+                "readOnly": true,
+                "validate": "min[0],max[100]"
+              }
+            ],
+            "dataType": "list",
+            "allowRowDelete": true,
+            "allowHeaderWrap": true,
+            "name": "plantsSpeciesList"
+          },
+          {
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "animalsScientificName",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "number",
+                "name": "animalsAreaInSquareMetres1",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "animalsAreaInSquareMetres2",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "animalsAreaInSquareMetres3",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "animalsAreaInSquareMetres4",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "animalsAreaInSquareMetres5",
+                "description": "Area in square metres covered by individuals of a particular taxon.",
+                "validate": "min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "animalsAreaInSquareMetresTotal",
+                "description": "Total area in square metres covered by individuals of a particular taxon.",
+                "computed": {
+                  "expression": "animalsAreaInSquareMetres1+animalsAreaInSquareMetres2+animalsAreaInSquareMetres3+animalsAreaInSquareMetres4+animalsAreaInSquareMetres5"
+                },
+                "decimalPlaces": 2,
+                "noEdit": true,
+                "readOnly": true
+              },
+              {
+                "dataType": "number",
+                "name": "animalsPercentCover",
+                "description": "This calculation show how much of your total survey area is covered by each of the identified encrusting animal species.",
+                "computed": {
+                  "expression": "animalsAreaInSquareMetresTotal/totalSurveyAreaInSquareMetres*100"
+                },
+                "noEdit": true,
+                "readOnly": true,
+                "validate": "min[0],max[100]"
+              }
+            ],
+            "dataType": "list",
+            "allowRowDelete": true,
+            "allowHeaderWrap": true,
+            "name": "animalsSpeciesList"
+          },
+          {
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "zoneId",
+                "description": "Unique name to identify the zone"
+              },
+              {
+                "dataType": "number",
+                "name": "widthOfZoneInMetres1",
+                "description": "Width of the zone being measured in metres.",
+                "validate": "required, min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "widthOfZoneInMetres2",
+                "description": "Width of the zone being measured in metres.",
+                "validate": "required, min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "widthOfZoneInMetres3",
+                "description": "Width of the zone being measured in metres.",
+                "validate": "required, min[0]",
+                "decimalPlaces": 2
+              },
+              {
+                "dataType": "number",
+                "name": "meanZoneWidthInMetres",
+                "description": "An average value requires a minimum of three separate measurements to be taken. Please remember to enter all three width measurements so that the average value is correctly calculated!",
+                "computed": {
+                  "expression": "(widthOfZoneInMetres1+widthOfZoneInMetres2+widthOfZoneInMetres3)/3"
+                },
+                "noEdit": true,
+                "readOnly": true
+              }
+            ],
+            "dataType": "list",
+            "allowRowDelete": true,
+            "allowHeaderWrap": true,
+            "allowTableUpload": false,
+            "name": "zonationTable"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Rocky Shore Photogrammetry Survey</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Record Information",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Date",
+                                "source": "eventDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Surveyor Name",
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Other surveyors / group",
+                                "source": "groupName",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Survey time",
+                                "source": "eventTime",
+                                "type": "time"
+                              },
+                              {
+                                "source": "<hr>",
+                                "type": "literal"
+                              },
+                              {
+                                "preLabel": "Does the photogrammetry link to a MM2 field survey?",
+                                "source": "isAssociatedRecordTrue",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Associated MM2 field survey URL",
+                                "source": "associatedMm2SurveyUrl",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Associated polycam model URL",
+                                "source": "associatedPolycamModelId",
+                                "type": "text"
+                              },
+                              {
+                                "source": "<hr>",
+                                "type": "literal"
+                              },
+                              {
+                                "preLabel": "Survey type",
+                                "source": "surveyType",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Total survey area (area within model e.g. within MM2 quadrat)",
+                                "source": "totalSurveyAreaInSquareMetres",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Describe any specific habitat features (e.g. exposure to light or seawater)",
+                                "source": "habitat",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Describe any specific species features (e.g. role in environment, presence of invasive species)",
+                                "source": "eventRemarks",
+                                "type": "textarea"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "Location",
+                        "type": "section",
+                        "items": [
+                          {
+                            "computed": null,
+                            "type": "row",
+                            "items": [
+                              {
+                                "includeNotes": false,
+                                "orientation": "vertical",
+                                "autoLocalitySearch": true,
+                                "readonly": true,
+                                "includeSource": false,
+                                "includeAccuracy": false,
+                                "hideSiteSelection": false,
+                                "source": "location",
+                                "type": "geoMap",
+                                "includeLocality": false,
+                                "hideMyLocation": false
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Region",
+                                "source": "region",
+                                "type": "selectOne"
+                              }
+                            ],
+                            "class": ""
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Location name",
+                                "source": "locality",
+                                "type": "text"
+                              }
+                            ],
+                            "class": ""
+                          },
+                          {
+                            "computed": null,
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Shore level",
+                                "source": "shoreLevel",
+                                "type": "selectOne"
+                              }
+                            ]
+                          },
+                          {
+                            "computed": null,
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Exposure",
+                                "source": "siteExposure",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Plant species",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "literal",
+                            "source": "Use the Polycam area measurement tool to calculate each discreate area of reef that is covered by the identified plant species. If there are more than five discrete areas please add some values together to fit within the data columns. Note - the smallest measurement value that Polycam will record is 0.01m². Please record any area measurements that are displayed as 0.00m² as 0.01m²."
+                          }
+                        ]
+                      },
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "allowHeaderWrap": true,
+                            "columns": [
+                              {
+                                "width": "30%",
+                                "source": "plantsScientificName",
+                                "title": "Species name",
+                                "type": "speciesSelect"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "plantsAreaInSquareMetres1",
+                                "type": "number",
+                                "title": "Area 1 (m²)"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "plantsAreaInSquareMetres2",
+                                "type": "number",
+                                "title": "Area 2 (m²)"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "plantsAreaInSquareMetres3",
+                                "title": "Area 3 (m²)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "plantsAreaInSquareMetres4",
+                                "type": "number",
+                                "title": "Area 4 (m²)"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "plantsAreaInSquareMetres5",
+                                "title": "Area 5 (m²)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "plantsAreaInSquareMetresTotal",
+                                "title": "Total Area (m²)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "plantsPercentCover",
+                                "title": "% Cover",
+                                "type": "number"
+                              }
+                            ],
+                            "defaultRows": "1",
+                            "userAddedRows": true,
+                            "source": "plantsSpeciesList",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Encrusting animal species",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "literal",
+                            "source": "Use the Polycam area measurement tool to calculate each discreate area of reef that is covered by the identified encrusting animal species. Encrusting animals are ones that cannot move (e.g. mussels, barnacles, sponges). If there are more than five discrete areas please add some values together to fit within the data columns. Note - the smallest measurement value that Polycam will record is 0.01m². Please record any area measurements that are displayed as 0.00m² as 0.01m²."
+                          }
+                        ]
+                      },
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "allowHeaderWrap": true,
+                            "columns": [
+                              {
+                                "width": "30%",
+                                "source": "animalsScientificName",
+                                "title": "Species name",
+                                "type": "speciesSelect"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "animalsAreaInSquareMetres1",
+                                "type": "number",
+                                "title": "Area 1 (m²)"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "animalsAreaInSquareMetres2",
+                                "type": "number",
+                                "title": "Area 2 (m²)"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "animalsAreaInSquareMetres3",
+                                "title": "Area 3 (m²)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "animalsAreaInSquareMetres4",
+                                "type": "number",
+                                "title": "Area 4 (m²)"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "animalsAreaInSquareMetres5",
+                                "title": "Area 5 (m²)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "animalsAreaInSquareMetresTotal",
+                                "title": "Total Area (m²)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "10%",
+                                "source": "animalsPercentCover",
+                                "title": "% Cover",
+                                "type": "number"
+                              }
+                            ],
+                            "defaultRows": "1",
+                            "userAddedRows": true,
+                            "source": "animalsSpeciesList",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Zonation",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "literal",
+                            "source": "Use the Polycam ruler tool to calculate the width of any zonation present within your survey area. Zones are typically discrete bands of animal (e.g. barnacle or mussel) or plant (e.g. Neptune's necklace) species that occur across a specific region of the intertidal zone (e.g. high, mid or low shore). For example you may find a zone of barnacles higher up the shoreline with a zone of algae and mussels below this."
+                          }
+                        ]
+                      },
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "allowHeaderWrap": true,
+                            "columns": [
+                              {
+                                "width": "20%",
+                                "source": "zoneId",
+                                "title": "Zone name",
+                                "type": "text"
+                              },
+                              {
+                                "width": "20%",
+                                "source": "widthOfZoneInMetres1",
+                                "title": "Width of zone (m)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "20%",
+                                "source": "widthOfZoneInMetres2",
+                                "title": "Width of zone (m)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "20%",
+                                "source": "widthOfZoneInMetres3",
+                                "title": "Width of zone (m)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "20%",
+                                "source": "meanZoneWidthInMetres",
+                                "title": "Average zone width (m)",
+                                "type": "number"
+                              }
+                            ],
+                            "defaultRows": "1",
+                            "userAddedRows": true,
+                            "source": "zonationTable",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Marine Metre Squared - Rocky Shore Photogrammetry Survey"
+      },
+      "modelName": null,
+      "templateName": "Marine Metre Squared - Rocky Shore Photogrammetry Survey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Marine Metre Squared - Rocky Shore Photogrammetry Survey",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": "Photogrammetry survey details for the Marine Metre Squared protocol",
+  "formVersion": 1
+}
