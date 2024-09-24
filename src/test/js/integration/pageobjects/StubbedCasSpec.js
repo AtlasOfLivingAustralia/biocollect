@@ -6,6 +6,11 @@ const util = require('node:util');
 const execFile = util.promisify(require('node:child_process').execFile);
 const path = require('node:path');
 class StubbedCasSpec {
+    READ_ONLY_USER_ID = '1000'
+    GRANT_MANAGER_USER_ID = '1001'
+    MERIT_ADMIN_USER_ID = '1002'
+    ALA_ADMIN_USER_ID = '2000'
+
     loggedInUser = null;
     baseUrl = '';
     serverUrl = '';
@@ -28,22 +33,37 @@ class StubbedCasSpec {
         this.serverUrl = this.testConfig.serverUrl;
     }
 
-    async at(regexTitle) {
-        return await browser.waitUntil( async () => {
-            const title = await browser.getTitle();
-            const regex = new RegExp(regexTitle);
-            return regex.test(title);
-        }, {
-            timeout: 5000,
-        });
+    async at() {
+        throw new Error('Method at() is not implemented');
+    }
+
+    async loginAsAlaAdmin() {
+        await this.login({userId:this.ALA_ADMIN_USER_ID, role:"ROLE_ADMIN", userName: 'ala_admin@nowhere.com', email: 'ala_admin@nowhere.com', firstName:"ALA", lastName:"Administrator"})
+    }
+
+    async loginAsPwaUser() {
+        let userDetails = this.getUserDetails('1');
+        let {tokenSet, profile} = await this.setupOidcAuthForUser(userDetails);
+        tokenSet.profile = profile;
+        let key = this.localStorageTokenKey;
+        await browser.execute(function (key, tokenSet) {
+            localStorage.setItem(key, JSON.stringify(tokenSet));
+            console.log('Token set in local storage');
+            console.log(localStorage.getItem(key));
+        }, key, tokenSet);
+        return tokenSet;
+    }
+
+    get localStorageTokenKey() {
+        return `oidc.user:${browser.options.testConfig.wireMockBaseUrl}/cas/oidc/.well-known:${this.testConfig.oidc.clientId}`
     }
 
     async loginAsUser(userId) {
         const reservedUserIds = [
-            'MERIT_ADMIN_USER_ID',
-            'READ_ONLY_USER_ID',
-            'GRANT_MANAGER_USER_ID',
-            'ALA_ADMIN_USER_ID'
+            this.MERIT_ADMIN_USER_ID,
+            this.READ_ONLY_USER_ID,
+            this.GRANT_MANAGER_USER_ID,
+            this.ALA_ADMIN_USER_ID
         ];
 
         // Check if userId is one of the reserved IDs
@@ -52,15 +72,19 @@ class StubbedCasSpec {
         }
 
         // User login data
-        const userDetails = {
+        const userDetails = this.getUserDetails(userId);
+
+        // Call the login function, assuming it exists
+        await this.login(userDetails);
+    }
+
+    getUserDetails(userId) {
+        return {
             userId: userId,
             email: `user${userId}@nowhere.com`,
             firstName: "MERIT",
             lastName: `User ${userId}`
         };
-
-        // Call the login function, assuming it exists
-        await this.login(userDetails);
     }
 
     async login(userDetails) {
@@ -124,7 +148,31 @@ class StubbedCasSpec {
         }
 
         // Define ID Token Claims
-        const idTokenClaims = {
+        const idTokenClaims = this.getUserTokenClaim(userDetails, roles, clientId);
+        const idToken = await this.signPayload(idTokenClaims);
+        let tokenSet = this.getUserToken(idToken);
+
+        // Stub the POST request for token exchange (using nock)
+        await this.setupAccessToken('/cas/oidc/oidcAccessToken', tokenSet, base64EncodedAuth);
+        const profile = await this.setupProfileEndpoint(userDetails, base64EncodedAuth);
+
+        // Return the ID token
+        return {tokenSet, profile};
+    }
+
+    getUserToken(idToken) {
+        return {
+            access_token: idToken,
+            id_token: idToken,
+            refresh_token: null,
+            token_type: 'bearer',
+            expires_in: 86400,
+            scope: 'openid profile ala roles email'
+        };
+    }
+
+    getUserTokenClaim(userDetails, roles, clientId) {
+        return {
             at_hash: 'KX-L2Fj6Z9ow-gOpYfehRA',
             sub: userDetails.userId,
             email_verified: true,
@@ -148,22 +196,6 @@ class StubbedCasSpec {
             email: userDetails.email,
             scope: this.testConfig.oidc.scope
         };
-
-        const idToken = await this.signPayload(idTokenClaims);
-
-        // Stub the POST request for token exchange (using nock)
-        await this.setupAccessToken('/cas/oidc/oidcAccessToken', {
-            access_token: idToken,
-            id_token: idToken,
-            refresh_token: null,
-            token_type: 'bearer',
-            expires_in: 86400,
-            scope: 'openid profile ala roles email'
-        }, base64EncodedAuth);
-        await this.setupProfileEndpoint(userDetails, base64EncodedAuth);
-
-        // Return the ID token
-        return idToken;
     }
 
     async setupAccessToken(url, body, base64EncodedAuth){
@@ -224,6 +256,7 @@ class StubbedCasSpec {
             }
         });
 
+        return profile;
     }
 
     async setupTokenForSystem() {
@@ -232,7 +265,29 @@ class StubbedCasSpec {
         let clientSecret = this.testConfig.webservice["client-secret"]
         let base64EncodedAuth = "Basic " + Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
-        let idTokenClaims = {
+        let idTokenClaims = this.getTokenClaims(clientId)
+        // Simulate generating JWT (signing token) - Assuming you have RSA private key in 'privateKey'
+        let idToken = await this.signPayload(idTokenClaims);
+        let token = this.getToken(idToken);
+
+        await this.setupAccessToken("/cas/oidc/oidcAccessToken", token, base64EncodedAuth);
+
+        return idToken
+    }
+
+    getToken(idToken) {
+        let token = {}
+        token.access_token = idToken
+        token.id_token = idToken
+        token.refresh_token = null
+        token.token_type = "bearer"
+        token.expires_in = 86400
+        token.scope = this.testConfig.webservice["jwt-scopes"]
+        return token;
+    }
+
+    getTokenClaims(clientId) {
+        return {
             at_hash: "KX-L2Fj6Z9ow-gOpYfehRA",
             sub: clientId,
             amr: "DelegatedClientAuthenticationHandler",
@@ -247,20 +302,7 @@ class StubbedCasSpec {
             iat: Math.floor(Date.now() / 1000),  // Issued at
             jti: "id-system",
             scope: this.testConfig.webservice["jwt-scopes"]
-        }
-        // Simulate generating JWT (signing token) - Assuming you have RSA private key in 'privateKey'
-        let idToken = await this.signPayload(idTokenClaims);
-        let token = {}
-        token.access_token = idToken
-        token.id_token = idToken
-        token.refresh_token = null
-        token.token_type = "bearer"
-        token.expires_in = 86400
-        token.scope = this.testConfig.webservice["jwt-scopes"]
-
-        await this.setupAccessToken("/cas/oidc/oidcAccessToken", token, base64EncodedAuth);
-
-        return idToken
+        };
     }
 
     async createPrivateKey() {
@@ -296,17 +338,6 @@ class StubbedCasSpec {
             args.push(this.testConfig.databasePassword);
         }
         const {error, stdout, stderr} = await execFile(this.testConfig.datasetLoadScript, args)
-        //     , (error, stdout, stderr) => {
-        //     if (error) {
-        //         console.error(`Error loading dataset ${dataSet}: ${error.message}`);
-        //         return;
-        //     }
-        //     if (stderr) {
-        //         console.error(`Error loading dataset ${dataSet}: ${stderr}`);
-        //         return;
-        //     }
-        //     console.log(`Dataset ${dataSet} loaded successfully: ${stdout}`);
-        // });
         console.log(`result of command ${JSON.stringify(error)} \n\n ${JSON.stringify(stderr)} \n\n ${JSON.stringify(stdout)}`);
     }
 }

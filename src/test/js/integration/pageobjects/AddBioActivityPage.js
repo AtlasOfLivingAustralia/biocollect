@@ -14,7 +14,8 @@ class AddBioActivityPage extends StubbedCasSpec {
     }
 
     async at() {
-        return super.at('Create \| .* \| BioCollect');
+        let title = await browser.getTitle();
+        return /Create \| .* \| BioCollect/i.test(title);
     }
 
     async setSite(site) {

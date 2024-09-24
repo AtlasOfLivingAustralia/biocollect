@@ -45,6 +45,7 @@ var  activityProject = {
     "isWorks" : false,
     "legalCustodianOrganisation" : "Atlas of Living Australia",
     "legalCustodianOrganisationType" : "",
+    "projLifecycleStatus": "published",
     "mapLayersConfig" : {
         "baseLayers" : [],
         "overlays" : []

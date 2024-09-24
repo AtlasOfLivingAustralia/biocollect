@@ -1,7 +1,8 @@
 const StubbedCasSpec = require('./StubbedCasSpec.js')
 class ViewBioActivityPage extends StubbedCasSpec {
     async at() {
-        return await super.at('View \\| .* \\| BioCollect');
+        var title = await browser.getTitle();
+        return /View \\| .* \\| BioCollect/i.test(title);
     }
 }
 
