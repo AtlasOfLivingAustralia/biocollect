@@ -11,6 +11,10 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 class SpeciesService {
+    static final String COMMON_NAME = 'COMMONNAME'
+    static final String SCIENTIFIC_NAME = 'SCIENTIFICNAME'
+    static final String COMMON_NAME_SCIENTIFIC_NAME = 'COMMONNAME(SCIENTIFICNAME)'
+    static final String SCIENTIFIC_NAME_COMMON_NAME = 'SCIENTIFICNAME(COMMONNAME)'
 
     def webService, grailsApplication
 
@@ -188,36 +192,43 @@ class SpeciesService {
     String formatSpeciesName(String displayType, Map data){
         String name
         if(data.guid){
-            switch (displayType){
-                case 'COMMONNAME(SCIENTIFICNAME)':
-                    if(data.commonName){
-                        name = "${data.commonName} (${data.scientificName})"
-                    } else {
-                        name = "${data.scientificName}"
-                    }
-                    break;
-                case 'SCIENTIFICNAME(COMMONNAME)':
-                    if(data.commonName){
-                        name = "${data.scientificName} (${data.commonName})"
-                    } else {
-                        name = "${data.scientificName}"
-                    }
-
-                    break;
-                case 'COMMONNAME':
-                    if(data.commonName){
-                        name = "${data.commonName}"
-                    } else {
-                        name = "${data.scientificName}"
-                    }
-                    break;
-                case 'SCIENTIFICNAME':
-                    name = "${data.scientificName}"
-                    break;
-            }
+            name = formatTaxonName(data, displayType)
         } else {
             // when no guid, append unmatched taxon string
             name = "${data.rawScientificName?:''} (Unmatched taxon)"
+        }
+
+        name
+    }
+
+    /** format species by specific type **/
+    String formatTaxonName (Map data, String displayType) {
+        String name = ''
+        switch (displayType){
+            case COMMON_NAME_SCIENTIFIC_NAME:
+                if (data.commonName && data.scientificName) {
+                    name = "${data.commonName} (${data.scientificName})"
+                } else if (data.commonName) {
+                    name = data.commonName
+                } else if (data.scientificName) {
+                    name = data.scientificName
+                }
+                break
+            case SCIENTIFIC_NAME_COMMON_NAME:
+                if (data.scientificName && data.commonName) {
+                    name = "${data.scientificName} (${data.commonName})"
+                } else if (data.scientificName) {
+                    name = data.scientificName
+                } else if (data.commonName) {
+                    name = data.commonName
+                }
+                break
+            case COMMON_NAME:
+                name = data.commonName ?: data.scientificName ?: ""
+                break
+            case SCIENTIFIC_NAME:
+                name = data.scientificName ?: ""
+                break
         }
 
         name
