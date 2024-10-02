@@ -11,7 +11,7 @@ const config = {
         capabilities: [{
             browserName: 'chrome',
             'goog:chromeOptions': {
-                args: ['disable-gpu']
+                args: ['--auto-open-devtools-for-tabs','disable-gpu']
             }
         }],
         testConfig: {
