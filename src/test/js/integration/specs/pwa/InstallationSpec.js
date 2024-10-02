@@ -18,8 +18,8 @@ describe("Application installation Spec", function () {
 
    it("Install app", async function() {
         var result = await pwaAppPage.serviceWorkerReady();
-        await browser.pause(180000);
         expect(result).toBe(true);
+        await browser.pause(180000);
    });
 
    it("login with token", function() {
