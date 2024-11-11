@@ -1,0 +1,1181 @@
+{
+  "id": "5d133339e4b00a475b28e29d",
+  "dateCreated": "2019-06-26T08:56:25Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-11-11T10:24:05Z",
+  "createdUserId": "<anon>",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Marine Metre Squared Transect Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "dataModel": [
+          {
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "eventDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date of the Survey.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "eventTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time that the survey started.",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "additionalSurveyors",
+            "description": "The names of other people or the group participating in the survey group."
+          },
+          {
+            "dataType": "number",
+            "name": "groupSize",
+            "description": "The number of people participating in the survey group.",
+            "validate": "min[1],integer"
+          },
+          {
+            "dataType": "text",
+            "name": "surveyExtent",
+            "description": "",
+            "constraints": [
+              "From high to low water mark",
+              "From low to high water mark"
+            ]
+          },
+          {
+            "indexName": "surveyorExperience",
+            "dataType": "text",
+            "name": "surveyorExperience",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "surveyorExperience",
+            "measurementType": "text",
+            "description": "",
+            "constraints": [
+              "Primary school level",
+              "Secondary School level",
+              "Tertiary level ",
+              "Scientifically accurate"
+            ]
+          },
+          {
+            "dataType": "number",
+            "name": "distanceBetweenQuadratsInMetres",
+            "description": "",
+            "decimalPlaces": 2,
+            "validate": "min[0]"
+          },
+          {
+            "indexName": "siteExposure",
+            "dataType": "text",
+            "name": "siteExposure",
+            "description": "",
+            "constraints": [
+              "Very exposed",
+              "Exposed",
+              "Sheltered",
+              "Estuary (freshwater input)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "description": ""
+          },
+          {
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "quadratNumber"
+              },
+              {
+                "indexName": "mm2Substrate",
+                "dataType": "text",
+                "name": "substrateType",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "substrateType",
+                "measurementType": "${dominantSpeciesPreIntervention.substrateType} - Substrate",
+                "description": "",
+                "constraints": [
+                  "Mud (sink >5cm)",
+                  "Sand (sink <2cm)",
+                  "Mixed (sink 2-5cm)",
+                  "Mixed with rocks"
+                ]
+              },
+              {
+                "dataType": "number",
+                "name": "rpdInMillimetres",
+                "description": "The RPD (Redox Potential Discontinuity) layer is the area where oxygenated substrate (light brown) changes to deoxygenated substrates (black, often smelly).",
+                "validate": "min[0],integer"
+              }
+            ],
+            "dataType": "list",
+            "name": "quadratData",
+            "allowRowDelete": false,
+            "defaultRows": [
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "1",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "2",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "3",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "4",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "5",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "6",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "7",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "8",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "9",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "10",
+                "substrate": ""
+              },
+              {
+                "habitat": "",
+                "rpdInMillimetres": "",
+                "quadratNumber": "11",
+                "substrate": ""
+              }
+            ]
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "indexName": "locationName",
+            "dataType": "text",
+            "name": "locationName",
+            "dwcAttribute": "verbatimLocality",
+            "description": "Enter the name of the location. Use town and name of shore or bay. Eg. Portobello – Latham Bay, Auckland – Campbells Bay. Please be consistent.",
+            "validate": "required"
+          },
+          {
+            "indexName": "region",
+            "dataType": "text",
+            "name": "region",
+            "dwcAttribute": "locality",
+            "description": "",
+            "constraints": [
+              "Northland (Te Tai Tokerau)",
+              "Auckland (Tāmaki-makau-rau)",
+              "Waikato",
+              "Bay of Plenty (Te Moana-a-Toi)",
+              "Gisborne (Te Tairāwhiti)",
+              "Hawke's Bay (Te Matau-a-Māui)",
+              "Taranaki",
+              "Manawatū-Whanganui",
+              "Wellington (Te Whanga-nui-a-Tara)",
+              "Tasman (Te Tai-o-Aorere)",
+              "Nelson (Whakatū)",
+              "Marlborough (Te Tauihu-o-te-waka)",
+              "West Coast (Te Tai Poutini)",
+              "Canterbury (Waitaha)",
+              "Otago (Ōtākou)",
+              "Southland (Murihiku)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "siteDescription",
+            "description": ""
+          },
+          {
+            "dataType": "image",
+            "name": "locationPhoto",
+            "description": "Photo of the survey location"
+          },
+          {
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "speciesPlants",
+                "dwcAttribute": "scientificName",
+                "description": "The species name of the animal (or tracks/evidence of) observed."
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ1Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ2Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ3Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ4Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ5Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ6Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ7Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ8Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ9Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ10Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "percentCoverQ11Plants",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "text",
+                "name": "occurrenceRemarksPlants",
+                "dwcAttribute": "occurrenceRemarks",
+                "description": ""
+              },
+              {
+                "dataType": "image",
+                "name": "associatedMediaPlants",
+                "dwcAttribute": "associatedMedia",
+                "description": ""
+              }
+            ],
+            "dataType": "list",
+            "name": "plantsTable"
+          },
+          {
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "speciesAnimals",
+                "dwcAttribute": "scientificName",
+                "description": "The species name of the animal (or tracks/evidence of) observed."
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ1Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ2Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ3Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ4Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ5Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ6Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ7Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ8Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ9Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ10Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ11Animals",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "text",
+                "name": "occurrenceRemarksAnimals",
+                "dwcAttribute": "occurrenceRemarks",
+                "description": ""
+              },
+              {
+                "dataType": "image",
+                "name": "associatedMediaAnimals",
+                "dwcAttribute": "associatedMedia",
+                "description": ""
+              }
+            ],
+            "dataType": "list",
+            "name": "animalsTable"
+          },
+          {
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "speciesInfauna",
+                "dwcAttribute": "scientificName",
+                "description": "The species name of the animal (or tracks/evidence of) observed."
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ1Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ2Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ3Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ4Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ5Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ6Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ7Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ8Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ9Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ10Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "number",
+                "name": "individualCountQ11Infauna",
+                "description": "The number of individuals of species recorded in quadrat.",
+                "validate": "min[0],integer"
+              },
+              {
+                "dataType": "text",
+                "name": "occurrenceRemarksInfauna",
+                "dwcAttribute": "occurrenceRemarks",
+                "description": ""
+              },
+              {
+                "dataType": "image",
+                "name": "associatedMediaInfauna",
+                "dwcAttribute": "associatedMedia",
+                "description": ""
+              }
+            ],
+            "dataType": "list",
+            "name": "infaunaTable"
+          }
+        ],
+        "modelName": "marineMeterSquaredTransectSurvey",
+        "record": "true",
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Sandy and Muddy Shore Transect Survey</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Survey Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Survey Date",
+                            "source": "eventDate",
+                            "type": "date"
+                          },
+                          {
+                            "preLabel": "Survey Time",
+                            "source": "eventTime",
+                            "type": "time"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Surveyor Name",
+                            "source": "recordedBy",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Other surveyors",
+                            "source": "additionalSurveyors",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Group Size",
+                            "source": "groupSize",
+                            "type": "number"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Surveyor Experience",
+                            "source": "surveyorExperience",
+                            "type": "selectOne"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Exposure",
+                            "source": "siteExposure",
+                            "type": "selectOne"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Survey Extends",
+                            "source": "surveyExtent",
+                            "type": "selectOne"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Distance between quadrats in metres",
+                            "source": "distanceBetweenQuadratsInMetres",
+                            "type": "number"
+                          }
+                        ]
+                      },
+                      {
+                        "allowRowDelete": false,
+                        "headerRowsWrap": true,
+                        "columns": [
+                          {
+                            "noEdit": true,
+                            "source": "quadratNumber",
+                            "title": "Quadrat No.",
+                            "type": "text",
+                            "width": "10%"
+                          },
+                          {
+                            "source": "substrateType",
+                            "title": "Substrate",
+                            "type": "selectOne",
+                            "width": "60%"
+                          },
+                          {
+                            "source": "rpdInMillimetres",
+                            "title": "RPD (mm)",
+                            "type": "number",
+                            "width": "30%"
+                          }
+                        ],
+                        "userAddedRows": false,
+                        "disableTableUpload": true,
+                        "source": "quadratData",
+                        "type": "table"
+                      }
+                    ],
+                    "class": ""
+                  }
+                ],
+                "class": ""
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "Location",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "To mark the location of the survey on the map, click on the pin icon (on left) and drag to the location of your survey. Please use the zoom controls and be as accurate as possible. Click the pin icon to cancel and start again.",
+                                "type": "literal"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "includeNotes": false,
+                                "orientation": "vertical",
+                                "computed": null,
+                                "autoLocalitySearch": true,
+                                "readonly": false,
+                                "includeSource": false,
+                                "includeAccuracy": false,
+                                "hideSiteSelection": true,
+                                "source": "location",
+                                "type": "geoMap",
+                                "includeLocality": false
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Location Name",
+                                "source": "locationName",
+                                "type": "text"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Region",
+                                "source": "region",
+                                "type": "selectOne"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Site Description (including environmental conditions)",
+                                "source": "siteDescription",
+                                "type": "textarea"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Location Photo",
+                                "source": "locationPhoto",
+                                "type": "image"
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "General Comments",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "preLabel": "Survey Notes: If you did a photogrammetry survey in conjunction with this survey, please insert the URL link here.",
+                                "source": "eventRemarks",
+                                "type": "textarea"
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Species Records",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "source": "Enter the number of each species counted in each quadrat sampled. Record a description of any species that you could not identify. You can also make a note of the abundance using one of the temporary 'Unknown Species' types from the lists below. (Remember to also post a picture and description on the blog to see if others can help with the id.)",
+                            "type": "literal"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "boxed": true,
+                            "title": "Plant Species",
+                            "type": "section",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "allowHeaderWrap": true,
+                                    "computed": null,
+                                    "columns": [
+                                      {
+                                        "width": "15%",
+                                        "source": "speciesPlants",
+                                        "title": "Species",
+                                        "type": "speciesSelect"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ1Plants",
+                                        "title": "Q1 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ2Plants",
+                                        "title": "Q2 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ3Plants",
+                                        "title": "Q3 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ4Plants",
+                                        "title": "Q4 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ5Plants",
+                                        "title": "Q5 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ6Plants",
+                                        "title": "Q6 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ7Plants",
+                                        "title": "Q7 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ8Plants",
+                                        "title": "Q8 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ9Plants",
+                                        "title": "Q9 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ10Plants",
+                                        "title": "Q10 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "percentCoverQ11Plants",
+                                        "title": "Q11 % cover",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "10%",
+                                        "source": "occurrenceRemarksPlants",
+                                        "title": "Species notes",
+                                        "type": "textarea"
+                                      },
+                                      {
+                                        "width": "15%",
+                                        "source": "associatedMediaPlants",
+                                        "title": "Photo",
+                                        "type": "image"
+                                      }
+                                    ],
+                                    "disableTableUpload": true,
+                                    "allowRowDelete": true,
+                                    "userAddedRows": true,
+                                    "defaultRows": 1,
+                                    "source": "plantsTable",
+                                    "type": "table"
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          },
+                          {
+                            "boxed": true,
+                            "title": "Animal Species",
+                            "type": "section",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "allowHeaderWrap": true,
+                                    "computed": null,
+                                    "columns": [
+                                      {
+                                        "width": "15%",
+                                        "source": "speciesAnimals",
+                                        "title": "Species",
+                                        "type": "speciesSelect"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ1Animals",
+                                        "title": "Q1 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ2Animals",
+                                        "title": "Q2 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ3Animals",
+                                        "title": "Q3 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ4Animals",
+                                        "title": "Q4 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ5Animals",
+                                        "title": "Q5 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ6Animals",
+                                        "title": "Q6 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ7Animals",
+                                        "title": "Q7 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ8Animals",
+                                        "title": "Q8 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ9Animals",
+                                        "title": "Q9 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ10Animals",
+                                        "title": "Q10 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ11Animals",
+                                        "title": "Q11 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "10%",
+                                        "source": "occurrenceRemarksAnimals",
+                                        "title": "Species notes",
+                                        "type": "textarea"
+                                      },
+                                      {
+                                        "width": "15%",
+                                        "source": "associatedMediaAnimals",
+                                        "title": "Photo",
+                                        "type": "image"
+                                      }
+                                    ],
+                                    "disableTableUpload": true,
+                                    "allowRowDelete": true,
+                                    "userAddedRows": true,
+                                    "defaultRows": 1,
+                                    "source": "animalsTable",
+                                    "type": "table"
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          },
+                          {
+                            "boxed": true,
+                            "title": "Infauna Species",
+                            "type": "section",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "allowHeaderWrap": true,
+                                    "computed": null,
+                                    "columns": [
+                                      {
+                                        "width": "15%",
+                                        "source": "speciesInfauna",
+                                        "title": "Species",
+                                        "type": "speciesSelect"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ1Infauna",
+                                        "title": "Q1 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ2Infauna",
+                                        "title": "Q2 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ3Infauna",
+                                        "title": "Q3 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ4Infauna",
+                                        "title": "Q4 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ5Infauna",
+                                        "title": "Q5 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ6Infauna",
+                                        "title": "Q6 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ7Infauna",
+                                        "title": "Q7 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ8Infauna",
+                                        "title": "Q8 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ9Infauna",
+                                        "title": "Q9 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ10Infauna",
+                                        "title": "Q10 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "5%",
+                                        "source": "individualCountQ11Infauna",
+                                        "title": "Q11 count",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "width": "10%",
+                                        "source": "occurrenceRemarksInfauna",
+                                        "title": "Species notes",
+                                        "type": "textarea"
+                                      },
+                                      {
+                                        "width": "15%",
+                                        "source": "associatedMediaInfauna",
+                                        "title": "Photo",
+                                        "type": "image"
+                                      }
+                                    ],
+                                    "disableTableUpload": true,
+                                    "allowRowDelete": true,
+                                    "userAddedRows": true,
+                                    "defaultRows": 1,
+                                    "source": "infaunaTable",
+                                    "type": "table"
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "marineMetreSquaredTransectSurvey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Marine Metre Squared Transect Survey",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "<anon>",
+  "description": null,
+  "formVersion": 1
+}
