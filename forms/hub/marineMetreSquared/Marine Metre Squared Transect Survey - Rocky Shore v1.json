@@ -35,22 +35,34 @@
             "validate": "required"
           },
           {
+            "indexName": "recordedBy",
             "dataType": "text",
             "name": "recordedBy",
             "dwcAttribute": "recordedBy",
-            "description": "",
+            "description": "The name of the person leading the survey",
             "validate": "required"
           },
           {
             "dataType": "text",
             "name": "additionalSurveyors",
-            "description": ""
+            "description": "Names of other people involved in the survey"
+          },
+          {
+            "dataType": "text",
+            "name": "groupName",
+            "description": "The name of the group or school"
           },
           {
             "dataType": "number",
             "name": "groupSize",
             "description": "The number of people participating in the survey group.",
             "validate": "min[1],integer"
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "description": ""
           },
           {
             "dataType": "text",
@@ -84,19 +96,13 @@
             "indexName": "siteExposure",
             "dataType": "text",
             "name": "siteExposure",
-            "description": ".",
+            "description": "",
             "constraints": [
               "Very exposed",
               "Exposed",
               "Sheltered",
               "Estuary (freshwater input)"
             ]
-          },
-          {
-            "dataType": "text",
-            "name": "eventRemarks",
-            "dwcAttribute": "eventRemarks",
-            "description": ""
           },
           {
             "columns": [
@@ -255,6 +261,21 @@
             "dataType": "image",
             "name": "locationPhoto",
             "description": "Photo of the survey location"
+          },
+          {
+            "dataType": "text",
+            "name": "photogrammetrySurveyUndertaken",
+            "description": "",
+            "constraints": [
+              "Yes",
+              "No"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "photogrammetrySurveyUrl",
+            "description": "If you did a photogrammetry survey in conjunction with this survey, please insert the URL link to it here."
           },
           {
             "columns": [
@@ -460,89 +481,59 @@
                     "type": "section",
                     "items": [
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Survey Date",
-                            "source": "eventDate",
-                            "type": "date"
-                          },
-                          {
-                            "preLabel": "Survey Time",
-                            "source": "eventTime",
-                            "type": "time"
-                          }
-                        ]
+                        "preLabel": "Survey Date",
+                        "source": "eventDate",
+                        "type": "date"
                       },
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Surveyor Name",
-                            "source": "recordedBy",
-                            "type": "text"
-                          }
-                        ]
+                        "preLabel": "Survey Time",
+                        "source": "eventTime",
+                        "type": "time"
                       },
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Other surveyors",
-                            "source": "additionalSurveyors",
-                            "type": "text"
-                          }
-                        ]
+                        "preLabel": "Survey leader name",
+                        "source": "recordedBy",
+                        "type": "text"
                       },
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Group Size",
-                            "source": "groupSize",
-                            "type": "number"
-                          }
-                        ]
+                        "preLabel": "Other surveyors",
+                        "source": "additionalSurveyors",
+                        "type": "text"
                       },
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Surveyor Experience",
-                            "source": "surveyorExperience",
-                            "type": "selectOne"
-                          }
-                        ]
+                        "preLabel": "School/Group name",
+                        "source": "groupName",
+                        "type": "text"
                       },
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Exposure",
-                            "source": "siteExposure",
-                            "type": "selectOne"
-                          }
-                        ]
+                        "preLabel": "Surveyor Experience",
+                        "source": "surveyorExperience",
+                        "type": "selectOne"
                       },
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Survey Extends",
-                            "source": "surveyExtent",
-                            "type": "selectOne"
-                          }
-                        ]
+                        "preLabel": "Group Size",
+                        "source": "groupSize",
+                        "type": "number"
                       },
                       {
-                        "type": "row",
-                        "items": [
-                          {
-                            "preLabel": "Distance between quadrats in metres",
-                            "source": "distanceBetweenQuadratsInMetres",
-                            "type": "number"
-                          }
-                        ]
+                        "preLabel": "Survey notes",
+                        "source": "eventRemarks",
+                        "type": "textarea"
+                      },
+                      {
+                        "preLabel": "Exposure",
+                        "source": "siteExposure",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Survey Extends",
+                        "source": "surveyExtent",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Distance between quadrats in metres",
+                        "source": "distanceBetweenQuadratsInMetres",
+                        "type": "number"
                       },
                       {
                         "allowRowDelete": false,
@@ -657,25 +648,41 @@
                     ]
                   },
                   {
+                    "computed": null,
                     "type": "row",
                     "items": [
                       {
-                        "boxed": true,
-                        "title": "General Comments",
-                        "type": "section",
+                        "type": "col",
                         "items": [
                           {
-                            "type": "row",
+                            "boxed": true,
+                            "title": "Photogrammetry Survey",
+                            "type": "section",
                             "items": [
                               {
-                                "preLabel": "Survey Notes: If you did a photogrammetry survey in conjunction with this survey, please insert the URL link here.",
-                                "source": "eventRemarks",
-                                "type": "textarea"
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "preLabel": "Did you do a photogrammetry survey in conjunction with this survey?",
+                                        "source": "photogrammetrySurveyUndertaken",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "preLabel": "Please provide the URL link to the photogrammetry survey associated with this survey.",
+                                        "source": "photogrammetrySurveyUrl",
+                                        "type": "text"
+                                      }
+                                    ]
+                                  }
+                                ]
                               }
-                            ]
+                            ],
+                            "class": ""
                           }
-                        ],
-                        "class": ""
+                        ]
                       }
                     ]
                   }
