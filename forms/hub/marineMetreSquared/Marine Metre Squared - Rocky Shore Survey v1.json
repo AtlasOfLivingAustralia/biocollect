@@ -1,0 +1,756 @@
+{
+  "id": "63cbd5ba00f69e66bb6dcdae",
+  "dateCreated": "2023-01-21T12:08:26Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-11-13T22:54:12Z",
+  "createdUserId": "35",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Marine Metre Squared - Rocky Shore Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "dataModel": [
+          {
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "eventDate",
+            "indexName": "eventDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date of the Survey.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "eventStartTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time that the survey started.",
+            "validate": "required"
+          },
+          {
+            "indexName": "recordedBy",
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person leading the survey",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "otherSurveyors",
+            "description": "Names of other people involved in the survey"
+          },
+          {
+            "dataType": "number",
+            "name": "groupSize",
+            "description": "The number of people in the survey group",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "text",
+            "name": "groupName",
+            "description": "The name of the group or school"
+          },
+          {
+            "dataType": "text",
+            "name": "surveyorExperience",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "surveyorExperience",
+            "measurementType": "text",
+            "description": "",
+            "constraints": [
+              "Primary school level",
+              "Secondary School level",
+              "Tertiary level ",
+              "Scientifically accurate"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "description": ""
+          },
+          {
+            "indexName": "shoreLevel",
+            "dataType": "text",
+            "name": "shoreLevel",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "shoreLevel",
+            "measurementType": "text",
+            "description": "",
+            "constraints": [
+              "Low",
+              "Mid",
+              "High"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "siteExposure",
+            "description": "",
+            "constraints": [
+              "Very exposed",
+              "Exposed",
+              "Sheltered"
+            ]
+          },
+          {
+            "defaultRows": [
+              {
+                "substrateType": "Reef (stable rock cover)",
+                "substratePercentCover": ""
+              },
+              {
+                "substrateType": "Boulder (head size)",
+                "substratePercentCover": ""
+              },
+              {
+                "substrateType": "Cobble (fist size)",
+                "substratePercentCover": ""
+              },
+              {
+                "substrateType": "Gravel (marble size)",
+                "substratePercentCover": ""
+              },
+              {
+                "substrateType": "Sand (like the beach)",
+                "substratePercentCover": ""
+              },
+              {
+                "substrateType": "Sediment (fine grain size)",
+                "substratePercentCover": ""
+              },
+              {
+                "substrateType": "Mud (gloopy)",
+                "substratePercentCover": ""
+              }
+            ],
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "substrateType",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "substrateType",
+                "measurementType": "${dominantSpeciesPreIntervention.substrateType} - Substrate",
+                "noEdit": true
+              },
+              {
+                "dataType": "number",
+                "name": "substratePercentCover",
+                "validate": "integer,min[0],max[100]"
+              }
+            ],
+            "dataType": "list",
+            "userAddedRows": false,
+            "allowRowDelete": false,
+            "name": "substrateTable"
+          },
+          {
+            "dataType": "number",
+            "name": "substrateTotalPercentCover",
+            "noEdit": true,
+            "readOnly": true,
+            "decimalPlaces": 0,
+            "computed": {
+              "expression": "sum(substrateTable, \"substratePercentCover\")"
+            },
+            "validate": "min[100],max[100]"
+          },
+          {
+            "dataType": "text",
+            "name": "siteKeyFeatures",
+            "description": "(e.g. rocky headland with surf beach 3 km to south; freshwater creek 50 m to the north; upper shore modified with harbour wall etc.)"
+          },
+          {
+            "dataType": "text",
+            "name": "evidenceOfHumanInfluences",
+            "description": "(e.g. rubbish, people collecting seafood, tyre tracks on sand, dogs present,people in the water)."
+          },
+          {
+            "indexName": "locationName",
+            "dataType": "text",
+            "name": "locationName",
+            "dwcAttribute": "verbatimLocality",
+            "description": "Use town and name of shore or bay. Eg. Portobello – Latham Bay, Auckland – Campbells Bay. Please be consistent.",
+            "validate": "required"
+          },
+          {
+            "indexName": "region",
+            "dataType": "text",
+            "name": "region",
+            "dwcAttribute": "locality",
+            "description": "",
+            "constraints": [
+              "Northland (Te Tai Tokerau)",
+              "Auckland (Tāmaki-makau-rau)",
+              "Waikato",
+              "Bay of Plenty (Te Moana-a-Toi)",
+              "Gisborne (Te Tairāwhiti)",
+              "Hawke's Bay (Te Matau-a-Māui)",
+              "Taranaki",
+              "Manawatū-Whanganui",
+              "Wellington (Te Whanga-nui-a-Tara)",
+              "Tasman (Te Tai-o-Aorere)",
+              "Nelson (Whakatū)",
+              "Marlborough (Te Tauihu-o-te-waka)",
+              "West Coast (Te Tai Poutini)",
+              "Canterbury (Waitaha)",
+              "Otago (Ōtākou)",
+              "Southland (Murihiku)"
+            ]
+          },
+          {
+            "dataType": "image",
+            "name": "locationPhoto",
+            "description": "Take a photo of your m2 area and put the top of this sheet in the corner for identification later!"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "photogrammetrySurveyUndertaken",
+            "description": "",
+            "constraints": [
+              "Yes",
+              "No"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "photogrammetrySurveyUrl",
+            "description": "If you did a photogrammetry survey in conjunction with this survey, please insert the URL link to it here."
+          },
+          {
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "seaweedSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "number",
+                "name": "percentCover",
+                "description": "",
+                "validate": "integer,min[0],max[100]"
+              },
+              {
+                "dataType": "image",
+                "name": "seaweedPhoto",
+                "description": "",
+                "dwcAttribute": "associatedMedia"
+              }
+            ],
+            "dataType": "list",
+            "name": "plantsTable"
+          },
+          {
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "animalSpecies",
+                "dwcAttribute": "scientificName",
+                "description": ""
+              },
+              {
+                "dataType": "number",
+                "name": "individualCount",
+                "dwcAttribute": "individualCount",
+                "description": "",
+                "validate": "integer,min[0]"
+              },
+              {
+                "dataType": "image",
+                "name": "animalPhoto",
+                "description": "",
+                "dwcAttribute": "associatedMedia"
+              }
+            ],
+            "dataType": "list",
+            "name": "animalsTable"
+          }
+        ],
+        "modelName": "Marine Metre Squared - Rocky Shore Survey",
+        "title": "Marine Metre Squared - Rocky Shore Survey",
+        "record": "true",
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h2>Rocky Shore Marine Metre2 Survey</h2>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Survey Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Survey date",
+                                "source": "eventDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Survey time",
+                                "source": "eventStartTime",
+                                "type": "time"
+                              },
+                              {
+                                "preLabel": "Survey leader name",
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Other surveyors",
+                                "source": "otherSurveyors",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "School/Group name",
+                                "source": "groupName",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Surveyor experience",
+                                "source": "surveyorExperience",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Group size",
+                                "source": "groupSize",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Survey notes",
+                                "source": "eventRemarks",
+                                "type": "textarea"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  },
+                  {
+                    "boxed": true,
+                    "title": "Site Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Shore level",
+                                "source": "shoreLevel",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Site exposure",
+                                "source": "siteExposure",
+                                "type": "selectOne"
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "footer": {
+                                      "rows": [
+                                        {
+                                          "columns": [
+                                            {
+                                              "colspan": 1,
+                                              "source": "Substrate total % cover (must equal 100%)",
+                                              "type": "literal"
+                                            },
+                                            {
+                                              "source": "substrateTotalPercentCover",
+                                              "colspan": 1,
+                                              "type": "number"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "source": "substrateTable",
+                                    "allowHeaderWrap": true,
+                                    "userAddedRows": false,
+                                    "allowRowDelete": false,
+                                    "disableTableUpload": true,
+                                    "type": "table",
+                                    "columns": [
+                                      {
+                                        "source": "substrateType",
+                                        "title": "Substrate",
+                                        "type": "text",
+                                        "width": "70%",
+                                        "noEdit": true
+                                      },
+                                      {
+                                        "source": "substratePercentCover",
+                                        "title": "Percentage cover (%)",
+                                        "type": "number",
+                                        "width": "30%"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "Key features of this site",
+                                "source": "siteKeyFeatures",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Evidence of human influences",
+                                "source": "evidenceOfHumanInfluences",
+                                "type": "textarea"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "Location",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "To mark the survey location on the map click on the pin icon (on left) and drag to the location of your survey. Please use the zoom controls and be as accurate as possible. Click the pin icon to cancel and start again.",
+                                "type": "literal"
+                              }
+                            ]
+                          },
+                          {
+                            "computed": null,
+                            "type": "row",
+                            "items": [
+                              {
+                                "includeNotes": false,
+                                "orientation": "vertical",
+                                "computed": null,
+                                "autoLocalitySearch": true,
+                                "readonly": false,
+                                "includeSource": false,
+                                "includeAccuracy": false,
+                                "hideSiteSelection": true,
+                                "source": "location",
+                                "type": "geoMap",
+                                "includeLocality": false
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "preLabel": "Location Name",
+                                    "source": "locationName",
+                                    "type": "text"
+                                  },
+                                  {
+                                    "preLabel": "Region",
+                                    "source": "region",
+                                    "type": "selectOne"
+                                  },
+                                  {
+                                    "preLabel": "Location Photo",
+                                    "source": "locationPhoto",
+                                    "type": "image"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  },
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "boxed": true,
+                            "title": "Photogrammetry Survey",
+                            "type": "section",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "preLabel": "Did you do a photogrammetry survey in conjunction with this survey?",
+                                        "source": "photogrammetrySurveyUndertaken",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "preLabel": "Please provide the URL link to the photogrammetry survey associated with this survey.",
+                                        "source": "photogrammetrySurveyUrl",
+                                        "type": "text"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Seaweed Cover",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "source": "<h3>Surface count (in 1m x 1m quadrat)</h3>If you find a species you cannot identify, write a description of it and where it was found in the species list. Make sure you take a photo of it and send all the information to us at <u><a href='mailto:marinemetresquared@gmail.com'>marinemetresquared@gmail.com</a></u>.",
+                            "type": "literal"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<b><i>Record seaweeds and encrusting animals as a percentage (%) cover.</i></b>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "allowHeaderWrap": "true",
+                                        "computed": null,
+                                        "columns": [
+                                          {
+                                            "width": "60%",
+                                            "source": "seaweedSpecies",
+                                            "title": "Species",
+                                            "type": "speciesSelect"
+                                          },
+                                          {
+                                            "width": "15%",
+                                            "source": "percentCover",
+                                            "title": "% Cover",
+                                            "type": "number"
+                                          },
+                                          {
+                                            "width": "25%",
+                                            "source": "seaweedPhoto",
+                                            "title": "Photo",
+                                            "type": "image",
+                                            "css": "img-responsive",
+                                            "showMetadata": "false"
+                                          }
+                                        ],
+                                        "userAddedRows": true,
+                                        "disableTableUpload": true,
+                                        "allowRowDelete": true,
+                                        "defaultRows": 1,
+                                        "source": "plantsTable",
+                                        "type": "table"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Live Animal Records",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "source": "<b><i>Count the number of living animals within the quadrat. Count only live animals.</i></b>",
+                            "type": "literal"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "allowRowDelete": true,
+                            "userAddedRows": true,
+                            "defaultRows": 1,
+                            "computed": null,
+                            "columns": [
+                              {
+                                "width": "60%",
+                                "source": "animalSpecies",
+                                "title": "Species",
+                                "type": "speciesSelect"
+                              },
+                              {
+                                "width": "15%",
+                                "source": "individualCount",
+                                "title": "Species tally (count)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "25%",
+                                "source": "animalPhoto",
+                                "title": "Photo",
+                                "type": "image",
+                                "css": "img-responsive",
+                                "showMetadata": "false"
+                              }
+                            ],
+                            "source": "animalsTable",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "Marine Metre Squared - Rocky Shore Survey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Marine Metre Squared - Rocky Shore Survey",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment and monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "129333",
+  "description": "NZ Marine Metre Squared intertidal quadrat protocol for rock shorelines",
+  "formVersion": 1
+}
