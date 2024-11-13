@@ -54,6 +54,7 @@
             "validate": "integer,min[0]"
           },
           {
+            "indexName": "groupName",
             "dataType": "text",
             "name": "groupName",
             "description": "The name of the group or school"
