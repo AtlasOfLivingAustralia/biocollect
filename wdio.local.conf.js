@@ -13,7 +13,7 @@ const config = {
             browserName: 'chrome',
             'goog:chromeOptions': {
                 // args: ['--auto-open-devtools-for-tabs','disable-gpu']
-                args: ['disable-gpu']
+                args: ['headless', 'disable-gpu']
             },
             'wdio:chromedriverOptions': {
                 binary: "./node_modules/chromedriver/lib/chromedriver/chromedriver"
