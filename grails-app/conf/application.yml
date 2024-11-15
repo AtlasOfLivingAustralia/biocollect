@@ -335,30 +335,5 @@ pwa:
     overlays: [ ]
 
 ---
-speciesCatalog:
-  url: "To be set"
-  fileName: "combined.zip"
-  vernacularFileName: "vernacularname.txt"
-  taxonFileName: "taxon.txt"
-  totalFileName: "total.json"
-  batchSize: 1000
-  dir: "/data/biocollect/speciesCatalog"
-  filters:
-    language: "en"
-    exclude:
-      unrankedValue: "unranked"
-  taxon:
-    headerNames:
-      guid: "taxonID"
-      scientificName: "scientificName"
-      rankString: "taxonRank"
-      name: "scientificName"
-  vernacular:
-    headerNames:
-      taxonID: "taxonID"
-      vernacularName: "vernacularName"
-      language: "language"
-      preferred: "isPreferredName"
-
 fathom:
   enabled: true

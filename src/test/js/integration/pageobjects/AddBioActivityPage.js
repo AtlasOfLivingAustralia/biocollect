@@ -8,8 +8,11 @@ class AddBioActivityPage extends StubbedCasSpec {
     get imageUploadInput() { return $("input[name=files][accept='image/*']"); }
     get imageTitleInput() { return $(".image-title-input"); }
     get saveButton() { return $("#save"); }
+    get okButtonBootBoxDialog(){ return $(".btn.btn-primary.bootbox-accept")}
+    get iframe() { return $("iframe"); }
 
     async open(projectActivityId) {
+        console.log(`Opening ${this.baseUrl}/bioActivity/create/${projectActivityId}`);
         await browser.url(`${this.baseUrl}/bioActivity/create/${projectActivityId}`);
     }
 
@@ -26,24 +29,41 @@ class AddBioActivityPage extends StubbedCasSpec {
         await this.surveyDateInput.setValue(date);
     }
 
-    async setSpecies(species) {
+    async setSpecies(species, iframe = false) {
         await this.addSpeciesInput.setValue(species);
-        await browser.waitUntil(async () => {
-            return (await this.speciesAutocomplete.isDisplayed()) === true;
-        }, { timeout: 10000 });
+        if (iframe) {
+            // iframe has difficulty checking if element is available
+            await browser.pause(5000);
+        }
+        else {
+            await browser.waitUntil(async () => {
+                return (await this.speciesAutocomplete.isDisplayed()) === true;
+            }, { timeout: 10000 });
+        }
         await this.firstSpecies.click();
     }
 
-    async uploadImage(imagePath) {
+    async uploadImage(imagePath, iframe = false) {
         await this.imageUploadInput.addValue(imagePath);
-        await browser.waitUntil(async () => {
-            return (await this.imageTitleInput.isDisplayed()) === true;
-        }, { timeout: 10000 });
+
+        if (iframe) {
+            // iframe has difficulty checking if element is available
+            await browser.pause(5000);
+        }
+        else {
+            await browser.waitUntil(async () => {
+                return (await this.imageTitleInput.isDisplayed()) === true;
+            }, { timeout: 10000 });
+        }
     }
 
     async saveActivity() {
         await this.saveButton.click();
     }
+
+    async dismissBootBoxDialog(){
+        await this.okButtonBootBoxDialog.click();
+    }
 }
 
-module.exports = new AddBioActivityPage();
+module.exports = AddBioActivityPage;

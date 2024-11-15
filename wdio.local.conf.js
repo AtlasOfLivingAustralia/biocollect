@@ -8,10 +8,15 @@ const config = {
         //     './src/test/js/integration/specs/pwa/InstallationSpec.js'
         // ],
         maxInstances: 1,
+        // services: ['devtools'],
         capabilities: [{
             browserName: 'chrome',
             'goog:chromeOptions': {
-                args: ['--auto-open-devtools-for-tabs','disable-gpu']
+                // args: ['--auto-open-devtools-for-tabs','disable-gpu']
+                args: ['disable-gpu']
+            },
+            'wdio:chromedriverOptions': {
+                binary: "./node_modules/chromedriver/lib/chromedriver/chromedriver"
             }
         }],
         testConfig: {
@@ -19,6 +24,8 @@ const config = {
             serverUrl: 'http://localhost:8087',
             wireMockBaseUrl: 'http://localhost:8018',
             pwaUrl: 'http://localhost:5173/pwa-mobile',
+            proxyUrl: 'http://localhost:8081',
+            proxyPort: 8081,
             dirName: __dirname,
             resourceDir: path.resolve(__dirname, 'src', 'integration-test', 'resources'),
             datasetLoadScript: path.resolve(__dirname, 'src', 'main', 'scripts', 'loadFunctionalTestData.sh'),

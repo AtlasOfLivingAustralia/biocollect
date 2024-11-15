@@ -2,6 +2,7 @@ const jose = require('node-jose');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const axios = require('axios');
+const {startServer, stopServer,blockSite, unblockSite} = require('../utils/proxy');
 const util = require('node:util');
 const execFile = util.promisify(require('node:child_process').execFile);
 const path = require('node:path');
@@ -10,7 +11,7 @@ class StubbedCasSpec {
     GRANT_MANAGER_USER_ID = '1001'
     MERIT_ADMIN_USER_ID = '1002'
     ALA_ADMIN_USER_ID = '2000'
-
+    offlineMock = null;
     loggedInUser = null;
     baseUrl = '';
     serverUrl = '';
@@ -41,11 +42,13 @@ class StubbedCasSpec {
         await this.login({userId:this.ALA_ADMIN_USER_ID, role:"ROLE_ADMIN", userName: 'ala_admin@nowhere.com', email: 'ala_admin@nowhere.com', firstName:"ALA", lastName:"Administrator"})
     }
 
-    async loginAsPwaUser() {
+    async loginAsPwaUser(expired = false) {
         let userDetails = this.getUserDetails('1');
-        let {tokenSet, profile} = await this.setupOidcAuthForUser(userDetails);
+        let {tokenSet, profile} = await this.setupOidcAuthForUser(userDetails, expired);
         tokenSet.profile = profile;
         let key = this.localStorageTokenKey;
+        console.log(`key - ${key}`);
+        console.log(`key - ${JSON.stringify(tokenSet)}`);
         await browser.execute(function (key, tokenSet) {
             localStorage.setItem(key, JSON.stringify(tokenSet));
             console.log('Token set in local storage');
@@ -125,15 +128,17 @@ class StubbedCasSpec {
     }
 
     async logoutViaUrl() {
+        console.log('Navigating to logout page - ' + `${this.baseUrl}/logout?appUrl=${this.baseUrl}`);
         await browser.url(`${this.baseUrl}/logout?appUrl=${this.baseUrl}`);
     }
 
     async oidcLogin(userDetails) {
         await this.setupOidcAuthForUser(userDetails)
+        console.log('Navigating to login page - ' + `${this.baseUrl}/login`);
         await browser.url(`${this.baseUrl}/login`)
     }
 
-    async setupOidcAuthForUser(userDetails) {
+    async setupOidcAuthForUser(userDetails, expired = false) {
         // Get the test configuration (assuming getTestConfig is defined elsewhere)
         const clientId = this.testConfig.oidc.clientId;
         const clientSecret = this.testConfig.oidc.secret;
@@ -148,31 +153,36 @@ class StubbedCasSpec {
         }
 
         // Define ID Token Claims
-        const idTokenClaims = this.getUserTokenClaim(userDetails, roles, clientId);
-        const idToken = await this.signPayload(idTokenClaims);
-        let tokenSet = this.getUserToken(idToken);
+        let {payload, expiresIn, expiresAt} = this.getUserTokenClaim(userDetails, roles, clientId, expired);
+        const idToken = await this.signPayload(payload);
+        let tokenSet = this.getUserToken(idToken, expiresIn, expiresAt);
 
         // Stub the POST request for token exchange (using nock)
         await this.setupAccessToken('/cas/oidc/oidcAccessToken', tokenSet, base64EncodedAuth);
-        const profile = await this.setupProfileEndpoint(userDetails, base64EncodedAuth);
+        let profile = await this.setupProfileEndpoint(userDetails, base64EncodedAuth);
 
         // Return the ID token
         return {tokenSet, profile};
     }
 
-    getUserToken(idToken) {
+    getUserToken(idToken, expiresIn, expiresAt) {
         return {
             access_token: idToken,
             id_token: idToken,
             refresh_token: null,
             token_type: 'bearer',
-            expires_in: 86400,
-            scope: 'openid profile ala roles email'
+            expires_in: expiresIn,
+            expires_at: expiresAt,
+            scope: this.testConfig.oidc.scope
         };
     }
 
-    getUserTokenClaim(userDetails, roles, clientId) {
-        return {
+    getUserTokenClaim(userDetails, roles, clientId, expired = false) {
+        let expiresIn = expired ? -1 * 3 * 24 * 60 * 60 : 365 * 24 * 60 * 60;
+        let expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
+        console.log('Expires In: ', expiresIn);
+        console.log('Expires At: ', expiresAt);
+        let payload=  {
             at_hash: 'KX-L2Fj6Z9ow-gOpYfehRA',
             sub: userDetails.userId,
             email_verified: true,
@@ -190,12 +200,13 @@ class StubbedCasSpec {
             state: 'maybe_this_matters',
             auth_time: -1,
             nbf: Math.floor(Date.now() / 1000) - 365 * 24 * 60 * 60,  // Not before (one year ago)
-            exp: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,  // Expires in one year
+            exp: expiresAt,
             iat: Math.floor(Date.now() / 1000),  // Issued at
             jti: 'id',
             email: userDetails.email,
             scope: this.testConfig.oidc.scope
         };
+        return {payload, expiresIn, expiresAt};
     }
 
     async setupAccessToken(url, body, base64EncodedAuth){
@@ -339,6 +350,34 @@ class StubbedCasSpec {
         }
         const {error, stdout, stderr} = await execFile(this.testConfig.datasetLoadScript, args)
         console.log(`result of command ${JSON.stringify(error)} \n\n ${JSON.stringify(stderr)} \n\n ${JSON.stringify(stdout)}`);
+    }
+
+    async setOffline(){
+        console.log('Going offline');
+        this.offlineMock = await browser.mock(`${this.baseUrl}/**`);
+        await this.offlineMock.abort("Failed");
+    }
+
+    async setOnline(){
+        if (this.offlineMock) {
+            console.log('Going online');
+            await this.offlineMock.restore();
+            this.offlineMock = null;
+        }
+    }
+
+    /**
+     * wait until knockout binding has been applied.
+     */
+    async waitForKnockoutBinding(selector, element) {
+        return browser.waitUntil(async () => {
+            var result = await element.execute(`
+                if (typeof ko === 'undefined') {
+                    return false;
+                }
+                return !!ko.dataFor(document.querySelector("${selector}"));`);
+            return result;
+        }, {timeout: 180000});
     }
 }
 

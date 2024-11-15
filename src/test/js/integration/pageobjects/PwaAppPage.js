@@ -6,7 +6,53 @@ class PwaAppPage extends StubbedCasSpec {
         return $('#getStarted');
     }
 
+    get avatar() {
+        return $('.mantine-Avatar-placeholder');
+    }
+
+    get signOut() {
+        return $('#signOut');
+    }
+
+    get signIn() {
+        return $('#signIn');
+    }
+
+    get viewRecordBtn() {
+        return $$('[data-testid="view-record"]');
+    }
+    project(projectId) {
+        return $('#' + projectId);
+    }
+
+    projectActivityDownload(paId) {
+        return $(`#${paId}Download`);
+    }
+
+    addRecordBtn(paId) {
+        return $(`#${paId}AddRecord`);
+    }
+
+    viewRecordsBtn(paId) {
+        return $(`#${paId}ViewRecord`);
+    }
+
+    viewUnpublishedRecordsBtn(paId) {
+        return $(`#${paId}UnpublishedRecords`);
+    }
+    get modalConfirmationButton() {
+        return $('#confirmDownloadModal');
+    }
+    get modalCloseBtn() {
+        return $('.mantine-Modal-close');
+    }
+
+    get rightDrawer() {
+        return $('.mantine-Drawer-content');
+    }
+
     async open() {
+        console.log(`Opening ${this.url}`);
         await browser.url(this.url);
     }
 
@@ -14,45 +60,58 @@ class PwaAppPage extends StubbedCasSpec {
         return /BioCollect PWA/i.test(await browser.getTitle());
     }
 
-
-    async saveToken() {
-        await browser.execute(function () {
-            return localStorage
-        });
+    async atSignIn() {
+        return await this.signIn.isDisplayed();
     }
 
     async start() {
         await this.getStarted.click();
     }
 
-    async serviceWorkerReady() {
-        return await browser.executeAsync((done) => {
-            console.log('Checking for Service Worker');
-            if ('serviceWorker' in navigator) {
-                console.log('Service Workers are supported');
-                navigator.serviceWorker.getRegistration().then((registration) => {
-                    console.log('Service Worker registration:', registration);
-                    done(true);  // Service Worker is installed and controlling the page
-                    // if (registration) {
-                    //     console.log('Service Worker is registered');
-                    //     resolve(true);  // Service Worker is registered
-                    // } else {
-                    //     resolve(true);  // Service Worker is installed and controlling the page
-                    //     // // Listen for Service Worker to take control
-                    //     // navigator.serviceWorker.oncontrollerchange = () => {
-                    //     //     console.log('Service Worker is not registered');
-                    //     //
-                    //     // };
-                    //
-                    //     // Set a timeout for the check
-                    //     setTimeout(() => resolve(false), 5000);  // Timeout after 5 seconds
-                    // }
-                });
-            } else {
-                done(false);  // Service Workers are not supported
-            }
-        });
+    async logout(){
+        await this.avatar.click();
+        await this.signOut.click();
+    }
+
+    async viewProject(projectId) {
+        await this.project(projectId).click()
+    }
+
+    async viewRecords(paId) {
+        await this.viewRecordsBtn(paId).click()
+        await this.rightDrawer.waitForExist({ timeout: 10000 });
+    }
+
+    async viewUnpublishedRecords(paId) {
+        var btn = this.viewUnpublishedRecordsBtn(paId)
+        await btn.waitForEnabled({ timeout: 10000 });
+        await this.viewUnpublishedRecordsBtn(paId).click()
+        await this.modalCloseBtn.waitForExist({ timeout: 10000 });
+    }
+    async downloadProjectActivity(paId){
+        await this.projectActivityDownload(paId).click();
+    }
+
+    async downloadComplete() {
+        let btn = this.modalConfirmationButton
+        await browser.waitUntil(() => btn.isClickable(), {timeout: 5*60*60*1000});
+        await btn.click();
+    }
+
+    async addRecord(paId){
+        await this.addRecordBtn(paId).click();
+    }
+
+    async closeModal(){
+        let modal = this.modalCloseBtn;
+        await modal.waitForEnabled({ timeout: 10000 });
+        await modal.click();
+    }
+
+    async viewFirstRecord(){
+        await this.viewRecordBtn[0].click();
+        await this.modalCloseBtn.waitForExist({ timeout: 10000 });
     }
 }
 
-module.exports = new PwaAppPage();
+module.exports = PwaAppPage;
