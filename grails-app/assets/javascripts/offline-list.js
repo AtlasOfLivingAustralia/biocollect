@@ -188,22 +188,33 @@ function ActivityViewModel (activity, parent) {
             deferred.reject();
         }, function () {
             loadPromise.then(function (){
-                self.uploading(true);
-                promises.push(self.uploadImages());
-                promises.push(self.uploadSite().then(self.updateActivityWithSiteId).then(self.saveAsNewSite));
-                $.when.apply($, promises).then(function (imagesToDelete, oldSitesToDelete) {
-                    self.saveActivityToDB().then(self.uploadActivity).then(self.deleteActivityFromDB).then(self.removeMeFromList).then(async function () {
-                        self.uploading(false);
-                        await self.deleteImages(imagesToDelete);
-                        await self.deleteOldSite(oldSitesToDelete);
-                        deferred.resolve({data: { activityId: activity.activityId} });
+                try {
+                    self.uploading(true);
+                    promises.push(self.uploadImages());
+                    promises.push(self.uploadSite().then(self.updateActivityWithSiteId).then(self.saveAsNewSite));
+                    $.when.apply($, promises).then(function (imagesToDelete, oldSitesToDelete) {
+                        self.saveActivityToDB().then(self.uploadActivity).then(self.deleteActivityFromDB).then(self.removeMeFromList).then(async function () {
+                            self.uploading(false);
+                            await self.deleteImages(imagesToDelete);
+                            await self.deleteOldSite(oldSitesToDelete);
+                            deferred.resolve({data: {activityId: activity.activityId}});
+                        });
+                    }, function (error) {
+                        self.saveActivityToDB().then(function () {
+                            self.uploading(false);
+                            deferred.reject({
+                                data: {activityId: activity.activityId},
+                                message: "There was an error uploading activity",
+                                error: error
+                            });
+                        });
                     });
-                }, function (error) {
-                    self.saveActivityToDB().then(function () {
-                        self.uploading(false);
-                        deferred.reject({data: { activityId: activity.activityId}, message: "There was an error uploading activity", error: error});
-                    });
-                });
+                }
+                catch (error) {
+                    console.error(error);
+                    deferred.reject();
+                    alert("There was an error uploading activity");
+                }
             }, function () {
                 deferred.reject();
                 alert("There was an error fetching metadata for activity");
@@ -399,7 +410,9 @@ function ActivityViewModel (activity, parent) {
 
     self.uploadImage = function(image) {
         var formData = new FormData();
-        formData.append("files", image.getBlob());
+        var blob = image.getBlob();
+        var file = new File([blob], image.filename, {type: image.contentType()});
+        formData.append("files", file);
         return $.ajax({
             url: fcConfig.imageUploadUrl,
             type: "POST",

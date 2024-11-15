@@ -101,6 +101,7 @@ environments {
                 grails.mail.port = 3025 // com.icegreen.greenmail.util.ServerSetupTest.SMTP.port
                 temp.dir="/tmp/stylesheet"
                 google.maps.apiKey="testGoogleApi"
+                speciesCatalog.dir="./src/integration-test/resources/data"
         }
 
         production {
@@ -144,6 +145,39 @@ webservice.jwt = true
 webservice['jwt-scopes'] = "ala/internal users/read ala/attrs ecodata/read_test ecodata/write_test"
 webservice['client-id']='changeMe'
 webservice['client-secret'] = 'changeMe'
+
+speciesCatalog = [
+        url: "To be set",
+        fileName: "combined.zip",
+        vernacularFileName: "vernacularname.txt",
+        taxonFileName: "taxon.txt",
+        totalFileName: "total.json",
+        batchSize: 1000,
+        dir: "/data/biocollect/speciesCatalog",
+        filters: [
+                language: "en",
+                exclude: [
+                        unrankedValue: "unranked"
+                ]
+        ],
+        taxon: [
+                headerNames: [
+                        guid: "taxonID",
+                        scientificName: "scientificName",
+                        rankString: "taxonRank",
+                        name: "scientificName"
+                ]
+        ],
+        vernacular: [
+                headerNames: [
+                        taxonID: "taxonID",
+                        vernacularName: "vernacularName",
+                        language: "language",
+                        preferred: "isPreferredName"
+                ]
+        ]
+]
+
 
 dataAccessMethods = [
         "oasrdfs",

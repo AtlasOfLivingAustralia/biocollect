@@ -1,8 +1,4 @@
 window.addEventListener('message', function(event) {
-    var origins = [fcConfig.originUrl, fcConfig.pwaAppUrl]
-    if (origins.indexOf(event.origin) == -1)
-        return
-
     var type = event.data.event;
     switch (type) {
         case 'viewmodelloadded':

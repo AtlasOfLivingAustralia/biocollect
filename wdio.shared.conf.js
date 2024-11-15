@@ -81,6 +81,7 @@ const config = {
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
+    implicit: 10000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
@@ -112,6 +113,8 @@ const config = {
     jasmineOpts: {
         // Jasmine default timeout
         defaultTimeoutInterval: 60000,
+        wait: 8000,
+        interval: 1000
         //
         // The Jasmine framework allows interception of each assertion in order to log the state of the application
         // or website depending on the result. For example, it is pretty handy to take a screenshot every time

@@ -4,6 +4,7 @@ class AdminToolsPage extends ReloadablePage {
     url = browser.options.testConfig.baseUrl + "/admin/tools";
 
     async open() {
+        console.log(`Opening ${this.url}`);
         await browser.url(this.url);
     }
     async at ()  {
@@ -19,6 +20,7 @@ class AdminToolsPage extends ReloadablePage {
     }
 
     async reindex() {
+        console.log(`Opening ${this.url}`);
         await browser.url(this.url)
         await this.reindexButton.click();
         await this.hasBeenReloaded();
@@ -29,4 +31,4 @@ class AdminToolsPage extends ReloadablePage {
     }
 }
 
-module.exports = new AdminToolsPage();
+module.exports = AdminToolsPage;
