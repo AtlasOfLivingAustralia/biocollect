@@ -50,7 +50,7 @@
   "scripts": {
     "test": "karma start karma.conf.js",
     "debug": "karma start --debug --browsers=ChromeHeadless --single-run=false",
-    "integration-test": "wdio run wdio.local.conf.js --spec src/test/js/integration/specs/activity/*.js",
+    "integration-test": "wdio run wdio.local.conf.js",
     "integration-test:local": "wdio run wdio.local.conf.js",
     "integration-test:sauce": "wdio run wdio.sauce.conf.js"
   },
