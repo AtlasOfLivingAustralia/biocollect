@@ -78,9 +78,10 @@ cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest &
+sleep 180
 
 cd $BIOCOLLECT_DIR
-echo "Starting biocollect"
+echo "Starting biocollect from `pwd`"
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087 &
 sleep 180
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
