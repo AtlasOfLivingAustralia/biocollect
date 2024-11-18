@@ -65,14 +65,14 @@ cat /etc/hosts
 cd $BIOCOLLECT_DIR
 echo "Starting wire mock"
 ./gradlew startWireMock &
-sleep 15
+sleep 60
 
 cd $PWA_LOCAL_DIR
 echo "Starting biocollect-pwa"
 cd $PWA_LOCAL_DIR
 npm install
 npm run run:functionaltest &
-sleep 60
+sleep 15
 
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
