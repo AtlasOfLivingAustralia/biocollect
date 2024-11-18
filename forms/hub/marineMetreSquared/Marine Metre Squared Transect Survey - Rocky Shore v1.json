@@ -48,6 +48,7 @@
             "description": "Names of other people involved in the survey"
           },
           {
+            "indexName": "groupName",
             "dataType": "text",
             "name": "groupName",
             "description": "The name of the group or school"
