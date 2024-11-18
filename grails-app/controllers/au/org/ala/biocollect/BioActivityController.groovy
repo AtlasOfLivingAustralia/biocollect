@@ -1598,12 +1598,7 @@ class BioActivityController {
         } else if (!projectId) {
             model.error = "No project associated with the activity"
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
-            model = [activity: activity, returnTo: params.returnTo, mode: mode]
-            def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
-            model.project = projectId ? projectService.get(model.activity.projectId, null, false, version) : null
-            model.pActivity = pActivity
-            model.projectActivityId = pActivity.projectActivityId
-            model.id = id
+            model = [activity: activity]
         } else {
             response.status = 401
             model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"

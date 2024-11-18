@@ -314,8 +314,5 @@ class ProjectSearchResponse {
 @JsonIgnoreProperties('metaClass')
 class GetOutputForActivitySimplifiedResponse {
     Map activity
-    Map project
-    Map pActivity
-    String projectActivityId
     String error
 }
