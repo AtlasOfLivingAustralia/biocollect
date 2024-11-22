@@ -46,6 +46,7 @@
             "validate": "required",
             "constraints": [
               "Chinamens",
+              "Fences beach",
               "Main beach",
               "North of Surf Club",
               "Workmans beach"
