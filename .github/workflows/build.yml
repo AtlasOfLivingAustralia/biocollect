@@ -87,7 +87,7 @@ jobs:
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
 
       - name: Run BioCollect functional tests
-        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/cognito
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
