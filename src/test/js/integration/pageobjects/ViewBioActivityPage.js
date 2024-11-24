@@ -1,5 +1,6 @@
-const StubbedCasSpec = require('./StubbedCasSpec.js')
-class ViewBioActivityPage extends StubbedCasSpec {
+// const StubbedCasSpec = require('./StubbedCasSpec.js')
+const ReloadablePage = require('./ReloadablePage.js')
+class ViewBioActivityPage extends ReloadablePage {
     get backBtn() {
         return $('#backButton');
     }

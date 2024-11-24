@@ -1,5 +1,6 @@
-const StubbedCasSpec = require('./StubbedCasSpec.js')
-class AddBioActivityPage extends StubbedCasSpec {
+// const StubbedCasSpec = require('./StubbedCasSpec.js')
+const ReloadablePage = require('./ReloadablePage.js')
+class AddBioActivityPage extends ReloadablePage {
     get addSiteInput() { return $("#siteLocation"); }
     get surveyDateInput() { return $('.inputDatePicker'); }
     get addSpeciesInput() { return $('.speciesInputTemplates'); }
