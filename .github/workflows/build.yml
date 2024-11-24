@@ -95,7 +95,6 @@ jobs:
 
       - name: Archive log directory
         uses: actions/upload-artifact@v4
-        if: ${{ failure() }}
         with:
           path: ./logs
 
