@@ -40,7 +40,7 @@ describe('Add BioActivity Spec', function () {
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityBeforeSave");
         // Save the activity
         await addBioActivityPage.saveActivity();
-
+        await addBioActivityPage.hasBeenReloaded();
         // Verify that the ViewBioActivityPage is loaded
         expect(await viewBioActivityPage.at()).toBeTrue();
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityAtViewBioActivityPage");
@@ -74,6 +74,7 @@ describe('Add BioActivity Spec', function () {
         // go online
         await addBioActivityPage.setOnline()
         await addBioActivityPage.saveActivity();
+        await addBioActivityPage.hasBeenReloaded();
         expect(await viewBioActivityPage.at()).toBeTrue();
     })
 
