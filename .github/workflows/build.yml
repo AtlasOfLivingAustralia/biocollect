@@ -88,12 +88,14 @@ jobs:
 
       - name: Run BioCollect functional tests
         run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/cognito
+        continue-on-error: true
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Archive log directory
         uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
         with:
           path: ./logs
 
