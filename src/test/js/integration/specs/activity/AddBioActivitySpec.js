@@ -17,6 +17,7 @@ describe('Add BioActivity Spec', function () {
     });
 
     afterEach(async function() {
+        await addBioActivityPage.takeScreenShot("afterEachAddBioActivitySpec");
         await addBioActivityPage.logout();
     });
 
@@ -25,6 +26,7 @@ describe('Add BioActivity Spec', function () {
         let promises = [];
         // Navigate to the Add Bio Activity page
         await addBioActivityPage.open(projectActivityId);
+        await addBioActivityPage.takeScreenShot("shouldAddAnActivitySurvey");
         // Set the site, date, and species
         promises.push(addBioActivityPage.setSite(site));
         promises.push(addBioActivityPage.setDate('01/01/2020'));
@@ -35,12 +37,13 @@ describe('Add BioActivity Spec', function () {
         // Wait for all promises to resolve
         await Promise.all(promises);
         await addBioActivityPage.setSpecies('acacia')
-
+        await addBioActivityPage.takeScreenShot("shouldAddAnActivityBeforeSave");
         // Save the activity
         await addBioActivityPage.saveActivity();
 
         // Verify that the ViewBioActivityPage is loaded
         expect(await viewBioActivityPage.at()).toBeTrue();
+        await addBioActivityPage.takeScreenShot("shouldAddAnActivityAtViewBioActivityPage");
     });
 
     it("should not be able to submit an activity when no network", async () => {
@@ -48,6 +51,7 @@ describe('Add BioActivity Spec', function () {
         let promises = [];
         // Navigate to the Add Bio Activity page
         await addBioActivityPage.open(projectActivityId);
+        await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkSurvey");
         // Set the site, date, and species
         promises.push(addBioActivityPage.setSite(site));
         promises.push(addBioActivityPage.setDate('01/01/2020'));
@@ -61,6 +65,7 @@ describe('Add BioActivity Spec', function () {
         await addBioActivityPage.setOffline();
         // Save the activity
         await addBioActivityPage.saveActivity();
+        await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkBeforeSave");
         // await browser.dismissAlert();
         await addBioActivityPage.dismissBootBoxDialog();
         // Verify that the ViewBioActivityPage is loaded

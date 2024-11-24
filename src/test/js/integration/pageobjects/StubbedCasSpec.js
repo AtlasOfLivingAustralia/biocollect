@@ -379,6 +379,11 @@ class StubbedCasSpec {
             return result;
         }, {timeout: 180000});
     }
+
+    async takeScreenShot(name){
+        var body = await $("body");
+        await body.saveScreenshot(`./logs/${name}.png`);
+    }
 }
 
 module.exports = StubbedCasSpec;
