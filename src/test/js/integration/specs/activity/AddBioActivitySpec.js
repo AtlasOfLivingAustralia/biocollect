@@ -40,6 +40,7 @@ describe('Add BioActivity Spec', function () {
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityBeforeSave");
         // Save the activity
         await addBioActivityPage.saveActivity();
+        await browser.sleep(30000);
         await addBioActivityPage.hasBeenReloaded();
         // Verify that the ViewBioActivityPage is loaded
         expect(await viewBioActivityPage.at()).toBeTrue();
