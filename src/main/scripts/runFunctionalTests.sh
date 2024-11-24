@@ -91,6 +91,8 @@ node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js
 
 RETURN_VALUE=$?
 
+jobs
+
 kill %4
 kill %3
 kill %2
