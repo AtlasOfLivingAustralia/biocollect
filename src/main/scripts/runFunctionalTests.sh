@@ -64,8 +64,7 @@ cat /etc/hosts
 
 cd $BIOCOLLECT_DIR
 echo "Starting wire mock"
-./gradlew startWireMock &
-sleep 60
+./gradlew startWireMock
 
 cd $PWA_LOCAL_DIR
 echo "Starting biocollect-pwa"
