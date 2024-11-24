@@ -65,6 +65,7 @@ class PwaAppPage extends StubbedCasSpec {
     }
 
     async start() {
+        await this.getStarted.waitForDisplayed({ timeout: 10000 });
         await this.getStarted.click();
     }
 
