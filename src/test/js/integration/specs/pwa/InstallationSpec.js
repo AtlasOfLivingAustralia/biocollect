@@ -40,8 +40,10 @@ describe("Application installation Spec", function () {
 
     it("open a project and take it offline", async function () {
         console.log(url);
+        await addBioActivityPage.takeScreenShot("openProjectAndTakeItOffline");
         await pwaAppPage.viewProject(project);
         await pwaAppPage.downloadProjectActivity(pa);
+        await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflineBeforeDownload");
         await pwaAppPage.downloadComplete();
         await stopServer();
         await pwaAppPage.addRecord(pa);
@@ -57,6 +59,7 @@ describe("Application installation Spec", function () {
         await addBioActivityPage.setSpecies('Acavomonidia', true)
         // Save the activity
         await addBioActivityPage.saveActivity();
+        await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflineAfterSave");
         contextId = await browser.switchToFrame(null);
         console.log("main frame context id- " +contextId);
         contextId = await browser.switchFrame(null);
@@ -69,6 +72,7 @@ describe("Application installation Spec", function () {
         await pwaAppPage.viewProject(project);
         await pwaAppPage.viewRecords(pa);
         await pwaAppPage.viewUnpublishedRecords(pa);
+        await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflineUnpublishedRecords");
 
         iframe =  await browser.findElement('tag name', 'iframe');
         console.log("iframe url  - " + JSON.stringify(iframe));
@@ -80,6 +84,7 @@ describe("Application installation Spec", function () {
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
         await offlineListPage.uploadRecords();
+        await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflinePublishedRecords");
         await browser.pause(5000);
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
@@ -96,6 +101,7 @@ describe("Application installation Spec", function () {
         console.log("iframe context id- " +contextId);
         let viewBioActivityPage = new ViewBioActivityPage();
         var speciesEl = viewBioActivityPage.speciesSelector("Acavomonidia");
+        await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflineViewPublishedRecord");
         await speciesEl.scrollIntoView();
         await expect(speciesEl).toBeDisplayed();
         await browser.switchFrame(null);
