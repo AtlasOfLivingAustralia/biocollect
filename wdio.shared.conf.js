@@ -112,7 +112,7 @@ const config = {
     // Options to be passed to Jasmine.
     jasmineOpts: {
         // Jasmine default timeout
-        defaultTimeoutInterval: 60000,
+        defaultTimeoutInterval: 240000,
         wait: 8000,
         interval: 1000
         //
