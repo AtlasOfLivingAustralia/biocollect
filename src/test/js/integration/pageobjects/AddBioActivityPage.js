@@ -63,6 +63,7 @@ class AddBioActivityPage extends ReloadablePage {
     }
 
     async dismissBootBoxDialog(){
+        await this.okButtonBootBoxDialog.waitForClickable({ timeout: 10000 });
         await this.okButtonBootBoxDialog.click();
     }
 }
