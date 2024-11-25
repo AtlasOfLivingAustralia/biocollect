@@ -69,6 +69,7 @@ describe('Add BioActivity Spec', function () {
         await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkBeforeSave");
         // await browser.dismissAlert();
         await addBioActivityPage.dismissBootBoxDialog();
+        await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkAfterDismiss");
         // Verify that the ViewBioActivityPage is loaded
         expect(await addBioActivityPage.at()).toBeTrue();
 
@@ -77,6 +78,7 @@ describe('Add BioActivity Spec', function () {
         await addBioActivityPage.saveActivity();
         await addBioActivityPage.hasBeenReloaded();
         expect(await viewBioActivityPage.at()).toBeTrue();
+        await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkAfterSuccessfullSave");
     })
 
 });

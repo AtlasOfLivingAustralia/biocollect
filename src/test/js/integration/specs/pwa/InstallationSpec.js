@@ -26,6 +26,7 @@ describe("Application installation Spec", function () {
         await pwaAppPage.open();
         await pwaAppPage.loginAsPwaUser();
         await pwaAppPage.open();
+        await browser.pause(10000);
         await pwaAppPage.start();
     });
 
