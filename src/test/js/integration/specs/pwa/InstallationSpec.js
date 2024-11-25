@@ -16,6 +16,7 @@ describe("Application installation Spec", function () {
         adminToolsPage = new AdminToolsPage();
         homePage = new HomePage();
         pwaAppPage = new PwaAppPage();
+        addBioActivityPage = new AddBioActivityPage();
         url = `${pwaAppPage.baseUrl}/pwa/bioActivity/edit/${pa}`;
         await startServer();
         await adminToolsPage.loadDataSet('dataset1');
@@ -26,13 +27,10 @@ describe("Application installation Spec", function () {
         await pwaAppPage.open();
         await pwaAppPage.loginAsPwaUser();
         await pwaAppPage.open();
-        await browser.pause(10000);
-        await pwaAppPage.start();
+        await browser.pause(30000);
     });
 
     beforeEach(async function () {
-        pwaAppPage = new PwaAppPage();
-        addBioActivityPage = new AddBioActivityPage();
     });
 
     afterAll(async function () {
@@ -41,6 +39,7 @@ describe("Application installation Spec", function () {
 
     it("open a project and take it offline", async function () {
         console.log(url);
+        await pwaAppPage.start();
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOffline");
         await pwaAppPage.viewProject(project);
         await pwaAppPage.downloadProjectActivity(pa);
