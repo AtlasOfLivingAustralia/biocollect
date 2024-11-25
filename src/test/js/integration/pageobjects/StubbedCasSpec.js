@@ -353,7 +353,7 @@ class StubbedCasSpec {
     }
 
     async setOffline(){
-        console.log('Going offline');
+        console.log('Going offline - ' + this.baseUrl);
         this.offlineMock = await browser.mock(`${this.baseUrl}/**`);
         await this.offlineMock.abort("Failed");
     }
