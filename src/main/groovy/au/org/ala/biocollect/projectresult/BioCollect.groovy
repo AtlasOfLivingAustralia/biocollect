@@ -39,17 +39,10 @@ class BioCollect {
                 ]
             }
 
-            Map siteGeom;
-            doc?.sites?.each { site ->
-                if (doc?.projectSiteId == site.siteId) {
-                    siteGeom = site.extent?.geometry;
-                }
-            }
-
             [
                 projectId              : doc.projectId,
                 aim                    : doc.aim,
-                coverage               : siteGeom,
+                coverage               : doc.projectArea?.geoIndex,
                 description            : doc.description,
                 difficulty             : doc.difficulty,
                 endDate                : doc.plannedEndDate,

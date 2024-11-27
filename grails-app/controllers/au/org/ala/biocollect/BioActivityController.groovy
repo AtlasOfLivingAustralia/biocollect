@@ -1780,6 +1780,86 @@ class BioActivityController {
     }
 
     /*
+     * Simplified version to get data/output for an activity
+     * Handles both session and non session based request.
+     *
+     * @param id activityId
+     *
+     * @return activity
+     *
+     */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "simplifiedactivityoutputs",
+            summary = "Get data for an activity",
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Activity id"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GetOutputForActivitySimplifiedResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/data/simplified/{id}")
+    def getOutputForActivitySimplified(String id){
+        String userId = userService.getCurrentUserId()
+        def activity = activityService.get(id)
+        String projectId = activity?.projectId
+        def model = [:]
+
+        if (!userId) {
+            response.status = 401
+            model.error = "Access denied: User has not been authenticated."
+        } else if (!activity) {
+            model.error = "Invalid activity id"
+        } else if (!activity) {
+            model.error = "Invalid activity - ${id}"
+        } else if (!projectId) {
+            model.error = "No project associated with the activity"
+        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            model = [activity: activity]
+        } else {
+            response.status = 401
+            model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+        }
+
+        render model as JSON
+    }
+
+    /*
      * Get activity model for a survey/projectActivity
      * Handles both session and non session based request.
      *
