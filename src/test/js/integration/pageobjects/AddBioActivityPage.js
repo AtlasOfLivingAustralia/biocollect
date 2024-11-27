@@ -9,7 +9,7 @@ class AddBioActivityPage extends ReloadablePage {
     get imageUploadInput() { return $("input[name=files][accept='image/*']"); }
     get imageTitleInput() { return $(".image-title-input"); }
     get saveButton() { return $("#save"); }
-    get okButtonBootBoxDialog(){ return $(".btn.btn-primary.bootbox-accept")}
+    get okButtonBootBoxDialog(){ return $(".bootbox-accept")}
     get iframe() { return $("iframe"); }
 
     async open(projectActivityId) {
@@ -63,7 +63,7 @@ class AddBioActivityPage extends ReloadablePage {
     }
 
     async dismissBootBoxDialog(){
-        await this.okButtonBootBoxDialog.waitForClickable({ timeout: 10000 });
+        await this.okButtonBootBoxDialog.waitForClickable({ timeout: 20000 });
         await this.okButtonBootBoxDialog.click();
     }
 }
