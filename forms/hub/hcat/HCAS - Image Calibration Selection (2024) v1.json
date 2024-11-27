@@ -1,0 +1,250 @@
+{
+  "id": "65f0d482c4908064dd100ab4",
+  "dateCreated": "2024-03-12T22:17:38Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-07-15T00:13:20Z",
+  "createdUserId": "35",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "HCAS - Image Calibration Selection (2024)",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "HCAS - Image Calibration Selection (2024)",
+        "title": "HCAS - Image Calibration Selection (2024)",
+        "dataModel": [
+          {
+            "indexName": "recordedBy",
+            "dataType": "text",
+            "name": "recordedBy",
+            "validate": "required"
+          },
+          {
+            "primaryResult": "true",
+            "dataType": "date",
+            "name": "submissionDate",
+            "description": "The date the assessment of this record was completed.",
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "name": "overallConditionBestEstimate",
+            "description": "On a scale of 1 (habitat with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed habitat with all native species removed), how would you rate the condition of the site in this image?",
+            "validate": "required,min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "upperConditionBound",
+            "description": "",
+            "validate": "required,min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "name": "lowerConditionBound",
+            "description": "",
+            "validate": "required,min[0],max[1]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "text",
+            "name": "comments",
+            "description": "If you would like to provide any more detailed information on the condition of this site, and the drivers of condition at this site please do so here."
+          },
+          {
+            "dataType": "image",
+            "name": "sitePhoto",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "mvgGroup",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "huchinsonGroup",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "completionStatus",
+            "description": "Please indicate whether you have completed this assessment record.",
+            "constraints": [
+              "Yes"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "deIdentify",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Image Assessment</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Record Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "preLabel": "Assessor name",
+                            "noEdit": true,
+                            "source": "recordedBy",
+                            "type": "text"
+                          },
+                          {
+                            "preLabel": "Date image assessment completed",
+                            "primaryResult": "true",
+                            "source": "submissionDate",
+                            "type": "date"
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "<h3>Overall Condition Score</h3><font style='color:blue; font-size:0.8em;'><i>Provide your best estimate of the expected condition of the habitat in this image on a scale of 1 (habitat with high ecosystem integrity as it might have existed prior to European colonisation) to 0 (completely removed or transformed habitat with all native species removed). The condition score you provide should reflect your satisfaction with the probability (i.e. chance) of assigning the highest (1) or lowest (0) condition state to this image in a random lottery.</i></font>",
+                                "type": "literal"
+                              }
+                            ]
+                          },
+                          {
+                            "preLabel": "Overall condition score",
+                            "source": "overallConditionBestEstimate",
+                            "type": "number"
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "lowerConditionBound",
+                                "preLabel": "Lower condition bound",
+                                "type": "number"
+                              },
+                              {
+                                "source": "upperConditionBound",
+                                "preLabel": "Upper condition bound",
+                                "type": "number"
+                              }
+                            ]
+                          },
+                          {
+                            "source": "<hr>",
+                            "type": "literal"
+                          },
+                          {
+                            "preLabel": "Comments",
+                            "source": "comments",
+                            "type": "textarea"
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Ecosystem Photo",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "preLabel": "Ecosystem image(s)",
+                            "css": "img-responsive",
+                            "allowImageAdd": "false",
+                            "showMetadata": "false",
+                            "source": "sitePhoto",
+                            "type": "image"
+                          },
+                          {
+                            "computed": null,
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "<font style='color:blue;'><i>Click to view detail - The hi-res image will open in a new tab</i></font>",
+                                "type": "literal"
+                              }
+                            ]
+                          },
+                          {
+                            "preLabel": "MVG Group",
+                            "readonly": true,
+                            "source": "mvgGroup",
+                            "type": "text"
+                          },
+                          {
+                            "preLabel": "Huchinson Group",
+                            "readonly": true,
+                            "source": "huchinsonGroup",
+                            "type": "text"
+                          },
+                          {
+                            "preLabel": "Indicate whether you have completed this assessment",
+                            "source": "completionStatus",
+                            "type": "selectOne"
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "HCAS - Image Calibration Selection (2024)",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "HCAS - Image Calibration Selection (2024)",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Habitat Condition Assessment",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": "This is a template for image calibration assessment for the habitat condition assessment tool (phase 2) project. It is based on the \"Ecological Condition Score Moderation (aka Expert Elicitation\" template from the HCAS phase 1 project and includes several modifications and refinements.",
+  "formVersion": 1
+}
