@@ -72,7 +72,8 @@
 //= require comment.js
 
 // indexDB
-//= require dexiejs/dexie.js
+// require dexiejs/dexie.js
+//= require dexiejs/dexie.min.js
 //= require entities.js
 
 // audio to be included
