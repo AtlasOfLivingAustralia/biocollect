@@ -1,6 +1,6 @@
 {
   "name": "biocollect",
-  "version": "7.0",
+  "version": "7.1",
   "description": "Karma / jasmine configuration for testing project javascript",
   "main": "test/unit/javascript",
   "directories": {

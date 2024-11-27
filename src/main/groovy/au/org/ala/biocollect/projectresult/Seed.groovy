@@ -39,13 +39,6 @@ class Seed {
                 ]
             }
 
-            Map siteGeom;
-            doc?.sites?.each { site ->
-                if (doc?.projectSiteId == site.siteId) {
-                    siteGeom = site.extent?.geometry;
-                }
-            }
-
             def projectActivities = doc.projectActivities?.collect {
                 def pActivity = [
                         name: it.name,
@@ -63,7 +56,7 @@ class Seed {
             [
                 projectId              : doc.projectId,
                 aim                    : doc.aim,
-                coverage               : siteGeom,
+                coverage               : doc.projectArea?.geoIndex,
                 description            : doc.description,
                 difficulty             : doc.difficulty,
                 endDate                : doc.plannedEndDate,

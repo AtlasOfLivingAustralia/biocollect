@@ -39,13 +39,6 @@ class SciStarter {
                 ]
             }
 
-            Map siteGeom;
-            doc?.sites?.each { site ->
-                if (doc?.projectSiteId == site.siteId) {
-                    siteGeom = site.geoIndex
-                }
-            }
-
             [
                 projectId              : doc.projectId,
                 name                   : doc.name,
@@ -69,12 +62,14 @@ class SciStarter {
                 ecoScienceType         : doc.ecoScienceType,
                 isDIY                  : doc.isDIY?.toBoolean(),
                 isSciStarter           : doc.isSciStarter?.toBoolean(),
+                isSuitableForChildren  : doc.isSuitableForChildren?.toBoolean(),
                 hasParticipantCost     : doc.hasParticipantCost?.toBoolean(),
+                origin                 : doc.origin,
                 equipment              : doc.gear,
                 plannedStartDate       : doc.plannedStartDate,
                 plannedEndDate         : doc.plannedEndDate,
                 endDate                : doc.plannedEndDate,
-                coverage               : siteGeom,
+                coverage               : doc.projectArea?.geoIndex,
                 links                  : trimmedLinks,
                 startDate              : doc.plannedStartDate,
                 url                    : params.url + "/acsa/project/index/" + doc.projectId,
