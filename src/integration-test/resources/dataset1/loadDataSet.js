@@ -45,6 +45,7 @@ var  activityProject = {
     "isWorks" : false,
     "legalCustodianOrganisation" : "Atlas of Living Australia",
     "legalCustodianOrganisationType" : "",
+    "projLifecycleStatus": "published",
     "mapLayersConfig" : {
         "baseLayers" : [],
         "overlays" : []
@@ -54,7 +55,7 @@ var  activityProject = {
     "organisationId" : "3a04141a-2290-4c54-aee3-a433d60b4476",
     "organisationName" : "Atlas of Living Australia",
     "plannedStartDate" : ISODate("2022-04-06T14:00:00.000Z"),
-    "projectSiteId" : "site_1",
+    "projectSiteId" : "ab9ec9af-241b-49f7-adcf-ca40e474d119",
     "projectType" : "survey",
     "regenerateProjectTimeline" : false,
     "task" : "collect plants",
@@ -82,7 +83,7 @@ var projectActivity = {
     },
     "surveySiteOption" : "sitepick",
     "sites" : [
-        "site_1"
+        "ab9ec9af-241b-49f7-adcf-ca40e474d119"
     ],
     "temporalAccuracy" : "high",
     "canEditAdminSelectedSites" : false,
@@ -140,7 +141,7 @@ var projectActivity = {
             }
         }
     ],
-    "defaultZoomArea" : "site_1",
+    "defaultZoomArea" : "ab9ec9af-241b-49f7-adcf-ca40e474d119",
     "published" : true,
     "relatedDatasets" : [],
     "allowPolygons" : false,
@@ -164,7 +165,7 @@ var site = {
     "lastUpdated" : ISODate("2022-04-07T07:13:28.815Z"),
     "catchment" : "",
     "notes" : "",
-    "siteId" : "site_1",
+    "siteId" : "ab9ec9af-241b-49f7-adcf-ca40e474d119",
     "extent" : {
         "geometry" : {
             "datum" : "",

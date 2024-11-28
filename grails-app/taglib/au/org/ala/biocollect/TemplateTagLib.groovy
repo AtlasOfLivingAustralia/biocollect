@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
+import grails.converters.JSON
 import grails.web.mapping.LinkGenerator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.context.MessageSource
@@ -334,6 +335,17 @@ class TemplateTagLib {
                 log.error("Error occurred while converting hex to integer.", nfe);
             }
         }
+    }
+
+    /**
+     * Generate links to assets like image that need to be pre-cached by PWA app.
+     */
+    def getFilesToPreCacheForPWA = { attrs ->
+        List files = grailsApplication.config.getProperty('pwa.serviceWorkerConfig.filesToPreCache', List)?.collect {
+            asset.assetPath(src: it)
+        }
+
+        out << (files as JSON).toString()
     }
 
     String getCurrentURLFromRequest() {

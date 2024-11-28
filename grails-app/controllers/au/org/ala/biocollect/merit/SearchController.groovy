@@ -1,7 +1,7 @@
 package au.org.ala.biocollect.merit
+
 import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
-import org.springframework.http.HttpStatus
 
 class SearchController {
     def searchService, webService, speciesService, commonService, projectActivityService
@@ -31,10 +31,21 @@ class SearchController {
         render speciesService.searchSpeciesList(sort, max, offset, guid, order, searchTerm) as JSON
     }
 
-    //Search species by project activity species constraint.
-    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName){
+    /**
+     * Search species based on species field configuration of the project activity.
+     * @param projectActivityId
+     * @param q
+     * @param limit
+     * @param output
+     * @param dataFieldName
+     * @param offset
+     * @return
+     */
+    def searchSpecies(String projectActivityId, String q, Integer limit, String output, String dataFieldName, Integer offset){
         try {
-            def result = projectActivityService.searchSpecies(id, q, limit, output, dataFieldName)
+            // backward compatibility - id was replaced with projectActivityId
+            projectActivityId = projectActivityId ?: params.id
+            def result = projectActivityService.searchSpecies(projectActivityId, q, limit, output, dataFieldName, offset)
             render result as JSON
         } catch (Exception ex){
             log.error (ex.message.toString(), ex)
