@@ -64,7 +64,15 @@ class BioCollect {
                 projectType            : doc.projectType,
                 isMERIT                : doc.isMERIT,
                 tags                   : doc.tags,
-                containsActivity       : doc.containsActivity
+                containsActivity       : doc.containsActivity,
+                projectEquipment       : doc.gear,
+                projectHowToParticipate: doc.getInvolved,
+                projectLogoImageCredit : doc.logoAttribution,
+                projectLogoImage       : doc.imageUrl,
+                projectTask            : doc.task,
+                projectActivities      : doc.projectActivities,
+                contactName            : doc.managerEmail,
+                contactDetails         : doc.manager
             ]
         }
     }

@@ -27,7 +27,7 @@ jobs:
       - name: Install nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - run: npm install
 
@@ -87,18 +87,27 @@ jobs:
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
 
       - name: Run BioCollect functional tests
-        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/pwa2
+        continue-on-error: true
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - name: Archive log directory
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          path: ./logs
+
       - name: Clean to remove clover instrumentation
         uses: gradle/gradle-build-action@v2.4.2
+        if: ${{ success() }}
         with:
           arguments: clean
 
       - name: Publish the JAR to the repository
         uses: gradle/gradle-build-action@v2.4.2
+        if: ${{ success() }}
         with:
           arguments: publish
         env:

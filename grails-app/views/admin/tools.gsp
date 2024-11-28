@@ -129,6 +129,17 @@
                         alert(result.statusText);
                     });
                 });
+
+                $("#speciesCatalog").on('click', function (e) {
+                    e.preventDefault();
+                    $.ajax(
+                        "${createLink(controller: 'species', action:'refreshSpeciesCatalog')}?force=true"
+                    ).done(function(result) {
+                        alert(result.success);
+                    }).fail(function (result) {
+                        alert(result.statusText);
+                    });
+                });
             });
 
         </script>
@@ -254,6 +265,14 @@
                     </td>
                     <td>
                         <g:message code="admin.alaAdmin.helptext"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id="speciesCatalog" class="btn btn-danger"><i class="fas fa-cog"></i> <g:message code="admin.species.catalog"/></button>
+                    </td>
+                    <td>
+                        <g:message code="admin.species.helptext"/>
                     </td>
                 </tr>
             </tbody>

@@ -81,10 +81,10 @@ class SettingService {
 
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
+            case Environment.TEST:
                 // do nothing
                 break
             case Environment.PRODUCTION:
-            case Environment.TEST:
             default:
                 generateStyleSheetForHubs()
                 break
