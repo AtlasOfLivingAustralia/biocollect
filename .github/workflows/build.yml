@@ -87,7 +87,7 @@ jobs:
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
 
       - name: Run BioCollect functional tests
-        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/pwa2
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev
         continue-on-error: true
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
