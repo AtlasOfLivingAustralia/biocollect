@@ -163,7 +163,7 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:0.11.5"
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:7.1-PWA-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:7.1-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
