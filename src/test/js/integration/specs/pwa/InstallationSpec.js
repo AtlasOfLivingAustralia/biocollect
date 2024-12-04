@@ -24,13 +24,13 @@ describe("Application installation Spec", function () {
         await homePage.open();
         await adminToolsPage.loginAsAlaAdmin();
         await adminToolsPage.reindex();
+    });
+
+    beforeEach(async function () {
         await pwaAppPage.open();
         await pwaAppPage.loginAsPwaUser();
         await pwaAppPage.open();
         await browser.pause(30000);
-    });
-
-    beforeEach(async function () {
     });
 
     afterAll(async function () {
@@ -94,7 +94,7 @@ describe("Application installation Spec", function () {
 
         // check if the record is uploaded
         await pwaAppPage.viewRecords(pa);
-        await pwaAppPage.viewFirstRecord();
+        await pwaAppPage.viewNthRecord();
         await browser.pause(3000);
         iframe = $("iframe");
         contextId = await browser.switchFrame(iframe);
@@ -110,17 +110,12 @@ describe("Application installation Spec", function () {
 
     it("submit record offline, choose a site on map and publish it when network returns", async function () {
         console.log(url);
-        await pwaAppPage.open();
-        await browser.pause(5000);
         let getStarted = await pwaAppPage.getStarted;
         if (getStarted && (await getStarted.isDisplayed())) {
             await pwaAppPage.start();
         }
-        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMap");
+        await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMap");
         await pwaAppPage.viewProject(project);
-        await pwaAppPage.downloadProjectActivity(pa);
-        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapBeforeDownload");
-        await pwaAppPage.downloadComplete();
         await stopServer();
         await pwaAppPage.addRecord(pa);
         await browser.pause(5000);
@@ -135,7 +130,7 @@ describe("Application installation Spec", function () {
         await addBioActivityPage.setSpecies('Acavomonidia', true)
         // Save the activity
         await addBioActivityPage.saveActivity();
-        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapAfterSave");
+        await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapAfterSave");
         contextId = await browser.switchFrame(null);
         console.log("main frame context id- " +contextId);
         await pwaAppPage.closeModal();
@@ -146,7 +141,7 @@ describe("Application installation Spec", function () {
         await pwaAppPage.viewProject(project);
         await pwaAppPage.viewRecords(pa);
         await pwaAppPage.viewUnpublishedRecords(pa);
-        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapUnpublishedRecords");
+        await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapUnpublishedRecords");
 
         contextId = await browser.switchFrame($('iframe'));
         console.log("iframe context id- " +contextId);
@@ -156,7 +151,7 @@ describe("Application installation Spec", function () {
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
         await offlineListPage.uploadRecords();
-        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapPublishedRecords");
+        await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapPublishedRecords");
         await browser.pause(5000);
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
@@ -166,18 +161,20 @@ describe("Application installation Spec", function () {
 
         // check if the record is uploaded
         await pwaAppPage.viewRecords(pa);
-        await pwaAppPage.viewFirstRecord();
+        await pwaAppPage.viewNthRecord(1);
         await browser.pause(3000);
         iframe = $("iframe");
         contextId = await browser.switchFrame(iframe);
         console.log("iframe context id- " +contextId);
         let viewBioActivityPage = new ViewBioActivityPage();
         var speciesEl = viewBioActivityPage.speciesSelector("Acavomonidia");
-        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapViewPublishedRecord");
+        await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapViewPublishedRecord");
         await speciesEl.scrollIntoView();
         await expect(speciesEl).toBeDisplayed();
         // map pin should be displayed
-        await expect($('.leaflet-marker-icon')).toBeDisplayed();
+        var pin =$('.leaflet-marker-icon');
+        await pin.scrollIntoView();
+        await expect(pin).toBeDisplayed();
         await browser.switchFrame(null);
         await pwaAppPage.closeModal(null);
     });
