@@ -109,7 +109,7 @@ class PwaAppPage extends StubbedCasSpec {
         await modal.click();
     }
 
-    async viewFirstRecord(){
+    async viewNthRecord(number= 0){
         await this.viewRecordBtn[0].click();
         await this.modalCloseBtn.waitForExist({ timeout: 10000 });
     }
