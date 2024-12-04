@@ -37,7 +37,7 @@ describe("Application installation Spec", function () {
         await stopServer();
     });
 
-    it("open a project and take it offline", async function () {
+    it("submit record offline and publish it when network returns", async function () {
         console.log(url);
         await pwaAppPage.start();
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOffline");
@@ -104,6 +104,78 @@ describe("Application installation Spec", function () {
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflineViewPublishedRecord");
         await speciesEl.scrollIntoView();
         await expect(speciesEl).toBeDisplayed();
+        await browser.switchFrame(null);
+        await pwaAppPage.closeModal(null);
+    });
+
+    it("submit record offline, choose a site on map and publish it when network returns", async function () {
+        console.log(url);
+        let getStarted = await pwaAppPage.getStarted;
+        if (getStarted && (await getStarted.isDisplayed())) {
+            await pwaAppPage.start();
+        }
+        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMap");
+        await pwaAppPage.viewProject(project);
+        await pwaAppPage.downloadProjectActivity(pa);
+        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapBeforeDownload");
+        await pwaAppPage.downloadComplete();
+        await stopServer();
+        await pwaAppPage.addRecord(pa);
+        await browser.pause(5000);
+        let iframe =  await browser.findElement('tag name', 'iframe');
+        let contextId = await browser.switchFrame($("iframe"));
+        console.log("iframe context id- " +contextId);
+        await addBioActivityPage.dropPin();
+        await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`, true);
+        // Wait for all promises to resolve
+        await Promise.all(promises);
+        await addBioActivityPage.setDate('01/01/2020');
+        await addBioActivityPage.setSpecies('Acavomonidia', true)
+        // Save the activity
+        await addBioActivityPage.saveActivity();
+        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapAfterSave");
+        contextId = await browser.switchFrame(null);
+        console.log("main frame context id- " +contextId);
+        await pwaAppPage.closeModal();
+        console.log("number of records checked again");
+
+        await startServer();
+        await pwaAppPage.open();
+        await pwaAppPage.viewProject(project);
+        await pwaAppPage.viewRecords(pa);
+        await pwaAppPage.viewUnpublishedRecords(pa);
+        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapUnpublishedRecords");
+
+        contextId = await browser.switchFrame($('iframe'));
+        console.log("iframe context id- " +contextId);
+
+        offlineListPage = new OfflineListPage();
+        expect(await offlineListPage.at()).toEqual(true);
+        await expect(offlineListPage.uploadAllButton).toBeEnabled();
+        await expect(offlineListPage.firstUploadButton).toBeEnabled();
+        await offlineListPage.uploadRecords();
+        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapPublishedRecords");
+        await browser.pause(5000);
+        await expect(offlineListPage.uploadAllButton).toBeDisabled();
+
+        await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
+        await browser.switchFrame(null);
+        await pwaAppPage.closeModal();
+
+        // check if the record is uploaded
+        await pwaAppPage.viewRecords(pa);
+        await pwaAppPage.viewFirstRecord();
+        await browser.pause(3000);
+        iframe = $("iframe");
+        contextId = await browser.switchFrame(iframe);
+        console.log("iframe context id- " +contextId);
+        let viewBioActivityPage = new ViewBioActivityPage();
+        var speciesEl = viewBioActivityPage.speciesSelector("Acavomonidia");
+        await addBioActivityPage.takeScreenShot("submitRecordOfflineAndChooseSiteOnMapViewPublishedRecord");
+        await speciesEl.scrollIntoView();
+        await expect(speciesEl).toBeDisplayed();
+        // map pin should be displayed
+        await expect($('.leaflet-marker-icon')).toBeDisplayed();
         await browser.switchFrame(null);
         await pwaAppPage.closeModal(null);
     });
