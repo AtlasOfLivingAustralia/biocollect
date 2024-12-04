@@ -110,6 +110,8 @@ describe("Application installation Spec", function () {
 
     it("submit record offline, choose a site on map and publish it when network returns", async function () {
         console.log(url);
+        await pwaAppPage.open();
+        await browser.pause(5000);
         let getStarted = await pwaAppPage.getStarted;
         if (getStarted && (await getStarted.isDisplayed())) {
             await pwaAppPage.start();
