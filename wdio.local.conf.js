@@ -14,6 +14,7 @@ const config = {
             'goog:chromeOptions': {
                 // args: ['--auto-open-devtools-for-tabs','disable-gpu']
                 args: ['headless', 'disable-gpu', '--window-size=1280,1024']
+                // args: ['disable-gpu', '--window-size=1280,1024']
             },
             'wdio:chromedriverOptions': {
                 binary: "./node_modules/chromedriver/lib/chromedriver/chromedriver"

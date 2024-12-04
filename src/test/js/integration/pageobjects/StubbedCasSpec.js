@@ -384,6 +384,33 @@ class StubbedCasSpec {
         var body = await $("body");
         await body.saveScreenshot(`./logs/${name}.png`);
     }
+
+    /**
+     * Drop a pin on the map
+     * @returns {Promise<void>}
+     */
+    async dropPin() {
+        // Select the marker draw button
+        const markerDraw = $('.leaflet-draw-draw-marker');
+        await markerDraw.waitForDisplayed();
+
+        // Move to the marker button and click it
+        await markerDraw.moveTo();
+        await markerDraw.click();
+
+        // Wait for the draw actions menu to appear
+        const drawActions = $('.leaflet-draw-actions'); // Get the first draw action
+        await drawActions.waitForDisplayed();
+
+        // click on the map pane to drop the pin
+        const mapPane = await $('.leaflet-map-pane');
+        await mapPane.moveTo();
+        await mapPane.click({x: 100, y: 100});
+
+        // wait for the point to be added to dropdown
+        const dropdown = $('.select2-selection__rendered');
+        await dropdown.waitForDisplayed();
+    }
 }
 
 module.exports = StubbedCasSpec;

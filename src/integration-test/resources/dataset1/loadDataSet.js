@@ -81,7 +81,7 @@ var projectActivity = {
         "alaAdminEnforcedEmbargo" : false,
         "embargoOption" : "NONE"
     },
-    "surveySiteOption" : "sitepick",
+    "surveySiteOption" : "sitepickcreate",
     "sites" : [
         "ab9ec9af-241b-49f7-adcf-ca40e474d119"
     ],
