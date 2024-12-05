@@ -347,6 +347,11 @@ class TemplateTagLib {
         List resolvedFiles = originalFiles?.collect {
             asset.assetPath(src: it)
         }
+
+        // adding /asset to path will help finding files when running from jar files.
+        // Running app from jar file returns path with the updated name.
+        // We need the updated and original name to be cached by PWA.
+        originalFiles = originalFiles?.collect { "/assets/" + it }
         List mixedFiles = resolvedFiles + originalFiles
 
         out << (mixedFiles as JSON).toString()
