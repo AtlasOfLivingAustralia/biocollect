@@ -341,11 +341,15 @@ class TemplateTagLib {
      * Generate links to assets like image that need to be pre-cached by PWA app.
      */
     def getFilesToPreCacheForPWA = { attrs ->
-        List files = grailsApplication.config.getProperty('pwa.serviceWorkerConfig.filesToPreCache', List)?.collect {
+        List originalFiles = grailsApplication.config.getProperty('pwa.serviceWorkerConfig.filesToPreCache', List)?.collect{
+            it
+        }
+        List resolvedFiles = originalFiles?.collect {
             asset.assetPath(src: it)
         }
+        List mixedFiles = resolvedFiles + originalFiles
 
-        out << (files as JSON).toString()
+        out << (mixedFiles as JSON).toString()
     }
 
     String getCurrentURLFromRequest() {
