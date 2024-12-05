@@ -61,6 +61,7 @@ class PwaAppPage extends StubbedCasSpec {
     }
 
     async atSignIn() {
+        await this.signIn.waitForDisplayed({ timeout: 10000 });
         return await this.signIn.isDisplayed();
     }
 

@@ -27,10 +27,20 @@ describe("Application installation Spec", function () {
     });
 
     beforeEach(async function () {
+        console.log("before each");
         await pwaAppPage.open();
+        console.log("before each - open");
         await pwaAppPage.loginAsPwaUser();
+        console.log("before each - login");
         await pwaAppPage.open();
-        await browser.pause(30000);
+        console.log("before each - open again");
+        // await browser.pause(5000);
+        // await pwaAppPage.start();
+        // console.log("before each - start");
+    });
+
+    afterEach(async function () {
+        await pwaAppPage.logout();
     });
 
     afterAll(async function () {
@@ -105,10 +115,10 @@ describe("Application installation Spec", function () {
         await speciesEl.scrollIntoView();
         await expect(speciesEl).toBeDisplayed();
         await browser.switchFrame(null);
-        await pwaAppPage.closeModal(null);
+        await pwaAppPage.closeModal();
     });
 
-    it("submit record offline, choose a site on map and publish it when network returns", async function () {
+    it("submit record offline and choose a site on map and publish it when network returns", async function () {
         console.log(url);
         let getStarted = await pwaAppPage.getStarted;
         if (getStarted && (await getStarted.isDisplayed())) {
@@ -127,7 +137,7 @@ describe("Application installation Spec", function () {
         // Wait for all promises to resolve
         await Promise.all(promises);
         await addBioActivityPage.setDate('01/01/2020');
-        await addBioActivityPage.setSpecies('Acavomonidia', true)
+        await addBioActivityPage.setSpecies('Fungi', true)
         // Save the activity
         await addBioActivityPage.saveActivity();
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapAfterSave");
@@ -161,13 +171,14 @@ describe("Application installation Spec", function () {
 
         // check if the record is uploaded
         await pwaAppPage.viewRecords(pa);
-        await pwaAppPage.viewNthRecord(1);
+        await browser.pause(5000);
+        await pwaAppPage.viewNthRecord();
         await browser.pause(3000);
         iframe = $("iframe");
         contextId = await browser.switchFrame(iframe);
         console.log("iframe context id- " +contextId);
         let viewBioActivityPage = new ViewBioActivityPage();
-        var speciesEl = viewBioActivityPage.speciesSelector("Acavomonidia");
+        var speciesEl = viewBioActivityPage.speciesSelector("Fungi");
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapViewPublishedRecord");
         await speciesEl.scrollIntoView();
         await expect(speciesEl).toBeDisplayed();
@@ -180,13 +191,24 @@ describe("Application installation Spec", function () {
     });
 
     it("login with expired token", async function () {
+        console.log("login with expired token - start");
         await pwaAppPage.logout();
+        console.log("login with expired token - logout");
         await pwaAppPage.atSignIn();
+        console.log("login with expired token - at sign in page");
         await pwaAppPage.loginAsPwaUser(true);
+        console.log("login with expired token - login as pwa user with expired token");
         await pwaAppPage.open();
-        expect(await pwaAppPage.atSignIn()).toBeTrue();
+        await browser.pause(2000);
+        // await browser.getUrl();
+        console.log("login with expired token - open");
+        expect(await pwaAppPage.atSignIn()).toEqual(true);
+        console.log("login with expired token - expect to be at sign in page");
         await pwaAppPage.loginAsPwaUser(false);
+        console.log("login with expired token - login as pwa user not expired");
         await pwaAppPage.open();
+        console.log("login with expired token - open again");
         await pwaAppPage.at();
+        console.log("login with expired token - at pwa app page");
     });
 });
