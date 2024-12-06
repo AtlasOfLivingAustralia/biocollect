@@ -207,8 +207,7 @@
           {
             "dataType": "text",
             "name": "occurrenceRemarks",
-            "dwcAttribute": "occurrenceRemarks",
-            "jsMain": "https://biocollect-staging.ala.org.au/download/getScriptFile?hub=ala&filename=clearImageDateTimeHandler.js&model=agnesWaterTurtleNestMonitoring"
+            "dwcAttribute": "occurrenceRemarks"
           }
         ],
         "viewModel": [
@@ -252,7 +251,10 @@
                         "source": "observationPhoto",
                         "preLabel": "Attach 3 track photos, plus emergence/predation, etc. as observed",
                         "css": "img-responsive",
-                        "showMetadata": "false"
+                        "showMetadata": "false",
+                        "displayOptions": {
+                          "showRemoveButtonWithImage": true
+                        }
                       }
                     ]
                   },
