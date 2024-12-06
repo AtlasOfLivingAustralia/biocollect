@@ -1709,6 +1709,7 @@ class BioActivityController {
             tags = "biocollect",
             operationId = "activityoutputs",
             summary = "Get data for an activity",
+            deprecated = true,
             parameters = [
                     @Parameter(
                             name = "id",
