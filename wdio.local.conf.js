@@ -24,7 +24,7 @@ const config = {
             baseUrl: 'http://localhost:8087',
             serverUrl: 'http://localhost:8087',
             wireMockBaseUrl: 'http://localhost:8018',
-            pwaUrl: 'http://localhost:5173/pwa-mobile',
+            pwaUrl: 'http://localhost:5173/mobile-app',
             proxyUrl: 'http://localhost:8081',
             proxyPort: 8081,
             dirName: __dirname,

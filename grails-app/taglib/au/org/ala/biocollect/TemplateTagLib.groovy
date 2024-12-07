@@ -353,6 +353,7 @@ class TemplateTagLib {
         // We need the updated and original name to be cached by PWA.
         originalFiles = originalFiles?.collect { "/assets/" + it }
         List mixedFiles = resolvedFiles + originalFiles
+        mixedFiles = mixedFiles?.unique()
 
         out << (mixedFiles as JSON).toString()
     }
