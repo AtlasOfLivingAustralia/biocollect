@@ -355,7 +355,7 @@ function ActivityViewModel (activity, parent) {
                 // if site update fails, reject the promise only if it is a new site.
                 // if existing site is update is reject, resolve the promise with the site id. This helps sync the activity.
                 // update can be rejected if user does not have permission on all the project the site is associated.
-                if (entities.utils.isDexieEntityId(site.siteId)) {
+                if (entities.utils.isDexieEntityId(id)) {
                     deferred.reject({error : error});
                 }
                 else {

@@ -102,6 +102,7 @@ environments {
                 temp.dir="/tmp/stylesheet"
                 google.maps.apiKey="testGoogleApi"
                 speciesCatalog.dir="./src/integration-test/resources/data"
+                userProfile.userIdAttribute="userid"
         }
 
         production {

@@ -28,6 +28,7 @@ class StubbedCasSpec {
         n: "h5XN-_LL1yXb8oPWHOTNMby0Y6olpByVCNJGo1mjhk9PUoX8bfu6wNr4G7oR7O0NfIQVNLykqE7Q04RrP7JfexI97UuH5B0xBjHVo-S5SxeyUrVSQBpRu6EisQzxxF3a038a0GHYJpA5YUAZWD7Pux0yqJ5ly1y2Sn7uGb_JJ_bJ86EVWs3AxE1RZHmeY975A1kk470ylDAyfQuW_GU-gUzG5vdE1wAEIKe6GFtg5ulA_n_XVsrz9qio7ZtEyWZDAOCtk0jfg8iTJf5eLP2Q3D8ePy_6IvYvFDuQLmvKHn1jg5MnnDWZHV3GBRnfU8CtPu2ChFKhXedcrhQhhAWfKQ"
     };
     privateKey = '';
+    systemToken = '';
     constructor () {
         this.testConfig = browser.options.testConfig;
         this.baseUrl = this.testConfig.baseUrl;
@@ -44,6 +45,7 @@ class StubbedCasSpec {
 
     async loginAsPwaUser(expired = false) {
         let userDetails = this.getUserDetails('1');
+        await this.setupUserProfileLookup(userDetails)
         let {tokenSet, profile} = await this.setupOidcAuthForUser(userDetails, expired);
         tokenSet.profile = profile;
         let key = this.localStorageTokenKey;
@@ -84,6 +86,7 @@ class StubbedCasSpec {
     getUserDetails(userId) {
         return {
             userId: userId,
+            username: userId,
             email: `user${userId}@nowhere.com`,
             firstName: "MERIT",
             lastName: `User ${userId}`
@@ -159,7 +162,7 @@ class StubbedCasSpec {
 
         // Stub the POST request for token exchange (using nock)
         await this.setupAccessToken('/cas/oidc/oidcAccessToken', tokenSet, base64EncodedAuth);
-        let profile = await this.setupProfileEndpoint(userDetails, base64EncodedAuth);
+        let profile = await this.setupProfileEndpoint(userDetails, idToken);
 
         // Return the ID token
         return {tokenSet, profile};
@@ -185,6 +188,7 @@ class StubbedCasSpec {
         let payload=  {
             at_hash: 'KX-L2Fj6Z9ow-gOpYfehRA',
             sub: userDetails.userId,
+            username: userDetails.userId,
             email_verified: true,
             role: roles,
             amr: 'DelegatedClientAuthenticationHandler',
@@ -207,6 +211,36 @@ class StubbedCasSpec {
             scope: this.testConfig.oidc.scope
         };
         return {payload, expiresIn, expiresAt};
+    }
+
+    async setupUserProfileLookup(userDetails) {
+        try {
+            await axios.post(`${this.testConfig.wireMockBaseUrl}/__admin/mappings`, {
+                request: {
+                    method: 'POST',
+                    url: this.testConfig.wireMockBaseUrl + '/userdetails/userDetails/getUserDetails',
+                    queryParameters: {
+                        userName: {
+                            "equalTo": userDetails.userId
+                        },
+                        includeProps: {
+                            "equalTo": "true"
+                        }
+                    }
+                },
+                response: {
+                    status: 200,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userDetails),
+                    transformers: ['response-template']
+                }
+            });
+            console.log('user lookup stub configured successfully.');
+        } catch (error) {
+            console.error('Error configuring stub:', error);
+        }
     }
 
     async setupAccessToken(url, body, base64EncodedAuth){
@@ -237,7 +271,7 @@ class StubbedCasSpec {
         }
     }
 
-    async setupProfileEndpoint(userDetails, base64EncodedAuth) {
+    async setupProfileEndpoint(userDetails, userToken){
         // Create user profile
         const profile = {
             userid: userDetails.userId,
@@ -254,7 +288,7 @@ class StubbedCasSpec {
                 url: '/cas/oidc/oidcProfile',
                 headers: {
                     'Authorization':  {
-                        "equalTo": base64EncodedAuth
+                        "equalTo": `Bearer ${userToken}`
                     }
                 }
             },
@@ -278,12 +312,12 @@ class StubbedCasSpec {
 
         let idTokenClaims = this.getTokenClaims(clientId)
         // Simulate generating JWT (signing token) - Assuming you have RSA private key in 'privateKey'
-        let idToken = await this.signPayload(idTokenClaims);
-        let token = this.getToken(idToken);
+        this.systemToken = await this.signPayload(idTokenClaims);
+        let token = this.getToken(this.systemToken);
 
         await this.setupAccessToken("/cas/oidc/oidcAccessToken", token, base64EncodedAuth);
 
-        return idToken
+        return this.systemToken;
     }
 
     getToken(idToken) {
