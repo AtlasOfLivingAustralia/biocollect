@@ -10,6 +10,15 @@ function ActivitiesViewModel (config) {
     self.disableUpload = ko.computed(function () {
         return self.activities().length === 0 || !self.online();
     });
+    // check if any activity is uploading
+    self.isUploading = ko.computed(function () {
+        var activities = self.activities();
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].uploading()) {
+                return true;
+            }
+        }
+    });
 
 
     self.init = function() {
@@ -271,11 +280,11 @@ function ActivityViewModel (activity, parent) {
                 data: toSave,
                 contentType: 'application/json',
                 success: function success(data) {
-                    if (data.errors || data.error) {
-                        deferred.reject({data: {oldActivityId: oldActivityId, error: data.errors || data.error}});
+                    if (data && data.resp && data.resp.activityId) {
+                        deferred.resolve({data: {oldActivityId: oldActivityId, activityId: data.resp.activityId }});
                     }
                     else {
-                        deferred.resolve({data: {oldActivityId: oldActivityId, activityId: data.resp.activityId }});
+                        deferred.reject({data: {oldActivityId: oldActivityId, error: data.errors || data.error}});
                     }
                 },
                 error: function (jqXHR, status, error) {
