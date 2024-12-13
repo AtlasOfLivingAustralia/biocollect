@@ -120,6 +120,10 @@ class UrlMappings {
                         controller = 'document'
                         action = 'download'
                 }
+                "/document/allDocumentsSearch" {
+                        controller = 'document'
+                        action = 'allDocumentsSearch'
+                }
 
                 "/$hub/bulkImport" {
                         controller = 'bulkImport'
