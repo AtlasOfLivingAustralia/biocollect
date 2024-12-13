@@ -265,11 +265,11 @@ class ProjectActivityService {
      * @param dataFieldName Identity of field for specific configuration.
      * @return json structure containing search results suitable for use by the species autocomplete widget on a survey form.
      */
-    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName) {
+    def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName, Integer offset = 0) {
         def pActivity = get(id)
         Map speciesConfig = getSpeciesConfigForProjectActivity(pActivity, output, dataFieldName)
         if (speciesConfig) {
-            def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit)
+            def result = speciesService.searchSpeciesForConfig(speciesConfig, q, limit, offset)
             speciesService.formatSpeciesNameInAutocompleteList(speciesConfig.speciesDisplayFormat, result)
         }
     }

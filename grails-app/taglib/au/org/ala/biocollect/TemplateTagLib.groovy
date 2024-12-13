@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
+import grails.converters.JSON
 import grails.web.mapping.LinkGenerator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.context.MessageSource
@@ -334,6 +335,27 @@ class TemplateTagLib {
                 log.error("Error occurred while converting hex to integer.", nfe);
             }
         }
+    }
+
+    /**
+     * Generate links to assets like image that need to be pre-cached by PWA app.
+     */
+    def getFilesToPreCacheForPWA = { attrs ->
+        List originalFiles = grailsApplication.config.getProperty('pwa.serviceWorkerConfig.filesToPreCache', List)?.collect{
+            it
+        }
+        List resolvedFiles = originalFiles?.collect {
+            asset.assetPath(src: it)
+        }
+
+        // adding /asset to path will help finding files when running from jar files.
+        // Running app from jar file returns path with the updated name.
+        // We need the updated and original name to be cached by PWA.
+        originalFiles = originalFiles?.collect { "/assets/" + it }
+        List mixedFiles = resolvedFiles + originalFiles
+        mixedFiles = mixedFiles?.unique()
+
+        out << (mixedFiles as JSON).toString()
     }
 
     String getCurrentURLFromRequest() {

@@ -14,13 +14,16 @@
  * 
  * Created by Temi on 26/02/16.
  */
-$(document).ready(function() {
-    $('table:not(.not-stacked-table)').each(function(index, item){
+$(document).ready(initResponsiveTable).on('form-initialised', initResponsiveTable);
+$(window).resize(initResponsiveTable);
+
+function initResponsiveTable(){
+    $('table:not(.not-stacked-table):not(.responsive-table-stacked)').each(function(index, item){
         $(this).addClass('responsive-table-stacked').parent().addClass('overflow-table');
         addAttributeToTd(item)
         watch(this, addAttributeToTd)
     });
-});
+}
 
 /**
  * adding data-th attribute to td elements of the table. this attribute is used to display

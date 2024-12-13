@@ -1,0 +1,1426 @@
+[
+  {
+    "guid": "NZOR-6-48962",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Eukaryota",
+    "name": "Eukaryota"
+  },
+  {
+    "guid": "NZOR-6-44464",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Prokaryota",
+    "name": "Prokaryota"
+  },
+  {
+    "guid": "NZOR-6-29373",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Archaea",
+    "name": "Archaea"
+  },
+  {
+    "guid": "NZOR-6-73174",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Bacteria",
+    "name": "Bacteria"
+  },
+  {
+    "guid": "134364ec-2f27-452d-a01c-8f2035ab5053",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Chromista",
+    "name": "Chromista"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90156",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Fungi",
+    "name": "Fungi"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/taxon/apni/51337710",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Plantae",
+    "name": "Plantae"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:99001",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Protozoa",
+    "name": "Protozoa"
+  },
+  {
+    "guid": "NZOR-6-10705",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Viroid",
+    "name": "Viroid"
+  },
+  {
+    "guid": "NZOR-6-35107",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "Virus",
+    "name": "Virus"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4647863b-760d-4b59-aaa1-502c8cdf8d3c",
+    "commonName": "animals",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "ANIMALIA",
+    "name": "ANIMALIA (animals)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:932fe780-c493-4397-9455-69d0e37159a4",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "kingdom",
+    "scientificName": "PROTISTA",
+    "name": "PROTISTA"
+  },
+  {
+    "guid": "NZOR-6-42085",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Negibacteria",
+    "name": "Negibacteria"
+  },
+  {
+    "guid": "NZOR-6-8766",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Unibacteria",
+    "name": "Unibacteria"
+  },
+  {
+    "guid": "NZOR-6-130416",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Biliphyta",
+    "name": "Biliphyta"
+  },
+  {
+    "guid": "NZOR-6-79752",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Dikarya",
+    "name": "Dikarya"
+  },
+  {
+    "guid": "NZOR-6-59991",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Hacrobia",
+    "name": "Hacrobia"
+  },
+  {
+    "guid": "NZOR-6-21545",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Harosa",
+    "name": "Harosa"
+  },
+  {
+    "guid": "NZOR-6-83103",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Rhodoplantae",
+    "name": "Rhodoplantae"
+  },
+  {
+    "guid": "NZOR-6-17310",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Viridiplantae",
+    "name": "Viridiplantae"
+  },
+  {
+    "guid": "NZOR-6-12915",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Eozoa",
+    "name": "Eozoa"
+  },
+  {
+    "guid": "NZOR-6-30747",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "subkingdom",
+    "scientificName": "Sarcomastigota",
+    "name": "Sarcomastigota"
+  },
+  {
+    "guid": "NZOR-6-129274",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Acidobacteria",
+    "name": "Acidobacteria"
+  },
+  {
+    "guid": "NZOR-6-15046",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Actinobacteria",
+    "name": "Actinobacteria"
+  },
+  {
+    "guid": "ecd9d9369ada5a6b101ed67384738f83",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Aquificae",
+    "name": "Aquificae"
+  },
+  {
+    "guid": "NZOR-6-226",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Archaebacteria",
+    "name": "Archaebacteria"
+  },
+  {
+    "guid": "NZOR-6-34248",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Armatimonadetes",
+    "name": "Armatimonadetes"
+  },
+  {
+    "guid": "NZOR-6-107505",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Bacteroidetes",
+    "name": "Bacteroidetes"
+  },
+  {
+    "guid": "61dd3598943ea9f235f636ffb2d10eb5",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Caldiserica",
+    "name": "Caldiserica"
+  },
+  {
+    "guid": "7fb1a584281ab78b396f5620de50dc7a",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Chlamydiae",
+    "name": "Chlamydiae"
+  },
+  {
+    "guid": "NZOR-6-72846",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Chlorobi",
+    "name": "Chlorobi"
+  },
+  {
+    "guid": "NZOR-6-78212",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Chloroflexi",
+    "name": "Chloroflexi"
+  },
+  {
+    "guid": "f77893cbc79d80ba59e7e43999216cc4",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Chrysiogenetes",
+    "name": "Chrysiogenetes"
+  },
+  {
+    "guid": "NZOR-6-123649",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Crenarchaeota",
+    "name": "Crenarchaeota"
+  },
+  {
+    "guid": "NZOR-6-113866",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Cyanobacteria",
+    "name": "Cyanobacteria"
+  },
+  {
+    "guid": "81dcbc04262b99ec0f3ea6a249cf9cfe",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Deferribacteres",
+    "name": "Deferribacteres"
+  },
+  {
+    "guid": "NZOR-6-80347",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Deinococcus-Thermus",
+    "name": "Deinococcus-Thermus"
+  },
+  {
+    "guid": "60e3432a71b5b2fdc119402818f87d2a",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Dictyoglomi",
+    "name": "Dictyoglomi"
+  },
+  {
+    "guid": "abb1c5486c19f6bd30a105c29a812ae4",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Elusimicrobia",
+    "name": "Elusimicrobia"
+  },
+  {
+    "guid": "NZOR-6-114068",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Eobacteria",
+    "name": "Eobacteria"
+  },
+  {
+    "guid": "NZOR-6-30865",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Euryarchaeota",
+    "name": "Euryarchaeota"
+  },
+  {
+    "guid": "e77e7fbb0df227fffcfd278dfb3cf322",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Fibrobacteres",
+    "name": "Fibrobacteres"
+  },
+  {
+    "guid": "NZOR-6-60155",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Firmicutes",
+    "name": "Firmicutes"
+  },
+  {
+    "guid": "NZOR-6-40354",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Fusobacteria",
+    "name": "Fusobacteria"
+  },
+  {
+    "guid": "1c7c3316ac727c04346a03ff6cd4917a",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Gemmatimonadetes",
+    "name": "Gemmatimonadetes"
+  },
+  {
+    "guid": "d8748a9af6ef6f57158b90df90763634",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Lentisphaerae",
+    "name": "Lentisphaerae"
+  },
+  {
+    "guid": "cad3eecd3286dd27efda8fa6635537eb",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Nitrospira",
+    "name": "Nitrospira"
+  },
+  {
+    "guid": "3129c26f949d35abf1ee403b7af250bc",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Planctomycetes",
+    "name": "Planctomycetes"
+  },
+  {
+    "guid": "NZOR-6-9465",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Posibacteria",
+    "name": "Posibacteria"
+  },
+  {
+    "guid": "NZOR-6-129863",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Proteobacteria",
+    "name": "Proteobacteria"
+  },
+  {
+    "guid": "NZOR-6-72033",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Sphingobacteria",
+    "name": "Sphingobacteria"
+  },
+  {
+    "guid": "16c8c6f073cb5b7cfb4667b3e477c4de",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Spirochaetae",
+    "name": "Spirochaetae"
+  },
+  {
+    "guid": "3348d512ea45122c78310ccf19f8814d",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Synergistetes",
+    "name": "Synergistetes"
+  },
+  {
+    "guid": "3bc7c644f11b72621ee35c1d860dcd3d",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Tenericutes",
+    "name": "Tenericutes"
+  },
+  {
+    "guid": "044b3e3c203559d562f4a9db535e5b7c",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Thermodesulfobacteria",
+    "name": "Thermodesulfobacteria"
+  },
+  {
+    "guid": "6d2581bf62879d6a64b229d06dd83349",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Thermotogae",
+    "name": "Thermotogae"
+  },
+  {
+    "guid": "NZOR-6-22013",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Verrucomicrobia",
+    "name": "Verrucomicrobia"
+  },
+  {
+    "guid": "NZOR-6-61857",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Acrasiomycota",
+    "name": "Acrasiomycota"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90876",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Amoebozoa",
+    "name": "Amoebozoa"
+  },
+  {
+    "guid": "NZOR-6-73551",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Anamorphic fungi",
+    "name": "Anamorphic fungi"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/node/ausmoss/9873243",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Anthocerotophyta",
+    "name": "Anthocerotophyta"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90031",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Ascomycota",
+    "name": "Ascomycota"
+  },
+  {
+    "guid": "NZOR-6-50411",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Bacillariophyta",
+    "name": "Bacillariophyta"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90050",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Basidiomycota",
+    "name": "Basidiomycota"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90874",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Bigyra",
+    "name": "Bigyra"
+  },
+  {
+    "guid": "NZOR-6-45238",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Blastocladiomycota",
+    "name": "Blastocladiomycota"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/taxon/ausmoss/10144252",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Bryophyta",
+    "name": "Bryophyta"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90830",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Cercozoa",
+    "name": "Cercozoa"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/instance/apni/887198",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Characeae",
+    "name": "Characeae"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/taxon/apni/51337706",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Charophyta",
+    "name": "Charophyta"
+  },
+  {
+    "guid": "NZOR-6-84277",
+    "commonName": "green algae",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Chlorophyta",
+    "name": "Chlorophyta (green algae)"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90831",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Choanozoa",
+    "name": "Choanozoa"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90736",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Chytridiomycota",
+    "name": "Chytridiomycota"
+  },
+  {
+    "guid": "NZOR-6-59117",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Ciliophora",
+    "name": "Ciliophora"
+  },
+  {
+    "guid": "NZOR-6-131723",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Cryptomycota",
+    "name": "Cryptomycota"
+  },
+  {
+    "guid": "NZOR-6-129065",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Cryptophyta",
+    "name": "Cryptophyta"
+  },
+  {
+    "guid": "NZOR-6-32770",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Cyanoprokaryota",
+    "name": "Cyanoprokaryota"
+  },
+  {
+    "guid": "NZOR-6-107980",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Dictyosteliomycota",
+    "name": "Dictyosteliomycota"
+  },
+  {
+    "guid": "NZOR-6-103781",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Dinophyta",
+    "name": "Dinophyta"
+  },
+  {
+    "guid": "NZOR-6-19335",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Entorrhizomycota",
+    "name": "Entorrhizomycota"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/name/apni/223968",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Equisetales",
+    "name": "Equisetales"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/name/apni/223963",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Equisetophyta",
+    "name": "Equisetophyta"
+  },
+  {
+    "guid": "NZOR-6-30610",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Euglenophyta",
+    "name": "Euglenophyta"
+  },
+  {
+    "guid": "NZOR-6-72111",
+    "commonName": "foraminiferans",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Foraminifera",
+    "name": "Foraminifera (foraminiferans)"
+  },
+  {
+    "guid": "CAAB:7d687c75:8bc9d974:ac455bde:c3876ffc",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Foraminiferida",
+    "name": "Foraminiferida"
+  },
+  {
+    "guid": "NZOR-6-16847",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Fossil Fungi",
+    "name": "Fossil Fungi"
+  },
+  {
+    "guid": "NZOR-6-101584",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Glaucophyta",
+    "name": "Glaucophyta"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90511",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Glomeromycota",
+    "name": "Glomeromycota"
+  },
+  {
+    "guid": "NZOR-6-108720",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Haptophyta",
+    "name": "Haptophyta"
+  },
+  {
+    "guid": "NZOR-6-81066",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Heliozoa",
+    "name": "Heliozoa"
+  },
+  {
+    "guid": "NZOR-6-25063",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Heterokontophyta",
+    "name": "Heterokontophyta"
+  },
+  {
+    "guid": "NZOR-6-80890",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Hyphochytriomycota",
+    "name": "Hyphochytriomycota"
+  },
+  {
+    "guid": "NZOR-6-96682",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Incertae sedis",
+    "name": "Incertae sedis"
+  },
+  {
+    "guid": "NZOR-6-89559",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Labyrinthista",
+    "name": "Labyrinthista"
+  },
+  {
+    "guid": "NZOR-6-129530",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Labyrinthulomycota",
+    "name": "Labyrinthulomycota"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/name/apni/217746",
+    "commonName": "angiosperms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Magnoliophyta",
+    "name": "Magnoliophyta (angiosperms)"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/taxon/ausmoss/51259285",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Marchantiophyta",
+    "name": "Marchantiophyta"
+  },
+  {
+    "guid": "NZOR-6-68860",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Microspora",
+    "name": "Microspora"
+  },
+  {
+    "guid": "NZOR-6-44068",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Microsporidia",
+    "name": "Microsporidia"
+  },
+  {
+    "guid": "NZOR-6-95922",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Mucoromycota",
+    "name": "Mucoromycota"
+  },
+  {
+    "guid": "NZOR-6-90575",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Myxomycota",
+    "name": "Myxomycota"
+  },
+  {
+    "guid": "NZOR-6-96134",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Myzozoa",
+    "name": "Myzozoa"
+  },
+  {
+    "guid": "NZOR-6-117717",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Neocallimastigomycota",
+    "name": "Neocallimastigomycota"
+  },
+  {
+    "guid": "NZOR-6-113445",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Ochrophyta",
+    "name": "Ochrophyta"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90276",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Oomycota",
+    "name": "Oomycota"
+  },
+  {
+    "guid": "NZOR-6-135898",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Percolozoa",
+    "name": "Percolozoa"
+  },
+  {
+    "guid": "NZOR-6-115384",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Pinophyta",
+    "name": "Pinophyta"
+  },
+  {
+    "guid": "NZOR-6-85454",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Plasmodiophoromycota",
+    "name": "Plasmodiophoromycota"
+  },
+  {
+    "guid": "NZOR-6-132868",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Pteridophyta",
+    "name": "Pteridophyta"
+  },
+  {
+    "guid": "51340000",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Radiolaria",
+    "name": "Radiolaria"
+  },
+  {
+    "guid": "NZOR-6-76560",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Radiozoa",
+    "name": "Radiozoa"
+  },
+  {
+    "guid": "NZOR-6-121299",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Rhodophyta",
+    "name": "Rhodophyta"
+  },
+  {
+    "guid": "NZOR-6-33912",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Spermatophyta",
+    "name": "Spermatophyta"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/name/apni/223966",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Sphenophyta",
+    "name": "Sphenophyta"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/name/apni/223965",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Sphenopsida",
+    "name": "Sphenopsida"
+  },
+  {
+    "guid": "https://id.biodiversity.org.au/name/ausmoss/10001169",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Streptophyta",
+    "name": "Streptophyta"
+  },
+  {
+    "guid": "NZOR-6-33408",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Tracheophyta",
+    "name": "Tracheophyta"
+  },
+  {
+    "guid": "NZOR-6-119157",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Zoopagomycota",
+    "name": "Zoopagomycota"
+  },
+  {
+    "guid": "urn:lsid:indexfungorum.org:names:90405",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Zygomycota",
+    "name": "Zygomycota"
+  },
+  {
+    "guid": "CoL:54767795",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Not assigned",
+    "name": "Not assigned"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:3cbb537e-ab39-4d85-864e-76cd6b6d6572",
+    "commonName": "Thorny-headed Worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "ACANTHOCEPHALA",
+    "name": "ACANTHOCEPHALA (Thorny-headed Worms)"
+  },
+  {
+    "guid": "0039636a7c3ca71326b92a7f8aa70e6f",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Acavomonidia",
+    "name": "Acavomonidia"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:1f5a5c77-fcef-45b9-84ad-bfea95fd1e62",
+    "commonName": "Segmented Worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "ANNELIDA",
+    "name": "ANNELIDA (Segmented Worms)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:3b1040b4-b593-4e32-b4cf-82a853083ca8",
+    "commonName": "Apicomplexans",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "APICOMPLEXA",
+    "name": "APICOMPLEXA (Apicomplexans)"
+  },
+  {
+    "guid": "NZOR-6-127078",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Apusozoa",
+    "name": "Apusozoa"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:ec21b060-78e8-4a37-9e62-b8bef532b001",
+    "commonName": "Arthropods",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "ARTHROPODA",
+    "name": "ARTHROPODA (Arthropods)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:b0d417cf-5c4a-4a07-a8cd-846f0ed5881d",
+    "commonName": "lamp shells",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "BRACHIOPODA",
+    "name": "BRACHIOPODA (lamp shells)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:a1f069f9-eaa8-487c-889a-d3cfb3dd936e",
+    "commonName": "bryozoans",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "BRYOZOA",
+    "name": "BRYOZOA (bryozoans)"
+  },
+  {
+    "guid": "e8d3db416e6f771ef255af99729d9f1a",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Calcitarcha",
+    "name": "Calcitarcha"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:797a8754-2f84-4286-a7ea-ee20cdc5e376",
+    "commonName": "arrow worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "CHAETOGNATHA",
+    "name": "CHAETOGNATHA (arrow worms)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:065f1da4-53cd-40b8-a396-80fa5c74dedd",
+    "commonName": "vertebrates",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "CHORDATA",
+    "name": "CHORDATA (vertebrates)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:46772087-1328-4a98-9769-423f28f75fec",
+    "commonName": "Corals",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "CNIDARIA",
+    "name": "CNIDARIA (Corals)"
+  },
+  {
+    "guid": "CAAB:4ebefa19:ba9cb8f0:30169aee:5ea7ac48",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Coelenterata",
+    "name": "Coelenterata"
+  },
+  {
+    "guid": "a73f1b028bead70cdf4c0e6ccad6b511",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Cryptista",
+    "name": "Cryptista"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:680cc112-c755-4203-a078-42bb4a499ebf",
+    "commonName": "ctenophorans",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "CTENOPHORA",
+    "name": "CTENOPHORA (ctenophorans)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:7ed7bdc7-0c4f-4a6a-8866-aaeafe33243c",
+    "commonName": "Mesozoans",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "DICYEMIDA",
+    "name": "DICYEMIDA (Mesozoans)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:1351114d-dd32-4ad1-b4e6-d1c6ffcea710",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "DINOFLAGELLATA",
+    "name": "DINOFLAGELLATA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:3b2da402-9136-4f10-a757-6a28e10c7867",
+    "commonName": "Trepang",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "ECHINODERMATA",
+    "name": "ECHINODERMATA (Trepang)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:ac6920d6-1344-4eea-ab7a-116c0008b3ae",
+    "commonName": "echiuran worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "ECHIURA",
+    "name": "ECHIURA (echiuran worms)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4c2714a5-f1ee-4499-a37c-849bb4d7280e",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "XENACOELOMORPHA",
+    "name": "XENACOELOMORPHA"
+  },
+  {
+    "guid": "CAAB:b82c7a5b:55c327eb:f13f32ca:8e18369f",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Entoprocta",
+    "name": "Entoprocta"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:57a22a50-568a-4f29-b0e4-6e9312cc1c65",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "EUGLENOZOA",
+    "name": "EUGLENOZOA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:f71a4c71-48e1-4a9f-840e-1bb189611fd4",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "FORNICATA",
+    "name": "FORNICATA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:95aa91aa-6cb9-4302-8a8a-48b6abf29ee9",
+    "commonName": "Gastrotrichs",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "GASTROTRICHA",
+    "name": "GASTROTRICHA (Gastrotrichs)"
+  },
+  {
+    "guid": "NZOR-6-87998",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Gnathifera",
+    "name": "Gnathifera"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:ee94317b-a133-471e-b128-b3b505500375",
+    "commonName": "Gnathostomulids",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "GNATHOSTOMULIDA",
+    "name": "GNATHOSTOMULIDA (Gnathostomulids)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:c7669f53-b59b-4764-8160-0aff7d3d8db6",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "HAPLOSPORIDIA",
+    "name": "HAPLOSPORIDIA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:f6a0d13f-7914-4f99-850b-624ccfb06b74",
+    "commonName": "hemichordates",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "HEMICHORDATA",
+    "name": "HEMICHORDATA (hemichordates)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:7fd008a6-6705-4a62-a627-52d87885f63d",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "HETEROLOBOSEA",
+    "name": "HETEROLOBOSEA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:ad23edff-5a7a-48e0-be2a-8633b65ef192",
+    "commonName": "entoprocts",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "KAMPTOZOA",
+    "name": "KAMPTOZOA (entoprocts)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:bedd9bbf-3071-4e09-bbcb-1f8bf2c10644",
+    "commonName": "Kinorhyncha",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "KINORHYNCHA",
+    "name": "KINORHYNCHA (Kinorhyncha)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:0e370d3c-61b5-46c1-adb3-076f6cffe2e4",
+    "commonName": "Loriciferans",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "LORICIFERA",
+    "name": "LORICIFERA (Loriciferans)"
+  },
+  {
+    "guid": "NZOR-6-112818",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Loukozoa",
+    "name": "Loukozoa"
+  },
+  {
+    "guid": "NZOR-6-19441",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Metamonada",
+    "name": "Metamonada"
+  },
+  {
+    "guid": "300679cc6fe9da91205e94bca48844b5",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Miozoa",
+    "name": "Miozoa"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4fb59020-e4a8-4973-adca-a4f662c4645c",
+    "commonName": "Molluscs",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "MOLLUSCA",
+    "name": "MOLLUSCA (Molluscs)"
+  },
+  {
+    "guid": "45355e80b0240c3ec5d2cb22d299cecc",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Mycetozoa",
+    "name": "Mycetozoa"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:0e7e0f7d-4456-495b-b762-2d11f78b9368",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "NEMATODA",
+    "name": "NEMATODA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4b1dd080-6a02-48c4-9f6c-94680f7651dd",
+    "commonName": "horsehair worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "NEMATOMORPHA",
+    "name": "NEMATOMORPHA (horsehair worms)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:89e92ab7-7ffc-4cc4-9149-19c8f8079940",
+    "commonName": "nemertean worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "NEMERTEA",
+    "name": "NEMERTEA (nemertean worms)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:f9293902-ab93-4293-b0d1-743d9b6cbfcf",
+    "commonName": "Velvet Worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "ONYCHOPHORA",
+    "name": "ONYCHOPHORA (Velvet Worms)"
+  },
+  {
+    "guid": "NZOR-6-116400",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Orthonectida",
+    "name": "Orthonectida"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:3d2cb502-f403-4d07-ada7-ea680a037cf7",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "PARABASALIA",
+    "name": "PARABASALIA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:e2e32d7f-10ec-4a8e-a101-3dc2bd663c85",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "PARAMYXEA",
+    "name": "PARAMYXEA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:149897a5-6e1e-403f-bfbe-5e73ef2741a4",
+    "commonName": "Tube Worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "PHORONIDA",
+    "name": "PHORONIDA (Tube Worms)"
+  },
+  {
+    "guid": "8f97c0dbb86a9b83e275958d450643be",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Picozoa",
+    "name": "Picozoa"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:d214124d-792a-4b34-aff1-2224b0aab03d",
+    "commonName": "Flatworms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "PLATYHELMINTHES",
+    "name": "PLATYHELMINTHES (Flatworms)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:baad4f23-9085-42af-ae79-9da703ea7e8b",
+    "commonName": "sponges",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "PORIFERA",
+    "name": "PORIFERA (sponges)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:acaeb754-5b53-4f9e-a58d-25bacde13229",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "PREAXOSTYLA",
+    "name": "PREAXOSTYLA"
+  },
+  {
+    "guid": "CAAB:d0906bdc:e4b5ec1d:4f687572:dc2a814b",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Priapula",
+    "name": "Priapula"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:218dac37-ee54-4d67-a2dc-76a07be7a060",
+    "commonName": "priapulan worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "PRIAPULIDA",
+    "name": "PRIAPULIDA (priapulan worms)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:e861146c-2b54-4319-baef-1547d930d857",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "RETARIA",
+    "name": "RETARIA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:c8f3a49c-bc00-4cf5-bb5a-d221cae09def",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "ROTIFERA",
+    "name": "ROTIFERA"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4ecd57eb-02e9-4fb5-97d6-cddafcd6c56c",
+    "commonName": "Amoebae",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "SARCOMASTIGOPHORA",
+    "name": "SARCOMASTIGOPHORA (Amoebae)"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:bdef2233-abd5-4b52-966b-7819b586be39",
+    "commonName": "peanut worms",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "SIPUNCULA",
+    "name": "SIPUNCULA (peanut worms)"
+  },
+  {
+    "guid": "b0cc473d7c9c38ec35ce77dc1c43a927",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Sulcozoa",
+    "name": "Sulcozoa"
+  },
+  {
+    "guid": "urn:lsid:biodiversity.org.au:afd.taxon:0fac364a-0692-4305-a968-7d6abeb99ee9",
+    "commonName": "Water Bears",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "TARDIGRADA",
+    "name": "TARDIGRADA (Water Bears)"
+  },
+  {
+    "guid": "CAAB:d477534b:8837ce01:54255e6e:4682deed",
+    "commonName": "",
+    "listId": "all",
+    "rankString": "phylum",
+    "scientificName": "Urochordata",
+    "name": "Urochordata"
+  }
+]

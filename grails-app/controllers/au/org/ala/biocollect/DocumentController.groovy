@@ -21,6 +21,22 @@ class DocumentController {
     WebService webService
     GrailsApplication grailsApplication
 
+    def get(String id) {
+        if (!id) {
+            render text: [message: "Document not found"] as JSON, status: HttpStatus.SC_NOT_FOUND
+            return
+        }
+
+        def document = documentService.get(id)
+        if (!document.error) {
+            render text: document as JSON, status: HttpStatus.SC_OK
+        }
+        else {
+            render text: [message: "Document error"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR
+            return
+        }
+    }
+
     /**
      * This function does an elastic search for documents. All elastic search parameters are supported like fq, max etc.
      * @return
