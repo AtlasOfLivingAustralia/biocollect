@@ -1,3 +1,6 @@
+// from plugin
+//= require utils.js
+
 // leaflet
 //= require leaflet-manifest.js
 
@@ -31,6 +34,7 @@
 //= require forms.js
 
 // activity
+//= require biocollect-utils.js
 //= require outputs.js
 //= require parser.js
 
@@ -66,5 +70,10 @@
 
 // comments
 //= require comment.js
+
+// indexDB
+// require dexiejs/dexie.js
+//= require dexiejs/dexie.min.js
+//= require entities.js
 
 // audio to be included

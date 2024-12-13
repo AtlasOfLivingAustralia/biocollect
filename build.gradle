@@ -18,6 +18,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.gorylenko.gradle-git-properties" version "2.4.1"
+}
+
 
 version "$biocollectVersion"
 group "au.org.ala"
@@ -111,6 +115,8 @@ dependencies {
     implementation('org.grails.plugins:http-builder-helper:1.1.0') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
+
+    implementation 'com.opencsv:opencsv:5.7.0'
     implementation "org.apache.httpcomponents:httpclient:4.5.7"
     runtimeOnly 'org.webjars:jquery:1.12.4'
     implementation 'dk.glasius:external-config:3.0.0'
@@ -151,10 +157,13 @@ dependencies {
     runtimeOnly 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
     implementation 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
     implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
-
+    implementation "com.nimbusds:nimbus-jose-jwt:9.25.6"
+    implementation "io.jsonwebtoken:jjwt-impl:0.11.5"
+    implementation "io.jsonwebtoken:jjwt-jackson:0.11.5"
+    implementation "io.jsonwebtoken:jjwt-api:0.11.5"
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:7.0"
+        implementation "org.grails.plugins:ecodata-client-plugin:7.1"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
@@ -200,7 +209,8 @@ assets {
     maxThreads = 6
     minifyOptions = [
             languageMode  : 'ES6', //languageIn
-            targetLanguage: 'ES5', // languageOut
+//            targetLanguage: 'ES5', // languageOut
+            excludes: ['sw.js', '**/*.min.js']
     ]
 
     includes = []
@@ -261,6 +271,7 @@ tasks.withType(Test) {
 wiremock {
     dir "${project.projectDir}/src/integration-test/resources/wiremock/"
     params "--port=8018 --global-response-templating --local-response-templating"
+//    params "--port=8018 --global-response-templating --local-response-templating --verbose --print-all-network-traffic --record-mappings"
 }
 
 assets {
