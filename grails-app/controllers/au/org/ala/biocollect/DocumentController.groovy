@@ -21,13 +21,13 @@ class DocumentController {
     WebService webService
     GrailsApplication grailsApplication
 
-    def get(String documentId) {
-        if (!documentId) {
+    def get(String id) {
+        if (!id) {
             render text: [message: "Document not found"] as JSON, status: HttpStatus.SC_NOT_FOUND
             return
         }
 
-        def document = documentService.get(documentId)
+        def document = documentService.get(id)
         if (!document.error) {
             render text: document as JSON, status: HttpStatus.SC_OK
         }
