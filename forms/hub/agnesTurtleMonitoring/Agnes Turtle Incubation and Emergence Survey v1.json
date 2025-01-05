@@ -234,8 +234,11 @@
             "dataType": "text",
             "name": "eventRemarks",
             "description": "",
-            "dwcAttribute": "eventRemarks",
-            "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=clearImageDateTimeHandler.js&model=agnesWaterTurtleNestMonitoring"
+            "dwcAttribute": "eventRemarks"
+          },
+          {
+            "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=clearImageDateTimeHandler.js&model=agnesWaterTurtleNestMonitoring",
+            "type": "jsMain"
           }
         ],
         "viewModel": [
@@ -279,7 +282,10 @@
                         "source": "observationPhoto",
                         "css": "img-responsive",
                         "showMetadata": "false",
-                        "preLabel": "Attach photos"
+                        "preLabel": "Attach photos",
+                        "displayOptions": {
+                          "showRemoveButtonWithImage": true
+                        }
                       }
                     ]
                   },
