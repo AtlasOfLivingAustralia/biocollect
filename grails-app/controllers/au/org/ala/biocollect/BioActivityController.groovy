@@ -1820,6 +1820,12 @@ class BioActivityController {
                             in = ParameterIn.PATH,
                             required = true,
                             description = "Activity id"
+                    ),
+                    @Parameter(
+                            name = "includeSiteData",
+                            in = ParameterIn.PATH,
+                            description = "Include site data",
+                            schema = @Schema(type = "boolean", defaultValue = "false")
                     )
             ],
             responses = [
@@ -1854,8 +1860,8 @@ class BioActivityController {
             ],
             security = @SecurityRequirement(name="auth")
     )
-    @Path("ws/bioactivity/data/simplified/{id}")
-    def getOutputForActivitySimplified(String id){
+    @Path("ws/bioactivity/data/simplified/{id}/{includeSiteData}")
+    def getOutputForActivitySimplified(String id, boolean includeSiteData){
         String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
         String projectId = activity?.projectId
@@ -1872,6 +1878,10 @@ class BioActivityController {
             model.error = "No project associated with the activity"
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             model = [activity: activity]
+            if (includeSiteData) {
+                model = activityAndOutputModel(activity, activity.projectId)
+            }
+            
         } else {
             response.status = 401
             model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
