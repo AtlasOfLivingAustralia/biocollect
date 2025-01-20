@@ -310,7 +310,7 @@ class ProjectSearchResponse {
     List<Facet> facets
 }
 
-// classes for "ws/bioactivity/data/simplified/{id}
+// classes for "ws/bioactivity/data/simplified/{id}/{includeSiteData}
 @JsonIgnoreProperties('metaClass')
 class GetOutputForActivitySimplifiedResponse {
     Map activity
