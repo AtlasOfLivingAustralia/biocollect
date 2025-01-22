@@ -1823,7 +1823,7 @@ class BioActivityController {
                     ),
                     @Parameter(
                             name = "includeSiteData",
-                            in = ParameterIn.PATH,
+                            in = ParameterIn.QUERY,
                             description = "Include site data",
                             schema = @Schema(type = "boolean", defaultValue = "false")
                     )
@@ -1862,6 +1862,9 @@ class BioActivityController {
     )
     @Path("ws/bioactivity/data/simplified/{id}/{includeSiteData}")
     def getOutputForActivitySimplified(String id, boolean includeSiteData){
+        log.debug("id = ${id}")
+        log.debug("includeSiteData = ${includeSiteData}")
+
         String userId = userService.getCurrentUserId()
         def activity = activityService.get(id)
         String projectId = activity?.projectId
@@ -1879,7 +1882,7 @@ class BioActivityController {
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             model = [activity: activity]
             if (includeSiteData) {
-                model = activityAndOutputModel(activity, activity.projectId)
+                model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view:'brief']) : null
             }
             
         } else {
