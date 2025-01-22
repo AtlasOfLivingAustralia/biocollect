@@ -1882,13 +1882,8 @@ class BioActivityController {
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             model = [activity: activity]
             if (includeSiteData) {
-                model.site = siteService.get(activity.siteId).collect {
-                    [
-                            siteId: it.siteId,
-                            name : it.name,
-                            geoJson: it.geoIndex
-                    ]
-                }
+                def activitySite = siteService.get(model.activity.siteId, [view: 'brief'])
+                model.site = [siteId: activitySite.siteId, name:activitySite.name, geoJson:activitySite.geoIndex]
             }
             
         } else {
