@@ -1860,7 +1860,7 @@ class BioActivityController {
             ],
             security = @SecurityRequirement(name="auth")
     )
-    @Path("ws/bioactivity/data/simplified/{id}/{includeSiteData}")
+    @Path("ws/bioactivity/data/simplified/{id}")
     def getOutputForActivitySimplified(String id, boolean includeSiteData){
         log.debug("id = ${id}")
         log.debug("includeSiteData = ${includeSiteData}")
@@ -1882,7 +1882,13 @@ class BioActivityController {
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             model = [activity: activity]
             if (includeSiteData) {
-                model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view:'brief']) : null
+                model.site = siteService.get(activity.siteId).collect {
+                    [
+                            siteId: it.siteId,
+                            name : it.name,
+                            geoJson: it.geoIndex
+                    ]
+                }
             }
             
         } else {
