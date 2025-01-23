@@ -27,6 +27,7 @@ import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.ContentType
 import org.grails.web.json.JSONArray
+import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
@@ -1866,7 +1867,7 @@ class BioActivityController {
         log.debug("includeSiteData = ${includeSiteData}")
 
         String userId = userService.getCurrentUserId()
-        def activity = activityService.get(id)
+        def activity = activityService.get(id, null, userId, false,includeSiteData)
         String projectId = activity?.projectId
         def model = [:]
 
@@ -1880,12 +1881,11 @@ class BioActivityController {
         } else if (!projectId) {
             model.error = "No project associated with the activity"
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
-            model = [activity: activity]
             if (includeSiteData) {
-                def activitySite = siteService.get(model.activity.siteId, [view: 'brief'])
-                model.site = [siteId: activitySite.siteId, name:activitySite.name, geoJson:activitySite.geoIndex]
+                activity.site = new JSONObject([siteId:activity.site.siteId, name:activity.site.name, geoJson:activity.site.geoIndex])
+                activity.remove('siteId')
             }
-            
+            model = [activity: activity]
         } else {
             response.status = 401
             model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
