@@ -1,0 +1,478 @@
+{
+  "id": "5d9fd30ee4b0a44dfe75d530",
+  "dateCreated": "2019-10-11T00:55:42Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-01-16T05:54:38Z",
+  "createdUserId": "82292",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Mangrove Floristic Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "record": true,
+        "modelName": "mangroveFloristicSurvey",
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "bdrsID",
+            "description": "ID of data imported from BDRS, only relevant to records created before Sept 2019"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": "false",
+            "zoomToProjectArea": "true",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "locationName"
+          },
+          {
+            "dataType": "text",
+            "name": "isFlowering",
+            "constraints": [
+              "true",
+              "false",
+              "null (no data)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "isFruiting",
+            "constraints": [
+              "true",
+              "false",
+              "null (no data)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "isLeafing",
+            "constraints": [
+              "true",
+              "false",
+              "null (no data)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "isPropaguleSolitary",
+            "constraints": [
+              "true",
+              "false",
+              "null (no data)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "recordIdentifier"
+          },
+          {
+            "dataType": "text",
+            "name": "country",
+            "dwcAttribute": "country",
+            "constraints": [
+              "Angola",
+              "Anguilla [United Kingdom]",
+              "Antigua and Barbuda",
+              "Aruba",
+              "Australia (Jervis Bay ACT )",
+              "Australia (New South Wales)",
+              "Australia (Northern Territory)",
+              "Australia (Queensland)",
+              "Australia (South Australia)",
+              "Australia (Tasmania)",
+              "Australia (Torres Strait Queensland)",
+              "Australia (Victoria)",
+              "Australia (Western Australia)",
+              "Bahamas",
+              "Bahrain",
+              "Bangladesh",
+              "Barbados",
+              "Belize",
+              "Benin",
+              "Bermuda [United Kingdom]",
+              "Brazil",
+              "British Indian Ocean Territory [United Kingdom]",
+              "British Virgin Islands [United Kingdom]",
+              "Brunei Darussalam",
+              "Cambodia",
+              "Cameroon",
+              "Cayman Islands [United Kingdom]",
+              "China (Hainan)",
+              "China (Hong Kong)",
+              "China (southern mainland)",
+              "Christmas Island (Australia)",
+              "Cocos-Keeling Islands [Australia]",
+              "Colombia (Atlantic)",
+              "Colombia (Pacific)",
+              "Comoros",
+              "Congo (Democratic Republic of the)",
+              "Cook Islands",
+              "Costa Rica (Atlantic)",
+              "Costa Rica (Pacific)",
+              "Cote d’Ivoire",
+              "Cuba",
+              "Côte d'Ivoire",
+              "Dakar",
+              "Djibouti",
+              "Dominica",
+              "Dominican Republic",
+              "Ecuador",
+              "Egypt",
+              "El Salvador",
+              "Equatorial Guinea",
+              "Eritrea",
+              "Fiji",
+              "French Guiana [France]",
+              "French Polynesia [France]",
+              "French Polynesia [Tahiti France]",
+              "Gabon",
+              "Gambia",
+              "Ghana",
+              "Grenada",
+              "Guadeloupe [France]",
+              "Guam [United States of America]",
+              "Guatemala",
+              "Guinea",
+              "Guinea-Bissau",
+              "Guyana",
+              "Haiti",
+              "Hispaniola",
+              "Honduras (Atlantic)",
+              "Honduras (Pacific)",
+              "India",
+              "Indonesia (Irian Jaya + eastern islands)",
+              "Indonesia (Sumatra + western islands)",
+              "Iran (Islamic Republic of)",
+              "Israel",
+              "Jamaica",
+              "Japan",
+              "Kenya",
+              "Kiribati",
+              "Liberia",
+              "Macao",
+              "Madagascar",
+              "Malaysia (Malay Peninsula)",
+              "Malaysia (Sabah + Sarawak)",
+              "Maldives",
+              "Malta",
+              "Marshall Islands",
+              "Martinique [France]",
+              "Mauritania",
+              "Mauritius",
+              "Mayotte [France]",
+              "Mexico (Atlantic)",
+              "Mexico (Pacific)",
+              "Micronesia (Federated States of)",
+              "Montserrat [United Kingdom]",
+              "Mozambique",
+              "Myanmar",
+              "Nauru",
+              "Netherlands Antilles",
+              "New Caledonia [France]",
+              "New Zealand",
+              "Nicaragua (Atlantic)",
+              "Nicaragua (Pacific)",
+              "Nigeria",
+              "Niue",
+              "Norfolk Island [Australia]",
+              "Northern Mariana Islands",
+              "Oman",
+              "Pakistan",
+              "Palau",
+              "Panama (Atlantic)",
+              "Panama (Pacific)",
+              "Papua New Guinea (north coast)",
+              "Papua New Guinea (south coast)",
+              "Peru",
+              "Philippines",
+              "Puerto Rico [United States of America]",
+              "Qatar",
+              "Réunion [France]",
+              "Saba [Netherlands]",
+              "Saint Croix",
+              "Saint Eustatis (Netherlands)",
+              "Saint Kitts and Nevis",
+              "Saint Lucia",
+              "Saint Vincent and the Grenadines",
+              "Samoa",
+              "Sao Tomé and Principe",
+              "Saudi Arabia",
+              "Senegal",
+              "Seychelles",
+              "Sierra Leone",
+              "Singapore",
+              "Solomon Islands",
+              "Somalia",
+              "South Africa",
+              "Sri Lanka",
+              "Sudan",
+              "Suriname",
+              "Taiwan",
+              "Tanzania (United Republic of)",
+              "Thailand",
+              "Timor Leste",
+              "Togo",
+              "Tokelau",
+              "Tonga",
+              "Trinidad and Tobago",
+              "Turks and Caicos Islands [United Kingdom]",
+              "Tuvalu",
+              "United Arab Emirates",
+              "United States of America (Hawaii)",
+              "United States of America (mainland Atlantic)",
+              "United States of America (mainland Pacific)",
+              "United States of America (Minor Outlying Islands)",
+              "Vanuatu",
+              "Venezuela",
+              "Viet Nam",
+              "Virgin Islands [United States of America]",
+              "Wallis and Futuna [France]",
+              "Yemen"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "validate": "required"
+          },
+          {
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "surveyDate",
+            "dwcAttribute": "occurrenceDate",
+            "description": "The date when the survey took place",
+            "validate": "required"
+          },
+          {
+            "dwcAttribute": "locationRemarks",
+            "name": "locationNotes",
+            "dataType": "text"
+          },
+          {
+            "dwcAttribute": "eventRemarks",
+            "name": "eventRemarks",
+            "dataType": "text"
+          },
+          {
+            "allowRowDelete": true,
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "species",
+                "description": "",
+                "dwcAttribute": "scientificName"
+              },
+              {
+                "dataType": "image",
+                "name": "speciesImage",
+                "description": "",
+                "dwcAttribute": "associatedMedia"
+              }
+            ],
+            "dataType": "list",
+            "name": "speciesObserved"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>Mangrove Floristic Surveys</font>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Survey Information",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "source": "Click on the map to set the location of the sightings or add coordinates in decimal degrees.",
+                            "type": "literal"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "includeNotes": false,
+                            "orientation": "vertical",
+                            "computed": null,
+                            "autoLocalitySearch": false,
+                            "readonly": false,
+                            "includeSource": false,
+                            "includeAccuracy": false,
+                            "hideSiteSelection": true,
+                            "source": "location",
+                            "type": "geoMap",
+                            "includeLocality": false
+                          }
+                        ]
+                      },
+                      {
+                        "preLabel": "Collector",
+                        "source": "recordedBy",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Location Name",
+                        "source": "locationName",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Country",
+                        "source": "country",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Date",
+                        "source": "surveyDate",
+                        "type": "date"
+                      },
+                      {
+                        "preLabel": "Location Notes",
+                        "source": "locationNotes",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Comments",
+                        "source": "eventRemarks",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Flowering",
+                        "type": "selectOne",
+                        "source": "isFlowering"
+                      },
+                      {
+                        "preLabel": "Fruiting",
+                        "type": "selectOne",
+                        "source": "isFruiting"
+                      },
+                      {
+                        "preLabel": "Leafing",
+                        "type": "selectOne",
+                        "source": "isLeafing"
+                      },
+                      {
+                        "preLabel": "Propagule alone",
+                        "type": "selectOne",
+                        "source": "isPropaguleSolitary"
+                      },
+                      {
+                        "preLabel": "Record identifier",
+                        "type": "text",
+                        "source": "recordIdentifier"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Species Observed",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "allowHeaderWrap": true,
+                            "columns": [
+                              {
+                                "title": "Species",
+                                "source": "species",
+                                "type": "speciesSelect"
+                              },
+                              {
+                                "title": "Species photo",
+                                "source": "speciesImage",
+                                "type": "image"
+                              }
+                            ],
+                            "userAddedRows": true,
+                            "source": "speciesObserved",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "mangroveFloristicSurvey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Mangrove Floristic Survey",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "82292",
+  "description": null,
+  "formVersion": 1
+}

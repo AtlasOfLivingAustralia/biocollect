@@ -1,0 +1,460 @@
+{
+  "id": "66725992648d5d60c4d4fecd",
+  "dateCreated": "2025-01-24T02:07:46Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-01-24T02:07:46Z",
+  "createdUserId": "4228",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Range Wetlands Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "range_wetlands_survey",
+        "title": "Range Wetlands Survey",
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who led the survey event.",
+            "validate": "required"
+          },
+          {
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "surveyDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date on which the transect survey was done.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "surveyStartTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time at which the transect survey was done."
+          },
+          {
+            "dataType": "text",
+            "name": "airTemperatureInRelativeQuadScaleClasses",
+            "description": "",
+            "constraints": [
+              "1 (cold)",
+              "2",
+              "3",
+              "4 (hot)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "cloudCoverInRelativeQuadScaleClasses",
+            "description": "",
+            "constraints": [
+              "1 (clear)",
+              "2",
+              "3",
+              "4 (overcast)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "windSpeedInRelativeQuadScaleClasses",
+            "description": "",
+            "constraints": [
+              "1 (none)",
+              "2",
+              "3",
+              "4 (strong)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "description": "General remarks about the survey event, including any characteristic site features, conditions, etc."
+          },
+          {
+            "dataType": "text",
+            "name": "comments",
+            "dwcAttribute": "notes",
+            "description": "Moderator comments about the record."
+          },
+          {
+            "dataType": "text",
+            "name": "transectName",
+            "description": "A unique local name or identifier for the transect. Allows for different transects to be differentiated from each other.",
+            "validate": "required"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "allowRowDelete": "true",
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "quadrantId",
+                "description": "",
+                "constraints": [
+                  "A",
+                  "B",
+                  "C"
+                ]
+              },
+              {
+                "dataType": "species",
+                "name": "taxonName",
+                "dwcAttribute": "scientificName",
+                "description": "The name of the species observed",
+                "validate": "required"
+              },
+              {
+                "dataType": "text",
+                "name": "commonName",
+                "description": "The common name of the selected species",
+                "computed": {
+                  "expression": "taxonName.commonName()"
+                }
+              },
+              {
+                "dataType": "number",
+                "name": "individualCount",
+                "dwcAttribute": "individualCount",
+                "description": "Count of the number of this species seen in the quadrant.",
+                "validate": "required,min[0]"
+              },
+              {
+                "dataType": "text",
+                "name": "identificationQualifier",
+                "description": "",
+                "constraints": [
+                  "Confident",
+                  "Uncertain"
+                ]
+              },
+              {
+                "dataType": "image",
+                "name": "sightingPhoto",
+                "description": "Upload a photo taken of the species at the time of the record. This is essential for verification of the record."
+              }
+            ],
+            "dataType": "list",
+            "name": "observations"
+          }
+        ],
+        "record": "true",
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Add Transect Data</h1>Use this form to record the results of your transect survey observations. This transect should be re-surveyed on a regular basis. Please note that data about the absence of birds is just as important as information about their presence and behaviour. Monitoring the same transect over time provides very important information about the species.",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Event Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Survey leader name",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "recordedBy",
+                            "preLabelClass": "span4",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Date",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "surveyDate",
+                            "preLabelClass": "span4",
+                            "type": "date"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Time",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "surveyStartTime",
+                            "preLabelClass": "span4",
+                            "type": "time"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Temperature",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "airTemperatureInRelativeQuadScaleClasses",
+                            "preLabelClass": "span4",
+                            "type": "selectOne"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Cloud",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "cloudCoverInRelativeQuadScaleClasses",
+                            "preLabelClass": "span4",
+                            "type": "selectOne"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Wind",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "windSpeedInRelativeQuadScaleClasses",
+                            "preLabelClass": "span4",
+                            "type": "selectOne"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Notes",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "eventRemarks",
+                            "preLabelClass": "span4",
+                            "type": "textarea",
+                            "rows": 5
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Moderator comments",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "comments",
+                            "preLabelClass": "span4",
+                            "type": "textarea",
+                            "rows": 5
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "source": "<img src='https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=Roy_Amer_Reserve_survey_form.png&model=roy_Amer_Reserve_and_Wetlands'>",
+                            "type": "literal"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Location",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "preLabel": "Transect name",
+                            "inline": true,
+                            "computed": null,
+                            "dataClass": "span8",
+                            "source": "transectName",
+                            "preLabelClass": "span4",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "includeNotes": false,
+                            "orientation": "vertical",
+                            "computed": null,
+                            "autoLocalitySearch": true,
+                            "readonly": true,
+                            "includeSource": false,
+                            "includeAccuracy": false,
+                            "hideSiteSelection": false,
+                            "source": "location",
+                            "type": "geoMap",
+                            "includeLocality": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Bird Observations",
+                "type": "section",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "source": "Please enter a row for each species you saw in each of the transect quadrants. Please use the quadrant identifiers as shown in the transect image. If you see more than one sighting within a quadrant, add another row for that quadrant. Remember that a record of having done the survey and not seen anything is still valuable information.",
+                        "type": "literal"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "columns": [
+                          {
+                            "width": "10%",
+                            "source": "quadrantId",
+                            "title": "Transect quadrant Id",
+                            "type": "selectOne"
+                          },
+                          {
+                            "width": "30%",
+                            "source": "taxonName",
+                            "title": "Species",
+                            "type": "speciesSelect"
+                          },
+                          {
+                            "width": "30%",
+                            "source": "commonName",
+                            "title": "Common name",
+                            "type": "text",
+                            "readonly": true
+                          },
+                          {
+                            "width": "10%",
+                            "source": "individualCount",
+                            "title": "How many birds did you see?",
+                            "type": "number"
+                          },
+                          {
+                            "width": "10%",
+                            "source": "identificationQualifier",
+                            "title": "How confident are you in your identification?",
+                            "type": "selectOne"
+                          }
+                        ],
+                        "source": "observations",
+                        "type": "table",
+                        "userAddedRows": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "range_wetlands_survey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Range Wetlands Survey",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "",
+  "description": null,
+  "formVersion": 1
+}
