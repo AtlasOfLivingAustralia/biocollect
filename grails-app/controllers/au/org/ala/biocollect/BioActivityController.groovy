@@ -1883,7 +1883,6 @@ class BioActivityController {
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             if (includeSiteData) {
                 activity.site = new JSONObject([siteId:activity.site.siteId, name:activity.site.name, geoJson:activity.site.geoIndex])
-                activity.remove('siteId')
             }
             model = [activity: activity]
         } else {
