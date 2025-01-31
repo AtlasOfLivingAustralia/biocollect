@@ -644,51 +644,66 @@
             "type": "row",
             "items": [
               {
-                "computed": null,
                 "type": "col",
                 "items": [
                   {
                     "boxed": true,
-                    "title": "Location",
+                    "title": "LOCATION",
                     "type": "section",
                     "items": [
                       {
-                        "includeNotes": true,
-                        "orientation": "horizontal",
-                        "computed": null,
-                        "autoLocalitySearch": true,
-                        "readonly": false,
-                        "includeSource": false,
-                        "includeAccuracy": false,
-                        "hideSiteSelection": true,
-                        "source": "location",
-                        "type": "geoMap",
-                        "includeLocality": true
-                      },
-                      {
-                        "preLabel": "Location accuracy",
-                        "source": "locationAccuracy",
-                        "type": "selectOne"
-                      },
-                      {
-                        "preLabel": "Reserve name",
-                        "source": "reserveName",
-                        "type": "selectOne"
-                      },
-                      {
-                        "preLabel": "Location confidence",
-                        "source": "locationConfidence",
-                        "type": "selectOne"
-                      },
-                      {
-                        "preLabel": "Source of coordinates",
-                        "source": "coordinateSource",
-                        "type": "selectOne"
-                      },
-                      {
-                        "preLabel": "Location Datum",
-                        "source": "locationDatum",
-                        "type": "selectOne"
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": true,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": true,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": true,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": true
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "Location accuracy",
+                                "source": "locationAccuracy",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Reserve name",
+                                "source": "reserveName",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Location confidence",
+                                "source": "locationConfidence",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Source of coordinates",
+                                "source": "coordinateSource",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Location Datum",
+                                "source": "locationDatum",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ]
                       }
                     ],
                     "class": ""
