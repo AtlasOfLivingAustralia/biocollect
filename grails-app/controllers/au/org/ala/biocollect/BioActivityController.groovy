@@ -27,6 +27,7 @@ import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.ContentType
 import org.grails.web.json.JSONArray
+import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
@@ -1820,6 +1821,12 @@ class BioActivityController {
                             in = ParameterIn.PATH,
                             required = true,
                             description = "Activity id"
+                    ),
+                    @Parameter(
+                            name = "includeSiteData",
+                            in = ParameterIn.QUERY,
+                            description = "Include site data",
+                            schema = @Schema(type = "boolean", defaultValue = "false")
                     )
             ],
             responses = [
@@ -1855,9 +1862,12 @@ class BioActivityController {
             security = @SecurityRequirement(name="auth")
     )
     @Path("ws/bioactivity/data/simplified/{id}")
-    def getOutputForActivitySimplified(String id){
+    def getOutputForActivitySimplified(String id, boolean includeSiteData){
+        log.debug("id = ${id}")
+        log.debug("includeSiteData = ${includeSiteData}")
+
         String userId = userService.getCurrentUserId()
-        def activity = activityService.get(id)
+        def activity = activityService.get(id, null, userId, false,includeSiteData)
         String projectId = activity?.projectId
         def model = [:]
 
@@ -1871,6 +1881,9 @@ class BioActivityController {
         } else if (!projectId) {
             model.error = "No project associated with the activity"
         } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            if (includeSiteData) {
+                activity.site = new JSONObject([siteId:activity.site.siteId, name:activity.site.name, geoJson:activity.site.geoIndex])
+            }
             model = [activity: activity]
         } else {
             response.status = 401
