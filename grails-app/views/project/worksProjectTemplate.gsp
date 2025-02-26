@@ -2,6 +2,13 @@
 <%@ page import="grails.converters.JSON" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <g:set var="utilService" bean="utilService"></g:set>
+<g:set var="speciesListService" bean="speciesListService"></g:set>
+<g:if test="${speciesListService.checkListAPIVersion(speciesListService.LIST_VERSION_V1)}">
+    <g:set var="speciesListServerURL" value="${grailsApplication.config.getProperty("lists.baseURL") + '/speciesListItem/list'}"></g:set>
+</g:if>
+<g:else>
+    <g:set var="speciesListServerURL" value="${grailsApplication.config.getProperty("lists.uiBaseURL") + '/list'}"></g:set>
+</g:else>
 <!DOCTYPE html>
 <html>
 <head>
@@ -62,7 +69,7 @@
         addNewSpeciesListsUrl: "${raw(createLink(controller: 'projectActivity', action: 'ajaxAddNewSpeciesLists', params: [projectId:project.projectId]))}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
-        speciesListsServerUrl: "${grailsApplication.config.lists.baseURL}",
+        speciesListsServerUrl: "${speciesListServerURL}",
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
         bieUrl: "${grailsApplication.config.bie.baseURL}",

@@ -1,5 +1,6 @@
 <!-- This section is bound to a secondary KO viewModel. The following line prevents binding
          to the main viewModel. -->
+<g:set var="speciesListService" bean="speciesListService"></g:set>
 <!-- ko stopBinding: true -->
 <div class="row-fluid" id="species-container">
     <div class="row-fluid">
@@ -10,9 +11,14 @@
         <p class="well well-small">Species lists can be selected to be used by this project when species information is required to be supplied as a part of activity reporting.
             Lists are created and managed using the <a href="http://lists.ala.org.au">ALA Species List tool</a>.
             <g:if test="${project.listId}">
+                <g:if test="${speciesListService.checkListAPIVersion(speciesListService.LIST_VERSION_V1)}">
+                    <g:set var="speciesListServerURL" value="${grailsApplication.config.getProperty("lists.baseURL") + '/speciesListItem/list/' + project.listId}"></g:set>
+                </g:if>
+                <g:else>
+                    <g:set var="speciesListServerURL" value="${grailsApplication.config.getProperty("lists.uiBaseURL") + '/list/' + project.listId}"></g:set>
+                </g:else>
                 <br><br>
-                <g:set var="listUrl">${grailsApplication.config.lists.baseURL}/speciesListItem/list/${project.listId}</g:set>
-                ALA Species List URL: <a href="${listUrl}" target="speciesList">${listUrl}</a>
+                ALA Species List URL: <a href="${listUrl}" target="speciesList">${speciesListServerURL}</a>
             </g:if>
         </p>
     </div>

@@ -14,27 +14,26 @@
  */
 
 package au.org.ala.biocollect.merit
-import groovyx.net.http.HTTPBuilder
+
+import au.org.ala.ws.tokens.TokenService
 import grails.converters.JSON
+import grails.web.http.HttpHeaders
+import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
 import org.apache.http.entity.mime.content.InputStreamBody
 import org.apache.http.entity.mime.content.StringBody
 import org.grails.web.converters.exceptions.ConverterException
-import grails.web.http.HttpHeaders
-import org.springframework.core.env.Environment
 import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
-import au.org.ala.ws.tokens.TokenService
 
 import javax.annotation.PostConstruct
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
 import java.nio.charset.StandardCharsets
 
-import static org.apache.http.HttpHeaders.*
-
+import static org.apache.http.HttpHeaders.ACCEPT
 /**
  * Helper class for invoking ecodata (and other Atlas) web services.
  */
