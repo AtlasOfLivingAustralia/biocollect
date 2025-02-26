@@ -31,9 +31,7 @@ import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST
-import static org.apache.http.HttpStatus.SC_OK
-import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
+import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,

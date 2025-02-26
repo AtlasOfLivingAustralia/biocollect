@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.biocollect.merit.SpeciesService
 import grails.converters.JSON
 import org.springframework.context.MessageSource
 import au.org.ala.web.UserDetails

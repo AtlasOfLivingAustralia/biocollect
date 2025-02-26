@@ -1,9 +1,11 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.ecodata.forms.SpeciesListService
+import au.org.ala.ecodata.forms.SpeciesListService.SpeciesListItem
 import com.opencsv.CSVParser
+import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReader
 import com.opencsv.CSVReaderBuilder
-import com.opencsv.CSVParserBuilder
 import grails.converters.JSON
 import grails.plugin.cache.Cacheable
 
@@ -17,6 +19,7 @@ class SpeciesService {
     static final String SCIENTIFIC_NAME_COMMON_NAME = 'SCIENTIFICNAME(COMMONNAME)'
 
     def webService, grailsApplication
+    SpeciesListService speciesListService
 
     def searchForSpecies(searchTerm, limit = 10, listId = null) {
 
@@ -52,7 +55,7 @@ class SpeciesService {
     def searchSpeciesInLists(String searchTerm,  Map speciesConfig = [:], limit = 10, offset = 0){
         List druids = speciesConfig.speciesLists?.collect{it.dataResourceUid}
         Map fields = getSpeciesListAutocompleteLookupFields(speciesConfig)
-        List listResults =  searchSpeciesListOnFields(searchTerm, druids, fields.fieldList, limit, offset)
+        List listResults = speciesListService.searchSpeciesListOnFields(searchTerm, druids, fields.fieldList, limit, offset)
         formatSpeciesListResultToAutocompleteFormat(listResults, fields.fieldMap)
     }
 
@@ -76,11 +79,11 @@ class SpeciesService {
      * @return
      */
     Map formatSpeciesListResultToAutocompleteFormat(List queryResult, Map fields){
-        List autoCompleteList = queryResult?.collect { result ->
+        List autoCompleteList = queryResult?.collect { SpeciesListItem result ->
             Map searchResult = [id: result.id, guid: result.lsid, lsid: result.lsid, listId: result.dataResourceUid]
-            searchResult.scientificName = result[fields.scientificNameField]?: result.kvpValues?.find { it.key ==  fields.scientificNameField } ?.value
+            searchResult.scientificName = result.kvpValues?.find { it.key ==  fields.scientificNameField } ?.value ?: result.scientificName
             searchResult.scientificNameMatches = searchResult.scientificName ? [ searchResult.scientificName ] : []
-            searchResult.commonName = result[fields.commonNameField]?: result.kvpValues?.find { it.key ==  fields.commonNameField } ?.value
+            searchResult.commonName = result.kvpValues?.find { it.key ==  fields.commonNameField } ?.value ?: result.commonName
             searchResult.commonNameMatches = searchResult.commonName ? [ searchResult.commonName ] : []
             searchResult
         }
@@ -120,7 +123,7 @@ class SpeciesService {
      * @return a JSON formatted String of the form {"autoCompleteList":[{...results...}]}
      */
     private def filterSpeciesList(String query, String listId) {
-        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${listId}?q=${query}")
+        def listContents = speciesListService.allSpeciesListItems(listId, query)
 
         def filtered = listContents.collect({[id: it.id, listId: listId, name: it.name, commonName: it.commonName, scientificName: it.scientificName, scientificNameMatches:[it.name], guid:it.lsid]})
 
@@ -129,22 +132,6 @@ class SpeciesService {
         results.count = filtered.size()
 
         return results
-    }
-
-    /**
-     * Executes a query on given fields in supplied data resources.
-     * @param query the term to search for.
-     * @param listId the id of the list to search.
-     * @return
-     */
-    private def searchSpeciesListOnFields(String query, List listId = [], List fields = [], limit = 10, offset = 0) {
-        def listContents = webService.getJson("${grailsApplication.config.lists.baseURL}/ws/queryListItemOrKVP?druid=${listId.join(',')}&fields=${URLEncoder.encode(fields.join(','), "UTF-8")}&q=${URLEncoder.encode(query, "UTF-8")}&includeKVP=true&max=${limit}&offset=${offset}")
-
-        if(listContents.hasProperty('error')){
-            throw new Exception(listContents.error)
-        }
-
-        return listContents
     }
 
     def searchBie(searchTerm, fq, limit) {
@@ -164,22 +151,6 @@ class SpeciesService {
 
         }
         webService.getJson(url)
-    }
-
-    def searchSpeciesList(String sort = 'listName', Integer max = 100, Integer offset = 0, String guid = null, String order = "asc", String searchTerm = null) {
-        def list
-        String url = "${grailsApplication.config.lists.baseURL}/ws/speciesList?sort=${sort}&max=${max}&offset=${offset}&order=${order}&q=${searchTerm?:''}"
-
-        if (!guid) {
-            list = webService.getJson(url)
-        } else {
-            // Search List by species in the list
-            url = "${url}&items=createAlias:items&items.guid=eq:${guid}"
-            list = webService.getJson(url)
-        }
-
-        list
-
     }
 
     /**
@@ -263,14 +234,31 @@ class SpeciesService {
         data
     }
 
-    def addSpeciesList(postBody) {
-       webService.doPost("${grailsApplication.config.lists.baseURL}/ws/speciesList", postBody)
+    Map<String,String> addSpeciesList (Map<String,String> postBody) {
+        if (speciesListService.checkListAPIVersion(SpeciesListService.LIST_VERSION_V1)) {
+            String druid = postBody.druid ?: ""
+            return speciesListService.uploadSpeciesListUsingV1(postBody, druid)
+        } else {
+            List<List> rows = getSpeciesListAsCSV(postBody.listItems as String)
+            return speciesListService.uploadSpeciesListUsingV2(rows, postBody.listName, postBody.description, postBody.licence, postBody.listType)
+        }
     }
 
-    def getAllSpeciesList(){
-        // 1000 is the maximum that species list could give right now.
-        String url = "${grailsApplication.config.lists.baseURL}/ws/speciesList?sort=listName&offset=0&max=1000"
-        webService.getJson(url)
+    /**
+     * Convert comma seperated species list to a format resembling CSV.
+     * @return
+     */
+    List<List> getSpeciesListAsCSV(String listItems){
+        List<List> csv = []
+        if (listItems) {
+            csv.add(["scientificName"])
+            List speciesList = listItems.split(',')?.toList()
+            speciesList.each {
+                csv.add([it])
+            }
+        }
+
+        csv
     }
 
     /**

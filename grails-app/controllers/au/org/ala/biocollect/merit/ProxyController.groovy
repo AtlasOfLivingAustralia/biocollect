@@ -1,11 +1,12 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.ecodata.forms.SpeciesListService
 import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
 import au.org.ala.web.SSO
 
 class ProxyController {
-
+    static responseFormats = ['json']
     def webService, commonService, projectService
     SpeciesService speciesService
 
@@ -18,16 +19,20 @@ class ProxyController {
     }
 
     def speciesLists() {
-        def paramString = commonService.buildUrlParamsFromMap(params)
-        render webService.get("${grailsApplication.config.lists.baseURL}/ws/speciesList${paramString}", false)
+        respond speciesListService.searchSpeciesList(params.sort, params.max, params.offset, params.guid, params.order, params.searchTerm)
     }
 
     def speciesList() {
-        render webService.get("${grailsApplication.config.lists.baseURL}/ws/speciesList?druid=${params.druid}", false)
+        SpeciesListService.SpeciesList speciesList = speciesListService.getSpeciesListMetadata(params.druid)
+        // it is possible for old species list to return list of species list when druid is not found
+        if (!speciesList.isValid())
+            speciesList = null
+
+        respond speciesList
     }
 
     def speciesItemsForList() {
-        render webService.get("${grailsApplication.config.lists.baseURL}/ws/speciesListItems/${params.druid}?includeKVP=true", false)
+        respond speciesListService.allSpeciesListItems(params.druid)
     }
 
     def intersect(){
@@ -43,17 +48,16 @@ class ProxyController {
     }
 
     def speciesProfile(String id) {
-        Map result = speciesService.getSpeciesDetailsForTaxonId(id);
+        Map result = speciesService.getSpeciesDetailsForTaxonId(id)
         render result
     }
 
     @SSO
     def speciesListPost() {
         def postBody = request.JSON
-        def druidParam = (postBody.druid) ? "/${postBody.druid}" : "" // URL part
-        def postResponse = webService.doPost("${grailsApplication.config.lists.baseURL}/ws/speciesListPost${druidParam}", postBody)
-        if (postResponse.resp && postResponse.resp.druid) {
-            def druid = postResponse.resp?.druid?:druid
+        def postResponse = speciesService.addSpeciesList(postBody)
+        String druid = postResponse?.druid
+        if (druid) {
             postBody.druid = druid
             def result = projectService.update(postBody.projectId, [listId: druid, listReason: postBody.reason])
 

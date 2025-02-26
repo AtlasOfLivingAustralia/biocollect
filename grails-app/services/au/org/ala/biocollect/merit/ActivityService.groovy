@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.UtilService
+import au.org.ala.biocollect.merit.SpeciesService
 import grails.core.GrailsApplication
 import org.joda.time.DateTime
 import org.joda.time.Period
