@@ -59,6 +59,7 @@ class BioActivityController {
 
     static int MAX_FLIMIT = 500
     static allowedMethods = ['bulkDelete': 'POST', bulkRelease: 'POST', bulkEmbargo: 'POST']
+    static responseFormats = ['json']
 
     /**
      * Update Activity by activityId or
@@ -1577,15 +1578,16 @@ class BioActivityController {
         }
 
         if (pActivityId && type && file) {
-            def content = activityService.convertExcelToOutputData(pActivityId, type, file)
-            def status = SC_OK
-            if (content.error) {
-                status = SC_INTERNAL_SERVER_ERROR
+            def result = activityService.convertExcelToOutputData(pActivityId, type, file)
+            if (!org.springframework.http.HttpStatus.resolve(result.statusCode).is2xxSuccessful()) {
+                respond (result.resp, status: result.statusCode)
             }
-            render text: content as JSON, status: status
+            else {
+                respond (result.content?.subMap('data')  ?: result)
+            }
         }
         else {
-            render text: [message: "Missing required parameters - pActivityId, type & data (excel file)"] as JSON, status: SC_BAD_REQUEST
+            respond([message: "Missing required parameters - pActivityId, type & data (excel file)"], status: SC_BAD_REQUEST)
         }
     }
 

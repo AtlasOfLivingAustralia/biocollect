@@ -3,10 +3,10 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.EmailService
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.merit.hub.HubSettings
-import au.org.ala.biocollect.merit.SpeciesService
+import au.org.ala.web.UserDetails
 import grails.converters.JSON
 import org.springframework.context.MessageSource
-import au.org.ala.web.UserDetails
+import org.springframework.http.HttpStatus
 
 class ProjectService {
 
@@ -510,24 +510,25 @@ class ProjectService {
         Map params = [projectIds:projectId,userId:userId]
         response = webService.postMultipart(url, params, null, null, null)
 
-        if(response.error){
-            if(response.error.contains('Timed out')){
+        if (HttpStatus.resolve(response.statusCode as int).is2xxSuccessful()) {
+            if (isAdmin) {
+                response?.content?.each { key, value ->
+                    if (value != null) {
+                        permissions[key] = true
+                    } else {
+                        permissions[key] = null;
+                    }
+                }
+            } else {
+                permissions = response.content;
+            }
+        }
+        else {
+            if (response.error?.contains('Timed out')) {
                 throw new SocketTimeoutException(response.error)
             } else {
                 throw new Exception(response.error)
             }
-        }
-
-        if(isAdmin){
-            response?.content?.each{ key, value ->
-                if(value != null){
-                    permissions[key] = true
-                } else {
-                    permissions[key] = null;
-                }
-            }
-        } else {
-            permissions = response.content;
         }
 
         permissions
