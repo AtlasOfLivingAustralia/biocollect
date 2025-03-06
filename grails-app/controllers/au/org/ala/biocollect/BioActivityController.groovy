@@ -1801,6 +1801,79 @@ class BioActivityController {
         render model as JSON
     }
 
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "listrecords",
+            summary = "List records associated with the given project",
+            parameters = [
+                    @Parameter(
+                            name = "projectId",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Project id"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = RecordListResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name = "auth")
+    )
+    @Path("ws/bioactivity/data/records/{projectId}")
+    def listRecordsForDataResourceId(String projectId){
+        log.debug("projectId = ${projectId}")
+
+        String userId = userService.getCurrentUserId()
+
+        def model = [:]
+
+        if (!userId) {
+            response.status = 401
+            model.error = "Access denied: User has not been authenticated."
+        } else if (!projectId) {
+            model.error = "No project associated with the activity"
+        } else if (projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)) {
+            Map project = projectService.get(projectId)
+            if (project.dataResourceId) {
+                def records = activityService.listRecordsForDataResourceId(project.dataResourceId)
+                model = [records: records]
+            }
+        } else {
+            response.status = 401
+            model.error = "Access denied: User is not an owner of this project"
+        }
+
+        render model as JSON
+
+    }
+
     /*
      * Simplified version to get data/output for an activity
      * Handles both session and non session based request.
