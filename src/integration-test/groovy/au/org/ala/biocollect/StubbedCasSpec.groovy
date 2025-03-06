@@ -2,13 +2,9 @@ package au.org.ala.biocollect
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-
-import com.nimbusds.jose.jwk.JWKSet
-
 import com.nimbusds.jose.jwk.RSAKey
 import geb.Browser
 import grails.converters.JSON
-import io.jsonwebtoken.security.Keys
 import org.grails.web.converters.marshaller.json.CollectionMarshaller
 import org.grails.web.converters.marshaller.json.MapMarshaller
 import org.openqa.selenium.StaleElementReferenceException
@@ -22,10 +18,9 @@ import wiremock.com.github.jknack.handlebars.Options
 import wiremock.com.google.common.collect.ImmutableMap
 
 import java.security.KeyPair
-import java.security.interfaces.RSAPublicKey
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
-
 //import com.github.tomakehurst.wiremock.WireMockServer
 
 /**
@@ -203,21 +198,6 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
         }
         oidcLogin(userDetails, browser)
         loggedInUser = userDetails.userId
-    }
-
-    def jks() {
-        KeyPair keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
-
-        // Convert the public key to JWKS format
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAKey rsaKey = new RSAKey.Builder(publicKey)
-                .keyID("1")
-                .build();
-        JWKSet jwkSet = new JWKSet(rsaKey);
-
-        // Print the JWKS
-        System.out.println(jwkSet.toPublicJWKSet().toString());
-
     }
 
     def oidcLogin(Map userDetails, Browser browser) {
