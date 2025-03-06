@@ -21,8 +21,6 @@ buildscript {
 plugins {
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
 }
-sourceCompatibility = '11'
-targetCompatibility = '17'
 
 version "$biocollectVersion"
 group "au.org.ala"
@@ -42,6 +40,8 @@ if (Boolean.valueOf(enableClover)) {
 }
 apply from: "${project.projectDir}/gradle/publish.gradle"
 
+sourceCompatibility = '11'
+targetCompatibility = '17'
 repositories {
     mavenLocal()
     //for missing jai_core.jar
@@ -164,7 +164,7 @@ dependencies {
     implementation "io.jsonwebtoken:jjwt-api:0.11.5"
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:7.3-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:8.0-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
