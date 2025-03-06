@@ -103,6 +103,12 @@ class ActivityService {
         webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/listByProject/' + id + params)
     }
 
+    def listRecordsForDataResourceId(dataResourceId){
+        String url = grailsApplication.config.ecodata.service.url + '/harvest/listRecordsForDataResourceId/' + dataResourceId
+        log.debug "url = $url"
+        webService.getJson(url)
+    }
+
     def create(activity) {
         update('', activity)
     }
