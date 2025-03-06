@@ -9,6 +9,7 @@ class ProxyController {
     static responseFormats = ['json']
     def webService, commonService, projectService
     SpeciesService speciesService
+    SpeciesListService speciesListService
 
     def geojsonFromPid(String pid) {
         def shpUrl = "${grailsApplication.config.spatial.layersUrl}/shape/geojson/${pid}"
