@@ -472,4 +472,21 @@ class WebService {
     Map postMultipart(String url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files', boolean useToken = false, boolean userToken = false) {
         ecpWebService.postMultipart(url, params, contentIn, contentType, originalFilename, fileParamName, useToken, userToken)
     }
+
+
+    /**
+     * Post a local file to an URL using multipart/form-data.
+     * @param url
+     * @param params
+     * @param file
+     * @param contentType
+     * @param originalFilename
+     * @param fileParamName
+     * @param useToken
+     * @param userToken
+     * @return
+     */
+    Map postMultipart(String url, Map params, File file, String contentType, String originalFilename, String fileParamName = 'files', boolean useToken = false, boolean userToken = false) {
+        ecpWebService.postMultipart(url, params, file, contentType, originalFilename, fileParamName, useToken, userToken)
+    }
 }
