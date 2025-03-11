@@ -31,6 +31,8 @@ import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 
+import javax.ws.rs.Produces
+
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_OK
 import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
@@ -1873,6 +1875,65 @@ class BioActivityController {
         render model as JSON
 
     }
+
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            summary = "Generate darwin core archive",
+            description = "Returns a ZIP file containing darwin core archive",
+            parameters = [
+                    @Parameter(
+                            name = "projectId",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Project id"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful response with ZIP file",
+                            content = [@Content(mediaType = "application/zip", schema = @Schema(type = "string", format = "binary"))]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name = "auth")
+    )
+    @Path("ws/bioactivity/data/archive/{projectId}")
+    @Produces("application/zip")
+    def getDarwinCoreArchiveForProject(String projectId){
+        log.debug("projectId = ${projectId}")
+
+        String userId = userService.getCurrentUserId()
+        if (!userId) {
+            respond([message: "Access denied: User has not been authenticated."], status: HttpStatus.SC_UNAUTHORIZED)
+        } else if (!projectId) {
+            respond([message: "Project Id is required."], status: SC_BAD_REQUEST)
+        } else {
+            if (projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)) {
+                response.contentType = 'application/zip'
+                response.setHeader("Content-disposition", "attachment; filename=darwin-core.zip")
+                activityService.getDarwinCoreArchiveForProject(projectId, response)
+                response.outputStream.flush()
+            } else {
+                respond([message: "Access denied: User not authorised."], status: HttpStatus.SC_UNAUTHORIZED)
+            }
+        }
+    }
+
 
     /*
      * Simplified version to get data/output for an activity
