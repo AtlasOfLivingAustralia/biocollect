@@ -316,9 +316,3 @@ class GetOutputForActivitySimplifiedResponse {
     Map activity
     String error
 }
-
-@JsonIgnoreProperties('metaClass')
-class RecordListResponse {
-    List records
-    String error
-}

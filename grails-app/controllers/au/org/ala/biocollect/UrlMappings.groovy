@@ -202,7 +202,7 @@ class UrlMappings {
                 "/ws/bioactivity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
                 "/ws/bioactivity/data/simplified/$id"(controller:  "bioActivity", action: 'getOutputForActivitySimplified')
                 "/ws/bioactivity/data/archive/$projectId"(controller:  "bioActivity", action: 'getDarwinCoreArchiveForProject')
-                "/ws/bioactivity/data/records/$projectId"(controller:  "bioActivity", action: 'listRecordsForDataResourceId')
+                "/ws/bioactivity/data/records"(controller:  "bioActivity", action: 'listRecordsForDataResourceId')
                 "/ws/species/uniqueId"(controller:  "output", action: 'getOutputSpeciesIdentifier')
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
                 "/ws/bioactivity/site"(controller:  "site", action: 'ajaxUpdate')
