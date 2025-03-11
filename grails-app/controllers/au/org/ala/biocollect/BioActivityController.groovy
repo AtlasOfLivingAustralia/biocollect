@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.ContentType
+import org.grails.web.converters.exceptions.ConverterException
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
@@ -1811,9 +1812,58 @@ class BioActivityController {
             parameters = [
                     @Parameter(
                             name = "projectId",
-                            in = ParameterIn.PATH,
+                            in = ParameterIn.QUERY,
                             required = true,
                             description = "Project id"
+                    ),
+                    @Parameter(
+                            name = "max",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of returned activities per page.",
+                            schema = @Schema(
+                                    name = "max",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "10"
+                            )
+                    ),
+                    @Parameter(
+                            name = "offset",
+                            in = ParameterIn.QUERY,
+                            description = "Offset search result by this parameter",
+                            schema = @Schema(
+                                    name = "offset",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "0"
+                            )
+                    ),
+                    @Parameter(
+                            name = "sort",
+                            in = ParameterIn.QUERY,
+                            description = "Sort by attribute",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "lastUpdated"
+                            )
+                    ),
+                    @Parameter(
+                            name = "order",
+                            in = ParameterIn.QUERY,
+                            description = "Order sort item by this parameter",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "desc"
+                            )
+                    ),
+                    @Parameter(
+                            name = "status",
+                            in = ParameterIn.QUERY,
+                            description = "Project status",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "active"
+                            )
                     )
             ],
             responses = [
@@ -1822,7 +1872,7 @@ class BioActivityController {
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(
-                                            implementation = RecordListResponse.class
+                                            implementation = Map.class
                                     )
                             ),
                             headers = [
@@ -1831,49 +1881,37 @@ class BioActivityController {
                                     @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
                             ]
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                            implementation = ErrorResponse.class
-                                    )
-                            ),
-                            headers = [
-                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
-                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
-                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
-                            ]
-                    )
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
             ],
             security = @SecurityRequirement(name = "auth")
     )
-    @Path("ws/bioactivity/data/records/{projectId}")
-    def listRecordsForDataResourceId(String projectId){
-        log.debug("projectId = ${projectId}")
-
+    @Path("ws/bioactivity/data/records")
+    def listRecordsForDataResourceId(){
         String userId = userService.getCurrentUserId()
-
-        def model = [:]
+        GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
         if (!userId) {
-            response.status = 401
-            model.error = "Access denied: User has not been authenticated."
-        } else if (!projectId) {
-            model.error = "No project associated with the activity"
-        } else if (projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)) {
-            Map project = projectService.get(projectId)
-            if (project.dataResourceId) {
-                def records = activityService.listRecordsForDataResourceId(project.dataResourceId)
-                model = [records: records]
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+        } else if (!queryParams.projectId) {
+            render text: [message: "No project associated with the activity."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+        } else if (projectService.canUserEditProject(userId, queryParams.projectId, false)) {
+            Map project = projectService.get(queryParams.projectId)
+            if (!project.dataResourceId) {
+                render text: [message: "Data resource Id is required."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+            } else {
+                queryParams.id = project.dataResourceId
+                def result = activityService.listRecordsForDataResourceId(queryParams)
+                if (!result.error) {
+                    render text: result as JSON, contentType: ContentType.APPLICATION_JSON
+                } else {
+                    render text: getMessage(result), status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                }
             }
         } else {
-            response.status = 401
-            model.error = "Access denied: User is not an owner of this project"
+            render text: "Access denied: User not authorised.", status: HttpStatus.SC_UNAUTHORIZED
         }
-
-        render model as JSON
-
     }
 
     @Operation(
@@ -1895,20 +1933,9 @@ class BioActivityController {
                             description = "Successful response with ZIP file",
                             content = [@Content(mediaType = "application/zip", schema = @Schema(type = "string", format = "binary"))]
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                            implementation = ErrorResponse.class
-                                    )
-                            ),
-                            headers = [
-                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
-                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
-                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
-                            ]
-                    )
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
             ],
             security = @SecurityRequirement(name = "auth")
     )
@@ -1918,22 +1945,29 @@ class BioActivityController {
         log.debug("projectId = ${projectId}")
 
         String userId = userService.getCurrentUserId()
+        Map project = projectService.get(projectId)
         if (!userId) {
-            respond([message: "Access denied: User has not been authenticated."], status: HttpStatus.SC_UNAUTHORIZED)
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
         } else if (!projectId) {
-            respond([message: "Project Id is required."], status: SC_BAD_REQUEST)
+            render text: "Project Id is required.", status: SC_BAD_REQUEST
+        }else if (project.error) {
+            render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
         } else {
-            if (projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)) {
-                response.contentType = 'application/zip'
-                response.setHeader("Content-disposition", "attachment; filename=darwin-core.zip")
-                activityService.getDarwinCoreArchiveForProject(projectId, response)
-                response.outputStream.flush()
+            if (projectService.canUserEditProject(userId, projectId, false)) {
+                try {
+                    response.contentType = 'application/zip'
+                    response.setHeader("Content-disposition", "attachment; filename=darwin-core.zip")
+                    activityService.getDarwinCoreArchiveForProject(projectId, response)
+                    response.outputStream.flush()
+                } catch (Exception e) {
+                    log.error (e.message.toString(), e)
+                    render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                }
             } else {
-                respond([message: "Access denied: User not authorised."], status: HttpStatus.SC_UNAUTHORIZED)
+                render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
             }
         }
     }
-
 
     /*
      * Simplified version to get data/output for an activity
@@ -2205,5 +2239,18 @@ class BioActivityController {
         if(params.embedded == 'true'){
             response.setHeader("X-Frame-Options", "SAMEORIGIN")
         }
+    }
+
+    private String getMessage(Map resp) {
+        def errorMessage
+        if (resp.detail) {
+            try {
+                errorMessage = JSON.parse(resp?.detail)
+            } catch (ConverterException ce) {
+                errorMessage = resp.error
+            }
+        }
+
+        errorMessage ?: resp.error
     }
 }
