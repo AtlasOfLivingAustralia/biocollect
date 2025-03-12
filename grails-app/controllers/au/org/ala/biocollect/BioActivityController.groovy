@@ -1899,7 +1899,7 @@ class BioActivityController {
         } else if (projectService.canUserEditProject(userId, queryParams.projectId, false)) {
             Map project = projectService.get(queryParams.projectId)
             if (!project.dataResourceId) {
-                render text: [message: "Data resource Id is required."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+                render text: [message: "Only data of ALA harvested projects can be accessed."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
             } else {
                 queryParams.id = project.dataResourceId
                 def result = activityService.listRecordsForDataResourceId(queryParams)
