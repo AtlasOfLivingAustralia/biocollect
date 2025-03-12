@@ -1906,7 +1906,7 @@ class BioActivityController {
                 if (!result.error) {
                     render text: result as JSON, contentType: ContentType.APPLICATION_JSON
                 } else {
-                    render text: JSON.parse(getMessage(result)), status: result.statusCode, contentType: ContentType.APPLICATION_JSON
+                    render text: [message: "An error occurred while fetching data."] as JSON, status: result.statusCode, contentType: ContentType.APPLICATION_JSON
                 }
             }
         } else {
