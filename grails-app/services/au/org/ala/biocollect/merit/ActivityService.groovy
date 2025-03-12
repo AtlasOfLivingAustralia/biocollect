@@ -4,6 +4,7 @@ import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.UtilService
 import grails.core.GrailsApplication
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
 import org.joda.time.Period
 import org.joda.time.format.DateTimeFormat
@@ -101,6 +102,18 @@ class ActivityService {
     def activitiesForProject(id, query){
         def params = '?'+ query.collect { k,v -> "$k=$v" }.join('&')
         webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/listByProject/' + id + params)
+    }
+
+    def listRecordsForDataResourceId(GrailsParameterMap params){
+        String url = grailsApplication.config.ecodata.service.url + '/harvest/listRecordsForDataResourceId/' + commonService.buildUrlParamsFromMap(params)
+        log.debug "url = $url"
+        webService.getJson(url)
+    }
+
+    def getDarwinCoreArchiveForProject(projectId, response){
+        String url = grailsApplication.config.ecodata.service.url + "/project/$projectId/archive"
+        log.debug "url = $url"
+        webService.proxyGetRequest(response, url)
     }
 
     def create(activity) {

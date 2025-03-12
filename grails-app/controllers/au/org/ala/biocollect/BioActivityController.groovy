@@ -26,10 +26,13 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.ContentType
+import org.grails.web.converters.exceptions.ConverterException
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
+
+import javax.ws.rs.Produces
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 import static org.apache.http.HttpStatus.SC_OK
@@ -1801,6 +1804,172 @@ class BioActivityController {
         render model as JSON
     }
 
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "listrecords",
+            summary = "List records associated with the given project",
+            parameters = [
+                    @Parameter(
+                            name = "projectId",
+                            in = ParameterIn.QUERY,
+                            required = true,
+                            description = "Project id"
+                    ),
+                    @Parameter(
+                            name = "max",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of returned activities per page.",
+                            schema = @Schema(
+                                    name = "max",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "10"
+                            )
+                    ),
+                    @Parameter(
+                            name = "offset",
+                            in = ParameterIn.QUERY,
+                            description = "Offset search result by this parameter",
+                            schema = @Schema(
+                                    name = "offset",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "0"
+                            )
+                    ),
+                    @Parameter(
+                            name = "sort",
+                            in = ParameterIn.QUERY,
+                            description = "Sort by attribute",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "lastUpdated"
+                            )
+                    ),
+                    @Parameter(
+                            name = "order",
+                            in = ParameterIn.QUERY,
+                            description = "Order sort item by this parameter",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "desc"
+                            )
+                    ),
+                    @Parameter(
+                            name = "status",
+                            in = ParameterIn.QUERY,
+                            description = "Project status",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "active"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = Map.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            ],
+            security = @SecurityRequirement(name = "auth")
+    )
+    @Path("ws/bioactivity/data/records")
+    def listRecordsForDataResourceId(){
+        String userId = userService.getCurrentUserId()
+        GrailsParameterMap queryParams = constructDefaultSearchParams(params)
+
+        if (!userId) {
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+        } else if (!queryParams.projectId) {
+            render text: [message: "No project associated with the activity."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+        } else if (projectService.canUserEditProject(userId, queryParams.projectId, false)) {
+            Map project = projectService.get(queryParams.projectId)
+            if (!project.dataResourceId) {
+                render text: [message: "Only data of ALA harvested projects can be accessed."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+            } else {
+                queryParams.id = project.dataResourceId
+                def result = activityService.listRecordsForDataResourceId(queryParams)
+                if (!result.error) {
+                    render text: result as JSON, contentType: ContentType.APPLICATION_JSON
+                } else {
+                    render text: [message: "An error occurred while fetching data."] as JSON, status: result.statusCode, contentType: ContentType.APPLICATION_JSON
+                }
+            }
+        } else {
+            render text: "Access denied: User not authorised.", status: HttpStatus.SC_UNAUTHORIZED
+        }
+    }
+
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            summary = "Generate darwin core archive",
+            description = "Returns a ZIP file containing darwin core archive",
+            parameters = [
+                    @Parameter(
+                            name = "projectId",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Project id"
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful response with ZIP file",
+                            content = [@Content(mediaType = "application/zip", schema = @Schema(type = "string", format = "binary"))]
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            ],
+            security = @SecurityRequirement(name = "auth")
+    )
+    @Path("ws/bioactivity/data/archive/{projectId}")
+    @Produces("application/zip")
+    def getDarwinCoreArchiveForProject(String projectId){
+        log.debug("projectId = ${projectId}")
+
+        String userId = userService.getCurrentUserId()
+        Map project = projectService.get(projectId)
+        if (!userId) {
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+        } else if (!projectId) {
+            render text: "Project Id is required.", status: SC_BAD_REQUEST
+        }else if (project.error) {
+            render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+        } else {
+            if (projectService.canUserEditProject(userId, projectId, false)) {
+                try {
+                    response.contentType = 'application/zip'
+                    response.setHeader("Content-disposition", "attachment; filename=darwin-core.zip")
+                    activityService.getDarwinCoreArchiveForProject(projectId, response)
+                    response.outputStream.flush()
+                    return null
+                } catch (Exception e) {
+                    log.error (e.message.toString(), e)
+                    render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                }
+            } else {
+                render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+            }
+        }
+    }
+
     /*
      * Simplified version to get data/output for an activity
      * Handles both session and non session based request.
@@ -2071,5 +2240,18 @@ class BioActivityController {
         if(params.embedded == 'true'){
             response.setHeader("X-Frame-Options", "SAMEORIGIN")
         }
+    }
+
+    private String getMessage(Map resp) {
+        String errorMessage
+        if (resp.detail) {
+            try {
+                errorMessage = JSON.parse(resp?.detail)
+            } catch (ConverterException ce) {
+                errorMessage = resp.error
+            }
+        }
+
+        errorMessage ?: resp.error
     }
 }
