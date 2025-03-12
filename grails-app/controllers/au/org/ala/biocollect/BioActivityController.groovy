@@ -1959,6 +1959,7 @@ class BioActivityController {
                     response.setHeader("Content-disposition", "attachment; filename=darwin-core.zip")
                     activityService.getDarwinCoreArchiveForProject(projectId, response)
                     response.outputStream.flush()
+                    return null
                 } catch (Exception e) {
                     log.error (e.message.toString(), e)
                     render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
@@ -2242,7 +2243,7 @@ class BioActivityController {
     }
 
     private String getMessage(Map resp) {
-        def errorMessage
+        Map errorMessage
         if (resp.detail) {
             try {
                 errorMessage = JSON.parse(resp?.detail)
