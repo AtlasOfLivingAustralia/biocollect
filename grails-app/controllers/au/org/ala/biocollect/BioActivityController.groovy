@@ -2242,7 +2242,7 @@ class BioActivityController {
         }
     }
 
-    private String getMessage(Map resp) {
+    private Map getMessage(Map resp) {
         Map errorMessage
         if (resp.detail) {
             try {
