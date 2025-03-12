@@ -1906,7 +1906,7 @@ class BioActivityController {
                 if (!result.error) {
                     render text: result as JSON, contentType: ContentType.APPLICATION_JSON
                 } else {
-                    render text: getMessage(result), status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                    render text: JSON.parse(getMessage(result)), status: result.statusCode, contentType: ContentType.APPLICATION_JSON
                 }
             }
         } else {
@@ -2242,8 +2242,8 @@ class BioActivityController {
         }
     }
 
-    private Map getMessage(Map resp) {
-        Map errorMessage
+    private String getMessage(Map resp) {
+        String errorMessage
         if (resp.detail) {
             try {
                 errorMessage = JSON.parse(resp?.detail)
