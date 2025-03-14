@@ -1955,8 +1955,8 @@ class BioActivityController {
         } else {
             if (projectService.canUserEditProject(userId, projectId, false)) {
                 try {
-                    response.contentType = 'application/zip'
-                    response.setHeader("Content-disposition", "attachment; filename=darwin-core.zip")
+//                    response.contentType = 'application/zip'
+//                    response.setHeader("Content-disposition", "attachment; filename=darwin-core.zip")
                     activityService.getDarwinCoreArchiveForProject(projectId, response)
                     response.outputStream.flush()
                     return null
