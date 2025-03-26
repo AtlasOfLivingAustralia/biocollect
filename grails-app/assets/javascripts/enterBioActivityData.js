@@ -175,7 +175,8 @@ function Master(activityId, config) {
             });
         }
         else {
-            self.onlineSave();
+            // returned thenable object used by bulk upload script
+            return self.onlineSave();
         }
     },
 
