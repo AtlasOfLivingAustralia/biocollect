@@ -110,8 +110,8 @@ class ActivityService {
         webService.getJson(url)
     }
 
-    def getDarwinCoreArchiveForProject(projectId, response){
-        String url = grailsApplication.config.ecodata.service.url + "/project/$projectId/archive"
+    def getDarwinCoreArchiveForProject(projectId, response, force){
+        String url = grailsApplication.config.ecodata.service.url + "/project/$projectId/archive/?${force}"
         log.debug "url = $url"
         webService.proxyGetRequest(response, url)
     }
