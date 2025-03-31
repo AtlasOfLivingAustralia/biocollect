@@ -1925,6 +1925,12 @@ class BioActivityController {
                             in = ParameterIn.PATH,
                             required = true,
                             description = "Project id"
+                    ),
+                    @Parameter(
+                        name = "force",
+                        in = ParameterIn.QUERY,
+                        description = "Set to true to generate Darwin Core Archive on demand (slow) or false to get the pre-generated file (might not have the latest data)",
+                        schema = @Schema(type = "boolean", defaultValue = "false")
                     )
             ],
             responses = [
@@ -1955,7 +1961,7 @@ class BioActivityController {
         } else {
             if (projectService.canUserEditProject(userId, projectId, false)) {
                 try {
-                    activityService.getDarwinCoreArchiveForProject(projectId, response)
+                    activityService.getDarwinCoreArchiveForProject(projectId, response, params.force)
                     response.outputStream.flush()
                     return null
                 } catch (Exception e) {
