@@ -9,6 +9,8 @@ import org.joda.time.DateTime
 import org.joda.time.Period
 import org.joda.time.format.DateTimeFormat
 
+import javax.servlet.http.HttpServletResponse
+
 class ActivityService {
     static final BATCH_SIZE = 20
 
@@ -110,8 +112,8 @@ class ActivityService {
         webService.getJson(url)
     }
 
-    def getDarwinCoreArchiveForProject(projectId, response, force){
-        String url = grailsApplication.config.ecodata.service.url + "/project/$projectId/archive/?${force}"
+    def getDarwinCoreArchiveForProject(String projectId, HttpServletResponse response, String force){
+        String url = grailsApplication.config.ecodata.service.url + "/project/$projectId/archive?force=${force}"
         log.debug "url = $url"
         webService.proxyGetRequest(response, url)
     }

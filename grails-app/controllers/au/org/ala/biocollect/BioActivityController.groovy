@@ -1929,7 +1929,7 @@ class BioActivityController {
                     @Parameter(
                         name = "force",
                         in = ParameterIn.QUERY,
-                        description = "a flag to control how to retrieve archive file",
+                        description = "Set to true to generate Darwin Core Archive on demand (slow) or false to get the pre-generated file (might not have the latest data)",
                         schema = @Schema(type = "boolean", defaultValue = "false")
                     )
             ],
