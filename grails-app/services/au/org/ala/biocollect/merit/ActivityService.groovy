@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse
 
 class ActivityService {
     static final BATCH_SIZE = 20
+    public static final List INCLUDE_LINKED_ENTITIES = ['outputs', 'site', 'documents']
 
     GrailsApplication grailsApplication
     WebService webService
@@ -463,5 +464,31 @@ class ActivityService {
         else {
             return result.content?.subMap('data')  ?: result
         }
+    }
+
+    /**
+     * Get linked entities such as outputs, site and documents for a list of activities.
+     */
+    List<Map> addLinkedEntitiesToActivities(List<Map> activities) {
+        if (activities) {
+            List ids = activities.activityId
+            List<Map> linkedActivities = search([activityId: ids])?.resp?.activities
+            if (!linkedActivities) {
+                return activities
+            }
+
+            activities.each {activity ->
+                Map match = linkedActivities.find { activity.activityId == it.activityId }
+                if (match) {
+                    INCLUDE_LINKED_ENTITIES.each { String entity ->
+                        if (match[entity]) {
+                            activity[entity] = match[entity]
+                        }
+                    }
+                }
+            }
+        }
+
+        activities
     }
 }
