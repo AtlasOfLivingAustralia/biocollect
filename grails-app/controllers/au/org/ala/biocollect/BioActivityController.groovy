@@ -1120,12 +1120,12 @@ class BioActivityController {
                     @Parameter(
                             name = "max",
                             in = ParameterIn.QUERY,
-                            description = "Maximum number of returned activities per page. Maximum is 50.",
+                            description = "Maximum number of returned activities per page. Maximum is 100.",
                             schema = @Schema(
                                     name = "max",
                                     type = "integer",
                                     minimum = "0",
-                                    maximum = "50",
+                                    maximum = "100",
                                     defaultValue = "10"
                             )
                     ),
@@ -1235,7 +1235,7 @@ class BioActivityController {
     @Path("ws/bioactivity/search")
     def searchProjectActivities() {
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
-        queryParams.max = Math.min(queryParams.max, 50)
+        queryParams.max = Math.min(queryParams.max, 100)
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
 
