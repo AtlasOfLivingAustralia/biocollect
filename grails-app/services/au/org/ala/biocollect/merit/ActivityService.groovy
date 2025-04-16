@@ -265,7 +265,8 @@ class ActivityService {
     }
 
     /** @see au.org.ala.ecodata.ActivityController for a description of the criteria required. */
-    def search(criteria) {
+    def search(criteria, boolean isReporting = false) {
+        String pathPrefix = isReporting ? '/reporting' : ''
         def modifiedCriteria = new HashMap(criteria?:[:])
         // Convert dates to UTC format.
         criteria.each { key, value ->
@@ -274,7 +275,7 @@ class ActivityService {
             }
 
         }
-        webService.doPost(grailsApplication.config.ecodata.service.url+'/activity/search/', modifiedCriteria)
+        webService.doPost(grailsApplication.config.getProperty("ecodata.baseURL") + pathPrefix + '/activity/search/', modifiedCriteria)
     }
 
     def isReport(activity) {
@@ -472,7 +473,7 @@ class ActivityService {
     List<Map> addLinkedEntitiesToActivities(List<Map> activities) {
         if (activities) {
             List ids = activities.activityId
-            List<Map> linkedActivities = search([activityId: ids])?.resp?.activities
+            List<Map> linkedActivities = search([activityId: ids], true)?.resp?.activities
             if (!linkedActivities) {
                 return activities
             }
