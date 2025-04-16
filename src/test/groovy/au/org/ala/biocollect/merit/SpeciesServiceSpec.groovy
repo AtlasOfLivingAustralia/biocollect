@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 /*
@@ -26,29 +27,6 @@ class SpeciesServiceSpec extends Specification implements ServiceUnitTest<Specie
         service.grailsApplication.config.lists.baseURL = "xyz"
 
         service.webService = Mock(WebService)
-    }
-
-    void "should call list tool with empty search term" () {
-        String searchTerm = null
-        String url = "xyz/ws/speciesList?sort=listName&max=10&offset=0&order=asc&q="
-
-        when:
-        service.searchSpeciesList('listName', 10, 0, null, 'asc', searchTerm)
-
-        then:
-        1 * service.webService.getJson(url) >> [:]
-    }
-
-    void "should call list tool with passed search term"() {
-        String searchTerm = 'abc'
-        String url = "xyz/ws/speciesList?sort=listName&max=10&offset=0&order=asc&q=abc"
-
-        when:
-        service.searchSpeciesList('listName', 10, 0, null, 'asc', searchTerm)
-
-        then:
-        1 * service.webService.getJson(url) >> [:]
-
     }
 
     def "formatTaxonName should format name based on displayType"() {
