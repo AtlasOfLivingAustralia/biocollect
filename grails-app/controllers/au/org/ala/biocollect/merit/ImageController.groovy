@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
 import org.imgscalr.Scalr
+import org.springframework.http.HttpStatus
 import org.springframework.web.multipart.MultipartFile
 
 import javax.imageio.ImageIO
@@ -131,7 +132,7 @@ class ImageController {
             MultipartFile file = request.getFile('files')
 
             def result = webService.postMultipart(url, params, file, 'image')
-            if (result.content) {
+            if (HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
                 def detailsUrl = "${grailsApplication.config.images.baseURL}ws/getImageInfo?id=${result.content.imageId}"
                 def imageDetails = webService.getJson(detailsUrl)
                 def thumbnailUrl = imageDetails.imageUrl.replace("/original", "/thumbnail")
