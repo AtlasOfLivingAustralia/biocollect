@@ -64,7 +64,7 @@ class DocumentService {
             def file = new File(grailsApplication.config.upload.images.path, document.filename)
             // Create a new document, supplying the file that was uploaded to the ImageController.
             result = createDocument(document, document.contentType, new FileInputStream(file))
-            if (!result.error) {
+            if (org.springframework.http.HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
                 file.delete()
             }
         }

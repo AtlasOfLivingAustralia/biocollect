@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.merit.SpeciesService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 
