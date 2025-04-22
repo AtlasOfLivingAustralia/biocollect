@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON;"%>
+<%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON; static au.org.ala.biocollect.MarkdownUtils.markdownToHtmlAndSanitise" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <g:set var="utilService" bean="utilService"></g:set>
 <g:set var="projectActivityService" bean="projectActivityService"></g:set>
@@ -243,11 +243,11 @@
         </g:if>
         <g:if test="${projectContent.admin.visible}">
             <g:if test="${!project.isExternal}">
-                var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+                var projectStoriesMarkdown = '${markdownToHtmlAndSanitise(project.projectStories?:"")?.encodeAsJavaScript()}';
                 var projectStoriesViewModel = new window.projectStoriesViewModel(projectViewModel, projectStoriesMarkdown);
                 ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
 
-                var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
+                var newsAndEventsMarkdown = '${markdownToHtmlAndSanitise(project.newsAndEvents?:"")?.encodeAsJavaScript()}';
                 var newsAndEventsViewModel = new window.newsAndEventsViewModel(projectViewModel, newsAndEventsMarkdown);
                 ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
             </g:if>
