@@ -29,6 +29,7 @@ public class ActivityServiceSpec extends Specification implements AutowiredTest{
 
     def "addLinkedEntitiesToActivities should add linked entities to activities"() {
         given:
+        grailsApplication.config.ecodata.baseURL = ""
         def activity = [activityId: 'activity1']
         def linkedEntity = [activityId: 'activity1', outputs: [[id: 'output1']], site: [id: 'site1'], documents: [[id: 'doc1']]]
 
@@ -36,7 +37,7 @@ public class ActivityServiceSpec extends Specification implements AutowiredTest{
         service.addLinkedEntitiesToActivities([activity])
 
         then:
-        1 * webService.doPost('/activity/search/', [activityId: ['activity1']]) >> [resp: [activities: [linkedEntity]]]
+        1 * webService.doPost('/reporting/activity/search/', [activityId: ['activity1']]) >> [resp: [activities: [linkedEntity]]]
         activity.outputs == linkedEntity.outputs
         activity.site == linkedEntity.site
         activity.documents == linkedEntity.documents

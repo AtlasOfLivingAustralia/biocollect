@@ -131,8 +131,9 @@ dependencies {
     implementation 'org.grails.plugins:grails-google-visualization:2.2.1'
     implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
     implementation 'org.grails.plugins:mail:2.0.0.RC6'
+    implementation "org.commonmark:commonmark:0.24.0"
+    implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20240325.1"
 
-    implementation 'org.grails.plugins:grails-markdown:3.0.0'
     implementation 'org.grails.plugins:grails-cookie:2.0.3'
 //    implementation 'org.grails.plugins:cache:5.0.0.RC1'
 

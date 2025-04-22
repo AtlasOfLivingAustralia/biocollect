@@ -9,6 +9,7 @@ import groovy.xml.MarkupBuilder
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import grails.web.servlet.mvc.GrailsParameterMap
+import au.org.ala.biocollect.MarkdownUtils
 
 @Slf4j
 class FCTagLib {
@@ -609,14 +610,14 @@ class FCTagLib {
     def footerContent = { attrs ->
         def content = settingService.getSettingText(SettingPageType.FOOTER) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
     def announcementContent = { attrs ->
         def content = settingService.getSettingText(SettingPageType.ANNOUNCEMENT) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
@@ -630,7 +631,7 @@ class FCTagLib {
     def homePageIntro = { attrs ->
         def content = settingService.getSettingText(SettingPageType.INTRO) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
@@ -643,7 +644,7 @@ class FCTagLib {
         SettingPageType settingType = attrs.settingType
         def content = settingService.getSettingText(settingType) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
@@ -657,7 +658,7 @@ class FCTagLib {
         if(attrs.key){
             def content = settingService.getSettingText(attrs.key) as String
             if (content) {
-                out << content.markdownToHtml()
+                out << markdownToHtmlAndSanitise(content)
             }
         }
     }
@@ -829,6 +830,17 @@ class FCTagLib {
                 out << createLink(controller: 'project', action:'create', params: [citizenScience:true])
             }
         }
+    }
+
+
+    def markdownToHtml = { Map attrs, body ->
+        String text = attrs.text ?: body()
+
+        out << MarkdownUtils.markdownToHtmlAndSanitise(text)
+    }
+
+    private String markdownToHtmlAndSanitise(String text) {
+        MarkdownUtils.markdownToHtmlAndSanitise(text)
     }
 
 }
