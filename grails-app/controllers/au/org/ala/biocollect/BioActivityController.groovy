@@ -34,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile
 import javax.ws.rs.Produces
 import static org.apache.http.HttpStatus.*
 
-
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
         scheme = "bearer"
