@@ -31,6 +31,7 @@ class SeedSpec extends Specification implements AutowiredTest{
     def setup() {
         results = [[
                            "_source": [
+                                   projectArea      : [geoIndex: [geometry: [:]]],
                                    projectActivities: [[name: "x", description: "y", dataAccessMethods: ["oasrdfs"], datasetExternalURL: "http://xyx.com", projectActivityId: 'b']],
                                    projectId        : 'a',
                                    aim              : 'b',
@@ -123,6 +124,6 @@ class SeedSpec extends Specification implements AutowiredTest{
         def dataset = project.datasets[0]
         dataset.dataAccessMethod[0] == 'oasrdfs'
         dataset.name == 'x'
-        dataset.datasetExternalURL == "http://devt.ala.org.au:8087/bioActivity/projectRecords/b"
+        dataset.datasetExternalURL == "http://localhost:8087/bioActivity/projectRecords/b"
     }
 }

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="grails.converters.JSON" %>
+<%@ page import="grails.converters.JSON; static au.org.ala.biocollect.MarkdownUtils.markdownToHtmlAndSanitise" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <g:set var="utilService" bean="utilService"></g:set>
 <g:set var="speciesListService" bean="speciesListService"></g:set>
@@ -206,8 +206,8 @@
 
             var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
             var project = <fc:modelAsJavascript model="${project}"/>;
-            var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
-            var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+            var newsAndEventsMarkdown = '${markdownToHtmlAndSanitise(project.newsAndEvents?:"")?.encodeAsJavaScript()}';
+            var projectStoriesMarkdown = '${markdownToHtmlAndSanitise(project.projectStories?:"")?.encodeAsJavaScript()}';
             var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, organisations, {});
 
             viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);
@@ -404,12 +404,12 @@
 
 //            var project = <fc:modelAsJavascript model="${project}"/>;
 //            var viewModel = new WorksProjectViewModel(project, ${user?.isEditor?:false}, {}, {});
-            var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+            var projectStoriesMarkdown = '${markdownToHtmlAndSanitise(project.projectStories?:"")?.encodeAsJavaScript()}';
             var projectStoriesViewModel = new window.projectStoriesViewModel(viewModel, projectStoriesMarkdown);
             ko.cleanNode($('#editprojectStoriesContent')[0]);
             ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
 
-            var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
+            var newsAndEventsMarkdown = '${markdownToHtmlAndSanitise(project.newsAndEvents?:"")?.encodeAsJavaScript()}';
             var newsAndEventsViewModel = new window.newsAndEventsViewModel(viewModel, newsAndEventsMarkdown);
             ko.cleanNode($('#editnewsAndEventsContent')[0]);
             ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);

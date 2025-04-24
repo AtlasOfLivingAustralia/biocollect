@@ -31,8 +31,8 @@ import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
-import static org.apache.http.HttpStatus.*
 import javax.ws.rs.Produces
+import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
