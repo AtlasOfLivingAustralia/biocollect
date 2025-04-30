@@ -501,6 +501,7 @@ function ContentViewModel(config) {
     self.hideProjectEditScienceTypes = ko.observable(config.hideProjectEditScienceTypes || false);
     self.hideProjectSurveyDownloadXLSX = ko.observable(config.hideProjectSurveyDownloadXLSX || false);
     self.enablePartialSearch = ko.observable(config.enablePartialSearch || false);
+    self.disableOrganisationHyperlink = ko.observable(config.disableOrganisationHyperlink || false);
     self.overriddenLabels = ko.observableArray();
     self.load(config);
 }

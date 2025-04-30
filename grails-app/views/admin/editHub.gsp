@@ -435,8 +435,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: enablePartialSearch"> Enable partial search
                 </div>
-
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: disableOrganisationHyperlink"> Enable organisation hyperlink
+                </div>
                 <h5>Project page</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectBackButton"> Hide 'Back to search results' button on project page
