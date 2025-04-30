@@ -6,16 +6,21 @@
         <h4>Create new species lists</h4>
 
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <label>New species lists name:</label>
                 <input class="form-control" data-bind="value: newSpeciesLists.listName" type="text"
                        data-validation-engine="validate[required]"/>
             </div>
 
-            <div class="col-6">
+            <div class="col-4">
                 <label>List Type</label>
                 <select class="form-control" data-validation-engine="validate[required]"
                         data-bind="options: transients.allowedListTypes, optionsText:'name', optionsValue:'id', value: newSpeciesLists.listType, optionsCaption: 'Please select'"></select>
+            </div>
+            <div class="col-4">
+                <label>Licence</label>
+                <select class="form-control" data-validation-engine="validate[required]"
+                        data-bind="options: transients.allowedLicences, optionsText:'label', optionsValue:'value', value: newSpeciesLists.licence, optionsCaption: 'Please select'"></select>
             </div>
         </div>
 

@@ -3,6 +3,7 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.UtilService
+import au.org.ala.biocollect.merit.SpeciesService
 import grails.core.GrailsApplication
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse
 
 class ActivityService {
     static final BATCH_SIZE = 20
+    public static final List INCLUDE_LINKED_ENTITIES = ['outputs', 'site', 'documents']
 
     GrailsApplication grailsApplication
     WebService webService
@@ -264,7 +266,8 @@ class ActivityService {
     }
 
     /** @see au.org.ala.ecodata.ActivityController for a description of the criteria required. */
-    def search(criteria) {
+    def search(criteria, boolean isReporting = false) {
+        String pathPrefix = isReporting ? '/reporting' : ''
         def modifiedCriteria = new HashMap(criteria?:[:])
         // Convert dates to UTC format.
         criteria.each { key, value ->
@@ -273,7 +276,7 @@ class ActivityService {
             }
 
         }
-        webService.doPost(grailsApplication.config.ecodata.service.url+'/activity/search/', modifiedCriteria)
+        webService.doPost(grailsApplication.config.getProperty("ecodata.baseURL") + pathPrefix + '/activity/search/', modifiedCriteria)
     }
 
     def isReport(activity) {
@@ -456,12 +459,32 @@ class ActivityService {
     }
 
     def convertExcelToOutputData(String id, String type, def file){
-        def result =  webService.postMultipart(grailsApplication.config.ecodata.service.url + "/metadata/extractOutputDataFromActivityExcelTemplate", [pActivityId: id, type: type], file, 'data', true)
-        if (result.error) {
-            return result.details
+        webService.postMultipart(grailsApplication.config.ecodata.service.url + "/metadata/extractOutputDataFromActivityExcelTemplate", [pActivityId: id, type: type], file, 'data')
+    }
+
+    /**
+     * Get linked entities such as outputs, site and documents for a list of activities.
+     */
+    List<Map> addLinkedEntitiesToActivities(List<Map> activities) {
+        if (activities) {
+            List ids = activities.activityId
+            List<Map> linkedActivities = search([activityId: ids], true)?.resp?.activities
+            if (!linkedActivities) {
+                return activities
+            }
+
+            activities.each {activity ->
+                Map match = linkedActivities.find { activity.activityId == it.activityId }
+                if (match) {
+                    INCLUDE_LINKED_ENTITIES.each { String entity ->
+                        if (match[entity]) {
+                            activity[entity] = match[entity]
+                        }
+                    }
+                }
+            }
         }
-        else {
-            return result.content?.subMap('data')  ?: result
-        }
+
+        activities
     }
 }

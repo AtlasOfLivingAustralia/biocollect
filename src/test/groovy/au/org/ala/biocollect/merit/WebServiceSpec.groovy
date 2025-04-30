@@ -1,9 +1,7 @@
 package au.org.ala.biocollect.merit
 
-
-import grails.testing.spring.AutowiredTest
+import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
-
 /*
  * Copyright (C) 2022 Atlas of Living Australia
  * All Rights Reserved.
@@ -21,12 +19,7 @@ import spock.lang.Specification
  * Created by Temi on 15/2/22.
  */
 
-class WebServiceSpec extends Specification implements AutowiredTest {
-    Closure doWithSpring() {{ ->
-        service WebService
-    }}
-
-    WebService service
+class WebServiceSpec extends Specification implements ServiceUnitTest<WebService> {
 
     def "hub header must be added to URL connection"() {
         given:

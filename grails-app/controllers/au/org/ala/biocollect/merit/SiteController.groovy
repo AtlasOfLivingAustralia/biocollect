@@ -364,7 +364,7 @@ class SiteController {
 
             def result = siteService.uploadShapefile(f)
 
-            if (!result.error && result.content.size() > 1) {
+            if (org.springframework.http.HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
                 def content = result.content
                 def shapeFileId = content.remove('shp_id')
                 def firstShape = content["0"]
