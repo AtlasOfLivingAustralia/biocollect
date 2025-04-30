@@ -31,12 +31,8 @@ import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
-
 import javax.ws.rs.Produces
-
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST
-import static org.apache.http.HttpStatus.SC_OK
-import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
+import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
@@ -64,6 +60,7 @@ class BioActivityController {
 
     static int MAX_FLIMIT = 500
     static allowedMethods = ['bulkDelete': 'POST', bulkRelease: 'POST', bulkEmbargo: 'POST']
+    static responseFormats = ['json']
 
     /**
      * Update Activity by activityId or
@@ -1052,9 +1049,10 @@ class BioActivityController {
             }
         }
 
-        queryParams.max = queryParams.max ?: 10
+        queryParams.max = queryParams.getInt('max', 10)
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20
+        queryParams.includeLinkedEntities = queryParams.getBoolean('includeLinkedEntities', false)
         if(queryParams.flimit ==  "-1"){
             queryParams.flimit = MAX_FLIMIT;
             queryParams.max = 0;
@@ -1119,11 +1117,12 @@ class BioActivityController {
                     @Parameter(
                             name = "max",
                             in = ParameterIn.QUERY,
-                            description = "Maximum number of returned activities per page.",
+                            description = "Maximum number of returned activities per page. Maximum is 100.",
                             schema = @Schema(
                                     name = "max",
                                     type = "integer",
                                     minimum = "0",
+                                    maximum = "100",
                                     defaultValue = "10"
                             )
                     ),
@@ -1145,6 +1144,15 @@ class BioActivityController {
                             schema = @Schema(
                                     type = "string",
                                     allowableValues = ['myrecords', 'project', 'projectrecords', 'myprojectrecords', 'userprojectactivityrecords', 'allrecords', 'bulkimport']
+                            )
+                    ),
+                    @Parameter(
+                            name = "includeLinkedEntities",
+                            in = ParameterIn.QUERY,
+                            description = "Add associations to an activity such as outputs, site, documents, etc.",
+                            schema = @Schema(
+                                    type = "boolean",
+                                    defaultValue =  "false"
                             )
                     ),
                     @Parameter(
@@ -1224,6 +1232,7 @@ class BioActivityController {
     @Path("ws/bioactivity/search")
     def searchProjectActivities() {
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
+        queryParams.max = Math.min(queryParams.max, 100)
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
 
@@ -1234,8 +1243,12 @@ class BioActivityController {
             it.type == 'property'
         }
 
-        activities = activities?.collect {
-            Map doc = it._source
+        activities = activities?.collect { it._source }
+        if (queryParams.includeLinkedEntities) {
+            activityService.addLinkedEntitiesToActivities(activities)
+        }
+
+        activities = activities?.collect { doc ->
             if ( !userCanModerateForProjects.hasProperty ( doc.projectId ) ) {
                 userCanModerateForProjects[doc.projectId] = projectService.canUserModerateProjects(queryParams.userId, doc.projectId)
             }
@@ -1265,6 +1278,12 @@ class BioActivityController {
             ]
 
             activityService.addAdditionalProperties(additionalPropertyConfig, doc, result)
+            if (queryParams.includeLinkedEntities) {
+                ActivityService.INCLUDE_LINKED_ENTITIES.each { key ->
+                    result[key] = doc[key]
+                }
+            }
+
             result
         }
 
@@ -1582,15 +1601,16 @@ class BioActivityController {
         }
 
         if (pActivityId && type && file) {
-            def content = activityService.convertExcelToOutputData(pActivityId, type, file)
-            def status = SC_OK
-            if (content.error) {
-                status = SC_INTERNAL_SERVER_ERROR
+            def result = activityService.convertExcelToOutputData(pActivityId, type, file)
+            if (!org.springframework.http.HttpStatus.resolve(result.statusCode).is2xxSuccessful()) {
+                respond (result.resp, status: result.statusCode)
             }
-            render text: content as JSON, status: status
+            else {
+                respond (result.content?.subMap('data')  ?: result)
+            }
         }
         else {
-            render text: [message: "Missing required parameters - pActivityId, type & data (excel file)"] as JSON, status: SC_BAD_REQUEST
+            respond([message: "Missing required parameters - pActivityId, type & data (excel file)"], status: SC_BAD_REQUEST)
         }
     }
 

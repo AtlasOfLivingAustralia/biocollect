@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
 import org.springframework.web.multipart.MultipartFile
 
 import java.text.DateFormat
@@ -275,8 +276,8 @@ class MetadataService {
         def data = webService.postMultipart(url, params, file, 'data')
 
         def result
-        if (data.error || data.status != SC_OK) {
-            result = [status:data.status, error:data.error?:'No data was found that matched the columns in this table, please check the template you used to upload the data. ']
+        if (!HttpStatus.resolve(data.statusCode as int).is2xxSuccessful()) {
+            result = [status:data.statusCode, error:data.content ?: 'No data was found that matched the columns in this table, please check the template you used to upload the data. ']
         }
         else {
             result = [status:SC_OK, data:data.content.data]

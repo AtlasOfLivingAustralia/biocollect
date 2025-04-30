@@ -61,7 +61,7 @@
 </div>
 <div class="row-fluid large-space-after">
     <div class="span12">
-        <markdown:renderHtml>${description}</markdown:renderHtml>
+        <fc:markdownToHtml>${raw(description)}</fc:markdownToHtml>
     </div>
 </div>
 

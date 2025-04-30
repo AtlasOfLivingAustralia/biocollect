@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; static au.org.ala.biocollect.MarkdownUtils.markdownToHtmlAndSanitise" contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
@@ -377,8 +377,8 @@
             });
 
             var project = <fc:modelAsJavascript model="${project}"/>;
-            var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
-            var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+            var newsAndEventsMarkdown = '${markdownToHtmlAndSanitise(project.newsAndEvents?:"")?.encodeAsJavaScript()}';
+            var projectStoriesMarkdown = '${markdownToHtmlAndSanitise(project.projectStories?:"")?.encodeAsJavaScript()}';
             var viewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
 
             viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);

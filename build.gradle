@@ -22,7 +22,6 @@ plugins {
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
 }
 
-
 version "$biocollectVersion"
 group "au.org.ala"
 
@@ -41,6 +40,8 @@ if (Boolean.valueOf(enableClover)) {
 }
 apply from: "${project.projectDir}/gradle/publish.gradle"
 
+sourceCompatibility = '11'
+targetCompatibility = '17'
 repositories {
     mavenLocal()
     //for missing jai_core.jar
@@ -96,6 +97,11 @@ dependencies {
     implementation "org.grails:grails-async-gpars"
     implementation "org.grails.plugins:scaffolding"
     profile "org.grails.profiles:web"
+    implementation "com.nimbusds:nimbus-jose-jwt:9.40"
+    implementation ("org.grails.plugins:ala-auth:$alaSecurityLibsVersion")
+    implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
+    implementation ("org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion")
+    implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
     implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
     implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
@@ -125,8 +131,9 @@ dependencies {
     implementation 'org.grails.plugins:grails-google-visualization:2.2.1'
     implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
     implementation 'org.grails.plugins:mail:2.0.0.RC6'
+    implementation "org.commonmark:commonmark:0.24.0"
+    implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20240325.1"
 
-    implementation 'org.grails.plugins:grails-markdown:3.0.0'
     implementation 'org.grails.plugins:grails-cookie:2.0.3'
 //    implementation 'org.grails.plugins:cache:5.0.0.RC1'
 
@@ -140,12 +147,7 @@ dependencies {
     implementation 'org.apache.poi:poi:4.1.2'
     implementation 'org.apache.poi:poi-ooxml:4.1.2'
     implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
-
     implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
-    implementation ("org.grails.plugins:ala-auth:$alaSecurityLibsVersion")
-    implementation ("org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion")
-    implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
-    implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
     runtimeOnly "org.grails.plugins:ala-bootstrap3:4.4.0"
 
     //    swagger API
@@ -157,16 +159,13 @@ dependencies {
     runtimeOnly 'com.bertramlabs.plugins:less-asset-pipeline:3.3.1'
     implementation 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
     implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
-    implementation "com.nimbusds:nimbus-jose-jwt:9.25.6"
-    implementation "io.jsonwebtoken:jjwt-impl:0.11.5"
-    implementation "io.jsonwebtoken:jjwt-jackson:0.11.5"
-    implementation "io.jsonwebtoken:jjwt-api:0.11.5"
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:7.2-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:8.0"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
+    testImplementation "org.pac4j:pac4j-jwt:5.4.3"
     testImplementation "org.grails:grails-gorm-testing-support"
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.grails:grails-web-testing-support"
