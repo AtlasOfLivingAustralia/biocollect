@@ -156,14 +156,13 @@
                             </p>
                         </div>
                     </div>
-                    <g:if test="${!mobile}">
+                    <g:if test="${!mobile && !hubConfig?.content?.hideProjectGettingStartedButton}">
                         <div class="row mt-3">
                             <div id="surveyLink" class="col-12 d-flex justify-content-center" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb()) && projectType() == 'survey' ">
                                 <a class="btn btn-primary-dark btn-lg" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><i class="fas fa-play"></i> <g:message code="project.display.join" /></a>
                             </div>
                         </div>
                     </g:if>
-
                 </div>
                 </div>
             </div>
