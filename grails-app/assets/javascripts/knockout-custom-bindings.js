@@ -1194,3 +1194,43 @@ ko.bindingHandlers.i18n = {
         }
     }
 }
+
+ko.bindingHandlers.ckeditor = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var options = ko.bindingHandlers.ckeditor.options,
+            bindingOptions = {},
+            value = ko.unwrap(valueAccessor()),
+            ckeditor, data;
+        if (typeof value === 'object') {
+            data = value.data;
+            delete value.data;
+            bindingOptions = value;
+        }
+        else if (typeof value === 'string') {
+            data = value;
+        }
+
+        options = ko.utils.extend(options, bindingOptions);
+        CKEDITOR.ClassicEditor.create(element, options).then(function (editor) {
+            editor.setData(data);
+            ckeditor = element.editor = editor;
+        });
+    },
+    options: {
+        licenseKey: "GPL",
+        plugins: [ CKEDITOR.Essentials, CKEDITOR.Bold, CKEDITOR.Italic, CKEDITOR.Paragraph, CKEDITOR.Font,
+            CKEDITOR.Alignment, CKEDITOR.RemoveFormat, CKEDITOR.Heading, CKEDITOR.Fullscreen, CKEDITOR.HorizontalLine,
+            CKEDITOR.Link, CKEDITOR.AutoLink, CKEDITOR.List, CKEDITOR.Table, CKEDITOR.TableToolbar, CKEDITOR.ShowBlocks,
+            CKEDITOR.PasteFromOffice, CKEDITOR.List, CKEDITOR.Indent, CKEDITOR.SourceEditing, CKEDITOR.Subscript, CKEDITOR.BlockQuote, CKEDITOR.Superscript, CKEDITOR.Strikethrough, CKEDITOR.Underline,
+        ],
+        toolbar: [
+            'undo', 'redo', '|', 'heading' , '|', 'bold', 'italic', 'underline', 'strikethrough', 'subscript',
+            'superscript', 'removeFormat', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', 'alignment', '|', 'link', 'blockQuote',
+            'insertTable', 'horizontalLine', '|', 'fontSize', 'fontColor', 'fontBackgroundColor', '|', 'showBlocks',
+            'sourceEditing', 'fullscreen' , '|'
+        ],
+        table: {
+            contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+        }
+    }
+}

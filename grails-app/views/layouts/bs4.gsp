@@ -104,6 +104,21 @@
                         </div>
                     </div>
                 </g:if>
+                <g:set var="introText"><config:getIntroductoryText links="${hubConfig.templateConfiguration?.header?.links}" /></g:set>
+
+                <g:if test="${introText}">
+                <div id="introBar" class="my-5">
+                    <div class="container-fluid">
+                        <div class="row d-flex intro-row">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <div>
+                                    ${raw(introText)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </g:if>
                 <div id="titleBar">
                     <div class="container-fluid">
                         <div class="row d-flex title-row">
