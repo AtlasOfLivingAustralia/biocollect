@@ -478,6 +478,7 @@ var TemplateConfigurationViewModel = function (config) {
 function ContentViewModel(config) {
     var self = this;
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
+    self.nespFavicon = ko.observable(config.nespFavicon || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
     self.hideNewButtonOnRecordView = ko.observable(config.hideNewButtonOnRecordView || false);

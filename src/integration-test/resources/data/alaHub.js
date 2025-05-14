@@ -111,6 +111,7 @@ var alaHub = {
         "hideProjectFinderNoImagePlaceholderTile" : false,
         "hideProjectSurveyDownloadXLSX" : false,
         "hideBreadCrumbs" : false,
+        "nespFavicon" : false,
         "hideCancelButtonOnForm" : false,
         "hideNewButtonOnRecordView" : false,
         "industries" : true,

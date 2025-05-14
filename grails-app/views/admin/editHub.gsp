@@ -414,7 +414,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: nespFavicon"> Use NESP favicon
+                </div>
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
