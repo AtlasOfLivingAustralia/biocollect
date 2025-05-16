@@ -326,6 +326,10 @@ function ProjectViewModel(project, isUserEditor) {
         return new FundingViewModel(funding)})
     self.fundings = ko.observableArray(fundings);
 
+    self.nespRaid = ko.observable(project.nespRaid);
+    self.nespCategory = ko.observable(project.nespCategory);
+    self.nespNationalScale = ko.observable(project.nespNationalScale);
+
     self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
     self.funding = ko.computed(function(){
         var total = 0;
@@ -817,6 +821,9 @@ function ProjectViewModel(project, isUserEditor) {
             })
         }
     }
+
+    self.transients.nespCategories = [ "Category 1", "Category 2", "Category 3" ];
+    self.transients.nespNationalScaleLevels = [ "Scale 1", "Scale 2", "Scale 3" ];
 
     /**
      * Remove a selected UN region
