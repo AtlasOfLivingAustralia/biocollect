@@ -116,6 +116,7 @@ var alaHub = {
         "hideNewButtonOnRecordView" : false,
         "industries" : true,
         "enablePartialSearch" : false,
+        "hideNespMetada" : false,
         "overriddenLabels" : [
             {
                 "notes" : "This text is generated dynamically. XXXX, YYYY & ZZZZ are replaced with dynamically generated content.",

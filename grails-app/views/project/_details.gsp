@@ -741,6 +741,26 @@
                             data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdSvcProvider, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
+            <g:if test="${!hubConfig?.content?.hideNespMetada}">
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="name"><g:message code="project.details.nespRaid"/></label>
+                    <div class="col-md-8">
+                        <g:textField class="form-control" name="name" data-bind="value:nespRaid" data-validation-engine="validate[required]"/>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="name"><g:message code="project.details.nespCategory"/></label>
+                    <div class="col-md-4">
+                        <select class="form-control" data-bind="value:nespCategory, options:transients.nespCategories, optionsCaption:'Select...'"></select>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="name"><g:message code="project.details.nespNationalScale"/></label>
+                    <div class="col-md-4">
+                        <select class="form-control" data-bind="value:nespNationalScale, options:transients.nespNationalScaleLevels, optionsCaption:'Select...'"></select>
+                    </div>
+                </div>
+            </g:if>
         </div>
     </div>
 

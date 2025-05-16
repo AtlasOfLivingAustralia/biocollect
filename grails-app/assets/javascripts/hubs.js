@@ -503,6 +503,7 @@ function ContentViewModel(config) {
     self.hideProjectSurveyDownloadXLSX = ko.observable(config.hideProjectSurveyDownloadXLSX || false);
     self.enablePartialSearch = ko.observable(config.enablePartialSearch || false);
     self.overriddenLabels = ko.observableArray();
+    self.hideNespMetada = ko.observable(config.hideNespMetada || false);
     self.load(config);
 }
 

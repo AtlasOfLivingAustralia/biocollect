@@ -302,6 +302,28 @@
                                 <!-- /ko -->
                             </div>
                         </div>
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <!-- ko if:nespRaid -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading"><g:message code="project.details.nespRaidView" /></h4>
+                                    <p data-bind="text:nespRaid"></p>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:nespCategory -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading"><g:message code="project.details.nespCategoryView" /></h4>
+                                    <p data-bind="text:nespCategory"></p>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:nespNationalScale -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading"><g:message code="project.details.nespNationalScaleView" /></h4>
+                                    <p data-bind="text:nespNationalScale"></p>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
