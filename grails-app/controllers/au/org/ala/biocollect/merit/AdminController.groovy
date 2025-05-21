@@ -466,6 +466,9 @@ class AdminController {
                 else if (savedDoc.role == 'footerlogo') {
                     logo.url = savedDoc.url
                 }
+                else if (savedDoc.role == 'faviconlogo') {
+                    logo.url = savedDoc.url
+                }
             }
 
         }
