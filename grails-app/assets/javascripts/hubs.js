@@ -101,6 +101,7 @@ var HubSettings = function (settings, config) {
     self.homePagePath = ko.observable();
     self.bannerUrl = ko.observable();
     self.logoUrl = ko.observable();
+    self.faviconlogoUrl = ko.observable();
     self.documents = ko.observableArray();
     self.defaultProgram = ko.observable();
     self.templateConfiguration = ko.observable();
@@ -161,6 +162,9 @@ var HubSettings = function (settings, config) {
             else if (document.role == 'logo') {
                 self.logoUrl(document.url);
             }
+            else if (document.role == 'faviconlogo') {
+                self.faviconlogoUrl(document.url);
+            }
         });
     });
 
@@ -172,6 +176,12 @@ var HubSettings = function (settings, config) {
 
     self.removeBanner = function () {
         var document = findDocumentByRole(self.documents(), 'logo');
+        self.documents.remove(document);
+    };
+
+    self.removeFaviconlogo = function () {
+        self.faviconlogoUrl(null);
+        var document = findDocumentByRole(self.documents(), 'faviconlogo');
         self.documents.remove(document);
     };
 
@@ -242,6 +252,7 @@ var HubSettings = function (settings, config) {
         self.defaultProgram(settings.defaultProgram);
         self.bannerUrl(self.orBlank(settings.bannerUrl));
         self.logoUrl(self.orBlank(settings.logoUrl));
+        self.faviconlogoUrl(self.orBlank(settings.faviconlogoUrl));
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
         self.content(new ContentViewModel(settings.content || {}));
