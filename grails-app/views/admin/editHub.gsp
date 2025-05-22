@@ -409,11 +409,9 @@
                 <div class="row">
                     <div class="col-6">
                         <img data-bind="visible:faviconlogoUrl(), attr:{src:faviconlogoUrl}">
-%{--                        <img data-bind="visible: url, attr:{src:url}">--}%
                     </div>
                     <div class="offset-4 col-2">
-                        <button type="button" class="btn  btn-sm btn-danger" data-bind="visible:faviconlogoUrl(), click:removeFaviconlogo"><i class="far fa-trash-alt"></i> Remove Favicon Logo</button>
-%{--                        <button type="button" class="btn btn-sm btn-danger" data-bind="visible:$data, click:remove"><i class="far fa-trash-alt"></i> Remove Favicon</button>--}%
+                        <button type="button" class="btn  btn-sm btn-danger" data-bind="visible:faviconlogoUrl(), click:removeFaviconlogo"><i class="far fa-trash-alt"></i> Remove Favicon</button>
                         <span class="btn fileinput-button float-right btn-dark"
                               data-url="${createLink(controller: 'image', action:'upload')}"
                               data-role="faviconlogo"
