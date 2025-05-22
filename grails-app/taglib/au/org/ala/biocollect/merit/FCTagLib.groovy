@@ -658,7 +658,7 @@ class FCTagLib {
         if(attrs.key){
             def content = settingService.getSettingText(attrs.key) as String
             if (content) {
-                out << content.markdownToHtml()
+                out << MarkdownUtils.markdownToHtml(content)
             }
         }
     }
