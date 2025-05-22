@@ -467,7 +467,7 @@ class AdminController {
                     logo.url = savedDoc.url
                 }
                 else if (savedDoc.role == 'faviconlogo') {
-                    logo.url = savedDoc.url
+                    json.faviconlogoUrl = savedDoc.url
                 }
             }
 
