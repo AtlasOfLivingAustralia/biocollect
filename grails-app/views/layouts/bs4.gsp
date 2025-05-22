@@ -9,8 +9,8 @@
     <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <title><g:layoutTitle/></title>
     <g:if test="${hubConfig?.content?.nespFavicon}">
-        <link rel="icon" href="${asset.assetPath(src: 'mdba/NESP favicon.png')}" sizes="32x32" type="image/png"/>
-        <link rel="icon" href="${asset.assetPath(src: 'mdba/NESP favicon.png')}" sizes="192x192" type="image/png"/>
+        <link rel="icon" href="${hubConfig.faviconlogoUrl}" sizes="32x32" type="image/png"/>
+        <link rel="icon" href="${hubConfig.faviconlogoUrl}" sizes="192x192" type="image/png"/>
     </g:if>
     <g:else>
         <link rel="icon" href="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png" sizes="32x32" />
