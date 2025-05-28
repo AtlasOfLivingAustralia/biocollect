@@ -506,12 +506,13 @@ class ProjectService {
             isAdmin = true
         }
 
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProjects?projectIds=${projectId}&userId=${userId}"
-        response = webService.getJson(url)
+        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProjects"
+        Map params = [projectIds:projectId,userId:userId]
+        response = webService.postMultipart(url, params, new ByteArrayInputStream(new byte[0]), "application/octet-stream", "empty.file")
 
-        if (!response.containsKey('error')) {
+        if (HttpStatus.resolve(response.statusCode as int).is2xxSuccessful()) {
             if (isAdmin) {
-                response?.each { key, value ->
+                response?.content?.each { key, value ->
                     if (value != null) {
                         permissions[key] = true
                     } else {
@@ -519,7 +520,7 @@ class ProjectService {
                     }
                 }
             } else {
-                permissions = response;
+                permissions = response.content;
             }
         }
         else {
