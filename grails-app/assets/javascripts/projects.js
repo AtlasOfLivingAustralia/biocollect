@@ -822,8 +822,8 @@ function ProjectViewModel(project, isUserEditor) {
         }
     }
 
-    self.transients.nespCategories = [ "Category 1", "Category 2", "Category 3" ];
-    self.transients.nespNationalScaleLevels = [ "Scale 1", "Scale 2", "Scale 3" ];
+    self.transients.nespCategories = [ "Category 1: Indigenous-led", "Category 2: Co-design", "Category 3: Communicate", "N/A"];
+    self.transients.nespNationalScaleLevels = [ "Yes", "No"];
 
     /**
      * Remove a selected UN region
