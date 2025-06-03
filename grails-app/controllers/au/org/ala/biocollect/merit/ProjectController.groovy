@@ -1036,7 +1036,7 @@ class ProjectController {
             downloadParams.offset=0
             downloadParams.downloadUrl = g.createLink(controller:'download', action:'downloadProjectDataFile', absolute: true)+'/'
             searchService.addDefaultFacetQuery(downloadParams)
-            downloadUrl += "?"+commonService.buildUrlParamsFromMap(downloadParams)
+            downloadUrl += commonService.buildUrlParamsFromMap(downloadParams)
             Map resp = webService.doPostWithParams(downloadUrl, [:])
             render resp as JSON
         }
