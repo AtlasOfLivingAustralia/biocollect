@@ -22,10 +22,11 @@ class CommonService {
         if (!map) return ''
         def params = '?'
         map.eachWithIndex { k,v,i ->
-            def vL = [v].flatten().findAll { it != null } // String[] and String both converted to List
-            params += (i?'&':'') + k + '=' + vL.collect { URLEncoder.encode(String.valueOf(it), "UTF-8") }.join("&${k}=")
+            def encodedKey = URLEncoder.encode(String.valueOf(k), "UTF-8")
+            def vL = [v].flatten().findAll { it != null }
+            params += (i ? '&' : '') + vL.collect { encodedKey + '=' + URLEncoder.encode(String.valueOf(it), "UTF-8") }.join('&')
         }
-        params
+        return params
     }
 
     def simpleDateLocalTime(String dateStr) {
