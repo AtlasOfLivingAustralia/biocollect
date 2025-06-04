@@ -1028,22 +1028,24 @@ class ProjectController {
         if (userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
 
             String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
-            params.fq = params.getList('fq[]')
-            GrailsParameterMap downloadParams = buildProjectSearch(params)
 
-            downloadParams.reportType="works"
-            downloadParams.max=1000
-            downloadParams.offset=0
-            downloadParams.downloadUrl = g.createLink(controller:'download', action:'downloadProjectDataFile', absolute: true)+'/'
+            params.fq = params.getList('fq') ?: params.getList('fq[]')
+
+            GrailsParameterMap downloadParams = buildProjectSearch(params)
+            downloadParams.reportType = "works"
+            downloadParams.max = 1000
+            downloadParams.offset = 0
+            downloadParams.downloadUrl = g.createLink(controller: 'download', action: 'downloadProjectDataFile', absolute: true) + '/'
+
             searchService.addDefaultFacetQuery(downloadParams)
+
             downloadUrl += commonService.buildUrlParamsFromMap(downloadParams)
+
             Map resp = webService.doPostWithParams(downloadUrl, [:])
             render resp as JSON
+        } else {
+            render status: 401, text: "Unauthorized"
         }
-        else {
-            render status:401, text: "Unauthorized"
-        }
-
     }
 
     /**
