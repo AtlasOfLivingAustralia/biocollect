@@ -126,7 +126,7 @@
                               data-owner-type="hubId"
                               data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents, visible:!faviconlogoUrl()">
                             <i class="fas fa-file-upload"></i>
-                            <input id="faviconlogo" type="file" name="files">
+                            <input id="faviconlogo" type="file" name="files" accept="image/png">
                             <span>Attach Favicon Logo</span>
                         </span>
                     </div>
