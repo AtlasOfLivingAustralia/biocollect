@@ -22,7 +22,7 @@
             <h2 class="my-2" data-bind="text:transients.truncatedName"></h2>
         </a>
         <g:if test="${controllerName != 'organisation'}">
-            <g:if test="${hubConfig?.content?.enableOrganisationHyperlink != true}">
+            <g:if test="${hubConfig?.content?.disableOrganisationHyperlink != true}">
                 <h6 class="mb-2" data-bind="text:transients.truncatedOrganisationName"></h6>
             </g:if>
             <g:else>
