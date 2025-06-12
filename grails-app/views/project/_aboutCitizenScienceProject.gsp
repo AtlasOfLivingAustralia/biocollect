@@ -34,6 +34,34 @@
                 </div>
             </div>
         </div>
+
+        <g:if test="${projectSite?.extent?.geometry}">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-auto">
+                            <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4"></i></h2>
+                        </div>
+                        <div class="col-11">
+                            <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
+                                <h2 class="p-0 mb-0">
+                                    ${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse" id="cs-about-section4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <m:map id="projectSiteMap" width="100%" height="512px"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </g:if>
+
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -55,6 +83,94 @@
             </div>
             <div class="collapse" id="cs-about-section2">
                 <div class="card-body">
+
+                    <!-- from - Other information-->
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <g:if test="${hubConfig?.content?.hideProjectAboutOriginallyRegistered != true}">
+                                    <div class="col-12">
+                                        <!-- ko if: origin -->
+                                        <h4><g:message code="project.display.origin" /></h4>
+                                        <p class="text-small-heading"> <!-- ko text:origin --> <!-- /ko --></p>
+                                        <!-- /ko -->
+                                    </div>
+                                </g:if>
+                                <g:if test="${hubConfig?.content?.hideProjectAboutParticipateInProject != true}">
+                                    <div class="col-12">
+                                        <!-- ko if: countries().length -->
+                                        <h4 class="text-small-heading">
+                                            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
+                                                <g:message code="project.display.countries.ecoscience" />
+                                            </g:if>
+                                            <g:else>
+                                                <g:message code="project.display.countries.citizenscience" />
+                                            </g:else>
+                                        </h4>
+                                        <p data-bind="text:countries().join(', ')"></p>
+                                        <!-- /ko -->
+                                    </div>
+                                </g:if>
+                            <!-- ko if:associatedProgram -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}uiyu</h4>
+                                    <p data-bind="text:associatedProgram"></p>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:associatedSubProgram -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}fghfg</h4>
+                                    <span data-bind="text:associatedSubProgram"></span>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <!-- ko if:isBushfire() -->
+                                <div class="col-12">
+                                    <div class="alert alert-success">
+                                        <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!--  ko if: bushfireCategories().length -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading"><g:message code="project.display.bushfireCategories"/></h4>
+                                    <p data-bind="text:bushfireCategories().join(', ')"></p>
+                                </div>
+                            <!-- /ko -->
+                                <g:if test="${hubConfig?.content?.hideProjectAboutUNRegions != true}">
+                                    <!-- ko if: uNRegions().length -->
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.display.unregions" /></h4>
+                                        <p data-bind="text:uNRegions().join(', ')"></p>
+                                    </div>
+                                    <!-- /ko -->
+                                </g:if>
+                            <!-- ko if: logoAttributionText() || mainImageAttributionText() -->
+                                <div class="col-12">
+                                    <h4 class="text-small-heading">Image credits</h4>
+                                    <p class="image-attribution-panel">
+                                        <span data-bind="visible: logoAttributionText()">Logo: <span data-bind="text: logoAttributionText()"></span>;&nbsp;</span>
+                                        <span data-bind="visible: mainImageAttributionText()">Feature image: <span data-bind="text: mainImageAttributionText()"></span></span>
+                                    </p>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- from - This project is run in association with-->
+                    <!-- ko if:associatedOrgs().length > 0 -->
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <h4 class="text-small-heading">This project is run in assocation with</h4>
+                            <div class="card-body" data-bind="template:{name:'associated-orgs'}"></div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+
                     <div class="row">
                         <div class="col-12 col-md-8">
                             <!-- ko if: getInvolved -->
@@ -143,7 +259,11 @@
                             <!-- /ko -->
                             %{-- TODO END--}%
                         </div>
+                        <div class="col-12 col-md-4">
+
+                        </div>
                     </div>
+
                     <hr id="hrGetStartedMobileAppTag" data-bind="visible: transients.checkVisibility('#contentGetStartedMobileAppTag', '#hrGetStartedMobileAppTag')" />
                     <div id="contentGetStartedMobileAppTag">
                     <div class="row">
@@ -156,175 +276,14 @@
                             </p>
                         </div>
                     </div>
-                    <g:if test="${!mobile}">
+                    <g:if test="${!mobile && !hubConfig?.content?.hideProjectGettingStartedButton}">
                         <div class="row mt-3">
                             <div id="surveyLink" class="col-12 d-flex justify-content-center" data-bind="visible:transients.daysRemaining() != 0 && (!isExternal() || urlWeb()) && projectType() == 'survey' ">
                                 <a class="btn btn-primary-dark btn-lg" data-bind="showTabOrRedirect: { url: isExternal() ? urlWeb() : '', tabId: '#activities-tab'}"><i class="fas fa-play"></i> <g:message code="project.display.join" /></a>
                             </div>
                         </div>
                     </g:if>
-
                 </div>
-                </div>
-            </div>
-        </div>
-    <g:if test="${projectSite?.extent?.geometry}">
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto">
-                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4"></i></h2>
-                    </div>
-                    <div class="col-11">
-                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
-                            <h2 class="p-0 mb-0">
-                                ${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="collapse" id="cs-about-section4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12">
-                            <m:map id="projectSiteMap" width="100%" height="512px"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </g:if>
-    <!-- ko if:associatedOrgs().length > 0 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto">
-                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section3" aria-expanded="false" aria-controls="cs-about-section3"></i></h2>
-                    </div>
-                    <div class="col-11">
-                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section3" aria-expanded="false" aria-controls="cs-about-section3">
-                            <h2 class="p-0 mb-0"><g:message code="project.display.associatedOrgs"/></h2>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="collapse" id="cs-about-section3">
-                <div class="card-body" data-bind="template:{name:'associated-orgs'}"></div>
-            </div>
-        </div>
-    <!-- /ko -->
-        <div class="card">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-auto">
-                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section5" aria-expanded="false" aria-controls="cs-about-section5"></i></h2>
-                    </div>
-                    <div class="col-11">
-                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section5" aria-expanded="false" aria-controls="cs-about-section5">
-                            <h2 class="p-0 mb-0"><g:message code="project.display.other"/></h2>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="collapse" id="cs-about-section5">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="row">
-                                <g:if test="${hubConfig?.content?.hideProjectAboutOriginallyRegistered != true}">
-                                    <div class="col-12">
-                                        <!-- ko if: origin -->
-                                        <h4><g:message code="project.display.origin" /></h4>
-                                        <p class="text-small-heading"> <!-- ko text:origin --> <!-- /ko --></p>
-                                        <!-- /ko -->
-                                    </div>
-                                </g:if>
-                                <g:if test="${hubConfig?.content?.hideProjectAboutParticipateInProject != true}">
-                                    <div class="col-12">
-                                        <!-- ko if: countries().length -->
-                                        <h4 class="text-small-heading">
-                                            <g:if test="${hubConfig.defaultFacetQuery.contains('isEcoScience:true')}">
-                                                <g:message code="project.display.countries.ecoscience" />
-                                            </g:if>
-                                            <g:else>
-                                                <g:message code="project.display.countries.citizenscience" />
-                                            </g:else>
-                                        </h4>
-                                        <p data-bind="text:countries().join(', ')"></p>
-                                        <!-- /ko -->
-                                    </div>
-                                </g:if>
-                                <!-- ko if:associatedProgram -->
-                                <div class="col-12">
-                                    <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
-                                    <p data-bind="text:associatedProgram"></p>
-                                </div>
-                                <!-- /ko -->
-                                <!-- ko if:associatedSubProgram -->
-                                <div class="col-12">
-                                    <h4 class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
-                                    <span data-bind="text:associatedSubProgram"></span>
-                                </div>
-                                <!-- /ko -->
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="row">
-                                <!-- ko if:isBushfire() -->
-                                <div class="col-12">
-                                    <div class="alert alert-success">
-                                        <span class="fa fa-fire"></span> <g:message code="project.bushfireInfo"/>
-                                    </div>
-                                </div>
-                                <!-- /ko -->
-                                <!--  ko if: bushfireCategories().length -->
-                                <div class="col-12">
-                                    <h4 class="text-small-heading"><g:message code="project.display.bushfireCategories"/></h4>
-                                    <p data-bind="text:bushfireCategories().join(', ')"></p>
-                                </div>
-                                <!-- /ko -->
-                                <g:if test="${hubConfig?.content?.hideProjectAboutUNRegions != true}">
-                                    <!-- ko if: uNRegions().length -->
-                                    <div class="col-12">
-                                        <h4 class="text-small-heading"><g:message code="project.display.unregions" /></h4>
-                                        <p data-bind="text:uNRegions().join(', ')"></p>
-                                    </div>
-                                    <!-- /ko -->
-                                </g:if>
-                                <!-- ko if: logoAttributionText() || mainImageAttributionText() -->
-                                <div class="col-12">
-                                    <h4 class="text-small-heading">Image credits</h4>
-                                    <p class="image-attribution-panel">
-                                        <span data-bind="visible: logoAttributionText()">Logo: <span data-bind="text: logoAttributionText()"></span>;&nbsp;</span>
-                                        <span data-bind="visible: mainImageAttributionText()">Feature image: <span data-bind="text: mainImageAttributionText()"></span></span>
-                                    </p>
-                                </div>
-                                <!-- /ko -->
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="row">
-                                <!-- ko if:nespRaid -->
-                                <div class="col-12">
-                                    <h4 class="text-small-heading"><g:message code="project.details.nespRaidView" /></h4>
-                                    <p data-bind="text:nespRaid"></p>
-                                </div>
-                                <!-- /ko -->
-                                <!-- ko if:nespCategory -->
-                                <div class="col-12">
-                                    <h4 class="text-small-heading"><g:message code="project.details.nespCategoryView" /></h4>
-                                    <p data-bind="text:nespCategory"></p>
-                                </div>
-                                <!-- /ko -->
-                                <!-- ko if:nespNationalScale -->
-                                <div class="col-12">
-                                    <h4 class="text-small-heading"><g:message code="project.details.nespNationalScaleView" /></h4>
-                                    <p data-bind="text:nespNationalScale"></p>
-                                </div>
-                                <!-- /ko -->
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
