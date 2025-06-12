@@ -117,6 +117,7 @@ var alaHub = {
         "industries" : true,
         "enablePartialSearch" : false,
         "hideProjectGettingStartedButton" : false,
+        "disableOrganisationHyperlink" : false,
         "overriddenLabels" : [
             {
                 "notes" : "This text is generated dynamically. XXXX, YYYY & ZZZZ are replaced with dynamically generated content.",
