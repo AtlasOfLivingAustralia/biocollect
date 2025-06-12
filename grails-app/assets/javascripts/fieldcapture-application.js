@@ -903,6 +903,11 @@ function Documents() {
         return bannerDocument ? bannerDocument.url : null;
     });
 
+    self.faviconlogoUrl = ko.pureComputed(function() {
+        var faviconDocument = self.findDocumentByRole(self.documents(), 'favicon');
+        return faviconDocument ? faviconDocument.url : null;
+    });
+
     self.asBackgroundImage = function(url) {
         return url ? 'url('+url+')' : null;
     };
@@ -969,7 +974,7 @@ function Documents() {
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
         'roleFilterFieldOptions', 'roleFilterField', 'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
-        'mainImageAttributionText', 'logoAttributionText'];
+        'mainImageAttributionText', 'logoAttributionText', 'faviconlogoUrl'];
 
 }
 
