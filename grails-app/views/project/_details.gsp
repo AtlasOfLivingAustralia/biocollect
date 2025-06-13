@@ -455,7 +455,60 @@
                             </div>
                     </div>
                 </g:if>
+                <g:if test="${hubConfig.content?.showIndigenousCulturalIPMetadata}">
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="indigenousCulturalIP"><g:message
+                            code="project.details.indigenousCulturalIP"/><fc:iconHelp><g:message
+                            code="project.details.indigenousCulturalIP.help"/></fc:iconHelp><i class="req-field"></i></label>
 
+                    <div class="col-md-8">
+                        <select class="form-control" id="indigenousCulturalIP"
+                                data-bind="value:customMetadata.indigenousCulturalIP" data-validation-engine="validate[required]">
+                            <option value="">Please Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Not Applicable">Not Applicable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="ethicsApproval"><g:message
+                            code="project.details.ethicsApproval"/></label>
+
+                    <div class="col-md-8">
+                        <select class="form-control" id="ethicsApproval"
+                                data-bind="value:customMetadata.ethicsApproval">
+                            <option value="">Please Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Exempt">Exempt</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="ethicsNumber"><g:message
+                            code="project.details.ethicsNumber"/></label>
+
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" id="ethicsNumber"
+                               data-bind="value:customMetadata.ethicsApprovalNumber"
+                               placeholder="Ethics Approval Number  (if available)"/>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="ethicsContact"><g:message
+                            code="project.details.ethicsContact"/></label>
+
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" id="ethicsContact"
+                               data-bind="value:customMetadata.ethicsContactDetails"
+                               placeholder="Ethics office contact details (if available)"/>
+                    </div>
+                </div>
+                </g:if>
 
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="bushfire"><g:message
