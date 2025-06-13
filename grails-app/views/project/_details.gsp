@@ -794,23 +794,35 @@
                             data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdSvcProvider, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
-            <g:if test="${!hubConfig?.content?.hideNespMetada}">
+            <g:if test="${hubConfig.content?.showNespMetada}">
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="name"><g:message code="project.details.nespRaid"/></label>
                     <div class="col-md-8">
-                        <g:textField class="form-control" name="name" data-bind="value:nespRaid" data-validation-engine="validate[required]"/>
+                        <g:textField class="form-control" name="name" data-bind="value:customMetadata.raid"/>
                     </div>
                 </div>
                 <div class="row form-group">
-                    <label class="col-from-label col-md-4" for="name"><g:message code="project.details.nespCategory"/></label>
-                    <div class="col-md-4">
-                        <select class="form-control" data-bind="value:nespCategory, options:transients.nespCategories, optionsCaption:'Select...'"></select>
+                    <label class="col-from-label col-md-4" for="category"><g:message
+                            code="project.details.nespCategory"/></label>
+                    <div class="col-md-8">
+                        <select class="form-control" id="category"
+                                data-bind="value:customMetadata.category" data-validation-engine="validate[required]">
+                            <option value="">Please Select</option>
+                            <option value="Category 1: Indigenous-led">Category 1: Indigenous-led</option>
+                            <option value="Category 2: Co-design">Category 2: Co-design</option>
+                            <option value="Category 3: Communicate">Category 3: Communicate</option>
+                            <option value="Not Applicable">Not Applicable</option>
+                        </select>
                     </div>
                 </div>
+
                 <div class="row form-group">
-                    <label class="col-from-label col-md-4" for="name"><g:message code="project.details.nespNationalScale"/></label>
-                    <div class="col-md-4">
-                        <select class="form-control" data-bind="value:nespNationalScale, options:transients.nespNationalScaleLevels, optionsCaption:'Select...'"></select>
+                    <label class="col-from-label col-md-4" for="nationwide"><g:message
+                            code="project.details.nespNationalScale"/></label>
+
+                    <div class="col-md-8">
+                        <select class="form-control" id="nationwide"
+                                data-bind="booleanValue:geographicInfo.nationwide, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select>
                     </div>
                 </div>
             </g:if>

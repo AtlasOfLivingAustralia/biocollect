@@ -484,7 +484,7 @@
                     <input type="checkbox" data-bind="checked: hideProjectEditScienceTypes"> Hide 'Science types' (Edit page)
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: hideNespMetada"> Hide 'NESP Metadata' (Edit page)
+                    <input type="checkbox" data-bind="checked: showNespMetada"> Show 'NESP Metadata' (Edit page)
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectAboutUNRegions"> Hide 'UN Regions'

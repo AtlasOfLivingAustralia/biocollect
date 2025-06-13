@@ -116,7 +116,6 @@ var alaHub = {
         "hideNewButtonOnRecordView" : false,
         "industries" : true,
         "enablePartialSearch" : false,
-        "hideNespMetada" : false,
         "hideProjectGettingStartedButton" : false,
         "disableOrganisationHyperlink" : false,
         "overriddenLabels" : [
