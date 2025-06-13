@@ -517,7 +517,7 @@ function ContentViewModel(config) {
     self.hideProjectGettingStartedButton = ko.observable(config.hideProjectGettingStartedButton || false);
     self.showIndigenousCulturalIPMetadata = ko.observable(config.showIndigenousCulturalIPMetadata || false);
     self.overriddenLabels = ko.observableArray();
-    self.hideNespMetada = ko.observable(config.hideNespMetada || false);
+    self.showNespMetada = ko.observable(config.showNespMetada || false);
 
     self.load(config);
 }

@@ -292,6 +292,39 @@
                             </div>
                         </div>
                     </g:if>
+                    <g:if test="${hubConfig.content?.showNespMetada}">
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <!-- ko if:customMetadata.category -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.nespCategory"/></h4>
+                                        <p data-bind="text:customMetadata.category"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:geographicInfo.nationwide != "" -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.nespNationalScale"/></h4>
+                                        <p data-bind="text:geographicInfo.nationwide() ? 'True' : 'False'"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <!-- ko if:customMetadata.raid -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.nespRaid"/></h4>
+                                        <p data-bind="text:customMetadata.raid"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </g:if>
+
 
                     <!-- from - This project is run in association with-->
                     <!-- ko if:associatedOrgs().length > 0 -->

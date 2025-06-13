@@ -325,11 +325,6 @@ function ProjectViewModel(project, isUserEditor) {
     var fundings = $.map(project.fundings || [], function(funding){
         return new FundingViewModel(funding)})
     self.fundings = ko.observableArray(fundings);
-
-    self.nespRaid = ko.observable(project.nespRaid);
-    self.nespCategory = ko.observable(project.nespCategory);
-    self.nespNationalScale = ko.observable(project.nespNationalScale);
-
     self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
     self.funding = ko.computed(function(){
         var total = 0;
@@ -462,6 +457,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.industries = ko.observableArray(project.industries);
     self.bushfireCategories = ko.observableArray(project.bushfireCategories);
     self.customMetadata = new CustomMetadataViewModel(project.customMetadata || {});
+    self.geographicInfo = new GeographicInfoViewModel(project.geographicInfo || {});
     self.transients.notification = new EmailViewModel(fcConfig);
     self.transients.yesNoOptions = ["Yes","No"];
     self.transients.alaHarvest = ko.computed({
@@ -1174,6 +1170,16 @@ function CustomMetadataViewModel(customMetadata) {
     self.ethicsApproval = ko.observable(customMetadata.ethicsApproval);
     self.ethicsApprovalNumber = ko.observable(customMetadata.ethicsApprovalNumber);
     self.ethicsContactDetails = ko.observable(customMetadata.ethicsContactDetails);
+
+    self.category =  ko.observable(customMetadata.category);
+    self.raid =  ko.observable(customMetadata.raid);
+}
+
+function GeographicInfoViewModel(geographicInfo) {
+    var self = this;
+
+    self.nationwide = ko.observable(geographicInfo.nationwide || false);
+    self.statewide =  ko.observable(geographicInfo.statewide || false);
 }
 
 
