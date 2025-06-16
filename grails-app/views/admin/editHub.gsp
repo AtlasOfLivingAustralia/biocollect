@@ -108,14 +108,32 @@
                     <input type="text" class="form-control" data-bind="value:homePagePath" placeholder="Relative path to home page (leave blank for default)"></input>
                 </div>
             </div>
-
             <div class="form-group row">
                 <label class="col-md-4 col-form-label" for="description">Fathom site id</label>
                 <div class="col-md-8 required">
                     <input type="text" class="form-control" data-bind="value:fathomSiteId" placeholder="Fathom analytics site id"></input>
                 </div>
             </div>
-
+            <div>
+                <label>Favicon image</label>
+                <div class="row">
+                    <div class="col-6">
+                        <img data-bind="visible:faviconlogoUrl(), attr:{src:faviconlogoUrl}">
+                    </div>
+                    <div class="offset-4 col-2">
+                        <button type="button" class="btn  btn-sm btn-danger" data-bind="visible:faviconlogoUrl(), click:removeFaviconlogo"><i class="far fa-trash-alt"></i> Remove Favicon</button>
+                        <span class="btn fileinput-button float-right btn-dark"
+                              data-url="${createLink(controller: 'image', action:'upload')}"
+                              data-role="faviconlogo"
+                              data-owner-type="hubId"
+                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents, visible:!faviconlogoUrl()">
+                            <i class="fas fa-file-upload"></i>
+                            <input id="faviconlogo" type="file" name="files" accept="image/png">
+                            <span>Attach Favicon Logo</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-md-4 col-form-label" for="supported-programs">Supported Programs (Projects in this hub can only select from these programs)</label>
                 <div class="col-md-8">
@@ -417,7 +435,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: nespFavicon"> Use HUB favicon
+                </div>
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
@@ -438,8 +458,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: enablePartialSearch"> Enable partial search
                 </div>
-
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: disableOrganisationHyperlink"> Disable organisation hyperlink
+                </div>
                 <h5>Project page</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectBackButton"> Hide 'Back to search results' button on project page
@@ -471,7 +492,13 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectSurveyDownloadXLSX"> Hide 'Download XLSX template'
                 </div>
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectGettingStartedButton"> Hide 'Getting Started' on project information
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: showIndigenousCulturalIPMetadata"> Show Indigenous Cultural Intellectual Property metadata.
+                    This should be checked for NESP hubs.
+                </div>
 
                 <h5>Record listing</h5>
                 <div class="checkbox">
