@@ -990,6 +990,10 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.transients.hasPublishedProjectActivities = false;
 
+    self.removeUrlWeb = function () {
+        self.urlWeb(undefined);
+    }
+
     self.checkPublishedProjectActivities = function (projectActivities) {
         if (projectActivities && Object.keys(projectActivities).length > 0) {
             for (var i = 0; i < projectActivities.length; i++) {

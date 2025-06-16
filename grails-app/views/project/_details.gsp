@@ -951,8 +951,15 @@
                         code="project.details.website.help"/></fc:iconHelp></label>
 
                 <div class="col-md-8">
-                    <g:textField class="form-control" type="url" name="urlWeb" data-bind="value:urlWeb"
-                                 data-validation-engine="validate[custom[url]]"/>
+                    <div class="input-group">
+                        <g:textField class="form-control" type="url" name="urlWeb" data-bind="value:urlWeb"
+                                     data-validation-engine="validate[custom[url]]"/>
+                        <div class="input-group-append">
+                            <button class="btn btn-danger" type="button" data-bind="click:removeUrlWeb">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
