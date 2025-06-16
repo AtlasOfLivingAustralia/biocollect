@@ -796,11 +796,12 @@
             </div>
             <g:if test="${hubConfig.content?.showNespMetada}">
                 <div class="row form-group">
-                    <label class="col-from-label col-md-4" for="name"><g:message code="project.details.nespRaid"/></label>
+                    <label class="col-from-label col-md-4" for="raid"><g:message code="project.details.nespRaid"/></label>
                     <div class="col-md-8">
-                        <g:textField class="form-control" name="name" data-bind="value:customMetadata.raid"/>
+                        <g:textField class="form-control" name="raid" data-bind="value:raidExternalId"/>
                     </div>
                 </div>
+
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="category"><g:message
                             code="project.details.nespCategory"/></label>
