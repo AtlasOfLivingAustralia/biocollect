@@ -10,6 +10,9 @@
                         <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
                             <h2 class="p-0 mb-0">
                                 ${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}
+                                <g:if test="${fc.userIsAlaOrFcAdmin()}">
+                                    <g:render template="statusBadge"/>
+                                </g:if>
                             </h2>
                         </button>
                     </div>
