@@ -118,7 +118,7 @@
                         <div class="row d-flex intro-row">
                             <div class="col d-flex justify-content-center align-items-center">
                                 <div>
-                                    ${raw(introText)}
+                                    <fc:sanitiseHtml text="${introText}"></fc:sanitiseHtml>
                                 </div>
                             </div>
                         </div>

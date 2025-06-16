@@ -18,20 +18,6 @@ class TemplateTagLibSpec extends Specification implements TagLibUnitTest<Templat
         JSON.registerObjectMarshaller(new MapMarshaller())
         JSON.registerObjectMarshaller(new CollectionMarshaller())
         mockTagLibs(AssetsTagLib, AssetMethodTagLib)
-//        GrailsWebMockUtil
-//        def mockRequest = new GrailsMockHttpServletRequest()
-//        mockRequest.setRequestURI("/current/page")
-//        mockRequest.setForwardURI("/current/page")
-//        mockRequest.setQueryString("id=123")
-//        def ctx = applicationContext
-//        def mockRequest = bindMockHttpServletRequest()
-//        def mockGrailsWebRequest = GrailsWebMockUtil.bindMockWebRequest()
-//        mockGrailsWebRequest.request.requestURI = "/current/page"
-//        mockGrailsWebRequest.request.forwardURI >> "/current/page"
-//        mockGrailsWebRequest.request.queryString >> "id=123"
-//        tagLib.request.getRequestURI() >> "/current/page"
-//        tagLib.request.getForwardURI() >> "/current/page"
-//        tagLib.request.getQueryString() >> "id=123"
     }
 
     def "test getFilesToPreCacheForPWA"() {
