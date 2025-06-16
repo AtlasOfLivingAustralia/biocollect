@@ -313,18 +313,18 @@
                                 <!-- /ko -->
                             </div>
                             <div class="col-12 col-md-4">
-                                <!-- ko if:customMetadata.raid -->
+                                <!-- ko if: raidExternalId -->
                                 <div class="row">
                                     <div class="col-12">
                                         <h4 class="text-small-heading"><g:message code="project.details.nespRaid"/></h4>
-                                        <p data-bind="text:customMetadata.raid"></p>
+                                        <p data-bind="text: raidExternalId"></p>
                                     </div>
                                 </div>
                                 <!-- /ko -->
                             </div>
+
                         </div>
                     </g:if>
-
 
                     <!-- from - This project is run in association with-->
                     <!-- ko if:associatedOrgs().length > 0 -->

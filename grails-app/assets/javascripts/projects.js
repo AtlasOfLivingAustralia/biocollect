@@ -458,6 +458,14 @@ function ProjectViewModel(project, isUserEditor) {
     self.bushfireCategories = ko.observableArray(project.bushfireCategories);
     self.customMetadata = new CustomMetadataViewModel(project.customMetadata || {});
     self.geographicInfo = new GeographicInfoViewModel(project.geographicInfo || {});
+
+    var raidId = '';
+    if (Array.isArray(project.externalIds)) {
+        var raid = project.externalIds.find(e => e && e.idType === 'RAID');  // fixed casing
+        raidId = raid?.externalId || '';
+    }
+    self.raidExternalId = ko.observable(raidId);
+
     self.transients.notification = new EmailViewModel(fcConfig);
     self.transients.yesNoOptions = ["Yes","No"];
     self.transients.alaHarvest = ko.computed({
@@ -1337,7 +1345,7 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
         self.associatedOrgs.remove(org);
     };
 
-    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
+    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation', 'raidExternalId']);
     self.transients.existingLinks = project.links;
 
     self.modelAsJSON = function() {
@@ -1348,10 +1356,20 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
         self.fixLinkDocumentIds(self.transients.existingLinks);
         var links = ko.mapping.toJS(self.links());
 
+        // Add RAID externalId
+        let externalIds = Array.isArray(projectData.externalIds) ? projectData.externalIds.slice() : [];
+        externalIds = externalIds.filter(e => e.idType !== "RAID");
+        if (self.raidExternalId && self.raidExternalId()) {
+            externalIds.push({ idType: "RAID", externalId: self.raidExternalId() });
+        }
+        projectData.externalIds = externalIds;
+
         // Assemble the data into the package expected by the service.
         projectData.projectSite = siteData;
         projectData.documents = documents;
         projectData.links = links;
+
+        console.log(JSON.stringify(projectData.externalIds));
 
         return JSON.stringify(projectData);
     };

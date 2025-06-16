@@ -602,6 +602,13 @@ class ProjectController {
             }
         }
 
+        values.externalIds = values.externalIds.collect { idMap ->
+            return [
+                idType: 'RAID',
+                externalId: idMap.externalId?.toString()
+            ]
+        }
+
         projectService.buildTags(values)
 
 
