@@ -457,6 +457,7 @@ function ProjectViewModel(project, isUserEditor) {
     self.alaHarvest = ko.observable(project.alaHarvest ? true : false);
     self.industries = ko.observableArray(project.industries);
     self.bushfireCategories = ko.observableArray(project.bushfireCategories);
+    self.customMetadata = new CustomMetadataViewModel(project.customMetadata || {});
     self.transients.notification = new EmailViewModel(fcConfig);
     self.transients.yesNoOptions = ["Yes","No"];
     self.transients.alaHarvest = ko.computed({
@@ -1159,6 +1160,14 @@ function ProjectViewModel(project, isUserEditor) {
     };
 };
 
+function CustomMetadataViewModel(customMetadata) {
+    var self = this;
+    // indigenous cultural IP metadata (NESP project requirement)
+    self.indigenousCulturalIP = ko.observable(customMetadata.indigenousCulturalIP);
+    self.ethicsApproval = ko.observable(customMetadata.ethicsApproval);
+    self.ethicsApprovalNumber = ko.observable(customMetadata.ethicsApprovalNumber);
+    self.ethicsContactDetails = ko.observable(customMetadata.ethicsContactDetails);
+}
 
 
 /**
