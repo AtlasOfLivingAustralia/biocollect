@@ -4,14 +4,7 @@
         <div class="card-body">
             <h4 class="card-title">
                 Project metadata
-                <span class="float-right">
-                    <g:if test="${project.projLifecycleStatus == 'published'}">
-                        <span class="badge badge-success">Published</span>
-                    </g:if>
-                    <g:elseif test="${project.projLifecycleStatus == 'unpublished'}">
-                        <span class="badge badge-info">Draft</span>
-                    </g:elseif>
-                </span>
+                <g:render template="statusBadge"/>
             </h4>
             <div class="row form-group">
             <label class="col-from-label col-md-4"><g:message code="project.details.type"/><fc:iconHelp><g:message
