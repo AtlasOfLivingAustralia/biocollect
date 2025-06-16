@@ -26,6 +26,10 @@ class MarkdownUtils {
         internalSanitise(policy, html)
     }
 
+    static String sanitise(String input) {
+        internalSanitise(policy, input)
+    }
+
     private static String internalSanitise(PolicyFactory policyFactory, String input, String imageId = '', String metadataName = '') {
         policyFactory.sanitize(input, new HtmlChangeListener<Object>() {
             void discardedTag(Object context, String elementName) {
