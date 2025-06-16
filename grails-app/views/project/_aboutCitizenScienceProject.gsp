@@ -113,13 +113,13 @@
                                 </g:if>
                             <!-- ko if:associatedProgram -->
                                 <div class="col-12">
-                                    <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}uiyu</h4>
+                                    <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
                                     <p data-bind="text:associatedProgram"></p>
                                 </div>
                                 <!-- /ko -->
                                 <!-- ko if:associatedSubProgram -->
                                 <div class="col-12">
-                                    <h4 class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}fghfg</h4>
+                                    <h4 class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
                                     <span data-bind="text:associatedSubProgram"></span>
                                 </div>
                                 <!-- /ko -->
@@ -160,16 +160,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- from - This project is run in association with-->
-                    <!-- ko if:associatedOrgs().length > 0 -->
-                    <div class="row">
-                        <div class="col-12 col-md-12">
-                            <h4 class="text-small-heading">This project is run in assocation with</h4>
-                            <div class="card-body" data-bind="template:{name:'associated-orgs'}"></div>
-                        </div>
-                    </div>
-                    <!-- /ko -->
 
                     <div class="row">
                         <div class="col-12 col-md-8">
@@ -259,10 +249,59 @@
                             <!-- /ko -->
                             %{-- TODO END--}%
                         </div>
-                        <div class="col-12 col-md-4">
+                    </div>
 
+                    <g:if test="${hubConfig.content?.showIndigenousCulturalIPMetadata}">
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <!-- ko if:customMetadata.indigenousCulturalIP -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.indigenousCulturalIP"/></h4>
+                                        <p data-bind="text:customMetadata.indigenousCulturalIP"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:customMetadata.ethicsApproval -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.ethicsApproval"/></h4>
+                                        <p data-bind="text:customMetadata.ethicsApproval"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <!-- ko if:customMetadata.ethicsApprovalNumber -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.ethicsNumber"/></h4>
+                                        <p data-bind="text:customMetadata.ethicsApprovalNumber"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:customMetadata.ethicsContactDetails -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.ethicsContact"/></h4>
+                                        <p data-bind="text:customMetadata.ethicsContactDetails"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </g:if>
+
+                    <!-- from - This project is run in association with-->
+                    <!-- ko if:associatedOrgs().length > 0 -->
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <h4 class="text-small-heading">This project is run in assocation with</h4>
+                            <div class="card-body" data-bind="template:{name:'associated-orgs'}"></div>
                         </div>
                     </div>
+                    <!-- /ko -->
 
                     <hr id="hrGetStartedMobileAppTag" data-bind="visible: transients.checkVisibility('#contentGetStartedMobileAppTag', '#hrGetStartedMobileAppTag')" />
                     <div id="contentGetStartedMobileAppTag">
@@ -283,7 +322,7 @@
                             </div>
                         </div>
                     </g:if>
-                </div>
+                    </div>
                 </div>
             </div>
         </div>
