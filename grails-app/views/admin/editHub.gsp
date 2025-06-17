@@ -496,8 +496,7 @@
                     <input type="checkbox" data-bind="checked: hideProjectGettingStartedButton"> Hide 'Getting Started' on project information
                 </div>
                 <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: showIndigenousCulturalIPMetadata"> Show Indigenous Cultural Intellectual Property metadata.
-                    This should be checked for NESP hubs.
+                    <input type="checkbox" data-bind="checked: showCustomMetadata"> Show Custom Metadata such as Category, Raid, Indigenous Cultural etc
                 </div>
 
                 <h5>Record listing</h5>
