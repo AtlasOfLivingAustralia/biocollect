@@ -312,7 +312,7 @@ function ProjectViewModel(project, isUserEditor) {
         isUserEditor = false;
     }
 
-    self.projLifecycleStatus = 'unpublished';
+    self.projLifecycleStatus = project.projLifecycleStatus || 'unpublished';
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
     self.description = ko.observable(project.description).extend({markdown:true});
