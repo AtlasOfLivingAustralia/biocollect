@@ -1177,7 +1177,6 @@ function CustomMetadataViewModel(customMetadata) {
     self.ethicsContactDetails = ko.observable(customMetadata.ethicsContactDetails);
 
     self.category =  ko.observable(customMetadata.category);
-    self.raid =  ko.observable(customMetadata.raid);
 }
 
 function GeographicInfoViewModel(geographicInfo) {
