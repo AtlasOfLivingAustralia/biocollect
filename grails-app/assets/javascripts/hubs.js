@@ -515,9 +515,8 @@ function ContentViewModel(config) {
     self.enablePartialSearch = ko.observable(config.enablePartialSearch || false);
     self.disableOrganisationHyperlink = ko.observable(config.disableOrganisationHyperlink || false);
     self.hideProjectGettingStartedButton = ko.observable(config.hideProjectGettingStartedButton || false);
-    self.showIndigenousCulturalIPMetadata = ko.observable(config.showIndigenousCulturalIPMetadata || false);
     self.overriddenLabels = ko.observableArray();
-    self.showNespMetada = ko.observable(config.showNespMetada || false);
+    self.showCustomMetadata = ko.observable(config.showCustomMetadata || false);
 
     self.load(config);
 }
