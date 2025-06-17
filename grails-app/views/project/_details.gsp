@@ -448,7 +448,7 @@
                             </div>
                     </div>
                 </g:if>
-                <g:if test="${hubConfig.content?.showIndigenousCulturalIPMetadata}">
+                <g:if test="${hubConfig.content?.showCustomMetadata}">
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="indigenousCulturalIP"><g:message
                             code="project.details.indigenousCulturalIP"/><fc:iconHelp><g:message
@@ -787,6 +787,39 @@
                             data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdSvcProvider, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
+            <g:if test="${hubConfig.content?.showCustomMetadata}">
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="raid"><g:message code="project.details.raid"/></label>
+                    <div class="col-md-8">
+                        <g:textField class="form-control" name="raid" data-bind="value:raidExternalId"/>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="category"><g:message
+                            code="project.details.category"/></label>
+                    <div class="col-md-8">
+                        <select class="form-control" id="category"
+                                data-bind="value:customMetadata.category" data-validation-engine="validate[required]">
+                            <option value="">Please Select</option>
+                            <option value="Category 1: Indigenous-led">Category 1: Indigenous-led</option>
+                            <option value="Category 2: Co-design">Category 2: Co-design</option>
+                            <option value="Category 3: Communicate">Category 3: Communicate</option>
+                            <option value="Not Applicable">Not Applicable</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <label class="col-from-label col-md-4" for="nationwide"><g:message
+                            code="project.details.nationalScale"/></label>
+
+                    <div class="col-md-8">
+                        <select class="form-control" id="nationwide"
+                                data-bind="booleanValue:geographicInfo.nationwide, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select>
+                    </div>
+                </div>
+            </g:if>
         </div>
     </div>
 
