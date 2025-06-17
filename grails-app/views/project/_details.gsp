@@ -455,7 +455,7 @@
                             </div>
                     </div>
                 </g:if>
-                <g:if test="${hubConfig.content?.showIndigenousCulturalIPMetadata}">
+                <g:if test="${hubConfig.content?.showCustomMetadata}">
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="indigenousCulturalIP"><g:message
                             code="project.details.indigenousCulturalIP"/><fc:iconHelp><g:message
@@ -794,9 +794,9 @@
                             data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdSvcProvider, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
-            <g:if test="${hubConfig.content?.showNespMetada}">
+            <g:if test="${hubConfig.content?.showCustomMetadata}">
                 <div class="row form-group">
-                    <label class="col-from-label col-md-4" for="raid"><g:message code="project.details.nespRaid"/></label>
+                    <label class="col-from-label col-md-4" for="raid"><g:message code="project.details.raid"/></label>
                     <div class="col-md-8">
                         <g:textField class="form-control" name="raid" data-bind="value:raidExternalId"/>
                     </div>
@@ -804,7 +804,7 @@
 
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="category"><g:message
-                            code="project.details.nespCategory"/></label>
+                            code="project.details.category"/></label>
                     <div class="col-md-8">
                         <select class="form-control" id="category"
                                 data-bind="value:customMetadata.category" data-validation-engine="validate[required]">
@@ -819,7 +819,7 @@
 
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="nationwide"><g:message
-                            code="project.details.nespNationalScale"/></label>
+                            code="project.details.nationalScale"/></label>
 
                     <div class="col-md-8">
                         <select class="form-control" id="nationwide"

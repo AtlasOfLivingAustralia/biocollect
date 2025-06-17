@@ -251,7 +251,7 @@
                         </div>
                     </div>
 
-                    <g:if test="${hubConfig.content?.showIndigenousCulturalIPMetadata}">
+                    <g:if test="${hubConfig.content?.showCustomMetadata}">
                         <div class="row">
                             <div class="col-12 col-md-8">
                                 <!-- ko if:customMetadata.indigenousCulturalIP -->
@@ -292,13 +292,13 @@
                             </div>
                         </div>
                     </g:if>
-                    <g:if test="${hubConfig.content?.showNespMetada}">
+                    <g:if test="${hubConfig.content?.showCustomMetadata}">
                         <div class="row">
                             <div class="col-12 col-md-8">
                                 <!-- ko if:customMetadata.category -->
                                 <div class="row">
                                     <div class="col-12">
-                                        <h4 class="text-small-heading"><g:message code="project.details.nespCategory"/></h4>
+                                        <h4 class="text-small-heading"><g:message code="project.details.category"/></h4>
                                         <p data-bind="text:customMetadata.category"></p>
                                     </div>
                                 </div>
@@ -306,7 +306,7 @@
                                 <!-- ko if:geographicInfo.nationwide != "" -->
                                 <div class="row">
                                     <div class="col-12">
-                                        <h4 class="text-small-heading"><g:message code="project.details.nespNationalScale"/></h4>
+                                        <h4 class="text-small-heading"><g:message code="project.details.nationalScale"/></h4>
                                         <p data-bind="text:geographicInfo.nationwide() ? 'True' : 'False'"></p>
                                     </div>
                                 </div>
@@ -316,7 +316,7 @@
                                 <!-- ko if: raidExternalId -->
                                 <div class="row">
                                     <div class="col-12">
-                                        <h4 class="text-small-heading"><g:message code="project.details.nespRaid"/></h4>
+                                        <h4 class="text-small-heading"><g:message code="project.details.raid"/></h4>
                                         <p data-bind="text: raidExternalId"></p>
                                     </div>
                                 </div>
