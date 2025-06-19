@@ -88,6 +88,7 @@
                 <div class="card-body">
 
                     <!-- from - Other information-->
+                    <h2><g:message code="project.display.other"/></h2>
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="row">
@@ -331,9 +332,9 @@
 
                     <!-- from - This project is run in association with-->
                     <!-- ko if:associatedOrgs().length > 0 -->
+                    <h2 class="text-small-heading"><g:message code="project.display.runInAssociation"/> </h2>
                     <div class="row">
                         <div class="col-12 col-md-12">
-                            <h4 class="text-small-heading">This project is run in assocation with</h4>
                             <div class="card-body" data-bind="template:{name:'associated-orgs'}"></div>
                         </div>
                     </div>
