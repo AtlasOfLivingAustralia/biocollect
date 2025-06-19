@@ -461,7 +461,7 @@ function ProjectViewModel(project, isUserEditor) {
 
     var raidId = '';
     if (Array.isArray(project.externalIds)) {
-        var raid = project.externalIds.find(e => e && e.idType === 'RAID');  // fixed casing
+        var raid = project.externalIds.find(e => e && e.idType === 'ARDC_RAID');  // fixed casing
         raidId = raid?.externalId || '';
     }
     self.raidExternalId = ko.observable(raidId);
@@ -1358,9 +1358,9 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
 
         // Add RAID externalId
         let externalIds = Array.isArray(projectData.externalIds) ? projectData.externalIds.slice() : [];
-        externalIds = externalIds.filter(e => e.idType !== "RAID");
+        externalIds = externalIds.filter(e => e.idType !== 'ARDC_RAID');
         if (self.raidExternalId && self.raidExternalId()) {
-            externalIds.push({ idType: "RAID", externalId: self.raidExternalId() });
+            externalIds.push({ idType: 'ARDC_RAID', externalId: self.raidExternalId() });
         }
         projectData.externalIds = externalIds;
 
