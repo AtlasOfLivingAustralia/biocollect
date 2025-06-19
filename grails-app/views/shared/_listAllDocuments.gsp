@@ -46,7 +46,18 @@
         <div class="row mb-2">
             <div class="col-12">
                 <div class="border-top border-bottom border-dark py-3">
-                    <h6 class="m-0">Found <!-- ko text:pagination.totalResults --> <!-- /ko --> ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h6>
+                    <div class="row">
+                        <div class="col-9">
+                            <h6 class="m-0">Found <!-- ko text:pagination.totalResults --> <!-- /ko --> ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h6>
+                        </div>
+                        <div class="col-3">
+                            <g:if test="${fc.userIsLoggedIn()}">
+                            <div class="btn btn-default float-right" data-bind="click: downloadDocuments">
+                                <i class="fas fa-download"></i> <g:message code="g.download"/>
+                            </div>
+                            </g:if>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
