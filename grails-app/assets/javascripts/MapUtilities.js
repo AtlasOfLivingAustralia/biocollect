@@ -58,7 +58,7 @@ Biocollect.MapUtilities = {
     createKnownShapeMapControl: function(map, featuresServiceUrl, regionListUrl) {
         var regionOptions = {
             id: "regionSelection",
-            title: "Select a known shape",
+            title: "Select layer",
             firstStepPlaceholder: "Choose a layer...",
             secondStepPlaceholder: "Choose a shape...",
             firstStepItemLookup: function (populateStep1Callback) {
