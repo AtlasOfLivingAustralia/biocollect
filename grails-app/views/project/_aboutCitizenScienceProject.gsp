@@ -10,6 +10,9 @@
                         <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
                             <h2 class="p-0 mb-0">
                                 ${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}
+                                <g:if test="${fc.userIsAlaOrFcAdmin()}">
+                                    <g:render template="statusBadge"/>
+                                </g:if>
                             </h2>
                         </button>
                     </div>
@@ -252,7 +255,7 @@
                         </div>
                     </div>
 
-                    <g:if test="${hubConfig.content?.showIndigenousCulturalIPMetadata}">
+                    <g:if test="${hubConfig.content?.showCustomMetadata}">
                         <div class="row">
                             <div class="col-12 col-md-8">
                                 <!-- ko if:customMetadata.indigenousCulturalIP -->
@@ -291,6 +294,39 @@
                                 </div>
                                 <!-- /ko -->
                             </div>
+                        </div>
+                    </g:if>
+                    <g:if test="${hubConfig.content?.showCustomMetadata}">
+                        <div class="row">
+                            <div class="col-12 col-md-8">
+                                <!-- ko if:customMetadata.category -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.category"/></h4>
+                                        <p data-bind="text:customMetadata.category"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                                <!-- ko if:geographicInfo.nationwide != "" -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.nationalScale"/></h4>
+                                        <p data-bind="text:geographicInfo.nationwide() ? 'True' : 'False'"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <!-- ko if: raidExternalId -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4 class="text-small-heading"><g:message code="project.details.raid"/></h4>
+                                        <p data-bind="text: raidExternalId"></p>
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+
                         </div>
                     </g:if>
 

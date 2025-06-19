@@ -312,7 +312,7 @@ function ProjectViewModel(project, isUserEditor) {
         isUserEditor = false;
     }
 
-    self.projLifecycleStatus = 'unpublished';
+    self.projLifecycleStatus = project.projLifecycleStatus || 'unpublished';
     self.name = ko.observable(project.name);
     self.aim = ko.observable(project.aim);
     self.description = ko.observable(project.description).extend({markdown:true});
@@ -325,7 +325,6 @@ function ProjectViewModel(project, isUserEditor) {
     var fundings = $.map(project.fundings || [], function(funding){
         return new FundingViewModel(funding)})
     self.fundings = ko.observableArray(fundings);
-
     self.fundingTypes = ["Public - commonwealth", "Public - state", "Public - local", "Public - in-kind", "Private - in-kind", "Private - industry", "Private - philanthropic", "Private - bequeath/other", "Private - NGO"];
     self.funding = ko.computed(function(){
         var total = 0;
@@ -458,6 +457,15 @@ function ProjectViewModel(project, isUserEditor) {
     self.industries = ko.observableArray(project.industries);
     self.bushfireCategories = ko.observableArray(project.bushfireCategories);
     self.customMetadata = new CustomMetadataViewModel(project.customMetadata || {});
+    self.geographicInfo = new GeographicInfoViewModel(project.geographicInfo || {});
+
+    var raidId = '';
+    if (Array.isArray(project.externalIds)) {
+        var raid = project.externalIds.find(e => e && e.idType === 'ARDC_RAID');  // fixed casing
+        raidId = raid?.externalId || '';
+    }
+    self.raidExternalId = ko.observable(raidId);
+
     self.transients.notification = new EmailViewModel(fcConfig);
     self.transients.yesNoOptions = ["Yes","No"];
     self.transients.alaHarvest = ko.computed({
@@ -990,6 +998,10 @@ function ProjectViewModel(project, isUserEditor) {
 
     self.transients.hasPublishedProjectActivities = false;
 
+    self.removeUrlWeb = function () {
+        self.urlWeb(undefined);
+    }
+
     self.checkPublishedProjectActivities = function (projectActivities) {
         if (projectActivities && Object.keys(projectActivities).length > 0) {
             for (var i = 0; i < projectActivities.length; i++) {
@@ -1167,6 +1179,15 @@ function CustomMetadataViewModel(customMetadata) {
     self.ethicsApproval = ko.observable(customMetadata.ethicsApproval);
     self.ethicsApprovalNumber = ko.observable(customMetadata.ethicsApprovalNumber);
     self.ethicsContactDetails = ko.observable(customMetadata.ethicsContactDetails);
+
+    self.category =  ko.observable(customMetadata.category);
+}
+
+function GeographicInfoViewModel(geographicInfo) {
+    var self = this;
+
+    self.nationwide = ko.observable(geographicInfo.nationwide || false);
+    self.statewide =  ko.observable(geographicInfo.statewide || false);
 }
 
 
@@ -1324,7 +1345,7 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
         self.associatedOrgs.remove(org);
     };
 
-    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation']);
+    self.ignore = self.ignore.concat(['organisationSearch', 'associatedOrganisationSearch', 'granteeOrganisation', 'sponsorOrganisation', 'raidExternalId']);
     self.transients.existingLinks = project.links;
 
     self.modelAsJSON = function() {
@@ -1335,10 +1356,20 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
         self.fixLinkDocumentIds(self.transients.existingLinks);
         var links = ko.mapping.toJS(self.links());
 
+        // Add RAID externalId
+        let externalIds = Array.isArray(projectData.externalIds) ? projectData.externalIds.slice() : [];
+        externalIds = externalIds.filter(e => e.idType !== 'ARDC_RAID');
+        if (self.raidExternalId && self.raidExternalId()) {
+            externalIds.push({ idType: 'ARDC_RAID', externalId: self.raidExternalId() });
+        }
+        projectData.externalIds = externalIds;
+
         // Assemble the data into the package expected by the service.
         projectData.projectSite = siteData;
         projectData.documents = documents;
         projectData.links = links;
+
+        console.log(JSON.stringify(projectData.externalIds));
 
         return JSON.stringify(projectData);
     };

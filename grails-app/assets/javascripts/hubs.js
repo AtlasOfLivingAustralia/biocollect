@@ -515,8 +515,8 @@ function ContentViewModel(config) {
     self.enablePartialSearch = ko.observable(config.enablePartialSearch || false);
     self.disableOrganisationHyperlink = ko.observable(config.disableOrganisationHyperlink || false);
     self.hideProjectGettingStartedButton = ko.observable(config.hideProjectGettingStartedButton || false);
-    self.showIndigenousCulturalIPMetadata = ko.observable(config.showIndigenousCulturalIPMetadata || false);
     self.overriddenLabels = ko.observableArray();
+    self.showCustomMetadata = ko.observable(config.showCustomMetadata || false);
 
     self.load(config);
 }
@@ -624,11 +624,33 @@ var FooterViewModel = function (config) {
 
 var LinkViewModel = function (config) {
     var self = this;
-
+    var elementId = "#introTextModal", ckeditorElement = "#introTextModal .ckeditor";
     self.displayName = ko.observable(config.displayName || '');
     self.contentType = ko.observable(config.contentType || 'static');
     self.href = ko.observable(config.href || '');
     self.role = ko.observable(config.role || '');
+    self.introductoryText = ko.observable(config.introductoryText || '');
+    self.launchModal = function () {
+        $(elementId).modal();
+        self.initialiseListeners();
+    }
+    self.initialiseListeners = function () {
+        $(elementId).on('shown.bs.modal', function () {
+            ko.applyBindings({introductoryText: self.introductoryText, saveIntroductoryText: self.saveIntroductoryText}, $(elementId).find('.modal-content')[0]);
+        });
+
+        $(elementId).on('hidden.bs.modal', function () {
+            var ckeditor = $(ckeditorElement)[0], modal = $(elementId)[0];
+            ckeditor && ckeditor.editor && ckeditor.editor.destroy();
+            ko.cleanNode(modal);
+        })
+    }
+
+    self.saveIntroductoryText = function () {
+        var editor = $(ckeditorElement)[0].editor;
+        self.introductoryText(editor && editor.getData());
+        $(elementId).modal('hide');
+    }
 };
 
 var StyleViewModel = function (config) {

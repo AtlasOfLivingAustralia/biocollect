@@ -832,6 +832,14 @@ class FCTagLib {
         }
     }
 
+    def sanitiseHtml = { Map attrs, body ->
+        String text = attrs.text ?: body()
+        if (text) {
+            out << MarkdownUtils.sanitise(text)
+        } else {
+            out << ''
+        }
+    }
 
     def markdownToHtml = { Map attrs, body ->
         String text = attrs.text ?: body()
