@@ -1,15 +1,14 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.MarkdownUtils
 import au.org.ala.biocollect.ProjectActivityService
-import au.org.ala.cas.util.AuthenticationCookieUtils
 import grails.converters.JSON
+import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
-import grails.web.servlet.mvc.GrailsParameterMap
-import au.org.ala.biocollect.MarkdownUtils
 
 @Slf4j
 class FCTagLib {
@@ -469,7 +468,7 @@ class FCTagLib {
     }
 
     def userIsLoggedIn = { attr ->
-        if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
+        if (userService.user) {
             out << true
         }
     }
@@ -658,7 +657,7 @@ class FCTagLib {
         if(attrs.key){
             def content = settingService.getSettingText(attrs.key) as String
             if (content) {
-                out << markdownToHtmlAndSanitise(content)
+                out << MarkdownUtils.markdownToHtml(content)
             }
         }
     }

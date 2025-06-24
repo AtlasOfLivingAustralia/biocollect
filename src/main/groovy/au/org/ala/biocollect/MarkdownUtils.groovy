@@ -17,6 +17,15 @@ class MarkdownUtils {
     static PolicyFactory policy = (Sanitizers.FORMATTING & Sanitizers.LINKS & Sanitizers.BLOCKS & Sanitizers.IMAGES
             & Sanitizers.TABLES & Sanitizers.STYLES) & new HtmlPolicyBuilder().allowTextIn("p", "div").toFactory()
 
+    static String markdownToHtml(String text) {
+        Parser parser = Parser.builder().build()
+        org.commonmark.node.Node document = parser.parse(text)
+        HtmlRenderer renderer = HtmlRenderer.builder().build()
+        String html = renderer.render(document)
+
+        html
+    }
+
     static String markdownToHtmlAndSanitise(String text) {
         Parser parser = Parser.builder().build()
         org.commonmark.node.Node document = parser.parse(text)
