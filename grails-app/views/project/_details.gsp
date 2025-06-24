@@ -789,15 +789,15 @@
             </div>
             <g:if test="${hubConfig.content?.showCustomMetadata}">
                 <div class="row form-group">
-                    <label class="col-from-label col-md-4" for="raid"><g:message code="project.details.raid"/></label>
+                    <label class="col-from-label col-md-4" for="raid"><g:message code="project.details.raid"/><i class="req-field"></i></label>
                     <div class="col-md-8">
-                        <g:textField class="form-control" name="raid" data-bind="value:raidExternalId"/>
+                        <g:textField class="form-control" name="raid" data-bind="value:raidExternalId" data-validation-engine="validate[required]"/>
                     </div>
                 </div>
 
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="category"><g:message
-                            code="project.details.category"/></label>
+                            code="project.details.category"/><i class="req-field"></i></label>
                     <div class="col-md-8">
                         <select class="form-control" id="category"
                                 data-bind="value:customMetadata.category" data-validation-engine="validate[required]">

@@ -51,6 +51,7 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
+        documentDownloadUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch', params: [format: 'zip'])}",
         imageLocation:"${asset.assetPath(src:'')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
