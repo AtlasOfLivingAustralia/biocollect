@@ -522,7 +522,7 @@ function FacetTermViewModel(term) {
     self.term = ko.observable(term.term);
     self.title = term.title;
     self.displayName = ko.computed(function(){
-        var label = self.title || decodeCamelCase(self.term()) || 'Unknown';
+        var label = self.title || self.term() || 'Unknown';
         if(self.count()){
             label += " (" + self.count() + ")";
         }
@@ -539,7 +539,7 @@ function FacetTermViewModel(term) {
 
 
     self.displayNameWithoutCount = function(){
-        return self.title || decodeCamelCase(self.term()) || 'Unknown';
+        return self.title || self.term() || 'Unknown';
     };
 
     /**
