@@ -16,7 +16,7 @@
         <g:render template="/shared/facetView" model="[modalName: 'chooseMore']"></g:render>
 
         <div class="filters-footer">
-            <button class="btn btn-dark custom-font" data-target="#mapModal" data-toggle="modal">
+            <button class="btn btn-light custom-font accordion-header" data-target="#mapModal" data-toggle="modal">
                 <i class="far fa-map"></i>
                 Filter by geographic location
             </button>
