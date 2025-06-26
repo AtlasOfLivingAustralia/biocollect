@@ -121,6 +121,23 @@
   outline: 0;
 }
 
+#mapModal .modal-body {
+  height: 500px;
+  max-height: none;
+  overflow: visible;
+}
+
+#mapModal .modal-content {
+  height: auto;
+  max-height: none;
+}
+
+#mapModal .modal-dialog {
+  max-width: 90vw;
+  width: auto;
+  margin: 1.75rem auto;
+}
+
 // Modal background
 .modal-backdrop {
   position: fixed;
