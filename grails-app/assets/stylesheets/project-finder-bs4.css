@@ -9,4 +9,9 @@
 
 .custom-font {
     font-size: 1rem !important;
+    font-weight: bold;
+}
+
+#filters .custom-font::after {
+    content: none;
 }
