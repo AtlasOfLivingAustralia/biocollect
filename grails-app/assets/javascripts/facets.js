@@ -522,7 +522,7 @@ function FacetTermViewModel(term) {
     self.term = ko.observable(term.term);
     self.title = term.title;
     self.displayName = ko.computed(function(){
-        var label = self.title || self.term() || 'Unknown';
+        var label = self.title || decodeCamelCase(self.term()) || 'Unknown';
         if(self.count()){
             label += " (" + self.count() + ")";
         }
@@ -539,7 +539,7 @@ function FacetTermViewModel(term) {
 
 
     self.displayNameWithoutCount = function(){
-        return self.title || self.term() || 'Unknown';
+        return self.title || decodeCamelCase(self.term()) || 'Unknown';
     };
 
     /**
@@ -933,7 +933,7 @@ function generateTermIdForFacetTerm(facetTerm) {
  */
 function decodeCamelCase(text) {
     if(typeof text == 'string'){
-        var result = text.replace( /([A-Z])/g, " $1" );
+        var result = text.replace( /([a-z][A-Z])/g, "$1 $2" );
         return result.charAt(0).toUpperCase() + result.slice(1); // capitalize the first letter - as an example.
     }
     else{
