@@ -19,8 +19,8 @@
     </label>
     <!-- /ko -->
     <a href="#" role="button" class="moreFacets tooltips" data-toggle="modal" title="" data-target="#${modalName}"
-       data-original-title="View full list of values" data-bind="click: loadMoreTerms, visible: showChooseMore()">
-        <i class="far fa-hand-point-right"></i> choose more...
+       data-original-title="View full list of values" data-bind="click: loadMoreTerms">
+        <i class="far fa-hand-point-right"></i> <g:message code="facets.terms.moreOptions" />
     </a>
 </div>
 %{--<!-- /ko -->--}%
