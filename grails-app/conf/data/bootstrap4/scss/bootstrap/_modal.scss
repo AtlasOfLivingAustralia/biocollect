@@ -122,9 +122,11 @@
 }
 
 #mapModal .modal-body {
-  height: 500px;
-  max-height: none;
-  overflow: visible;
+  height: 575px;
+  padding: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 #mapModal .modal-content {
@@ -137,6 +139,14 @@
   width: auto;
   margin: 1.75rem auto;
 }
+
+/* this will ensure the map fills the body */
+#mapModal .leaflet-container {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
 
 // Modal background
 .modal-backdrop {
