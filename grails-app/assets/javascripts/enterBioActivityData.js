@@ -208,7 +208,13 @@ function Master(activityId, config) {
             // Don't allow another save to be initiated.
             blockUIWithMessage("Saving activity data...");
 
-            amplify.store('activity-' + config.activityId, toSave);
+            try {
+                amplify.store('activity-' + config.activityId, toSave);
+            } catch (e) {
+                console.error("Unable to save activity data to local storage: " + e.message);
+                amplify.store('activity-' + config.activityId, null);
+            }
+
             var unblock = true;
             var url = config.isMobile ? config.bioActivityMobileUpdate : config.bioActivityUpdate;
             var ajaxRequestParams = {

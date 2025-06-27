@@ -81,7 +81,12 @@ function trackState () {
         }
     });
     console.log('state stored = ' + state);
-    amplify.store.sessionStorage('output-accordion-state',state);
+    try {
+        amplify.store.sessionStorage('output-accordion-state',state);
+    } catch (e) {
+        console.error('Error storing accordion state: ' + e.message);
+        amplify.store.sessionStorage('output-accordion-state',null);
+    }
 }
 
 function readState () {
