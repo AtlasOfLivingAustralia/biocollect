@@ -1262,7 +1262,13 @@ function CreateEditProjectViewModel(project, isUserEditor, options) {
 
     self.createOrganisation = function() {
         var projectData = self.modelAsJSON();
-        amplify.store(config.storageKey, projectData);
+        try {
+            amplify.store(config.storageKey, projectData);
+        } catch (e) {
+            console.error("Unable to store project data in local storage, continuing without it.", e.message);
+            amplify.store(config.storageKey, null);
+        }
+
         var here = document.location.href;
         document.location.href = config.organisationCreateUrl+'?returnTo='+here+'&returning=true';
     };
