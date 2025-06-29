@@ -211,6 +211,7 @@ function ProjectFinder(config) {
         if (!mapInitialised) {
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+
             spatialFilter = new ALA.Map("mapFilter", {
                 autoZIndex: false,
                 preserveZIndex: true,
@@ -225,11 +226,44 @@ function ProjectFinder(config) {
                 overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
             });
 
-            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
-            spatialFilter.addControl(regionSelector);
+            const regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(
+                spatialFilter,
+                fcConfig.featuresService,
+                fcConfig.regionListUrl,
+            );
+
+            // Create the custom option above the leaflet draw toolbar
+            setTimeout(() => {
+                const drawControl = document.querySelector('.leaflet-draw.leaflet-control');
+                const globeControl = regionSelector.onAdd(spatialFilter.getMapImpl());
+
+                if (drawControl && globeControl) {
+                    const drawParent = drawControl.parentElement;
+
+                    // Inserting custom option before leaflet draw toolbar
+                    drawParent.insertBefore(globeControl, drawControl);
+                } else {
+                    console.warn('Could not find drawControl or globeControl');
+                }
+            }, 100);
+
             mapInitialised = true;
         } else {
             spatialFilter.getMapImpl().invalidateSize();
+        }
+    }
+
+    function reorderGlobeBelowDrawToolbar(attempts = 10) {
+        const drawToolbar = document.querySelector('.leaflet-draw-toolbar-top');
+        const globeControl = document.querySelector('.two-step-selector.leaflet-control');
+
+        if (drawToolbar && globeControl) {
+            const drawSection = drawToolbar.closest('.leaflet-draw-section');
+            if (drawSection) {
+                drawSection.parentElement.insertBefore(globeControl, drawSection.nextSibling);
+            }
+        } else if (attempts > 0) {
+            setTimeout(() => reorderGlobeBelowDrawToolbar(attempts - 1), 100);
         }
     }
 
