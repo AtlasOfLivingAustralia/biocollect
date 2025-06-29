@@ -230,6 +230,9 @@ function ProjectFinder(config) {
                 spatialFilter,
                 fcConfig.featuresService,
                 fcConfig.regionListUrl,
+                {
+                    iconClass: "fa fa-map-o"
+                }
             );
 
             // Create the custom option above the leaflet draw toolbar
