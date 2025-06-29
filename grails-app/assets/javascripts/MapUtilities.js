@@ -55,7 +55,7 @@ Biocollect.MapUtilities = {
      * @param regionListUrl The URL to retrieve the list of available regions
      * @returns {*} L.Control.TwoStepSelector
      */
-    createKnownShapeMapControl: function(map, featuresServiceUrl, regionListUrl) {
+    createKnownShapeMapControl: function(map, featuresServiceUrl, regionListUrl, extraOptions = {}) {
         var regionOptions = {
             id: "regionSelection",
             title: "Select layer",
@@ -89,7 +89,7 @@ Biocollect.MapUtilities = {
             }
         };
 
-        return new L.Control.TwoStepSelector(regionOptions);
+        return new L.Control.TwoStepSelector(Object.assign({}, regionOptions, extraOptions));
     },
 
     /**
