@@ -256,20 +256,6 @@ function ProjectFinder(config) {
         }
     }
 
-    function reorderGlobeBelowDrawToolbar(attempts = 10) {
-        const drawToolbar = document.querySelector('.leaflet-draw-toolbar-top');
-        const globeControl = document.querySelector('.two-step-selector.leaflet-control');
-
-        if (drawToolbar && globeControl) {
-            const drawSection = drawToolbar.closest('.leaflet-draw-section');
-            if (drawSection) {
-                drawSection.parentElement.insertBefore(globeControl, drawSection.nextSibling);
-            }
-        } else if (attempts > 0) {
-            setTimeout(() => reorderGlobeBelowDrawToolbar(attempts - 1), 100);
-        }
-    }
-
     function checkButton($button, value, attribute) {
         var attr = attribute || 'data-value';
         $button.removeClass('active').find('button.active').removeClass('active');
