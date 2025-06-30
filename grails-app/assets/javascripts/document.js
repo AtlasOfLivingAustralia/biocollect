@@ -70,6 +70,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.role = ko.observable(doc.role);
     this.roles = this.settings.roles;
     this.public = ko.observable(doc.public);
+    this.isbn = ko.observable(doc.isbn ? doc.isbn : '');
     this.url = doc.url;
     this.thumbnailUrl = doc.thumbnailUrl ? doc.thumbnailUrl : doc.url;
     this.documentId = doc.documentId;
