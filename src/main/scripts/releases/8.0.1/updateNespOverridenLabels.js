@@ -7,7 +7,7 @@ while (hubs.hasNext()) {
         { _id: hub._id },
         {
             $set: {
-                "data.content.overriddenLabels.$[label].defaultText": "Other project information"
+                "content.overriddenLabels.$[label].defaultText": "Other project information"
             }
         },
         {
@@ -21,7 +21,7 @@ while (hubs.hasNext()) {
         { _id: hub._id },
         {
             $set: {
-                "data.content.overriddenLabels.$[label].customText": "Project map"
+                "content.overriddenLabels.$[label].customText": "Project map"
             }
         },
         {
