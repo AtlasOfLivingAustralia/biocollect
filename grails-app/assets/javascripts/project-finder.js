@@ -211,6 +211,7 @@ function ProjectFinder(config) {
         if (!mapInitialised) {
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+
             spatialFilter = new ALA.Map("mapFilter", {
                 autoZIndex: false,
                 preserveZIndex: true,
@@ -225,8 +226,30 @@ function ProjectFinder(config) {
                 overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
             });
 
-            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
-            spatialFilter.addControl(regionSelector);
+            const regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(
+                spatialFilter,
+                fcConfig.featuresService,
+                fcConfig.regionListUrl,
+                {
+                    iconClass: "fa fa-map-o"
+                }
+            );
+
+            // Create the custom option above the leaflet draw toolbar
+            setTimeout(() => {
+                const drawControl = document.querySelector('.leaflet-draw.leaflet-control');
+                const globeControl = regionSelector.onAdd(spatialFilter.getMapImpl());
+
+                if (drawControl && globeControl) {
+                    const drawParent = drawControl.parentElement;
+
+                    // Inserting custom option before leaflet draw toolbar
+                    drawParent.insertBefore(globeControl, drawControl);
+                } else {
+                    console.warn('Could not find drawControl or globeControl');
+                }
+            }, 100);
+
             mapInitialised = true;
         } else {
             spatialFilter.getMapImpl().invalidateSize();
