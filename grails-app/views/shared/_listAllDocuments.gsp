@@ -174,6 +174,15 @@
 
     <div class="row">
         <div class="col-2">
+            <label><h6>ISBN:</h6></label>
+        </div>
+        <div class="col">
+            <label data-bind="text:selectedDocument().isbn()"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-2">
             <label><h6>Date uploaded:</h6></label>
         </div>
         <div class="col">
