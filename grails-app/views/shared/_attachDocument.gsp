@@ -81,6 +81,14 @@
                     </div>
 
                     <div class="row form-group">
+                        <label class="col-form-label col-sm-3" for="isbn">ISBN</label>
+
+                        <div class="col-sm-9">
+                            <input class="form-control" id="isbn" type="text" data-bind="value:isbn"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
                         <label class="col-form-label col-sm-3" for="documentLicense">License</label>
 
                         <div class="col-sm-9">
