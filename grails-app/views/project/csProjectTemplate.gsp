@@ -86,6 +86,7 @@
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         methoddocumentUpdateUrl: "${raw(createLink(controller:"image", action:"upload", params:[role: "methodDoc"]))}",
+        documentDownloadUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch', params: [format: 'zip'])}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${asset.assetPath(src:'')}",
         documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}",
