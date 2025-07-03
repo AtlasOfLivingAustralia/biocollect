@@ -797,7 +797,9 @@
 
                 <div class="row form-group">
                     <label class="col-from-label col-md-4" for="category"><g:message
-                            code="project.details.category"/><i class="req-field"></i></label>
+                            code="project.details.category"/>&nbsp;<span tabindex="-1" data-original-title="" data-placement="top" title="<g:message code="project.details.category.helptext"/>" data-toggle="tooltip">
+                        <i class="fas fa-question-circle">&nbsp;</i>
+                    </span>&nbsp;<i class="req-field"></i></label>
                     <div class="col-md-8">
                         <select class="form-control" id="category"
                                 data-bind="value:customMetadata.category" data-validation-engine="validate[required]">
