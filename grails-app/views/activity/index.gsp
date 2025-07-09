@@ -34,6 +34,7 @@
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         surveyName: "${metaModel.name}",
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesConfig: ${raw(fc.modelAsJavascript(model: speciesConfig))},
         speciesSearch: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         speciesSearchUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",

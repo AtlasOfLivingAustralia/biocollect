@@ -154,21 +154,17 @@ class BioActivityController {
 
         String userId = userService.getCurrentUserId()
         if (!userId) {
-            flash.message = "Access denied: User has not been authenticated."
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: User has not been authenticated."]
         } else if (!activity && !pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"]
         } else if (!activity && isProjectActivityClosed(pActivity)) {
-            flash.message = "Access denied: This survey is closed."
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: This survey is closed."]
         } else if (activity && !pActivity.publicAccess && !projectService.canUserEditActivity(userId, activity)) {
-            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: User is not an owner of this activity ${activity?.activityId}"]
         } else {
             boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
             Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
@@ -218,12 +214,11 @@ class BioActivityController {
                 }
 
             } else {
-                flash.message = userAlreadyInRole.error
                 response.status = userAlreadyInRole.statusCode
                 result = userAlreadyInRole
             }
         }
-        result.error = flash.message
+
         render result as JSON
     }
 
@@ -241,9 +236,13 @@ class BioActivityController {
     @SSO
     def create(String id) {
         Map model = addActivity(id)
-        model?.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
+        if (model == null) {
+            // If model is null, it means there was an error and the redirect has already been handled
+            return
+        }
 
-        model
+        model?.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
+        render view: model.error ? 'error' : 'create', model: model
     }
 
     def pwaCreateOrEdit(String projectActivityId) {
@@ -299,18 +298,15 @@ class BioActivityController {
                     render view: "pwaBioActivityCreateOrEditFragment", model: model
                     return
                 } else {
-                    flash.message = "Project associated with project activity not found"
-                    render status: HttpStatus.SC_NOT_FOUND
+                    render status: HttpStatus.SC_NOT_FOUND, text: [message: "Project associated with project activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
                     return
                 }
             } else {
-                flash.message = "Project Activity not found"
-                render status: HttpStatus.SC_NOT_FOUND
+                render status: HttpStatus.SC_NOT_FOUND, text: [message: "Project Activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
                 return
             }
         } else {
-            flash.message = "Project Activity Id must be provided"
-            render status: HttpStatus.SC_BAD_REQUEST
+            render status: HttpStatus.SC_BAD_REQUEST, text: [message: "Project Activity Id must be provided"] as JSON, contentType: ContentType.APPLICATION_JSON
         }
     }
 
@@ -457,11 +453,13 @@ class BioActivityController {
     @SSO
     def edit(String id) {
         Map model = editActivity(id)
+        if (model == null) {
+            // If model is null, it means there was an error and the redirect has already been handled
+            return
+        }
+
         model?.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
-        //May relates to the known grails.converter.JSON issue
-        //Remove this seem-useless statement may causes issue
-        model.toString()
-        model
+        render view: model.error ? 'error' : 'edit', model: model
     }
 
     def mobileCreate(String id) {
@@ -519,19 +517,35 @@ class BioActivityController {
     private def addActivity(String id, boolean mobile = false) {
         String userId = userService.getCurrentUserId()
         Map pActivity = projectActivityService.get(id, "all")
+        Map model = [:]
+        if (pActivity.error) {
+            model.error = "Project activity (survey) not found"
+            return model
+        }
+
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName
-        Map model = [:]
-
         if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            flash.message = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
-            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            if (!mobile) {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (!type) {
-            flash.message = "Invalid activity type"
-            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Invalid activity type"
+            if (!mobile) {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (isProjectActivityClosed(pActivity)) {
-            flash.message = "Access denied: This survey is closed."
-            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Access denied: This survey is closed."
+            if (!mobile) {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
             Map project = projectService.get(projectId)
@@ -544,10 +558,6 @@ class BioActivityController {
             model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
             addOutputModel(model)
             addDefaultSpecies(activity)
-        }
-
-        if (mobile && flash.message) {
-            model?.error = flash.message
         }
 
         model
@@ -631,11 +641,19 @@ class BioActivityController {
         def model = [:]
 
         if (!userId) {
-            flash.message = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
-            if(!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            if(!mobile){
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (!activity || activity.error) {
-            flash.message = "Invalid activity - ${id}"
-            if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Invalid activity - ${id}"
+            if(!mobile)  {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (projectService.canUserModerateProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
             model = activityAndOutputModel(activity, activity.projectId)
@@ -646,12 +664,12 @@ class BioActivityController {
             model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
         } else {
-            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
-            if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
-        }
-
-        if(mobile && flash.message) {
-            model?.error = flash.message
+            model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+            if (!mobile)  {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         }
 
         model
@@ -951,7 +969,7 @@ class BioActivityController {
             )
         } else {
             flash.message = "You need to be logged in to view your records"
-            forward(action: 'projectRecords', params: params)
+            redirect(action: 'projectRecords', params: params)
         }
     }
 

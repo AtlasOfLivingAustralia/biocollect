@@ -27,6 +27,7 @@
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${asset.assetPath(src:'')}",
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesSearch: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [projectActivityId: pActivity.projectActivityId, limit: 10]))}",
         bioActivityUpdate: "${raw(createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId]))}",
         bioActivityView: "${createLink(controller: 'bioActivity', action: 'index')}/",

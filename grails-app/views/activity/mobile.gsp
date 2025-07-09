@@ -17,6 +17,7 @@
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile', absolute: true)}",
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         googleStaticUrl:"http://maps.googleapis.com/maps/api/staticmap?maptype=terrian&zoom=12&sensor=false&size=350x250&markers=color:red%7C"
