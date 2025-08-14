@@ -178,16 +178,6 @@
             "validate": "past[now]"
           },
           {
-            "dataType": "number",
-            "name": "nestDepthInCentimetres",
-            "dwcAttribute": "measurementValue",
-            "measurementUnit": "decimal",
-            "measurementUnitID": "nestDepthInCentimetres",
-            "measurementType": "number",
-            "description": "The depth in centimetres to the bottom of the nest from the general level of the immediate surrounding land",
-            "decimalPlaces": 1
-          },
-          {
             "defaultAccuracy": 50,
             "hideMyLocation": false,
             "columns": [
@@ -270,13 +260,15 @@
             "dataType": "date"
           },
           {
-            "dataType": "boolean",
             "name": "lightDisorientationIsTrue",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "lightDisorientationIsTrue",
-            "measurementType": "boolean",
-            "description": "Please enter observations – Include hatchling disorientation, predation, human interference"
+            "measurementType": "stringList",
+            "dataType": "stringList",
+            "constraints": [
+              "DA"
+            ]
           },
           {
             "dataType": "text",
@@ -460,6 +452,15 @@
             "validate": "required"
           },
           {
+            "dataType": "number",
+            "name": "nestDepthInCentimetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "nestDepthInCentimetres",
+            "measurementType": "number",
+            "decimalPlaces": 1
+          },
+          {
             "dataType": "text",
             "name": "eventRemarks",
             "description": "",
@@ -603,22 +604,28 @@
                           {
                             "boxed": true,
                             "type": "section",
-                            "title": "Key Dates",
+                            "title": "Emergence",
                             "items": [
                               {
-                                "preLabel": "Date eggs laid",
-                                "source": "nestEstablishedDate",
-                                "type": "date"
-                              },
-                              {
                                 "preLabel": "Date of emergence",
-                                "source": "juvenilesEmergedDate",
+                                "source": "dateOfEmergence",
                                 "type": "date"
                               },
                               {
-                                "preLabel": "Date nest dug/excavated",
-                                "source": "excavationDate",
-                                "type": "date"
+                                "preLabel": "Light disorientation",
+                                "source": "lightDisorientationIsTrue",
+                                "type": "selectMany"
+                              },
+                              {
+                                "preLabel": "Notes",
+                                "source": "hatchlingRemarks",
+                                "type": "textarea",
+                                "rows": 4
+                              },
+                              {
+                                "preLabel": "Scavenged – post emergence predation",
+                                "source": "postEmergentPredationIsTrue",
+                                "type": "boolean"
                               }
                             ]
                           }
@@ -674,33 +681,35 @@
                   {
                     "boxed": true,
                     "type": "section",
-                    "title": "Emergence",
+                    "title": "Key Dates",
                     "items": [
                       {
-                        "preLabel": "Date of emergence",
-                        "source": "dateOfEmergence",
+                        "preLabel": "Date eggs laid",
+                        "source": "nestEstablishedDate",
                         "type": "date"
                       },
                       {
-                        "preLabel": "Light disorientation",
-                        "source": "lightDisorientationIsTrue",
-                        "description": "Tick the box if light disorientation occurred and make comments below",
-                        "type": "boolean"
+                        "preLabel": "Date of emergence",
+                        "source": "juvenilesEmergedDate",
+                        "type": "date"
                       },
                       {
-                        "preLabel": "Notes",
-                        "source": "hatchlingRemarks",
-                        "type": "textarea",
-                        "rows": 4
-                      },
-                      {
-                        "preLabel": "Scavenged – post emergence predation",
-                        "source": "postEmergentPredationIsTrue",
-                        "type": "boolean"
+                        "preLabel": "Date nest dug/excavated",
+                        "source": "excavationDate",
+                        "type": "date"
                       }
                     ]
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>Nest digs to be performed by authorised volunteers only</font>",
+                "type": "literal"
               }
             ]
           },
@@ -795,6 +804,11 @@
                         "type": "number",
                         "readOnly": true,
                         "noEdit": true
+                      },
+                      {
+                        "preLabel": "Nest depth",
+                        "source": "nestDepthInCentimetres",
+                        "type": "number"
                       },
                       {
                         "preLabel": "Counted by",
