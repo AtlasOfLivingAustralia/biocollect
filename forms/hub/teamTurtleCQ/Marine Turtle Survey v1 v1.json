@@ -24,6 +24,7 @@
             "dataType": "date",
             "name": "eventDate",
             "dwcAttribute": "eventDate",
+            "indexName": "eventDate",
             "description": "The date that the survey was undertaken",
             "validate": "required,past[now]"
           },
@@ -104,6 +105,7 @@
             "measurementUnit": "unitless",
             "measurementUnitID": "nestNumber",
             "measurementType": "text",
+            "indexName": "nestNumber",
             "dataType": "text",
             "description": "Enter the identification number of the nest",
             "validate": "required"
