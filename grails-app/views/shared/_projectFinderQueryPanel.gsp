@@ -40,10 +40,12 @@
             </div>
 
             <div class="modal-footer">
-                <div class="checkbox">
-                    <input type="checkbox" data-bind="checked: nationwideProjCheckbox">
-                    <g:message code="project.search.excludeNationalProject"/>
-                </div>
+                <g:if test="${hubConfig?.content?.enableNationalProjectsExclusionFilter}">
+                    <div class="checkbox">
+                        <input type="checkbox" data-bind="checked: nationwideProjCheckbox">
+                        <g:message code="project.search.excludeNationalProject"/>
+                    </div>
+                </g:if>
 
                 <button id="clearFilterByRegionButton" type="button" class="btn btn-sm btn-danger">
                     <i class="toggleIndicator far fa-trash-alt"></i>
