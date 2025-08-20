@@ -67,32 +67,33 @@ function ProjectFinder(config) {
         this.isGeoSearchEnabled = ko.observable(false);
         this.selectedFacets = ko.observableArray();
         this.columns = ko.observable(2);
-        this.pagination = new PaginationViewModel({
-            numberPerPage: projectsPerPage
-        }, this);
+
+        this.pagination = new PaginationViewModel({ numberPerPage: projectsPerPage }, this);
         self.columns = this.columns
         this.clearGeoSearch = function () {
             this.isGeoSearchEnabled(false);
             clearGeoSearch();
-            this.doSearch();
+            self.doSearch();
         };
         this.doSearch = function () {
 
             self.doSearch();
-        }
+        };
+
         this.resetPageOffSet = function () {
             self.resetPageOffSet();
-        }
+        };
+
         this.getFacetTerms = function (facets) {
             return self.getFacetTerms(facets);
-        }
+        };
 
         this.reset = function () {
             self.reset();
-        }
+        };
 
-        this.sortBy.subscribe(this.doSearch);
-        this.isWorldWide.subscribe(this.doSearch);
+        this.sortBy.subscribe(function(){ self.doSearch(); });
+        this.isWorldWide.subscribe(function(){ self.doSearch(); });
 
         this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
         this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
@@ -178,11 +179,15 @@ function ProjectFinder(config) {
         };
 
         this.filterViewModel = new FilterViewModel({
-            parent: this,
+            parent: self,
             flimit: fcConfig.flimit
         });
 
-        this.filterViewModel.selectedFacets.subscribe(this.doSearch)
+        this.filterViewModel.selectedFacets.subscribe(function () {
+            self.resetPageOffSet(); // pagination restarts at page 1
+            self.doSearch();       //make the query
+        });
+
     }
 
     /**
@@ -305,80 +310,79 @@ function ProjectFinder(config) {
         }
 
         var queryString = '';
+        var selectedList = pageWindow.filterViewModel.selectedFacets();
+        var origFacetList = pageWindow.filterViewModel.origSelectedFacet();
 
-            var selectedList = pageWindow.filterViewModel.selectedFacets();
-            var origFacetList = pageWindow.filterViewModel.origSelectedFacet();
-
-            // Separate AND from OR condtion
-            var uniqueFacetTerm = [];
-            selectedList.forEach(function (item) {
-                if (item.facet.type == 'terms') {
-                    if (uniqueFacetTerm.indexOf(item.facet.name()) == -1) {
-                        uniqueFacetTerm.push(item.facet.name())
-                    }
+        // Separate AND from OR condtion
+        var uniqueFacetTerm = [];
+        selectedList.forEach(function (item) {
+            if (item.facet.type == 'terms') {
+                if (uniqueFacetTerm.indexOf(item.facet.name()) == -1) {
+                    uniqueFacetTerm.push(item.facet.name())
                 }
-            });
-            var dupFacet = {};
-            uniqueFacetTerm.forEach(function (name) {
-                var tempList = [];
-                var mixedTempList = [];
-                selectedList.forEach(function(item) {
-                    // if this facet is part of the original OR condition, ignore it
-                    var found = origFacetList.find(function (orig) {
-                        //if (item.facet.name() == orig.facet.name() && item.term() == orig.term()) {
-                        if (item.type == 'term' && item.id() == orig.id()) {
+            }
+        });
+        var dupFacet = {};
+        uniqueFacetTerm.forEach(function (name) {
+            var tempList = [];
+            var mixedTempList = [];
+            selectedList.forEach(function(item) {
+                // if this facet is part of the original OR condition, ignore it
+                var found = origFacetList.find(function (orig) {
+                    //if (item.facet.name() == orig.facet.name() && item.term() == orig.term()) {
+                    if (item.type == 'term' && item.id() == orig.id()) {
+                        return true;
+                    }
+                });
+                if (!found) {
+                    // if the facet name exist but not term, treat the others as AND condition
+                    var nameFound = origFacetList.find(function (orig) {
+                        if (item.facet.name() == orig.facet.name()) {
                             return true;
                         }
                     });
-                    if (!found) {
-                        // if the facet name exist but not term, treat the others as AND condition
-                        var nameFound = origFacetList.find(function (orig) {
-                            if (item.facet.name() == orig.facet.name()) {
-                                return true;
-                            }
-                        });
-                        if (item.facet.name() == name) {
-                            if (nameFound) {
-                                mixedTempList.push(item);
-                            } else
-                                tempList.push(item);
-                        }
+                    if (item.facet.name() == name) {
+                        if (nameFound) {
+                            mixedTempList.push(item);
+                        } else
+                            tempList.push(item);
                     }
-                });
-                if (tempList.length > 1) {
-                    dupFacet[name] = tempList;
-                } else if (mixedTempList.length > 0) {
-                    dupFacet[name] = mixedTempList;
                 }
             });
+            if (tempList.length > 1) {
+                dupFacet[name] = tempList;
+            } else if (mixedTempList.length > 0) {
+                dupFacet[name] = mixedTempList;
+            }
+        });
 
-            for (var term in dupFacet) {
-                var andFacetTermList = [];
-                var facetList = dupFacet[term];
-                facetList.forEach(function (item) {
-                    selectedList = selectedList.filter(function(element) {
-                        return !(element.type == "term" && element.id() == item.id())
-                    });
-                    andFacetTermList.push(item.exclude? '-"' + item.term() + '"': '"' + item.term() + '"');
+        for (var term in dupFacet) {
+            var andFacetTermList = [];
+            var facetList = dupFacet[term];
+            facetList.forEach(function (item) {
+                selectedList = selectedList.filter(function(element) {
+                    return !(element.type == "term" && element.id() == item.id())
                 });
+                andFacetTermList.push(item.exclude? '-"' + item.term() + '"': '"' + item.term() + '"');
+            });
 
 
-                var termStrList = '';
-                if (andFacetTermList.length > 0) {
-                    termStrList = '(' + andFacetTermList.join(' AND ') + ')';
-                }
-
-                if (termStrList.length > 0) {
-                    if (queryString.length > 0) {
-                        queryString = queryString +  ' AND ';
-                    }
-                    queryString = queryString + term + ':' + termStrList;
-                }
+            var termStrList = '';
+            if (andFacetTermList.length > 0) {
+                termStrList = '(' + andFacetTermList.join(' AND ') + ')';
             }
 
-            selectedList.forEach(function (facet) {
-                fq.push(facet.getQueryText())
-            });
+            if (termStrList.length > 0) {
+                if (queryString.length > 0) {
+                    queryString = queryString +  ' AND ';
+                }
+                queryString = queryString + term + ':' + termStrList;
+            }
+        }
+
+        selectedList.forEach(function (facet) {
+            fq.push(facet.getQueryText());
+        });
 
         var query = this.getQuery(true);
         if (query.length > 0) {
@@ -388,12 +392,18 @@ function ProjectFinder(config) {
         }
 
         var queryList = [];
-
-        var selectedFacetList = pageWindow.filterViewModel.selectedFacets();
-
-        selectedFacetList.forEach(function (facet) {
-            queryList.push(facet.getQueryText())
+        pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
+            queryList.push(facet.getQueryText());
         });
+
+        // get the checkbox value
+        var excludeNationwide = !!(pageWindow.filterViewModel.nationwideProjCheckbox && pageWindow.filterViewModel.nationwideProjCheckbox());
+
+        // only add filter when checked
+        if (excludeNationwide) {
+            if (!fq.includes('-nationwideFacet:false')) fq.push('-nationwideFacet:false');
+            if (!queryList.includes('-nationwideFacet:false')) queryList.push('-nationwideFacet:false');
+        }
 
         var map = {
             fq: fq,
@@ -412,13 +422,15 @@ function ProjectFinder(config) {
             projectId: selectedProjectId,
             q: query,
             queryList: queryList,
-            queryText: this.getQuery(true)
+            queryText: this.getQuery(true),
+            // sending the value for logging use
+            excludeNationwide: excludeNationwide
         };
 
-        map.max =  pageWindow.pagination.resultsPerPage() // Page size
+        map.max =  pageWindow.pagination.resultsPerPage(); // Page size
         map.sort = pageWindow.sortBy();
 
-        return map
+        return map;
     };
 
     this.getQuery = function (partialSearch) {
@@ -531,22 +543,31 @@ function ProjectFinder(config) {
         return true
     };
 
-
     this.reset = function () {
+        pageWindow.filterViewModel.switchOffSearch(true);
+
         $('#pt-search').val('');
         if (spatialFilter && isMapFilterVisible()) {
             spatialFilter.resetMap();
             clearMapFilter = false;
         } else {
-            clearMapFilter = true
+            clearMapFilter = true;
         }
 
         geoSearch = {};
         pageWindow.isGeoSearchEnabled(false);
+
+        // clear the checkbox BEFORE clearing facets
+        pageWindow.filterViewModel.nationwideProjCheckbox(false);
+        // Clear facets
         pageWindow.filterViewModel.selectedFacets.removeAll();
         pageWindow.filterViewModel.origSelectedFacet.removeAll();
         pageWindow.filterViewModel.redefineFacet(false);
-    }
+        // Re-enable and perform a single fresh search
+        pageWindow.filterViewModel.switchOffSearch(false);
+        self.resetPageOffSet();
+        self.doSearch();
+    };
 
     /** display the current size of the filtered list **/
     this.updateTotal = function () {
@@ -817,9 +838,9 @@ function ProjectFinder(config) {
 
     $(mapFilterSelector).on('hide.bs.modal', function () {
         geoSearchChanged();
-        if(refreshSearch) {
-            self.doSearch();
-        }
+        // Always search on close so checkbox change applies
+        self.resetPageOffSet(); // pagination restarts at page 1
+        self.doSearch();       //make the query
     });
 
     function isMapFilterVisible() {
