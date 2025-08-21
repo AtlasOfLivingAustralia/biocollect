@@ -842,9 +842,11 @@ function ProjectFinder(config) {
 
     $(mapFilterSelector).on('hide.bs.modal', function () {
         geoSearchChanged();
-        // Always search on close so checkbox change applies
-        self.resetPageOffSet(); // pagination restarts at page 1
-        self.doSearch();       //make the query
+        if (refreshSearch) {
+            self.resetPageOffSet(); // pagination restarts at page 1
+            self.doSearch();       //make the query
+            refreshSearch = false;
+        }
     });
 
     function isMapFilterVisible() {
