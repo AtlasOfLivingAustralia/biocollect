@@ -189,7 +189,7 @@ function ProjectFinder(config) {
         });
 
         vm.removeNationwide = function () {
-            vm.filterViewModel.nationwideProjCheckbox(false);
+            vm.filterViewModel.nationwideProjectCheckbox(false);
             self.resetPageOffSet();
             self.doSearch();
         };
@@ -402,7 +402,7 @@ function ProjectFinder(config) {
         });
 
         // get the checkbox value
-        var excludeNationwide = !!(pageWindow.filterViewModel.nationwideProjCheckbox && pageWindow.filterViewModel.nationwideProjCheckbox());
+        var excludeNationwide = !!(pageWindow.filterViewModel.nationwideProjectCheckbox && pageWindow.filterViewModel.nationwideProjectCheckbox());
 
         // only add filter when checked
         if (excludeNationwide) {
@@ -563,7 +563,7 @@ function ProjectFinder(config) {
         pageWindow.isGeoSearchEnabled(false);
 
         // clear the checkbox BEFORE clearing facets
-        pageWindow.filterViewModel.nationwideProjCheckbox(false);
+        pageWindow.filterViewModel.nationwideProjectCheckbox(false);
         // Clear facets
         pageWindow.filterViewModel.selectedFacets.removeAll();
         pageWindow.filterViewModel.origSelectedFacet.removeAll();

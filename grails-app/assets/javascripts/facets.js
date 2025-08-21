@@ -38,7 +38,7 @@ function FilterViewModel(config){
     var parent = config.parent;
     self.flimit = config.flimit;
 
-    self.nationwideProjCheckbox = ko.observable(false);
+    self.nationwideProjectCheckbox = ko.observable(false);
     self.facets = ko.observableArray()
     self.selectedFacets = ko.observableArray()
     self.tempListOfFacets = ko.observableArray()
@@ -233,7 +233,7 @@ function FilterViewModel(config){
         self.tempListOfFacets.removeAll();
         self.selectedFacets.removeAll();
         self.origSelectedFacet.removeAll();
-        self.nationwideProjCheckbox(false);
+        self.nationwideProjectCheckbox(false);
     }
 
     self.otherFilters = function() {
