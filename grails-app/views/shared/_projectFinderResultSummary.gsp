@@ -57,9 +57,7 @@
     <button class="filter-item btn btn-outline-dark btn-sm"><strong data-bind="if: exclude">[EXCLUDE]</strong> <!-- ko text: displayNameWithoutCount() --> <!-- /ko --> <span class="remove" data-bind="click: remove"><i class="far fa-trash-alt"></i></span></button>
     <!-- /ko -->
     <!-- ko if: filterViewModel.nationwideProjCheckbox() -->
-    <button class="filter-item btn btn-outline-dark btn-sm"><g:message code="project.search.excludeNationalProject"/>
-        <span class="remove" data-bind="click: function(){ filterViewModel.nationwideProjCheckbox(false); resetPageOffSet(); doSearch(); }"><i class="far fa-trash-alt"></i></span>
-    </button>
+    <button class="filter-item btn btn-outline-dark btn-sm"><g:message code="project.search.excludeNationalProject"/><span class="remove" data-bind="click: removeNationwide"><i class="far fa-trash-alt"></i></span></button>
     <!-- /ko -->
     <!-- ko if: ((filterViewModel.selectedFacets() && filterViewModel.selectedFacets().length > 0) || isGeoSearchEnabled() || filterViewModel.nationwideProjCheckbox()) -->
     <button type="button" class="btn btn-sm btn-dark clear-filters" data-bind="click: reset">
