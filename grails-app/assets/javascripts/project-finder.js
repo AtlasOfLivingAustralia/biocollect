@@ -407,7 +407,6 @@ function ProjectFinder(config) {
         // only add filter when checked
         if (excludeNationwide) {
             if (!fq.includes('-nationwideFacet:false')) fq.push('-nationwideFacet:false');
-            if (!queryList.includes('-nationwideFacet:false')) queryList.push('-nationwideFacet:false');
         }
 
         var map = {
