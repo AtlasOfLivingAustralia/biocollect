@@ -974,6 +974,11 @@ function ProjectFinder(config) {
         pageWindow.isWorldWide( params.isWorldWide || 'false');
 
         $('#pt-search').val(params.queryText).focus();
+
+        var excl = params.excludeNationwide;
+        var excludeNationwide = (excl === 'true' || excl === true);
+        pageWindow.filterViewModel.nationwideProjectCheckbox(!!excludeNationwide);
+
         pageWindow.filterViewModel.switchOffSearch(false);
     }
 
