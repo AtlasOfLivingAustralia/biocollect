@@ -59,54 +59,54 @@ function ProjectFinder(config) {
 
     /* window into current page */
     function PageVM(config) {
-        this.self = this;
-        this.sortBy = ko.observable("dateCreatedSort");
-        this.isWorldWide = ko.observable("false");
-        this.pageProjects = ko.observableArray();
-        this.facets = ko.observableArray();
-        this.isGeoSearchEnabled = ko.observable(false);
-        this.selectedFacets = ko.observableArray();
-        this.columns = ko.observable(2);
+        var vm = this;                      // ✅ single alias for PageVM
 
-        this.pagination = new PaginationViewModel({ numberPerPage: projectsPerPage }, this);
-        self.columns = this.columns
-        this.clearGeoSearch = function () {
-            this.isGeoSearchEnabled(false);
+        vm.sortBy = ko.observable("dateCreatedSort");
+        vm.isWorldWide = ko.observable("false");
+        vm.pageProjects = ko.observableArray();
+        vm.facets = ko.observableArray();
+        vm.isGeoSearchEnabled = ko.observable(false);
+        vm.selectedFacets = ko.observableArray();
+        vm.columns = ko.observable(2);
+
+        vm.pagination = new PaginationViewModel({numberPerPage: projectsPerPage}, vm);
+        self.columns = vm.columns;
+        vm.clearGeoSearch = function () {
+            vm.isGeoSearchEnabled(false);
             clearGeoSearch();
             self.doSearch();
         };
-        this.doSearch = function () {
+        vm.doSearch = function () {
 
             self.doSearch();
         };
-
-        this.resetPageOffSet = function () {
+        vm.resetPageOffSet = function () {
             self.resetPageOffSet();
         };
 
-        this.getFacetTerms = function (facets) {
+        vm.getFacetTerms = function (facets) {
             return self.getFacetTerms(facets);
         };
 
-        this.reset = function () {
+        vm.reset = function () {
             self.reset();
         };
 
-        this.sortBy.subscribe(function(){ self.doSearch(); });
-        this.isWorldWide.subscribe(function(){ self.doSearch(); });
+        vm.sortBy.subscribe(function(){ self.doSearch(); });
+        vm.isWorldWide.subscribe(function(){ self.doSearch(); });
 
-        this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
-        this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
-        this.sortKeys = ko.observableArray(self.sortKeys);
-        this.download = function (obj, e) {
-            bootbox.alert("The download may take several minutes to complete.  Once it is complete, an email will be sent to your registered email address.");
-            $.post(config.downloadWorksProjectsUrl, self.getParams()).fail(function() {
+        vm.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
+        vm.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
+        vm.sortKeys = ko.observableArray(self.sortKeys);
+        vm.download = function () {
+            bootbox.alert("The download may take several minutes to complete. Once it is complete, an email will be sent to your registered email address.");
+            $.post(config.downloadWorksProjectsUrl, self.getParams()).fail(function () {
                 bootbox.alert("There was an error attempting your download.  Please try again or contact support.");
             });
             return false;
         };
 
-        this.refreshPage = function(newOffset){
+        vm.refreshPage = function (newOffset) {
             offset = newOffset;
             self.doSearch();
         };
@@ -133,10 +133,10 @@ function ProjectFinder(config) {
         self.resizeGrid();
 
         // this.listView = ko.observable(true);
-        this.viewMode = ko.observable("tileView");
+        vm.viewMode = ko.observable("tileView");
 
-        this.viewMode.subscribe(function (newValue) {
-            if ((newValue === 'tileView') || (newValue === 'listView')) {
+        vm.viewMode.subscribe(function (newValue) {
+            if ((newValue === 'tileView' || newValue === 'listView')) {
                 setTimeout(updateLazyLoad, 0);
             }
         });
@@ -154,7 +154,7 @@ function ProjectFinder(config) {
             return true;
         }
 
-        this.partitioned = function (observableArray, countObservable) {
+        vm.partitioned = function (observableArray, countObservable) {
             var rows, partIdx, i, j, arr;
             var count = countObservable();
 
@@ -174,20 +174,25 @@ function ProjectFinder(config) {
             return rows;
         };
 
-        this.styleIndex = function (dataIndex, rowSize) {
+        vm.styleIndex = function (dataIndex, rowSize) {
             return dataIndex() % rowSize + 1 ;
         };
 
-        this.filterViewModel = new FilterViewModel({
+        vm.filterViewModel = new FilterViewModel({
             parent: self,
             flimit: fcConfig.flimit
         });
 
-        this.filterViewModel.selectedFacets.subscribe(function () {
+        vm.filterViewModel.selectedFacets.subscribe(function () {
             self.resetPageOffSet(); // pagination restarts at page 1
             self.doSearch();       //make the query
         });
 
+        vm.removeNationwide = function () {
+            vm.filterViewModel.nationwideProjCheckbox(false);
+            self.resetPageOffSet();
+            self.doSearch();
+        };
     }
 
     /**
