@@ -42,7 +42,7 @@
             <div class="modal-footer">
                 <g:if test="${hubConfig?.content?.enableNationalProjectsExclusionFilter}">
                     <div class="checkbox">
-                        <input type="checkbox" data-bind="checked: nationwideProjCheckbox">
+                        <input type="checkbox" data-bind="checked: nationwideProjectCheckbox">
                         <g:message code="project.search.excludeNationalProject"/>
                     </div>
                 </g:if>
