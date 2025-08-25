@@ -1,0 +1,360 @@
+{
+  "id": "5d133338e4b00a475b28e228",
+  "dateCreated": "2019-06-26T08:56:25Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-07-24T06:21:06Z",
+  "createdUserId": "<anon>",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "North Sydney Wildlife Watch",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "dataModel": [
+          {
+            "dataType": "date",
+            "name": "surveyDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date on which the sighting was made.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "surveyTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time at which the sighting was made."
+          },
+          {
+            "dataType": "text",
+            "name": "notes",
+            "dwcAttribute": "eventRemarks",
+            "description": "General remarks about the sighing, including any characteristic site features, conditions, etc."
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who is attributed with making the sighting.",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "observationType",
+            "description": "What type of observation is this record for?",
+            "constraints": [
+              "A - Stranding/beached",
+              "AR - Acoustic recording",
+              "B - Burnt",
+              "C - Cat kill",
+              "CI - Cat Injured",
+              "D - Dog kill",
+              "DI - Dog Injured",
+              "E - Nest/roost/mound",
+              "F - Tracks, scratchings",
+              "FB - Burrow",
+              "H - Hair, feathers or skin",
+              "K - Dead",
+              "M - Miscellaneous",
+              "O - Observed",
+              "OW - Observed and Heard call",
+              "P - Scat",
+              "Q - Camera",
+              "R - Road kill",
+              "RI - Road injured",
+              "V - Fox kill",
+              "VI - Fox injured",
+              "W - Heard call",
+              "WR - Wildlife rehabilitation",
+              "Y - Bone, teeth or shell"
+            ],
+            "validate": "required"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "name": "coordinateUncertaintyInMeters",
+            "dwcAttribute": "coordinateUncertaintyInMeters",
+            "description": "The radius in metres of uncertainty of the coordinate precision.",
+            "validate": "required,integer,min[1]",
+            "defaultValue": 1
+          },
+          {
+            "dataType": "text",
+            "name": "locationDescription",
+            "dwcAttribute": "locality",
+            "description": "Detailed description of the geographic location, such as street, nearest cross street, town, landmark or reserve",
+            "validate": "required"
+          },
+          {
+            "dataType": "species",
+            "name": "species",
+            "dwcAttribute": "scientificName",
+            "description": "The species name of the plant, animal or fungus observed. If your species cannot be found, type ‘unlisted'.",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "unlistedSpecies",
+            "description": "If the species is not in the select list or is unknown, please indicate the species name or describe it here."
+          },
+          {
+            "dataType": "number",
+            "name": "individualCount",
+            "dwcAttribute": "individualCount",
+            "description": "The number of individuals or colonies (for certain insects).",
+            "validate": "min[1]",
+            "defaultValue": 1
+          },
+          {
+            "dataType": "text",
+            "name": "identificationConfidence",
+            "dwcAttribute": "identificationQualifier",
+            "description": "How certain are you that you have correctly identified your sighting? Only choose 'certain' if you are 100% sure.",
+            "constraints": [
+              "Certain",
+              "Uncertain"
+            ]
+          },
+          {
+            "dataType": "image",
+            "name": "sightingPhoto",
+            "dwcAttribute": "associatedMedia",
+            "description": "Upload a photo taken of the species at the time of the record. This is essential for verification of the record."
+          },
+          {
+            "dataType": "text",
+            "name": "piSaringAgreement",
+            "constraints": [
+              "Yes",
+              "No"
+            ],
+            "validate": "required",
+            "defaultValue": "Yes"
+          }
+        ],
+        "modelName": "northSydneyWildlifeWatch",
+        "record": "true",
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Wildlife Watch</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "SITE VISIT DETAILS",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Date of the sighting",
+                                "source": "surveyDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Time of the sighting",
+                                "source": "surveyTime",
+                                "type": "time"
+                              },
+                              {
+                                "source": "<i>Start typing a common or scientific name, or NSW BioNet code. Note: type and select ‘Unlisted or unknown’ if the species is not in the list, or you cannot identify it, then enter the details in the box below.</i>",
+                                "type": "literal"
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "preLabel": "Species name",
+                                    "source": "species",
+                                    "type": "autocomplete"
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "Unlisted species name or description of unknown species.",
+                                "source": "unlistedSpecies",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Are you confident of the species identification?",
+                                "source": "identificationConfidence",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Observation Type",
+                                "source": "observationType",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "How many individuals did you see?",
+                                "source": "individualCount",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Sighting photo",
+                                "source": "sightingPhoto",
+                                "type": "image"
+                              },
+                              {
+                                "preLabel": "Notes",
+                                "computed": null,
+                                "source": "notes",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Observed by",
+                                "computed": null,
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Do you agree to ALA sharing your contact details with the project organiser for the purposes of record verification?",
+                                "computed": null,
+                                "source": "piSaringAgreement",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "LOCATION",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<font-size='0.8em'><i>Zoom in on the map, then click on the marker and drop it on the location where you made the sighting.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": false,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": true,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": true,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": false
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "Location accuracy (m)",
+                                "type": "number",
+                                "source": "coordinateUncertaintyInMeters"
+                              },
+                              {
+                                "preLabel": "Location Description",
+                                "type": "textarea",
+                                "source": "locationDescription"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "northSydneyWildlifeWatch",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "North Sydney Wildlife Watch",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "82292",
+  "description": null,
+  "formVersion": 1
+}

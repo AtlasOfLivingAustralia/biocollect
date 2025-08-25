@@ -1,3 +1,4 @@
+
 //= require js-iso8601/js-iso8601.min.js
 //= require underscore/underscore-1.8.3.min.js
 //= require amplify/amplify.min.js
@@ -25,3 +26,6 @@
 //= require restoreTab.js
 //= require components.js
 //= require izitoast/izitoast.min.js
+// select2
+//= require select2/4.0.3/js/select2.full
+//= require typeahead/0.11.1/bloodhound

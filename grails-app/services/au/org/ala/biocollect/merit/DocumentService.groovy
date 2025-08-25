@@ -1,6 +1,9 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.ecodata.forms.EcpWebService
 import grails.converters.JSON
+import grails.web.mapping.LinkGenerator
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 
 /**
@@ -16,6 +19,10 @@ class DocumentService {
     ActivityService activityService
     SearchService searchService
     ProjectService projectService
+    SettingService settingService
+    LinkGenerator grailsLinkGenerator
+    CommonService commonService
+    EcpWebService ecpWebService
 
     def get(String id) {
         def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${id}"
@@ -64,7 +71,7 @@ class DocumentService {
             def file = new File(grailsApplication.config.upload.images.path, document.filename)
             // Create a new document, supplying the file that was uploaded to the ImageController.
             result = createDocument(document, document.contentType, new FileInputStream(file))
-            if (!result.error) {
+            if (org.springframework.http.HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
                 file.delete()
             }
         }
@@ -91,10 +98,53 @@ class DocumentService {
         return resp
     }
 
-    Map allDocumentsSearch(Integer offset = 0, Integer max = 100, String searchTerm = null, String searchType = null, String searchInRole = null, String sort = "dateCreated", String order = "desc", String projectId = null, String hub = null) {
-        String searchTextBy = "";
+    /**
+     * Download documents with search criteria.
+     * @param requestParams
+     * @return
+     */
+    Map documentsDownload(GrailsParameterMap requestParams) {
+        Map params = populateDocumentSearchParameters(requestParams)
+        params.email = userService.getUser().email
+        params.downloadUrl = grailsLinkGenerator.link(controller: 'download', action: 'downloadProjectDataFile', absolute: true) + '/'
+        ecpWebService.getJson2("${grailsApplication.config.getProperty('ecodata.service.url')}/search/downloadAllDocuments" + commonService.buildUrlParamsFromMap(params))
+    }
 
-        Map params = [:]
+    Map allDocumentsSearch(GrailsParameterMap requestParams) {
+        Map params = populateDocumentSearchParameters(requestParams)
+        Map results = searchService.fulltextSearch(
+                params, true
+        )
+
+        //add the associated projectId when viewing hub documents
+        if (!projectId) {
+            Map project
+
+            if (results) {
+                for (int i = 0; i < results.hits.hits.size(); i++) {
+                    project = projectService.get(results.hits.hits[i]._source.projectId)
+
+                    if (project)
+                        results.hits.hits[i]._source.put("projectName", project.name)
+                }
+            }
+        }
+
+        results
+    }
+
+    Map populateDocumentSearchParameters(GrailsParameterMap requestParams) {
+        String searchType = requestParams.searchType
+        String searchTerm = requestParams.searchTerm
+        String searchInRole = requestParams.searchInRole
+        String projectId = requestParams.projectId
+        int offset = requestParams.getInt('offset', 0)
+        int max = requestParams.getInt('max', 100)
+        String hub = settingService.getHubConfig().urlPath
+        String order = requestParams.order
+        String sort = requestParams.sort
+        String searchTextBy = ""
+        Map params
 
         if (searchType == 'none' && searchTerm)
             searchTextBy += "(name:" + searchTerm + " OR labels:" + searchTerm + " OR attribution:" + searchTerm + " OR citation:" + searchTerm + " OR description:" + searchTerm + ")";
@@ -185,25 +235,7 @@ class DocumentService {
             params.searchInRole = searchInRole
         }
 
-        Map results = searchService.fulltextSearch(
-                params, true
-        )
-
-        //add the associated projectId when viewing hub documents
-        if (!projectId) {
-            Map project = [:]
-
-            if (results) {
-                for (int i = 0; i < results.hits.hits.size(); i++) {
-                    project = projectService.get(results.hits.hits[i]._source.projectId)
-
-                    if (project)
-                        results.hits.hits[i]._source.put("projectName", project.name)
-                }
-            }
-        }
-
-        results
+        return params
     }
 
     /**

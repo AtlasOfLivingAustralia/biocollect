@@ -25,7 +25,7 @@
 
     <div class="row-fluid margin-top-2">
         <div class="well span12">
-            <markdown:renderHtml>${text}</markdown:renderHtml>
+            <fc:markdownToHtml>${raw(text)}</fc:markdownToHtml>
         </div>
     </div>
 

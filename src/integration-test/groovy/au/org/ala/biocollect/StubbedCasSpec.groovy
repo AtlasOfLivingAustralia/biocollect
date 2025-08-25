@@ -21,7 +21,6 @@ import java.security.KeyPair
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
-
 //import com.github.tomakehurst.wiremock.WireMockServer
 
 /**

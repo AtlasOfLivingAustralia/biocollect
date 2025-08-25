@@ -74,8 +74,15 @@ images:
 
 lists:
   baseURL: "https://lists.ala.org.au" # "https://lists-test.ala.org.au/public/speciesLists"
+  uiBaseURL: "https://lists.ala.org.au"
   commonFields: ['rawScientificName', 'matchedName', 'commonName']
   facetsToRemoveFromProjectFinderPage: ['projLifecycleStatus']
+  apiVersion: "v1"
+
+listsFieldMappingV2:
+  matchedName: "classification.scientificName"
+  commonName: "classification.vernacularName"
+  rawScientificName: "scientificName"
 
 merit:
   baseURL: "https://fieldcapture-test.ala.org.au"
@@ -175,6 +182,8 @@ grails:
             xml:
               - text/xml
               - application/xml
+            zip:
+              - application/zip
     urlmapping:
         cache:
             maxsize: 1000
@@ -308,5 +317,32 @@ grails:
   cors:
     enabled: true
 
+---
+#pwa
+pwa:
+  appUrl: "http://localhost:5173"
+  cache:
+    ignore: ["/image/upload", "/ws/attachment/upload"]
+  maxAreaInKm: 25
+  tileSize: 256
+  apiKey: ""
+  cacheVersion: "v3"
+  oldCacheToDelete: "v2"
+  serviceWorkerConfig:
+      pathsToIgnoreCache: [ "/image/upload", "/ws/attachment/upload", "/ajax/keepSessionAlive", "/noop", '/pwa/sw.js', '/pwa/config.js', "/ws/species/speciesDownload" ]
+      cachePathForRequestsStartingWith: [ "/pwa/bioActivity/edit/", "/pwa/createOrEditFragment/", "/pwa/bioActivity/index/", "/pwa/indexFragment/", "/pwa/offlineList" ]
+      filesToPreCache: ["webjars/leaflet/0.7.7/dist/images/layers.png", "webjars/leaflet/0.7.7/dist/images/layers-2x.png", "webjars/leaflet/0.7.7/dist/images/marker-icon.png", "webjars/leaflet/0.7.7/dist/images/marker-icon-2x.png", "webjars/leaflet/0.7.7/dist/images/marker-shadow.png", "map-not-cached.png", "font-awesome/5.15.4/svgs/regular/image.svg"]
+      baseMapPrefixUrl: "https://api.maptiler.com/maps/hybrid/256"
+      noCacheTileFile: "map-not-cached.png"
+  baseMapUrl: "${pwa.serviceWorkerConfig.baseMapPrefixUrl}/{z}/{x}/{y}.jpg?key="
+  mapConfig:
+    baseLayers:
+      - code: 'maptilersatellite'
+        displayText: 'Satellite'
+        isSelected: true
+        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
+    overlays: [ ]
+
+---
 fathom:
   enabled: true

@@ -1,7 +1,14 @@
-<%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON;"%>
+<%@ page contentType="text/html;charset=UTF-8" import="grails.converters.JSON; static au.org.ala.biocollect.MarkdownUtils.markdownToHtmlAndSanitise" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <g:set var="utilService" bean="utilService"></g:set>
 <g:set var="projectActivityService" bean="projectActivityService"></g:set>
+<g:set var="speciesListService" bean="speciesListService"></g:set>
+<g:if test="${speciesListService.checkListAPIVersion(speciesListService.LIST_VERSION_V1)}">
+    <g:set var="speciesListServerURL" value="${grailsApplication.config.getProperty("lists.baseURL") + '/speciesListItem/list'}"></g:set>
+</g:if>
+<g:else>
+    <g:set var="speciesListServerURL" value="${grailsApplication.config.getProperty("lists.uiBaseURL") + '/list'}"></g:set>
+</g:else>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,7 +78,7 @@
         getSpeciesFieldsForSurveyUrl: "${createLink(controller: 'projectActivity', action: 'ajaxGetSpeciesFieldsForSurvey')}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         speciesListUrl: "${createLink(controller: 'search', action: 'searchSpeciesList')}",
-        speciesListsServerUrl: "${grailsApplication.config.lists.baseURL}",
+        speciesListsServerUrl: "${speciesListServerURL}",
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
@@ -79,6 +86,7 @@
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         methoddocumentUpdateUrl: "${raw(createLink(controller:"image", action:"upload", params:[role: "methodDoc"]))}",
+        documentDownloadUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch', params: [format: 'zip'])}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
         imageLocation:"${asset.assetPath(src:'')}",
         documentSearchUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch')}",
@@ -236,11 +244,11 @@
         </g:if>
         <g:if test="${projectContent.admin.visible}">
             <g:if test="${!project.isExternal}">
-                var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+                var projectStoriesMarkdown = '${markdownToHtmlAndSanitise(project.projectStories?:"")?.encodeAsJavaScript()}';
                 var projectStoriesViewModel = new window.projectStoriesViewModel(projectViewModel, projectStoriesMarkdown);
                 ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
 
-                var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
+                var newsAndEventsMarkdown = '${markdownToHtmlAndSanitise(project.newsAndEvents?:"")?.encodeAsJavaScript()}';
                 var newsAndEventsViewModel = new window.newsAndEventsViewModel(projectViewModel, newsAndEventsMarkdown);
                 ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
             </g:if>

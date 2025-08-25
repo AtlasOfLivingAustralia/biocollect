@@ -350,13 +350,11 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
     }
 
     function updateSiteMarkerPosition() {
-        var siteMarker = getSiteMarker();
-
         var geometry = self.site().extent().geometry();
-        if (siteMarker && geometry.decimalLatitude() && geometry.decimalLongitude()) {
-            siteMarker.setLatLng(new L.LatLng(geometry.decimalLatitude(), geometry.decimalLongitude()));
-            self.map.fitBounds();
-            loadGazetteInformation(geometry.decimalLatitude(), geometry.decimalLongitude());
+        if (geometry.decimalLatitude() && geometry.decimalLongitude()) {
+            geometry.coordinates([geometry.decimalLongitude(), geometry.decimalLatitude()]);
+            self.map.addMarker(geometry.decimalLatitude(), geometry.decimalLongitude());
+            loadGazetteInformation(geometry.decimalLatitude, geometry.decimalLongitude);
         }
     }
 

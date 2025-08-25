@@ -30,6 +30,8 @@
 <asset:stylesheet src="leaflet-manifest.css"/>
 <asset:stylesheet src="admin.css"/>
 <asset:stylesheet src="fileupload-ui-manifest.css"/>
+<asset:stylesheet src="ckeditor/ckeditor5/ckeditor5.css"/>
+<asset:javascript src="ckeditor/ckeditor5/ckeditor5.umd.js"/>
 <asset:javascript src="leaflet-manifest.js"/>
 <asset:javascript src="common-bs4.js"/>
 <asset:javascript src="fileupload-manifest.js"/>
@@ -106,14 +108,32 @@
                     <input type="text" class="form-control" data-bind="value:homePagePath" placeholder="Relative path to home page (leave blank for default)"></input>
                 </div>
             </div>
-
             <div class="form-group row">
                 <label class="col-md-4 col-form-label" for="description">Fathom site id</label>
                 <div class="col-md-8 required">
                     <input type="text" class="form-control" data-bind="value:fathomSiteId" placeholder="Fathom analytics site id"></input>
                 </div>
             </div>
-
+            <div>
+                <label>Favicon image</label>
+                <div class="row">
+                    <div class="col-6">
+                        <img data-bind="visible:faviconlogoUrl(), attr:{src:faviconlogoUrl}">
+                    </div>
+                    <div class="offset-4 col-2">
+                        <button type="button" class="btn  btn-sm btn-danger" data-bind="visible:faviconlogoUrl(), click:removeFaviconlogo"><i class="far fa-trash-alt"></i> Remove Favicon</button>
+                        <span class="btn fileinput-button float-right btn-dark"
+                              data-url="${createLink(controller: 'image', action:'upload')}"
+                              data-role="faviconlogo"
+                              data-owner-type="hubId"
+                              data-bind="attr:{'data-owner-id':name}, stagedImageUpload:documents, visible:!faviconlogoUrl()">
+                            <i class="fas fa-file-upload"></i>
+                            <input id="faviconlogo" type="file" name="files" accept="image/png">
+                            <span>Attach Favicon Logo</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-md-4 col-form-label" for="supported-programs">Supported Programs (Projects in this hub can only select from these programs)</label>
                 <div class="col-md-8">
@@ -184,13 +204,14 @@
                                     <th>Display name</th>
                                     <th>Content type</th>
                                     <th>Href value</th>
+                                    <th>Introductory text</th>
                                     <th>Role</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, enableIntroText: true, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
@@ -247,7 +268,7 @@
                                 </thead>
                                 <tbody>
                                 <!-- ko foreach: links -->
-                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
+                                <!-- ko template: { name: 'templateLink', data: {disableRoles:false, enableIntroText: false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
@@ -414,7 +435,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideBreadCrumbs"> Hide bread crumbs
                 </div>
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: nespFavicon"> Use HUB favicon
+                </div>
 
                 <h5>Project finder</h5>
                 <div class="checkbox">
@@ -435,8 +458,9 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: enablePartialSearch"> Enable partial search
                 </div>
-
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: disableOrganisationHyperlink"> Disable organisation hyperlink
+                </div>
                 <h5>Project page</h5>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectBackButton"> Hide 'Back to search results' button on project page
@@ -468,7 +492,12 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectSurveyDownloadXLSX"> Hide 'Download XLSX template'
                 </div>
-
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectGettingStartedButton"> Hide 'Getting Started' on project information
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: showCustomMetadata"> Show Custom Metadata such as Category, Raid, Indigenous Cultural etc
+                </div>
 
                 <h5>Record listing</h5>
                 <div class="checkbox">
@@ -508,7 +537,7 @@
                     </thead>
                     <tbody>
                     <!-- ko foreach: quickLinks -->
-                    <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
+                    <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, enableIntroText: false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                     <!-- /ko -->
                     <!-- /ko -->
                     <tr>
@@ -733,7 +762,30 @@
         <button type="button" id="cancel" class="btn btn-dark"><i class="far fa-times-circle"></i> Cancel</button>
     </div>
 </div>
-
+<!-- ko stopBinding: true -->
+<!-- Introductory text Modal -->
+<div class="modal fade vh-100" id="introTextModal" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Introductory text</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <bc:koLoading>
+                <textarea class="ckeditor" data-bind="ckeditor: introductoryText"></textarea>
+                </bc:koLoading>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bind="click: saveIntroductoryText">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /ko -->
 <script id="templateLink" type="text/html">
     <tr>
         <td>
@@ -761,6 +813,15 @@
         <td>
             <input class="form-control" type="text" data-bind="value: link.href"/>
         </td>
+        <!-- ko if: enableIntroText -->
+        <td>
+        <!-- ko ifnot: ['external', 'nolink', 'login', 'biocacheexplorer'].indexOf(link.contentType()) > -1 -->
+            <button class="btn btn-sm btn-primary" data-bind="click: link.launchModal">
+                <i class="fas fa-pencil-alt"></i> Edit&nbsp;intro
+            </button>
+        <!-- /ko -->
+        </td>
+        <!-- /ko -->
         <!-- ko if:!disableRoles -->
         <td>
             <select class="form-control" data-bind="value: link.role">
@@ -770,7 +831,7 @@
         </td>
         <!-- /ko -->
         <td>
-            <button class="btn btn-danger" data-bind="click: removeLink">
+            <button class="btn btn-sm btn-danger" data-bind="click: removeLink">
                 <i class="far fa-trash-alt"></i> Remove
             </button>
         </td>
@@ -807,7 +868,7 @@
                 </thead>
                 <tbody>
                 <!-- ko foreach: breadCrumbs -->
-                <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
+                <!-- ko template: { name: 'templateLink', data: {$parent: $parent, disableRoles:true, enableIntroText: false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                 <!-- /ko -->
                 <!-- /ko -->
                 <tr>
@@ -1157,7 +1218,7 @@
                         </thead>
                         <tbody>
                         <!-- ko foreach: buttons -->
-                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
+                        <!--ko template: { name: 'templateLink', data: {disableRoles:false, enableIntroText: false, link:$data, removeLink:function() {$parent.removeLink($data)} }} -->
                         <!-- /ko -->
                         <!-- /ko -->
                         <tr>

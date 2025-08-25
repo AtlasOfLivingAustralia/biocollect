@@ -52,6 +52,7 @@ environments {
                 wiremock.port = 8018
                 grails.config.locations = []
                 security.oidc.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
+                security.jwt.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
                 security.oidc.allowUnsignedIdTokens = true
                 security.oidc.clientId="oidcId"
                 security.oidc.secret="oidcSecret"
@@ -101,6 +102,8 @@ environments {
                 grails.mail.port = 3025 // com.icegreen.greenmail.util.ServerSetupTest.SMTP.port
                 temp.dir="/tmp/stylesheet"
                 google.maps.apiKey="testGoogleApi"
+                speciesCatalog.dir="./src/integration-test/resources/data"
+                userProfile.userIdAttribute="userid"
         }
 
         production {
@@ -144,6 +147,39 @@ webservice.jwt = true
 webservice['jwt-scopes'] = "ala/internal users/read ala/attrs ecodata/read_test ecodata/write_test"
 webservice['client-id']='changeMe'
 webservice['client-secret'] = 'changeMe'
+
+speciesCatalog = [
+        url: "To be set",
+        fileName: "combined.zip",
+        vernacularFileName: "vernacularname.txt",
+        taxonFileName: "taxon.txt",
+        totalFileName: "total.json",
+        batchSize: 1000,
+        dir: "/data/biocollect/speciesCatalog",
+        filters: [
+                language: "en",
+                exclude: [
+                        unrankedValue: "unranked"
+                ]
+        ],
+        taxon: [
+                headerNames: [
+                        guid: "taxonID",
+                        scientificName: "scientificName",
+                        rankString: "taxonRank",
+                        name: "scientificName"
+                ]
+        ],
+        vernacular: [
+                headerNames: [
+                        taxonID: "taxonID",
+                        vernacularName: "vernacularName",
+                        language: "language",
+                        preferred: "isPreferredName"
+                ]
+        ]
+]
+
 
 dataAccessMethods = [
         "oasrdfs",
@@ -687,3 +723,11 @@ if (!app.file.script.path) {
         app.file.script.path = "/data/biocollect/scripts"
 }
 script.read.extensions.list = ['js','min.js','png', 'json', 'jpg', 'jpeg']
+
+// yml interpreter doesn't evaluate expression in deep nested objects such as baseLayers below
+pwaMapConfig = { def config ->
+        Map pwa = config.getProperty('pwa', Map)
+        Map mapConfig = pwa.mapConfig
+        mapConfig.baseLayers.getAt(0).url = pwa.baseMapUrl + pwa.apiKey
+        mapConfig
+}

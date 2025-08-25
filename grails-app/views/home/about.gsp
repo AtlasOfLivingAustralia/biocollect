@@ -34,7 +34,7 @@
         <div class="row">
             <div class="col-md-7">
                 <div class="mt-3" id="aboutDescription">
-                    <markdown:renderHtml>${raw(content)}</markdown:renderHtml>
+                    <fc:markdownToHtml>${raw(content)}</fc:markdownToHtml>
                 </div>
             </div>
             <g:if test="${showNews}">

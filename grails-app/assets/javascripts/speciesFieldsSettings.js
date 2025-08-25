@@ -88,14 +88,43 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
     self.transients.fieldName = ko.observable(fieldName);
     self.transients.bioSearch = ko.observable(fcConfig.speciesSearchUrl);
     self.transients.allowedListTypes = [
-        {id: 'SPECIES_CHARACTERS', name: 'SPECIES_CHARACTERS'},
-        {id: 'CONSERVATION_LIST', name: 'CONSERVATION_LIST'},
-        {id: 'SENSITIVE_LIST', name: 'SENSITIVE_LIST'},
-        {id: 'LOCAL_LIST', name: 'LOCAL_LIST'},
-        {id: 'COMMON_TRAIT', name: 'COMMON_TRAIT'},
-        {id: 'COMMON_HABITAT', name: 'COMMON_HABITAT'},
-        {id: 'TEST', name: 'TEST'},
-        {id: 'OTHER', name: 'OTHER'}];
+        {id: 'SPECIES_CHARACTERS', name: 'Species characters'},
+        {id: 'CONSERVATION_LIST', name: 'Conservation species list'},
+        {id: 'SENSITIVE_LIST', name: 'Sensitive list'},
+        {id: 'LOCAL_LIST', name: 'Local checklist'},
+        {id: 'COMMON_TRAIT', name: 'Traits'},
+        {id: 'TEST', name: 'Testing List'}
+    ];
+    self.transients.allowedLicences = [
+        {
+            "value": "CC0",
+            "label": "Creative Commons Zero"
+        },
+        {
+            "value": "CC-BY",
+            "label": "Creative Commons By Attribution"
+        },
+        {
+            "value": "CC-BY-NC",
+            "label": "Creative Commons By Attribution-Noncommercial"
+        },
+        {
+            "value": "CC-BY-NC-ND",
+            "label": "Creative Commons By Attribution-Noncommercial-Noderivatives"
+        },
+        {
+            "value": "CC-BY-NC-SA",
+            "label": "Creative Commons By Attribution-Noncommercial-Sharealike"
+        },
+        {
+            "value": "CC-BY-ND",
+            "label": "Creative Commons By Attribution-Noderivatives"
+        },
+        {
+            "value": "CC-BY-SA",
+            "label": "Creative Commons By Attribution-Sharealike"
+        }
+    ]
 
     self.transients.showAddSpeciesLists = ko.observable(false);
     self.transients.showExistingSpeciesLists = ko.observable(false);
@@ -206,6 +235,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         var jsData = {};
         jsData.listName = self.newSpeciesLists.listName();
         jsData.listType = self.newSpeciesLists.listType();
+        jsData.licence = self.newSpeciesLists.licence();
         jsData.description = self.newSpeciesLists.description();
         jsData.listItems = "";
 
@@ -283,6 +313,7 @@ var NewSpeciesListViewModel = function (o) {
     self.dataResourceUid = ko.observable(o.dataResourceUid);
     self.description = ko.observable(o.description);
     self.listType = ko.observable(o.listType);
+    self.licence = ko.observable(o.licence);
     self.allSpecies = ko.observableArray();
 
     self.inputSpeciesViewModel = new SpeciesViewModel({}, fcConfig);
@@ -309,7 +340,7 @@ var NewSpeciesListViewModel = function (o) {
     };
 
     self.transients = {};
-    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
+    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/" + o.dataResourceUid);
 
 };
 
@@ -542,7 +573,7 @@ var SpeciesList = function (o) {
 
 
     self.transients = {};
-    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/speciesListItem/list/" + o.dataResourceUid);
+    self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/" + o.dataResourceUid);
     self.transients.check = ko.observable(false);
     self.transients.truncatedListName = ko.computed(function () {
         return truncate(self.listName(), 45);

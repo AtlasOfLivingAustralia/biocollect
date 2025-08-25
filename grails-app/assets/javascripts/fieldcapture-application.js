@@ -258,7 +258,12 @@ function autoSaveModel(viewModel, saveUrl, options) {
         amplify.store(config.storageKey, null);
     };
     var saveLocally = function(data) {
-        amplify.store(config.storageKey, data);
+        try {
+            amplify.store(config.storageKey, data);
+        } catch (e) {
+            console.error("Error saving data to local storage:", e.message);
+            amplify.store(config.storageKey, null);
+        }
     };
 
 
@@ -288,7 +293,13 @@ function autoSaveModel(viewModel, saveUrl, options) {
         }
 
         if (viewModel.dirtyFlag.isDirty()) {
-            amplify.store(config.storageKey, serializeModel());
+            try {
+                amplify.store(config.storageKey, serializeModel());
+            } catch (e) {
+                console.error("Error saving data to local storage:", e.message);
+                amplify.store(config.storageKey, null);
+            }
+
             window.setTimeout(autoSaveModel, config.autoSaveIntervalInSeconds*1000);
         }
     };
@@ -328,8 +339,13 @@ function autoSaveModel(viewModel, saveUrl, options) {
 
         var json = config.serializeModel();
 
-        // Store data locally in case the save fails.plan
-        amplify.store(config.storageKey, json);
+        try {
+            // Store data locally in case the save fails.plan
+            amplify.store(config.storageKey, json);
+        } catch (e) {
+            console.error("Error saving data to local storage:", e.message);
+            amplify.store(config.storageKey, null);
+        }
 
         return $.ajax({
             url: saveUrl,
@@ -903,6 +919,11 @@ function Documents() {
         return bannerDocument ? bannerDocument.url : null;
     });
 
+    self.faviconlogoUrl = ko.pureComputed(function() {
+        var faviconDocument = self.findDocumentByRole(self.documents(), 'favicon');
+        return faviconDocument ? faviconDocument.url : null;
+    });
+
     self.asBackgroundImage = function(url) {
         return url ? 'url('+url+')' : null;
     };
@@ -969,7 +990,7 @@ function Documents() {
     self.ignore = ['documents', 'links', 'logoUrl', 'bannerUrl', 'mainImageUrl', 'primaryImages', 'embeddedVideos',
         'ignore', 'transients', 'documentFilter', 'documentFilterFieldOptions', 'documentFilterField',
         'roleFilterFieldOptions', 'roleFilterField', 'previewTemplate', 'selectedDocumentFrameUrl', 'filteredDocuments','docViewerClass','docListClass',
-        'mainImageAttributionText', 'logoAttributionText'];
+        'mainImageAttributionText', 'logoAttributionText', 'faviconlogoUrl'];
 
 }
 

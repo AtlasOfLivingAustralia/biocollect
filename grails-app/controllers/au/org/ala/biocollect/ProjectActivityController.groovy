@@ -35,8 +35,8 @@ class ProjectActivityController {
         }
     }
 
-    def ajaxGet(String id) {
-        def pActivity = projectActivityService.get(params.id)
+    def ajaxGet(String id, String view) {
+        def pActivity = projectActivityService.get(id, view)
         render pActivity as JSON
     }
 
@@ -184,10 +184,10 @@ class ProjectActivityController {
             }
         }
         log.debug "values: " + (values as JSON).toString()
-        def response = speciesService.addSpeciesList(postBody);
-        def result
-        if (response?.resp?.druid) {
-            result = [status: "ok", id: response.resp.druid]
+        Map response = speciesService.addSpeciesList(postBody);
+        Map result
+        if (response) {
+            result = [status: "ok", id: response.druid]
         } else {
             result = [status: 'error', error: "Error creating new species lists, please try again later."]
         }

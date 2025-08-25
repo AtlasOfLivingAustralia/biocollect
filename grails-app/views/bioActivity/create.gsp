@@ -35,8 +35,9 @@
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${asset.assetPath(src: '')}",
-        speciesSearchUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
-        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
+        speciesSearchUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [projectActivityId: pActivity.projectActivityId, limit: 10]))}",
+        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [projectActivityId: pActivity.projectActivityId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         bioActivityUpdate: "${raw(createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId]))}",
@@ -61,5 +62,6 @@
 
 <body>
     <g:render template="createEditActivityBody"></g:render>
+    <g:render template="activityInitialisationJavaScript"></g:render>
 </body>
 </html>

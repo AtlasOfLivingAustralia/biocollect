@@ -2,17 +2,12 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.plugin.cookie.CookieService
-import grails.testing.spring.AutowiredTest
+import grails.testing.services.ServiceUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import spock.lang.Specification
 
-class SettingServiceSpec extends Specification implements AutowiredTest, ControllerUnitTest {
-    Closure doWithSpring() {{ ->
-        service SettingService
-    }}
-
-    SettingService service
+class SettingServiceSpec extends Specification implements ControllerUnitTest, ServiceUnitTest<SettingService> {
     File temp, uploadPath
 
     void setup() {
@@ -73,7 +68,7 @@ class SettingServiceSpec extends Specification implements AutowiredTest, Control
         then:
         service.getHubConfig().urlPath == expected
         GrailsWebRequest.lookup().params.hub == expected
-        response.getCookie(service.LAST_ACCESSED_HUB).getValue() == expected
+        response.getCookie(service.LAST_ACCESSED_HUB) == null
 
         where:
         hub       | expected

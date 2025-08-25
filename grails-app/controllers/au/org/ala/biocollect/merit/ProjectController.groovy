@@ -38,7 +38,7 @@ import static org.apache.http.HttpStatus.*
 )
 @SSO
 class ProjectController {
-
+    static final String UNPUBLISHED = "unpublished", PUBLISHED = "published"
     ProjectService projectService
     MetadataService metadataService
     OrganisationService organisationService
@@ -120,6 +120,29 @@ class ProjectController {
         }
 
         render projectActivities as JSON
+    }
+
+    /**
+     * Get a project by id. It will not get project if it is a MERIT project or project is in draft mode.
+     * @param id
+     * @return
+     */
+    @NoSSO
+    def ajaxGet (String id) {
+        if (id) {
+            def project = projectService.get(id)
+            if (project && !project.error) {
+                if (project.isMERIT || (project.projLifecycleStatus == UNPUBLISHED)) {
+                    render text: [message: "You are not authorised"] as JSON, status: HttpStatus.SC_FORBIDDEN, contentType: "application/json"
+                } else {
+                    render project as JSON, contentType: "application/json"
+                }
+            } else {
+                render text: [message: "Project not found"] as JSON, status: HttpStatus.SC_NOT_FOUND, contentType: "application/json"
+            }
+        } else {
+            render text: [message: "Project not found"] as JSON, status: HttpStatus.SC_NOT_FOUND, contentType: "application/json"
+        }
     }
 
     /*
@@ -1005,22 +1028,24 @@ class ProjectController {
         if (userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
 
             String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
-            params.fq = params.getList('fq[]')
-            GrailsParameterMap downloadParams = buildProjectSearch(params)
 
-            downloadParams.reportType="works"
-            downloadParams.max=1000
-            downloadParams.offset=0
-            downloadParams.downloadUrl = g.createLink(controller:'download', action:'downloadProjectDataFile', absolute: true)+'/'
+            params.fq = params.getList('fq') ?: params.getList('fq[]')
+
+            GrailsParameterMap downloadParams = buildProjectSearch(params)
+            downloadParams.reportType = "works"
+            downloadParams.max = 1000
+            downloadParams.offset = 0
+            downloadParams.downloadUrl = g.createLink(controller: 'download', action: 'downloadProjectDataFile', absolute: true) + '/'
+
             searchService.addDefaultFacetQuery(downloadParams)
-            downloadUrl += "?"+commonService.buildUrlParamsFromMap(downloadParams)
+
+            downloadUrl += commonService.buildUrlParamsFromMap(downloadParams)
+
             Map resp = webService.doPostWithParams(downloadUrl, [:])
             render resp as JSON
+        } else {
+            render status: 401, text: "Unauthorized"
         }
-        else {
-            render status:401, text: "Unauthorized"
-        }
-
     }
 
     /**
@@ -1437,6 +1462,7 @@ class ProjectController {
     }
 
     //Search species by project activity species constraint.
+    @NoSSO
     def searchSpecies(String id, String q, Integer limit, String output, String dataFieldName, String surveyName){
 
         def result = projectService.searchSpecies(id, q, limit, output, dataFieldName, surveyName)

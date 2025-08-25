@@ -27,7 +27,8 @@
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
         imageLocation:"${asset.assetPath(src:'')}",
-        speciesSearch: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
+        speciesSearch: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [projectActivityId: pActivity.projectActivityId, limit: 10]))}",
         bioActivityUpdate: "${raw(createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId]))}",
         bioActivityView: "${createLink(controller: 'bioActivity', action: 'index')}/",
         excelDataUploadUrl: "${raw(createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', params:[pActivityId:pActivity.projectActivityId]))}",
@@ -36,7 +37,7 @@
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, pActivity)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
-        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}"
+        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [projectActivityId: pActivity.projectActivityId, limit: 10]))}"
         </g:applyCodec>
         }
     </asset:script>
@@ -49,5 +50,6 @@
 
 <body>
 <g:render template="createEditActivityBody"></g:render>
+<g:render template="activityInitialisationJavaScript"></g:render>
 </body>
 </html>

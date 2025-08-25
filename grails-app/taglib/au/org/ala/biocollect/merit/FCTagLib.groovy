@@ -1,14 +1,14 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.MarkdownUtils
 import au.org.ala.biocollect.ProjectActivityService
-import au.org.ala.cas.util.AuthenticationCookieUtils
 import grails.converters.JSON
+import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
-import grails.web.servlet.mvc.GrailsParameterMap
 
 @Slf4j
 class FCTagLib {
@@ -468,7 +468,7 @@ class FCTagLib {
     }
 
     def userIsLoggedIn = { attr ->
-        if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
+        if (userService.user) {
             out << true
         }
     }
@@ -609,14 +609,14 @@ class FCTagLib {
     def footerContent = { attrs ->
         def content = settingService.getSettingText(SettingPageType.FOOTER) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
     def announcementContent = { attrs ->
         def content = settingService.getSettingText(SettingPageType.ANNOUNCEMENT) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
@@ -630,7 +630,7 @@ class FCTagLib {
     def homePageIntro = { attrs ->
         def content = settingService.getSettingText(SettingPageType.INTRO) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
@@ -643,7 +643,7 @@ class FCTagLib {
         SettingPageType settingType = attrs.settingType
         def content = settingService.getSettingText(settingType) as String
         if (content) {
-            out << content.markdownToHtml()
+            out << markdownToHtmlAndSanitise(content)
         }
     }
 
@@ -657,7 +657,7 @@ class FCTagLib {
         if(attrs.key){
             def content = settingService.getSettingText(attrs.key) as String
             if (content) {
-                out << content.markdownToHtml()
+                out << MarkdownUtils.markdownToHtml(content)
             }
         }
     }
@@ -829,6 +829,25 @@ class FCTagLib {
                 out << createLink(controller: 'project', action:'create', params: [citizenScience:true])
             }
         }
+    }
+
+    def sanitiseHtml = { Map attrs, body ->
+        String text = attrs.text ?: body()
+        if (text) {
+            out << MarkdownUtils.sanitise(text)
+        } else {
+            out << ''
+        }
+    }
+
+    def markdownToHtml = { Map attrs, body ->
+        String text = attrs.text ?: body()
+
+        out << MarkdownUtils.markdownToHtmlAndSanitise(text)
+    }
+
+    private String markdownToHtmlAndSanitise(String text) {
+        MarkdownUtils.markdownToHtmlAndSanitise(text)
     }
 
 }
