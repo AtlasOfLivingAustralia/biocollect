@@ -34,13 +34,14 @@
         siteDeleteUrl: "${createLink(controller: 'site', action: 'forceDelete')}/",
         bieUrl: "${grailsApplication.config.bie.baseURL}",
         bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
+        noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesProfileUrl: "${createLink(controller: 'proxy', action: 'speciesProfile')}",
-        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
+        searchBieUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [projectActivityId: pActivity.projectActivityId, limit: 10]))}",
         speciesListUrl: "${createLink(controller: 'proxy', action: 'speciesItemsForList')}",
         speciesImageUrl:"${createLink(controller:'species', action:'speciesImage')}",
         imageLocation:"${asset.assetPath(src:'')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
-        speciesSearchUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [id: pActivity.projectActivityId, limit: 10]))}",
+        speciesSearchUrl: "${raw(createLink(controller: 'search', action: 'searchSpecies', params: [projectActivityId: pActivity.projectActivityId, limit: 10]))}",
         bioActivityUpdate: "${raw(createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id]))}",
         bioActivityMobileUpdate: "${raw(createLink(controller: 'bioActivity', action: 'ajaxUpdate', params: [pActivityId: pActivity.projectActivityId, id: id, isMobile: true]))}",
         excelDataUploadUrl: "${createLink(controller:'bioActivity', action:'extractDataFromExcelTemplate', id:projectActivityId)}",
@@ -72,5 +73,6 @@
 
 <body>
     <g:render template="createEditActivityBody"></g:render>
+    <g:render template="activityInitialisationJavaScript"></g:render>
 </body>
 </html>

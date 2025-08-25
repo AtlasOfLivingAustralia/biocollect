@@ -434,6 +434,39 @@ function PlanViewModel(config) {
         placeholder = config.placeholder,
         sites = config.sites;
 
+    /**
+     * Moved resolveSites since this function conflict with resolveSites from utils.js
+     * It is for  projects which contain a list of site ids instead of sites
+     * e.g workprojects
+     * @param sites
+     * @param addNotFoundSite
+     * @returns {Array}
+     */
+    window.resolveSites = function resolveSites(sites, addNotFoundSite) {
+        var resolved = [];
+        sites = sites || [];
+
+        sites.forEach(function (siteId) {
+            var site;
+            if(typeof siteId === 'string'){
+                site = lookupSite(siteId);
+
+                if(site){
+                    resolved.push(site);
+                } else if(addNotFoundSite && siteId) {
+                    resolved.push({
+                        name: 'User created site',
+                        siteId: siteId
+                    });
+                }
+            } else if(typeof siteId === 'object'){
+                resolved.push(siteId);
+            }
+        });
+
+        return resolved;
+    }
+
     self.userIsCaseManager = ko.observable(fcConfig.isCaseManager);
     self.selectedWorksActivityViewModel = ko.observable();
     self.canEditOutputTargets = ko.computed(function() {
@@ -787,12 +820,10 @@ function PlanStage(stage, activities, planViewModel, isCurrentStage, project) {
     });
 };
 
-
 function lookupSiteName (siteId) {
     var site = lookupSite(siteId) || {};
     return site.name;
 }
-
 function lookupSite (siteId) {
     var site;
     if (siteId !== undefined && siteId !== '') {
@@ -805,38 +836,6 @@ function lookupSite (siteId) {
         }
     }
 }
-/**
-* It is for  projects which contain a list of site ids instead of sites
- * e.g workprojects
-* @param sites
-* @param addNotFoundSite
-* @returns {Array}
- */
-function resolveSites(sites, addNotFoundSite) {
-    var resolved = [];
-    sites = sites || [];
-
-    sites.forEach(function (siteId) {
-        var site;
-        if(typeof siteId === 'string'){
-            site = lookupSite(siteId);
-
-             if(site){
-                    resolved.push(site);
-                } else if(addNotFoundSite && siteId) {
-                    resolved.push({
-                        name: 'User created site',
-                        siteId: siteId
-                    });
-                }
-        } else if(typeof siteId === 'object'){
-            resolved.push(siteId);
-        }
-    });
-
-    return resolved;
-}
-
 function drawGanttChart(ganttData) {
     if (ganttData.length > 0) {
         $("#gantt-container").gantt({

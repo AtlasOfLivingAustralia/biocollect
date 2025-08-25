@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
+import org.apache.http.entity.ContentType
 
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
@@ -85,11 +86,11 @@ class SiteController {
     }
 
     @NoSSO
-    def index(String id) {
-
+    def index(String id, String levelOfDetail) {
+        levelOfDetail = levelOfDetail ?: 'projects'
         // Include activities only when biocollect starts supporting NRM based projects.
-        def site = siteService.get(id, [view: 'projects'])
-        if (site && site.status != 'deleted') {
+        def site = siteService.get(id, [view: levelOfDetail])
+        if (site && !site.error && (site.status != 'deleted')) {
             // inject the metadata model for each activity
             site.activities = site.activities ?: []
             site.activities?.each {
@@ -113,9 +114,20 @@ class SiteController {
                 result
 
         } else {
-            //forward(action: 'list', model: [error: 'no such id'])
-            flash.message = "Site not found."
-            redirect(controller: 'site', action: 'list')
+            switch (params.format) {
+                case 'json':
+                    if (site.statusCode) {
+                        render text: [message: "Site not found."] as JSON, status: site.statusCode, contentType: ContentType.APPLICATION_JSON
+                    }
+                    else {
+                        render text: [message: "An error occurred while getting site."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                    }
+                    break
+                default:
+                    flash.message = "Site not found."
+                    redirect(controller: 'site', action: 'list')
+                    break
+            }
         }
     }
 
@@ -352,7 +364,7 @@ class SiteController {
 
             def result = siteService.uploadShapefile(f)
 
-            if (!result.error && result.content.size() > 1) {
+            if (org.springframework.http.HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
                 def content = result.content
                 def shapeFileId = content.remove('shp_id')
                 def firstShape = content["0"]
@@ -606,9 +618,11 @@ class SiteController {
     @NoSSO
     def checkSiteName(String id) {
         log.debug "Name: ${params.name}"
-        def result = siteService.isSiteNameUnique(id, params.entityType, params.name)
-
-        response.sendError(result.value ? SC_NO_CONTENT : SC_CONFLICT)
+        boolean result = siteService.isSiteNameUnique(id, params.entityType, params.name)
+        if (result)
+            render status:  SC_NO_CONTENT
+        else
+            response.sendError(SC_CONFLICT)
     }
 
     def locationLookup(String id) {

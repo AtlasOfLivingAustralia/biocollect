@@ -45,6 +45,7 @@ var  activityProject = {
     "isWorks" : false,
     "legalCustodianOrganisation" : "Atlas of Living Australia",
     "legalCustodianOrganisationType" : "",
+    "projLifecycleStatus": "published",
     "mapLayersConfig" : {
         "baseLayers" : [],
         "overlays" : []
@@ -54,13 +55,71 @@ var  activityProject = {
     "organisationId" : "3a04141a-2290-4c54-aee3-a433d60b4476",
     "organisationName" : "Atlas of Living Australia",
     "plannedStartDate" : ISODate("2022-04-06T14:00:00.000Z"),
-    "projectSiteId" : "site_1",
+    "projectSiteId" : "ab9ec9af-241b-49f7-adcf-ca40e474d119",
     "projectType" : "survey",
     "regenerateProjectTimeline" : false,
     "task" : "collect plants",
     "termsOfUseAccepted" : true
 };
 db.project.insert(activityProject);
+var  project2 = {
+    "bushfireCategories" : [],
+    "origin" : "atlasoflivingaustralia",
+    "dateCreated" : ISODate("2022-04-07T07:12:58.072Z"),
+    "promoteOnHomepage" : "no",
+    "ecoScienceType" : [],
+    "countries" : [
+        "Australia"
+    ],
+    "name" : "Test project 2",
+    "funding" : 0.0,
+    "isCitizenScience" : true,
+    "uNRegions" : [
+        "Oceania"
+    ],
+    "industries" : [],
+    "tags" : [
+        "noCost"
+    ],
+    "lastUpdated" : ISODate("2022-04-07T07:12:59.036Z"),
+    "isBushfire" : false,
+    "alaHarvest" : false,
+    "scienceType" : [
+        "Birds"
+    ],
+    "isMERIT" : false,
+    "status" : "active",
+    "isSciStarter" : false,
+    "isExternal" : false,
+    "projectId" : "project_2",
+    "aim" : "Test Aim",
+    "associatedOrgs" : [],
+    "associatedProgram" : "Citizen Science Projects",
+    "baseLayer" : "",
+    "description" : "Test Description",
+    "facets" : [],
+    "fundings" : [],
+    "isEcoScience" : false,
+    "isWorks" : false,
+    "legalCustodianOrganisation" : "Atlas of Living Australia",
+    "legalCustodianOrganisationType" : "",
+    "projLifecycleStatus": "published",
+    "mapLayersConfig" : {
+        "baseLayers" : [],
+        "overlays" : []
+    },
+    "orgGrantee" : "",
+    "orgSponsor" : "",
+    "organisationId" : "3a04141a-2290-4c54-aee3-a433d60b4476",
+    "organisationName" : "Atlas of Living Australia",
+    "plannedStartDate" : ISODate("2022-04-06T14:00:00.000Z"),
+    "projectSiteId" : "ab9ec9af-241b-49f7-adcf-ca40e474d119",
+    "projectType" : "survey",
+    "regenerateProjectTimeline" : false,
+    "task" : "collect plants",
+    "termsOfUseAccepted" : true
+};
+db.project.insert(project2);
 db.userPermission.insert({
     entityType: 'au.org.ala.ecodata.Project',
     entityId: activityProject.projectId,
@@ -80,9 +139,9 @@ var projectActivity = {
         "alaAdminEnforcedEmbargo" : false,
         "embargoOption" : "NONE"
     },
-    "surveySiteOption" : "sitepick",
+    "surveySiteOption" : "sitepickcreate",
     "sites" : [
-        "site_1"
+        "ab9ec9af-241b-49f7-adcf-ca40e474d119"
     ],
     "temporalAccuracy" : "high",
     "canEditAdminSelectedSites" : false,
@@ -140,7 +199,7 @@ var projectActivity = {
             }
         }
     ],
-    "defaultZoomArea" : "site_1",
+    "defaultZoomArea" : "ab9ec9af-241b-49f7-adcf-ca40e474d119",
     "published" : true,
     "relatedDatasets" : [],
     "allowPolygons" : false,
@@ -158,13 +217,14 @@ db.projectActivity.insert(projectActivity);
 
 var site = {
     "projects" : [
-        "project_1"
+        "project_1",
+        "project_2"
     ],
     "dateCreated" : ISODate("2022-04-07T07:12:56.343Z"),
     "lastUpdated" : ISODate("2022-04-07T07:13:28.815Z"),
     "catchment" : "",
     "notes" : "",
-    "siteId" : "site_1",
+    "siteId" : "ab9ec9af-241b-49f7-adcf-ca40e474d119",
     "extent" : {
         "geometry" : {
             "datum" : "",

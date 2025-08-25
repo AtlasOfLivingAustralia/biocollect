@@ -22,9 +22,14 @@
             <h2 class="my-2" data-bind="text:transients.truncatedName"></h2>
         </a>
         <g:if test="${controllerName != 'organisation'}">
-            <a class="tile-organisation" data-bind="attr:{href:transients.orgUrl}">
+            <g:if test="${hubConfig?.content?.disableOrganisationHyperlink}">
                 <h6 class="mb-2" data-bind="text:transients.truncatedOrganisationName"></h6>
-            </a>
+            </g:if>
+            <g:else>
+                <a class="tile-organisation" data-bind="attr:{href:transients.orgUrl}">
+                    <h6 class="mb-2" data-bind="text:transients.truncatedOrganisationName"></h6>
+                </a>
+            </g:else>
         </g:if>
         <div class="excerpt" data-bind="text:transients.truncatedAim"></div>
     </div>

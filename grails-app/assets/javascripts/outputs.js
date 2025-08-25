@@ -81,7 +81,12 @@ function trackState () {
         }
     });
     console.log('state stored = ' + state);
-    amplify.store.sessionStorage('output-accordion-state',state);
+    try {
+        amplify.store.sessionStorage('output-accordion-state',state);
+    } catch (e) {
+        console.error('Error storing accordion state: ' + e.message);
+        amplify.store.sessionStorage('output-accordion-state',null);
+    }
 }
 
 function readState () {
@@ -320,9 +325,30 @@ ko.bindingHandlers.imageUpload = {
             }
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         }).on('fileuploadfail', function(e, data) {
-            error(data.errorThrown);
+            if (fcConfig.enableOffline) {
+                isOffline().then(function () {
+                    var file = data.files[0];
+                    file && biocollect.utils.readDocument(file).then(biocollect.utils.saveDocument).then(biocollect.utils.fetchDocument).then(addToViewModel);
+                },
+                function () {
+                    error(data.errorThrown);
+                });
+            }
+            else {
+                error(data.errorThrown);
+            }
+
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         });
+
+        function addToViewModel(result) {
+            var viewModel;
+            biocollect.utils.addObjectURL(result.data);
+            viewModel = new ImageViewModel(result.data, true);
+            target.push(viewModel);
+            complete(true);
+            return viewModel;
+        };
 
         ko.applyBindingsToDescendants(innerContext, element);
 

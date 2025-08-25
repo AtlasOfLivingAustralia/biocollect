@@ -185,7 +185,13 @@ var Master = function (activityId, config) {
 
         var toSave = JSON.stringify(jsData);
         var activityStorageKey = 'activity-'+options.activityId;
-        amplify.store(activityStorageKey, toSave);
+        try {
+            amplify.store(activityStorageKey, toSave);
+        } catch (e) {
+            console.error("Error saving activity data to local storage: " + e.message);
+            amplify.store(activityStorageKey, null);
+        }
+
         $.ajax({
             url: options.activityUpdateUrl,
             type: 'POST',

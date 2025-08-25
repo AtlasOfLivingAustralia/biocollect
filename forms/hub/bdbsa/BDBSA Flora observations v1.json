@@ -1,0 +1,823 @@
+{
+  "id": "5d133339e4b00a475b28e28e",
+  "dateCreated": "2019-06-26T08:56:25Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2022-06-30T06:52:03Z",
+  "createdUserId": "<anon>",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "BDBSA Flora observations",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "surveyId",
+            "description": "The local title/number of the survey or project under which the record was collected."
+          },
+          {
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "surveyDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date on which the sighting was made.",
+            "validate": "required"
+          },
+          {
+            "defaultValue": "D _ Accurate to day",
+            "dataType": "text",
+            "name": "surveyDateAccuracy",
+            "description": "Indicate the accuracy of the date that the assessment was undertaken.",
+            "constraints": [
+              "D _ Accurate to day",
+              "M _ Accurate to month",
+              "Y _ Accurate to year"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "reserveName",
+            "description": "The local name of the reserve in which the observation was made.",
+            "constraints": [
+              "Aberdour (CP)",
+              "Acraman Creek (CP)",
+              "Adelaide International Bird Sanctuary National Park - Winaityinaityi Pangkara",
+              "Aldinga Scrub (CP)",
+              "Althorpe Islands (CP)",
+              "Angove (CP)",
+              "Anstey Hill (RP)",
+              "Avoid Bay Islands (CP)",
+              "Baird Bay Islands (CP)",
+              "Bakara (CP)",
+              "Bandon (CP)",
+              "Bangham (CP)",
+              "Barwell (CP)",
+              "Bascombe Well (CP)",
+              "Baudin (CP)",
+              "Baudin Rocks (CP)",
+              "Beachport (CP)",
+              "Beatrice Islet (CP)",
+              "Belair (NP)",
+              "Belt Hill (CP)",
+              "Bernouilli (CR)",
+              "Beyeria (CP)",
+              "Big Heath (CP)",
+              "Billiatt (CP)",
+              "Billiatt (WA)",
+              "Bimbowrie (CP)",
+              "Bird Islands (CP)",
+              "Black Hill (CP)",
+              "Black Rock (CP)",
+              "Blackwood Forest (RP)",
+              "Bool Lagoon (GR)",
+              "Boondina (CP)",
+              "Brookfield (CP)",
+              "Brownhill Creek (RP)",
+              "Buckleboo (CR)",
+              "Bucks Lake (GR)",
+              "Bullock Hill (CP)",
+              "Bunbury (CR)",
+              "Bunkers (CR)",
+              "Busby Islet (CP)",
+              "Butcher Gap (CP)",
+              "Calectasia (CP)",
+              "Calpatanna Waterhole (CP)",
+              "Canunda (NP)",
+              "Cap Island (CP)",
+              "Cape Blanche (CP)",
+              "Cape Bouguer (WA)",
+              "Cape Gantheaume (CP)",
+              "Cape Gantheaume (WA)",
+              "Cape Torrens (WA)",
+              "Cape Willoughby (CP)",
+              "Caralue Bluff (CP)",
+              "Carappee Hill (CP)",
+              "Caratoola (RP)",
+              "Carcuma (CP)",
+              "Caroona Creek (CP)",
+              "Carpenter Rocks (CP)",
+              "Carribie (CP)",
+              "Chadinga (CP)",
+              "Charleston (CP)",
+              "Chowilla (GR)",
+              "Chowilla (RR)",
+              "Christmas Rocks (CP)",
+              "Cleland (CP)",
+              "Clements Gap (CP)",
+              "Clinton (CP)",
+              "Cobbler Creek (RP)",
+              "Cocata (CP)",
+              "Coffin Bay (NP)",
+              "Cooltong (CP)",
+              "Coorong (NP)",
+              "Corrobinnie Hill (CP)",
+              "Cortlinye (CR)",
+              "Cox Scrub (CP)",
+              "Cox Scrub (CR)",
+              "Cromer (CP)",
+              "Cudlee Creek (CP)",
+              "Cunyarie (CR)",
+              "Currency Creek (GR)",
+              "Custon (CP)",
+              "Cygnet Estuary (CP)",
+              "Danggali (CP)",
+              "Danggali (WA)",
+              "Darke Range (CP)",
+              "Deep Creek (CP)",
+              "Desert Camp (CP)",
+              "Desert Camp (CR)",
+              "Dingley Dell (CP)",
+              "Douglas Point (CP)",
+              "Dudley (CP)",
+              "Eba Island (CP)",
+              "Ediacara (CP)",
+              "Elliot Price (CP)",
+              "Eric Bonython (CP)",
+              "Ettrick (CP)",
+              "Eurilla (CP)",
+              "Ewens Ponds (CP)",
+              "Fairview (CP)",
+              "Ferguson (CP)",
+              "Ferries - McDonald (CP)",
+              "Finniss (CP)",
+              "Flinders Chase (NP)",
+              "Fort Glanville (CP)",
+              "Fowlers Bay (CP)",
+              "Franklin Harbor (CP)",
+              "Furner (CP)",
+              "Gambier Islands (CP)",
+              "Gawler Ranges (CP)",
+              "Gawler Ranges (NP)",
+              "Geegeela (CP)",
+              "Giles (CP)",
+              "Glen Roy (CP)",
+              "Goose Island (CP)",
+              "Gower (CP)",
+              "Granite Island (RP)",
+              "Grass Tree (CP)",
+              "Great Australian Bight Marine (NP)",
+              "Greenhill (RP)",
+              "Greenly Island (CP)",
+              "Guichen Bay (CP)",
+              "Gum Lagoon (CP)",
+              "Gum Tree Gully (CP)",
+              "Hacks Lagoon (CP)",
+              "Hale (CP)",
+              "Hallett Cove (CP)",
+              "Hambidge (WA)",
+              "Hanson Scrub (CP)",
+              "Hardings Springs (CR)",
+              "Heggaton (CP)",
+              "Hesperilla (CP)",
+              "Hincks (CP)",
+              "Hincks (WA)",
+              "Hogwash Bend (CP)",
+              "Hopkins Creek (CP)",
+              "Horsnell Gully (CP)",
+              "Ikara-Flinders Ranges (NP)",
+              "Innamincka (RR)",
+              "Innes (NP)",
+              "Investigator Group (WA)",
+              "Ironstone Hill (CP)",
+              "Jip Jip (CP)",
+              "Kaiserstuhl (CP)",
+              "Kanku-Breakaways (CP)",
+              "Kapunda Island (CP)",
+              "Karte (CP)",
+              "Kathai (CP)",
+              "Kati Thanda-Lake Eyre (NP)",
+              "Kellidie Bay (CP)",
+              "Kelly Hill (CP)",
+              "Kelvin Powrie (CP)",
+              "Kenneth Stirling (CP)",
+              "Kinchina (CP)",
+              "Kulliparu (CP)",
+              "Kungari (CP)",
+              "Kyeema (CP)",
+              "Lacroma (CR)",
+              "Lake Frome (CP)",
+              "Lake Frome (RR)",
+              "Lake Gairdner (NP)",
+              "Lake Gilles (CP)",
+              "Lake Hawdon South (CP)",
+              "Lake Newland (CP)",
+              "Lake Robe (GR)",
+              "Lake St Clair (CP)",
+              "Lake Torrens (NP)",
+              "Lashmar (CP)",
+              "Lathami (CP)",
+              "Laura Bay (CP)",
+              "Lawari (CP)",
+              "Lesueur (CP)",
+              "Leven Beach (CP)",
+              "Lincoln (CP)",
+              "Lincoln (NP)",
+              "Lipson Island (CP)",
+              "Little Dip (CP)",
+              "Loch Luna (GR)",
+              "Long Island (RP)",
+              "Lowan (CP)",
+              "Lower Glenelg River (CP)",
+              "Maize Island Lagoon (CP)",
+              "Malgra (CP)",
+              "Malkumba-Coongie Lakes (NP)",
+              "Mamungari (CP)",
+              "Mantung (CP)",
+              "Marino (CP)",
+              "Mark Oliphant (CP)",
+              "Marne Valley (CP)",
+              "Martin Washpool (CP)",
+              "Martindale Hall (CP)",
+              "Mary Seymour (CP)",
+              "Media Island (CP)",
+              "Memory Cove (WA)",
+              "Messent (CP)",
+              "Middlecamp Hills (CP)",
+              "Mimbara (CP)",
+              "Minlacowie (CP)",
+              "Moana Sands (CP)",
+              "Mokota (CP)",
+              "Monarto (CP)",
+              "Monarto Woodlands (CP)",
+              "Montacute (CP)",
+              "Moody Tank (CP)",
+              "Moongi (CR)",
+              "Moorook (GR)",
+              "Mootra (CR)",
+              "Morgan (CP)",
+              "Morialta (CP)",
+              "Mount Billy (CP)",
+              "Mount Boothby (CP)",
+              "Mount Brown (CP)",
+              "Mount Dutton Bay (CP)",
+              "Mount George (CP)",
+              "Mount Magnificent (CP)",
+              "Mount Monster (CP)",
+              "Mount Remarkable (NP)",
+              "Mount Scott (CP)",
+              "Mount Taylor (CP)",
+              "Mowantjie Willauwar (CP)",
+              "Mud Islands (GR)",
+              "Mullinger Swamp (CP)",
+              "Munyaroo (CP)",
+              "Murray River (NP)",
+              "Murrunatta (CP)",
+              "Mylor (CP)",
+              "Myponga (CP)",
+              "Naracoorte Caves (NP)",
+              "Nene Valley (CP)",
+              "Nepean Bay (CP)",
+              "Neptune Islands (CP)",
+              "Newland Head (CP)",
+              "Ngarkat (CP)",
+              "Ngaut Ngaut (CP)",
+              "Nicolas Baudin Island (CP)",
+              "Nixon - Skinner (CP)",
+              "Nullarbor (NP)",
+              "Nullarbor (RR)",
+              "Nullarbor (WA)",
+              "Nuyts Archipelago (CP)",
+              "Nuyts Archipelago (WA)",
+              "Nuyts Reef (CP)",
+              "O'Halloran Hill (RP)",
+              "Olive Island (CP)",
+              "Onkaparinga River (NP)",
+              "Onkaparinga River (RP)",
+              "Padthaway (CP)",
+              "Pandappa (CP)",
+              "Para Wirra (CP)",
+              "Paranki Lagoon (CP)",
+              "Parndana (CP)",
+              "Peachna (CP)",
+              "Peebinga (CP)",
+              "Pelican Lagoon (CP)",
+              "Penambol (CP)",
+              "Penguin Island (CP)",
+              "Penola (CP)",
+              "Piccaninnie Ponds (CP)",
+              "Pigface Island (CP)",
+              "Pike River (CP)",
+              "Pine Hill Soak (CP)",
+              "Pinkawillinie (CP)",
+              "Pinkawillinie Reservoir (CR)",
+              "Point Bell (CP)",
+              "Point Davenport (CP)",
+              "Point Labatt (CP)",
+              "Poocher Swamp (GR)",
+              "Pooginook (CP)",
+              "Poolgarra (CR)",
+              "Poonthie Ruwe (CP)",
+              "Porter Scrub (CP)",
+              "Pualco Range (CP)",
+              "Pullen Island (CP)",
+              "Pureba (CP)",
+              "Ramco Point (CP)",
+              "Ramsay (CP)",
+              "Ravine des Casoars (WA)",
+              "Red Banks (CP)",
+              "Reedy Creek (CP)",
+              "Ridley (CP)",
+              "Rilli Island (CP)",
+              "Rocky Island (North) (CP)",
+              "Rocky Island (South) (CP)",
+              "Roonka (CP)",
+              "Rudall (CP)",
+              "Salt Lagoon Islands (CP)",
+              "Sandy Creek (CP)",
+              "Sceale Bay (CP)",
+              "Scott (CP)",
+              "Scott Creek (CP)",
+              "Seal Bay (CP)",
+              "Searcy Bay (CP)",
+              "Seddon (CP)",
+              "Shannon (CP)",
+              "Sheoak Hill (CP)",
+              "Shepherds Hill (RP)",
+              "Simpson (CP)",
+              "Simpson Desert (CP)",
+              "Simpson Desert (RR)",
+              "Sinclair Island (CP)",
+              "Sir Joseph Banks Group (CP)",
+              "Sleaford Mere (CP)",
+              "Spaniards Gully (CP)",
+              "Spring Gully (CP)",
+              "Spring Mount (CP)",
+              "Stipiturus (CP)",
+              "Strzelecki (RR)",
+              "Sturt Gorge (RP)",
+              "Swan Reach (CP)",
+              "Talapar (CP)",
+              "Talisker (CP)",
+              "Tallaringa (CP)",
+              "Tantanoola Caves (CP)",
+              "Telford Scrub (CP)",
+              "Telowie Gorge (CP)",
+              "Tennyson Dunes (CR)",
+              "The Dutchmans Stern (CP)",
+              "The Knoll (CP)",
+              "The Pages (CP)",
+              "The Plug Range (CP)",
+              "Thidna (CP)",
+              "Tilley Swamp (CP)",
+              "Tola (CR)",
+              "Tolderol (GR)",
+              "Torrens Island (CP)",
+              "Totness (RP)",
+              "Troubridge Island (CP)",
+              "Tucknott Scrub (CP)",
+              "Tumby Island (CP)",
+              "Venus Bay (CP)",
+              "Verran Tanks (CP)",
+              "Vivigani Ardune (CP)",
+              "Vivonne Bay (CP)",
+              "Vulkathunha-Gammon Ranges (NP)",
+              "Wabma Kadarbu Mound Springs (CP)",
+              "Wahgunyah (CP)",
+              "Waitpinga (CP)",
+              "Waldegrave Islands (CP)",
+              "Wanilla (CP)",
+              "Wanilla Land Settlement (CP)",
+              "Warren (CP)",
+              "Warrenben (CP)",
+              "West Island (CP)",
+              "Western River (WA)",
+              "Wharminda (CP)",
+              "Whidbey Isles (CP)",
+              "White Dam (CP)",
+              "Whyalla (CP)",
+              "Wiljani (CP)",
+              "Wills Creek (CP)",
+              "Winninowie (CP)",
+              "Wirrabara Range (CP)",
+              "Witjira (NP)",
+              "Wittelbee (CP)",
+              "Woakwine (CP)",
+              "Wolseley Common (CP)",
+              "Yalpara (CP)",
+              "Yeldulknie (CP)",
+              "Yellabinna (RR)",
+              "Yellabinna (WA)",
+              "Yulte (CP)",
+              "Yumbarra (CP)"
+            ]
+          },
+          {
+            "defaultValue": "C _ confident",
+            "dataType": "text",
+            "name": "locationConfidence",
+            "description": "",
+            "constraints": [
+              "Q _ questionable",
+              "C _ confident"
+            ]
+          },
+          {
+            "defaultValue": "WGS84",
+            "dataType": "text",
+            "name": "locationDatum",
+            "dwcAttribute": "geodeticDatum",
+            "constraints": [
+              "WGS84",
+              "AGD84",
+              "AGD66",
+              "GDA94"
+            ]
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "hideSiteSelection": false,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "locationAccuracy",
+            "dwcAttribute": "accuracy",
+            "description": "The precision or degree of uncertainty in the spatial position of the record.",
+            "constraints": [
+              "0-1m",
+              "1-5m",
+              "5-50m",
+              "51-100m",
+              "101-250m",
+              "251-500m",
+              "501-1000m",
+              "1-10km",
+              "11-25km",
+              ">25km"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "coordinateSource",
+            "defaultValue": "Mobile Device",
+            "constraints": [
+              "Mobile Device",
+              "Web Map application (ie Google earth)",
+              "Single Global Positioning System",
+              "Differential Global Positioning System",
+              "Gazetteer",
+              "Map (topographic)",
+              "Unknown location method"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "description": "General notes and comments about the site visit, including any characteristic site features, conditions, etc."
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who is attributed with making the sighting.",
+            "validate": "required"
+          },
+          {
+            "defaultValue": "approved",
+            "dataType": "text",
+            "name": "dataReleaseAuthorisation",
+            "description": "The Department  operates under an open access policy and endeavors to deliver Biological data in its most precise and complete form whenever possible. All records of species considered environmentally sensitive will be denatured prior to release on public websites.  If non-departmental researchers prefer that their data not be released  to external clients and websites please indicate in the appropriate field. DEW researchers wishing to restrict distribution of data need to submit an 'Environmentally Sensitive Data Nomination Form'.  See website for further details http://www.environment.sa.gov.au/Science/Information_data/Biological_databases_of_South_Australia/Information_sharing.",
+            "constraints": [
+              "approved",
+              "not approved"
+            ]
+          },
+          {
+            "columns": [
+              {
+                "defaultValue": "'P _ Plant'",
+                "dataType": "text",
+                "name": "speciesType",
+                "description": "The broad taxonomic group that the species belongs to.",
+                "constraints": [
+                  "P _ Plant"
+                ],
+                "validate": "required"
+              },
+              {
+                "dataType": "species",
+                "name": "species",
+                "dwcAttribute": "scientificName",
+                "description": "The species name of the plant observed.",
+                "validate": "required"
+              },
+              {
+                "defaultValue": "'present but not counted'",
+                "dataType": "text",
+                "name": "individualCountText",
+                "dwcAttribute": "individualCountText",
+                "description": "The number of individual plants counted or estimated.",
+                "validate": "required"
+              },
+              {
+                "defaultValue": "C _ confident",
+                "dataType": "text",
+                "name": "identificationQualifier",
+                "description": "How certain are you that you have correctly identified your sighting? Only choose 'certain' if you are 100% sure.",
+                "constraints": [
+                  "Q _ questionable",
+                  "C _ confident"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "fieldVoucherNumber",
+                "description": "Specify the voucher number allocated & attached to the specimen collected in the field."
+              },
+              {
+                "dataType": "text",
+                "name": "notes",
+                "description": "Notes or comments about the observation or specimen"
+              },
+              {
+                "dataType": "image",
+                "name": "sightingPhoto",
+                "description": "Upload a photo taken of the species at the time of the record. This is essential for verification of the record."
+              },
+              {
+                "dataType": "text",
+                "name": "verifiedBy",
+                "description": "The name of the person who verified the record."
+              },
+              {
+                "dataType": "text",
+                "name": "recordProcessed",
+                "indexName": "recordProcessedStatus",
+                "constraints": [
+                  "No",
+                  "Yes"
+                ],
+                "defaultValue": "No"
+              }
+            ],
+            "dataType": "list",
+            "name": "observations"
+          }
+        ],
+        "modelName": "bdbsaFloraObservations",
+        "record": "true",
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "source": "<h1>BDBSA Flora Observations Data Sheet</h1>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "LOCATION",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": true,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": true,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": true,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": true
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "Location accuracy",
+                                "source": "locationAccuracy",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Reserve name",
+                                "source": "reserveName",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Location confidence",
+                                "source": "locationConfidence",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Source of coordinates",
+                                "source": "coordinateSource",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Location Datum",
+                                "source": "locationDatum",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Site Visit Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "preLabel": "Survey date",
+                        "computed": null,
+                        "source": "surveyDate",
+                        "type": "date"
+                      },
+                      {
+                        "preLabel": "Reliability of the entered date",
+                        "computed": null,
+                        "source": "surveyDateAccuracy",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Visit comments",
+                        "computed": null,
+                        "source": "eventRemarks",
+                        "type": "textarea"
+                      },
+                      {
+                        "preLabel": "Observer name",
+                        "computed": null,
+                        "source": "recordedBy",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Data release authorisation",
+                        "computed": null,
+                        "source": "dataReleaseAuthorisation",
+                        "type": "selectOne"
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Species Observations",
+                    "type": "section",
+                    "items": [
+                      {
+                        "source": "Use the add a row button to record multiple species for the same site and date",
+                        "type": "literal"
+                      },
+                      {
+                        "allowHeaderWrap": true,
+                        "columns": [
+                          {
+                            "width": "15%",
+                            "source": "speciesType",
+                            "title": "Species type",
+                            "type": "selectOne"
+                          },
+                          {
+                            "width": "15%",
+                            "source": "species",
+                            "title": "Species name",
+                            "type": "speciesSelect"
+                          },
+                          {
+                            "width": "10%",
+                            "source": "identificationQualifier",
+                            "title": "Identification confidence",
+                            "type": "selectOne"
+                          },
+                          {
+                            "width": "35%",
+                            "source": "individualCountText",
+                            "title": "Number of individuals seen",
+                            "type": "text"
+                          },
+                          {
+                            "width": "20%",
+                            "source": "fieldVoucherNumber",
+                            "title": "Field voucher #",
+                            "type": "text"
+                          },
+                          {
+                            "width": "15%",
+                            "source": "sightingPhoto",
+                            "title": "Photo",
+                            "type": "image"
+                          },
+                          {
+                            "width": "25%",
+                            "source": "notes",
+                            "title": "Species comments",
+                            "type": "textarea"
+                          },
+                          {
+                            "width": "20%",
+                            "source": "verifiedBy",
+                            "title": "Verified by (Office use only)",
+                            "type": "text"
+                          },
+                          {
+                            "title": "Record Processed",
+                            "type": "selectOne",
+                            "source": "recordProcessed"
+                          }
+                        ],
+                        "userAddedRows": true,
+                        "source": "observations",
+                        "type": "table",
+                        "disableTableUpload": true
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "bdbsaFloraObservations",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "BDBSA Flora observations",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "82292",
+  "description": null,
+  "formVersion": 1
+}

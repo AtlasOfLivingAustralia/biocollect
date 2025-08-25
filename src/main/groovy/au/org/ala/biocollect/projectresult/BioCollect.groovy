@@ -67,6 +67,15 @@ class BioCollect {
                 containsActivity       : doc.containsActivity,
                 publicParticipation    : doc.publicParticipation,
                 numberOfRecords        : doc.numberOfRecords
+                containsActivity       : doc.containsActivity,
+                projectEquipment       : doc.gear,
+                projectHowToParticipate: doc.getInvolved,
+                projectLogoImageCredit : doc.logoAttribution,
+                projectLogoImage       : doc.imageUrl,
+                projectTask            : doc.task,
+                projectActivities      : doc.projectActivities,
+                contactName            : doc.managerEmail,
+                contactDetails         : doc.manager
             ]
         }
     }

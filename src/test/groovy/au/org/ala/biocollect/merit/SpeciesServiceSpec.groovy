@@ -1,8 +1,8 @@
 package au.org.ala.biocollect.merit
 
-import grails.testing.spring.AutowiredTest
-import spock.lang.Specification
 
+import grails.testing.services.ServiceUnitTest
+import spock.lang.Specification
 /*
  * Copyright (C) 2021 Atlas of Living Australia
  * All Rights Reserved.
@@ -20,12 +20,8 @@ import spock.lang.Specification
  * Created by Temi on 3/8/21.
  */
 
-class SpeciesServiceSpec extends Specification implements AutowiredTest{
-    Closure doWithSpring() {{ ->
-        service SpeciesService
-    }}
+class SpeciesServiceSpec extends Specification implements ServiceUnitTest<SpeciesService> {
 
-    SpeciesService service
     def setup() {
         service.grailsApplication = grailsApplication
         service.grailsApplication.config.lists.baseURL = "xyz"
@@ -33,26 +29,32 @@ class SpeciesServiceSpec extends Specification implements AutowiredTest{
         service.webService = Mock(WebService)
     }
 
-    void "should call list tool with empty search term" () {
-        String searchTerm = null
-        String url = "xyz/ws/speciesList?sort=listName&max=10&offset=0&order=asc&q="
+    def "formatTaxonName should format name based on displayType"() {
+        setup:
+        Map data = [commonName: commonName, scientificName: scientificName]
 
         when:
-        service.searchSpeciesList('listName', 10, 0, null, 'asc', searchTerm)
+        String result = service.formatTaxonName(data, displayType)
 
         then:
-        1 * service.webService.getJson(url) >> [:]
-    }
+        result == expectedName
 
-    void "should call list tool with passed search term"() {
-        String searchTerm = 'abc'
-        String url = "xyz/ws/speciesList?sort=listName&max=10&offset=0&order=asc&q=abc"
-
-        when:
-        service.searchSpeciesList('listName', 10, 0, null, 'asc', searchTerm)
-
-        then:
-        1 * service.webService.getJson(url) >> [:]
-
+        where:
+        commonName         | scientificName       | displayType                         | expectedName
+        'Blackbird'        | 'Turdus merula'      | service.COMMON_NAME_SCIENTIFIC_NAME       | 'Blackbird (Turdus merula)'
+        'Blackbird'        | 'Turdus merula'      | service.SCIENTIFIC_NAME_COMMON_NAME       | 'Turdus merula (Blackbird)'
+        'Blackbird'        | 'Turdus merula'      | service.COMMON_NAME                       | 'Blackbird'
+        null               | 'Turdus merula'      | service.COMMON_NAME                       | 'Turdus merula'
+        'Blackbird'        | 'Turdus merula'      | service.SCIENTIFIC_NAME                   | 'Turdus merula'
+        null               | 'Turdus merula'      | service.SCIENTIFIC_NAME                   | 'Turdus merula'
+        null               | 'Turdus merula'      | service.COMMON_NAME_SCIENTIFIC_NAME       | 'Turdus merula'
+        null               | 'Turdus merula'      | service.SCIENTIFIC_NAME_COMMON_NAME       | 'Turdus merula'
+        'Blackbird'        | null                 | service.COMMON_NAME_SCIENTIFIC_NAME       | 'Blackbird'
+        'Blackbird'        | null                 | service.SCIENTIFIC_NAME_COMMON_NAME       | 'Blackbird'
+        'Blackbird'        | null                 | service.COMMON_NAME                       | 'Blackbird'
+        null               | null                 | service.COMMON_NAME                       | ''
+        null               | null                 | service.SCIENTIFIC_NAME                   | ''
+        null               | null                 | service.COMMON_NAME_SCIENTIFIC_NAME       | ''
+        null               | null                 | service.SCIENTIFIC_NAME_COMMON_NAME       | ''
     }
 }

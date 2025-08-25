@@ -309,3 +309,10 @@ class ProjectSearchResponse {
     Integer total
     List<Facet> facets
 }
+
+// classes for "ws/bioactivity/data/simplified/{id}
+@JsonIgnoreProperties('metaClass')
+class GetOutputForActivitySimplifiedResponse {
+    Map activity
+    String error
+}

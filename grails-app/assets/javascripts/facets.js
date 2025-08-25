@@ -933,7 +933,7 @@ function generateTermIdForFacetTerm(facetTerm) {
  */
 function decodeCamelCase(text) {
     if(typeof text == 'string'){
-        var result = text.replace( /([A-Z])/g, " $1" );
+        var result = text.replace( /([a-z])([A-Z])/g, "$1 $2" );
         return result.charAt(0).toUpperCase() + result.slice(1); // capitalize the first letter - as an example.
     }
     else{

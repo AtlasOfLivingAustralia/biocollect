@@ -25,13 +25,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
+import org.apache.http.entity.ContentType
+import org.grails.web.converters.exceptions.ConverterException
 import org.grails.web.json.JSONArray
+import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
-
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST
-import static org.apache.http.HttpStatus.SC_OK
-import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR
+import javax.ws.rs.Produces
+import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
@@ -59,6 +60,7 @@ class BioActivityController {
 
     static int MAX_FLIMIT = 500
     static allowedMethods = ['bulkDelete': 'POST', bulkRelease: 'POST', bulkEmbargo: 'POST']
+    static responseFormats = ['json']
 
     /**
      * Update Activity by activityId or
@@ -152,21 +154,17 @@ class BioActivityController {
 
         String userId = userService.getCurrentUserId()
         if (!userId) {
-            flash.message = "Access denied: User has not been authenticated."
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: User has not been authenticated."]
         } else if (!activity && !pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            flash.message = "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: User does not have <b>editor</b> permission for projectId ${projectId}"]
         } else if (!activity && isProjectActivityClosed(pActivity)) {
-            flash.message = "Access denied: This survey is closed."
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: This survey is closed."]
         } else if (activity && !pActivity.publicAccess && !projectService.canUserEditActivity(userId, activity)) {
-            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             response.status = 401
-            result = [status: 401, error: flash.message]
+            result = [status: 401, error: "Access denied: User is not an owner of this activity ${activity?.activityId}"]
         } else {
             boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
             Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
@@ -216,12 +214,11 @@ class BioActivityController {
                 }
 
             } else {
-                flash.message = userAlreadyInRole.error
                 response.status = userAlreadyInRole.statusCode
                 result = userAlreadyInRole
             }
         }
-        result.error = flash.message
+
         render result as JSON
     }
 
@@ -239,9 +236,183 @@ class BioActivityController {
     @SSO
     def create(String id) {
         Map model = addActivity(id)
-        model?.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
+        if (model == null) {
+            // If model is null, it means there was an error and the redirect has already been handled
+            return
+        }
 
-        model
+        model?.title = messageSource.getMessage('record.create.title', [].toArray(), '', Locale.default)
+        render view: model.error ? 'error' : 'create', model: model
+    }
+
+    def pwaCreateOrEdit(String projectActivityId) {
+        Map model = [projectActivityId: projectActivityId, activityId: ""]
+        if(projectActivityId) {
+            Map pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
+
+            if(!pActivity.error) {
+                model.title = messageSource.getMessage('pwa.record.create.title', [].toArray(), '', Locale.default)
+                String projectId = model.projectId = pActivity.projectId
+                Map project = projectService.get(projectId, "brief", params?.version)
+                if (!project.error) {
+                    model.project = project
+                    model.pActivity = pActivity
+                    model.type = pActivity.pActivityFormName
+                    // disable showing verification status on pwa
+                    model.isUserAdminModeratorOrEditor = false
+                    render view: "pwaBioActivityCreateOrEdit", model: model
+                    return
+                } else {
+                    flash.message = "Project associated with project activity not found"
+                    render status: HttpStatus.SC_NOT_FOUND
+                    return
+                }
+            } else {
+                flash.message = "Project Activity not found"
+                render status: HttpStatus.SC_NOT_FOUND
+                return
+            }
+        } else {
+            flash.message = "Project Activity Id must be provided"
+            render status: HttpStatus.SC_BAD_REQUEST
+        }
+    }
+
+    @PreAuthorise(accessLevel = "loggedInUser")
+    def pwaCreateOrEditFragment(String projectActivityId) {
+        Map model = [projectActivityId: projectActivityId, activityId: ""]
+        if(projectActivityId) {
+            Map pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
+
+            if(!pActivity.error) {
+                model.title = messageSource.getMessage('pwa.record.create.title', [].toArray(), '', Locale.default)
+                String projectId = model.projectId = pActivity.projectId
+                Map project = projectService.get(projectId, "brief", params?.version)
+                if (!project.error) {
+                    model.project = project
+                    model.pActivity = pActivity
+                    model.type = pActivity.pActivityFormName
+                    // disable showing verification status on pwa
+                    model.isUserAdminModeratorOrEditor = false
+                    addOutputModel(model, model.type)
+                    render view: "pwaBioActivityCreateOrEditFragment", model: model
+                    return
+                } else {
+                    render status: HttpStatus.SC_NOT_FOUND, text: [message: "Project associated with project activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
+                    return
+                }
+            } else {
+                render status: HttpStatus.SC_NOT_FOUND, text: [message: "Project Activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
+                return
+            }
+        } else {
+            render status: HttpStatus.SC_BAD_REQUEST, text: [message: "Project Activity Id must be provided"] as JSON, contentType: ContentType.APPLICATION_JSON
+        }
+    }
+
+    def getProjectActivityMetadata (String projectActivityId, String activityId) {
+        Map activity
+        String userId = userService.getCurrentUserId()
+        Map pActivity = projectActivityService.get(projectActivityId, "all")
+        if (pActivity.error) {
+            render text: [message: "An error occurred when accessing project activity"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            return
+        }
+
+        String projectId = pActivity?.projectId
+        String type = pActivity.pActivityFormName
+        Map project = projectService.get(projectId)
+        if(project.error) {
+            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            return
+        }
+
+        if (activityId) {
+            activity = activityService.get(activityId, params?.version, userId, true)
+            if(activity.error) {
+                render text: [message: "An error occurred when accessing activity"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                return
+            }
+        } else {
+            activity = [activityId: '', siteId: '', projectId: projectId, type: type]
+        }
+
+        Map userPermission = checkUserPermission(project, pActivity, activityId ? activity : null)
+        if (!userPermission.authorized) {
+            render text: [message: userPermission.message] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+            return
+        }
+
+        Map model = activityAndOutputModel(activity, projectId, 'view', params?.version, pActivity?.pActivityFormName)
+        model.pActivity = pActivity
+        model.project = project
+        model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
+        model.projectName = project.name
+        model.isUserAdminModeratorOrEditor = false
+
+        render text:  model as JSON, status: HttpStatus.SC_OK, contentType: ContentType.APPLICATION_JSON
+    }
+
+    @PreAuthorise(accessLevel = "loggedInUser")
+    def pwaIndexFragment(String projectActivityId) {
+        String projectId
+        def model = [:]
+        def pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
+        if(pActivity.error) {
+            render text: [message: "An error occurred when accessing project activity"] as JSON, contentType: ContentType.APPLICATION_JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR
+            return
+        }
+
+        model.pActivity = pActivity
+        model.projectActivityId = projectActivityId
+        projectId = model.projectId = pActivity?.projectId
+        String type = pActivity.pActivityFormName
+        Map project = projectService.get(projectId)
+        if (project.error) {
+            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            return
+        }
+
+        addOutputModel(model, type)
+        model.project = project
+        model.id = projectActivityId
+        render view: 'pwaBioActivityIndexFragment', model: model
+    }
+
+    def pwaIndex(String projectActivityId) {
+        String projectId
+        def model = [:]
+        def pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
+        if(pActivity.error) {
+            render text: [message: "An error occurred when accessing project activity"] as JSON, contentType: ContentType.APPLICATION_JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR
+            return
+        }
+
+        model.pActivity = pActivity
+        model.projectActivityId = projectActivityId
+        projectId = model.projectId = pActivity?.projectId
+        String type = pActivity.pActivityFormName
+        Map project = projectService.get(projectId)
+        if (project.error) {
+            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            return
+        }
+
+        model.project = project
+        model.id = projectActivityId
+        render view: 'pwaBioActivityIndex', model: model
+    }
+
+    def pwaOfflineList() {
+    }
+
+    def pwa () {
+    }
+
+    def pwaConfig () {
+    }
+
+    def pwaSettings () {
     }
 
     /**
@@ -282,11 +453,13 @@ class BioActivityController {
     @SSO
     def edit(String id) {
         Map model = editActivity(id)
+        if (model == null) {
+            // If model is null, it means there was an error and the redirect has already been handled
+            return
+        }
+
         model?.title = messageSource.getMessage('record.edit.title', [].toArray(), '', Locale.default)
-        //May relates to the known grails.converter.JSON issue
-        //Remove this seem-useless statement may causes issue
-        model.toString()
-        model
+        render view: model.error ? 'error' : 'edit', model: model
     }
 
     def mobileCreate(String id) {
@@ -344,19 +517,35 @@ class BioActivityController {
     private def addActivity(String id, boolean mobile = false) {
         String userId = userService.getCurrentUserId()
         Map pActivity = projectActivityService.get(id, "all")
+        Map model = [:]
+        if (pActivity.error) {
+            model.error = "Project activity (survey) not found"
+            return model
+        }
+
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName
-        Map model = [:]
-
         if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            flash.message = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
-            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            if (!mobile) {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (!type) {
-            flash.message = "Invalid activity type"
-            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Invalid activity type"
+            if (!mobile) {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (isProjectActivityClosed(pActivity)) {
-            flash.message = "Access denied: This survey is closed."
-            if (!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Access denied: This survey is closed."
+            if (!mobile) {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else {
             Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
             Map project = projectService.get(projectId)
@@ -365,17 +554,84 @@ class BioActivityController {
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.projectName = project.name
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
-            model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
+            model.autocompleteUrl = "${request.contextPath}/search/searchSpecies?projectActivityId=${pActivity.projectActivityId}&limit=10"
             model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
             addOutputModel(model)
             addDefaultSpecies(activity)
         }
 
-        if (mobile && flash.message) {
-            model?.error = flash.message
+        model
+    }
+
+    /**
+     * Check if user can create an activity or edit an activity
+     */
+    private Map checkUserCreatePermission (Map project, Map pActivity) {
+        Map result = [ message: "Access denied: You are not allowed to create activity", authorized: false ]
+        String userId = userService.getCurrentUserId()
+        String projectId = project?.projectId
+
+        if (!userId) {
+            result.message = "Access denied: You are not logged in."
+        }
+        else if (isProjectActivityClosed(pActivity)) {
+            result.message = "Access denied: This survey is closed."
+        }
+        else if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
+            result.message = "Access denied: Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+        }
+        else if (projectService.canUserEditProject(userId, projectId, false) ||
+                (pActivity.publicAccess && userId)) {
+            result.message = "User is authorized to create or edit activity"
+            result.authorized = true
         }
 
-        model
+        return result
+    }
+
+    private Map checkUserEditPermission (Map project, Map activity) {
+        Map result = [ message: "Access denied: You are not allowed to edit activity", authorized: false ]
+        String userId = userService.getCurrentUserId()
+        String projectId = project?.projectId
+
+        if (!userId) {
+            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+        } else if (!activity || activity.error) {
+            result.message =  "Invalid activity - ${id}"
+        } else if (projectService.canUserModerateProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            result.message = "User is authorized to edit activity"
+            result.authorized = true
+        }
+
+        return result
+    }
+
+    private Map checkUserViewPermission (Map project, Map pActivity, Map activity) {
+        Map result = [ message: "Access denied: You are not allowed to edit activity", authorized: false ]
+        String userId = userService.getCurrentUserId()
+        String projectId = project?.projectId
+        Boolean embargoed = (activity.embargoed == true) || projectActivityService.isEmbargoed(pActivity)
+
+        if (!userId) {
+            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+        } else if (!activity || activity.error) {
+            result.message =  "Invalid activity - ${id}"
+        } else if (embargoed) {
+            result.message = "Access denied: This activity is embargoed."
+        } else if (projectService.isUserEditorForProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            result.message = "User is authorized to edit activity"
+            result.authorized = true
+        }
+
+        return result
+    }
+
+    private Map checkUserPermission (Map project, Map pActivity, Map activity) {
+        if (activity) {
+            return checkUserViewPermission(project, pActivity, activity)
+        } else {
+            return checkUserCreatePermission(project, pActivity)
+        }
     }
 
     private editActivity(String id, boolean mobile = false){
@@ -385,11 +641,19 @@ class BioActivityController {
         def model = [:]
 
         if (!userId) {
-            flash.message = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
-            if(!mobile) redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            if(!mobile){
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (!activity || activity.error) {
-            flash.message = "Invalid activity - ${id}"
-            if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
+            model.error = "Invalid activity - ${id}"
+            if(!mobile)  {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         } else if (projectService.canUserModerateProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def pActivity = projectActivityService.get(activity?.projectActivityId, "all")
             model = activityAndOutputModel(activity, activity.projectId)
@@ -400,12 +664,12 @@ class BioActivityController {
             model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
             model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
         } else {
-            flash.message = "Access denied: User is not an owner of this activity ${activity?.activityId}"
-            if(!mobile)  redirect(controller: 'project', action: 'index', id: projectId)
-        }
-
-        if(mobile && flash.message) {
-            model?.error = flash.message
+            model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+            if (!mobile)  {
+                flash.message = model.error
+                redirect(controller: 'project', action: 'index', id: projectId)
+                return null
+            }
         }
 
         model
@@ -566,6 +830,32 @@ class BioActivityController {
         }
     }
 
+    def ajaxGet(String id) {
+        String userId = userService.getCurrentUserId()
+        def activity = activityService.get(id, params?.version, userId, true)
+        if (activity.error) {
+            render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: [message: activity.error] as JSON, contentType: ContentType.APPLICATION_JSON
+            return
+        }
+
+        def pActivity = projectActivityService.get(activity?.projectActivityId, "all", params?.version)
+        boolean embargoed = (activity.embargoed == true) || projectActivityService.isEmbargoed(pActivity)
+        boolean userIsOwner = userId && activityService.isUserOwnerForActivity(userId, id)
+        boolean userIsModerator = userId && projectService.canUserModerateProjects(userId, pActivity?.projectId)
+        boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
+
+        if (activity && pActivity) {
+            if (embargoed && !userIsModerator && !userIsOwner && !userIsAlaAdmin) {
+                def payload = [message: "Access denied: You do not have permission to access the requested resource."]
+                render status: HttpStatus.SC_UNAUTHORIZED, text: payload as JSON, contentType: ContentType.APPLICATION_JSON
+            } else {
+                render text: activity as JSON, contentType: ContentType.APPLICATION_JSON
+            }
+        } else {
+            render status: HttpStatus.SC_NOT_FOUND, text: [message: "Activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
+        }
+    }
+
     /**
      * List all activity associated to the user based on their role.
      * @param id activity id
@@ -679,7 +969,7 @@ class BioActivityController {
             )
         } else {
             flash.message = "You need to be logged in to view your records"
-            forward(action: 'projectRecords', params: params)
+            redirect(action: 'projectRecords', params: params)
         }
     }
 
@@ -777,9 +1067,10 @@ class BioActivityController {
             }
         }
 
-        queryParams.max = queryParams.max ?: 10
+        queryParams.max = queryParams.getInt('max', 10)
         queryParams.offset = queryParams.offset ?: 0
         queryParams.flimit = queryParams.flimit ?: 20
+        queryParams.includeLinkedEntities = queryParams.getBoolean('includeLinkedEntities', false)
         if(queryParams.flimit ==  "-1"){
             queryParams.flimit = MAX_FLIMIT;
             queryParams.max = 0;
@@ -844,11 +1135,12 @@ class BioActivityController {
                     @Parameter(
                             name = "max",
                             in = ParameterIn.QUERY,
-                            description = "Maximum number of returned activities per page.",
+                            description = "Maximum number of returned activities per page. Maximum is 100.",
                             schema = @Schema(
                                     name = "max",
                                     type = "integer",
                                     minimum = "0",
+                                    maximum = "100",
                                     defaultValue = "10"
                             )
                     ),
@@ -870,6 +1162,15 @@ class BioActivityController {
                             schema = @Schema(
                                     type = "string",
                                     allowableValues = ['myrecords', 'project', 'projectrecords', 'myprojectrecords', 'userprojectactivityrecords', 'allrecords', 'bulkimport']
+                            )
+                    ),
+                    @Parameter(
+                            name = "includeLinkedEntities",
+                            in = ParameterIn.QUERY,
+                            description = "Add associations to an activity such as outputs, site, documents, etc.",
+                            schema = @Schema(
+                                    type = "boolean",
+                                    defaultValue =  "false"
                             )
                     ),
                     @Parameter(
@@ -949,6 +1250,7 @@ class BioActivityController {
     @Path("ws/bioactivity/search")
     def searchProjectActivities() {
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
+        queryParams.max = Math.min(queryParams.max, 100)
 
         Map searchResult = searchService.searchProjectActivity(queryParams)
 
@@ -959,8 +1261,12 @@ class BioActivityController {
             it.type == 'property'
         }
 
-        activities = activities?.collect {
-            Map doc = it._source
+        activities = activities?.collect { it._source }
+        if (queryParams.includeLinkedEntities) {
+            activityService.addLinkedEntitiesToActivities(activities)
+        }
+
+        activities = activities?.collect { doc ->
             if ( !userCanModerateForProjects.hasProperty ( doc.projectId ) ) {
                 userCanModerateForProjects[doc.projectId] = projectService.canUserModerateProjects(queryParams.userId, doc.projectId)
             }
@@ -990,6 +1296,12 @@ class BioActivityController {
             ]
 
             activityService.addAdditionalProperties(additionalPropertyConfig, doc, result)
+            if (queryParams.includeLinkedEntities) {
+                ActivityService.INCLUDE_LINKED_ENTITIES.each { key ->
+                    result[key] = doc[key]
+                }
+            }
+
             result
         }
 
@@ -1257,7 +1569,7 @@ class BioActivityController {
     private Map activityModel(activity, projectId, mode = '', version = null) {
         Map model = [activity: activity, returnTo: params.returnTo, mode: mode]
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
-        model.project = projectId ? projectService.get(model.activity.projectId, null, false, version) : null
+        model.project = projectId ? projectService.get(projectId, null, false, version) : null
         model.projectSite = model.project?.sites?.find { it.siteId == model.project.projectSiteId }
 
         // Add the species lists that are relevant to this activity.
@@ -1284,15 +1596,16 @@ class BioActivityController {
         model
     }
 
-    private Map activityAndOutputModel(activity, projectId, mode = '', version = null) {
+    private Map activityAndOutputModel(activity, projectId, mode = '', version = null, type = null) {
         def model = activityModel(activity, projectId, mode, version)
-        addOutputModel(model)
+        addOutputModel(model, type)
 
         model
     }
 
-    def addOutputModel(model) {
-        model.putAll(activityFormService.getActivityAndOutputMetadata(model.activity.type))
+    private def addOutputModel(model ,type = null) {
+        type = type ?: model.activity.type
+        model.putAll(activityFormService.getActivityAndOutputMetadata(type))
         model
     }
 
@@ -1306,15 +1619,16 @@ class BioActivityController {
         }
 
         if (pActivityId && type && file) {
-            def content = activityService.convertExcelToOutputData(pActivityId, type, file)
-            def status = SC_OK
-            if (content.error) {
-                status = SC_INTERNAL_SERVER_ERROR
+            def result = activityService.convertExcelToOutputData(pActivityId, type, file)
+            if (!org.springframework.http.HttpStatus.resolve(result.statusCode).is2xxSuccessful()) {
+                respond (result.resp, status: result.statusCode)
             }
-            render text: content as JSON, status: status
+            else {
+                respond (result.content?.subMap('data')  ?: result)
+            }
         }
         else {
-            render text: [message: "Missing required parameters - pActivityId, type & data (excel file)"] as JSON, status: SC_BAD_REQUEST
+            respond([message: "Missing required parameters - pActivityId, type & data (excel file)"], status: SC_BAD_REQUEST)
         }
     }
 
@@ -1457,6 +1771,7 @@ class BioActivityController {
             tags = "biocollect",
             operationId = "activityoutputs",
             summary = "Get data for an activity",
+            deprecated = true,
             parameters = [
                     @Parameter(
                             name = "id",
@@ -1519,6 +1834,268 @@ class BioActivityController {
             model.pActivity = pActivity
             model.projectActivityId = pActivity.projectActivityId
             model.id = id
+        } else {
+            response.status = 401
+            model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
+        }
+
+        render model as JSON
+    }
+
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "listrecords",
+            summary = "List records associated with the given project",
+            parameters = [
+                    @Parameter(
+                            name = "projectId",
+                            in = ParameterIn.QUERY,
+                            required = true,
+                            description = "Project id"
+                    ),
+                    @Parameter(
+                            name = "max",
+                            in = ParameterIn.QUERY,
+                            description = "Maximum number of returned activities per page.",
+                            schema = @Schema(
+                                    name = "max",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "10"
+                            )
+                    ),
+                    @Parameter(
+                            name = "offset",
+                            in = ParameterIn.QUERY,
+                            description = "Offset search result by this parameter",
+                            schema = @Schema(
+                                    name = "offset",
+                                    type = "integer",
+                                    minimum = "0",
+                                    defaultValue = "0"
+                            )
+                    ),
+                    @Parameter(
+                            name = "sort",
+                            in = ParameterIn.QUERY,
+                            description = "Sort by attribute",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "lastUpdated"
+                            )
+                    ),
+                    @Parameter(
+                            name = "order",
+                            in = ParameterIn.QUERY,
+                            description = "Order sort item by this parameter",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "desc"
+                            )
+                    ),
+                    @Parameter(
+                            name = "status",
+                            in = ParameterIn.QUERY,
+                            description = "Project status",
+                            schema = @Schema(
+                                    type = "string",
+                                    defaultValue = "active"
+                            )
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = Map.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            ],
+            security = @SecurityRequirement(name = "auth")
+    )
+    @Path("ws/bioactivity/data/records")
+    def listRecordsForDataResourceId(){
+        String userId = userService.getCurrentUserId()
+        GrailsParameterMap queryParams = constructDefaultSearchParams(params)
+
+        if (!userId) {
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+        } else if (!queryParams.projectId) {
+            render text: [message: "No project associated with the activity."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+        } else if (projectService.canUserEditProject(userId, queryParams.projectId, false)) {
+            Map project = projectService.get(queryParams.projectId)
+            if (!project.dataResourceId) {
+                render text: [message: "Only data of ALA harvested projects can be accessed."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+            } else {
+                queryParams.id = project.dataResourceId
+                def result = activityService.listRecordsForDataResourceId(queryParams)
+                if (!result.error) {
+                    render text: result as JSON, contentType: ContentType.APPLICATION_JSON
+                } else {
+                    render text: [message: "An error occurred while fetching data."] as JSON, status: result.statusCode, contentType: ContentType.APPLICATION_JSON
+                }
+            }
+        } else {
+            render text: "Access denied: User not authorised.", status: HttpStatus.SC_UNAUTHORIZED
+        }
+    }
+
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            summary = "Generate darwin core archive",
+            description = "Returns a ZIP file containing darwin core archive",
+            parameters = [
+                    @Parameter(
+                            name = "projectId",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Project id"
+                    ),
+                    @Parameter(
+                        name = "force",
+                        in = ParameterIn.QUERY,
+                        description = "Set to true to generate Darwin Core Archive on demand (slow) or false to get the pre-generated file (might not have the latest data)",
+                        schema = @Schema(type = "boolean", defaultValue = "false")
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful response with ZIP file",
+                            content = [@Content(mediaType = "application/zip", schema = @Schema(type = "string", format = "binary"))]
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            ],
+            security = @SecurityRequirement(name = "auth")
+    )
+    @Path("ws/bioactivity/data/archive/{projectId}")
+    @Produces("application/zip")
+    def getDarwinCoreArchiveForProject(String projectId){
+        log.debug("projectId = ${projectId}")
+
+        String userId = userService.getCurrentUserId()
+        Map project = projectService.get(projectId)
+        if (!userId) {
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+        } else if (!projectId) {
+            render text: "Project Id is required.", status: SC_BAD_REQUEST
+        }else if (project.error) {
+            render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+        } else {
+            if (projectService.canUserEditProject(userId, projectId, false)) {
+                try {
+                    activityService.getDarwinCoreArchiveForProject(projectId, response, params.force)
+                    response.outputStream.flush()
+                    return null
+                } catch (Exception e) {
+                    log.error (e.message.toString(), e)
+                    render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                }
+            } else {
+                render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+            }
+        }
+    }
+
+    /*
+     * Simplified version to get data/output for an activity
+     * Handles both session and non session based request.
+     *
+     * @param id activityId
+     *
+     * @return activity
+     *
+     */
+    @Operation(
+            method = "GET",
+            tags = "biocollect",
+            operationId = "simplifiedactivityoutputs",
+            summary = "Get data for an activity",
+            parameters = [
+                    @Parameter(
+                            name = "id",
+                            in = ParameterIn.PATH,
+                            required = true,
+                            description = "Activity id"
+                    ),
+                    @Parameter(
+                            name = "includeSiteData",
+                            in = ParameterIn.QUERY,
+                            description = "Include site data",
+                            schema = @Schema(type = "boolean", defaultValue = "false")
+                    )
+            ],
+            responses = [
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = GetOutputForActivitySimplifiedResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = ErrorResponse.class
+                                    )
+                            ),
+                            headers = [
+                                    @Header(name = 'Access-Control-Allow-Headers', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Methods', description = "CORS header", schema = @Schema(type = "String")),
+                                    @Header(name = 'Access-Control-Allow-Origin', description = "CORS header", schema = @Schema(type = "String"))
+                            ]
+                    )
+            ],
+            security = @SecurityRequirement(name="auth")
+    )
+    @Path("ws/bioactivity/data/simplified/{id}")
+    def getOutputForActivitySimplified(String id, boolean includeSiteData){
+        log.debug("id = ${id}")
+        log.debug("includeSiteData = ${includeSiteData}")
+
+        String userId = userService.getCurrentUserId()
+        def activity = activityService.get(id, null, userId, false,includeSiteData)
+        String projectId = activity?.projectId
+        def model = [:]
+
+        if (!userId) {
+            response.status = 401
+            model.error = "Access denied: User has not been authenticated."
+        } else if (!activity) {
+            model.error = "Invalid activity id"
+        } else if (!activity) {
+            model.error = "Invalid activity - ${id}"
+        } else if (!projectId) {
+            model.error = "No project associated with the activity"
+        } else if (projectService.isUserAdminForProject(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
+            if (includeSiteData) {
+                activity.site = new JSONObject([siteId:activity.site.siteId, name:activity.site.name, geoJson:activity.site.geoIndex])
+            }
+            model = [activity: activity]
         } else {
             response.status = 401
             model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
@@ -1607,7 +2184,7 @@ class BioActivityController {
                 model = activityModel(activity, projectId)
                 model.pActivity = pActivity
                 model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
-                model.autocompleteUrl = "${request.contextPath}/search/searchSpecies/${pActivity.projectActivityId}?limit=10"
+                model.autocompleteUrl = "${request.contextPath}/search/searchSpecies?projectActivityId=${pActivity.projectActivityId}&limit=10"
 
                 addOutputModel(model)
             }
@@ -1705,5 +2282,18 @@ class BioActivityController {
         if(params.embedded == 'true'){
             response.setHeader("X-Frame-Options", "SAMEORIGIN")
         }
+    }
+
+    private String getMessage(Map resp) {
+        String errorMessage
+        if (resp.detail) {
+            try {
+                errorMessage = JSON.parse(resp?.detail)
+            } catch (ConverterException ce) {
+                errorMessage = resp.error
+            }
+        }
+
+        errorMessage ?: resp.error
     }
 }

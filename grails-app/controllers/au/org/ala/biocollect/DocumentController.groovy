@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.SettingService
+import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
 import grails.converters.JSON
 import grails.core.GrailsApplication
@@ -20,15 +21,48 @@ class DocumentController {
     SettingService settingService
     WebService webService
     GrailsApplication grailsApplication
+    UserService userService
+
+    def get(String id) {
+        if (!id) {
+            render text: [message: "Document not found"] as JSON, status: HttpStatus.SC_NOT_FOUND
+            return
+        }
+
+        def document = documentService.get(id)
+        if (!document.error) {
+            render text: document as JSON, status: HttpStatus.SC_OK
+        }
+        else {
+            render text: [message: "Document error"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR
+            return
+        }
+    }
 
     /**
      * This function does an elastic search for documents. All elastic search parameters are supported like fq, max etc.
+     * If format is zip, it will request download of the document list to a spreadsheet. By default it returns json.
      * @return
      */
-    def allDocumentsSearch(Integer offset, Integer max, String searchTerm, String searchType, String searchInRole, String sort, String order, String projectId) {
-        String hub = settingService.getHubConfig().urlPath;
-
-        render documentService.allDocumentsSearch(offset, max, searchTerm, searchType, searchInRole, sort, order, projectId, hub) as JSON
+    def allDocumentsSearch () {
+        withFormat {
+            json {
+                render documentService.allDocumentsSearch(params) as JSON
+            }
+            zip {
+                def resp = documentService.documentsDownload(params)
+                if (org.springframework.http.HttpStatus.resolve(resp.statusCode as int).is2xxSuccessful()) {
+                    render text: resp.resp as JSON, status: resp.statusCode
+                }
+                else {
+                    render text: [error: "" +
+                            "An error occurred when requesting download."] as JSON, status: resp.statusCode
+                }
+            }
+            '*' {
+                render documentService.allDocumentsSearch(params) as JSON
+            }
+        }
     }
 
     /** Downloads a the file attached to a document stored in the ecodata database */

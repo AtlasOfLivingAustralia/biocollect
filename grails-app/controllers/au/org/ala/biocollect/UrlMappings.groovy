@@ -120,6 +120,10 @@ class UrlMappings {
                         controller = 'document'
                         action = 'download'
                 }
+                "/document/allDocumentsSearch" {
+                        controller = 'document'
+                        action = 'allDocumentsSearch'
+                }
 
                 "/$hub/bulkImport" {
                         controller = 'bulkImport'
@@ -167,6 +171,22 @@ class UrlMappings {
                         format = 'json'
                 }
 
+                "/pwa" (controller: 'bioActivity', action: 'pwa')
+
+                "/sw.js" (uri: '/assets/sw.js')
+                "/pwa/config.js" (controller: 'bioActivity', action: 'pwaConfig')
+
+                "/pwa/bioActivity/edit/$projectActivityId" (controller: 'bioActivity', action: 'pwaCreateOrEdit')
+
+                "/pwa/createOrEditFragment/$projectActivityId" (controller: 'bioActivity', action: 'pwaCreateOrEditFragment')
+
+                "/pwa/bioActivity/index/$projectActivityId" (controller: 'bioActivity', action: 'pwaIndex')
+
+                "/pwa/indexFragment/$projectActivityId" (controller: 'bioActivity', action: 'pwaIndexFragment')
+
+                "/pwa/offlineList" ( controller: 'bioActivity', action: 'pwaOfflineList' )
+                "/pwa/settings" (controller: 'bioActivity', action: 'pwaSettings')
+
                 "/referenceAssessment/requestRecords"(controller: "referenceAssessment", action: [POST: "requestRecords"])
 
                 "500"(controller:'error', action:'response500')
@@ -180,12 +200,49 @@ class UrlMappings {
                 "/ws/attachment/upload"(controller:  "image", action: 'upload')
                 "/ws/bioactivity/model/$id"(controller: "bioActivity", action: 'getActivityModel')
                 "/ws/bioactivity/data/$id"(controller:  "bioActivity", action: 'getOutputForActivity')
+                "/ws/bioactivity/data/simplified/$id"(controller:  "bioActivity", action: 'getOutputForActivitySimplified')
+                "/ws/bioactivity/data/archive/$projectId"(controller:  "bioActivity", action: 'getDarwinCoreArchiveForProject')
+                "/ws/bioactivity/data/records"(controller:  "bioActivity", action: 'listRecordsForDataResourceId')
                 "/ws/species/uniqueId"(controller:  "output", action: 'getOutputSpeciesIdentifier')
                 "/ws/bioactivity/save"(controller:  "bioActivity", action: 'ajaxUpdate')
                 "/ws/bioactivity/site"(controller:  "site", action: 'ajaxUpdate')
                 "/ws/bioactivity/delete/$id"(controller:  "bioActivity", action: 'delete')
                 "/ws/bioactivity/search"(controller:  "bioActivity", action: 'searchProjectActivities')
                 "/ws/bioactivity/map"(controller:  "bioActivity", action: 'getProjectActivitiesRecordsForMapping')
+                "/ws/project/$id" {
+                        controller = 'project'
+                        action = 'ajaxGet'
+                }
+                "/ws/projectActivity/$id" {
+                        controller = 'projectActivity'
+                        action = 'ajaxGet'
+                }
+                "/ws/projectActivity/activity" {
+                        controller = 'bioActivity'
+                        action = 'getProjectActivityMetadata'
+                }
+                "/ws/activity/$id" {
+                        controller = 'bioActivity'
+                        action = 'ajaxGet'
+                }
+                "/ws/site/$id" {
+                        controller = 'site'
+                        action = 'index'
+                        format = 'json'
+                        levelOfDetail = 'brief'
+                }
+                "/ws/document/$id" {
+                        controller = 'document'
+                        action = 'get'
+                }
+                "/ws/species/speciesDownload" {
+                        controller = 'species'
+                        action = 'speciesDownload'
+                }
+                "/ws/species/totalSpecies" {
+                        controller = 'species'
+                        action = 'totalSpecies'
+                }
         }
 }
 

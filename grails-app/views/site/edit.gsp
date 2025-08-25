@@ -45,7 +45,7 @@
         <g:else>
             pageUrl : "${createLink(controller:'site', action:'create', params:[checkForState:true])}",
         </g:else>
-        sitePageUrl : "${createLink(action: 'index', id: site?.siteId)}",
+        sitePageUrl : "${createLink(controller: 'site', action: 'index')}/${site?.siteId}",
         homePageUrl : "${createLink(controller: 'home', action: 'index')}",
         ajaxUpdateUrl: "${createLink(action: 'ajaxUpdate', id: site?.siteId)}",
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
