@@ -406,7 +406,7 @@ function ProjectFinder(config) {
 
         // only add filter when checked
         if (excludeNationwide) {
-            if (!fq.includes('nationwideFacet:true')) fq.push('nationwideFacet:true');
+            if (!fq.includes('-nationwideFacet:true')) fq.push('-nationwideFacet:true');
         }
 
         var map = {
