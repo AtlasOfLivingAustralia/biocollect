@@ -56,8 +56,13 @@
     <!-- ko foreach: filterViewModel.selectedFacets -->
     <button class="filter-item btn btn-outline-dark btn-sm"><strong data-bind="if: exclude">[EXCLUDE]</strong> <!-- ko text: displayNameWithoutCount() --> <!-- /ko --> <span class="remove" data-bind="click: remove"><i class="far fa-trash-alt"></i></span></button>
     <!-- /ko -->
-    <!-- ko if: ((filterViewModel.selectedFacets() && (filterViewModel.selectedFacets().length > 0)) || isGeoSearchEnabled()) -->
-    <button type="button" class="btn btn-sm btn-dark clear-filters" data-bind="click: reset" aria-label="Clear all filters"><i class="far fa-trash-alt"></i> Clear All</button>
+    <!-- ko if: filterViewModel.nationwideProjectCheckbox() -->
+    <button class="filter-item btn btn-outline-dark btn-sm"><g:message code="project.search.excludeNationalProject"/><span class="remove" data-bind="click: removeNationwide"><i class="far fa-trash-alt"></i></span></button>
+    <!-- /ko -->
+    <!-- ko if: ((filterViewModel.selectedFacets() && filterViewModel.selectedFacets().length > 0) || isGeoSearchEnabled() || filterViewModel.nationwideProjectCheckbox()) -->
+    <button type="button" class="btn btn-sm btn-dark clear-filters" data-bind="click: reset">
+        <i class="far fa-trash-alt"></i> Clear All
+    </button>
     <!-- /ko -->
 </div>
 

@@ -117,7 +117,7 @@ class DocumentService {
         )
 
         //add the associated projectId when viewing hub documents
-        if (!projectId) {
+        if (!params.projectId) {
             Map project
 
             if (results) {

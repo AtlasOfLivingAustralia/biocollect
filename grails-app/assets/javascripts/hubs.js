@@ -517,6 +517,7 @@ function ContentViewModel(config) {
     self.hideProjectGettingStartedButton = ko.observable(config.hideProjectGettingStartedButton || false);
     self.overriddenLabels = ko.observableArray();
     self.showCustomMetadata = ko.observable(config.showCustomMetadata || false);
+    self.enableNationalProjectsExclusionFilter = ko.observable(config.enableNationalProjectsExclusionFilter || false);
 
     self.load(config);
 }
