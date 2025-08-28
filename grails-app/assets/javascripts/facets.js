@@ -38,6 +38,7 @@ function FilterViewModel(config){
     var parent = config.parent;
     self.flimit = config.flimit;
 
+    self.nationwideProjectCheckbox = ko.observable(false);
     self.facets = ko.observableArray()
     self.selectedFacets = ko.observableArray()
     self.tempListOfFacets = ko.observableArray()
@@ -232,6 +233,7 @@ function FilterViewModel(config){
         self.tempListOfFacets.removeAll();
         self.selectedFacets.removeAll();
         self.origSelectedFacet.removeAll();
+        self.nationwideProjectCheckbox(false);
     }
 
     self.otherFilters = function() {
@@ -933,7 +935,7 @@ function generateTermIdForFacetTerm(facetTerm) {
  */
 function decodeCamelCase(text) {
     if(typeof text == 'string'){
-        var result = text.replace( /([a-z][A-Z])/g, "$1 $2" );
+        var result = text.replace( /([a-z])([A-Z])/g, "$1 $2" );
         return result.charAt(0).toUpperCase() + result.slice(1); // capitalize the first letter - as an example.
     }
     else{
