@@ -37,6 +37,7 @@ var forceCreateProject = false; //Set to true to delete existing projects and re
 for(var i = 0; i < projects.length; i++) {
     var project = projects[i];
     var mappedProject = Object.assign({}, projectMap);
+    project[projectName] = (project[projectName] || "" ).trim();
     var checkIfProjectExists = db.project.findOne({name: project[projectName], externalId: project[externalId], status: "active"});
     if (checkIfProjectExists) {
         print("Project already exists: " + project[projectName]);
@@ -61,7 +62,7 @@ for(var i = 0; i < projects.length; i++) {
     mappedProject.manager = (project[manager]|| "" ).trim();
     mappedProject.description = (project[description]|| "" ).trim();
     mappedProject.aim = (project[aim]|| "" ).trim();
-    mappedProject.name = (project[projectName]|| "" ).trim();
+    mappedProject.name = project[projectName]
     mappedProject.associatedProgram = (hubToOrgMap[project[hub_name]]|| "" ).trim();
     mappedProject.externalId = (project[externalId]|| "" ).trim();
     mappedProject.keywords = (project[keywords]|| "" ).trim();
