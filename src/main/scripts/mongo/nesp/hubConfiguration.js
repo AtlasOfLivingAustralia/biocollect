@@ -18,6 +18,7 @@ while (hubs.hasNext()) {
                 "content.nespFavicon": true,
                 "content.showCustomMetadata": true,
                 "content.disableOrganisationHyperlink": true,
+                "content.enableNationalProjectsExclusionFilter": true,
                 "templateConfiguration.homePage.projectFinderConfig.showProjectDownloadButton": true,
                 "faviconlogoUrl": faviconlogoUrl
             }
