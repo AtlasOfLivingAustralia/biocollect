@@ -62,7 +62,7 @@ for(var i = 0; i < projects.length; i++) {
     mappedProject.description = (project[description]|| "" ).trim();
     mappedProject.aim = (project[aim]|| "" ).trim();
     mappedProject.name = (project[projectName]|| "" ).trim();
-    mappedProject.associatedProgram = (hubToOrgMap[hub_name]|| "" ).trim();
+    mappedProject.associatedProgram = (hubToOrgMap[project[hub_name]]|| "" ).trim();
     mappedProject.externalId = (project[externalId]|| "" ).trim();
     mappedProject.keywords = (project[keywords]|| "" ).trim();
 
