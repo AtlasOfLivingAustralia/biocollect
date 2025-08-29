@@ -9,11 +9,6 @@ print("Loaded all dependent files...");
 
 var userId = "229308";
 var hub_name = "Hub";
-var associatedProgram ;
-var projectSiteId  ;
-var organisationId ;
-var organisationUrl;
-var organisationLogo;
 var projectName = "Project name/title";
 var externalId = "Project ID";
 var aim = "Project outcomes";
@@ -24,23 +19,34 @@ var manager = "Project leader email";
 var managerEmail = "Project leader";
 var associatedOrgs = "Lead organisation";
 var keywords = "Project keywords";
+var traditionalPlaceName = "Traditional place name";
+var locationOfResearch = "Location of research"
 var nationwide = "Scale of research";
+var category = "Indigenous consultation and engagement";
+var raid = "RAID"
 
+var engagementCategories = {
+    "1": "Category 1: Indigenous-led",
+    "2": "Category 2: Co-design",
+    "3": "Category 3: Communicate",
+    "": "Not Applicable"
+}
 
-// Include name, organisationId pairs for all associated orgs
-var organisations = [
-    {name:"CSIRO", organisationId:"98250704-d244-42d3-abdb-a15e95107560"},
-    {name:"Curtin University", organisationId:"0f65d21c-f876-4a01-ad81-2132094c8fb4"},
-    {name:"Murdoch University", organisationId:"c23d36ed-2e4a-4b56-b807-fbff825b56ca"}
-];
+var forceCreateProject = false; //Set to true to delete existing projects and re-create them
 
 for(var i = 0; i < projects.length; i++) {
     var project = projects[i];
     var mappedProject = Object.assign({}, projectMap);
+    project[projectName] = (project[projectName] || "" ).trim();
     var checkIfProjectExists = db.project.findOne({name: project[projectName], externalId: project[externalId], status: "active"});
     if (checkIfProjectExists) {
         print("Project already exists: " + project[projectName]);
-        continue;
+        if (forceCreateProject) {
+            db.project.deleteOne({_id: checkIfProjectExists._id});
+            db.site.deleteOne({siteId: checkIfProjectExists.projectSiteId});
+        }
+        else
+            continue;
     }
 
     print("Import "+ (i+1) + " of " + projects.length + " " + project[projectName]);
@@ -52,16 +58,45 @@ for(var i = 0; i < projects.length; i++) {
     var organisation = createOrFindOrganisation(project[hub_name], "", "");
     mappedProject.organisationId = organisation.organisationId;
     mappedProject.organisationName = organisation.name;
+    mappedProject.managerEmail = (project[managerEmail]|| "" ).trim();
+    mappedProject.manager = (project[manager]|| "" ).trim();
+    mappedProject.description = (project[description]|| "" ).trim();
+    mappedProject.aim = (project[aim]|| "" ).trim();
+    mappedProject.name = project[projectName]
+    mappedProject.associatedProgram = (hubToOrgMap[project[hub_name]]|| "" ).trim();
+    mappedProject.externalId = (project[externalId]|| "" ).trim();
+    mappedProject.keywords = (project[keywords]|| "" ).trim();
 
-    mappedProject.managerEmail = project[managerEmail];
-    mappedProject.manager = project[manager];
-    mappedProject.description = project[description];
-    mappedProject.aim = project[aim];
-    mappedProject.name = project[projectName];
-    mappedProject.associatedProgram = hubToOrgMap[hub_name];
-    mappedProject.externalId = project[externalId];
-    mappedProject.keywords = project[keywords];
-    mappedProject.geographicInfo.nationwide = isNational(project[nationwide]);
+    if (project[locationOfResearch]) {
+        project[locationOfResearch] = project[locationOfResearch].trim();
+        if (mappedProject.keywords)
+            mappedProject.keywords += ", " + project[locationOfResearch];
+        else
+            mappedProject.keywords = project[locationOfResearch];
+    }
+
+    if (project[traditionalPlaceName]) {
+        project[traditionalPlaceName] = project[traditionalPlaceName].trim();
+        if (mappedProject.keywords)
+            mappedProject.keywords += ", " + project[traditionalPlaceName];
+        else
+            mappedProject.keywords = project[traditionalPlaceName];
+    }
+
+    if (project[raid]) {
+        mappedProject.externalIds = [{idType: "ARDC_RAID", externalId: project[raid].trim()}];
+    }
+
+    if(isNational(project[nationwide])) {
+        mappedProject.geographicInfo = {
+            nationwide: true
+        };
+    }
+
+    mappedProject.customMetadata = {
+        category: engagementCategories[(project[category]|| "" ).trim()]
+    }
+
     //Handle associated orgs
     mappedProject.associatedOrgs = []
     var tempAssociatedOrgs;
@@ -73,7 +108,7 @@ for(var i = 0; i < projects.length; i++) {
         tempAssociatedOrgs = tempStr.split("/");
 
         for (var j = 0; j < tempAssociatedOrgs.length; j++) {
-            var orgName = tempAssociatedOrgs[j].trim();
+            var orgName = (tempAssociatedOrgs[j]|| "" ).trim();
             if (orgName) {
                 var org = createOrFindOrganisation(orgName, "", "");
                 print("Found or created organisation: " + org.name);
@@ -82,7 +117,7 @@ for(var i = 0; i < projects.length; i++) {
         }
     }
 
-    mappedProject.keywords = project[keywords];
+    mappedProject.keywords = (project[keywords]|| "" ).trim();
     var startDate = project[plannedStartDate];
     var endDate = project[plannedEndDate];
     mappedProject.plannedStartDate = convertDateToISODate(startDate);
@@ -140,7 +175,7 @@ function convertDateToISODate(date) {
 }
 
 function isNational (value) {
-    return value === "National";
+    return (value || "").trim() === "National";
 }
 
 
