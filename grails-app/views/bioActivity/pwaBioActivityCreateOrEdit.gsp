@@ -64,7 +64,8 @@
         isCaching: ${params.getBoolean('cache', false)},
         preventNavigationIfDirty: ${params.getBoolean('cache', false) ? false : true},
         globalReturnToAddress: '${createLink(uri: "/pwa/offlineList")}',
-        surveyReturnToAddress: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}'
+        surveyReturnToAddress: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}',
+        overrideUseAlaFlag: true
         </g:applyCodec>
         },
         here = document.location.href;

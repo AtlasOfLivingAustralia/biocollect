@@ -81,9 +81,17 @@ class SpeciesService {
     Map formatSpeciesListResultToAutocompleteFormat(List queryResult, Map fields){
         List autoCompleteList = queryResult?.collect { SpeciesListItem result ->
             Map searchResult = [id: result.id, guid: result.lsid, lsid: result.lsid, listId: result.dataResourceUid]
-            searchResult.scientificName = result.kvpValues?.find { it.key ==  fields.scientificNameField } ?.value ?: result.scientificName
+            searchResult.scientificName = result.kvpValues?.find { it.key ==  fields.scientificNameField } ?.value
+            if (!searchResult.scientificName) {
+                searchResult.scientificName = SpeciesListItem.metaClass.hasProperty(result, fields.scientificNameField) ? result[fields.scientificNameField] : result.scientificName
+            }
+
             searchResult.scientificNameMatches = searchResult.scientificName ? [ searchResult.scientificName ] : []
-            searchResult.commonName = result.kvpValues?.find { it.key ==  fields.commonNameField } ?.value ?: result.commonName
+            searchResult.commonName = result.kvpValues?.find { it.key ==  fields.commonNameField } ?.value
+            if (!searchResult.commonName) {
+                searchResult.commonName = SpeciesListItem.metaClass.hasProperty(result, fields.commonNameField) ? result[fields.commonNameField] : result.commonName
+            }
+
             searchResult.commonNameMatches = searchResult.commonName ? [ searchResult.commonName ] : []
             searchResult
         }
@@ -161,15 +169,7 @@ class SpeciesService {
      * @return
      */
     String formatSpeciesName(String displayType, Map data){
-        String name
-        if(data.guid){
-            name = formatTaxonName(data, displayType)
-        } else {
-            // when no guid, append unmatched taxon string
-            name = "${data.rawScientificName?:''} (Unmatched taxon)"
-        }
-
-        name
+        formatTaxonName(data, displayType)
     }
 
     /** format species by specific type **/

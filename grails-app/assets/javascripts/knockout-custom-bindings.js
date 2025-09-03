@@ -533,19 +533,19 @@ ko.bindingHandlers.autocomplete = {
                             source: item
                         }
                     });
-                    items = [{
+                    items = items.push({
                         label: "Missing or unidentified species",
-                        value: request.term,
-                        source: {listId: 'unmatched', name: request.term}
-                    }].concat(items);
+                        value: _.escape(request.term),
+                        source: {listId: 'unmatched', name: _.escape(request.term), scientificName: _.escape(request.term), commonName: '', guid: ''}
+                    });
                     response(items);
 
                 },
                 error: function () {
                     items = [{
                         label: "Error during species lookup",
-                        value: request.term,
-                        source: {listId: 'error-unmatched', name: request.term}
+                        value: _.escape(request.term),
+                        source: {listId: 'error-unmatched', name: _.escape(request.term), scientificName: _.escape(request.term), commonName: '', guid: ''}
                     }];
                     response(items);
                 },
