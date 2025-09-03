@@ -55,6 +55,7 @@
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, pActivity)}"/>,
         originUrl: "${grailsApplication.config.server.serverURL}",
         bulkUpload: ${bulkUpload?:false},
+        overrideUseAlaFlag: true,
         </g:applyCodec>
         returnTo: "${returnTo}"
         },

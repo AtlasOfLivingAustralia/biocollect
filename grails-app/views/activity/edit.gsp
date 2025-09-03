@@ -16,6 +16,7 @@
     <asset:script type="text/javascript">
     var fcConfig = {
         <g:applyCodec encodeAs="none">
+        overrideUseAlaFlag: true,
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
