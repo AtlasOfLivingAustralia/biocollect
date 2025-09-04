@@ -1,9 +1,12 @@
 print("Imported started");
-load("./data/projects.js")
+//load("./data/projects.js")
+load("/Users/var03f/Documents/ala/NESP/NPIL for CSIRO August 2025.json")
 load("./templates/organisationTemplate.js")
 load("./templates/projectTemplate.js");
 load('../../utils/uuid.js');
 load('./templates/siteTemplate.js');
+load('./templates/documentTemplate.js');
+load('../../utils/audit.js');
 
 print("Loaded all dependent files...");
 
@@ -32,7 +35,38 @@ var engagementCategories = {
     "": "Not Applicable"
 }
 
-var forceCreateProject = false; //Set to true to delete existing projects and re-create them
+var hubToLogoMap = {
+    "RL": {
+        filepath: "2025-06",
+        filename: "712066-2.1.jpg",
+        name : "712066-2.1.jpg",
+        fileSize: 6694415,
+        contentType: "image/jpeg"
+    },
+    "SCaW": {
+        filepath: "2025-06",
+        filename: "709144-2.1.jpg",
+        name : "709144-2.1.jpg",
+        fileSize: 206619,
+        contentType: "image/jpeg"
+    },
+    "MaC": {
+        filepath: "2025-06",
+        filename: "709532-2.1.jpg",
+        name : "709532-2.1.jpg",
+        fileSize: 680431,
+        contentType: "image/jpeg"
+    },
+    "CS":{
+        filepath: "2025-06",
+        filename: "709498-2.1.jpg",
+        name : "709498-2.1.jpg",
+        fileSize: 340563,
+        contentType: "image/jpeg"
+    }
+}
+
+var forceCreateProject = true; //Set to true to delete existing projects and re-create them
 
 for(var i = 0; i < projects.length; i++) {
     var project = projects[i];
@@ -42,8 +76,29 @@ for(var i = 0; i < projects.length; i++) {
     if (checkIfProjectExists) {
         print("Project already exists: " + project[projectName]);
         if (forceCreateProject) {
-            db.project.deleteOne({_id: checkIfProjectExists._id});
-            db.site.deleteOne({siteId: checkIfProjectExists.projectSiteId});
+            var existingProjects = db.project.find({name: project[projectName], externalId: project[externalId], status: "active"});
+            while (existingProjects.hasNext()) {
+                var p = existingProjects.next();
+                audit(p, p.projectId, 'au.org.ala.ecodata.Project', "system", p.projectId, 'Delete');
+                db.project.deleteOne({projectId: p.projectId});
+                var deleteSite = db.site.findOne({projects: p.projectId});
+                if (deleteSite) {
+                    audit(deleteSite, deleteSite.siteId, 'au.org.ala.ecodata.Site', "system", p.projectId, 'Delete');
+                    db.site.deleteOne({siteId: deleteSite.siteId});
+                }
+
+                var deleteDocument = db.document.findOne({projectId: p.projectId});
+                if(deleteDocument) {
+                    audit(deleteDocument, deleteDocument.documentId, 'au.org.ala.ecodata.Document', "system", p.projectId, 'Delete');
+                    db.document.deleteOne({documentId: deleteDocument.documentId});
+                }
+                var userPermissions = db.userPermission.find({entityId: p.projectId});
+                while (userPermissions.hasNext()) {
+                    var up = userPermissions.next();
+                    audit(up, up._id, 'au.org.ala.ecodata.UserPermission', "system", up.entityId, 'Delete');
+                    db.userPermission.deleteOne({_id: up._id});
+                }
+            }
         }
         else
             continue;
@@ -52,6 +107,7 @@ for(var i = 0; i < projects.length; i++) {
     print("Import "+ (i+1) + " of " + projects.length + " " + project[projectName]);
     var projectId = UUID.generate();
     var siteId = UUID.generate();
+    var documentId = UUID.generate();
 
     mappedProject.projectId = projectId;
     mappedProject.projectSiteId = siteId;
@@ -136,6 +192,18 @@ for(var i = 0; i < projects.length; i++) {
         siteMap.dateCreated = today;
     }
 
+    if (document) {
+        document.documentId = documentId;
+        document.projectId = projectId;
+        document.dateCreated = today;
+        document.lastUpdated = today;
+        document.filepath = hubToLogoMap[project[hub_name]].filepath;
+        document.filename = hubToLogoMap[project[hub_name]].filename;
+        document.name = hubToLogoMap[project[hub_name]].name;
+        document.filesize = hubToLogoMap[project[hub_name]].fileSize;
+        document.contentType = hubToLogoMap[project[hub_name]].contentType;
+    }
+
     var userPermission = {};
     userPermission.accessLevel = 'admin';
     userPermission.entityId = mappedProject.projectId;
@@ -144,10 +212,17 @@ for(var i = 0; i < projects.length; i++) {
 
     var siteResult = db.site.insert(siteMap);
     checkInsertResult(siteResult, "site");
+    audit(siteMap, siteMap.siteId, 'au.org.ala.ecodata.Site', "system", siteMap.projects[0], 'Insert');
+    var documentResult = db.document.insert(document);
+    checkInsertResult(documentResult, "document");
+    audit(document, document.documentId, 'au.org.ala.ecodata.Document', "system", document.projectId, 'Insert');
     var projectResult = db.project.insert(mappedProject);
     checkInsertResult(projectResult, "project");
+    audit(mappedProject, mappedProject.projectId, 'au.org.ala.ecodata.Project', "system", mappedProject.projectId, 'Insert');
     var permissionResult = db.userPermission.insert(userPermission);
     checkInsertResult(permissionResult, "userPermission");
+    var createdUserPermission = db.userPermission.findOne({userId:userId, entityId:mappedProject.projectId, accessLevel:'admin'});
+    audit(userPermission, createdUserPermission._id, 'au.org.ala.ecodata.UserPermission', "system", userPermission.entityId, 'Insert');
 }
 
 function checkInsertResult(result, entityName) {
