@@ -49,6 +49,7 @@ class WebService {
     void init() {
         String whiteListed = grailsApplication.config.getProperty('app.domain.whiteList', "")
         WHITE_LISTED_DOMAINS = Arrays.asList(whiteListed.split(','))
+        log.info "User Agent at startup: ${createUserAgent()} (info.app.version=${grailsApplication.config.getProperty('info.app.version', String)}, implVersion=${this.class.package?.implementationVersion})"
     }
 
     def get(String url, boolean includeUserId) {
@@ -99,6 +100,7 @@ class WebService {
 
         addHubUrlPath(conn)
         addAuthForAllowedDomains(conn)
+        addUserAgent(conn)
 
         if (includeUserId) {
             def user = getUserService().getUser()
@@ -126,6 +128,39 @@ class WebService {
         }
 
         headers
+    }
+
+    private String appVersion() {
+        grailsApplication.config.getProperty('info.app.version', String) ?: System.getProperty('app.version') ?: (this.class.package?.implementationVersion) ?: 'dev'
+    }
+
+    private String appName() {
+        grailsApplication.config.getProperty('appName', String) ?: grailsApplication.config.getProperty('grails.application.name', String) ?: 'biocollect'
+    }
+
+    /**
+     * Compose "biocollect/<version>"
+     * */
+    private String createUserAgent() {
+        "${appName()}/${appVersion()}"
+    }
+
+    private String resolveUserAgent() {
+        createUserAgent() ?: System.getProperty('http.agent')
+    }
+
+    /**
+     * Add User Agent to outbound calls
+     * */
+    URLConnection addUserAgent(URLConnection conn) {
+        def userAgent = resolveUserAgent()
+        if (userAgent) {
+            conn.setRequestProperty('User-Agent', userAgent)
+            log.debug "User-Agent applied: '${userAgent}' for ${conn?.URL}"
+        } else {
+            log.warn "No User-Agent resolved for ${conn?.URL}; JDK default may be used"
+        }
+        conn
     }
 
     /**
@@ -266,6 +301,7 @@ class WebService {
                 query+=name.encodeAsURL()+"="+params.get(name).encodeAsURL()
             }
             conn = new URL(url+query).openConnection()
+            addUserAgent(conn)
             conn.setRequestMethod("POST")
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
@@ -304,6 +340,7 @@ class WebService {
         def charEncoding = 'utf-8'
         try {
             conn = new URL(url).openConnection()
+            addUserAgent(conn)
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}")
 
@@ -339,6 +376,7 @@ class WebService {
         def charEncoding = 'utf-8'
         try {
             conn = new URL(url).openConnection()
+            addUserAgent(conn)
             conn.setRequestMethod("PUT")
             conn.setDoOutput(true)
             conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}")
@@ -386,6 +424,7 @@ class WebService {
             }
 
             conn = new URL(url).openConnection()
+            addUserAgent(conn)
             conn.setDoOutput(true)
             conn.setRequestMethod("GET")
             conn.setRequestProperty("Content-Type", "${APPLICATION_JSON};charset=${StandardCharsets.UTF_8.toString()}");
@@ -417,6 +456,7 @@ class WebService {
         def conn = null
         try {
             conn = new URL(url).openConnection()
+            addUserAgent(conn)
             conn.setRequestMethod("DELETE")
 
             addAuthForAllowedDomains(conn)
