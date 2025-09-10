@@ -1,4 +1,4 @@
-
+//= require fieldcapture-application.js
 /**
  * A view model to capture metadata about a document and manage progress / feedback as a file is uploaded.
  *
@@ -70,6 +70,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.role = ko.observable(doc.role);
     this.roles = this.settings.roles;
     this.public = ko.observable(doc.public);
+    this.isbn = ko.observable(doc.isbn ? doc.isbn : '');
     this.url = doc.url;
     this.thumbnailUrl = doc.thumbnailUrl ? doc.thumbnailUrl : doc.url;
     this.documentId = doc.documentId;
@@ -484,7 +485,8 @@ function AllDocListViewModel(projectId) {
         !!projectId;
     }
 
-    self.refreshPage = function(offset) {
+    self.getParameters = function(offset) {
+        offset = offset || 0;
         var params = {offset: offset, max: self.pagination.resultsPerPage()};
 
         if (self.searchDoc()) {
@@ -507,6 +509,12 @@ function AllDocListViewModel(projectId) {
 
         if (projectId)
             params.projectId = projectId;
+
+        return params;
+    }
+
+    self.refreshPage = function(offset) {
+        var params = self.getParameters(offset);
 
         $.ajax({
             url:fcConfig.documentSearchUrl,
@@ -632,6 +640,24 @@ function AllDocListViewModel(projectId) {
             default:
                 return roleName = text;
         }
+    }
+
+    self.downloadDocuments = function() {
+        blockUIWithMessage("Requesting download, please wait...");
+        var params = self.getParameters(0);
+        // add client timezone so that date on spreadsheet reflect the timezone of the user
+        params.clientTimezone = moment.tz.guess()
+        $.ajax({
+            url :fcConfig.documentDownloadUrl,
+            data:params,
+            success:function(data) {
+                $.unblockUI();
+                bootbox.alert("The download will be emailed to you when it is ready.");
+            },
+            complete: function () {
+                $.unblockUI();
+            }
+        });
     }
 }
 

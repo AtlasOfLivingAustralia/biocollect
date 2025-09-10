@@ -79,3 +79,12 @@
 .inline {
     display: inline;
 }
+/* This selector targets the editable element (excluding comments). */
+.ck-editor__editable_inline:not(.ck-comment__input *) {
+    height: 70vh;
+    overflow-y: auto;
+}
+
+.ck-body-wrapper .ck.ck-balloon-panel {
+    z-index: 1100;
+}

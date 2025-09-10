@@ -101,6 +101,7 @@ var HubSettings = function (settings, config) {
     self.homePagePath = ko.observable();
     self.bannerUrl = ko.observable();
     self.logoUrl = ko.observable();
+    self.faviconlogoUrl = ko.observable();
     self.documents = ko.observableArray();
     self.defaultProgram = ko.observable();
     self.templateConfiguration = ko.observable();
@@ -161,6 +162,9 @@ var HubSettings = function (settings, config) {
             else if (document.role == 'logo') {
                 self.logoUrl(document.url);
             }
+            else if (document.role == 'faviconlogo') {
+                self.faviconlogoUrl(document.url);
+            }
         });
     });
 
@@ -172,6 +176,12 @@ var HubSettings = function (settings, config) {
 
     self.removeBanner = function () {
         var document = findDocumentByRole(self.documents(), 'logo');
+        self.documents.remove(document);
+    };
+
+    self.removeFaviconlogo = function () {
+        self.faviconlogoUrl(null);
+        var document = findDocumentByRole(self.documents(), 'faviconlogo');
         self.documents.remove(document);
     };
 
@@ -242,6 +252,7 @@ var HubSettings = function (settings, config) {
         self.defaultProgram(settings.defaultProgram);
         self.bannerUrl(self.orBlank(settings.bannerUrl));
         self.logoUrl(self.orBlank(settings.logoUrl));
+        self.faviconlogoUrl(self.orBlank(settings.faviconlogoUrl));
         self.homePagePath(self.orBlank(settings.homePagePath));
         self.defaultFacetQuery([]);
         self.content(new ContentViewModel(settings.content || {}));
@@ -478,6 +489,7 @@ var TemplateConfigurationViewModel = function (config) {
 function ContentViewModel(config) {
     var self = this;
     self.hideBreadCrumbs = ko.observable(config.hideBreadCrumbs || false);
+    self.nespFavicon = ko.observable(config.nespFavicon || false);
     self.hideProjectAndSurvey = ko.observable(config.hideProjectAndSurvey || false);
     self.hideCancelButtonOnForm = ko.observable(config.hideCancelButtonOnForm || false);
     self.hideNewButtonOnRecordView = ko.observable(config.hideNewButtonOnRecordView || false);
@@ -501,7 +513,12 @@ function ContentViewModel(config) {
     self.hideProjectEditScienceTypes = ko.observable(config.hideProjectEditScienceTypes || false);
     self.hideProjectSurveyDownloadXLSX = ko.observable(config.hideProjectSurveyDownloadXLSX || false);
     self.enablePartialSearch = ko.observable(config.enablePartialSearch || false);
+    self.disableOrganisationHyperlink = ko.observable(config.disableOrganisationHyperlink || false);
+    self.hideProjectGettingStartedButton = ko.observable(config.hideProjectGettingStartedButton || false);
     self.overriddenLabels = ko.observableArray();
+    self.showCustomMetadata = ko.observable(config.showCustomMetadata || false);
+    self.enableNationalProjectsExclusionFilter = ko.observable(config.enableNationalProjectsExclusionFilter || false);
+
     self.load(config);
 }
 
@@ -608,11 +625,33 @@ var FooterViewModel = function (config) {
 
 var LinkViewModel = function (config) {
     var self = this;
-
+    var elementId = "#introTextModal", ckeditorElement = "#introTextModal .ckeditor";
     self.displayName = ko.observable(config.displayName || '');
     self.contentType = ko.observable(config.contentType || 'static');
     self.href = ko.observable(config.href || '');
     self.role = ko.observable(config.role || '');
+    self.introductoryText = ko.observable(config.introductoryText || '');
+    self.launchModal = function () {
+        $(elementId).modal();
+        self.initialiseListeners();
+    }
+    self.initialiseListeners = function () {
+        $(elementId).on('shown.bs.modal', function () {
+            ko.applyBindings({introductoryText: self.introductoryText, saveIntroductoryText: self.saveIntroductoryText}, $(elementId).find('.modal-content')[0]);
+        });
+
+        $(elementId).on('hidden.bs.modal', function () {
+            var ckeditor = $(ckeditorElement)[0], modal = $(elementId)[0];
+            ckeditor && ckeditor.editor && ckeditor.editor.destroy();
+            ko.cleanNode(modal);
+        })
+    }
+
+    self.saveIntroductoryText = function () {
+        var editor = $(ckeditorElement)[0].editor;
+        self.introductoryText(editor && editor.getData());
+        $(elementId).modal('hide');
+    }
 };
 
 var StyleViewModel = function (config) {

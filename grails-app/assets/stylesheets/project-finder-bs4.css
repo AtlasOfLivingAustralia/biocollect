@@ -6,3 +6,12 @@
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
+
+.custom-font {
+    font-size: 1rem !important;
+    font-weight: bold;
+}
+
+#filters .custom-font::after {
+    content: none;
+}

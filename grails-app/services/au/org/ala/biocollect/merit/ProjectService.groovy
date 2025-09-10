@@ -499,7 +499,7 @@ class ProjectService {
      * @return boolean
      */
     Map canUserEditProjects(String userId, String projectId) throws SocketTimeoutException, Exception {
-        def isAdmin
+        boolean isAdmin = false
         Map permissions = [:], response
 
         if (userService.userIsAlaAdmin()) {
@@ -508,7 +508,7 @@ class ProjectService {
 
         def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProjects"
         Map params = [projectIds:projectId,userId:userId]
-        response = webService.postMultipart(url, params, null, null, null)
+        response = webService.postMultipart(url, params, new ByteArrayInputStream(new byte[0]), "application/octet-stream", "empty.file")
 
         if (HttpStatus.resolve(response.statusCode as int).is2xxSuccessful()) {
             if (isAdmin) {
@@ -533,6 +533,7 @@ class ProjectService {
 
         permissions
     }
+
 
     /**
      * Can user edit bio collect activity

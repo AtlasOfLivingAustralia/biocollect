@@ -13,14 +13,21 @@
                             <a data-bind="attr:{href:transients.indexUrl}, click: $root.setTrafficFromProjectFinderFlag">
                                 <span data-bind="text:name" style="font-size:150%;font-weight:bold"></span>
                             </a>
-                            <div data-bind="visible:transients.orgUrl">
-                                <small data-bind="visible:transients.daysSince() >= 0">
-                                    Started <!--ko text:transients.since--><!--/ko-->&nbsp;
-                                    <g:if test="${controllerName != 'organisation'}">
-                                        <a data-bind="text:organisationName,attr:{href:transients.orgUrl}"></a>
-                                    </g:if>
-                                </small>
-                            </div>
+
+                                <div data-bind="visible:transients.orgUrl">
+                                    <small data-bind="visible:transients.daysSince() >= 0">
+                                        Started <!--ko text:transients.since--><!--/ko-->&nbsp;
+                                        <g:if test="${controllerName != 'organisation'}">
+                                            <g:if test="${hubConfig?.content?.disableOrganisationHyperlink}">
+                                                <span data-bind="text:organisationName"></span>
+                                            </g:if>
+                                            <g:else>
+                                                <a data-bind="text:organisationName,attr:{href:transients.orgUrl}"></a>
+                                            </g:else>
+                                        </g:if>
+                                    </small>
+                                </div>
+
                             <div data-bind="text:aim"></div>
                             <div class="d-inline-block">
                                 <span>

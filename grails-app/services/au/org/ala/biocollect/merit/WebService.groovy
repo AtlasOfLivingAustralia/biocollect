@@ -469,8 +469,8 @@ class WebService {
      * @param fileParamName the name of the HTTP parameter that will be used for the post.
      * @return [status:<request status>, content:<The response content from the server, assumed to be JSON>
      */
-    Map postMultipart(String url, Map params, InputStream contentIn, contentType, originalFilename, fileParamName = 'files', boolean useToken = false, boolean userToken = false) {
-        ecpWebService.postMultipart(url, params, contentIn, contentType, originalFilename, fileParamName, useToken, userToken)
+    Map postMultipart(String url, Map params, InputStream contentIn, String contentType, String originalFilename, String fileParamName = 'files', boolean useToken = false, boolean userToken = false) {
+        ecpWebService.postMultipart(url, params, (InputStream) contentIn, (String) contentType, (String) originalFilename, (String) fileParamName, (boolean) useToken, (boolean) userToken)
     }
 
 
@@ -489,4 +489,5 @@ class WebService {
     Map postMultipart(String url, Map params, File file, String contentType, String originalFilename, String fileParamName = 'files', boolean useToken = false, boolean userToken = false) {
         ecpWebService.postMultipart(url, params, file, contentType, originalFilename, fileParamName, useToken, userToken)
     }
+
 }

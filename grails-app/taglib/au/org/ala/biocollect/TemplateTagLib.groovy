@@ -6,6 +6,8 @@ import grails.converters.JSON
 import grails.web.mapping.LinkGenerator
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.context.MessageSource
+import org.springframework.web.util.UriComponents
+import org.springframework.web.util.UriComponentsBuilder
 
 class TemplateTagLib {
     static namespace = "config"
@@ -36,14 +38,33 @@ class TemplateTagLib {
         }
     }
 
-    boolean isUrlActivePage(String url) {
-        if(url) {
-            String qString = request.getQueryString()
-            qString = qString ? '?' + qString : ''
-            String rUrl = "${request.requestURI}${qString}"
-            String fUrl =  "${request.forwardURI}${qString}"
-            rUrl?.endsWith(url) || fUrl?.endsWith(url)
+    String getIntroductoryText = { attrs ->
+        Map currentLink = attrs?.links?.find {
+            if(it?.contentType == 'static') {
+                return isUrlActivePage(getLinkUrl(it))
+            }
+
+            isUrlActivePage(getLinkUrl(it), true)
         }
+
+        if (currentLink) {
+            out << currentLink?.introductoryText
+        }
+    }
+
+    boolean isUrlActivePage(String url, boolean ignoreQueryString = false) {
+        if(url) {
+            UriComponents build = UriComponentsBuilder.fromUriString(url).build()
+            Map queryParams = build.getQueryParams().toSingleValueMap()
+            String urlPath = build.getPath()
+
+            if (!ignoreQueryString)
+                return (urlPath?.endsWith(request.requestURI) || urlPath?.endsWith(request.forwardURI) || request.requestURI?.endsWith(urlPath) || request.forwardURI?.endsWith(urlPath)) && (queryParams == params)
+            else
+                return (urlPath?.endsWith(request.requestURI) || urlPath?.endsWith(request.forwardURI) || request.requestURI?.endsWith(urlPath) || request.forwardURI?.endsWith(urlPath))
+        }
+
+        return false
     }
 
     /**
@@ -60,7 +81,7 @@ class TemplateTagLib {
                 return
             }
             String url = getLinkUrl(link)
-            if (isUrlActivePage(url)) {
+            if (isUrlActivePage(url, true)) {
                 classes += " ${activeClass}"
             }
 
@@ -76,8 +97,12 @@ class TemplateTagLib {
                         out << "</li>";
                     }
                     break;
-                case 'content':
                 case 'static':
+                    // for static pages, we need to check query parameters since all static pages have same path value but query params differ
+                    if (isUrlActivePage(url)) {
+                        classes += " ${activeClass}"
+                    }
+                case 'content':
                     if (bs4) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName}\" href=\"${url}\">${link.displayName}</a>";

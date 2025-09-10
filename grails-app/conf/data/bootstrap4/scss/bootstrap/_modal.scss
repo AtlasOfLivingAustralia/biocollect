@@ -121,6 +121,33 @@
   outline: 0;
 }
 
+#mapModal .modal-body {
+  height: 70vh;
+  padding: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#mapModal .modal-content {
+  height: auto;
+  max-height: none;
+}
+
+#mapModal .modal-dialog {
+  max-width: 90vw;
+  width: auto;
+  margin: 1.75rem auto;
+}
+
+/* this will ensure the map fills the body */
+#mapModal .leaflet-container {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+
 // Modal background
 .modal-backdrop {
   position: fixed;

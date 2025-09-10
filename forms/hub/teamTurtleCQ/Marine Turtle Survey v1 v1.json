@@ -1,0 +1,521 @@
+{
+  "id": "64b8d4a6c9b6421068da76a5",
+  "dateCreated": "2023-07-20T06:31:02Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-05-07T08:22:31Z",
+  "createdUserId": "35",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Marine Turtle Survey v1",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Marine Turtle Survey V1",
+        "record": true,
+        "dataModel": [
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "dwcAttribute": "eventDate",
+            "indexName": "eventDate",
+            "description": "The date that the survey was undertaken",
+            "validate": "required,past[now]"
+          },
+          {
+            "dataType": "text",
+            "name": "surveyTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time of the day that the survey was undertaken"
+          },
+          {
+            "dataType": "text",
+            "name": "beachName",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "beachName",
+            "measurementType": "text",
+            "validate": "required",
+            "constraints": [
+              "Alligator Bay",
+              "Flat Rock",
+              "Five Rocks",
+              "Nine Mile",
+              "Farnborough North",
+              "Farnborough South",
+              "Barwell’s Creek Beach",
+              "Yeppoon Main Beach",
+              "Cooee Bay & Fishermans Bay",
+              "Lammermoor Beach",
+              "Kemp Beach",
+              "Mulumbin Beach",
+              "Kinka Beach",
+              "The Haven/ Tanby Beach",
+              "Fishermans Beach",
+              "Ladies Beach",
+              "Emu Park Main Beach",
+              "Shelly's Beach",
+              "Pandanus / Steps",
+              "Zilzie Beach",
+              "Coconut/ Muskers",
+              "Keppel Sands/ Long Beach/ Joskeleigh",
+              "Lillies Beach",
+              "Canoe Point",
+              "Tannum Sands Main Beach",
+              "Wild Cattle North",
+              "Wild Cattle South",
+              "Facing Island",
+              "Wop-pa – Fishermans Beach",
+              "Wop-pa – Putney Beach",
+              "Wop-pa – Leekes Beach",
+              "Wop-pa – Monkey Beach",
+              "Wop-pa – Second Beach",
+              "Wop-pa - Svendsens/Palm Beach",
+              "Wop-pa – Butterfish Bay Beach",
+              "Wop-pa – Wreck Bay Beach",
+              "Wop-pa – Long Beach",
+              "Ko-no-mie (NKI)",
+              "Other Keppel Group Islands",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person or group undertaking the sampling event",
+            "validate": "required"
+          },
+          {
+            "dataType": "species",
+            "name": "species",
+            "dwcAttribute": "scientificName",
+            "description": "The name of the turtle species observed.",
+            "validate": "required"
+          },
+          {
+            "name": "nestNumber",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestNumber",
+            "measurementType": "text",
+            "indexName": "nestNumber",
+            "dataType": "text",
+            "description": "Enter the identification number of the nest",
+            "validate": "required"
+          },
+          {
+            "dataType": "image",
+            "name": "observationPhoto",
+            "dwcAttribute": "associatedMedia",
+            "description": "Attach 3 track photos, plus emergence/predation, etc. as observed.",
+            "validate": "required"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "boolean",
+            "name": "postEmergentPredationIsTrue",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "postEmergentPredationIsTrue",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "text",
+            "name": "habitatBeach",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "habitatBeach",
+            "measurementType": "text",
+            "validate": "required",
+            "constraints": [
+              "HW - Below Highwater",
+              "B - Below Slope",
+              "S - Slope",
+              "D - Dune"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "hatchlingRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "hatchlingRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "text",
+            "name": "habitatVegetation",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "habitatVegetation",
+            "measurementType": "text",
+            "validate": "required",
+            "constraints": [
+              "S - Bare Sand",
+              "G - Grass Area",
+              "Sh - Under Shrub",
+              "T - Under Tree",
+              "R - In Rubble Zone"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "activityCode",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "activityCode",
+            "measurementType": "text",
+            "validate": "required",
+            "constraints": [
+              "X - Laid Eggs",
+              "< - Laid/Disturbed",
+              "E - No Laying",
+              "? - Undetermined",
+              "T - Turnaround"
+            ]
+          },
+          {
+            "name": "dateOfEmergence",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "dateOfEmergence",
+            "measurementType": "date",
+            "dataType": "date"
+          },
+          {
+            "dataType": "boolean",
+            "name": "lightDisorientationIsTrue",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "lightDisorientationIsTrue",
+            "measurementType": "boolean",
+            "description": "Please enter observations – Include hatchling disorientation, predation, human interference"
+          },
+          {
+            "dataType": "stringList",
+            "name": "threats",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "threats",
+            "measurementType": "text",
+            "constraints": [
+              "Vehicle",
+              "Light",
+              "Beach fires",
+              "Rubbish",
+              "Predator – specify below"
+            ]
+          },
+          {
+            "name": "dateOfImpact",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "dateOfImpact",
+            "measurementType": "date",
+            "dataType": "date"
+          },
+          {
+            "name": "nestDamageImpacts",
+            "dataType": "text",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestDamageImpacts",
+            "measurementType": "text",
+            "constraints": [
+              "Predation",
+              "Inundation",
+              "Washed away"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "damage",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "damage",
+            "measurementType": "text",
+            "constraints": [
+              "PD - Predation by dog or dingo",
+              "PF - Predation by a fox",
+              "PP - Predation by pig",
+              "PV - Predation by goanna",
+              "P - Predation by unidentified species",
+              "PU - Unsuccessful predation attempt on a clutch",
+              "PW - clutch loss from Erosion or Flooding",
+              "Other, specify"
+            ]
+          },
+          {
+            "name": "protectionActivity",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "protectionActivity",
+            "measurementType": "stringList",
+            "dataType": "stringList",
+            "constraints": [
+              "PEX - Predator exclusion device",
+              "RZ - Relocation"
+            ]
+          },
+          {
+            "name": "incubationRemarks",
+            "description": "Record predator type, and date of PEX & RZ",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "incubationRemarks",
+            "measurementType": "text",
+            "dataType": "text"
+          },
+          {
+            "dataType": "text",
+            "name": "threatRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "threatRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "text",
+            "name": "occurrenceRemarks",
+            "dwcAttribute": "occurrenceRemarks"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>Team Turtle Beach Monitoring Survey</font>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Event information",
+                    "items": [
+                      {
+                        "preLabel": "Date",
+                        "source": "eventDate",
+                        "type": "simpleDate"
+                      },
+                      {
+                        "preLabel": "Time",
+                        "source": "surveyTime",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Beach",
+                        "source": "beachName",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Recorder",
+                        "source": "recordedBy",
+                        "type": "text"
+                      },
+                      {
+                        "type": "image",
+                        "source": "observationPhoto",
+                        "css": "img-responsive",
+                        "showMetadata": "false",
+                        "preLabel": "Attach 3 track photos, plus emergence/predation, etc. as observed",
+                        "displayOptions": {
+                          "showRemoveButtonWithImage": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "type": "section",
+                        "title": "Location",
+                        "items": [
+                          {
+                            "includeNotes": false,
+                            "orientation": "vertical",
+                            "autoLocalitySearch": false,
+                            "readonly": false,
+                            "includeSource": false,
+                            "includeAccuracy": false,
+                            "source": "location",
+                            "type": "geoMap",
+                            "includeLocality": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Turtle & Nest",
+                    "items": [
+                      {
+                        "preLabel": "Nest number",
+                        "source": "nestNumber",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Species",
+                        "source": "species",
+                        "type": "speciesSelect"
+                      },
+                      {
+                        "preLabel": "Habitat - Across Beach",
+                        "source": "habitatBeach",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Habitat - Vegetation",
+                        "source": "habitatVegetation",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Activity Comments",
+                        "source": "occurrenceRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Activity Code",
+                        "source": "activityCode",
+                        "type": "selectOne"
+                      }
+                    ]
+                  },
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Incubation",
+                    "items": [
+                      {
+                        "preLabel": "Date of impact",
+                        "source": "dateOfImpact",
+                        "type": "simpleDate"
+                      },
+                      {
+                        "preLabel": "Impacts",
+                        "source": "nestDamageImpacts",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Activity",
+                        "source": "protectionActivity",
+                        "type": "selectMany",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Notes",
+                        "source": "incubationRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      }
+                    ]
+                  },
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Emergence",
+                    "items": [
+                      {
+                        "preLabel": "Date of emergence",
+                        "source": "dateOfEmergence",
+                        "type": "simpleDate"
+                      },
+                      {
+                        "preLabel": "Light disorientation",
+                        "source": "lightDisorientationIsTrue",
+                        "description": "Tick the box if light disorientation occurred and make comments below",
+                        "type": "boolean"
+                      },
+                      {
+                        "preLabel": "Notes",
+                        "source": "hatchlingRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Scavenged – post emergence predation",
+                        "source": "postEmergentPredationIsTrue",
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Marine Turtle Survey V1"
+      },
+      "modelName": null,
+      "templateName": "Marine Turtle Survey v1",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Marine Turtle Survey v1",
+      "description": "Template for marine turtle nest monitoring. Designed for the Fitzroy Basin Association turtle nest monitoring program, but suitable for general use."
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": "Template for marine turtle nest monitoring. Designed for the Fitzroy Basin Association turtle nest monitoring program, but suitable for general use.",
+  "formVersion": 1
+}

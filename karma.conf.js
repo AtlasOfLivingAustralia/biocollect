@@ -58,7 +58,7 @@ module.exports = function (config) {
             'grails-app/assets/vendor/leaflet-plugins-2.0.0/layer/tile/Google.js',
             'grails-app/assets/javascripts/MapUtilities.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/expr-eval/2.0.2/bundle.js',
-            'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin@feature/cognito/grails-app/assets/javascripts/images.js',
+            'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/javascripts/images.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/select2/4.0.3/js/select2.full.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/typeahead/0.11.1/bloodhound.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/expr-eval/2.0.2/bundle.js',
