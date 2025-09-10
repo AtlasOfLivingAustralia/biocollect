@@ -59,53 +59,54 @@ function ProjectFinder(config) {
 
     /* window into current page */
     function PageVM(config) {
-        this.self = this;
-        this.sortBy = ko.observable("dateCreatedSort");
-        this.isWorldWide = ko.observable("false");
-        this.pageProjects = ko.observableArray();
-        this.facets = ko.observableArray();
-        this.isGeoSearchEnabled = ko.observable(false);
-        this.selectedFacets = ko.observableArray();
-        this.columns = ko.observable(2);
-        this.pagination = new PaginationViewModel({
-            numberPerPage: projectsPerPage
-        }, this);
-        self.columns = this.columns
-        this.clearGeoSearch = function () {
-            this.isGeoSearchEnabled(false);
+        var vm = this;                      // ✅ single alias for PageVM
+
+        vm.sortBy = ko.observable("dateCreatedSort");
+        vm.isWorldWide = ko.observable("false");
+        vm.pageProjects = ko.observableArray();
+        vm.facets = ko.observableArray();
+        vm.isGeoSearchEnabled = ko.observable(false);
+        vm.selectedFacets = ko.observableArray();
+        vm.columns = ko.observable(2);
+
+        vm.pagination = new PaginationViewModel({numberPerPage: projectsPerPage}, vm);
+        self.columns = vm.columns;
+        vm.clearGeoSearch = function () {
+            vm.isGeoSearchEnabled(false);
             clearGeoSearch();
-            this.doSearch();
+            self.doSearch();
         };
-        this.doSearch = function () {
+        vm.doSearch = function () {
 
             self.doSearch();
-        }
-        this.resetPageOffSet = function () {
+        };
+        vm.resetPageOffSet = function () {
             self.resetPageOffSet();
-        }
-        this.getFacetTerms = function (facets) {
+        };
+
+        vm.getFacetTerms = function (facets) {
             return self.getFacetTerms(facets);
-        }
+        };
 
-        this.reset = function () {
+        vm.reset = function () {
             self.reset();
-        }
+        };
 
-        this.sortBy.subscribe(this.doSearch);
-        this.isWorldWide.subscribe(this.doSearch);
+        vm.sortBy.subscribe(function(){ self.doSearch(); });
+        vm.isWorldWide.subscribe(function(){ self.doSearch(); });
 
-        this.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
-        this.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
-        this.sortKeys = ko.observableArray(self.sortKeys);
-        this.download = function (obj, e) {
-            bootbox.alert("The download may take several minutes to complete.  Once it is complete, an email will be sent to your registered email address.");
-            $.post(config.downloadWorksProjectsUrl, self.getParams()).fail(function() {
+        vm.availableProjectTypes = ko.observableArray(self.availableProjectTypes);
+        vm.projectTypes = ko.observable(['citizenScience', 'works', 'survey', 'merit']);
+        vm.sortKeys = ko.observableArray(self.sortKeys);
+        vm.download = function () {
+            bootbox.alert("The download may take several minutes to complete. Once it is complete, an email will be sent to your registered email address.");
+            $.post(config.downloadWorksProjectsUrl, self.getParams()).fail(function () {
                 bootbox.alert("There was an error attempting your download.  Please try again or contact support.");
             });
             return false;
         };
 
-        this.refreshPage = function(newOffset){
+        vm.refreshPage = function (newOffset) {
             offset = newOffset;
             self.doSearch();
         };
@@ -132,10 +133,10 @@ function ProjectFinder(config) {
         self.resizeGrid();
 
         // this.listView = ko.observable(true);
-        this.viewMode = ko.observable("tileView");
+        vm.viewMode = ko.observable("tileView");
 
-        this.viewMode.subscribe(function (newValue) {
-            if ((newValue === 'tileView') || (newValue === 'listView')) {
+        vm.viewMode.subscribe(function (newValue) {
+            if ((newValue === 'tileView' || newValue === 'listView')) {
                 setTimeout(updateLazyLoad, 0);
             }
         });
@@ -153,7 +154,7 @@ function ProjectFinder(config) {
             return true;
         }
 
-        this.partitioned = function (observableArray, countObservable) {
+        vm.partitioned = function (observableArray, countObservable) {
             var rows, partIdx, i, j, arr;
             var count = countObservable();
 
@@ -173,16 +174,25 @@ function ProjectFinder(config) {
             return rows;
         };
 
-        this.styleIndex = function (dataIndex, rowSize) {
+        vm.styleIndex = function (dataIndex, rowSize) {
             return dataIndex() % rowSize + 1 ;
         };
 
-        this.filterViewModel = new FilterViewModel({
-            parent: this,
+        vm.filterViewModel = new FilterViewModel({
+            parent: self,
             flimit: fcConfig.flimit
         });
 
-        this.filterViewModel.selectedFacets.subscribe(this.doSearch)
+        vm.filterViewModel.selectedFacets.subscribe(function () {
+            self.resetPageOffSet(); // pagination restarts at page 1
+            self.doSearch();       //make the query
+        });
+
+        vm.removeNationwide = function () {
+            vm.filterViewModel.nationwideProjectCheckbox(false);
+            self.resetPageOffSet();
+            self.doSearch();
+        };
     }
 
     /**
@@ -211,6 +221,7 @@ function ProjectFinder(config) {
         if (!mapInitialised) {
             var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
             var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+
             spatialFilter = new ALA.Map("mapFilter", {
                 autoZIndex: false,
                 preserveZIndex: true,
@@ -225,8 +236,30 @@ function ProjectFinder(config) {
                 overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault
             });
 
-            var regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(spatialFilter, fcConfig.featuresService, fcConfig.regionListUrl);
-            spatialFilter.addControl(regionSelector);
+            const regionSelector = Biocollect.MapUtilities.createKnownShapeMapControl(
+                spatialFilter,
+                fcConfig.featuresService,
+                fcConfig.regionListUrl,
+                {
+                    iconClass: "fa fa-map-o"
+                }
+            );
+
+            // Create the custom option above the leaflet draw toolbar
+            setTimeout(() => {
+                const drawControl = document.querySelector('.leaflet-draw.leaflet-control');
+                const globeControl = regionSelector.onAdd(spatialFilter.getMapImpl());
+
+                if (drawControl && globeControl) {
+                    const drawParent = drawControl.parentElement;
+
+                    // Inserting custom option before leaflet draw toolbar
+                    drawParent.insertBefore(globeControl, drawControl);
+                } else {
+                    console.warn('Could not find drawControl or globeControl');
+                }
+            }, 100);
+
             mapInitialised = true;
         } else {
             spatialFilter.getMapImpl().invalidateSize();
@@ -282,80 +315,79 @@ function ProjectFinder(config) {
         }
 
         var queryString = '';
+        var selectedList = pageWindow.filterViewModel.selectedFacets();
+        var origFacetList = pageWindow.filterViewModel.origSelectedFacet();
 
-            var selectedList = pageWindow.filterViewModel.selectedFacets();
-            var origFacetList = pageWindow.filterViewModel.origSelectedFacet();
-
-            // Separate AND from OR condtion
-            var uniqueFacetTerm = [];
-            selectedList.forEach(function (item) {
-                if (item.facet.type == 'terms') {
-                    if (uniqueFacetTerm.indexOf(item.facet.name()) == -1) {
-                        uniqueFacetTerm.push(item.facet.name())
-                    }
+        // Separate AND from OR condtion
+        var uniqueFacetTerm = [];
+        selectedList.forEach(function (item) {
+            if (item.facet.type == 'terms') {
+                if (uniqueFacetTerm.indexOf(item.facet.name()) == -1) {
+                    uniqueFacetTerm.push(item.facet.name())
                 }
-            });
-            var dupFacet = {};
-            uniqueFacetTerm.forEach(function (name) {
-                var tempList = [];
-                var mixedTempList = [];
-                selectedList.forEach(function(item) {
-                    // if this facet is part of the original OR condition, ignore it
-                    var found = origFacetList.find(function (orig) {
-                        //if (item.facet.name() == orig.facet.name() && item.term() == orig.term()) {
-                        if (item.type == 'term' && item.id() == orig.id()) {
+            }
+        });
+        var dupFacet = {};
+        uniqueFacetTerm.forEach(function (name) {
+            var tempList = [];
+            var mixedTempList = [];
+            selectedList.forEach(function(item) {
+                // if this facet is part of the original OR condition, ignore it
+                var found = origFacetList.find(function (orig) {
+                    //if (item.facet.name() == orig.facet.name() && item.term() == orig.term()) {
+                    if (item.type == 'term' && item.id() == orig.id()) {
+                        return true;
+                    }
+                });
+                if (!found) {
+                    // if the facet name exist but not term, treat the others as AND condition
+                    var nameFound = origFacetList.find(function (orig) {
+                        if (item.facet.name() == orig.facet.name()) {
                             return true;
                         }
                     });
-                    if (!found) {
-                        // if the facet name exist but not term, treat the others as AND condition
-                        var nameFound = origFacetList.find(function (orig) {
-                            if (item.facet.name() == orig.facet.name()) {
-                                return true;
-                            }
-                        });
-                        if (item.facet.name() == name) {
-                            if (nameFound) {
-                                mixedTempList.push(item);
-                            } else
-                                tempList.push(item);
-                        }
+                    if (item.facet.name() == name) {
+                        if (nameFound) {
+                            mixedTempList.push(item);
+                        } else
+                            tempList.push(item);
                     }
-                });
-                if (tempList.length > 1) {
-                    dupFacet[name] = tempList;
-                } else if (mixedTempList.length > 0) {
-                    dupFacet[name] = mixedTempList;
                 }
             });
+            if (tempList.length > 1) {
+                dupFacet[name] = tempList;
+            } else if (mixedTempList.length > 0) {
+                dupFacet[name] = mixedTempList;
+            }
+        });
 
-            for (var term in dupFacet) {
-                var andFacetTermList = [];
-                var facetList = dupFacet[term];
-                facetList.forEach(function (item) {
-                    selectedList = selectedList.filter(function(element) {
-                        return !(element.type == "term" && element.id() == item.id())
-                    });
-                    andFacetTermList.push(item.exclude? '-"' + item.term() + '"': '"' + item.term() + '"');
+        for (var term in dupFacet) {
+            var andFacetTermList = [];
+            var facetList = dupFacet[term];
+            facetList.forEach(function (item) {
+                selectedList = selectedList.filter(function(element) {
+                    return !(element.type == "term" && element.id() == item.id())
                 });
+                andFacetTermList.push(item.exclude? '-"' + item.term() + '"': '"' + item.term() + '"');
+            });
 
 
-                var termStrList = '';
-                if (andFacetTermList.length > 0) {
-                    termStrList = '(' + andFacetTermList.join(' AND ') + ')';
-                }
-
-                if (termStrList.length > 0) {
-                    if (queryString.length > 0) {
-                        queryString = queryString +  ' AND ';
-                    }
-                    queryString = queryString + term + ':' + termStrList;
-                }
+            var termStrList = '';
+            if (andFacetTermList.length > 0) {
+                termStrList = '(' + andFacetTermList.join(' AND ') + ')';
             }
 
-            selectedList.forEach(function (facet) {
-                fq.push(facet.getQueryText())
-            });
+            if (termStrList.length > 0) {
+                if (queryString.length > 0) {
+                    queryString = queryString +  ' AND ';
+                }
+                queryString = queryString + term + ':' + termStrList;
+            }
+        }
+
+        selectedList.forEach(function (facet) {
+            fq.push(facet.getQueryText());
+        });
 
         var query = this.getQuery(true);
         if (query.length > 0) {
@@ -365,12 +397,17 @@ function ProjectFinder(config) {
         }
 
         var queryList = [];
-
-        var selectedFacetList = pageWindow.filterViewModel.selectedFacets();
-
-        selectedFacetList.forEach(function (facet) {
-            queryList.push(facet.getQueryText())
+        pageWindow.filterViewModel.selectedFacets().forEach(function (facet) {
+            queryList.push(facet.getQueryText());
         });
+
+        // get the checkbox value
+        var excludeNationwide = !!(pageWindow.filterViewModel.nationwideProjectCheckbox && pageWindow.filterViewModel.nationwideProjectCheckbox());
+
+        // only add filter when checked
+        if (excludeNationwide) {
+            if (!fq.includes('-nationwideFacet:true')) fq.push('-nationwideFacet:true');
+        }
 
         var map = {
             fq: fq,
@@ -389,13 +426,15 @@ function ProjectFinder(config) {
             projectId: selectedProjectId,
             q: query,
             queryList: queryList,
-            queryText: this.getQuery(true)
+            queryText: this.getQuery(true),
+            // sending the value for logging use
+            excludeNationwide: excludeNationwide
         };
 
-        map.max =  pageWindow.pagination.resultsPerPage() // Page size
+        map.max =  pageWindow.pagination.resultsPerPage(); // Page size
         map.sort = pageWindow.sortBy();
 
-        return map
+        return map;
     };
 
     this.getQuery = function (partialSearch) {
@@ -508,22 +547,31 @@ function ProjectFinder(config) {
         return true
     };
 
-
     this.reset = function () {
+        pageWindow.filterViewModel.switchOffSearch(true);
+
         $('#pt-search').val('');
         if (spatialFilter && isMapFilterVisible()) {
             spatialFilter.resetMap();
             clearMapFilter = false;
         } else {
-            clearMapFilter = true
+            clearMapFilter = true;
         }
 
         geoSearch = {};
         pageWindow.isGeoSearchEnabled(false);
+
+        // clear the checkbox BEFORE clearing facets
+        pageWindow.filterViewModel.nationwideProjectCheckbox(false);
+        // Clear facets
         pageWindow.filterViewModel.selectedFacets.removeAll();
         pageWindow.filterViewModel.origSelectedFacet.removeAll();
         pageWindow.filterViewModel.redefineFacet(false);
-    }
+        // Re-enable and perform a single fresh search
+        pageWindow.filterViewModel.switchOffSearch(false);
+        self.resetPageOffSet();
+        self.doSearch();
+    };
 
     /** display the current size of the filtered list **/
     this.updateTotal = function () {
@@ -794,8 +842,10 @@ function ProjectFinder(config) {
 
     $(mapFilterSelector).on('hide.bs.modal', function () {
         geoSearchChanged();
-        if(refreshSearch) {
-            self.doSearch();
+        if (refreshSearch) {
+            self.resetPageOffSet(); // pagination restarts at page 1
+            self.doSearch();       //make the query
+            refreshSearch = false;
         }
     });
 
@@ -926,6 +976,11 @@ function ProjectFinder(config) {
         pageWindow.isWorldWide( params.isWorldWide || 'false');
 
         $('#pt-search').val(params.queryText).focus();
+
+        var excl = params.excludeNationwide;
+        var excludeNationwide = (excl === 'true' || excl === true);
+        pageWindow.filterViewModel.nationwideProjectCheckbox(!!excludeNationwide);
+
         pageWindow.filterViewModel.switchOffSearch(false);
     }
 

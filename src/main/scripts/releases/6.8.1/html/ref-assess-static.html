@@ -240,6 +240,20 @@
       </div>
     </div>
   </div>
+  <div class="row p-3">
+    <div class="col-12">
+      <div class="card p-3">
+        <p>
+          Participants who contribute both Image Assessments and Site Condition Assessments between
+          July 2025 and April 2026 will be eligible for co-authorship on a data report. The report
+          will describe the data set and method of collection, and will be submitted to a
+          peer-reviewed, open-access scientific journal. If you are interested in being a co-author
+          on the data report, contact the HCAT team via <a href="mailto:expertconditionassessments@csiro.au">expertconditionassessments@csiro.au</a> to
+          'opt-in' and provide your contact details.
+        </p>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12">
       <hr />
@@ -319,7 +333,6 @@
         'G3 - Shrublands',
       '99 - Unknown/No Data': 'G2 - Open forest and woodland',
     };
-
     const hutchGroups = [
       'B1 - Very cold winters with summers too short for crop growth',
       'B2 - Less severe winters and longer moist summers suitable for some crops',
@@ -339,12 +352,10 @@
       'I3 - This has cooler winters than I1 and I2 with a growing season lasting at least six months',
       'J1 - Moisture and temperature regime supports growth for 8-9 months of the year, with a 3-4 month dry season',
     ];
-
     const requestAssessmentRecordsVM = new RequestAssessmentRecordsModel(
       mvgMapping,
       hutchGroups
     );
-
     ko.applyBindings(requestAssessmentRecordsVM);
   </script>
 </div>

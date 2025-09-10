@@ -618,9 +618,11 @@ class SiteController {
     @NoSSO
     def checkSiteName(String id) {
         log.debug "Name: ${params.name}"
-        def result = siteService.isSiteNameUnique(id, params.entityType, params.name)
-
-        response.sendError(result.value ? SC_NO_CONTENT : SC_CONFLICT)
+        boolean result = siteService.isSiteNameUnique(id, params.entityType, params.name)
+        if (result)
+            render status:  SC_NO_CONTENT
+        else
+            response.sendError(SC_CONFLICT)
     }
 
     def locationLookup(String id) {

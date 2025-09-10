@@ -52,6 +52,7 @@ environments {
                 wiremock.port = 8018
                 grails.config.locations = []
                 security.oidc.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
+                security.jwt.discoveryUri = "http://localhost:${wiremock.port}/cas/oidc/.well-known"
                 security.oidc.allowUnsignedIdTokens = true
                 security.oidc.clientId="oidcId"
                 security.oidc.secret="oidcSecret"

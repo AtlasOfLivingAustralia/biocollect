@@ -8,8 +8,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="app.version" content="${g.meta(name: 'info.app.version')}"/>
     <title><g:layoutTitle/></title>
-    <link rel="icon" href="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" href="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-192x192.png" sizes="192x192" />
+    <g:if test="${hubConfig?.content?.nespFavicon}">
+        <link rel="icon" href="${hubConfig.faviconlogoUrl}" sizes="32x32" type="image/png"/>
+        <link rel="icon" href="${hubConfig.faviconlogoUrl}" sizes="192x192" type="image/png"/>
+    </g:if>
+    <g:else>
+        <link rel="icon" href="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" href="https://www.ala.org.au/app/uploads/2019/01/cropped-favicon-192x192.png" sizes="192x192" />
+    </g:else>
     <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
     <g:if test="${hubConfig.templateConfiguration?.header?.type == 'ala' || hubConfig.templateConfiguration?.footer?.type == 'ala'}">
     <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-theme.css"/>
@@ -103,6 +109,21 @@
                             ${raw(tabList)}
                         </div>
                     </div>
+                </g:if>
+                <g:set var="introText"><config:getIntroductoryText links="${hubConfig.templateConfiguration?.header?.links}" /></g:set>
+
+                <g:if test="${introText}">
+                <div id="introBar" class="my-5">
+                    <div class="container-fluid">
+                        <div class="row d-flex intro-row">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <div>
+                                    <fc:sanitiseHtml text="${introText}"></fc:sanitiseHtml>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </g:if>
                 <div id="titleBar">
                     <div class="container-fluid">

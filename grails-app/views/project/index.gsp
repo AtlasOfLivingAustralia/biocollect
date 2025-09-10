@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.JSON;" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; static au.org.ala.biocollect.MarkdownUtils.markdownToHtmlAndSanitise" contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <!DOCTYPE html>
 <html>
@@ -51,6 +51,7 @@
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
+        documentDownloadUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch', params: [format: 'zip'])}",
         imageLocation:"${asset.assetPath(src:'')}",
         pdfgenUrl: "${createLink(controller: 'resource', action: 'pdfUrl')}",
         pdfViewer: "${createLink(controller: 'resource', action: 'viewer')}",
@@ -377,8 +378,8 @@
             });
 
             var project = <fc:modelAsJavascript model="${project}"/>;
-            var newsAndEventsMarkdown = '${(project.newsAndEvents?:"").markdownToHtml().encodeAsJavaScript()}';
-            var projectStoriesMarkdown = '${(project.projectStories?:"").markdownToHtml().encodeAsJavaScript()}';
+            var newsAndEventsMarkdown = '${markdownToHtmlAndSanitise(project.newsAndEvents?:"")?.encodeAsJavaScript()}';
+            var projectStoriesMarkdown = '${markdownToHtmlAndSanitise(project.projectStories?:"")?.encodeAsJavaScript()}';
             var viewModel = new ProjectViewModel(project, ${user?.isEditor?:false});
 
             viewModel.loadPrograms(<fc:modelAsJavascript model="${programs}"/>);

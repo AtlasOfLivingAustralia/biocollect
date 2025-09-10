@@ -128,7 +128,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                             facets.push(value);
                         });
 
-                        amplify.store(key, facets);
+                        try {
+                            // Store the facets in local storage
+                            amplify.store(key, facets);
+                        } catch (e) {
+                            console.error("Error storing facets in local storage. ", e);
+                            amplify.store(key, null);
+                        }
                         break;
 
                     case 'restore':
