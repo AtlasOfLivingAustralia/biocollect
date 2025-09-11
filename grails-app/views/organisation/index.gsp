@@ -53,7 +53,7 @@
             showAllProjects: true,
             meritProjectLogo:"${asset.assetPath(src: 'merit_project_logo.jpg')}",
             meritProjectUrl: "${grailsApplication.config.merit.project.url}",
-
+            pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/mobile-app/project/",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             bieUrl: "${grailsApplication.config.bie.baseURL}",

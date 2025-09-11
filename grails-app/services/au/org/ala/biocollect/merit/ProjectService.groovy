@@ -19,6 +19,7 @@ class ProjectService {
         static  final MOBILE_APP_ROLE = [ "android",
                                           "blackberry",
                                           "iTunes",
+                                          "pwa",
                                           "windowsPhone"]
 
     public static final SPECIAL_FACETS = [

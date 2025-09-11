@@ -40,7 +40,12 @@
                                     <!-- ko if: transients.mobileApps().length > 0-->
                                         |&nbsp;<g:message code="g.appsLinks"/>
                                         <!-- ko foreach: transients.mobileApps -->
+                                            <!-- ko if: role != 'pwa' -->
                                             <a class="do-not-mark-external" data-bind="attr: {href: link.url}"><i data-bind="attr: {class: icon()}"></i></a>
+                                            <!-- /ko -->
+                                            <!-- ko if: role == 'pwa' -->
+                                            <a class="do-not-mark-external" data-bind="attr: {href: pwaAppUrl()}"><span class="pwa-mobile small"><img src="${asset.assetPath(src: 'biocollect-dark.svg')}"/></span></a>
+                                            <!-- /ko -->
                                         <!-- /ko -->
                                         &nbsp;
                                     <!-- /ko -->

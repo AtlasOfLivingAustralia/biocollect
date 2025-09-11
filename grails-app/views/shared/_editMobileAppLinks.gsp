@@ -3,9 +3,25 @@
     <table class="table links-table col-md-8">
         <tbody data-bind="foreach:transients.mobileApps">
         <tr>
-            <td><i class="fa-2x" data-bind="attr:{alt:name, title:name, class: 'fa-2x ' + icon()}"></i></td>
-            <td><input class="form-control form-control-sm" type="url" data-bind="value:link.url"
-                       data-validation-engine="validate[required,custom[url]]"/></td>
+            <td>
+                <!-- ko if:role != 'pwa' -->
+                <i class="fa-2x" data-bind="attr:{alt:name, title:name, class: 'fa-2x ' + icon()}"></i>
+                <!-- /ko -->
+                <!-- ko if:role == 'pwa' -->
+                <span class="pwa-mobile large">
+                    <img src="${asset.assetPath(src: 'biocollect-dark.svg')}" alt="BioCollect PWA logo"/>
+                </span>
+                <!-- /ko -->
+            </td>
+            <td>
+                <!-- ko if:role != 'pwa' -->
+                <input class="form-control form-control-sm" type="url" data-bind="value:link.url"
+                       data-validation-engine="validate[required,custom[url]]"/>
+                <!-- /ko -->
+                <!-- ko if:role == 'pwa' -->
+                <span class="alert alert-info"><g:message code="pwa.mobile.link.info"/></span>
+                <!-- /ko -->
+            </td>
             <td><a class="btn btn-danger btn-sm" href="#" data-bind="click:remove"><i class="far fa-trash-alt"></i></a></td>
         </tr>
         </tbody>
