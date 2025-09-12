@@ -34,7 +34,7 @@
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         associatedPrograms: <fc:modelAsJavascript model="${associatedPrograms}"/>,
         flimit: ${grailsApplication.config.facets.flimit},
-        pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/mobile-app/project/",
+        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/mobile-app/project/",
         </g:applyCodec>
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
     }

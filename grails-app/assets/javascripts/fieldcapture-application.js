@@ -809,8 +809,8 @@ function Documents() {
             logo: function(dir) {
                 return dir + "/" + role.role.toLowerCase() + ".png";
             },
-            pwaAppUrl: function() {
-                return fcConfig.pwaAppUrl + projectId;
+            pwaAppProjectUrl: function() {
+                return fcConfig.pwaAppProjectUrl + projectId;
             },
             icon: function(){
                 var icon;

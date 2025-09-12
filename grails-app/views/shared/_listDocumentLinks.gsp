@@ -6,9 +6,9 @@
         <a data-bind="attr:{href:link.url, title: 'Connect with ' + role + ' app'}, css: role" class="do-not-mark-external pr-3"><i data-bind="attr: {class: 'fa-3x ' + icon()}"></i></a>
         <!-- /ko -->
         <!-- ko if: role == 'pwa' -->
-        <a data-bind="attr:{href:fcConfig.pwaAppUrl, title: 'Connect with BioCollect PWA app'}, css: role" class="do-not-mark-external pr-3">
+        <a data-bind="attr:{href:pwaAppProjectUrl(), title: 'Connect with BioCollect PWA app'}, css: role" class="do-not-mark-external pr-3">
             <span class="pwa-mobile large">
-                <img src="${asset.assetPath(src: 'biocollect-dark.svg')}"/>
+                <img src="${asset.assetPath(src: 'logo-dark-32x32.png')}"/>
             </span>
         </a>
         <!-- /ko -->

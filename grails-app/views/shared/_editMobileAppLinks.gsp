@@ -9,7 +9,7 @@
                 <!-- /ko -->
                 <!-- ko if:role == 'pwa' -->
                 <span class="pwa-mobile large">
-                    <img src="${asset.assetPath(src: 'biocollect-dark.svg')}" alt="BioCollect PWA logo"/>
+                    <img src="${asset.assetPath(src: 'logo-dark-32x32.png')}" alt="BioCollect PWA logo"/>
                 </span>
                 <!-- /ko -->
             </td>
