@@ -1,5 +1,5 @@
 var hubs = db.hub.find({urlPath: {$regex: /nesp/, $options: 'i'}});
-var faviconlogoUrl = "";
+var faviconlogoUrl = "https://biocollect.ala.org.au/document/download/2025-07/NESP_favicon.png";
 if (faviconlogoUrl === "") {
     print("No favicon provided exiting.");
     exit(0);
@@ -12,14 +12,20 @@ while (hubs.hasNext()) {
         { _id: hub._id },
         {
             $set: {
-                "content.overriddenLabels.$[label1].defaultText": "Other project information",
+                "content.overriddenLabels.$[label1].defaultText": 'Project information',
+                "content.overriddenLabels.$[label1].customText": "Other project information",
+                "content.overriddenLabels.$[label1].showCustomText": true,
+                "content.overriddenLabels.$[label2].defaultText": 'Project Area',
                 "content.overriddenLabels.$[label2].customText": "Project map",
+                "content.overriddenLabels.$[label2].showCustomText": true,
                 "content.hideProjectGettingStartedButton": true,
                 "content.nespFavicon": true,
                 "content.showCustomMetadata": true,
                 "content.disableOrganisationHyperlink": true,
                 "content.enableNationalProjectsExclusionFilter": true,
                 "templateConfiguration.homePage.projectFinderConfig.showProjectDownloadButton": true,
+                "templateConfiguration.footer.links.$[label3].displayName": "<p>The National Environmental Science Program (NESP) values its partnerships with Aboriginal and Torres Strait Islander communities. We acknowledge Traditional Owners across Australia and their enduring connection to Country, and pay respect to Elders past and present.</p>" +
+                    "<p>This website may include images, voices, names, and dialogue of deceased persons. It also contains links to external sites. NESP and the Australian Government are not responsible for the content or accuracy of these external sources, nor do they endorse any products or services they may offer.</p>",
                 "faviconlogoUrl": faviconlogoUrl,
                 "pages": {
                     "allRecords": {
@@ -70,17 +76,6 @@ while (hubs.hasNext()) {
                         }, {
                             "adminOnly": false,
                             "isNotHistogram": true,
-                            "helpText": "Organisations either running projects or associated with projects (eg. as partners).",
-                            "facetTermType": "Default",
-                            "formattedName": "Delivery & partner organisations (organisationFacet)",
-                            "name": "organisationFacet",
-                            "interval": 10,
-                            "state": "Collapsed",
-                            "title": "Delivery & partner organisations",
-                            "chartjsType": "none"
-                        }, {
-                            "adminOnly": false,
-                            "isNotHistogram": true,
                             "helpText": "Filters projects by project lifecycle status",
                             "facetTermType": "Default",
                             "formattedName": "Project Lifecycle Status (projLifecycleStatus)",
@@ -96,20 +91,22 @@ while (hubs.hasNext()) {
                     }, "myProjectRecords": {
                         "facets": []
                     }
-                }
+                },
+                lastUpdated: new ISODate()
             }
         },
         {
             arrayFilters: [
-                { "label1.defaultText": "Project information" },
-                { "label2.defaultText": "Geographic Extent of Project" }
+                { "label1.id": 5 },
+                { "label2.id": 8 },
+                { "label3.contentType": "nolink" }
             ]
         }
     );
 
     if (updateResult1.modifiedCount > 0) {
         printjson({
-            message: "Updated document", documentId: hub._id, modifiedCount: updateResult1.modifiedCount,
+            message: "Updated document", documentId: hub._id, modifiedCount: updateResult1.modifiedCount, urlPath: hub.urlPath
         });
     }
 }
