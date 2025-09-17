@@ -10,11 +10,14 @@ while (hubs.hasNext()) {
 
     if (hub.content.overriddenLabels) {
      // find id 11
-        let labelExists = false;
+        let labelExists = false, id12Exists = false;
         for (let i = 0; i < hub.content.overriddenLabels.length; i++) {
             if (hub.content.overriddenLabels[i].id === 11) {
                 labelExists = true;
-                break;
+            }
+
+            if (hub.content.overriddenLabels[i].id === 12) {
+                id12Exists = true;
             }
         }
 
@@ -25,11 +28,25 @@ while (hubs.hasNext()) {
                     showCustomText: false,
                     page: 'Project > "About" tab',
                     defaultText: 'External Id',
+                    customText: '',
+                    notes: 'Label for external id field.'
+                }
+            );
+        }
+
+        if (!id12Exists) {
+            hub.content.overriddenLabels.push(
+                {
+                    id: 12,
+                    showCustomText: false,
+                    page: 'Project > "Admin" tab > "Resources" tab > "Attach document" modal',
+                    defaultText: 'make this document public on the project "Resources" tab',
                     customText:'',
                     notes: 'Label for external id field.'
                 }
             );
-
+        }
+        if (!labelExists || !id12Exists) {
             db.hub.replaceOne({_id: hub._id}, hub);
             printjson({message: "Added overridden labels to document", documentId: hub._id, urlPath: hub.urlPath});
         }
@@ -47,6 +64,8 @@ while (hubs.hasNext()) {
                 "content.overriddenLabels.$[label2].showCustomText": true,
                 "content.overriddenLabels.$[label4].customText": "Project number",
                 "content.overriddenLabels.$[label4].showCustomText": true,
+                "content.overriddenLabels.$[label5].customText": "make this document public on the project \"Products\" tab",
+                "content.overriddenLabels.$[label5].showCustomText": true,
                 "content.hideProjectGettingStartedButton": true,
                 "content.nespFavicon": true,
                 "content.showCustomMetadata": true,
@@ -131,6 +150,7 @@ while (hubs.hasNext()) {
                 { "label1.id": 5 },
                 { "label2.id": 8 },
                 { "label4.id": 11 },
+                { "label5.id": 12 },
                 { "label3.contentType": "nolink" }
             ]
         }
