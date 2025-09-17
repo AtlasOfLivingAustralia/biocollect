@@ -174,8 +174,16 @@
                             </h4>
                             <p data-bind="html:getInvolved.markdownToHtml()"></p>
                             <!-- /ko -->
+                            <g:set var="externalId" value="${hubConfig.getTextForExternalId(grailsApplication.config.content.defaultOverriddenLabels)}"/>
                             <!-- ko if:externalId -->
-                                <h4 class="text-small-heading"><g:message code="project.display.externalId" /></h4>
+                                <h4 class="text-small-heading">
+                                    <g:if test="${externalId}">
+                                        ${externalId}
+                                    </g:if>
+                                    <g:else>
+                                        <g:message code="project.display.externalId" />
+                                    </g:else>
+                                </h4>
                                 <p data-bind="text:externalId"></p>
                             <!-- /ko -->
                             <!-- ko if:grantId -->
@@ -258,14 +266,6 @@
                     <g:if test="${hubConfig.content?.showCustomMetadata}">
                         <div class="row">
                             <div class="col-12 col-md-8">
-                                <!-- ko if:customMetadata.indigenousCulturalIP -->
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h4 class="text-small-heading"><g:message code="project.details.indigenousCulturalIP"/></h4>
-                                        <p data-bind="text:customMetadata.indigenousCulturalIP"></p>
-                                    </div>
-                                </div>
-                                <!-- /ko -->
                                 <!-- ko if:customMetadata.ethicsApproval -->
                                 <div class="row">
                                     <div class="col-12">
@@ -307,6 +307,7 @@
                                     </div>
                                 </div>
                                 <!-- /ko -->
+                                <g:if test="${hubConfig?.content?.hideProjectAboutGeographicInfo != true}">
                                 <!-- ko if:geographicInfo.nationwide != "" -->
                                 <div class="row">
                                     <div class="col-12">
@@ -315,6 +316,7 @@
                                     </div>
                                 </div>
                                 <!-- /ko -->
+                                </g:if>
                             </div>
                             <div class="col-12 col-md-4">
                                 <!-- ko if: raidExternalId -->
@@ -339,7 +341,15 @@
                         </div>
                     </div>
                     <!-- /ko -->
-
+                    <g:if test="${hubConfig.content?.showCustomMetadata}">
+                    <!-- ko if:customMetadata.indigenousCulturalIP -->
+                    <div class="row">
+                        <div class="col-12">
+                            <p><g:message code="project.details.indigenousCulturalIP.acknowledgementText"/></p>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                    </g:if>
                     <hr id="hrGetStartedMobileAppTag" data-bind="visible: transients.checkVisibility('#contentGetStartedMobileAppTag', '#hrGetStartedMobileAppTag')" />
                     <div id="contentGetStartedMobileAppTag">
                     <div class="row">
