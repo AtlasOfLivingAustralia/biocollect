@@ -61,7 +61,7 @@ function ProjectFinder(config) {
     function PageVM(config) {
         var vm = this;                      // ✅ single alias for PageVM
 
-        vm.sortBy = ko.observable("dateCreatedSort");
+        vm.sortBy = ko.observable(fcConfig.hubDefaultSortBy || "dateCreatedSort");
         vm.isWorldWide = ko.observable("false");
         vm.pageProjects = ko.observableArray();
         vm.facets = ko.observableArray();
@@ -971,7 +971,7 @@ function ProjectFinder(config) {
         offset = Number.parseInt(params.offset || offset);
         selectedProjectId = params.projectId;
 
-        pageWindow.sortBy( params.sort || 'dateCreatedSort');
+        pageWindow.sortBy( params.sort || fcConfig.hubDefaultSortBy || "dateCreatedSort");
         pageWindow.pagination.resultsPerPage( Number.parseInt(params.max || '30'));
         pageWindow.isWorldWide( params.isWorldWide || 'false');
 
