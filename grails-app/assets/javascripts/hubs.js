@@ -508,6 +508,7 @@ function ContentViewModel(config) {
     self.hideProjectAboutOriginallyRegistered = ko.observable(config.hideProjectAboutOriginallyRegistered || false);
     self.hideProjectAboutContributing = ko.observable(config.hideProjectAboutContributing || false);
     self.hideProjectAboutParticipateInProject = ko.observable(config.hideProjectAboutParticipateInProject || false);
+    self.hideProjectAboutGeographicInfo = ko.observable(config.hideProjectAboutGeographicInfo || false);
     self.hideProjectAboutUNRegions = ko.observable(config.hideProjectAboutUNRegions || false);
     self.hideProjectEditCountries = ko.observable(config.hideProjectEditCountries || false);
     self.hideProjectEditScienceTypes = ko.observable(config.hideProjectEditScienceTypes || false);
@@ -732,6 +733,7 @@ var ButtonsHomePageViewModel = function (config) {
 var ProjectFinderHomePageViewModel = function (config) {
     var self = this;
     self.defaultView = ko.observable(config.defaultView || 'grid');
+    self.defaultSort = ko.observable(config.defaultSort || 'dateCreatedSort');
     self.showProjectRegionSwitch = ko.observable(config.showProjectRegionSwitch || false);
     self.showProjectDownloadButton = ko.observable(config.showProjectDownloadButton || false);
 };

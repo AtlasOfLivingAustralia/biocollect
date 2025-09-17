@@ -22,6 +22,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
+        hubDefaultSortBy : "${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultSort}",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",

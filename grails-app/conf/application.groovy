@@ -457,6 +457,14 @@ content.defaultOverriddenLabels = [
                 defaultText: 'Dashboard',
                 customText:'',
                 notes: 'Section heading on project\'s charts tab.'
+        ],
+        [
+                id: 11,
+                showCustomText: false,
+                page: 'Project > "About" tab',
+                defaultText: 'External Id',
+                customText:'',
+                notes: 'Label for external id field.'
         ]
 ]
 
