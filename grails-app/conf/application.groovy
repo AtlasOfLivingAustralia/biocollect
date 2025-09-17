@@ -465,6 +465,14 @@ content.defaultOverriddenLabels = [
                 defaultText: 'External Id',
                 customText:'',
                 notes: 'Label for external id field.'
+        ],
+        [
+                id: 12,
+                showCustomText: false,
+                page: 'Project > "Admin" tab > "Resources" tab > "Attach document" modal',
+                defaultText: 'make this document public on the project "Resources" tab',
+                customText:'',
+                notes: 'Label for external id field.'
         ]
 ]
 

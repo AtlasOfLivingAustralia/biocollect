@@ -193,6 +193,10 @@ class HubSettings extends JSONObject {
         findLabelOverrideForIndex(11, defaults)
     }
 
+    String getTextForResourceLabelOnModal(List defaults) {
+        findLabelOverrideForIndex(12, defaults)
+    }
+
     /**
      * Get facets without special meaning like 'date', 'geoMap' etc.
      * @param facets
