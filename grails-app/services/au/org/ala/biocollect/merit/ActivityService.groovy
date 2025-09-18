@@ -530,6 +530,9 @@ class ActivityService {
         }  else if (projectService.isUserEditorForProjects(userId, projectId)) {
             result.message = "User is authorized to view activity"
             result.authorized = true
+        } else if ((pActivity.published == true) && (pActivity.publicAccess == true) && (activity == null)) {
+            result.message =  "Survey is published with public access"
+            result.authorized = true
         } else if (!activity || activity.error) {
             result.message =  "Activity not found"
         } else if (isUserOwnerForActivity(userId, activity.activityId)) {
