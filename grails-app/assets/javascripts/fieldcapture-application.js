@@ -516,6 +516,7 @@ var contentTypes = {
 /** A function that works with documents.  Intended for inheritance by ViewModels */
 var mobileAppRoles = [
     { role: "android", name: "Android" },
+    { role: "pwa", name: "BioCollect PWA" },
     { role: "blackberry", name: "Blackberry" },
     { role: "iTunes", name: "ITunes" },
     { role: "windowsPhone", name: "Windows Phone" }
@@ -796,7 +797,7 @@ function Documents() {
                 }
         });
     };
-    function pushLinkUrl(urls, links, role) {
+    function pushLinkUrl(urls, links, role, projectId) {
         var link = self.findLinkByRole(links, role.role);
         if (link) urls.push({
             link: link,
@@ -807,6 +808,9 @@ function Documents() {
             },
             logo: function(dir) {
                 return dir + "/" + role.role.toLowerCase() + ".png";
+            },
+            pwaAppProjectUrl: function() {
+                return fcConfig.pwaAppProjectUrl + projectId;
             },
             icon: function(){
                 var icon;
@@ -852,6 +856,9 @@ function Documents() {
                     case "vimeo":
                         icon = "fab fa-vimeo-square"
                         break;
+                    case "pwa":
+                        icon = "pwa-mobile"
+                        break;
                     case "windowsPhone":
                         icon = "fab fa-windows"
                         break;
@@ -872,7 +879,7 @@ function Documents() {
     self.transients.mobileApps = ko.pureComputed(function() {
         var urls = [], links = self.links();
         for (var i = 0; i < mobileAppRoles.length; i++)
-            pushLinkUrl(urls, links, mobileAppRoles[i]);
+            pushLinkUrl(urls, links, mobileAppRoles[i], self.transients.projectId);
         return urls;
     });
     self.transients.mobileAppsUnspecified = ko.pureComputed(function() {

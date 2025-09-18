@@ -128,6 +128,7 @@
         allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}"/>,
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
         sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}",
+        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/mobile-app/project/",
         </g:applyCodec>
         version: "${params.version}"
         },
