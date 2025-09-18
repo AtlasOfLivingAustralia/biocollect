@@ -106,13 +106,18 @@
                             </textarea>
                         </div>
                     </div>
-
+                    <g:set var="labelResources" value="${hubConfig.getTextForResourceLabelOnModal(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}"/>
                     <div class="row form-group" data-bind="visible:settings.showSettings">
                         <label class="col-form-label col-sm-3" for="public">Settings</label>
                         <div class="col-sm-9">
                             <div class="form-check">
                                 <input class="form-check-input" id="public" type="checkbox" data-bind="checked:public"/>
-                                <label class="checkbox form-check-label" for="public">make this document public on the project "Resources" tab</label>
+                                <g:if test="${labelResources}">
+                                    <label class="checkbox form-check-label" for="public">${labelResources}</label>
+                                </g:if>
+                                <g:else>
+                                    <label class="checkbox form-check-label" for="public">make this document public on the project "Resources" tab</label>
+                                </g:else>
                             </div>
                         </div>
 

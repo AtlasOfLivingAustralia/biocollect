@@ -135,7 +135,13 @@ class ProjectController {
                 if (project.isMERIT || (project.projLifecycleStatus == UNPUBLISHED)) {
                     render text: [message: "You are not authorised"] as JSON, status: HttpStatus.SC_FORBIDDEN, contentType: "application/json"
                 } else {
-                    render project as JSON, contentType: "application/json"
+                    String userId = userService.getCurrentUserId()
+                    boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
+                    boolean userIsProjectMember = userIsAlaAdmin || projectService.isUserMemberOfProject(userId, project.projectId)
+                    def map = new LinkedHashMap(project)
+                    map.userIsProjectMember = userIsProjectMember
+
+                    render map as JSON, contentType: "application/json", status: HttpStatus.SC_OK
                 }
             } else {
                 render text: [message: "Project not found"] as JSON, status: HttpStatus.SC_NOT_FOUND, contentType: "application/json"
@@ -979,8 +985,13 @@ class ProjectController {
             utilService.getDisplayNamesForFacets(facets, allFacetConfig)
         }
 
-        projects?.each{ Map project ->
-            projectService.buildFieldsForTags (project)
+        projects?.each { Map project ->
+            projectService.buildFieldsForTags(project)
+
+            String userId = userService.getCurrentUserId()
+            boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
+            boolean userIsProjectMember = userIsAlaAdmin || projectService.isUserMemberOfProject(userId, project.projectId)
+            project.userIsProjectMember = userIsProjectMember
         }
 
         if (params.download as boolean) {

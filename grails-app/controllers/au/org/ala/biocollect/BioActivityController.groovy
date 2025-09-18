@@ -595,9 +595,9 @@ class BioActivityController {
         String projectId = project?.projectId
 
         if (!userId) {
-            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            result.message =  "You are not logged in."
         } else if (!activity || activity.error) {
-            result.message =  "Invalid activity"
+            result.message =  "Activity not found"
         } else if (projectService.canUserModerateProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             result.message = "User is authorized to edit activity"
             result.authorized = true
@@ -605,7 +605,6 @@ class BioActivityController {
 
         return result
     }
-
 
     private Map checkUserPermission (Map project, Map pActivity, Map activity) {
         if (activity) {
