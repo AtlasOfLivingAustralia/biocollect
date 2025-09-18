@@ -25,12 +25,18 @@ class ActivityService {
     CacheService cacheService
     OutputService outputService
     UtilService utilService
+    ProjectService projectService
 
     public static final String PROGRESS_PLANNED = 'planned'
     public static final String PROGRESS_FINISHED = 'finished'
     public static final String PROGRESS_STARTED = 'started'
     public static final String PROGRESS_DEFERRED = 'deferred'
     public static final String PROGRESS_CANCELLED = 'cancelled'
+    public static final String VERIFICATION_NOT_APPROVED = 'not approved'
+    public static final String VERIFICATION_NOT_VERIFIED = 'not verified'
+    public static final String VERIFICATION_UNDER_REVIEW = 'under review'
+    public static final String VERIFICATION_APPROVED = 'approved'
+    public static final String VERIFICATION_NOT_APPLICABLE = 'not applicable'
 
     private static def PROGRESS = ['planned', 'started', 'finished', 'cancelled', 'deferred']
 
@@ -486,5 +492,54 @@ class ActivityService {
         }
 
         activities
+    }
+
+    /**
+     * Determine if the verification status of an activity is publicly viewable.
+     * @param activity
+     * @return
+     */
+    boolean doesActivityHavePubliclyViewableVerificationStatus (Map activity) {
+        def viewable = false
+        if (activity) {
+            String status = activity.verificationStatus
+            if (status in [null, "", VERIFICATION_APPROVED, VERIFICATION_NOT_APPLICABLE]) {
+                viewable = true
+            }
+        }
+
+        viewable
+    }
+
+
+    /**
+     * Check if the current user has permission to view the activity.
+     * @param project
+     * @param pActivity
+     * @param activity
+     * @return
+     */
+    Map checkUserViewPermission (Map project, Map pActivity, Map activity) {
+        Map result = [ message: "Access denied: You are not allowed to edit activity", authorized: false ]
+        String userId = userService.getCurrentUserId()
+        String projectId = project?.projectId
+        Boolean embargoed = (activity?.embargoed == true) || projectActivityService.isEmbargoed(pActivity)
+
+        if (!userId) {
+            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+        }  else if (projectService.isUserEditorForProjects(userId, projectId)) {
+            result.message = "User is authorized to view activity"
+            result.authorized = true
+        } else if (!activity || activity.error) {
+            result.message =  "Activity not found"
+        } else if (isUserOwnerForActivity(userId, activity.activityId)) {
+            result.message = "User is authorized to view activity"
+            result.authorized = true
+        } else if (!embargoed && doesActivityHavePubliclyViewableVerificationStatus(activity)) {
+            result.message = "Publicly viewable activity"
+            result.authorized = true
+        }
+
+        return result
     }
 }
