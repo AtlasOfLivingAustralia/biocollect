@@ -63,6 +63,7 @@
         enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false},
         downloadWorksProjectsUrl: "${createLink(controller: 'project', action: 'downloadWorksProjects')}",
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
+        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/mobile-app/project/",
         <g:if test="${isUserPage}">
             <g:if test="${isWorks}">
                 isUserWorksPage: true,
