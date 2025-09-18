@@ -606,29 +606,9 @@ class BioActivityController {
         return result
     }
 
-    private Map checkUserViewPermission (Map project, Map pActivity, Map activity) {
-        Map result = [ message: "Access denied: You are not allowed to edit activity", authorized: false ]
-        String userId = userService.getCurrentUserId()
-        String projectId = project?.projectId
-        Boolean embargoed = (activity.embargoed == true) || projectActivityService.isEmbargoed(pActivity)
-
-        if (!userId) {
-            result.message =  "You are not logged in."
-        } else if (!activity || activity.error) {
-            result.message =  "Activity not found"
-        } else if (embargoed) {
-            result.message = "Access denied: This activity is embargoed."
-        } else if (projectService.isUserEditorForProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
-            result.message = "User is authorized to edit activity"
-            result.authorized = true
-        }
-
-        return result
-    }
-
     private Map checkUserPermission (Map project, Map pActivity, Map activity) {
         if (activity) {
-            return checkUserViewPermission(project, pActivity, activity)
+            return activityService.checkUserViewPermission(project, pActivity, activity)
         } else {
             return checkUserCreatePermission(project, pActivity)
         }
