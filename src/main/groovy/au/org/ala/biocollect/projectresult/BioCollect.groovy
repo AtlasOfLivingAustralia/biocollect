@@ -64,6 +64,8 @@ class BioCollect {
                 projectType            : doc.projectType,
                 isMERIT                : doc.isMERIT,
                 tags                   : doc.tags,
+                publicParticipation    : doc.publicParticipation,
+                numberOfRecords        : doc.numberOfRecords,
                 containsActivity       : doc.containsActivity,
                 projectEquipment       : doc.gear,
                 projectHowToParticipate: doc.getInvolved,

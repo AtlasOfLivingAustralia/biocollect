@@ -24,6 +24,7 @@ var hubToOrgMap = {
     "Bush Heritage Australia": "Bush Heritage Australia",
     "UWA": "University of Western Australia",
     "CQU": "Central Queensland University",
+    "Central Queensland University": "Central Queensland University",
     "Curtin": "Curtin University",
     "Deakin": "Deakin University",
     "ECU": "Edith Cowan University",
@@ -38,6 +39,7 @@ var hubToOrgMap = {
     "Latrobe":"La Trobe University",
     "Macquarie": "Macquarie University",
     "MTWAC": "Melaythenner Teeackana Warrana Aboriginal Corporation",
+    "Melaythenner Teeackana Warrana Aboriginal Corporation" :"Melaythenner Teeackana Warrana Aboriginal Corporation",
     "Murdoch": "Murdoch University",
     "NAILSMA":"NAILSMA",
     "Newcastle Uni": "The University of Newcastle",
@@ -46,16 +48,19 @@ var hubToOrgMap = {
     "QUT":"Queensland University of Technology",
     "RRRC": "Reef and Rainforest Research Centre Ltd",
     "SIMS": "Sydney Institute of Marine Science",
+    "Sydney Institute of Marine Science": "Sydney Institute of Marine Science",
     "UNE": "University of New England",
     "Uni of Wollongong": "University of Wollongong",
     "University of Adelaide": "University of Adelaide",
     "SARDI": "South Australian Research and Development Institute",
+    "South Australian Research and Development Institute": "South Australian Research and Development Institute",
     "University of Queensland": "University of Queensland",
-    "Swinburne University": "Swinburne University Of Technology",
+    "Swinburne University Of Technology": "Swinburne University Of Technology",
     "UoM": "University of Melbourne",
     "UQ": "University of Queensland",
     "USQ": "University of Southern Queensland",
-    "DBCA": "Department of Biodiversity, Conservation and Attractions",
+    "University of Southern Queensland": "University of Southern Queensland",
+    "WA Department of Biodiversity, Conservation and Attractions": "Department of Biodiversity, Conservation and Attractions",
     "UTS":"University of Technology Sydney",
     "WSU": "University of Western Sydney",
     "Zoos Victoria": "Zoos Victoria"
@@ -69,12 +74,17 @@ var nameToOrgMap = {
 }
 
 function createOrFindOrganisation(hub, url, description) {
+    var organisation = db.organisation.findOne({name:hub, status: "active"});
+    if (organisation) {
+        return organisation
+    }
+
     var name = hubToOrgMap[hub];
     if (!name) {
         throw new Error("Unknown hub: " + hub);
     }
 
-    var organisation = db.organisation.findOne({name:name, status: "active"});
+    organisation = db.organisation.findOne({name:name, status: "active"});
     if (!organisation) {
         organisation = createOrganisation(name, url, description);
     }

@@ -64,6 +64,27 @@ describe("BiocollectUtilsSpec", function () {
 
 
     describe('addObjectURL', function () {
+        let originalImageViewModel;
+
+        beforeEach(function () {
+            originalImageViewModel = window.ImageViewModel;
+
+            window.ImageViewModel = {
+                createObjectURL: jasmine.createSpy('createObjectURL').and.callFake(function (doc) {
+                    if (doc && doc.blob) {
+                        doc.blobObject = new Blob([doc.blob], { type: doc.contentType });
+                        return 'http://www.blob.com/fakeUrl';
+                    }
+                    return null;
+                })
+            };
+        });
+
+        afterEach(function () {
+            if (originalImageViewModel === undefined) delete window.ImageViewModel;
+            else window.ImageViewModel = originalImageViewModel;
+        });
+
         // Test case 1: Valid Blob
         it('should set thumbnailUrl and url when a valid blob is provided', function () {
             var mockDocument = {
@@ -73,9 +94,10 @@ describe("BiocollectUtilsSpec", function () {
 
             biocollect.utils.addObjectURL(mockDocument);
 
+            expect(ImageViewModel.createObjectURL).toHaveBeenCalledWith(mockDocument);
             expect(mockDocument.blobObject instanceof Blob).toBe(true);
-            expect(mockDocument.thumbnailUrl).toBeDefined();
-            expect(mockDocument.url).toBeDefined();
+            expect(mockDocument.thumbnailUrl).toBe('http://www.blob.com/fakeUrl');
+            expect(mockDocument.url).toBe('http://www.blob.com/fakeUrl');
         });
 
         // Test case 2: No Blob Provided
@@ -84,6 +106,7 @@ describe("BiocollectUtilsSpec", function () {
 
             biocollect.utils.addObjectURL(mockDocument);
 
+            expect(ImageViewModel.createObjectURL).toHaveBeenCalledWith(mockDocument);
             expect(mockDocument.blobObject).toBeUndefined();
             expect(mockDocument.thumbnailUrl).toBeUndefined();
             expect(mockDocument.url).toBeUndefined();
