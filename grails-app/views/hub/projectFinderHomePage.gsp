@@ -33,6 +33,7 @@
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
         isUserPage: false,
+        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
         <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
             isUserWorksPage: true,
         </g:if>
@@ -45,6 +46,7 @@
         projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params:[initiator:'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
+        hubDefaultSortBy : "${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultSort}",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",

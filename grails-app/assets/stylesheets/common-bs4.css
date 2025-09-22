@@ -292,3 +292,19 @@ select[name=project-list_length]{
     height: 200px;
 }
 /* END bulk import index*/
+
+/* pwa mobile */
+.pwa-mobile.large{
+    width: 100%;
+}
+
+.pwa-mobile.large img {
+    width: 32px;
+    height: 32px;
+}
+
+.pwa-mobile.small img {
+    width: 16px;
+    height: 16px;
+}
+/* end pwa mobile */
