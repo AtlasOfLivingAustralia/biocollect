@@ -33,7 +33,7 @@
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
         isUserPage: false,
-        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/mobile-app/project/",
+        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
         <g:if test="${hubConfig.defaultFacetQuery.contains('isWorks:true')}">
             isUserWorksPage: true,
         </g:if>
