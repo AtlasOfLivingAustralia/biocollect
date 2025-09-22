@@ -116,6 +116,30 @@ public class ActivityServiceSpec extends Specification implements AutowiredTest{
         service.checkUserViewPermission([projectId: "p1"], [:], [verificationStatus: "approved"]).authorized == true
     }
 
+    def "returns authorized when survey is published, publicAccess is true"() {
+        given:
+        userService.getCurrentUserId() >> "u1"
+        projectService.isUserEditorForProjects("u1", "p1") >> false
+        projectActivityService.isEmbargoed(_) >> true  // embargoed
+        0 * webService.doGet(*_) >> null // not owner
+        def activity = null
+
+        expect:
+        service.checkUserViewPermission([projectId: "p1"], [published: true, publicAccess: true], activity).authorized == true
+    }
+
+    def "returns not authorized when survey is published and publicAccess is false"() {
+        given:
+        userService.getCurrentUserId() >> "u1"
+        projectService.isUserEditorForProjects("u1", "p1") >> false
+        projectActivityService.isEmbargoed(_) >> true  // embargoed
+        0 * webService.doGet(*_) >> null // not owner
+        def activity = null
+
+        expect:
+        service.checkUserViewPermission([projectId: "p1"], [published: true, publicAccess: false], activity).authorized == false
+    }
+
     def "returns default denied when no conditions are met"() {
         given:
         userService.getCurrentUserId() >> "u1"
@@ -125,7 +149,7 @@ public class ActivityServiceSpec extends Specification implements AutowiredTest{
         def activity = [verificationStatus: "not approved", activityId: "other"]
 
         expect:
-        service.checkUserViewPermission([projectId: "p1"], [:], activity).authorized == false
+        service.checkUserViewPermission([projectId: "p1"], [published: true, publicAccess: false], activity).authorized == false
     }
 
 }
