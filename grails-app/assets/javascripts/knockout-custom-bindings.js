@@ -533,7 +533,7 @@ ko.bindingHandlers.autocomplete = {
                             source: item
                         }
                     });
-                    items = items.push({
+                    items.push({
                         label: "Missing or unidentified species",
                         value: _.escape(request.term),
                         source: {listId: 'unmatched', name: _.escape(request.term), scientificName: _.escape(request.term), commonName: '', guid: ''}
