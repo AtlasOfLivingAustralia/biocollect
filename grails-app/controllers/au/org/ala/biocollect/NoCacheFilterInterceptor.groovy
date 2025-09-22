@@ -18,6 +18,20 @@ class NoCacheFilterInterceptor {
 
     boolean before() {
         if (grailsApplication.config.getProperty("app.view.nocache", Boolean)) {
+            // exclude document downloads
+            if (controllerName == 'document' && actionName == 'download') {
+                return true
+            }
+
+            // Exclude by URI patterns
+            def path = request.forwardURI ?: request.requestURI
+
+            if (path ==~ /\/proxy\/speciesLists\/.*/ ||
+                    path ==~ /\/proxy\/speciesList\/.*/ ||
+                    path ==~ /\/proxy\/speciesItemsForList\/.*/ ||
+                    path ==~ /\/proxy\/speciesProfile\/.*/) {
+                return true
+            }
 
             response.setHeader(HEADER_PRAGMA, "no-cache");
             response.setDateHeader(HEADER_EXPIRES, 1L);
