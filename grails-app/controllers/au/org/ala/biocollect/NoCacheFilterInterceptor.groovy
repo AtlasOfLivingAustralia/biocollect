@@ -26,10 +26,10 @@ class NoCacheFilterInterceptor {
             // Exclude by URI patterns
             def path = request.forwardURI ?: request.requestURI
 
-            if (path ==~ /\/proxy\/speciesLists\/.*/ ||
-                    path ==~ /\/proxy\/speciesList\/.*/ ||
-                    path ==~ /\/proxy\/speciesItemsForList\/.*/ ||
-                    path ==~ /\/proxy\/speciesProfile\/.*/) {
+            if (path ==~ /.*\/proxy\/speciesLists.*/ ||
+                    path ==~ /.*\/proxy\/speciesList.*/ ||
+                    path ==~ /.*\/proxy\/speciesItemsForList.*/ ||
+                    path ==~ /.*\/proxy\/speciesProfile.*/) {
                 return true
             }
 
