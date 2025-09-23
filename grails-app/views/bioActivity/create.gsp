@@ -49,6 +49,7 @@
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, pActivity)}"/>,
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
+        overrideUseAlaFlag: true,
         </g:applyCodec>
         returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index')+ "/" + pActivity.projectId)}"
         },

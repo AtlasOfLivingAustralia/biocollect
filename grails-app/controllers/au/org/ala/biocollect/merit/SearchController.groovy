@@ -5,11 +5,26 @@ import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 import org.springframework.http.HttpStatus
 
+import javax.annotation.PostConstruct
+
 class SearchController {
     static responseFormats = ['json']
     def searchService, webService, speciesService, commonService, projectActivityService
     SpeciesListService speciesListService
     grails.core.GrailsApplication grailsApplication
+    private int cacheDuration
+
+    @PostConstruct
+    def init(){
+        cacheDuration = grailsApplication.config.getProperty('browserCache.duration', Integer)
+    }
+
+    private void addCacheHeader() {
+        if (cacheDuration > 0) {
+            response.setHeader('Cache-Control', "public, max-age=${cacheDuration}")
+        }
+    }
+
 
     /**
      * Main search page that takes its input from the search bar in the header
@@ -28,10 +43,12 @@ class SearchController {
      * @return
      */
     def species(String q, Integer limit) {
+        addCacheHeader()
         respond speciesService.searchForSpecies(q, limit, params.listId)
     }
 
     def searchSpeciesList(String sort, Integer max, Integer offset, String guid, String order, String searchTerm){
+        addCacheHeader()
         respond speciesListService.searchSpeciesList(sort, max, offset, guid, order, searchTerm)
     }
 
@@ -60,6 +77,7 @@ class SearchController {
     def getCommonKeys(){
         if (params.druid) {
             List commonFields = speciesListService.getCommonKeys(params.druid)
+            addCacheHeader()
             respond commonFields
         } else {
             render status: HttpStatus.BAD_REQUEST, text: 'Parameter druid is required.'
