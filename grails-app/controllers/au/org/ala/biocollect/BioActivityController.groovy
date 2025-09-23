@@ -595,30 +595,10 @@ class BioActivityController {
         String projectId = project?.projectId
 
         if (!userId) {
-            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            result.message =  "You are not logged in."
         } else if (!activity || activity.error) {
-            result.message =  "Invalid activity - ${id}"
+            result.message =  "Activity not found"
         } else if (projectService.canUserModerateProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
-            result.message = "User is authorized to edit activity"
-            result.authorized = true
-        }
-
-        return result
-    }
-
-    private Map checkUserViewPermission (Map project, Map pActivity, Map activity) {
-        Map result = [ message: "Access denied: You are not allowed to edit activity", authorized: false ]
-        String userId = userService.getCurrentUserId()
-        String projectId = project?.projectId
-        Boolean embargoed = (activity.embargoed == true) || projectActivityService.isEmbargoed(pActivity)
-
-        if (!userId) {
-            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
-        } else if (!activity || activity.error) {
-            result.message =  "Invalid activity - ${id}"
-        } else if (embargoed) {
-            result.message = "Access denied: This activity is embargoed."
-        } else if (projectService.isUserEditorForProjects(userId, projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             result.message = "User is authorized to edit activity"
             result.authorized = true
         }
@@ -628,7 +608,7 @@ class BioActivityController {
 
     private Map checkUserPermission (Map project, Map pActivity, Map activity) {
         if (activity) {
-            return checkUserViewPermission(project, pActivity, activity)
+            return activityService.checkUserViewPermission(project, pActivity, activity)
         } else {
             return checkUserCreatePermission(project, pActivity)
         }

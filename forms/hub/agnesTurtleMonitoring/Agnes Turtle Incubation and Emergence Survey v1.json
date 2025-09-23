@@ -23,6 +23,7 @@
           {
             "dataType": "date",
             "name": "eventDate",
+            "indexName": "eventDate",
             "dwcAttribute": "eventDate",
             "description": "The date that the survey was undertaken",
             "validate": "required,past[now]"
@@ -55,6 +56,7 @@
           {
             "name": "nestNumber",
             "dataType": "text",
+            "indexName": "nestNumber",
             "validate": "required"
           },
           {

@@ -5,11 +5,25 @@ import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
 import au.org.ala.web.SSO
 
+import javax.annotation.PostConstruct
+
 class ProxyController {
     static responseFormats = ['json']
     def webService, commonService, projectService
     SpeciesService speciesService
     SpeciesListService speciesListService
+    private int cacheDuration
+
+    @PostConstruct
+    def init(){
+        cacheDuration = grailsApplication.config.getProperty('browserCache.duration', Integer)
+    }
+
+    private void addCacheHeader() {
+        if (cacheDuration > 0) {
+            response.setHeader('Cache-Control', "public, max-age=${cacheDuration}")
+        }
+    }
 
     def geojsonFromPid(String pid) {
         def shpUrl = "${grailsApplication.config.spatial.layersUrl}/shape/geojson/${pid}"
@@ -20,6 +34,7 @@ class ProxyController {
     }
 
     def speciesLists() {
+        addCacheHeader()
         respond speciesListService.searchSpeciesList(params.sort, params.max, params.offset, params.guid, params.order, params.searchTerm)
     }
 
@@ -29,10 +44,12 @@ class ProxyController {
         if (!speciesList.isValid())
             speciesList = null
 
+        addCacheHeader()
         respond speciesList
     }
 
     def speciesItemsForList() {
+        addCacheHeader()
         respond speciesListService.allSpeciesListItems(params.druid)
     }
 
@@ -50,6 +67,7 @@ class ProxyController {
 
     def speciesProfile(String id) {
         Map result = speciesService.getSpeciesDetailsForTaxonId(id)
+        addCacheHeader()
         render result
     }
 

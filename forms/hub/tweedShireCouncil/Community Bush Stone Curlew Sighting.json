@@ -1,0 +1,584 @@
+{
+  "id": "6867a64ad2f7d17b78797871",
+  "dateCreated": "2025-07-04T10:00:42Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-09-01T02:20:21Z",
+  "createdUserId": "35",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Community Bush Stone Curlew Sighting Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who entered the record (attributed with making the observation).",
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "dwcAttribute": "eventDate",
+            "indexName": "eventDate",
+            "description": "The date on which the observation was made.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "surveyTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time at which the sighting was made."
+          },
+          {
+            "dataType": "text",
+            "name": "currentLocation",
+            "dwcAttribute": "",
+            "description": "",
+            "constraints": [
+              "Yes",
+              "No"
+            ],
+            "validate": "required"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "locality",
+            "dwcAttribute": "locality",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "suburb",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "streetAddress",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "state",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "postcode",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "localGovernmentArea",
+            "description": "",
+            "constraints": [
+              "Tweed",
+              "Byron",
+              "Ballina",
+              "Clarence Valley",
+              "Kyogle",
+              "Lismore",
+              "Richmond",
+              "Gold Coast"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "sightingType",
+            "validate": "required",
+            "description": "",
+            "constraints": [
+              "Pair",
+              "Single Bird",
+              "1 or more adult birds with a chick",
+              "Sitting on a nest",
+              "Communal roost (group of birds)",
+              "Dead bird",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "number",
+            "name": "pairSightingType",
+            "validate": "required",
+            "defaultValue": 0,
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"Pair\" == sightingType"
+              }
+            ],
+            "constraints": [
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          {
+            "dataType": "number",
+            "name": "adultBirdWithChick",
+            "validate": "required",
+            "defaultValue": 0,
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"1 or more adult birds with a chick\" == sightingType or \"Communal roost (group of birds)\"  == sightingType"
+              }
+            ],
+            "constraints": [
+              "Yes",
+              "No",
+              "Unsure (cannot clearly see)"
+            ]
+          },
+          {
+            "dataType": "number",
+            "name": "numberOfDeadBirds",
+            "validate": "required",
+            "defaultValue": 0,
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"Dead bird\" == sightingType"
+              }
+            ],
+            "constraints": [
+              "Yes",
+              "No",
+              "Unsure (cannot clearly see)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "birdFlaggedBanded",
+            "validate": "required",
+            "constraints": [
+              "Yes",
+              "No",
+              "Unsure (cannot clearly see)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "flagAndOrBandDetails",
+            "validate": "required",
+            "description": "Colour and number of each flag",
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"Yes\" == birdFlaggedBanded"
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "otherTypeSighting",
+            "validate": "required",
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"Other\" == sightingType"
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "locatedBushStoneCurlewBefore",
+            "validate": "required",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "reportedBirdBefore",
+            "validate": "required",
+            "constraints": [
+              "Yes",
+              "No"
+            ],
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"Yes\" == locatedBushStoneCurlewBefore"
+              }
+            ]
+          },
+          {
+            "dataType": "date",
+            "name": "previousDateReported",
+            "validate": "required",
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"Yes\" == reportedBirdBefore"
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "sightingBehaviourNotes",
+            "dwcAttribute": "sightingBehaviourNotes,",
+            "description": "",
+            "validate": "max[250],required"
+          },
+          {
+            "dataType": "text",
+            "name": "threatsToBushStoneCurlews",
+            "dwcAttribute": "threatsToBushStoneCurlews,",
+            "description": "",
+            "validate": "max[250],required"
+          },
+          {
+            "dataType": "text",
+            "name": "bushStoneCurlewInjured",
+            "validate": "required",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "name": "birdThreatHotline",
+            "dataType": "text",
+            "behaviour": [
+              {
+                "type": "visible",
+                "condition": "\"Yes\" == bushStoneCurlewInjured"
+              }
+            ]
+          },
+          {
+            "dataType": "species",
+            "name": "species",
+            "dwcAttribute": "scientificName",
+            "description": "",
+            "validate": "required"
+          },
+
+          {
+            "dataType": "image",
+            "name": "sitePhoto",
+            "dwcAttribute": "associatedMedia",
+            "description": ""
+          }
+        ],
+        "modelName": "Community Bush Stone Curlew Sighting Survey",
+        "title": "Community Bush Stone Curlew Sighting Survey",
+        "record": "true",
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Community Bush Stone Curlew Sighting Survey</h1>",
+                "type": "literal"
+              },
+              {
+                "preLabel": "",
+                "source": "species",
+                "type": "autocomplete",
+                "noEdit": true,
+                "readOnly": true
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Sighting Event Information",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Sighting date",
+                                "source": "eventDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Sighting time",
+                                "source": "surveyTime",
+                                "type": "time"
+                              },
+                              {
+                                "preLabel": "Entered by",
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Are you currently at the location of the sighting?",
+                                "source": "currentLocation",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  },
+                  {
+                    "boxed": true,
+                    "title": "Sighting Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Sighting type",
+                                "source": "sightingType",
+                                "type": "selectOne"
+                              },
+                              {
+                                "css": "span5",
+                                "preLabel": "Number of breeding pairs",
+                                "source": "pairSightingType",
+                                "type": "selectOne"
+                              },
+                              {
+                                "css": "span5",
+                                "preLabel": "Number of birds",
+                                "source": "adultBirdWithChick",
+                                "type": "number"
+                              },
+                              {
+                                "css": "span5",
+                                "preLabel": "Number of dead birds",
+                                "source": "numberOfDeadBirds",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Other type of sighting",
+                                "source": "otherTypeSighting",
+                                "type": "text"
+                              },
+                              {
+                                "css": "span5",
+                                "preLabel": "Is the bird flagged and/or banded?",
+                                "source": "birdFlaggedBanded",
+                                "type": "selectOne"
+                              },
+                              {
+                                "css": "span5",
+                                "preLabel": "Flag and/or band details",
+                                "source": "flagAndOrBandDetails",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Have you seen Bush Stone-curlew at this location before?",
+                                "source": "locatedBushStoneCurlewBefore",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Have you reported this bird / pair before?",
+                                "source": "reportedBirdBefore",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Previous date reported",
+                                "source": "previousDateReported",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Sighting behaviour notes",
+                                "source": "sightingBehaviourNotes",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "What could be threats to Bush Stone-curlews here?",
+                                "source": "threatsToBushStoneCurlews",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Is the Bush Stone-curlew injured or in immediate threat?",
+                                "source": "bushStoneCurlewInjured",
+                                "type": "selectOne"
+                              },
+                              {
+                                "type": "",
+                                "source": "birdThreatHotline",
+                                "css": "span5",
+                                "fullWidthLabelAbove": true,
+                                "preLabel": "If bird is injured or in immediate threat:<br><i><b style=\"background-color:yellow\">Please call Northern Rivers Wildlife Carers 02 6628 1866 OR<br>Please call Byron Bay Wildlife Hospital 1300 945 654</b></i>"
+                              },
+                              {
+                                "preLabel": "Add a photo from the site",
+                                "source": "sitePhoto",
+                                "type": "image"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "LOCATION",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<font-size='0.8em'><i>Zoom in on the map, then click on the marker and drop it on the location where you made the sighting. Change the base map to show the satellite image.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": false,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": true,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": true,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": false
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Locality",
+                                "source": "locality",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Suburb",
+                                "source": "suburb",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Street address",
+                                "source": "streetAddress",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "State",
+                                "source": "state",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Postcode",
+                                "source": "postcode",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Local Government area ",
+                                "source": "localGovernmentArea",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "Community Bush Stone Curlew Sighting Survey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Community Bush Stone Curlew Sighting Survey",
+      "description": "Template developed in 2026 to report any sightings of Bush Stone-curlews in the Northern Rivers or Gold Coast."
+    }
+  ],
+  "type": "Assessment",
+  "category": "Species monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": "Template developed in 2026 to report any sightings of Bush Stone-curlews in the Northern Rivers or Gold Coast.",
+  "formVersion": 1
+}

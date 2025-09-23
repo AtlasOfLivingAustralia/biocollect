@@ -42,7 +42,13 @@ class ALA {
                 urlWeb     : doc.urlWeb,
                 urlImage   : doc.imageUrl,
                 url        : params.url + "/project/index/" + doc.projectId,
-                containsActivity       : doc.containsActivity
+                containsActivity : doc.containsActivity,
+                plannedStartDate : doc.plannedStartDate,
+                plannedEndDate : doc.plannedEndDate,
+                organisationId : doc.organisationId,
+                organisationName : doc.organisationName,
+                numberOfRecords : doc.numberOfRecords,
+                publicParticipation : doc.publicParticipation
             ]
         }
     }
