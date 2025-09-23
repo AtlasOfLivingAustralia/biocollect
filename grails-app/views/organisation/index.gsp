@@ -42,6 +42,7 @@
             spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
             spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
             rejectReportUrl: '${g.createLink(action: 'ajaxRejectReport', id: "${organisation.organisationId}")}',
+            hubDefaultSortBy : "${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultSort}",
             defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
             returnTo: '${g.createLink(action: 'index', id: "${organisation.organisationId}")}',
             projects : <fc:modelAsJavascript model="${organisation.projects}"/>,
@@ -53,7 +54,7 @@
             showAllProjects: true,
             meritProjectLogo:"${asset.assetPath(src: 'merit_project_logo.jpg')}",
             meritProjectUrl: "${grailsApplication.config.merit.project.url}",
-
+            pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             bieUrl: "${grailsApplication.config.bie.baseURL}",

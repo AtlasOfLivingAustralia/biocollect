@@ -208,6 +208,11 @@ methodType = [
     'systematic'
 ]
 
+browserCache.duration = 3*30*24*60*60 // 3 months
+browserCache.includes = [
+        [uri: '/proxy/speciesLists/.*'], [uri: '/proxy/speciesList/.*'],
+        [uri: '/proxy/speciesItemsForList/.*'], [uri: '/proxy/speciesProfile/.*']
+]
 datapage.defaultColumns = [
         [
                 type: "image",
@@ -457,6 +462,22 @@ content.defaultOverriddenLabels = [
                 defaultText: 'Dashboard',
                 customText:'',
                 notes: 'Section heading on project\'s charts tab.'
+        ],
+        [
+                id: 11,
+                showCustomText: false,
+                page: 'Project > "About" tab',
+                defaultText: 'External Id',
+                customText:'',
+                notes: 'Label for external id field.'
+        ],
+        [
+                id: 12,
+                showCustomText: false,
+                page: 'Project > "Admin" tab > "Resources" tab > "Attach document" modal',
+                defaultText: 'make this document public on the project "Resources" tab',
+                customText:'',
+                notes: 'Label for external id field.'
         ]
 ]
 

@@ -22,6 +22,7 @@
         sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
         sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
+        hubDefaultSortBy : "${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultSort}",
         defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
@@ -34,6 +35,7 @@
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         associatedPrograms: <fc:modelAsJavascript model="${associatedPrograms}"/>,
         flimit: ${grailsApplication.config.facets.flimit},
+        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
         </g:applyCodec>
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
     }

@@ -129,6 +129,7 @@
         allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}" />,
         allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}" />,
         surveyMethods: <fc:modelAsJavascript model="${projectActivityService.getSurveyMethods()}"/>,
+        pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
         </g:applyCodec>
         version: "${params.version}",
         },

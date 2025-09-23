@@ -461,7 +461,11 @@
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: disableOrganisationHyperlink"> Disable organisation hyperlink
                 </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: enableNationalProjectsExclusionFilter"> Enable National Projects exclusion filter in the Map modal
+                </div>
                 <h5>Project page</h5>
+
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectBackButton"> Hide 'Back to search results' button on project page
                 </div>
@@ -479,6 +483,9 @@
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectAboutParticipateInProject"> Hide 'You can participate in this project in'
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" data-bind="checked: hideProjectAboutGeographicInfo"> Hide 'National Scale'
                 </div>
                 <div class="checkbox">
                     <input type="checkbox" data-bind="checked: hideProjectEditCountries"> Hide 'Countries' (Edit page)
@@ -1157,6 +1164,35 @@
                                 <input class="form-check-input" type="radio" name="defaultView" data-bind="checked: defaultView" value="map" disabled>
                                 <label class="form-check-label">
                                     Projects Map
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-4">Default sort order:</label>
+                        <div class="col-sm-8">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="defaultSort" data-bind="checked: defaultSort" value="dateCreatedSort">
+                                <label class="form-check-label">
+                                    Most Recent
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="defaultSort" data-bind="checked: defaultSort" value="nameSort">
+                                <label class="form-check-label">
+                                    Name
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="defaultSort" data-bind="checked: defaultSort" value="_score">
+                                <label class="form-check-label">
+                                    Relevance
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="defaultSort" data-bind="checked: defaultSort" value="organisationSort">
+                                <label class="form-check-label">
+                                    Organisation
                                 </label>
                             </div>
                         </div>
