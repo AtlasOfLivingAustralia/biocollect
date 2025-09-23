@@ -208,6 +208,11 @@ methodType = [
     'systematic'
 ]
 
+browserCache.duration = 3*30*24*60*60 // 3 months
+browserCache.includes = [
+        [uri: '/proxy/speciesLists/.*'], [uri: '/proxy/speciesList/.*'],
+        [uri: '/proxy/speciesItemsForList/.*'], [uri: '/proxy/speciesProfile/.*']
+]
 datapage.defaultColumns = [
         [
                 type: "image",
