@@ -160,7 +160,7 @@ dependencies {
     implementation 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
     implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
     if (!Boolean.valueOf(inplace)) {
-        implementation "org.grails.plugins:ala-map-plugin:3.0.1"
+        implementation "org.grails.plugins:ala-map-plugin:4.0.1"
         implementation "org.grails.plugins:ecodata-client-plugin:8.4"
     }
 
