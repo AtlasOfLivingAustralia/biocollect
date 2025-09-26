@@ -577,7 +577,7 @@ class BioActivityController {
         else if (isProjectActivityClosed(pActivity)) {
             result.message = "Access denied: This survey is closed."
         }
-        else if (!pActivity.publicAccess && !projectService.isUserParticipantForProject(userId, projectId)) {
+        else if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
             result.message = "Access denied: Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
         }
         else if (projectService.canUserEditProject(userId, projectId, false) ||
