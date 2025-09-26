@@ -15,6 +15,7 @@ var documentTemplate =
         "filename" : "",
         "isSciStarter" : false,
         "projectId" : "",
+        "public": true,
         "readOnly" : false,
         "filesize" : 104117,
         "contentType" : ""
