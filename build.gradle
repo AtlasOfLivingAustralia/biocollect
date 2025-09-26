@@ -209,7 +209,7 @@ assets {
     minifyOptions = [
             languageMode  : 'ES6', //languageIn
 //            targetLanguage: 'ES5', // languageOut
-            excludes: ['sw.js', '**/*.min.js', 'ckeditor/ckeditor5/**']
+            excludes: ['sw.js', '**/*.min.js', 'ckeditor/ckeditor5/**', 'allKeys.unminified.js', 'allKeys.js']
     ]
 
     includes = []
