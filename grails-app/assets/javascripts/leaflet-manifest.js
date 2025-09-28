@@ -6,7 +6,7 @@
 //= require leaflet/Control.FullScreen
 
 // from ala-map-plugin
-//= require ala-map-no-jquery-us   //without jquery 2
+//= require ala-map-no-jquery-us-no-handlebars   //without jquery 2
 
 //= require MapUtilities.js
 //= require siteDisplay.js
