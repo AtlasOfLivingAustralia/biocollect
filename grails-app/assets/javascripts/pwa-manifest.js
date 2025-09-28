@@ -5,7 +5,7 @@
 //= require bootbox/bootbox.min.js
 //= require utils.js
 //= require dexiejs/dexie.js
-//= require ala-map-no-jquery-us.js
+//= require ala-map-no-jquery-us-no-handlebars.js
 //= require MapUtilities.js
 //= require entities.js
 //= require modals.js
