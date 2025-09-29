@@ -151,6 +151,7 @@
           },
           {
             "dataType": "date",
+            "defaultValue": "${now}",
             "name": "nestEstablishedDate",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "datetime",
@@ -161,6 +162,7 @@
           },
           {
             "dataType": "date",
+            "defaultValue": "${now}",
             "name": "juvenilesEmergedDate",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "datetime",
@@ -171,6 +173,7 @@
           },
           {
             "dataType": "date",
+            "defaultValue": "${now}",
             "name": "excavationDate",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "datetime",
@@ -450,8 +453,7 @@
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "countedBy",
-            "measurementType": "text",
-            "validate": "required"
+            "measurementType": "text"
           },
           {
             "dataType": "number",
@@ -606,28 +608,22 @@
                           {
                             "boxed": true,
                             "type": "section",
-                            "title": "Emergence",
+                            "title": "Key Dates",
                             "items": [
                               {
-                                "preLabel": "Date of emergence",
-                                "source": "dateOfEmergence",
+                                "preLabel": "Date eggs laid",
+                                "source": "nestEstablishedDate",
                                 "type": "date"
                               },
                               {
-                                "preLabel": "Light disorientation",
-                                "source": "lightDisorientationIsTrue",
-                                "type": "selectMany"
+                                "preLabel": "Date of emergence",
+                                "source": "juvenilesEmergedDate",
+                                "type": "date"
                               },
                               {
-                                "preLabel": "Notes",
-                                "source": "hatchlingRemarks",
-                                "type": "textarea",
-                                "rows": 4
-                              },
-                              {
-                                "preLabel": "Scavenged – post emergence predation",
-                                "source": "postEmergentPredationIsTrue",
-                                "type": "boolean"
+                                "preLabel": "Date nest dug/excavated",
+                                "source": "excavationDate",
+                                "type": "date"
                               }
                             ]
                           }
@@ -639,7 +635,6 @@
               }
             ]
           },
-
           {
             "type": "row",
             "items": [
@@ -683,22 +678,28 @@
                   {
                     "boxed": true,
                     "type": "section",
-                    "title": "Key Dates",
+                    "title": "Emergence",
                     "items": [
                       {
-                        "preLabel": "Date eggs laid",
-                        "source": "nestEstablishedDate",
-                        "type": "date"
-                      },
-                      {
                         "preLabel": "Date of emergence",
-                        "source": "juvenilesEmergedDate",
+                        "source": "dateOfEmergence",
                         "type": "date"
                       },
                       {
-                        "preLabel": "Date nest dug/excavated",
-                        "source": "excavationDate",
-                        "type": "date"
+                        "preLabel": "Light disorientation",
+                        "source": "lightDisorientationIsTrue",
+                        "type": "selectMany"
+                      },
+                      {
+                        "preLabel": "Notes",
+                        "source": "hatchlingRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Scavenged – post emergence predation",
+                        "source": "postEmergentPredationIsTrue",
+                        "type": "boolean"
                       }
                     ]
                   }
