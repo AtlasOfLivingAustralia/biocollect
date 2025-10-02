@@ -116,6 +116,14 @@
             "dataType": "text"
           },
           {
+            "name": "tagPosition",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "tagPosition",
+            "measurementType": "text",
+            "dataType": "text"
+          },
+          {
             "dataType": "species",
             "name": "species",
             "dwcAttribute": "scientificName",
@@ -245,6 +253,24 @@
             "constraints": [
               "PEX - Predator exclusion device",
               "RZ - Relocation"
+            ]
+          },
+          {
+            "name": "predationUnderImpacts",
+            "dataType": "text",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "predationUnderImpacts",
+            "measurementType": "text",
+            "constraints": [
+              "PD - Predation by dog or dingo",
+              "PF - Predation by a fox",
+              "PP - Predation by pig",
+              "PV - Predation by goanna",
+              "P - Predation by unidentified species",
+              "PU - Unsuccessful predation attempt on a clutch",
+              "PW - clutch loss from Erosion or Flooding",
+              "Other, specify"
             ]
           },
           {
@@ -544,6 +570,11 @@
                         "type": "text"
                       },
                       {
+                        "preLabel": "Tag position",
+                        "source": "tagNumber",
+                        "type": "text"
+                      },
+                      {
                         "preLabel": "Species",
                         "source": "species",
                         "type": "speciesSelect"
@@ -661,6 +692,11 @@
                         "source": "protectionActivity",
                         "type": "selectMany",
                         "rows": 4
+                      },
+                      {
+                        "preLabel": "Predation (under Impacts)",
+                        "source": "predationUnderImpacts",
+                        "type": "selectOne"
                       },
                       {
                         "preLabel": "Notes",
