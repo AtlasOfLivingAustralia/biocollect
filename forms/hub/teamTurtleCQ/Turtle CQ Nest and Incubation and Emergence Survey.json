@@ -158,28 +158,6 @@
             "description": "Attach nest dig egg count image plus data sheet if used"
           },
           {
-            "dataType": "date",
-            "defaultValue": "${now}",
-            "name": "nestEstablishedDate",
-            "dwcAttribute": "measurementValue",
-            "measurementUnit": "datetime",
-            "measurementUnitID": "nestEstablishedDate",
-            "measurementType": "date",
-            "description": "The date that eggs were laid",
-            "validate": "past[now]"
-          },
-          {
-            "dataType": "date",
-            "defaultValue": "${now}",
-            "name": "juvenilesEmergedDate",
-            "dwcAttribute": "measurementValue",
-            "measurementUnit": "datetime",
-            "measurementUnitID": "juvenilesEmergedDate",
-            "measurementType": "date",
-            "description": "The date that juveniles began to emerge from the nest",
-            "validate": "past[now]"
-          },
-          {
             "defaultAccuracy": 50,
             "hideMyLocation": false,
             "columns": [
