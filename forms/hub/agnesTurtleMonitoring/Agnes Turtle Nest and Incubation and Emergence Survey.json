@@ -12,12 +12,12 @@
   "publicationStatus": "unpublished",
   "externalIds": null,
   "gmsId": null,
-  "name": "Turtle Nest and Incubation and Emergence Survey",
+  "name": "Agnes Turtle Nest and Incubation and Emergence Survey",
   "sections": [
     {
       "collapsedByDefault": false,
       "template": {
-        "modelName": "Turtle Nest and Incubation and Emergence Survey",
+        "modelName": "Agnes Turtle Nest and Incubation and Emergence Survey",
         "record": true,
         "dataModel": [
           {
@@ -256,11 +256,11 @@
             ]
           },
           {
-            "name": "predationUnderImpacts",
+            "name": "predation",
             "dataType": "text",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
-            "measurementUnitID": "predationUnderImpacts",
+            "measurementUnitID": "predation",
             "measurementType": "text",
             "constraints": [
               "PD - Predation by dog or dingo",
@@ -688,15 +688,15 @@
                         "type": "selectOne"
                       },
                       {
+                        "preLabel": "Predation",
+                        "source": "predation",
+                        "type": "selectOne"
+                      },
+                      {
                         "preLabel": "Activity",
                         "source": "protectionActivity",
                         "type": "selectMany",
                         "rows": 4
-                      },
-                      {
-                        "preLabel": "Predation (under Impacts)",
-                        "source": "predationUnderImpacts",
-                        "type": "selectOne"
                       },
                       {
                         "preLabel": "Notes",
@@ -867,15 +867,15 @@
             ]
           }
         ],
-        "title": "Turtle Nest and Incubation and Emergence Survey"
+        "title": "Agnes Turtle Nest and Incubation and Emergence Survey"
       },
       "modelName": null,
-      "templateName": "Turtle Nest and Incubation and Emergence Survey",
+      "templateName": "Agnes Turtle Nest and Incubation and Emergence Survey",
       "optional": false,
       "optionalQuestionText": null,
       "title": null,
       "collapsibleHeading": null,
-      "name": "Turtle Nest and Incubation and Emergence Survey",
+      "name": "Agnes Turtle Nest and Incubation and Emergence Survey",
       "description": "Generic template for monitoring marine turtle nests"
     }
   ],
