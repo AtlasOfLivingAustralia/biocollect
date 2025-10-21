@@ -116,6 +116,7 @@
           {
             "dataType": "image",
             "name": "observationPhoto",
+            "validate": "required",
             "dwcAttribute": "associatedMedia",
             "description": "Attach nest dig egg count image plus data sheet if used"
           },
@@ -249,6 +250,7 @@
           {
             "dataType": "text",
             "name": "habitatBeach",
+            "validate": "required",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "habitatBeach",
@@ -263,6 +265,7 @@
           {
             "dataType": "text",
             "name": "habitatVegetation",
+            "validate": "required",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "habitatVegetation",
