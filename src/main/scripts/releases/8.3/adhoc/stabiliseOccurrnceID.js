@@ -87,7 +87,7 @@ for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
 }
 
 print("Total occurrences updated: " + counter);
-print("Total multiple records found: " + missingOccurrences.length);
+print("Total missing occurrences found: " + missingOccurrences.length);
 printjson(missingOccurrences);
 print("Total missing records found: " + missingRecords.length);
 printjson(missingRecords);
