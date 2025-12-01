@@ -134,7 +134,8 @@ class BioActivityController {
         def pActivity = null
         String projectId = null
 
-        id = id ?: ''
+        String bodyActivityId = postBody.activityId
+        id = id ?: bodyActivityId ?: ''
 
         if (id) {
             activity = activityService.get(id)
