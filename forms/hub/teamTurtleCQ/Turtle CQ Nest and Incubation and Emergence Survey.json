@@ -472,6 +472,10 @@
             "name": "eventRemarks",
             "description": "",
             "dwcAttribute": "eventRemarks"
+          },
+          {
+            "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=clearImageDateTimeHandler.js&model=agnesWaterTurtleNestMonitoring",
+            "dataType": "jsMain"
           }
         ],
         "viewModel": [
