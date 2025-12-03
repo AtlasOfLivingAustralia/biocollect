@@ -440,7 +440,7 @@
           },
           {
             "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=clearImageDateTimeHandler.js&model=agnesWaterTurtleNestMonitoring",
-            "type": "jsMain"
+            "dataType": "jsMain"
           }
         ],
         "viewModel": [
