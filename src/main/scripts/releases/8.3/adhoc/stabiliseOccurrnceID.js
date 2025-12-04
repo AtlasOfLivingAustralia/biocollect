@@ -1,33 +1,51 @@
 // create an eventID index on record collection for faster lookup
 // db.record.createIndex({eventID: 1});
+// db.auditMessage.createIndex({entityType: 1, entityId: 1});
 // usage mongosh ecodata stabiliseOccurrnceID.js
 
+load("../../../mongo/utils/audit.js");
 var files = [
-    "dr364_1.js" ,
-    "dr364_2.js" ,
-    "dr364_3.js" ,
-    "dr364_4.js" ,
-    "dr364_5.js" ,
-    "dr364_6.js" ,
-    "dr364_7.js" ,
-    "dr364_8.js" ,
-    "dr364_9.js" ,
-    "dr364_10.js" ,
-    "dr364_11.js" ,
-    "dr3147.js" ,
-    "dr5018_1.js" ,
-    "dr5018_2.js" ,
-    "dr5018_3.js" ,
-    "dr5018_4.js" ,
-    "dr15301.js" ,
-    "dr16853_1.js" ,
-    "dr16853_2.js" ,
-    "dr17465.js" ,
-    "dr17493.js" ,
-    "dr17831.js" ,
-    "dr22119.js" ,
-    "dr25010_1.js" ,
-    "dr25010_2.js"
+    "allresources_1.js" ,
+    "allresources_2.js" ,
+    "allresources_3.js" ,
+    "allresources_4.js" ,
+    "allresources_5.js" ,
+    "allresources_6.js" ,
+    "allresources_7.js" ,
+    "allresources_8.js" ,
+    "allresources_9.js" ,
+    "allresources_10.js" ,
+    "allresources_11.js" ,
+    "allresources_12.js" ,
+    "allresources_13.js",
+    "allresources_14.js",
+    "allresources_15.js",
+    "allresources_16.js" ,
+    "allresources_17.js" ,
+    "allresources_18.js" ,
+    "allresources_19.js" ,
+    "allresources_20.js" ,
+    "allresources_21.js" ,
+    "allresources_22.js" ,
+    "allresources_23.js",
+    "allresources_24.js",
+    "allresources_25.js",
+    "allresources_26.js" ,
+    "allresources_27.js" ,
+    "allresources_28.js" ,
+    "allresources_29.js" ,
+    "allresources_30.js" ,
+    "allresources_31.js" ,
+    "allresources_32.js",
+    "allresources_33.js",
+    "allresources_34.js",
+    "allresources_35.js",
+    "allresources_36.js" ,
+    "allresources_37.js" ,
+    "allresources_38.js" ,
+    "allresources_39.js" ,
+    "allresources_40.js" ,
+    "allresources_41.js"
 ]
 
 // group by eventId
@@ -65,11 +83,13 @@ for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
                         var isUpdated = recurseDataAndUpdateOutputSpeciesID(output.data, oldOccurrenceID, newOccurrenceID);
                         if (isUpdated) {
                             db.output.updateOne({outputId: output.outputId}, {$set: {data: output.data}});
+                            audit(output, output.outputId, 'au.org.ala.ecodata.Output', 'system');
                             print("Updated outputId: " + output.outputId + ", and occurrenceID from " + newOccurrenceID + " to " + oldOccurrenceID);
                         }
                     });
 
                     db.record.updateOne({_id: record._id}, {$set: {occurrenceID: oldOccurrenceID}});
+                    audit(record, record.occurrenceID, 'au.org.ala.ecodata.Record', 'system');
                 }
                 else {
                     print("OccurrenceID matches for occurrenceID: " + occurrence.occurrenceID);
@@ -98,7 +118,8 @@ function recurseDataAndUpdateOutputSpeciesID(data, oldOccurrenceID, newOccurrenc
         if (data.hasOwnProperty(key)) {
             let value = data[key];
             if (typeof value === 'object' && value !== null) {
-                isUpdated = isUpdated || recurseDataAndUpdateOutputSpeciesID(value, oldOccurrenceID, newOccurrenceID, isUpdated);
+                var tempIsUpdated = recurseDataAndUpdateOutputSpeciesID(value, oldOccurrenceID, newOccurrenceID, isUpdated);
+                isUpdated = isUpdated || tempIsUpdated;
             } else if (key === OUTPUT_SPECIES_ID && value === newOccurrenceID) {
                 data[key] = oldOccurrenceID;
                 // print("Updated outputSpeciesId from " + newOccurrenceID + " to " + oldOccurrenceID);
