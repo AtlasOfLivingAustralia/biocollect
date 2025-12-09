@@ -342,7 +342,7 @@
                     </div>
                     <!-- /ko -->
                     <g:if test="${hubConfig.content?.showCustomMetadata}">
-                    <!-- ko if:customMetadata.indigenousCulturalIP -->
+                    <!-- ko if:customMetadata.indigenousCulturalIP() === "Yes" -->
                     <div class="row">
                         <div class="col-12">
                             <p><g:message code="project.details.indigenousCulturalIP.acknowledgementText"/></p>
