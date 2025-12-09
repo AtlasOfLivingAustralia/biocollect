@@ -1,0 +1,698 @@
+{
+  "id": "6867a64ad2f7d17b78797871",
+  "dateCreated": "2025-07-04T10:00:42Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-09-01T02:20:21Z",
+  "createdUserId": "35",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Bush Stone Curlew Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who entered the record (attributed with making the observation).",
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "dwcAttribute": "eventDate",
+            "indexName": "eventDate",
+            "description": "The date on which the observation was made.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "surveyTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time at which the sighting was made."
+          },
+          {
+            "dataType": "text",
+            "name": "recordType",
+            "dwcAttribute": "",
+            "description": "",
+            "constraints": [
+              "Breeding",
+              "Non Breeding",
+              "Dead",
+              "Not Sighted"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "landType",
+            "dwcAttribute": "",
+            "description": "",
+            "constraints": [
+              "School (Public)",
+              "School (Private)",
+              "Council Managed Land (Parks)",
+              "Council Managed Land (Road Reserve)",
+              "Council Managed Land (Other)",
+              "State Managed Land (Other)",
+              "Private Land (Residential)",
+              "Private Land (Business)",
+              "Parks and Active Communities",
+              "Holiday Park",
+              "Other"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "landTypeOther",
+            "dwcAttribute": "",
+            "description": "If 'Other', please indicate the type of land on which the Bush stone-curlews are nesting."
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "locality",
+            "dwcAttribute": "locality",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "suburb",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "streetAddress",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "state",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "postcode",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "localGovernmentArea",
+            "description": "",
+            "constraints": [
+              "Tweed",
+              "Byron",
+              "Ballina",
+              "Clarence Valley",
+              "Kyogle",
+              "Lismore",
+              "Richmond",
+              "Gold Coast"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "nestingLocationCode",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "description": ""
+          },
+          {
+            "dataType": "species",
+            "name": "species",
+            "dwcAttribute": "scientificName",
+            "description": "",
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "name": "individualCount",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "nestingAttemptNumber",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "numberOfAdults",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "nestingAttemptNumber",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "date",
+            "name": "eggsLaidDate",
+            "description": ""
+          },
+          {
+            "dataType": "number",
+            "name": "eggsLaidNumber",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "eggsHatchedNumber",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "date",
+            "name": "eggsHatchedDate",
+            "description": ""
+          },
+          {
+            "dataType": "number",
+            "name": "numberOfChicksTotal",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "numberOfChicksFledged",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "numberOfJuveniles",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "numberOfBirdsInRoost",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "number",
+            "name": "deadBirdsNumber",
+            "description": "",
+            "validate": "min[0],integer"
+          },
+          {
+            "dataType": "date",
+            "name": "deadBirdsDateDied",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "bandingNumber",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "bandingColour",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "name": "observationRemarks",
+            "description": ""
+          },
+          {
+            "dataType": "image",
+            "name": "sightingPhoto",
+            "dwcAttribute": "associatedMedia",
+            "description": "Upload a photo taken of the species at the time of the record. This is essential for verification of the record."
+          },
+          {
+            "dataType": "stringList",
+            "name": "threatsToBreedingSuccess",
+            "description": "",
+            "constraints": [
+              "People threats",
+              "Vehicle threats",
+              "Cat threats",
+              "Dog threats",
+              "Fox threats",
+              "Storm water drain threats",
+              "Gutter threats",
+              "Construction threats",
+              "Native animal threats (e.g. goanna, other birds etc)",
+              "Feeding intervention threats",
+              "Other threats (note below)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "otherThreatInformation",
+            "description": ""
+          },
+          {
+            "dataType": "stringList",
+            "name": "actionsImplementedForBreedingSuccess",
+            "description": "",
+            "constraints": [
+              "Signage",
+              "Rope",
+              "Safety cones",
+              "Letter drop",
+              "Postcards / brochures",
+              "Drain covers",
+              "Sandbags",
+              "Habitat maintenance",
+              "Cat trap",
+              "Camera monitoring",
+              "Public education",
+              "No action taken"
+            ],
+            "userRole": "admin"
+          },
+          {
+            "dataType": "text",
+            "name": "typeOfSign",
+            "description": "",
+            "constraints": [
+              "Slow down",
+              "Curlews here"
+            ],
+            "userRole": "admin"
+          }
+        ],
+        "modelName": "Bush Stone Curlew Survey",
+        "title": "Bush Stone Curlew Survey",
+        "record": "true",
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Bush Stone Curlew Survey</h1>",
+                "type": "literal"
+              },
+              {
+                "preLabel": "",
+                "source": "species",
+                "type": "autocomplete",
+                "noEdit": true,
+                "readOnly": true
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Observation Event Information",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Observation date",
+                                "source": "eventDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Observation time",
+                                "source": "surveyTime",
+                                "type": "time"
+                              },
+                              {
+                                "preLabel": "Entered by",
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Land type",
+                                "source": "landType",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Land type - Other",
+                                "source": "landTypeOther",
+                                "type": "text"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  },
+                  {
+                    "boxed": true,
+                    "title": "Observation Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Record type",
+                                "source": "recordType",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Nesting location code",
+                                "source": "nestingLocationCode",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "General notes",
+                                "source": "eventRemarks",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Total # birds",
+                                "source": "individualCount",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Nesting attempt",
+                                "source": "nestingAttemptNumber",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Adult birds",
+                                "source": "numberOfAdults",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Date eggs laid",
+                                "source": "eggsLaidDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Number of eggs laid",
+                                "source": "eggsLaidNumber",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Number of eggs hatched",
+                                "source": "eggsHatchedNumber",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Date hatched",
+                                "source": "eggsHatchedDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Number of chicks",
+                                "source": "numberOfChicksTotal",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Number of chicks fledged",
+                                "source": "numberOfChicksFledged",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Number of juveniles",
+                                "source": "numberOfJuveniles",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Birds in roost",
+                                "source": "numberOfBirdsInRoost",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Number of dead Birds",
+                                "source": "deadBirdsNumber",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Date died",
+                                "source": "deadBirdsDateDied",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Banding number",
+                                "source": "bandingNumber",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Banding colour",
+                                "source": "bandingColour",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Breeding notes",
+                                "source": "observationRemarks",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Upload photo",
+                                "source": "sightingPhoto",
+                                "type": "image"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "LOCATION",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<font-size='0.8em'><i>Zoom in on the map, then click on the marker and drop it on the location where you made the sighting. Change the base map to show the satellite image.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": false,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": true,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": true,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": false
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Locality",
+                                "source": "locality",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Suburb",
+                                "source": "suburb",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Street address",
+                                "source": "streetAddress",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "State",
+                                "source": "state",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Postcode",
+                                "source": "postcode",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Local Government area ",
+                                "source": "localGovernmentArea",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  },
+                  {
+                    "boxed": true,
+                    "title": "Threats",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Threats to Breeding Success",
+                                "source": "threatsToBreedingSuccess",
+                                "type": "selectMany"
+                              },
+                              {
+                                "preLabel": "Other info (if applicable)",
+                                "source": "otherThreatInformation",
+                                "type": "text"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "memberOnlyView": true,
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Management Actions",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Actions Implemented for Breeding Success",
+                                "source": "actionsImplementedForBreedingSuccess",
+                                "type": "selectMany"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Type of sign (if applicable)",
+                                "source": "typeOfSign",
+                                "type": "selectOne"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "Bush Stone Curlew Survey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Bush Stone Curlew Survey",
+      "description": "Template developed in 2025 for monitoring of Bush Stone Curlew observations in the Tweed Shire and norther NSW."
+    }
+  ],
+  "type": "Assessment",
+  "category": "Species monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": "Template developed in 2025 for monitoring of Bush Stone Curlew observations in the Tweed Shire and norther NSW.",
+  "formVersion": 1
+}

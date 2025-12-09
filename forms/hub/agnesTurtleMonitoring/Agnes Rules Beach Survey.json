@@ -1,0 +1,799 @@
+{
+  "id": "77b8d3bec9b6421068da778e",
+  "dateCreated": "2025-08-04T06:27:10Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-08-04T12:36:35Z",
+  "createdUserId": "129333",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "unpublished",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Agnes Rules Beach Survey",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Agnes Rules Beach Survey",
+        "record": true,
+        "dataModel": [
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "dwcAttribute": "eventDate",
+            "indexName": "eventDate",
+            "description": "The date that the survey was undertaken",
+            "validate": "required,past[now]"
+          },
+          {
+            "dataType": "time",
+            "name": "surveyTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time of the day that the survey was undertaken"
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person or group undertaking the survey",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "beachName",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "beachName",
+            "measurementType": "text",
+            "validate": "required",
+            "constraints": [
+              "Rules beach north",
+              "Rules beach south"
+            ]
+          },
+          {
+            "name": "nestNumber",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestNumber",
+            "indexName": "nestNumber",
+            "measurementType": "text",
+            "dataType": "text",
+            "description": "Enter the identification number of the nest",
+            "validate": "required"
+          },
+          {
+            "name": "tagNumber",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "tagNumber",
+            "measurementType": "text",
+            "dataType": "text"
+          },
+          {
+            "name": "tagPosition",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "tagPosition",
+            "measurementType": "text",
+            "dataType": "text"
+          },
+          {
+            "dataType": "species",
+            "name": "species",
+            "dwcAttribute": "scientificName",
+            "description": "The name of the turtle species observed.",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "occurrenceRemarks",
+            "dwcAttribute": "occurrenceRemarks"
+          },
+          {
+            "dataType": "text",
+            "name": "activityCode",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "activityCode",
+            "measurementType": "text",
+            "validate": "required",
+            "constraints": [
+              "X - Laid Eggs",
+              "< - Laid/Disturbed",
+              "E - No Laying",
+              "? - Undetermined",
+              "T - Turnaround"
+            ]
+          },
+          {
+            "dataType": "image",
+            "name": "observationPhoto",
+            "validate": "required",
+            "dwcAttribute": "associatedMedia",
+            "description": "Attach nest dig egg count image plus data sheet if used"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "name": "dateOfImpact",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "dateOfImpact",
+            "measurementType": "date",
+            "dataType": "date"
+          },
+          {
+            "name": "nestDamageImpacts",
+            "dataType": "text",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestDamageImpacts",
+            "measurementType": "text",
+            "constraints": [
+              "Predation",
+              "Inundation",
+              "Washed away"
+            ]
+          },
+          {
+            "name": "protectionActivity",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "protectionActivity",
+            "measurementType": "stringList",
+            "dataType": "stringList",
+            "constraints": [
+              "PEX - Predator exclusion device",
+              "RZ - Relocation"
+            ]
+          },
+          {
+            "name": "predation",
+            "dataType": "text",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "predation",
+            "measurementType": "text",
+            "constraints": [
+              "PD - Predation by dog or dingo",
+              "PF - Predation by a fox",
+              "PP - Predation by pig",
+              "PV - Predation by goanna",
+              "P - Predation by unidentified species",
+              "PU - Unsuccessful predation attempt on a clutch",
+              "PW - clutch loss from Erosion or Flooding",
+              "Other, specify"
+            ]
+          },
+          {
+            "name": "incubationRemarks",
+            "description": "Record predator type, and date of PEX & RZ",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "incubationRemarks",
+            "measurementType": "text",
+            "dataType": "text"
+          },
+          {
+            "name": "dateOfEmergence",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "dateOfEmergence",
+            "measurementType": "date",
+            "dataType": "date"
+          },
+          {
+            "name": "lightDisorientationIsTrue",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "lightDisorientationIsTrue",
+            "measurementType": "stringList",
+            "dataType": "stringList",
+            "constraints": [
+              "DA"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "hatchlingRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "hatchlingRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "boolean",
+            "name": "postEmergentPredationIsTrue",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "postEmergentPredationIsTrue",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "text",
+            "name": "habitatBeach",
+            "validate": "required",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "habitatBeach",
+            "measurementType": "text",
+            "constraints": [
+              "HW - Below Highwater",
+              "B - Below Slope",
+              "S - Slope",
+              "D - Dune"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "habitatVegetation",
+            "validate": "required",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "habitatVegetation",
+            "measurementType": "text",
+            "constraints": [
+              "S - Bare Sand",
+              "G - Grass Area",
+              "Sh - Under Shrub",
+              "T - Under Tree",
+              "R - In Rubble Zone"
+            ]
+          },
+          {
+            "dataType": "number",
+            "name": "emptyShellCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "emptyShellCount",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "liveHatchlingCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "liveHatchlingCount",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "deadHatchlingCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "deadHatchlingCount",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "unhatchedDevelopmentTotalCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "unhatchedDevelopmentTotalCount",
+            "measurementType": "number",
+            "computed": {
+              "expression": "unhatchedDevelopmentStage2Count+unhatchedDevelopmentStage3Count+unhatchedDevelopmentStage4Count+unhatchedDevelopmentStage5Count+unhatchedDevelopmentStage6Count"
+            },
+            "readOnly": true,
+            "noEdit": true,
+            "decimalPlaces": 0
+          },
+          {
+            "dataType": "number",
+            "name": "undevelopedEggsCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "undevelopedEggsCount",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "predatedEggsCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "predatedEggsCount",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "yokelessOrMultiyokeEggsCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "yokelessOrMultiyokeEggsCount",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "unhatchedDevelopmentStage2Count",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "unhatchedDevelopmentStage2Count",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "unhatchedDevelopmentStage3Count",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "unhatchedDevelopmentStage3Count",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "unhatchedDevelopmentStage4Count",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "unhatchedDevelopmentStage4Count",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "unhatchedDevelopmentStage5Count",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "unhatchedDevelopmentStage5Count",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "unhatchedDevelopmentStage6Count",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "unhatchedDevelopmentStage6Count",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "name": "unhatchedDevelopmentTotalCount",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "unhatchedDevelopmentTotalCount",
+            "measurementType": "number",
+            "computed": {
+              "expression": "unhatchedDevelopmentStage2Count+unhatchedDevelopmentStage3Count+unhatchedDevelopmentStage4Count+unhatchedDevelopmentStage5Count+unhatchedDevelopmentStage6Count"
+            },
+            "readOnly": true,
+            "noEdit": true,
+            "decimalPlaces": 0
+          },
+          {
+            "dataType": "text",
+            "name": "countedBy",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "countedBy",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "number",
+            "name": "nestDepthInCentimetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "nestDepthInCentimetres",
+            "measurementType": "number",
+            "decimalPlaces": 1
+          },
+          {
+            "dataType": "date",
+            "name": "excavationDate",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "excavationDate",
+            "measurementType": "date",
+            "description": "The date that the nest was excavated",
+            "validate": "past[now]"
+          },
+          {
+            "dataType": "text",
+            "name": "eventRemarks",
+            "description": "",
+            "dwcAttribute": "eventRemarks"
+          },
+          {
+            "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=clearImageDateTimeHandler.js&model=agnesWaterTurtleNestMonitoring",
+            "type": "jsMain"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>Rules Beach Survey</font>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Event information",
+                    "items": [
+                      {
+                        "preLabel": "Date",
+                        "source": "eventDate",
+                        "type": "date"
+                      },
+                      {
+                        "preLabel": "Time",
+                        "source": "surveyTime",
+                        "type": "time"
+                      },
+                      {
+                        "preLabel": "Recorder",
+                        "source": "recordedBy",
+                        "type": "text"
+                      },
+                      {
+                        "type": "image",
+                        "source": "observationPhoto",
+                        "css": "img-responsive",
+                        "showMetadata": "false",
+                        "preLabel": "Attach photos",
+                        "displayOptions": {
+                          "showRemoveButtonWithImage": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Nest Information",
+                    "items": [
+                      {
+                        "preLabel": "Beach",
+                        "source": "beachName",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Nest marker number",
+                        "source": "nestNumber",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Tag number",
+                        "source": "tagNumber",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Tag position",
+                        "source": "tagNumber",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Species",
+                        "source": "species",
+                        "type": "speciesSelect"
+                      },
+                      {
+                        "preLabel": "Habitat - Across Beach",
+                        "source": "habitatBeach",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Habitat - Vegetation",
+                        "source": "habitatVegetation",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Activity Comments",
+                        "source": "occurrenceRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Activity Code",
+                        "source": "activityCode",
+                        "type": "selectOne"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "type": "section",
+                        "title": "Nest Location",
+                        "items": [
+                          {
+                            "includeNotes": false,
+                            "orientation": "vertical",
+                            "autoLocalitySearch": false,
+                            "readonly": false,
+                            "includeSource": false,
+                            "includeAccuracy": false,
+                            "source": "location",
+                            "type": "geoMap",
+                            "includeLocality": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Incubation",
+                    "items": [
+                      {
+                        "preLabel": "Date of impact",
+                        "source": "dateOfImpact",
+                        "type": "date"
+                      },
+                      {
+                        "preLabel": "Impacts",
+                        "source": "nestDamageImpacts",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Predation",
+                        "source": "predation",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Activity",
+                        "source": "protectionActivity",
+                        "type": "selectMany",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Notes",
+                        "source": "incubationRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Emergence",
+                    "items": [
+                      {
+                        "preLabel": "Date of emergence",
+                        "source": "dateOfEmergence",
+                        "type": "date"
+                      },
+                      {
+                        "preLabel": "Light disorientation",
+                        "source": "lightDisorientationIsTrue",
+                        "type": "selectMany"
+                      },
+                      {
+                        "preLabel": "Notes",
+                        "source": "hatchlingRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Scavenged – post emergence predation",
+                        "source": "postEmergentPredationIsTrue",
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>Nest digs to be performed by authorised volunteers only</font>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Shell and Egg Counts",
+                    "items": [
+                      {
+                        "preLabel": "Empty shells (#)",
+                        "source": "emptyShellCount",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "Live hatchlings (#)",
+                        "source": "liveHatchlingCount",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "Dead hatchlings (#)",
+                        "source": "deadHatchlingCount",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "Unhatched eggs (# of UH2 - UH6)",
+                        "source": "unhatchedDevelopmentTotalCount",
+                        "type": "number",
+                        "noEdit": true,
+                        "readOnly": true
+                      },
+                      {
+                        "preLabel": "Undeveloped eggs (#)",
+                        "source": "undevelopedEggsCount",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "Predated eggs (#)",
+                        "source": "predatedEggsCount",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "Yokeless/multi-yoke eggs (#)",
+                        "source": "yokelessOrMultiyokeEggsCount",
+                        "type": "number"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Unhatched Stage of Development",
+                    "items": [
+                      {
+                        "preLabel": "UH2 – some sign of development (#)",
+                        "source": "unhatchedDevelopmentStage2Count",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "UH3 – unpigmented carapace (#)",
+                        "source": "unhatchedDevelopmentStage3Count",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "UH4 – yolk greater than 50% (#)",
+                        "source": "unhatchedDevelopmentStage4Count",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "UH5 – yolk less than 50% (#)",
+                        "source": "unhatchedDevelopmentStage5Count",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "UH6- pipped (#)",
+                        "source": "unhatchedDevelopmentStage6Count",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "UH2 - UH6 Total (#)",
+                        "source": "unhatchedDevelopmentTotalCount",
+                        "type": "number",
+                        "readOnly": true,
+                        "noEdit": true
+                      },
+                      {
+                        "preLabel": "Nest depth",
+                        "source": "nestDepthInCentimetres",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "Counted by",
+                        "source": "countedBy",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Date nest dug/excavated",
+                        "source": "excavationDate",
+                        "type": "date"
+                      },
+                      {
+                        "preLabel": "Notes",
+                        "source": "eventRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Agnes Rules Beach Survey"
+      },
+      "modelName": null,
+      "templateName": "Agnes Rules Beach Survey",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Agnes Rules Beach Survey",
+      "description": "Generic template for monitoring marine turtle nests"
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "129333",
+  "description": "Generic template for monitoring marine turtle nests",
+  "formVersion": 1
+}
