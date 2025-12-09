@@ -12,12 +12,12 @@
   "publicationStatus": "unpublished",
   "externalIds": null,
   "gmsId": null,
-  "name": "Turtle Nest and Incubation and Emergence Survey",
+  "name": "Agnes Turtle Nest and Incubation and Emergence Survey",
   "sections": [
     {
       "collapsedByDefault": false,
       "template": {
-        "modelName": "Turtle Nest and Incubation and Emergence Survey",
+        "modelName": "Agnes Turtle Nest and Incubation and Emergence Survey",
         "record": true,
         "dataModel": [
           {
@@ -50,50 +50,12 @@
             "measurementType": "text",
             "validate": "required",
             "constraints": [
-              "Alligator Bay",
-              "Barwell’s Creek Beach",
-              "Canoe Point",
-              "Coconut/ Muskers",
-              "Cooee Bay & Fishermans Bay",
-              "Emu Park Main Beach",
-              "Facing Island",
-              "Facing Island - Settlement Bay",
-              "Facing Island - Ocean beach Nth",
-              "Facing Island - Ocean beach Sth",
-              "Facing Island - other beaches",
-              "Farnborough North",
-              "Farnborough South",
-              "Fishermans Beach",
-              "Flat Rock",
-              "Five Rocks",
-              "Kemp Beach",
-              "Keppel Sands/ Long Beach/ Joskeleigh",
-              "Kinka Beach",
-              "Ko-no-mie (NKI)",
-              "Ladies Beach",
-              "Lammermoor Beach",
-              "Lillies Beach",
-              "Mulumbin Beach",
-              "Nine Mile",
-              "Pandanus / Steps",
-              "Shelly's Beach",
-              "Tannum Sands Main Beach",
-              "The Haven/ Tanby Beach",
-              "Wild Cattle North",
-              "Wild Cattle South",
-              "Wop-pa – Fishermans Beach",
-              "Wop-pa – Putney Beach",
-              "Wop-pa – Leekes Beach",
-              "Wop-pa – Monkey Beach",
-              "Wop-pa – Second Beach",
-              "Wop-pa - Svendsens/Palm Beach",
-              "Wop-pa – Butterfish Bay Beach",
-              "Wop-pa – Wreck Bay Beach",
-              "Wop-pa – Long Beach",
-              "Yeppoon Main Beach",
-              "Zilzie Beach",
-              "Other Keppel Group Islands",
-              "Other"
+              "Chinamens",
+              "Fences beach",
+              "Main beach",
+              "North of Captain Hook Holiday Village",
+              "North of Surf Club",
+              "Workmans beach"
             ]
           },
           {
@@ -112,6 +74,14 @@
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "tagNumber",
+            "measurementType": "text",
+            "dataType": "text"
+          },
+          {
+            "name": "tagPosition",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "tagPosition",
             "measurementType": "text",
             "dataType": "text"
           },
@@ -146,38 +116,9 @@
           {
             "dataType": "image",
             "name": "observationPhoto",
+            "validate": "required",
             "dwcAttribute": "associatedMedia",
             "description": "Attach nest dig egg count image plus data sheet if used"
-          },
-          {
-            "dataType": "date",
-            "name": "nestEstablishedDate",
-            "dwcAttribute": "measurementValue",
-            "measurementUnit": "datetime",
-            "measurementUnitID": "nestEstablishedDate",
-            "measurementType": "date",
-            "description": "The date that eggs were laid",
-            "validate": "past[now]"
-          },
-          {
-            "dataType": "date",
-            "name": "juvenilesEmergedDate",
-            "dwcAttribute": "measurementValue",
-            "measurementUnit": "datetime",
-            "measurementUnitID": "juvenilesEmergedDate",
-            "measurementType": "date",
-            "description": "The date that juveniles began to emerge from the nest",
-            "validate": "past[now]"
-          },
-          {
-            "dataType": "date",
-            "name": "excavationDate",
-            "dwcAttribute": "measurementValue",
-            "measurementUnit": "datetime",
-            "measurementUnitID": "excavationDate",
-            "measurementType": "date",
-            "description": "The date that the nest was excavated",
-            "validate": "past[now]"
           },
           {
             "defaultAccuracy": 50,
@@ -245,6 +186,24 @@
             ]
           },
           {
+            "name": "predation",
+            "dataType": "text",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "predation",
+            "measurementType": "text",
+            "constraints": [
+              "PD - Predation by dog or dingo",
+              "PF - Predation by a fox",
+              "PP - Predation by pig",
+              "PV - Predation by goanna",
+              "P - Predation by unidentified species",
+              "PU - Unsuccessful predation attempt on a clutch",
+              "PW - clutch loss from Erosion or Flooding",
+              "Other, specify"
+            ]
+          },
+          {
             "name": "incubationRemarks",
             "description": "Record predator type, and date of PEX & RZ",
             "dwcAttribute": "measurementValue",
@@ -291,6 +250,7 @@
           {
             "dataType": "text",
             "name": "habitatBeach",
+            "validate": "required",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "habitatBeach",
@@ -305,6 +265,7 @@
           {
             "dataType": "text",
             "name": "habitatVegetation",
+            "validate": "required",
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "habitatVegetation",
@@ -450,8 +411,7 @@
             "dwcAttribute": "measurementValue",
             "measurementUnit": "unitless",
             "measurementUnitID": "countedBy",
-            "measurementType": "text",
-            "validate": "required"
+            "measurementType": "text"
           },
           {
             "dataType": "number",
@@ -463,6 +423,16 @@
             "decimalPlaces": 1
           },
           {
+            "dataType": "date",
+            "name": "excavationDate",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "excavationDate",
+            "measurementType": "date",
+            "description": "The date that the nest was excavated",
+            "validate": "past[now]"
+          },
+          {
             "dataType": "text",
             "name": "eventRemarks",
             "description": "",
@@ -470,7 +440,7 @@
           },
           {
             "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=clearImageDateTimeHandler.js&model=agnesWaterTurtleNestMonitoring",
-            "type": "jsMain"
+            "dataType": "jsMain"
           }
         ],
         "viewModel": [
@@ -542,6 +512,11 @@
                         "type": "text"
                       },
                       {
+                        "preLabel": "Tag position",
+                        "source": "tagNumber",
+                        "type": "text"
+                      },
+                      {
                         "preLabel": "Species",
                         "source": "species",
                         "type": "speciesSelect"
@@ -596,50 +571,11 @@
                         ]
                       }
                     ]
-                  },
-                  {
-                    "type": "row",
-                    "items": [
-                      {
-                        "type": "col",
-                        "items": [
-                          {
-                            "boxed": true,
-                            "type": "section",
-                            "title": "Emergence",
-                            "items": [
-                              {
-                                "preLabel": "Date of emergence",
-                                "source": "dateOfEmergence",
-                                "type": "date"
-                              },
-                              {
-                                "preLabel": "Light disorientation",
-                                "source": "lightDisorientationIsTrue",
-                                "type": "selectMany"
-                              },
-                              {
-                                "preLabel": "Notes",
-                                "source": "hatchlingRemarks",
-                                "type": "textarea",
-                                "rows": 4
-                              },
-                              {
-                                "preLabel": "Scavenged – post emergence predation",
-                                "source": "postEmergentPredationIsTrue",
-                                "type": "boolean"
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ]
               }
             ]
           },
-
           {
             "type": "row",
             "items": [
@@ -659,6 +595,11 @@
                       {
                         "preLabel": "Impacts",
                         "source": "nestDamageImpacts",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Predation",
+                        "source": "predation",
                         "type": "selectOne"
                       },
                       {
@@ -683,22 +624,28 @@
                   {
                     "boxed": true,
                     "type": "section",
-                    "title": "Key Dates",
+                    "title": "Emergence",
                     "items": [
                       {
-                        "preLabel": "Date eggs laid",
-                        "source": "nestEstablishedDate",
-                        "type": "date"
-                      },
-                      {
                         "preLabel": "Date of emergence",
-                        "source": "juvenilesEmergedDate",
+                        "source": "dateOfEmergence",
                         "type": "date"
                       },
                       {
-                        "preLabel": "Date nest dug/excavated",
-                        "source": "excavationDate",
-                        "type": "date"
+                        "preLabel": "Light disorientation",
+                        "source": "lightDisorientationIsTrue",
+                        "type": "selectMany"
+                      },
+                      {
+                        "preLabel": "Notes",
+                        "source": "hatchlingRemarks",
+                        "type": "textarea",
+                        "rows": 4
+                      },
+                      {
+                        "preLabel": "Scavenged – post emergence predation",
+                        "source": "postEmergentPredationIsTrue",
+                        "type": "boolean"
                       }
                     ]
                   }
@@ -818,6 +765,11 @@
                         "type": "text"
                       },
                       {
+                        "preLabel": "Date nest dug/excavated",
+                        "source": "excavationDate",
+                        "type": "date"
+                      },
+                      {
                         "preLabel": "Notes",
                         "source": "eventRemarks",
                         "type": "textarea",
@@ -830,15 +782,15 @@
             ]
           }
         ],
-        "title": "Turtle Nest and Incubation and Emergence Survey"
+        "title": "Agnes Turtle Nest and Incubation and Emergence Survey"
       },
       "modelName": null,
-      "templateName": "Turtle Nest and Incubation and Emergence Survey",
+      "templateName": "Agnes Turtle Nest and Incubation and Emergence Survey",
       "optional": false,
       "optionalQuestionText": null,
       "title": null,
       "collapsibleHeading": null,
-      "name": "Turtle Nest and Incubation and Emergence Survey",
+      "name": "Agnes Turtle Nest and Incubation and Emergence Survey",
       "description": "Generic template for monitoring marine turtle nests"
     }
   ],
