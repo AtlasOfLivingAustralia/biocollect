@@ -3,7 +3,7 @@
 // db.auditMessage.createIndex({entityType: 1, entityId: 1});
 // usage mongosh ecodata stabiliseOccurrnceID.js
 
-load("../../../mongo/utils/audit.js");
+load("../../../../mongo/utils/audit.js");
 var files = [
     "allresources_1.js" ,
     "allresources_2.js" ,
@@ -45,7 +45,24 @@ var files = [
     "allresources_38.js" ,
     "allresources_39.js" ,
     "allresources_40.js" ,
-    "allresources_41.js"
+    "allresources_41.js",
+    "allresources_42.js",
+    "allresources_43.js",
+    "allresources_44.js",
+    "allresources_45.js",
+    "allresources_46.js" ,
+    "allresources_47.js" ,
+    "allresources_48.js" ,
+    "allresources_49.js" ,
+    "allresources_50.js",
+    "allresources_51.js",
+    "allresources_52.js",
+    "allresources_53.js",
+    "allresources_54.js",
+    "allresources_55.js",
+    "allresources_56.js",
+    "allresources_57.js",
+    "allresources_58.js"
 ]
 
 // group by eventId
@@ -75,7 +92,7 @@ for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
             let oldRecordObjectId = oldRecord.entity._id;
             let record = db.record.findOne({_id: oldRecordObjectId});
             if (record) {
-                let newOccurrenceID = record.occurrenceID;
+                let newOccurrenceID = record.outputSpeciesId || record.occurrenceID;
                 if (oldOccurrenceID !== newOccurrenceID) {
                     // also update output data so that next regeneration creates records with old occurrence ID.
                     let outputs = db.output.find({activityId: eventID, status: 'active'}).toArray();
