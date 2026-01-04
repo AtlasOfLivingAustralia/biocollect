@@ -6,3 +6,12 @@
     max-height:400px;
     overflow-y: auto
 }
+
+#download-data .form-check {
+    margin-bottom: .25rem;
+    padding-left: 0;
+}
+
+#download-data .form-check {
+    line-height: 1.3;
+}
