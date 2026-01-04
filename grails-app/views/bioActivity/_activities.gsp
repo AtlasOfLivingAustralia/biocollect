@@ -5,15 +5,11 @@
     <div id="survey-all-activities-and-records-content">
         <bc:koLoading>
             <div class="container-fluid data-expander data-container show">
-                <div class="row justify-content-end">
-                    <div class="col-12 col-md-4 mb-3">
-                        <g:render template="/bioActivity/search"/>
-                    </div>
-                </div>
-
-                <div id="sortBar" class="row d-flex">
-                    <div class="col col-md-4 mb-3 order-1 order-md-0 pr-1">
-                        <button data-toggle="collapse" data-target=".data-expander" aria-expanded="true" aria-controls="filters" class="btn btn-dark" title="Filter Data">
+                <div id="sortBar" class="row align-items-end">
+                    <div class="col-12 col-md-4 mb-3 order-1 order-md-0">
+                        <button data-toggle="collapse" data-target=".data-expander"
+                                aria-expanded="true" aria-controls="filters"
+                                class="btn btn-dark" title="Filter Data">
                             <i class="fas fa-filter"></i> Filter Data
                         </button>
                     </div>
@@ -49,12 +45,38 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 text-center text-md-right order-0 order-md-2">
-                        <button id="download-data" class="btn btn-dark padding-top-1"
-                                data-bind="click: download, disable: transients.loading"
-                                data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
-                            <i class="fas fa-download">&nbsp;</i> <g:message code="g.download"/>
-                        </button>
+
+                    <div class="col-12 col-md-4 mb-3 order-3 order-md-2 d-flex flex-column align-items-md-end">
+                        <div class="w-100" style="max-width:520px;">
+                            <g:render template="/bioActivity/search"/>
+                        </div>
+
+                        <div id="download-data"
+                             class="mt-2 d-flex flex-column align-items-end"
+                             style="width:100%;"
+                             data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
+                            <div class="d-flex flex-column align-items-end">
+
+                                <div class="form-check d-flex justify-content-end align-items-center">
+                                    <label class="form-check-label mb-0 mr-2" for="dl-include-data">Include data (Excel)</label>
+                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-data" checked>
+                                </div>
+
+                                <div class="form-check d-flex justify-content-end align-items-center">
+                                    <label class="form-check-label mb-0 mr-2" for="dl-include-images">Include images</label>
+                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-images" checked>
+                                </div>
+
+                                <div class="form-check d-flex justify-content-end align-items-center">
+                                    <label class="form-check-label mb-0 mr-2" for="dl-include-shapefiles">Include shapefiles</label>
+                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-shapefiles" checked>
+                                </div>
+
+                                <div class="text-right" style="width:100%;">
+                                    <button class="btn btn-primary mt-2" data-bind="click: download">Download</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -442,6 +464,7 @@
                                         <!-- ko if: $parent.embargoed() -->
                                         <a href="#" class="helphover"
                                            data-bind="popover: {title:'Embargoed.', content:'Indicates that only project members can access the record'}">
+                                        <span class="fas fa-lock"></span>
                                         </a>
                                         <!-- /ko -->
                                     </div>
@@ -565,6 +588,7 @@
 </div>
 <!-- /ko -->
 
+<asset:stylesheet src="activities.css"/>
 <asset:javascript src="chartjs/chart.min.js"/>
 <asset:script type="text/javascript">
     var activitiesAndRecordsViewModel, alaMap, results;
