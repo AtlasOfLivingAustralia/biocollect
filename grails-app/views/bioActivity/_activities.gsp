@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="col-12 col-md-4 mb-3 order-3 order-md-2 d-flex flex-column align-items-md-end">
-                        <div class="w-100" style="max-width:520px;">
+                        <div class="w-100 search-container">
                             <g:render template="/bioActivity/search"/>
                         </div>
 
@@ -64,12 +64,12 @@
 
                                 <div class="form-check d-flex justify-content-end align-items-center">
                                     <label class="form-check-label mb-0 mr-2" for="dl-include-images">Include images</label>
-                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-images" checked>
+                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-images">
                                 </div>
 
                                 <div class="form-check d-flex justify-content-end align-items-center">
                                     <label class="form-check-label mb-0 mr-2" for="dl-include-shapefiles">Include shapefiles</label>
-                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-shapefiles" checked>
+                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-shapefiles">
                                 </div>
 
                                 <div class="text-right" style="width:100%;">
@@ -463,7 +463,7 @@
                                     <div>
                                         <!-- ko if: $parent.embargoed() -->
                                         <a href="#" class="helphover"
-                                           data-bind="popover: {title:'Embargoed.', content:'Indicates that only project members can access the record'}">
+                                           data-bind="popover: {title:'Embargoed.', content:'Indicates that only restricted members can access the record'}">
                                         <span class="fas fa-lock"></span>
                                         </a>
                                         <!-- /ko -->
