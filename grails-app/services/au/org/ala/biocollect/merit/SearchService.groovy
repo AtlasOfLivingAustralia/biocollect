@@ -85,8 +85,8 @@ class SearchService {
 
     def downloadProjectData(HttpServletResponse response, Map params) {
         params.includeData = params.containsKey('includeData') ? params.includeData : true
-        params.includeImages = params.containsKey('includeImages') ? params.includeImages : true
-        params.includeShapefiles = params.containsKey('includeShapefiles') ? params.includeShapefiles : true
+        params.includeImages = params.containsKey('includeImages') ? params.includeImages : false
+        params.includeShapefiles = params.containsKey('includeShapefiles') ? params.includeShapefiles : false
 
         def url = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}"
         log.debug("downloadProjectData proxy URL: ${url}")
