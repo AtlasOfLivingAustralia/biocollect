@@ -232,7 +232,12 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 }
         }
 
+        var includeData = $('#dl-include-data').is(':checked');
+        var includeImages = $('#dl-include-images').is(':checked');
+        var includeShapefiles = $('#dl-include-shapefiles').is(':checked');
+
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
+        url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
 
         if (self.total() > asyncDownloadThreshold) {
             self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
@@ -246,9 +251,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     };
 
     self.asyncDownload = function() {
-        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
+        var includeData = $('#dl-include-data').is(':checked');
+        var includeImages = $('#dl-include-images').is(':checked');
+        var includeShapefiles = $('#dl-include-shapefiles').is(':checked');
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, true);
 
-        url += "&async=true&email=" + self.transients.downloadEmail();
+        url += "&async=true&email=" + encodeURIComponent(self.transients.downloadEmail() || '');
+        url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
 
         $.ajax({
             url: url,
