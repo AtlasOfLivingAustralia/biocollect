@@ -6,3 +6,13 @@
     max-height:400px;
     overflow-y: auto
 }
+
+#download-data .form-check {
+    margin-bottom: .25rem;
+    padding-left: 0;
+    line-height: 1.3;
+}
+
+.search-container {
+    max-width: 520px;
+}
