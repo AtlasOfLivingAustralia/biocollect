@@ -41,7 +41,7 @@
     "karma-verbose-reporter": "^0.0.8",
     "knockout": "^3.5.1",
     "leaflet": "0.7.7",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.35",
     "node-jose": "^2.2.0",
