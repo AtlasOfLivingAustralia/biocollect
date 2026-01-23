@@ -109,7 +109,6 @@
             "name": "temperature",
             "dwcAttribute": "temperature",
             "description": "",
-            "validate": "min[0]",
             "decimalPlaces": 1
           },
           {
