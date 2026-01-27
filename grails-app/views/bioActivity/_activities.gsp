@@ -53,27 +53,47 @@
 
                         <div id="download-data"
                              class="mt-2 d-flex flex-column align-items-end"
-                             style="width:100%;"
                              data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
-                            <div class="d-flex flex-column align-items-end">
 
-                                <div class="form-check d-flex justify-content-end align-items-center">
-                                    <label class="form-check-label mb-0 mr-2" for="dl-include-data">Include data (Excel)</label>
-                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-data" checked>
-                                </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" data-bind="click: download">Download</button>
+                                <button type="button"
+                                        class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <span class="sr-only">Toggle download options</span>
+                                </button>
 
-                                <div class="form-check d-flex justify-content-end align-items-center">
-                                    <label class="form-check-label mb-0 mr-2" for="dl-include-images">Include images</label>
-                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-images">
-                                </div>
+                                <div class="dropdown-menu dropdown-menu-right p-3 download-options">
+                                    <strong class="d-block mb-2">Download options</strong>
 
-                                <div class="form-check d-flex justify-content-end align-items-center">
-                                    <label class="form-check-label mb-0 mr-2" for="dl-include-shapefiles">Include shapefiles</label>
-                                    <input class="form-check-input position-static m-0" type="checkbox" id="dl-include-shapefiles">
-                                </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
+                                        <label class="form-check-label" for="dl-include-data">
+                                            Include data (Excel)
+                                        </label>
+                                    </div>
 
-                                <div class="text-right" style="width:100%;">
-                                    <button class="btn btn-primary mt-2" data-bind="click: download">Download</button>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dl-include-images">
+                                        <label class="form-check-label" for="dl-include-images">
+                                            Include images
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="dl-include-shapefiles">
+                                        <label class="form-check-label" for="dl-include-shapefiles">
+                                            Include shapefiles
+                                        </label>
+                                    </div>
+
+                                    <div class="dropdown-divider"></div>
+
+                                    <small class="text-muted d-block">
+                                        Data is included by default. Images and shapefiles may increase download size.
+                                    </small>
                                 </div>
                             </div>
                         </div>
