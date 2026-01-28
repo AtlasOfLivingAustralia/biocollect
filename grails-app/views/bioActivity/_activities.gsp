@@ -62,11 +62,11 @@
                                         data-toggle="dropdown"
                                         aria-haspopup="true"
                                         aria-expanded="false">
-                                    <span class="sr-only">Toggle download options</span>
+                                    <span class="sr-only"><g:message code="split.download.dropdown"/></span>
                                 </button>
 
                                 <div class="dropdown-menu dropdown-menu-right p-3 download-options">
-                                    <strong class="d-block mb-2">Download options</strong>
+                                    <strong class="d-block mb-2"><g:message code="split.download.options"/></strong>
 
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
