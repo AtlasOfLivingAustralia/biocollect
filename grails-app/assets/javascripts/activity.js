@@ -250,6 +250,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
     };
 
+    // This will keep the download options dropdown open when clicking checkboxes (BS4 default is to close)
+    $(document).on('click', '#download-data .dropdown-menu', function (e) {
+        e.stopPropagation();
+    });
+
     self.asyncDownload = function() {
         var includeData = $('#dl-include-data').is(':checked');
         var includeImages = $('#dl-include-images').is(':checked');
