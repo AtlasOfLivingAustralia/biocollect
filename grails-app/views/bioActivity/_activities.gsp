@@ -71,28 +71,28 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
                                         <label class="form-check-label" for="dl-include-data">
-                                            Include data (Excel)
+                                            <g:message code="split.download.data"/>
                                         </label>
                                     </div>
 
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="dl-include-images">
                                         <label class="form-check-label" for="dl-include-images">
-                                            Include images
+                                            <g:message code="split.download.images"/>
                                         </label>
                                     </div>
 
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="checkbox" id="dl-include-shapefiles">
                                         <label class="form-check-label" for="dl-include-shapefiles">
-                                            Include shapefiles
+                                            <g:message code="split.download.shapefiles"/>
                                         </label>
                                     </div>
 
                                     <div class="dropdown-divider"></div>
 
                                     <small class="text-muted d-block">
-                                        Data is included by default. Images and shapefiles may increase download size.
+                                        <g:message code="split.download.info"/>
                                     </small>
                                 </div>
                             </div>
