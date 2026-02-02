@@ -608,6 +608,19 @@ class ProjectController {
             }
         }
 
+        HubSettings hubSettings = SettingService.getHubConfig()
+        if (!id) {
+            values.remove('projectId')
+            if (hubSettings?.hubId) {
+                values.hubId = hubSettings.hubId
+            }
+        } else {
+            if (values.containsKey('hubId')) {
+                log.warn("Ignoring attempted hubId update for project ${id}")
+                values.remove('hubId')
+            }
+        }
+
         projectService.buildTags(values)
 
 
