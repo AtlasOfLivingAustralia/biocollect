@@ -66,7 +66,7 @@ class ProjectController {
     //def grailsApplication
 
     static defaultAction = "index"
-    static ignore = ['action','controller','id']
+    static ignore = ['action','controller','id','hubId']
     static allowedMethods = [listRecordImages: "POST", "sendEmailToMembers": "POST"]
     static int MAX_FACET_TERMS = 500
     @Operation(
@@ -613,11 +613,6 @@ class ProjectController {
             values.remove('projectId')
             if (hubSettings?.hubId) {
                 values.hubId = hubSettings.hubId
-            }
-        } else {
-            if (values.containsKey('hubId')) {
-                log.warn("Ignoring attempted hubId update for project ${id}")
-                values.remove('hubId')
             }
         }
 
