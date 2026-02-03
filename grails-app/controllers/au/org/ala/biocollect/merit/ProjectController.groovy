@@ -66,7 +66,7 @@ class ProjectController {
     //def grailsApplication
 
     static defaultAction = "index"
-    static ignore = ['action','controller','id']
+    static ignore = ['action','controller','id','hubId','projectId','isMERIT']
     static allowedMethods = [listRecordImages: "POST", "sendEmailToMembers": "POST"]
     static int MAX_FACET_TERMS = 500
     @Operation(
@@ -605,6 +605,13 @@ class ProjectController {
         postBody.each { k, v ->
             if (!(k in ignore)) {
                 values[k] = v
+            }
+        }
+
+        HubSettings hubSettings = SettingService.getHubConfig()
+        if (!id) {
+            if (hubSettings?.hubId) {
+                values.hubId = hubSettings.hubId
             }
         }
 
