@@ -91,6 +91,13 @@
       border-width: 0 $table-border-width;
     }
   }
+
+  thead {
+    th,
+    td {
+      border-bottom-width: calc(#{$table-border-width} * 2);
+    }
+  }
 }
 
 .table-borderless {
