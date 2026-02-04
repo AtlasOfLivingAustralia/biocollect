@@ -213,11 +213,12 @@ $navbar-nav-link-padding-x: 0.5rem;
 //
 // Customizes the `.table` component with basic values, each used across all table variations.
 
-$table-cell-padding: 15px;
+$table-cell-padding-x: 15px;
+$table-cell-padding-y: 15px;
 $table-cell-padding-sm: 10px;
 
 $table-bg: transparent ;
-$table-accent-bg: rgba($black, .05) ;
+// $table-accent-bg: rgba($black, .05) ;
 $table-hover-bg: rgba($black, .075) ;
 $table-active-bg: $table-hover-bg ;
 
