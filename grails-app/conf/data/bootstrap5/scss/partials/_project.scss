@@ -126,7 +126,7 @@
   }
 }
 
-@include media-breakpoint-down(xs){
+@include media-breakpoint-down(sm){
   .nav-row {
     .container {
       padding: 0;
@@ -147,7 +147,7 @@
   select {
     width: auto;
   }
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     margin-bottom: 20px;
   }
 }
@@ -237,7 +237,7 @@
     color: $gray-500;
     margin-right: 10px;
   }
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     padding: 15px;
     margin-bottom: 20px;
     .image {
@@ -348,7 +348,7 @@
       margin-bottom: 15px;
     }
   }
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     .content {
       font-size: 14px;
       .controls {
