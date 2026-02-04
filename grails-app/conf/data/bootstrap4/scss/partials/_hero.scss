@@ -66,7 +66,7 @@
             }
         }
 
-        @include media-breakpoint-down(xs) {
+        @include media-breakpoint-down(sm) {
             min-height: 300px;
             padding: 50px 0 170px;
             h1 {
@@ -116,7 +116,7 @@
             }
         }
 
-        @include media-breakpoint-down(xs) {
+        @include media-breakpoint-down(sm) {
 
             .search-container {
                 .form-inline {

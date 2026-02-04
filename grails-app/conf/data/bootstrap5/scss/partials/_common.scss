@@ -306,7 +306,7 @@ ul.menu {
 
 .padding-40 {
   padding: 40px;
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     padding: 20px 15px;
   }
 }
@@ -914,7 +914,7 @@ ul.links {
       }
     }
 
-    @include media-breakpoint-down(xs) {
+    @include media-breakpoint-down(sm) {
       font-size: 18px;
       .image {
         flex: 0 0 55px;
