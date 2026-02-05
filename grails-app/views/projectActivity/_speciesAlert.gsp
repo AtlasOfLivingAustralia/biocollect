@@ -6,7 +6,7 @@
 
 <div class="row mt-2">
     <div class="col-12">
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-form-label col-12 col-md-4" for="alertSpecies">Species name:
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="project.survey.alert.species"/>', content:'<g:message
@@ -26,7 +26,7 @@
                                                 scientificName: alert.transients.species.transients.scientificName,
                                                 commonName: alert.transients.species.transients.commonName
                                             }">
-                <button class="btn-dark btn block btn-sm mt-1" data-toggle="tooltip" title="Enter valid species name"
+                <button class="btn-dark btn block btn-sm mt-1" data-bs-toggle="tooltip" title="Enter valid species name"
                         data-bind="click: alert.add, disable: alert.transients.disableSpeciesAdd"><i
                         class="fas fa-plus"></i>  Add</button>
             </div>

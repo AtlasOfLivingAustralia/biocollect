@@ -4,10 +4,10 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto">
-                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-up about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1"></i></h2>
+                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-up about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1"></i></h2>
                     </div>
                     <div class="col-11">
-                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
+                        <button class="btn btn-link btn-block p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
                             <h2 class="p-0 mb-0">
                                 ${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}
                                 <g:if test="${fc.userIsAlaOrFcAdmin()}">
@@ -43,10 +43,10 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-auto">
-                            <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4"></i></h2>
+                            <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4"></i></h2>
                         </div>
                         <div class="col-11">
-                            <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
+                            <button class="btn btn-link btn-block p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
                                 <h2 class="p-0 mb-0">
                                     ${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
                             </button>
@@ -69,10 +69,10 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-auto">
-                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-toggle="collapse" data-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2"></i></h2>
+                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2"></i></h2>
                     </div>
                     <div class="col-11">
-                        <button class="btn btn-link btn-block p-0" type="button" data-toggle="collapse" data-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2">
+                        <button class="btn btn-link btn-block p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2">
                             <h2 class="p-0 mb-0" data-bind="visible:projectType() == 'survey'">
                                 <g:message code="project.display.involved" />
                             </h2>
@@ -194,7 +194,7 @@
                                 <h4 class="text-small-heading"><g:message code="project.display.fundingValue" /></h4>
                                 <p data-bind="text:funding.formattedCurrency"></p>
                                 <g:if test="project.fundings">
-                                    <p><a href="#" data-toggle="modal" data-target="#fundingDetails"><i class="fas fa-th-list"></i></a></p>
+                                    <p><a href="#" data-bs-toggle="modal" data-bs-target="#fundingDetails"><i class="fas fa-th-list"></i></a></p>
                                 </g:if>
                             <!-- /ko -->
 
@@ -216,7 +216,7 @@
                                                 </table>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-dark" data-dismiss="modal"><i class="far fa-times-circle"></i> Close</button>
+                                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal"><i class="far fa-times-circle"></i> Close</button>
                                             </div>
                                         </div>
                                     </div>

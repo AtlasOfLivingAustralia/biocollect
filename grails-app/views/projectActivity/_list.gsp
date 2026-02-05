@@ -20,12 +20,12 @@
 
     %{--    <div class="row  survey-list-actions mb-3">--}%
     %{--        <div class="col-12 col-md-2">--}%
-    %{--            <div class="form-group">--}%
+    %{--            <div class="mb-3">--}%
     %{--                <span data-bind="click: toggleFilter" class="btn btn-sm btn-dark"><i class="fas fa-sort"></i> <g:message code="g.sort"/></span>--}%
     %{--            </div>--}%
     %{--        </div>--}%
     %{--        <div class="col-12 col-md-3">--}%
-    %{--            <div class="form-group row">--}%
+    %{--            <div class="mb-3 row">--}%
     %{--                <!-- ko if: filter -->--}%
     %{--                <label class="muted col-6 col-form-label" for="sort"><g:message code="g.sortBy"/></label>--}%
     %{--                <select class="col-6" id="sort" data-bind="options: sortOptions, optionsText:'name', optionsValue:'id', value: sortBy" ></select>--}%
@@ -33,7 +33,7 @@
     %{--            </div>--}%
     %{--        </div>--}%
     %{--        <div class="col-12 col-md-3">--}%
-    %{--            <div class="form-group row">--}%
+    %{--            <div class="mb-3 row">--}%
     %{--                <!-- ko if: filter -->--}%
     %{--                <label class="muted col-6 col-form-label" for="sortOrder"><g:message code="g.sortOrder"/></label>--}%
     %{--                <select class="col-6" id="sortOrder" data-bind="options: sortOrderOptions, optionsText:'name', optionsValue:'id', value: sortOrder" ></select>--}%
@@ -58,7 +58,7 @@
         <div class="col-12 col-md-8 col-lg-9">
             <div class="content">
                 <!-- ko if: $parent.userCanEdit($data) -->
-                <a href="#"><h4 class="pl-0" data-bind="text:name, click: addActivity"></h4></a>
+                <a href="#"><h4 class="ps-0" data-bind="text:name, click: addActivity"></h4></a>
                 <!-- /ko -->
                 <!-- ko if: !$parent.userCanEdit($data) -->
                 <h4 data-bind="text:name"></h4>
@@ -123,20 +123,20 @@
                     <button class="btn btn-sm btn-primary-dark"
                             data-bind="click: addActivity"
                             title="<g:message code='project.survey.addRecord'/>">
-                        <i class="fas fa-plus mr-1"></i>
+                        <i class="fas fa-plus me-1"></i>
                         <g:message code="project.survey.addRecord"/>
                     </button>
                     <!-- /ko -->
                     <button class="btn btn-sm btn-dark" data-bind="click: listActivityRecords"
                             title="<g:message code='project.survey.viewRecords'/>">
-                        <i class="far fa-eye mr-1"></i>
+                        <i class="far fa-eye me-1"></i>
                         <g:message code="project.survey.viewRecords"/>
                     </button>
                     <g:if test="${hubConfig?.content?.hideProjectSurveyDownloadXLSX != true}">
                         <a class="btn btn-sm btn-dark"
                            data-bind="attr: { href: downloadFormTemplateUrl, target: pActivityFormName }"
                            title="<g:message code="project.survey.downloadTemplate.title"/>">
-                            <i class="fas fa-download mr-1"></i>
+                            <i class="fas fa-download me-1"></i>
                             <g:message code="project.survey.downloadTemplate"/>
                         </a>
                         <g:if test="${fc.userIsAlaAdmin()}">
@@ -159,14 +159,14 @@
                     </g:if>
                     <button class="btn btn-sm btn-dark"
                             type="button" data-bind="attr: {'data-target': '#showMetadata' + $index()}, click: transients.toggleMetadata"
-                            data-toggle="collapse" aria-expanded="false">
-                        <i class="fas fa-chevron-down mr-1"></i> <!-- ko if: transients.metadataToggle -->Show<!-- /ko -->
+                            data-bs-toggle="collapse" aria-expanded="false">
+                        <i class="fas fa-chevron-down me-1"></i> <!-- ko if: transients.metadataToggle -->Show<!-- /ko -->
                         <!-- ko if: !transients.metadataToggle() -->Hide<!-- /ko --> metadata
                     </button>
                 </div>
                 <div class="collapse mt-3" data-bind="attr: {id: 'showMetadata' + $index()}">
-                    <div class="row mb-2 no-gutters">
-                        <div class="col-11 col-sm-5 col-md-2 mr-1 p-2 mt-1 mt-md-0" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
+                    <div class="row mb-2 g-0">
+                        <div class="col-11 col-sm-5 col-md-2 me-1 p-2 mt-1 mt-md-0" data-bind="css: spatialAccuracy, visible: spatialAccuracy">
                             <span>
                                 <g:message code="project.survey.info.spatialAccuracy.text"/> -
                                 <!-- ko if: spatialAccuracy() == 'low' --> <g:message
@@ -178,7 +178,7 @@
                             </span>
                         </div>
 
-                        <div class="col-11 col-sm-5 col-md-2 mr-1 p-2 mt-1 mt-md-0" data-bind="css: speciesIdentification, visible: speciesIdentification">
+                        <div class="col-11 col-sm-5 col-md-2 me-1 p-2 mt-1 mt-md-0" data-bind="css: speciesIdentification, visible: speciesIdentification">
                             <span>
                                 <g:message code="project.survey.info.speciesIdentification.text"/> -
                                 <!-- ko if: speciesIdentification() == 'low' --> <g:message
@@ -192,7 +192,7 @@
                             </span>
                         </div>
 
-                        <div class="col-11 col-sm-5 col-md-2 mr-1 p-2 mt-1 mt-md-0" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
+                        <div class="col-11 col-sm-5 col-md-2 me-1 p-2 mt-1 mt-md-0" data-bind="css: temporalAccuracy, visible: temporalAccuracy">
                             <span>
                                 <g:message code="project.survey.info.temporalAccuracy.text"/> -
                                 <!-- ko if: temporalAccuracy() == 'low' --> <g:message
@@ -372,7 +372,7 @@
 
                         <div class="col-12 col-md-7">
                             <a data-bind="attr: {href: methodUrl}, text: methodUrl"
-                               class="ellipsis-full-width" target="_blank"></a>
+                               class="ellipsis-full-collapse-horizontal" target="_blank"></a>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -391,11 +391,11 @@
                         </div>
 
                         <div class="col-12 col-md-7">
-                            <div class="media">
-                                <img class="media-object"
+                            <div class="d-flex">
+                                <img class="d-flex-object"
                                      data-bind="attr:{src: transients.getFileTypeForSurveyMethodDocument()}">
 
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <h5></h5>
                                     <a href="#" data-bind="text: methodDocName, click: showDocument"
                                        data-document="method" target="_blank"></a>
@@ -588,7 +588,7 @@
 
                         <div class="col-12 col-md-7">
                             <a data-bind="attr: {href: dataManagementPolicyURL}, text: dataManagementPolicyURL"
-                               target="_blank" class="ellipsis-full-width"></a>
+                               target="_blank" class="ellipsis-full-collapse-horizontal"></a>
                         </div>
                     </div>
                     <!-- /ko -->
@@ -606,11 +606,11 @@
                         </div>
 
                         <div class="col-12 col-md-7">
-                            <div class="media">
-                                <img class="media-object"
+                            <div class="d-flex">
+                                <img class="d-flex-object"
                                      data-bind="attr:{src: transients.getFileTypeForDataManagementDocument()}">
 
-                                <div class="media-body">
+                                <div class="flex-grow-1">
                                     <h5></h5>
                                     <a data-bind="text: transients.getFileNameForDataManagementDocument(), click: showDocument"
                                        data-document="management" href="#"></a>

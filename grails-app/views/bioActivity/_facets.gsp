@@ -29,7 +29,7 @@
         <div class="panel-heading">
             <h4 class="panel-title">
                 <span data-bind="attr:{class: filter() ? 'icon-chevron-right' : 'icon-chevron-down'}"></span>
-                <a role="button" data-toggle="collapse" data-parent="#facet-accordion"
+                <a role="button" data-bs-toggle="collapse" data-parent="#facet-accordion"
                    data-bind="text: displayText, attr:{ href: '#facets_accordion_' + $index()+1}, click: toggleFilter()"></a>
             </h4>
         </div>

@@ -72,7 +72,7 @@
                         </div>
                     </td>
                     <td>
-                        <select class="form-control" data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
+                        <select class="form-select" data-bind="options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
                         </select>
                     </td>
                 </tr>

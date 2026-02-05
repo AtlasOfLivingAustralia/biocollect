@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="name"><g:message code="project.survey.info.name"/>
             <a href="#" class="helphover"
                data-bind="popover: {title:'<g:message code="project.survey.info.name"/>', content:'<g:message
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
 
         <label class="col-12 col-md-4 col-form-label" for="description"><g:message
                 code="project.survey.info.description"/>
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
 
         <label class="col-12 col-md-4 col-form-label" for="methodType"><g:message
                 code="project.survey.info.methodType"/>
@@ -80,7 +80,7 @@
         </label>
 
         <div class="col-12 col-md-8">
-            <select id="methodType" class="form-control" data-bind="value: methodType"
+            <select id="methodType" class="form-select" data-bind="value: methodType"
                     data-validation-engine="validate[required]">
                 <option value=""><g:message code="project.survey.info.methodType.noSelection.displayName"/></option>
                 <g:each in="${grailsApplication.config.methodType}" var="type">
@@ -91,7 +91,7 @@
     </div>
 
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="methodName"><g:message
                 code="project.survey.info.methodName"/>
             <a href="#" class="helphover"
@@ -110,7 +110,7 @@
     </div>
 
     <div data-bind="slideVisible: transients.isSystematicSurvey">
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-12 col-md-4 col-form-label" for="methodAbstract"><g:message
                     code="project.survey.info.methodAbstract"/>
                 <a href="#" class="helphover"
@@ -128,7 +128,7 @@
             </div>
         </div>
 
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-12 col-md-4 col-form-label" for="methodUrl"><g:message
                     code="project.survey.info.methodUrl"/>
                 <a href="#" class="helphover"
@@ -145,7 +145,7 @@
             </div>
         </div>
 
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-12 col-md-4 col-form-label"><g:message code="project.survey.info.methodDoc"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="project.survey.info.methodDoc"/>', content:'<g:message
@@ -159,19 +159,19 @@
                 <!-- Method document-->
                 <div class="row mb-3">
                     <div class="col-12">
-                        <div class="text-left">
+                        <div class="text-start">
                             <a data-bind="attr:{href:methodDocUrl}" target="_blank">
-                                <small class="media-heading" data-bind="text:methodDocName"></small>
+                                <small class="d-flex-heading" data-bind="text:methodDocName"></small>
                             </a>
 
-                            <span class="btn btn-dark fileinput-button float-left"
+                            <span class="btn btn-dark fileinput-button float-start"
                                     data-bind="attr:{'data-role':'methodDoc', 'data-url': transients.methoddocumentUpdateUrl(), 'data-owner-type': 'projectActivityId','data-owner-id': projectActivityId()}, stagedImageUpload: documents, visible:!methodDocUrl(), validateObservable: methodDocUrl"
                                     data-validation-engine="validate[groupRequired[DescriptionSurveyMethod]]">
                                 <i class="fas fa-file-upload"></i>
                                 <input id="mthDoc" type="file" name="files"/>
                                 <span>Attach Document</span>
                             </span>
-                            <button class="btn btn-sm btn-danger ml-3"
+                            <button class="btn btn-sm btn-danger ms-3"
                                     data-bind="click:removeMethodDoc, visible:methodDocUrl()"><i
                                     class="far fa-trash-alt"></i> Remove
                             </button>
@@ -189,7 +189,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-label-" for="startDate"><g:message code="project.survey.info.startDate"/>
             <a href="#" class="helphover"
                data-bind="popover: {title:'<g:message code="project.survey.info.startDate"/>', content:'<g:message
@@ -210,7 +210,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="endDate"><g:message code="project.survey.info.endDate"/>
             <a href="#" class="helphover"
                data-bind="popover: {title:'<g:message code="project.survey.info.endDate"/>', content:'<g:message
@@ -231,7 +231,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="publicAccess"><g:message
                 code="project.survey.info.publicData"/>
             <a href="#" class="helphover"
@@ -249,7 +249,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="allowComments"><g:message
                 code="project.survey.info.comments"/>
             <a href="#" class="helphover"
@@ -267,7 +267,7 @@
             </div>
         </div>
     </div>
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="adminVerification"><g:message
                 code="project.survey.info.adminVerificationLbl"/>
             <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -335,7 +335,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="dataSharingLicense"><g:message
                 code="project.survey.info.dataSharingLicense"/>
             <a href="#" class="helphover"
@@ -348,7 +348,7 @@
         </label>
 
         <div class="col-12 col-md-8">
-            <g:select id="dataSharingLicense" class="full-width form-control" name="dateSharingLicence"
+            <g:select id="dataSharingLicense" class="full-collapse-horizontal form-control" name="dateSharingLicence"
                       from="${licences}"
                       optionValue="name" data-bind="value:dataSharingLicense"
                       noSelection="['': '-Please select the licence-']" optionKey="url"
@@ -362,7 +362,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="legalCustodian"><g:message
                 code="project.survey.info.legalCustodian"/>
             <a href="#" class="helphover"
@@ -386,7 +386,7 @@
     </div>
 
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label"><g:message code="project.survey.info.reliabilityTag"/>
             <a href="#" class="helphover"
                data-bind="popover: {title:'<g:message code="project.survey.info.reliabilityTag"/>', content:'<g:message
@@ -593,7 +593,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="dataQualityAssuranceMethod"><g:message
                 code="project.survey.info.dataQualityAssuranceMethod"/>
             <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -633,7 +633,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="dataQualityAssuranceDescription"><g:message
                 code="project.survey.info.dataQualityAssuranceDescription"/>
             <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -659,7 +659,7 @@
     </div>
 
     %{--todo: add data access method section once its behaviour is finalised. Behaviour to be finalised are its interaction with "public access to data" and "embargo date" --}%
-    %{--<div class="row form-group">--}%
+    %{--<div class="row mb-3">--}%
     %{--<div  class="col-12 col-md-4 col-form-label">--}%
     %{--<label  class="col-12 col-md-4 col-form-label" for="dataAccessMethods"><g:message code="project.survey.info.dataAccessMethods"/>--}%
     %{--<a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.dataAccessMethods"/>', content:'<g:message code="project.survey.info.dataAccessMethods.content"/>'}">--}%
@@ -679,7 +679,7 @@
     %{--<g:if test="${end >= grailsApplication.config.dataAccessMethods.size()}">--}%
     %{--<g:set var="end" value="${end -1}"/>--}%
     %{--</g:if>--}%
-    %{--<div class="row form-group">--}%
+    %{--<div class="row mb-3">--}%
     %{--<g:each in="${grailsApplication.config.dataAccessMethods[start..end]}" var="daMethod">--}%
     %{--<div class="span6">--}%
     %{--<label class="checkbox">--}%
@@ -695,7 +695,7 @@
     %{--</div>--}%
     %{--</div>--}%
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="dataAccessExternalURL"><g:message
                 code="project.survey.info.dataAccessExternalURL"/>
             <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -712,7 +712,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="usageGuide"><g:message
                 code="project.survey.info.usageGuide"/>
             <a href="#" class="helphover"
@@ -734,7 +734,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-12 col-md-4 col-form-label" for="isDataManagementPolicyDocumented"><g:message
                 code="project.survey.info.isDataManagementPolicyDocumented"/>
             <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -746,7 +746,7 @@
         </label>
 
         <div class="col-12 col-md-8">
-            <select id="isDataManagementPolicyDocumented" name="isDataManagementPolicyDocumented" class="form-control"
+            <select id="isDataManagementPolicyDocumented" name="isDataManagementPolicyDocumented" class="form-select"
                     data-bind="value: transients.isDataManagementPolicyDocumented"
                     data-validation-engine="validate[required]">
                 <option selected value="">- Please select an option -</option>
@@ -761,7 +761,7 @@
     </div>
 
     <div data-bind="slideVisible: isDataManagementPolicyDocumented">
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-12 col-md-4 col-form-label" for="dataManagementPolicyDescription"><g:message
                     code="project.survey.info.dataManagementPolicyDescription"/>
                 <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -779,7 +779,7 @@
             </div>
         </div>
 
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-12 col-md-4 col-form-label" for="dataManagementPolicyURL"><g:message
                     code="project.survey.info.dataManagementPolicyURL"/>
                 <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -797,7 +797,7 @@
             </div>
         </div>
 
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-12 col-md-4 col-form-label"><g:message
                     code="project.survey.info.dataManagementPolicyDocument"/>
                 <a href="#" class="helphover" data-bind="popover: {title:'<g:message
@@ -809,7 +809,7 @@
             </label>
 
             <div class="col-12 col-md-8">
-                <div class="row form-group">
+                <div class="row mb-3">
                     <div class="col-12">
                         <div class="space-after">
                             <a data-bind="attr: { href: transients.dataManagementPolicyDocumentURL}, text: transients.getFileNameForDataManagementDocument(), visible: dataManagementPolicyDocument, validateObservable:dataManagementPolicyDocument"

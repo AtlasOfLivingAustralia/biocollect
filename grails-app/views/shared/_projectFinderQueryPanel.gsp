@@ -1,6 +1,6 @@
 <!-- ko with: filterViewModel-->
 <div id="filters" class="collapse show expander overflow-auto project-finder-filters">
-    <button data-toggle="collapse" data-target=".expander" aria-expanded="true" aria-controls="expander" class="close"
+    <button data-bs-toggle="collapse" data-bs-target=".expander" aria-expanded="true" aria-controls="expander" class="btn-close"
             title="Close Filters">
         <i class="far fa-times-circle"></i>
     </button>
@@ -16,7 +16,7 @@
         <g:render template="/shared/facetView" model="[modalName: 'chooseMore']"></g:render>
 
         <div class="filters-footer">
-            <button class="btn btn-light custom-font accordion-header" data-target="#mapModal" data-toggle="modal">
+            <button class="btn btn-light custom-font accordion-header" data-bs-target="#mapModal" data-bs-toggle="modal">
                 <i class="far fa-map"></i>
                 Filter by geographic location
             </button>
@@ -29,8 +29,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><g:message code="project.search.mapToggle"/></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
 
@@ -52,7 +52,7 @@
                     <g:message code="project.search.mapClear"/>
                 </button>
 
-                <button type="button" class="btn btn-sm btn-primary-dark" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="btn btn-sm btn-primary-dark" data-bs-dismiss="modal" aria-label="Close">
                     <i class="far fa-arrow-alt-circle-right"></i>
                     <g:message code="project.search.mapClose"/>
                 </button>

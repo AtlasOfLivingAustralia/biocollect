@@ -29,7 +29,7 @@
     <tr>
         <th colspan="3"></th>
         <th colspan="2">
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="searchBulkImport">Search</label>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" id="searchBulkImport" aria-describedby="searchHelp" data-bind="value: search, valueUpdate: 'input', enter: transients.searchHandler">

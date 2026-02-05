@@ -88,7 +88,7 @@
         });
 
         // tooltip needs to be initialised manually
-        $("[data-toggle=\"tooltip\"]").tooltip();
+        $("[data-bs-toggle=\"tooltip\"]").tooltip();
     });
 
 </asset:script>

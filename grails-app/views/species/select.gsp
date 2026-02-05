@@ -70,7 +70,7 @@
             <span id="project-filter-warning" class="label filter-label label-warning hide pull-left">Filtered</span>
             <div class="control-group pull-right dataTables_filter">
                 <div class="input-append">
-                    <g:textField class="filterinput input-medium" data-target="project"
+                    <g:textField class="filterinput input-medium" data-bs-target="project"
                                  title="Type a few characters to restrict the list." name="projects"
                                  placeholder="filter"/>
                     <button type="button" class="btn clearFilterBtn"

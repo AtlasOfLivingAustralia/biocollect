@@ -218,12 +218,12 @@
         </div>
         <div class="col-12 col-md-6">
             <form>
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="map-area"><g:message code="pwa.map.area"/></label>
                     <input type="text" readonly class="form-control" id="map-area" aria-describedby="map-area-help" data-bind="value: areaInKmOfBounds, css: {'is-invalid': !isBoundsWithinMaxArea(), 'is-valid': isBoundsWithinMaxArea}">
                     <small id="map-area-help" class="form-text text-muted"><g:message code="pwa.map.area.help" args="${[grailsApplication.config.getProperty("pwa.maxAreaInKm")]}"/></small>
                 </div>
-                <div class="form-group was-validated">
+                <div class="mb-3 was-validated">
                     <label for="map-name"><g:message code="pwa.map.name"/> <span class="req-field"></span></label>
                     <input type="text" class="form-control" id="map-name" required aria-describedby="map-name-help" data-bind="value: name">
                     <small id="map-name-help" class="form-text text-muted"><g:message code="pwa.map.name.help"/></small>
@@ -288,7 +288,7 @@
     <div class="row">
         <div class="col-12">
             <form>
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <label class="col-sm-4 col-form-label"><g:message code="pwa.species.download.offline"/></label>
                     <div class="col-sm-8">
                         <button type="submit" class="btn btn-primary" data-bind="click: clickSpeciesDownload, enable: speciesStatus() == 'downloaded'"><i class="fas fa-redo"></i> <g:message code="pwa.species.refresh"/></button>
@@ -331,8 +331,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Choose sites to download</h3>
-                <button type="button" class="close" data-bind="click: cancel" aria-hidden="true">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bind="click: cancel" aria-hidden="true">
+                    
                 </button>
             </div>
             <div class="modal-body">

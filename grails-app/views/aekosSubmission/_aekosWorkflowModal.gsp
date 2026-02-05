@@ -25,11 +25,11 @@
 <script type="text/html" id="aekosWorkflowModal">
 
 <!-- Modal -->
-%{--<div class="modal hide fade aekosModal validationEngineContainer" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"  data-bind="bootstrapShowModal:aekosModalView().show">--}%
-<div class="modal fade aekosModal validationEngineContainer" id="aekosModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" >
+%{--<div class="modal hide fade aekosModal validationEngineContainer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog"  data-bind="bootstrapShowModal:aekosModalView().show">--}%
+<div class="modal fade aekosModal validationEngineContainer" id="aekosModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" >
     <div class="modal-dialog">
         <div class="modal-header">
-           %{-- <button type="button" class="close" data-bind="click: hideModal" aria-hidden="true">&times;</button>--}%
+           %{-- <button type="button" class="btn-close" data-bind="click: hideModal" aria-hidden="true">&times;</button>--}%
             <h4 class="modal-title">Dataset: <span data-bind="text: name"></span></h4>
         </div>
 
@@ -42,7 +42,7 @@
                     <div class="span2"></div>
 
                     <div class="span8">
-                        <div data-bind="if: ($index()+ 1) <= $root.transients.currentQuestion()" class="text-left">
+                        <div data-bind="if: ($index()+ 1) <= $root.transients.currentQuestion()" class="text-start">
                             <span data-bind="text: question" ></span> <b><i><span data-bind="text: answer" ></span></i></b>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
 
             <div data-bind="if: transients.cannotSubmitError()" class="row-fluid">
                 <div class="span2"></div>
-                <div class="span8 text-left">
+                <div class="span8 text-start">
                     <b><i><span data-bind="text: transients.cannotSubmitError" ></span></i></b>
                 </div>
             </div>
@@ -65,7 +65,7 @@
           %{--  <br/>--}%
 
             <ul  data-bind="attr: {id: 'ul_submission_info' }" class="nav nav-pills">
-                <li data-bind="css: { active: selectedTab() == 'tab-1' }"><a data-bind="attr: {href: '#project-info', id: 'tab-1'}, click: selectTab" data-toggle="tab" >Project<br>Info</a></li>
+                <li data-bind="css: { active: selectedTab() == 'tab-1' }"><a data-bind="attr: {href: '#project-info', id: 'tab-1'}, click: selectTab" data-bs-toggle="tab" >Project<br>Info</a></li>
                 <li data-bind="css: { active: selectedTab() == 'tab-2' }"><a data-bind="attr: {href: '#dataset-info', id: 'tab-2', 'data-toggle': dataToggleVal()}, css:{disabled: !isValidationValid()}, click: function(data, event) {selectTab(data, event);}">Dataset<br>Description</a></li>
                 <li data-bind="css: { active: selectedTab() == 'tab-3' }"><a data-bind="attr: {href: '#dataset-content', id: 'tab-3', 'data-toggle': dataToggleVal()}, css:{disabled: !isValidationValid()}, click: function(data, event) {selectTab(data, event);}">Dataset<br>Content</a></li>
                 <li data-bind="css: { active: selectedTab() == 'tab-4' }"><a data-bind="attr: {href: '#location-dates', id: 'tab-4', 'data-toggle': dataToggleVal()}, css:{disabled: !isValidationValid()}, click: function(data, event) {selectTab(data, event);}, event: { shown: showMap}" >Study Location<br>and Dates</a></li>

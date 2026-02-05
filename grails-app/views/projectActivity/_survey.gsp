@@ -21,13 +21,13 @@
                 </div>
             </div>
 
-            <div class="row mt-2 form-group">
+            <div class="row mt-2 mb-3">
 %{--                <div >--}%
                 <label class="col-4 col-form-label" for="template"> Select a form template: <span class="req-field"></span></label>
 %{--                </div>--}%
                 <div class="col-8">
                     <div class="btn-space">
-                        <select class="form-control" id="template" data-validation-engine="validate[required]" data-bind="options: $root.formNames, value: pActivityFormName, optionsCaption: 'Please select'" ></select>
+                        <select class="form-select" id="template" data-validation-engine="validate[required]" data-bind="options: $root.formNames, value: pActivityFormName, optionsCaption: 'Please select'" ></select>
                         <button class="btn btn-sm btn-primary-dark" data-bind="click: function() {previewActivity('<g:createLink controller="bioActivity" action="previewActivity"/>', pActivityFormName())}"> <i class="far fa-eye"></i> Preview Survey</button>
                     </div>
                 </div>

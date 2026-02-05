@@ -21,8 +21,8 @@
         <h4 class="inline">Planned Activities</h4>
 
         <ul class="nav nav-tabs nav-tab-small space-before">
-            <li class="nav-item"><a class="nav-link active" href="#tablePlan" data-toggle="tab">Tabular</a></li>
-            <li class="nav-item"><a class="nav-link" href="#ganttPlan" data-toggle="tab">Gantt chart</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#tablePlan" data-bs-toggle="tab">Tabular</a></li>
+            <li class="nav-item"><a class="nav-link" href="#ganttPlan" data-bs-toggle="tab">Gantt chart</a></li>
         </ul>
 
         <div class="tab-content" style="padding:0;border:none;overflow:visible">
@@ -68,16 +68,16 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                     <div data-bind="validateOnClick:  { callback: save, selector: '.save-activity'}, css: {'ajax-opacity': transients.isSaving}" class="validationEngineContainer">
                 <h4><!-- ko text: activityId ? 'Update activity': 'Add a new activity' --> <!-- /ko --></h4>
                 <div id="add-new-activity">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-sm-4 required">
                             <label>Type of activity</label>
-                            <select class="form-control form-control-sm" data-bind="value: type,
+                            <select class="form-control form-select-sm" data-bind="value: type,
                                 popover:{title:'', content: transients.activityDescription,
-                                trigger:'manual', autoShow:true}, enable: canEditType"  class="full-width form-control"
+                                trigger:'manual', autoShow:true}, enable: canEditType"  class="full-collapse-horizontal form-select"
                                     data-validation-engine="validate[required]">
                                 <option></option>
                                 <g:each in="${activityTypes}" var="t" status="i">
@@ -93,7 +93,7 @@
                         <div class="col-sm-2">
                             <div data-bind="visible:fcConfig.themes && fcConfig.themes.length > 1">
                                 <label>Major theme</label>
-                                <select class="form-control form-control-sm"
+                                <select class="form-select form-select-sm"
                                         data-bind="value:mainTheme, options:fcConfig.themes,
                                                                 optionsText: 'name', optionsValue: 'name',
                                                                 optionsCaption:'Choose..'">
@@ -137,7 +137,7 @@
             <div class="modal-content">
                 <form class="reasonModalForm">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"
                                 data-bind="click:$parent.displayReasonModal.cancelReasonModal">×</button>
 
                         <h3 id="myModalLabel">Reason for deferring or cancelling an activity</h3>
@@ -155,7 +155,7 @@
                     <div class="modal-footer">
                         <button class="btn btn-dark"
                                 data-bind="click: $parent.displayReasonModal.cancelReasonModal"
-                                data-dismiss="modal" aria-hidden="true"><i class="far fa-times-circle"></i> Discard status change</button>
+                                data-bs-dismiss="modal" aria-hidden="true"><i class="far fa-times-circle"></i> Discard status change</button>
                         <button class="btn btn-primary-dark"
                                 data-bind="click:$parent.displayReasonModal.saveReasonDocument"><i class="fas fa-hdd"></i> Save reason</button>
                     </div>
@@ -327,7 +327,7 @@
     <th>To</th>
     <th>Description</th>
     <th>Activity &nbsp;
-        <a href="#createOrUpdateActivity" role="button" class="btn btn-dark btn-sm" data-toggle="modal"
+        <a href="#createOrUpdateActivity" role="button" class="btn btn-dark btn-sm" data-bs-toggle="modal"
                     data-bind="click: openActivityModal(newActivityViewModel), visible: fcConfig.canAddActivity"><i class="fas fa-plus"></i>
         <g:message code="project.works.createNewActivity"/> </a>
     </th>
@@ -343,7 +343,7 @@
 <script id="activityRow" type="text/html">
 
 <td class="btn-space">
-    <a class="btn btn-dark btn-sm" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+    <a class="btn btn-dark btn-sm" href="#createOrUpdateActivity" role="button" data-bs-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
             class="fas fa-pencil-alt" title="Edit Activity"></i></a>
     <button type="button" class="btn btn-dark btn-sm" data-bind="click:viewActivity"><i
             class="far fa-eye" title="View Activity"></i></button>
@@ -359,7 +359,7 @@
 </td>
 <td>
     <a href="#" data-bind="text:type,click: editActivity"></a>
-    <button class="btn btn-dark btn-sm float-right" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
+    <button class="btn btn-dark btn-sm float-end" data-bind="click: transients.editSpeciesConfiguration, visible: transients.canEditSpeciesConfiguration">
         <i class="fas " data-bind="css: { 'fa-arrow-down': transients.speciesConfigurationToggle, 'fa-arrow-up': !transients.speciesConfigurationToggle() }"></i>
         <g:message code="project.survey.activity.editSpecies"/>
     </button>
@@ -367,7 +367,7 @@
 <td>
     <div class="row" data-bind="css: {'ajax-opacity': transients.isSaving}">
         <div class="col-sm-12">
-            <select class="form-control form-control-sm" data-bind="options: resolveSites(fcConfig.siteIds, true), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
+            <select class="form-select form-select-sm" data-bind="options: resolveSites(fcConfig.siteIds, true), optionsText: 'name', optionsValue: 'siteId', optionsCaption: 'Please choose', value: siteId"></select>
             <span class="margin-left-1">
                 <a href="#" data-bind="click:$parent.openSite, attr: {title: siteName}, visible: siteId"><i class="fas fa-info-circle"></i></a>
                 <span data-bind="visible: transients.siteArea">
@@ -386,7 +386,7 @@
 <script id="milestoneRow" type="text/html">
 
     <td class="btn-space">
-        <a class="btn btn-sm btn-dark" href="#createOrUpdateActivity" role="button" data-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
+        <a class="btn btn-sm btn-dark" href="#createOrUpdateActivity" role="button" data-bs-toggle="modal"  data-bind="click: $parent.openActivityModal($data), visible: canEditActivity"><i
                 class="fas fa-pencil-alt" title="Edit Milestone"></i></a>
         <button type="button" class="btn btn-sm btn-dark" data-bind="click:viewActivity"><i
                 class="far fa-eye" title="View Milestone"></i></button>
@@ -409,10 +409,10 @@
 </script>
 <script id="updateStatusTmpl" type="text/html">
 <div class="btn-group">
-    <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+    <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown"
             data-bind="css: {'btn-warning':progress()=='planned','btn-success':progress()=='started','btn-info':progress()=='finished','btn-danger':progress()=='deferred','btn-dark':progress()=='cancelled'}"
             style="line-height:16px;min-width:86px;text-align:left;">
-        <span data-bind="text: progress"></span> <span class="caret float-right" style="margin-top:6px;"></span>
+        <span data-bind="text: progress"></span> <span class="caret float-end" style="margin-top:6px;"></span>
     </button>
     <ul class="dropdown-menu" data-bind="foreach:$root.progressOptions" style="min-width:100px;">
         <!-- Disable item if selected -->
@@ -535,7 +535,7 @@
                     <span data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}, disable: true, text: config().transients.inputSettingsSummary"></span>
                 </td>
                 <td>
-                    <select class="form-control form-control-sm" data-bind="disable: config().type() == 'DEFAULT_SPECIES', options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
+                    <select class="form-select form-select-sm" data-bind="disable: config().type() == 'DEFAULT_SPECIES', options: $parent.transients.availableSpeciesDisplayFormat, optionsText:'name', optionsValue:'id', value:  config().speciesDisplayFormat">
                     </select>
                 </td>
                 <td>
@@ -565,9 +565,9 @@
 <g:render template="/projectActivity/speciesFieldSettingsDialog"></g:render>
 </script>
 <script type="text/html" id="workScheduleActionButtonsTmpl">
-<div class="row no-gutters">
+<div class="row g-0">
     <div class="col-sm-12">
-        <div class="float-right">
+        <div class="float-end">
             <a class="btn btn-info my-2" data-bind="attr: {href: fcConfig.worksScheduleIntroUrl}"><i class="fas fa-question-circle"></i>
                 <g:message code="project.works.workschedule.button.help"/></a>
         </div>

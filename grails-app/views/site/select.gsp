@@ -57,7 +57,7 @@
                     </div>
                     <!-- /ko -->
                     <div class="col-12 col-md-7 order-0 order-md-1 mt-2 mt-md-0">
-                        <form class="text-md-right" data-bind="submit: searchSites">
+                        <form class="text-md-end" data-bind="submit: searchSites">
                             <div class="input-group">
                                 <input class="form-control" type="text" data-bind="value: currentSearch"
                                        placeholder="Search by keyword" aria-label="Search by keyword" aria-describedby="search-site-button"/>
@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 text-right">
+                                <div class="col-12 text-end">
                                     <button class="btn btn-primary-dark mt-2" data-bind="click: useSelectedSites">Add selected sites</button>
                                     <button class="btn btn-dark mt-2" data-bind="click: cancelUpdate">Cancel</button>
                                 </div>

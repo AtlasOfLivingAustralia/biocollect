@@ -14,7 +14,7 @@
         <!-- ko foreach: projectActivities -->
         <!-- ko if: current -->
 
-        <div class="span6 text-left">
+        <div class="span6 text-start">
             <label class="control-label"><g:message code="project.survey.info.relatedDatasets"/>
                 <a href="#" class="helphover" data-bind="popover: {title:'<g:message code="project.survey.info.relatedDatasets"/>', content:'<g:message code="project.survey.info.relatedDatasets.content"/>'}">
                     <i class="icon-question-sign"></i>
@@ -23,7 +23,7 @@
             </label>
 
             <!-- ko if: $parent.projectActivities().length <= 1 -->
-            <h3 class="text-left margin-bottom-five">
+            <h3 class="text-start margin-bottom-five">
                 There are no other related datasets in the project
             </h3>
             <!-- /ko -->

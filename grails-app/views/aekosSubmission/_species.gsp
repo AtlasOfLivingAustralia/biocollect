@@ -15,7 +15,7 @@ div.speciesClassDiv {
     <div class="speciesClassDiv">
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="containPlantsSpecies"><g:message code="aekos.dataset.species.plants"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.species.plants"/>',
@@ -35,7 +35,7 @@ div.speciesClassDiv {
     <br>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label"><g:message code="aekos.dataset.species.plants.scientificNames"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.species.plants.scientificNames"/>',
@@ -55,7 +55,7 @@ div.speciesClassDiv {
 
     <br>
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" name="plantsCommonNames"><g:message code="aekos.dataset.species.plants.commonNames"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.species.plants.commonNames"/>',
@@ -79,7 +79,7 @@ div.speciesClassDiv {
     <br>
 
         <div class="row-fluid">
-            <div class="span4 text-right">
+            <div class="span4 text-end">
                 <label class="control-label"><g:message code="aekos.dataset.species.plantGroup"/>
                     <a href="#" class="helphover"
                        data-bind="popover: {title:'',
@@ -103,7 +103,7 @@ div.speciesClassDiv {
     <br>
 <div class="speciesClassDiv">
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="containAnimalSpecies"><g:message code="aekos.dataset.species.animals"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.species.animals"/>',
@@ -121,7 +121,7 @@ div.speciesClassDiv {
     <!-- ko if: animalSpecies().length > 0 -->
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" ><g:message code="aekos.dataset.species.animals.scientificNames"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.species.animals.scientificNames"/>',
@@ -143,7 +143,7 @@ div.speciesClassDiv {
     <br>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" ><g:message code="aekos.dataset.species.animals.commonNames"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.species.animals.commonNames"/>',
@@ -167,7 +167,7 @@ div.speciesClassDiv {
     <br>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label"><g:message code="aekos.dataset.species.animalGroup"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'',

@@ -36,10 +36,10 @@
             </div>
 
             <div class="col-xs-12 col-lg-4 d-flex align-items-center justify-content-center justify-content-lg-end">
-                <div class="limiter text-right">
+                <div class="limiter text-end">
                     <g:message code="label.show"/>
-                    <label for="projectsLimit" class="sr-only"><g:message code="label.items.page"/></label>
-                    <select class="custom-select projects-limiter" id="projectsLimit"
+                    <label for="projectsLimit" class="visually-hidden"><g:message code="label.items.page"/></label>
+                    <select class="form-select projects-limiter" id="projectsLimit"
                             data-bind="options: pagination.rppOptions, value: pagination.resultsPerPage"></select>
                 </div>
             </div>
@@ -51,7 +51,7 @@
         <span data-bind="if: pagination.totalResults() >= pagination.rppOptions[0]-1">
             <div class="row-fluid">
                 <div class="span12">
-                    <div class="span4 text-left">
+                    <div class="span4 text-start">
                         <p class="hidden-xs pull-left nomargin">
                             <span data-bind="text: pagination.info()"></span>
                         </p>
@@ -64,7 +64,7 @@
                         </p>
                     </div>
 
-                    <div class=" text-right">
+                    <div class=" text-end">
                         <span>
                             <span data-bind="if: pagination.currentPage() > 1"><a class="btn btn-small" href="#"
                                                                                   data-bind="click:pagination.first"><i

@@ -1,11 +1,11 @@
 <form id="userAccessForm">
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-form-label col-md-3" for="emailAddress"><g:message code="project.admin.permissions.email"/></label>
         <div class="col-md-9">
             <input class="form-control validate[required,custom[email]]" id="emailAddress" placeholder="enter a user's email address" type="text"/>
         </div>
     </div>
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-form-label col-md-3" for="addUserRole"><g:message code="project.admin.permissions.level"/></label>
         <div class="col-md-9" id="rolesSelect">
             <g:render id="addUserRole" template="/admin/userRolesSelect" model="[roles:roles, includeEmptyOption: true, selectClass: 'form-control']"/>
@@ -15,7 +15,7 @@
         <input type='hidden' id='entityId' value='${entityId}'>
     </g:if>
     <g:elseif test="${projects}">
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-form-label col-md-3" for="projectId"><g:message code="g.project"/></label>
             <div class="col-md-9">
                 <g:select name="project" id="projectId" class="form-control combobox validate[required]" from="${projects}" optionValue="name" optionKey="projectId" noSelection="['':'start typing a project name']" />
@@ -23,7 +23,7 @@
         </div>
     </g:elseif>
     <g:else><div class="alert alert-danger"><g:message code="project.admin.permissions.missingmodel"/></div></g:else>
-    <div class="row form-group">
+    <div class="row mb-3">
         <div class="col-md-9 offset-md-3">
             <button id="addUserRoleBtn" class="btn btn-sm btn-primary-dark"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
             <g:img uri="${asset.assetPath(src:'spinner.gif')}" id="spinner1" class="d-none spinner" alt="spinner icon"/>
@@ -31,7 +31,7 @@
     </div>
 </form>
 <div id="status" class="offset-md-2 col-md-7 d-none alert alert-success">
-    <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+    <button class="btn-close" onclick="$('.alert').fadeOut();" href="#">×</button>
     <span></span>
 </div>
 %{--<div class="clearfix">&nbsp;</div>--}%

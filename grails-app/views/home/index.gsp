@@ -47,7 +47,7 @@
     <g:if test="${flash.message}">
         <div class="row-fluid">
             <div class="span6 alert alert-info" style="margin-bottom:0;">
-                <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                <button class="btn-close" onclick="$('.alert').fadeOut();" href="#">×</button>
                 ${flash.message}
             </div>
         </div>
@@ -69,7 +69,7 @@
     <g:set var="error" value="${flash.error?:results.error}"/>
     <div class="row-fluid">
         <div class="alert alert-danger large-space-before">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
             <span>Error: ${error}</span>
         </div>
     </div>
@@ -78,7 +78,7 @@
     <div id="" class="row-fluid ">
         <div id="facetsCol" class="span4 well well-small">
             <g:set var="reqParams" value="sort,order,max,fq"/>
-            <div class="visible-phone float-right" style="margin-top: 5px;">
+            <div class="visible-phone float-end" style="margin-top: 5px;">
                 <a href="#" id="toggleFacetDisplay" rel="facetsContent" role="button" class="btn btn-small btn-inverse" style="color:white;">
                     <span>show</span> options&nbsp;
                     <b class="caret"></b>
@@ -126,10 +126,10 @@
                             </g:each>
                         </ul>
                         <g:if test="${f?.terms?.size() > max}">
-                            <a href="#${fn}Modal" role="button" class="moreFacets tooltips" data-toggle="modal" title="View full list of values"><i class="icon-hand-right"></i> choose more...</a>
+                            <a href="#${fn}Modal" role="button" class="moreFacets tooltips" data-bs-toggle="modal" title="View full list of values"><i class="icon-hand-right"></i> choose more...</a>
                             <div id="${fn}Modal" class="modal hide fade">
                                	<div class="modal-header">
-	                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
 	                                    <h3>Filter by ${fName}</h3>
 	                                </div>
 	                                <div class="modal-body">
@@ -150,7 +150,7 @@
 	                                        <button class="btn btn-small sortAlpha"><i class="icon-filter"></i> Sort by name</button>
 	                                        <button class="btn btn-small sortCount"><i class="icon-filter"></i> Sort by count</button>
 	                                    </div>
-                                        <a href="#" class="btn" data-dismiss="modal">Close</a>
+                                        <a href="#" class="btn" data-bs-dismiss="modal">Close</a>
 	                                </div>
                             	 
                             </div>
@@ -163,11 +163,11 @@
 
             <div class="tabbable">
                 <ul class="nav nav-tabs" data-tabs="tabs">
-                    <li class=""><a id="mapView-tab" href="#mapView" data-toggle="tab">Map</a></li>
-                    <li class=""><a id="projectsView-tab" href="#projectsView" data-toggle="tab">Projects</a></li>
-                    <li class=""><a id="reportView-tab" href="#reportView" data-toggle="tab">Dashboard</a></li>
+                    <li class=""><a id="mapView-tab" href="#mapView" data-bs-toggle="tab">Map</a></li>
+                    <li class=""><a id="projectsView-tab" href="#projectsView" data-bs-toggle="tab">Projects</a></li>
+                    <li class=""><a id="reportView-tab" href="#reportView" data-bs-toggle="tab">Dashboard</a></li>
                     <g:if test="${fc.userIsSiteAdmin()}">
-                        <li class=""><a id="downloadView-tab" href="#downloadView" data-toggle="tab">Download</a></li>
+                        <li class=""><a id="downloadView-tab" href="#downloadView" data-bs-toggle="tab">Download</a></li>
                     </g:if>
 
                 </ul>
@@ -178,7 +178,7 @@
 
                 <div class="tab-pane " id="projectsView">
                     <div class="scroll-list clearfix" id="projectList">
-                        <table class="table table-bordered table-hover" id="projectTable" data-sort="lastUpdated" data-order="DESC" data-offset="0" data-max="10">
+                        <table class="table table-bordered table-hover" id="projectTable" data-sort="lastUpdated" data-order="DESC" data-bs-offset="0" data-max="10">
                             <thead>
                             <tr>
                                 <th width="85%" data-sort="nameSort" data-order="ASC" class="header">Project name</th>
@@ -195,9 +195,9 @@
                                 <button class="btn btn-small next">next&nbsp;<i class="icon-chevron-right"></i></button>
                             </div>
                             <span id="project-filter-warning" class="label filter-label label-warning hide pull-left">Filtered</span>
-                            <div class="control-group float-right dataTables_filter">
+                            <div class="control-group float-end dataTables_filter">
                                 <div class="input-append">
-                                    <g:textField class="filterinput input-medium" data-target="project"
+                                    <g:textField class="filterinput input-medium" data-bs-target="project"
                                                  title="Type a few characters to restrict the list." name="projects"
                                                  placeholder="filter"/>
                                     <button type="button" class="btn clearFilterBtn"
@@ -375,7 +375,7 @@
             }
         };
         // retain tab state for future re-visits
-        $('a[data-toggle="tab"]').on('shown', function (e) {
+        $('a[data-bs-toggle="tab"]').on('shown', function (e) {
             var tab = e.currentTarget.hash;
             amplify.store(TAB_STATE_KEY, tab);
             initialiseTab(tab);

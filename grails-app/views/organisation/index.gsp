@@ -158,7 +158,7 @@
 
         var organisationTabStorageKey = 'organisation-page-tab';
         var initialisedSites = false;
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
             var tab = e.currentTarget.hash;
             amplify.store(organisationTabStorageKey, tab);
             if (!initialisedSites && tab == '#sites') {

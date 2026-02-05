@@ -24,7 +24,7 @@
 					<td class="index"> <span data-bind="text:$index()+1"></span></td>
 					<td class="baseline"><textarea class="form-control" data-bind="value: baseline, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
 					<td class="target"><textarea class="form-control" data-bind="value: target, disable: $parent.isProjectDetailsLocked()" rows="5" ></textarea></td>
-					<td class="assets"><select class="form-control"
+					<td class="assets"><select class="form-select"
 											data-bind="options: $parent.protectedNaturalAssests, selectedOptions: assets, disable: $parent.isProjectDetailsLocked()" size="5" multiple="true"></select></td>
 					<td class="controls">
 						<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()"><i class="fas fa-times" data-bind="click: $parent.removeObjectivesOutcome"></i></span>
@@ -146,7 +146,7 @@
 					<td width="2%"> <span data-bind="text:$index()+1"></span></td>
 					<td width="20%"> <textarea class="form-control" data-bind="value: data1, disable: $parent.isProjectDetailsLocked()" rows="5"></textarea> </td>
 					<td width="54%"><textarea class="form-control" data-bind="value: data2, disable: $parent.isProjectDetailsLocked()"  rows="5"></textarea></td>
-					<td width="20%"><select class="form-control" data-bind="options: $parent.organisations, value:data3,optionsCaption: 'Please select',disable: $parent.isProjectDetailsLocked()"></select></td>
+					<td width="20%"><select class="form-select" data-bind="options: $parent.organisations, value:data3,optionsCaption: 'Please select',disable: $parent.isProjectDetailsLocked()"></select></td>
 					<td width="4%">
 						<span data-bind="if: $index() && !$parent.isProjectDetailsLocked()" ><i class="fas fa-times" data-bind="click: $parent.removePartnership"></i></span>
 					</td>
@@ -232,10 +232,10 @@
 					<tbody data-bind="foreach : details.budget.rows">
 					<tr>
 						<td class="index"><span data-bind="text:$index()+1"></span></td>
-						<td class="category"><select class="form-control" data-bind="options: $parent.projectThemes, optionsCaption: 'Please select', value:shortLabel, disable: $parent.isProjectDetailsLocked()"> </select></td>
+						<td class="category"><select class="form-select" data-bind="options: $parent.projectThemes, optionsCaption: 'Please select', value:shortLabel, disable: $parent.isProjectDetailsLocked()"> </select></td>
 						<td class="payment-number"><input class="form-control" data-bind="value:paymentNumber"></td>
                         <td class="funding-source"><input class="form-control" data-bind="value:fundingSource"></td>
-                        <td class="payment-status"><select class="form-control" data-bind="value:paymentStatus, options:paymentStatus.options"></select></td>
+                        <td class="payment-status"><select class="form-select" data-bind="value:paymentStatus, options:paymentStatus.options"></select></td>
                         <td class="description"><textarea class="form-control" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea></td>
 						<td class="due-date mt-4" style="border: none !important;">
 							<div class="input-group">

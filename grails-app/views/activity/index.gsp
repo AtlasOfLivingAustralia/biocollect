@@ -81,31 +81,31 @@
             </div>
         </div>
 
-        <div class="row mt-3 ml-3">
+        <div class="row mt-3 ms-3">
             <div class="${mapFeatures.toString() != '{}' ? 'col-sm-9' : 'col-sm-12'}" style="font-size: 1.2em">
                 <!-- Common activity fields -->
                 <div class="row">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Description:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Description:</span> <span
                             data-bind="text:description"></span></span>
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Type:</span> <span data-bind="text:type"></span></span>
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Type:</span> <span data-bind="text:type"></span></span>
                 </div>
 
                 <div class="row mt-3">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Starts:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Starts:</span> <span
                             data-bind="text:startDate.formattedDate"></span></span>
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Ends:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Ends:</span> <span
                             data-bind="text:endDate.formattedDate"></span></span>
                 </div>
 
                 <div class="row mt-3">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Project stage:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Project stage:</span> <span
                             data-bind="text:projectStage"></span></span>
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Major theme:</span> <span data-bind="text:mainTheme"></span>
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Major theme:</span> <span data-bind="text:mainTheme"></span>
                     </span>
                 </div>
 
                 <div class="row mt-3">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Activity status:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Activity status:</span> <span
                             data-bind="text:progress"></span></span>
                 </div>
             </div>
@@ -140,7 +140,7 @@
             </div>
         </g:if>
     </div>
-    <div class="row ml-3 mr-3">
+    <div class="row ms-3 me-3">
         <div class="col-sm-12">
         <!-- ko stopBinding: true -->
         <g:each in="${metaModel?.outputs}" var="outputName">
