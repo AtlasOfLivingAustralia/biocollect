@@ -1,7 +1,6 @@
 <!-- ko with: filterViewModel-->
 <div id="filters" class="collapse data-expander show" style="">
     <button data-bs-toggle="collapse" data-bs-target=".data-expander" aria-expanded="true" aria-controls="filters" class="btn-close" title="Close Filters">
-        <i class="far fa-times-circle"></i>
     </button>
 
     <div class="title">
