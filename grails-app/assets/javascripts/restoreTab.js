@@ -17,7 +17,7 @@ var RestoreTab = function (tabId, defaultHrefTab) {
     }
 
     //Store tab reference
-    $('#' + tabId + ' a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    $('#' + tabId + ' a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         var tab = e.currentTarget.id;
         saveTabSelection(tabId, tab);
     });

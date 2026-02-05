@@ -2,7 +2,7 @@
 //= require knockout/3.4.0/knockout-3.4.0.js
 //= require knockout-custom-bindings.js
 //= require knockout-custom-extenders.js
-//= require bootbox/bootbox.min.js
+//= require bootbox/6.0.4/bootbox.min.js
 //= require utils.js
 //= require dexiejs/dexie.js
 //= require ala-map-no-jquery-us-no-handlebars.js

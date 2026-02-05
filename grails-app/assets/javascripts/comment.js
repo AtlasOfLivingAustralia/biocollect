@@ -15,9 +15,9 @@
 function showAlertOnTarget(message, alerttype, target) {
 
     if(typeof target === 'string'){
-        $('#'+target).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+        $('#'+target).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="btn-close" data-bs-dismiss="alert">×</a><span>'+message+'</span></div>')
     } else if(typeof target === 'object') {
-        $(target).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="close" data-dismiss="alert">×</a><span>'+message+'</span></div>')
+        $(target).append('<div id="alertdiv" class="alert ' +  alerttype + '"><a class="btn-close" data-bs-dismiss="alert">×</a><span>'+message+'</span></div>')
     }
 
     setTimeout(function() { // this will automatically close the alert and remove this if the users doesnt close it in 5 secs
