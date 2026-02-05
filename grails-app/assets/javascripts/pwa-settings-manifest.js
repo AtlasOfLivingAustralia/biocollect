@@ -3,6 +3,6 @@
 //= require utils.js
 //= require dexiejs/dexie.js
 //= require bootstrap4/js/bootstrap.bundle.min.js
-//= require bootbox/bootbox.min.js
+//= require bootbox/6.0.4/bootbox.min.js
 //= require entities.js
 //= require pwa-settings.js

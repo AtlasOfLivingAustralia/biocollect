@@ -5,7 +5,7 @@
 //= require moment/moment.min.js
 //= require moment/moment-timezone-with-data.min.js
 //= require bootstrap4/js/bootstrap.bundle.min.js
-//= require bootbox/bootbox.min.js
+//= require bootbox/6.0.4/bootbox.min.js
 //= require knockout-dates.js
 //= require fieldcapture-application.js
 //= require enterBioActivityData.js

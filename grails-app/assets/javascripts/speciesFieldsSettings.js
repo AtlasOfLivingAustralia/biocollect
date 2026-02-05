@@ -44,7 +44,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
             if(self.speciesLists().length > 0) {
                 var speciesListsTooltip = '<p>Lists</p>';
                 for(var i =0 ; i < self.speciesLists().length; i++ ) {
-                    speciesListsTooltip += '<span class="pull-left text-left">' + self.speciesLists()[i].transients.truncatedListName() + '</span> <br/>\n';
+                    speciesListsTooltip += '<span class="pull-left text-start">' + self.speciesLists()[i].transients.truncatedListName() + '</span> <br/>\n';
                 }
 
                 speciesListsTooltip += '<br/>';
