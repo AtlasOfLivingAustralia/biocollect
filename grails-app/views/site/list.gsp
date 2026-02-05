@@ -152,7 +152,6 @@
                         title="Close Filters"
                         aria-expanded="false"
                         aria-controls="filters">
-                    <i class="far fa-times-circle"></i>
                 </button>
                 <div class="filter-group">
                     <bc:koLoading>

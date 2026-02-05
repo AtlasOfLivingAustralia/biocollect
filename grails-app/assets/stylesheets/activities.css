@@ -1,6 +1,6 @@
-.btn-group .active {
-    background-color: #fbaf44;
-}
+/*.btn-group .active {*/
+/*    background-color: #fbaf44; Overrides hub theme styles */
+/*}*/
 
 .facet-block{
     max-height:400px;

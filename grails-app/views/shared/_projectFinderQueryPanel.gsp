@@ -2,7 +2,6 @@
 <div id="filters" class="collapse show expander overflow-auto project-finder-filters">
     <button data-bs-toggle="collapse" data-bs-target=".expander" aria-expanded="true" aria-controls="expander" class="btn-close"
             title="Close Filters">
-        <i class="far fa-times-circle"></i>
     </button>
 
     <div class="title">
