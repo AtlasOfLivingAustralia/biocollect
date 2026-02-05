@@ -105,12 +105,12 @@
                         class="icon-upload"></i> Upload data for this table</button>
 
                 <div id="bulkUpload" style="display:none;">
-                    <div class="text-left" style="margin:5px">
+                    <div class="text-start" style="margin:5px">
                         <a target="_blank" id="downloadTemplate"
                            class="btn btn-dark btn-sm">Step 1 - Download template (.xlsx)</a>
                     </div>
 
-                    <div class="text-left" style="margin:5px">
+                    <div class="text-start" style="margin:5px">
                         <span class="btn btn-dark btn-sm fileinput-button">
                             Step 2 - Upload populated template <input id="fileupload" type="file" name="templateFile">
                         </span>

@@ -44,7 +44,7 @@
         <h1><g:message code="bulkimport.index.title" /></h1>
     </div>
     <div class="col-sm-6">
-        <div class="float-right">
+        <div class="float-end">
             <g:render template="adminActions"/>
         </div>
     </div>
@@ -53,10 +53,10 @@
 <div class="mt-5">
     <h2><g:message code="bulkimport.stepone.title" /></h2>
     <div>
-        <div class="form-group">
+        <div class="mb-3">
             <a id="template" class="btn btn-dark" data-bind="attr: { href: fcConfig.downloadTemplateFormUrl }"
                 title="<g:message code="project.survey.downloadTemplate.title"/>" target="_blank">
-                <i class="fas fa-download mr-1"></i>
+                <i class="fas fa-download me-1"></i>
                 <g:message code="project.survey.downloadTemplate"/>
             </a>
         </div>
@@ -66,18 +66,18 @@
 <div class="mt-5">
     <h2><g:message code="bulkimport.steptwo.title" /></h2>
     <div>
-        <div class="form-group">
+        <div class="mb-3">
             <label for="description"><g:message code="bulkimport.steptwo.describe"/> <span class="req-field"/></label>
             <small id="descriptionHelpBlock" class="form-text text-muted">
                 <g:message code="bulkimport.steptwo.describe.helptext" />
             </small>
             <textarea id="description" class="form-control" data-bind="value: activityImport.description"></textarea>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label for="spreadsheetFile"><g:message code="bulkimport.steptwo.spreadsheet"/> </label>
-            <input id="spreadsheetFile" class="form-control-file" type="file" name="data" data-bind="event: {change: fileInputChangeHandler}"/>
+            <input id="spreadsheetFile" class="form-control" type="file" name="data" data-bind="event: {change: fileInputChangeHandler}"/>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
             <label class="form-check-label" for="jsonData"><g:message code="bulkimport.steptwo.json"/> <span class="req-field"/></label>
             <pre id="jsonData" class="h-200px p-2 border mt-2" data-bind="text: JSON.stringify(activityImport.dataToLoad() || [], null, 2)">
 

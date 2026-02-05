@@ -1,8 +1,8 @@
 <bc:koLoading>
 <div class="row">
     <div class="col-12">
-        <div class="text-right" data-bind="visible: !isSitesEmpty()">Image sort order :
-            <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group"
+        <div class="text-end" data-bind="visible: !isSitesEmpty()">Image sort order :
+            <div class="btn-group btn-group-toggle" data-bs-toggle="buttons" role="group"
                  aria-label="<g:message code="label.order.image"/>">
                 <label class="btn btn-sm btn-outline-dark">
                     <input type="radio" name="order" id="ascending" value="asc" data-bind="event: {change: setSortDirection}"> <g:message code="label.order.asc"/>
@@ -21,13 +21,13 @@
                 <li>
                     <span><strong data-bind="text:name"></strong> (<span data-bind="text: total"></span>)</span>
                 </li>
-                <li class="ml-1">
+                <li class="ms-1">
                     | <span data-bind="text: $parent.name"></span>
                 </li>
-                <li class="ml-1" data-bind="visible: showPoi() == true" title="Click to hide images for this point of interest">
+                <li class="ms-1" data-bind="visible: showPoi() == true" title="Click to hide images for this point of interest">
                     | <a class="btn-link" data-bind="click: toggleVisibility">hide</a>
                 </li>
-                <li class="ml-1" data-bind="visible: showPoi() == false" title="Click to show images for this point of interest">
+                <li class="ms-1" data-bind="visible: showPoi() == false" title="Click to show images for this point of interest">
                     | <a class="btn-link" data-bind="click: toggleVisibility">show</a>
                 </li>
             </ul>

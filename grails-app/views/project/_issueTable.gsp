@@ -33,10 +33,10 @@
                     </td>
 
                     <td class="status">
-                        <select class="form-control" data-validation-engine="validate[required]" data-bind="value:status, options: status.options"></select>
+                        <select class="form-select" data-validation-engine="validate[required]" data-bind="value:status, options: status.options"></select>
                     </td>
                     <td class="priority">
-                        <select class="form-control" data-validation-engine="validate[required]" data-bind="value:priority, options: priority.options, optionsCaption:'Please select'"></select>
+                        <select class="form-select" data-validation-engine="validate[required]" data-bind="value:priority, options: priority.options, optionsCaption:'Please select'"></select>
                     </td>
                     <td class="description">
                         <textarea class="form-control" data-validation-engine="validate[required]" class="input-xlarge"
@@ -47,7 +47,7 @@
                                   data-bind="value: actionPlan" rows="5"></textarea>
                     </td>
                     <td class="impact">
-                        <select class="form-control" data-validation-engine="validate[required]"
+                        <select class="form-select" data-validation-engine="validate[required]"
                                 data-bind="options: impact.options, value: impact,  optionsCaption: 'Please select'"></select>
                     </td>
 

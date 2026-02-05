@@ -6,26 +6,26 @@
                 Project metadata
                 <g:render template="statusBadge"/>
             </h4>
-            <div class="row form-group">
+            <div class="row mb-3">
             <label class="col-from-label col-md-4"><g:message code="project.details.type"/><fc:iconHelp><g:message
                     code="project.details.type.help"/></fc:iconHelp><i class="req-field"></i></label>
 
             <div class="col-md-8">
-                <select class="form-control"
+                <select class="form-select"
                         data-bind="value:transients.kindOfProject, options:transients.availableProjectTypes, optionsText:'name', optionsValue:'value', optionsCaption:'Select...'"
                         <g:if test="${params.citizenScience || params.works || params.ecoScience}">disabled</g:if>
                         data-validation-engine="validate[required]"></select>
             </div>
         </div>
 
-            <div class="row form-group" data-bind="visible:!isWorks()">
+            <div class="row mb-3" data-bind="visible:!isWorks()">
 
             <label class="col-from-label col-md-4" for="isExternal"><g:message
                     code="project.details.useALA"/><fc:iconHelp><g:message
                     code="project.details.useALA.help"/></fc:iconHelp><i class="req-field"></i></label>
 
             <div class="col-md-8">
-                <select class="form-control" id="isExternal"
+                <select class="form-select" id="isExternal"
                         data-bind="booleanValue:isExternal, options:[{label:'Yes', value:'false'}, {label:'No', value:'true'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'"
                         data-validation-engine="validate[required]">
                 </select>
@@ -33,7 +33,7 @@
         </div>
 
             <div id="organisationSearch" data-bind="with: organisationSearch">
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4"><g:message
                         code="project.details.organisationNameSearch"/><fc:iconHelp><g:message
                         code="project.details.organisationName.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -56,16 +56,16 @@
             </div>
 
             <div data-bind="slideVisible:displayNavigationControls()">
-                <div class="row form-group">
+                <div class="row mb-3">
                     <div class="col-md-4"></div>
 
                     <div class="col-md-8">
                         <div><b>Organisation Search Results</b> (Click an organisation to select it)</div>
 
                         <div class="organisation-list">
-                            <ul class="list-unstyled ml-2">
+                            <ul class="list-unstyled ms-2">
                                 <!-- ko foreach : organisations -->
-                                <li data-bind="css:{active:$parent.isSelected($data)}"><a class="btn btn-link text-left"
+                                <li data-bind="css:{active:$parent.isSelected($data)}"><a class="btn btn-link text-start"
                                                                                           data-bind="click:$parent.select, text:name"></a>
                                 </li>
                                 <!-- /ko -->
@@ -109,7 +109,7 @@
         <div class="card-body">
             <h4 class="card-title"><g:message code="project.details.tell"/></h4>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="name"><g:message
                         code="project.details.name"/><fc:iconHelp><g:message
                         code="project.details.name.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isWorks()" class="row form-group">
+            <div data-bind="visible:!isWorks()" class="row mb-3">
                 <label class="col-from-label col-md-4" for="aim"><g:message
                         code="project.details.aim"/><fc:iconHelp><g:message
                         code="project.details.aim.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -131,7 +131,7 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="description"><g:message
                         code="project.details.description"/><fc:iconHelp><g:message
                         code="project.details.description.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -142,7 +142,7 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="manager"><g:message
                         code="project.details.manager"/><fc:iconHelp><g:message
                         code="project.details.manager.help"/></fc:iconHelp></label>
@@ -152,7 +152,7 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="managerEmail"><g:message
                         code="project.details.managerEmail"/><fc:iconHelp><g:message
                         code="project.details.managerEmail.help"/></fc:iconHelp></label>
@@ -162,7 +162,7 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="plannedStartDate"><g:message
                         code="project.details.plannedStartDate"/>
                     <fc:iconHelp><g:message code="project.details.plannedStartDate.help"/></fc:iconHelp><i
@@ -177,7 +177,7 @@
                 </div>
             </div>
 
-            <div class="row form-group" data-bind="visible:!isWorks()">
+            <div class="row mb-3" data-bind="visible:!isWorks()">
                 <label class="col-from-label col-md-4" for="plannedEndDate"><g:message
                         code="project.details.plannedEndDate"/>
                 <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp>
@@ -195,7 +195,7 @@
                 </div>
             </div>
 
-            <div class="row form-group" data-bind="visible:isWorks()">
+            <div class="row mb-3" data-bind="visible:isWorks()">
                 <label class="col-from-label col-md-4" for="plannedEndDate"><g:message
                         code="project.details.plannedEndDate"/>
                     <fc:iconHelp><g:message code="project.details.plannedEndDate.help"/></fc:iconHelp><i
@@ -215,7 +215,7 @@
 
 
             <div id="associatedOrgs">
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="associatedOrgList">
                         <g:message code="project.details.associatedOrgs"/>:
                         <fc:iconHelp><g:message code="project.details.associatedOrgs.help"/></fc:iconHelp>
@@ -253,7 +253,7 @@
 
                 <div data-bind="with: associatedOrganisationSearch">
                     <div id="addAssociatedOrgPanel">
-                        <div class="row form-group">
+                        <div class="row mb-3">
                             <label class="col-form-label col-md-4"
                                    for="associatedOrgName"><g:message
                                     code="project.details.associatedOrgs.name"/><i class="req-field"
@@ -281,7 +281,7 @@
 
                         <div class="organisation-search" data-bind="slideVisible: navigationShouldBeVisible()">
                             <div data-bind="slideVisible: !$parent.transients.associatedOrgNotInList()">
-                                <div class="row form-group">
+                                <div class="row mb-3">
                                     <div class="col-md-4"></div>
 
                                     <div class="col-md-8">
@@ -290,10 +290,10 @@
                                         </p>
 
                                         <div class="organisation-list">
-                                            <ul class="list-unstyled ml-1">
+                                            <ul class="list-unstyled ms-1">
                                                 <!-- ko foreach : organisations -->
                                                 <li data-bind="css:{active:$parent.isSelected($data)}">
-                                                    <a class="btn btn-link text-left"
+                                                    <a class="btn btn-link text-start"
                                                        data-bind="click:$parent.select, text:name"></a>
                                                 </li>
                                                 <!-- /ko -->
@@ -305,7 +305,7 @@
                                 </div>
                             </div>
 
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <div class="col-md-4"></div>
 
                                 <div class="col-md-8">
@@ -322,7 +322,7 @@
                                 </div>
                             </div>
 
-                            <div class="row form-group" data-bind="visible: $parent.transients.associatedOrgNotInList()">
+                            <div class="row mb-3" data-bind="visible: $parent.transients.associatedOrgNotInList()">
                                 <div class="col-md-4"></div>
 
                                 <div class="col-md-8">
@@ -330,7 +330,7 @@
                                         <g:message code="project.details.associatedOrgs.notInList.extra"/>
                                     </p>
 
-                                    <div class="row form-group">
+                                    <div class="row mb-3">
                                         <label class="col-form-label col-md-4"
                                                for="associatedOrgUrl"><g:message
                                                 code="project.details.associatedOrgs.url"/></label>
@@ -341,7 +341,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row form-group">
+                                    <div class="row mb-3">
                                         <label class="col-form-label col-md-4"
                                                for="associatedOrgLogo"><g:message
                                                 code="project.details.associatedOrgs.logo"/></label>
@@ -355,13 +355,13 @@
                                 </div>
                             </div>
 
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <div class="offset-md-4 col-md-8">
                                     <div id="orgAlreadyAddedMessage"></div>
                                 </div>
                             </div>
 
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <div class="offset-md-4 col-md-8">
                                     <button class="btn btn-primary-dark"
                                             data-bind="click: addSelectedOrganisation, enable: selection() || searchTerm() && $parent.transients.associatedOrgNotInList() ">
@@ -374,7 +374,7 @@
                 </div>
 
                 <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_INDUSTRIES}">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                             <label class="col-from-label col-md-4"><g:message
                                     code="project.details.industries.label"/>:<fc:iconHelp><g:message
                                     code="project.details.industries.help"/></fc:iconHelp></label>
@@ -389,7 +389,7 @@
                 </config:optionalContent>
 
                 <g:if test="${!hubConfig.content?.hideProjectEditCountries}">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                             <label class="col-from-label col-md-4" for="associatedOrgList"><g:message
                                     code="project.details.countries.label"/>:<fc:iconHelp><g:message
                                     code="project.details.countries.help"/></fc:iconHelp><i class="req-field"></i></label>
@@ -411,13 +411,13 @@
                                             </div>
                                         </div>
                                         <!-- /ko -->
-                                        <select class="form-control" id="countries"
+                                        <select class="form-select" id="countries"
                                                 data-bind="options: $root.transients.countries, event:{change: $root.transients.selectCountry}, optionsCaption: '<g:message
                                                         code="project.details.countries.placeholder"/>'"></select>
                                     </div>
 
                                     <div class="col-md-8">
-                                        <div class="row form-group">
+                                        <div class="row mb-3">
                                             <label class="col-from-label col-md-3"><g:message
                                                         code="project.details.uNRegions.label"/>:<fc:iconHelp><g:message
                                                         code="project.details.uNRegions.help"/></fc:iconHelp><i
@@ -438,7 +438,7 @@
                                                     </div>
                                                     </div>
                                                     <!-- /ko -->
-                                                    <select class="form-control" id="uNRegionsId"
+                                                    <select class="form-select" id="uNRegionsId"
                                                             data-bind="options: $root.transients.uNRegions, event:{change: $root.transients.selectUNRegion}, optionsCaption: '<g:message
                                                                     code="project.details.uNRegions.placeholder"/>'"></select>
                                                 </div>
@@ -449,13 +449,13 @@
                     </div>
                 </g:if>
                 <g:if test="${hubConfig.content?.showCustomMetadata}">
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="indigenousCulturalIP"><g:message
                             code="project.details.indigenousCulturalIP"/><fc:iconHelp><g:message
                             code="project.details.indigenousCulturalIP.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                     <div class="col-md-8">
-                        <select class="form-control" id="indigenousCulturalIP"
+                        <select class="form-select" id="indigenousCulturalIP"
                                 data-bind="value:customMetadata.indigenousCulturalIP" data-validation-engine="validate[required]">
                             <option value="">Please Select</option>
                             <option value="Yes">Yes</option>
@@ -465,12 +465,12 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="ethicsApproval"><g:message
                             code="project.details.ethicsApproval"/></label>
 
                     <div class="col-md-8">
-                        <select class="form-control" id="ethicsApproval"
+                        <select class="form-select" id="ethicsApproval"
                                 data-bind="value:customMetadata.ethicsApproval">
                             <option value="">Please Select</option>
                             <option value="Yes">Yes</option>
@@ -480,7 +480,7 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="ethicsNumber"><g:message
                             code="project.details.ethicsNumber"/></label>
 
@@ -491,7 +491,7 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="ethicsContact"><g:message
                             code="project.details.ethicsContact"/></label>
 
@@ -503,19 +503,19 @@
                 </div>
                 </g:if>
 
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="bushfire"><g:message
                             code="project.details.bushfire"/><fc:iconHelp><g:message
                             code="project.details.bushfire.help"/></fc:iconHelp></label>
 
                     <div class="col-md-8">
-                        <select class="form-control" id="bushfire"
+                        <select class="form-select" id="bushfire"
                               data-bind="booleanValue:isBushfire, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select>
                     </div>
                 </div>
 
                 <config:optionalContent key="${au.org.ala.biocollect.merit.hub.HubSettings.CONTENT_BUSHFIRE_CATEGORIES}">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-from-label col-md-4"><g:message
                                 code="project.details.bushfireCategories.label"/>:<fc:iconHelp><g:message
                                 code="project.details.bushfireCategories.help"/></fc:iconHelp></label>
@@ -530,7 +530,7 @@
                 </config:optionalContent>
 
                 <g:if test="${!hubConfig.content?.hideProjectEditScienceTypes}">
-                    <div class="row form-group" data-bind="if:isEcoScience()">
+                    <div class="row mb-3" data-bind="if:isEcoScience()">
                         <label class="col-from-label col-md-4"><g:message
                                 code="project.details.scienceType"/><fc:iconHelp><g:message
                                 code="project.details.scienceType.help"/></fc:iconHelp></label>
@@ -557,7 +557,7 @@
         <div class="card-body">
             <h4 class="card-title"><g:message code="project.details.associations"/></h4>
 
-            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row form-group">
+            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row mb-3">
                 <label class="col-from-label col-md-4" for="externalId"><g:message
                         code="project.details.externalId"/><fc:iconHelp><g:message
                         code="project.details.externalId.help"/></fc:iconHelp></label>
@@ -567,7 +567,7 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row form-group">
+            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row mb-3">
                 <label class="col-from-label col-md-4" for="grantId"><g:message
                         code="project.details.grantId"/><fc:iconHelp><g:message
                         code="project.details.grantId.help"/></fc:iconHelp></label>
@@ -577,7 +577,7 @@
                 </div>
             </div>
 
-            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row form-group">
+            <div data-bind="visible:!isCitizenScience() && (isEcoScience() || !isExternal())" class="row mb-3">
                 <label class="col-from-label col-md-4" for="fundingSourceAmount"><g:message
                         code="project.details.funding"/><fc:iconHelp><g:message
                         code="project.details.funding.help"/></fc:iconHelp></label>
@@ -599,7 +599,7 @@
                         <tr>
                             <td><g:textField class="form-control" name="fundingSource" data-bind="value:fundingSource"
                                              data-validation-engine="validate[required]"></g:textField></td>
-                            <td><select class="form-control" name="fundingType"
+                            <td><select class="form-select" name="fundingType"
                                         data-bind="options:$parent.fundingTypes,value:fundingType"></select></td>
                             <td><g:field class="form-control"  type="number" step="any" min="0" name="fundingSourceAmount"
                                          data-bind="value:fundingSourceAmount"
@@ -626,31 +626,31 @@
             </div>
 
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="program"><g:message
                         code="project.details.program"/><fc:iconHelp><g:message
                         code="project.details.program.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                 <div class="col-md-8">
-                    <select class="form-control" id="program"
+                    <select class="form-select" id="program"
                             data-bind="disable: transients.programs.length == 1,  value:associatedProgram,options:transients.programs,optionsCaption: 'Choose...'"
                             data-validation-engine="validate[required]"></select>
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="subProgram"><g:message
                         code="project.details.subprogram"/><fc:iconHelp><g:message
                         code="project.details.subprogram.help"/></fc:iconHelp></label>
 
                 <div class="col-md-8">
-                    <select class="form-control" id="subProgram"
+                    <select class="form-select" id="subProgram"
                             data-bind="value:associatedSubProgram,options:transients.subprogramsToDisplay,optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
 
             <div data-bind="visible:!isCitizenScience() && !isWorks() && (isEcoScience() || !isExternal()), with: granteeOrganisation">
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4"><g:message
                             code="project.details.orgGrantee"/><fc:iconHelp><g:message
                             code="project.details.orgGrantee.help"/></fc:iconHelp></label>
@@ -671,16 +671,16 @@
                 </div>
 
                 <div data-bind="slideVisible:displayNavigationControls()">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-md-4"></div>
 
                         <div class="col-md-8">
                             <p><b>Organisation Search Results</b> (Click an organisation to select it)</p>
 
                             <div class="organisation-list">
-                                <ul class="list-unstyled ml-1">
+                                <ul class="list-unstyled ms-1">
                                     <!-- ko foreach : organisations -->
-                                    <li data-bind="css:{active:$parent.isSelected($data)}"><a class="btn btn-link text-left"
+                                    <li data-bind="css:{active:$parent.isSelected($data)}"><a class="btn btn-link text-start"
                                             data-bind="click:$parent.select, text:name"></a></li>
                                     <!-- /ko -->
                                 </ul>
@@ -690,7 +690,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-md-4"></div>
 
                         <div class="col-md-8">
@@ -713,7 +713,7 @@
             </div>
 
             <div data-bind="visible:!isCitizenScience() && !isWorks() && (isEcoScience() || !isExternal()), with: sponsorOrganisation">
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4"><g:message
                             code="project.details.orgSponsor"/><fc:iconHelp><g:message
                             code="project.details.orgSponsor.help"/></fc:iconHelp></label>
@@ -734,17 +734,17 @@
                 </div>
 
                 <div data-bind="slideVisible:displayNavigationControls()">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-md-4"></div>
 
                         <div class="col-md-8">
                             <p><b>Organisation Search Results</b> (Click an organisation to select it)</p>
 
                             <div class="organisation-list">
-                                <ul class="list-unstyled ml-1">
+                                <ul class="list-unstyled ms-1">
                                     <!-- ko foreach : organisations -->
                                     <li data-bind="css:{active:$parent.isSelected($data)}">
-                                        <a class="btn btn-link text-left" data-bind="click:$parent.select, text:name"></a>
+                                        <a class="btn btn-link text-start" data-bind="click:$parent.select, text:name"></a>
                                     </li>
                                     <!-- /ko -->
                                 </ul>
@@ -754,7 +754,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-md-4"></div>
 
                         <div class="col-md-8">
@@ -778,30 +778,30 @@
             </div>
 
             %{--When is the service provider organisation going to show?--}%
-            <div data-bind="visible:!isCitizenScience() && !isWorks() && !isEcoScience()" class="row form-group">
+            <div data-bind="visible:!isCitizenScience() && !isWorks() && !isEcoScience()" class="row mb-3">
                 <label class="col-from-label col-md-4"
                        for="orgSvcProvider"><g:message code="project.details.orgSvcProvider"/></label>
 
                 <div class="col-md-8">
-                    <select class="form-control" id="orgSvcProvider"
+                    <select class="form-select" id="orgSvcProvider"
                             data-bind="options:transients.organisations, optionsText:'name', optionsValue:'uid', value:orgIdSvcProvider, optionsCaption: 'Choose...'"></select>
                 </div>
             </div>
             <g:if test="${hubConfig.content?.showCustomMetadata}">
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="raid"><g:message code="project.details.raid"/><i class="req-field"></i></label>
                     <div class="col-md-8">
                         <g:textField class="form-control" name="raid" data-bind="value:raidExternalId" data-validation-engine="validate[required]"/>
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="category"><g:message
-                            code="project.details.category"/>&nbsp;<span tabindex="-1" data-original-title="" data-placement="top" title="<g:message code="project.details.category.helptext"/>" data-toggle="tooltip">
+                            code="project.details.category"/>&nbsp;<span tabindex="-1" data-original-title="" data-bs-placement="top" title="<g:message code="project.details.category.helptext"/>" data-bs-toggle="tooltip">
                         <i class="fas fa-question-circle">&nbsp;</i>
                     </span>&nbsp;<i class="req-field"></i></label>
                     <div class="col-md-8">
-                        <select class="form-control" id="category"
+                        <select class="form-select" id="category"
                                 data-bind="value:customMetadata.category" data-validation-engine="validate[required]">
                             <option value="">Please Select</option>
                             <option value="Category 1: Indigenous-led">Category 1: Indigenous-led</option>
@@ -812,12 +812,12 @@
                     </div>
                 </div>
 
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="nationwide"><g:message
                             code="project.details.nationalScale"/></label>
 
                     <div class="col-md-8">
-                        <select class="form-control" id="nationwide"
+                        <select class="form-select" id="nationwide"
                                 data-bind="booleanValue:geographicInfo.nationwide, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Please Select'"></select>
                     </div>
                 </div>
@@ -829,7 +829,7 @@
         <div class="card-body">
             <h4 class="card-title"><g:message code="project.details.involved"/></h4>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="getInvolved"><g:message
                         code="project.details.involved"/><fc:iconHelp><g:message
                         code="project.details.involved.help"/></fc:iconHelp></label>
@@ -840,13 +840,13 @@
                 </div>
             </div>
             <g:if test="${!hubConfig.content?.hideProjectEditScienceTypes}">
-                <div id="scienceTypeControlGroup" class="row form-group">
+                <div id="scienceTypeControlGroup" class="row mb-3">
                     <label class="col-from-label col-md-4"><g:message
                             code="project.details.scienceType"/><fc:iconHelp><g:message
                             code="project.details.scienceType.help"/></fc:iconHelp><i class="req-field"></i></label>
 
                     <div class="col-md-8">
-                        <div class="row form-group">
+                        <div class="row mb-3">
                             <!-- ko foreach: transients.availableScienceTypes -->
                             <div class="col-12 col-md-4">
 
@@ -860,25 +860,25 @@
                     </div>
                 </div>
             </g:if>
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4"><g:message
                         code="project.details.difficulty"/><fc:iconHelp><g:message
                         code="project.details.difficulty.help"/></fc:iconHelp></label>
 
                 <div class="col-md-8">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-md-4">
-                            <select class="form-control" data-bind="value:difficulty, options:transients.difficultyLevels, optionsCaption:'Select...'"></select>
+                            <select class="form-select" data-bind="value:difficulty, options:transients.difficultyLevels, optionsCaption:'Select...'"></select>
                         </div>
 
                         <div class="col-md-8">
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <label class="col-form-label col-md-4" for="isHome"><g:message
                                         code="project.details.isHome"/><fc:iconHelp><g:message
                                         code="project.details.isHome.help"/></fc:iconHelp></label>
 
                                 <div class="col-md-8">
-                                    <select class="form-control" id="isHome"
+                                    <select class="form-select" id="isHome"
                                             data-bind="booleanValue:isHome, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
                                     </select>
                                 </div>
@@ -888,27 +888,27 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="hasParticipantCost"><g:message
                         code="project.details.hasParticipantCost"/><fc:iconHelp><g:message
                         code="project.details.hasParticipantCost.help"/></fc:iconHelp></label>
 
                 <div class="col-md-8">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-md-4">
-                            <select class="form-control" id="hasParticipantCost"
+                            <select class="form-select" id="hasParticipantCost"
                                     data-bind="booleanValue:hasParticipantCost, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
                             </select>
                         </div>
 
                         <div class="col-md-8">
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <label class="col-form-label col-md-4" for="isSuitableForChildren"><g:message
                                         code="project.details.isSuitableForChildren"/><fc:iconHelp><g:message
                                         code="project.details.isSuitableForChildren.help"/></fc:iconHelp></label>
 
                                 <div class="col-md-8">
-                                    <select class="form-control" id="isSuitableForChildren"
+                                    <select class="form-select" id="isSuitableForChildren"
                                             data-bind="booleanValue:isSuitableForChildren, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
                                     </select>
                                 </div>
@@ -918,27 +918,27 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="hasTeachingMaterials"><g:message
                         code="project.details.hasTeachingMaterials"/><fc:iconHelp><g:message
                         code="project.details.hasTeachingMaterials.help"/></fc:iconHelp></label>
 
                 <div class="col-md-8">
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <div class="col-md-4">
-                            <select class="form-control" id="hasTeachingMaterials"
+                            <select class="form-select" id="hasTeachingMaterials"
                                     data-bind="booleanValue:hasTeachingMaterials, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
                             </select>
                         </div>
 
                         <div class="col-md-8">
-                            <div class="row form-group">
+                            <div class="row mb-3">
                                 <label class="col-form-label col-md-4" for="isDIY"><g:message
                                         code="project.details.isDIY"/><fc:iconHelp><g:message
                                         code="project.details.isDIY.help"/></fc:iconHelp></label>
 
                                 <div class="col-md-8">
-                                    <select class="form-control" id="isDIY"
+                                    <select class="form-select" id="isDIY"
                                             data-bind="booleanValue:isDIY, options:[{label:'Yes', value:'true'}, {label:'No', value:'false'}], optionsText:'label', optionsValue:'value', optionsCaption:'Select...'">
                                     </select>
                                 </div>
@@ -948,7 +948,7 @@
                 </div>
             </div>
 
-            <div class="row form-group" data-bind="visible:!isEcoScience()">
+            <div class="row mb-3" data-bind="visible:!isEcoScience()">
                 <label class="col-from-label col-md-4"><g:message code="project.details.gear"/><fc:iconHelp><g:message
                         code="project.details.gear.help"/></fc:iconHelp></label>
 
@@ -957,7 +957,7 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4"><g:message code="project.details.task"/><fc:iconHelp><g:message
                         code="project.details.task.help"/></fc:iconHelp><i class="req-field"></i></label>
 
@@ -973,7 +973,7 @@
         <div class="card-body">
             <h4 class="card-title"><g:message code="project.details.find"/></h4>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="urlWeb"><g:message
                         code="project.details.website"/><fc:iconHelp><g:message
                         code="project.details.website.help"/></fc:iconHelp></label>
@@ -994,7 +994,7 @@
             <g:render template="/shared/editDocumentLinks"
                       model="${[entity: 'project', imageUrl: asset.assetPath(src: 'filetypes'), isProject: true]}"/>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="keywords"><g:message
                         code="project.details.keywords"/><fc:iconHelp><g:message
                         code="project.details.keywords.help"/></fc:iconHelp></label>
@@ -1011,7 +1011,7 @@
         <div class="card-body">
             <h4 class="card-title"><g:message code="project.details.image"/></h4>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="logo"><g:message
                         code="project.details.logo"/><fc:iconHelp><g:message
                         code="project.details.logo.help"/></fc:iconHelp></label>
@@ -1043,7 +1043,7 @@
                 </div>
             </div>
 
-            <div class="row form-group" data-bind="visible: logoUrl()">
+            <div class="row mb-3" data-bind="visible: logoUrl()">
                 <label class="col-from-label col-md-4" for="logoCredit"><g:message
                         code="project.details.logo.attribution"/><fc:iconHelp><g:message
                         code="project.details.logo.attribution.help"/></fc:iconHelp></label>
@@ -1053,7 +1053,7 @@
                 </div>
             </div>
 
-            <div class="row form-group">
+            <div class="row mb-3">
                 <label class="col-from-label col-md-4" for="mainImage"><g:message
                         code="project.details.mainImage"/><fc:iconHelp><g:message
                         code="project.details.mainImage.help"/></fc:iconHelp></label>
@@ -1084,7 +1084,7 @@
                 </span>
             </div>
 
-            <div class="row form-group" data-bind="visible: mainImageUrl()">
+            <div class="row mb-3" data-bind="visible: mainImageUrl()">
                 <label class="col-from-label col-md-4" for="mainImageCredit"><g:message
                         code="project.details.mainImage.attribution"/><fc:iconHelp><g:message
                         code="project.details.mainImage.attribution.help"/></fc:iconHelp></label>
@@ -1124,7 +1124,7 @@
             <div class="card-body">
                 <h4 class="card-title"><g:message code="project.details.termsOfUseAgreement"/></h4>
 
-                <div class="row form-group">
+                <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="termsOfUseAgreement"><g:message
                             code="project.details.termsOfUseAgreement"/><fc:iconHelp><g:message
                             code="project.details.termsOfUseAgreement.help"/></fc:iconHelp></label>

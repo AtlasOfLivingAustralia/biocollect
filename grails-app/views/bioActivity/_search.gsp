@@ -1,6 +1,6 @@
 <div class="row" data-bind="slideVisible: searchView()">
     <div class="col-12">
-        <div class="input-group float-right">
+        <div class="input-group float-end">
             <input type="text" class="form-control list-search-text-input"
                    data-bind="value: searchTerm, valueUpdate: 'input', enter: search"
                    placeholder="Search records" aria-label="Search records"
@@ -12,7 +12,7 @@
                 </button>
             </div>
         </div>
-        <span class="search-spinner spinner margin-left-1 float-right"><i
+        <span class="search-spinner spinner margin-left-1 float-end"><i
                 class='fa fa-spin fa-spinner'></i> Searching...</span>
     </div>
 </div>

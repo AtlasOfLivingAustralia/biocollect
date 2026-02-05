@@ -7,21 +7,21 @@
             <div class="container-fluid data-expander data-container show">
                 <div id="sortBar" class="row align-items-end">
                     <div class="col-12 col-md-4 mb-3 order-1 order-md-0">
-                        <button data-toggle="collapse" data-target=".data-expander"
+                        <button data-bs-toggle="collapse" data-bs-target=".data-expander"
                                 aria-expanded="true" aria-controls="filters"
                                 class="btn btn-dark" title="Filter Data">
                             <i class="fas fa-filter"></i> Filter Data
                         </button>
                     </div>
-                    <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
+                    <div class="col col-sm-6 col-md-4 mb-3 text-end text-md-center order-2 order-md-1 ps-1">
                         <div class="btn-group">
                             <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a class="btn btn-outline-dark" id="data-grid-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark" id="data-grid-tab" data-bs-toggle="tab" type="button"
                                    href="#dataGrid" title="<g:message code="data.grid.title"/>"
                                    role="tab" aria-controls="<g:message code="data.grid.title"/>">
                                     <i class="fas fa-th-large"></i>
                                 </a>
-                                <a class="btn btn-outline-dark active" id="data-list-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark active" id="data-list-tab" data-bs-toggle="tab" type="button"
                                    href="#recordVis" title="<g:message code="data.list.title"/>"
                                    role="tab" aria-controls="<g:message code="data.list.title"/>" aria-selected="true">
                                     <i class="fas fa-list"></i>
@@ -32,12 +32,12 @@
                                    role="tab" aria-controls="<g:message code="data.map.title"/>">
                                     <i class="far fa-map"></i>
                                 </a>
-                                <a class="btn btn-outline-dark" id="data-image-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark" id="data-image-tab" data-bs-toggle="tab" type="button"
                                    href="#imageGallery" title="<g:message code="data.image.title"/>"
                                    role="tab" aria-controls="<g:message code="data.image.title"/>">
                                     <i class="far fa-images"></i>
                                 </a>
-                                <a class="btn btn-outline-dark" id="data-chart-tab" data-toggle="tab" type="button"
+                                <a class="btn btn-outline-dark" id="data-chart-tab" data-bs-toggle="tab" type="button"
                                    href="#chartGraph" title="<g:message code="data.chart.title"/>"
                                    role="tab" aria-controls="<g:message code="data.chart.title"/>">
                                     <i class="fas fa-chart-pie"></i>
@@ -59,13 +59,13 @@
                                 <button type="button" class="btn btn-primary" data-bind="click: download">Download</button>
                                 <button type="button"
                                         class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                                        data-toggle="dropdown"
+                                        data-bs-toggle="dropdown"
                                         aria-haspopup="true"
                                         aria-expanded="false">
-                                    <span class="sr-only"><g:message code="split.download.dropdown"/></span>
+                                    <span class="visually-hidden"><g:message code="split.download.dropdown"/></span>
                                 </button>
 
-                                <div class="dropdown-menu dropdown-menu-right p-3 download-options">
+                                <div class="dropdown-menu dropdown-menu-end p-3 download-options">
                                     <strong class="d-block mb-2"><g:message code="split.download.options"/></strong>
 
                                     <div class="form-check">
@@ -130,7 +130,7 @@
                                 Indicates species absence record
                             </span>
                         </div>
-                        <div class="order-1 order-xl-2 col-6 col-xl-auto flex-shrink-1 text-right">
+                        <div class="order-1 order-xl-2 col-6 col-xl-auto flex-shrink-1 text-end">
                             <span class="d-none" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner"></i> Preparing download, please wait...</span>
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                             <div class="mb-2 alert alert-info" role="alert">
                                 <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
                             </div>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="email">Email address</label>
                                 <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
                             </div>
@@ -178,7 +178,7 @@
                         <div class="records-list row d-flex flex-wrap mt-4 mt-md-4 mb-3">
                             <!-- ko if: activities().length == 0 -->
                             <div class="col-12 d-flex">
-                                <h3 class="text-left mb-1">
+                                <h3 class="text-start mb-1">
                                     <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
                                         No data has been recorded for this project yet
                                     </span>
@@ -196,7 +196,7 @@
                                             <img onload="findLogoScalingClass(this, 200, 150);addClassForImage(this, '${noImageUrl}', 'w-25')" data-bind="attr:{src: thumbnailUrl}"
                                                  onerror="imageError(this, '${noImageUrl}');"/>
                                         </div>
-                                        <div class="col-12 col-sm-7 pl-sm-1">
+                                        <div class="col-12 col-sm-7 ps-sm-1">
                                             <h4 data-bind="text: name"></h4>
                                             <ul class="detail-list">
                                                 <li><span class="label">Submitted On:</span>
@@ -239,7 +239,7 @@
                                             <img data-bind="attr:{src: transients.thumbnailUrl}" onload="findLogoScalingClass(this, 200, 150)"
                                                  onerror="imageError(this, '${noImageUrl}');"/>
                                         </div>
-                                        <div class="col-12 col-sm-7 pl-sm-1">
+                                        <div class="col-12 col-sm-7 ps-sm-1">
                                             <h4 data-bind="text: name"></h4>
                                             <ul class="detail-list">
                                                 <li><span class="label">Submitted On:</span>
@@ -280,7 +280,7 @@
                         <!-- ko if: activities().length == 0 -->
                         <div class="row">
                             <div class="col-12">
-                                <h3 class="text-left mb-1">
+                                <h3 class="text-start mb-1">
                                     <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
                                         No data has been recorded for this project yet
                                     </span>
@@ -294,7 +294,7 @@
 
                         <div class="row" data-bind="visible: version().length == 0">
                             <div class="col-12">
-                                <div class="float-right mb-2 mt-1">
+                                <div class="float-end mb-2 mt-1">
                                     <!-- ko if:  transients.isBulkActionsEnabled -->
                                     <span><g:message code="data.bulk.actions.label"/>
                                         <div class="btn-group" role="group" aria-label="<g:message code="data.bulk.actions.label" />">
@@ -575,7 +575,7 @@
                             <i class="fa fa-spin fa-spinner"></i>&nbsp;Loading...
                         </span>
                         <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
-                            <span class="text-left mb-1">
+                            <span class="text-start mb-1">
                                 <span data-bind="if: transients.loading()">
                                     <i class="fa fa-spin fa-spinner"></i>&nbsp;Loading...
                                 </span>

@@ -16,7 +16,7 @@
                     <!-- ko if: projectActivities().length > 0 -->
                      <span> <b> Select survey: </b></span>
                      <div class="btn-group" role="group">
-                         <button type="button" class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                         <button type="button" class="btn btn-sm btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <!-- ko  foreach: projectActivities -->
                                 <span data-bind="if: current">
                                    <span data-bind="text: name"></span> <span class="caret"></span>
@@ -31,7 +31,7 @@
                                     <span data-bind="if:!published()"> <small>X</small></span>
                                     </span>
                                     <span data-bind="text: name"></span>
-                                    <span data-bind="if: current"> <span class="badge badge-info">selected</span></span>
+                                    <span data-bind="if: current"> <span class="badge text-bg-info">selected</span></span>
                                 </a>
                             <!-- /ko -->
                           </div>
@@ -55,13 +55,13 @@
             <div class="col-12">
 
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
-                    <li class="nav-item"><a class="nav-link active" href="#survey-info" id="survey-info-tab" data-toggle="tab">Survey Info</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-visibility" id="survey-visibility-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Visibility</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-alert" id="survey-alert-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Alert</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-form" id="survey-form-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Survey Form</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-species" id="survey-species-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Species</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-locations" id="survey-locations-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Locations</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-publish" id="survey-publish-tab" data-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Publish</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#survey-info" id="survey-info-tab" data-bs-toggle="tab">Survey Info</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-visibility" id="survey-visibility-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Visibility</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-alert" id="survey-alert-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Alert</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-form" id="survey-form-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Survey Form</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-species" id="survey-species-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Species</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-locations" id="survey-locations-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Locations</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-publish" id="survey-publish-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Publish</a></li>
                 </ul>
 
                 <div class="tab-content">

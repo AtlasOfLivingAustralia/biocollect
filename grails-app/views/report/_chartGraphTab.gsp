@@ -10,7 +10,7 @@
                     <div class="input-group-prepend">
                         <label for="associatedProgram" class="input-group-text">Program</label>
                     </div>
-                    <select id="associatedProgram" class="custom-select" data-bind="options: associatedProgramFilterFieldOptions, optionsCaption: 'No Filters', value: associatedProgramFilterField"></select>
+                    <select id="associatedProgram" class="form-select" data-bind="options: associatedProgramFilterFieldOptions, optionsCaption: 'No Filters', value: associatedProgramFilterField"></select>
                     <div class="input-group-append">
                         <button id="addAssociatedProgram" class="btn btn-primary-dark" data-bind="click: addAssociatedProgram"><i class="fas fa-plus"></i> Add</button>
                     </div>
@@ -22,7 +22,7 @@
                     <div class="input-group-prepend">
                         <label for="electorate" class="input-group-text">Electorate</label>
                     </div>
-                    <select id="electorate" class="custom-select" data-bind="options: electorateFilterFieldOptions, optionsCaption: 'No Filters', value: electorateFilterField"></select>
+                    <select id="electorate" class="form-select" data-bind="options: electorateFilterFieldOptions, optionsCaption: 'No Filters', value: electorateFilterField"></select>
                     <div class="input-group-append">
                         <button id="addElectorate" class="btn btn-primary-dark" data-bind="click: addElectorate"><i class="fas fa-plus"></i> Add</button>
                     </div>

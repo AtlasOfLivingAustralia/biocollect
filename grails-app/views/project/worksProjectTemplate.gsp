@@ -223,7 +223,7 @@
 
             var dashboardInitialised = false;
 
-            $('#ul-main-project a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+            $('#ul-main-project a[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
                 var tab = e.currentTarget.hash;
                 // only init map when the tab is first shown
                 if (tab === '#site' && map === undefined) {
@@ -366,7 +366,7 @@
             });
 
             // Non-editors should get tooltip and popup when trying to click other tabs
-            $('#projectTabs li a').not('[data-toggle="tab"]').css('cursor', 'not-allowed') //.data('placement',"right")
+            $('#projectTabs li a').not('[data-bs-toggle="tab"]').css('cursor', 'not-allowed') //.data('placement',"right")
             .attr('title','Only available to project members').addClass('tooltips');
 
             new RestoreTab('ul-main-project', 'about-tab');
@@ -392,7 +392,7 @@
         // Admin JS code only exposed to admin users
 
             // remember state of admin nav (vertical tabs)
-            $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {
+            $('#adminNav a[data-bs-toggle="tab"]').on('shown', function (e) {
                 var tab = e.currentTarget.hash;
                 amplify.store('project-admin-tab-state', tab);
             });

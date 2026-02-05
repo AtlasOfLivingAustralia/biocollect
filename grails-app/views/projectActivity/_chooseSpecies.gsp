@@ -1,11 +1,11 @@
 <!-- data-table select species list -->
 <span data-bind="visible: transients.showExistingSpeciesLists">
-    <button type="button" class="close mr-2 mt-2"  data-bind="click:transients.toggleShowExistingSpeciesLists">&times;</button>
+    <button type="button" class="close me-2 mt-2"  data-bind="click:transients.toggleShowExistingSpeciesLists">&times;</button>
     <div>
         <h4>Choose from existing species lists</h4>
         <div class="row mb-2">
             <div class="col-12">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <label class="col-12 col-md-5 col-form-label" for="speciesNameSearch">Enter a list name or select a species name to search for</label>
                     <div class="input-group input-group-sm col-12 col-md-7">
                         <input id="speciesNameSearch" class="form-control" type="text" placeholder="Search list or species"

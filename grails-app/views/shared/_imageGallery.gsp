@@ -5,7 +5,7 @@
         <div class="thumbnails row">
             <!-- ko foreach: recordImages -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 mt-1">
-                <div class="projectLogo" data-toggle="popover" data-trigger="hover" data-title="Photo metadata" data-bind="popover: {placement:'top', content: function(){ return $(this).find('.metadata').html()} }">
+                <div class="projectLogo" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-title="Photo metadata" data-bind="popover: {placement:'top', content: function(){ return $(this).find('.metadata').html()} }">
                     <a href=""
                        data-bind="attr:{href:getImageViewerUrl()}, fancybox: {nextEffect:'fade', preload:0, 'prevEffect':'fade', type: 'iframe', width:'80%', title: function(){ return $(this).next().find('.metadata').html()}}"
                        target="fancybox">

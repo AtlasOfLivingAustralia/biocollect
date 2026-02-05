@@ -18,7 +18,7 @@
             </div>
         </td>
         <td class="type align-top">
-            <select class="form-control" data-bind="options:type.options, value:type"></select>
+            <select class="form-select" data-bind="options:type.options, value:type"></select>
         </td>
         <td class="outcome-progress align-top">
             <textarea class="form-control" data-bind="value:progress" rows="3"></textarea>
@@ -43,7 +43,7 @@
     </tfoot>
 </table>
 
-<div class="row space-after no-gutters">
+<div class="row space-after g-0">
     <div class="col-sm-12">
         <div class="form-actions">
 

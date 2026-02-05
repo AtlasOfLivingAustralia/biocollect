@@ -21,7 +21,7 @@
         });
     </asset:script>
 </head>
-<body data-offset="70" data-target="#page-nav" data-spy="scroll">
+<body data-bs-offset="70" data-bs-target="#page-nav" data-spy="scroll">
 <div class="${fluidLayout?'container-fluid':'container'}">
     <div class="inner">
         <div class="row">

@@ -11,7 +11,7 @@
         <asset:stylesheet src="datatables-manifest.css"/>
         <asset:javascript src="datatables-manifest.js"/>
     <h3>Audit</h3>
-        <form class="form-inline">
+        <form class="d-flex align-items-center">
             Search for a project:
             <g:textField id="searchTerm" name="searchTerm" placeholder="Search for projects..." value="${searchTerm}"></g:textField>
             <button class="btn" id="btnProjectSearch"><i class="icon-search"></i></button>

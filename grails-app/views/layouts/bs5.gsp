@@ -31,7 +31,7 @@
 <div class="site " id="page">
     %{--    navbar start--}%
     <div id="wrapper-navbar" itemscope="" itemtype="http://schema.org/WebSite">
-        <a class="skip-link sr-only sr-only-focusable" href="#content">Skip to content</a>
+        <a class="skip-link visually-hidden-focusable" href="#content">Skip to content</a>
 
     <g:if test="${hubConfig.templateConfiguration.header.type == 'ala'}">
         <hf:banner logoutUrl="${g.createLink(controller: "logout", action: "logout", absolute: true)}" fluidLayout="false"/>
@@ -52,7 +52,7 @@
 
                     <div class="main-nav-wrapper">
                         <a href="javascript:" class="navbar-toggler order-3 order-lg-2" type="button"
-                           data-toggle="offcanvas" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+                           data-bs-toggle="offcanvas" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
                            aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </a>
@@ -60,7 +60,7 @@
 
                         <!-- The Main Menu goes here -->
                         <div id="navbarNavDropdown" class="collapse navbar-collapse offcanvas-collapse">
-                            <ul class="navbar-nav ml-auto flex-lg-wrap">
+                            <ul class="navbar-nav ms-auto flex-lg-wrap">
                                 <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                                     <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
                                         <config:getLinkFromConfig config="${link}"
@@ -163,7 +163,7 @@
                                 </ul>
                             </div>
                             <!--col end -->
-                            <div class="col-12 col-md-8 menu-column text-center text-lg-right d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
+                            <div class="col-12 col-md-8 menu-column text-center text-lg-end d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center">
                                 <div class="account mt-3 mt-md-0">
                                     <ul class="social">
                                         <g:if test="${hubConfig.templateConfiguration?.footer?.socials}">
@@ -190,12 +190,12 @@
                                                 <img class="footer-logo d-block d-md-inline-block" src="${logo.url}" alt="Website logo"/>
                                             </g:else>
                                         </g:each>
-                                        <a class="brand text-center text-md-left d-block d-md-inline-block" href="http://ala.org.au/" id="alaLink" title="ALA home page">
+                                        <a class="brand text-center text-md-start d-block d-md-inline-block" href="http://ala.org.au/" id="alaLink" title="ALA home page">
                                             <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
                                                  class="headerLogo"/>
                                             <div id="alaHeadingText"><div id="poweredBy">powered by</div>
                                                 <div id="alaBy" class="d-none d-lg-block">Atlas of Living Australia</div>
-                                                <div class="d-block d-lg-none text-left">ALA</div>
+                                                <div class="d-block d-lg-none text-start">ALA</div>
                                             </div>
                                         </a>
                                     </div>
@@ -236,7 +236,7 @@
         /**
          * Mobile (off-canvas) menu
          */
-        $('[data-toggle="offcanvas"]').on('click', function () {
+        $('[data-bs-toggle="offcanvas"]').on('click', function () {
             $('#page.site').toggleClass('offcanvas-open');
         });
 

@@ -70,13 +70,13 @@
         <bc:koLoading>
         <g:if test="${pActivity?.adminVerification && pActivity?.showVerificationStatus}">
             <div class="row">
-                <div class="col-sm-12 text-right">
+                <div class="col-sm-12 text-end">
                     <g:if test="${activity.verificationStatus == 'approved'}">
-                        <span class="badge badge-success"><g:message code="record.view.verificationStatus"></g:message>:
+                        <span class="badge text-bg-success"><g:message code="record.view.verificationStatus"></g:message>:
                             <g:message code="facets.verificationStatusFacet.${activity.verificationStatus}"></g:message></span>
                     </g:if>
                     <g:else >
-                        <span class="badge badge-danger"><g:message code="record.view.verificationStatus"></g:message>:
+                        <span class="badge text-bg-danger"><g:message code="record.view.verificationStatus"></g:message>:
                             <g:message code="facets.verificationStatusFacet.${activity.verificationStatus}"></g:message></span>
                     </g:else>
                 </div>

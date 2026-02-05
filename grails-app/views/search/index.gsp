@@ -29,7 +29,7 @@
         <g:set var="error" value="${flash.error?:results.error}"/>
         <div class="row-fluid">
             <div class="alert alert-danger large-space-before">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
                 <span>Error: ${error}</span>
             </div>
         </div>
@@ -94,10 +94,10 @@
                             </g:each>
                         </ul>
                         <g:if test="${f?.terms?.size() > max}">
-                            <a href="#${fn}Modal" role="button" class="moreFacets tooltips" data-toggle="modal" title="View full list of values"><i class="icon-hand-right"></i> choose more...</a>
+                            <a href="#${fn}Modal" role="button" class="moreFacets tooltips" data-bs-toggle="modal" title="View full list of values"><i class="icon-hand-right"></i> choose more...</a>
                             <div id="${fn}Modal" class="modal hide fade">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                                     <h3>Filter by ${fName}</h3>
                                 </div>
                                 <div class="modal-body">
@@ -112,7 +112,7 @@
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <a href="#" class="btn" data-dismiss="modal">Close</a>
+                                    <a href="#" class="btn" data-bs-dismiss="modal">Close</a>
                                 </div>
                             </div>
                         </g:if>

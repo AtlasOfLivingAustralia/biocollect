@@ -37,8 +37,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="alert alert-danger" role="alert">
-                    <button class="close" data-dismiss="alert" type="button" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button class="btn-close" data-bs-dismiss="alert" type="button" aria-label="Close">
+                        
                     </button>
                     ${flash.errorMessage ?: flash.message}
                 </div>
@@ -74,21 +74,21 @@
     <form id="sites">
         <fieldset>
             <div class="row mt-3">
-                <div class="col-4 form-group">
+                <div class="col-4 mb-3">
                     <label for="nameAttribute">Shapefile attribute to use as the site name:</label>
-                    <select class="form-control" id="nameAttribute" name="nameAttribute"
+                    <select class="form-select" id="nameAttribute" name="nameAttribute"
                             data-bind="value:nameAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                 </div>
 
-                <div class="col-4 form-group">
+                <div class="col-4 mb-3">
                     <label for="nameAttribute">Shapefile attribute to use as the site description:</label>
-                    <select class="form-control" id="descriptionAttribute" name="descriptionAttribute"
+                    <select class="form-select" id="descriptionAttribute" name="descriptionAttribute"
                             data-bind="value:descriptionAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                 </div>
 
-                <div class="col-4 form-group">
+                <div class="col-4 mb-3">
                     <label for="nameAttribute">Shapefile attribute to use as the site ID:</label>
-                    <select class="form-control" id="externalIdAttribute" name="externalIdAttribute"
+                    <select class="form-select" id="externalIdAttribute" name="externalIdAttribute"
                             data-bind="value:externalIdAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                 </div>
             </div>

@@ -77,7 +77,7 @@
             <div class="col-sm-9">
                 <!-- Common activity fields -->
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
 
                     <div class="col-sm-9 required">
                         <label class="for-readonly" for="description">Description</label>
@@ -86,12 +86,12 @@
                     </div>
                 </div>
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
                     <div class="col-sm-9 " data-bind="visible:transients.themes && transients.themes.length > 1">
                         <label for="theme">Major theme</label>
                         <select id="theme"
                                 data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
-                                class="form-control">
+                                class="form-select">
                         </select>
                     </div>
 
@@ -102,7 +102,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
                     <div class="col-sm-6 d-flex flex-column">
                         <label class="for-readonly inline">Activity progress</label>
                         <button type="button" class="btn col-sm-2"
@@ -113,7 +113,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
 
                     <div class="col-sm-6" data-bind="visible:plannedStartDate()">
                         <div class="d-flex flex-column">
@@ -130,7 +130,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <div class="col-sm-6 required">
                         <label for="startDate"><b>Actual start date</b>
                             <fc:iconHelp title="Start date"

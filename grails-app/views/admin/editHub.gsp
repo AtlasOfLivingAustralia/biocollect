@@ -43,20 +43,20 @@
 <content tag="pageTitle">Manage Hubs</content>
 
 <div class="alert alert-info">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
     <span>You are viewing the hub: ${hubConfig.urlPath}</span>
 </div>
 
 <div class="alert alert-info" data-bind="visible:message()">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
     <span data-bind="text:message"></span>
 </div>
 <div class="row">
     <div class="col-md-6">
-        <div class="form-group row">
+        <div class="mb-3 row">
             <label class="col-md-4 col-form-label">Configured hubs:</label>
             <div class="col-md-8">
-                <select class="form-control" data-bind="value:selectedHubUrlPath, options:hubs"></select>
+                <select class="form-select" data-bind="value:selectedHubUrlPath, options:hubs"></select>
             </div>
         </div>
     </div>
@@ -73,42 +73,42 @@
     <h2><span data-bind="visible:hubId">Editing: </span><span data-bind="visible:!hubId()">Creating: </span> <span data-bind="text:urlPath"></span></h2>
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" href="#hubPrograms" data-toggle="tab">Programs</a>
+            <a class="nav-link active" href="#hubPrograms" data-bs-toggle="tab">Programs</a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="#hubTemplate"  data-toggle="tab">Template</a></li>
-        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubHeader"  data-toggle="tab">Header</a></li>
-        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubFooter"  data-toggle="tab">Footer</a></li>
-        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubBanner"  data-toggle="tab">Banner</a></li>
-        <li class="nav-item"><a class="nav-link" href="#hubContent"  data-toggle="tab">Content</a></li>
-        <li class="nav-item"><a class="nav-link" href="#hubFacet"  data-toggle="tab">Facets</a></li>
-        <li class="nav-item"><a class="nav-link" href="#hubData"  data-toggle="tab">Data</a></li>
-        <li class="nav-item"><a class="nav-link" href="#hubMap"  data-toggle="tab">Map</a></li>
-        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubHomepage"  data-toggle="tab">Homepage</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubTemplate"  data-bs-toggle="tab">Template</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubHeader"  data-bs-toggle="tab">Header</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubFooter"  data-bs-toggle="tab">Footer</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubBanner"  data-bs-toggle="tab">Banner</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubContent"  data-bs-toggle="tab">Content</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubFacet"  data-bs-toggle="tab">Facets</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubData"  data-bs-toggle="tab">Data</a></li>
+        <li class="nav-item"><a class="nav-link" href="#hubMap"  data-bs-toggle="tab">Map</a></li>
+        <li class="nav-item" data-bind="disable: transients.isSkinAConfigurableTemplate"><a class="nav-link" href="#hubHomepage"  data-bs-toggle="tab">Homepage</a></li>
     </ul>
     <div class="tab-content mt-3">
         <div class="tab-pane active" id="hubPrograms">
 
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="name">URL path (added to URL to select the hub)</label>
                 <div class="col-md-8 required">
                     <input type="text" id="name" class="form-control" data-bind="value:urlPath" data-validation-engine="validate[required]">
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="description">Title</label>
                 <div class="col-md-8 required">
                     <textarea rows="3" class="form-control" data-bind="value:title" data-validation-engine="validate[required]" id="description" placeholder="Displays as a heading on the home page"></textarea>
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="description">Home Page Path</label>
                 <div class="col-md-8 required">
                     <input type="text" class="form-control" data-bind="value:homePagePath" placeholder="Relative path to home page (leave blank for default)"></input>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="description">Fathom site id</label>
                 <div class="col-md-8 required">
                     <input type="text" class="form-control" data-bind="value:fathomSiteId" placeholder="Fathom analytics site id"></input>
@@ -122,7 +122,7 @@
                     </div>
                     <div class="offset-4 col-2">
                         <button type="button" class="btn  btn-sm btn-danger" data-bind="visible:faviconlogoUrl(), click:removeFaviconlogo"><i class="far fa-trash-alt"></i> Remove Favicon</button>
-                        <span class="btn fileinput-button float-right btn-dark"
+                        <span class="btn fileinput-button float-end btn-dark"
                               data-url="${createLink(controller: 'image', action:'upload')}"
                               data-role="faviconlogo"
                               data-owner-type="hubId"
@@ -134,7 +134,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="supported-programs">Supported Programs (Projects in this hub can only select from these programs)</label>
                 <div class="col-md-8">
                     <ul class="list-unstyled" id="supported-programs" data-bind="foreach:$parent.transients.programNames">
@@ -143,33 +143,33 @@
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
                 <div class="col-md-8">
-                    <select class="form-control" id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
+                    <select class="form-select" id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
                 </div>
             </div>
         </div>
 
         <div class="tab-pane" id="hubTemplate">
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="skin">Skin</label>
                 <div class="col-md-8 required">
-                    <select class="form-control" id="skin" data-bind="value:skin,options:$parent.transients.availableSkins" data-validation-engine="validate[required]"></select>
+                    <select class="form-select" id="skin" data-bind="value:skin,options:$parent.transients.availableSkins" data-validation-engine="validate[required]"></select>
                 </div>
             </div>
 
             <div data-bind="slideVisible: transients.isSkinAConfigurableTemplate">
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: styles -->
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <label class="col-md-4 col-form-label" for="skin">Colour scheme</label>
                             <div class="col-md-8">
                                 <!-- ko template: { name: 'templateStyles'} -->
                                 <!-- /ko -->
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <label class="col-md-4 col-form-label" for="skin" id="preview">Preview</label>
                             <div class="col-md-8">
                                 <!-- ko template: { name: 'templatePreviewHomePage'} -->
@@ -185,10 +185,10 @@
                 <!-- ko with: templateConfiguration -->
                     <!-- ko with: header -->
                         <h3>Header</h3>
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <label class="col-md-4 col-form-label">Choose between the following header options: </label>
                             <div class="col-md-8">
-                                <select class="form-control" data-bind="value: type">
+                                <select class="form-select" data-bind="value: type">
                                     <option value="">Please choose</option>
                                     <option value="ala">ALA</option>
                                     <option value="custom">Custom header</option>
@@ -240,12 +240,12 @@
                     <!-- ko with: footer -->
                     <div>
                         <h3>Footer</h3>
-                        <div class="form-group row">
+                        <div class="mb-3 row">
                             <label class="col-md-4 col-form-label">
                                 Choose between the following footer options:
                             </label>
                             <div class="col-md-8">
-                                <select class="form-control" data-bind="value: type">
+                                <select class="form-select" data-bind="value: type">
                                     <option value="">Please choose</option>
                                     <option value="ala">ALA</option>
                                     <option value="custom">Custom footer</option>
@@ -339,7 +339,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>
-                                        <span class="btn fileinput-button float-right btn-dark"
+                                        <span class="btn fileinput-button float-end btn-dark"
                                               data-url="${createLink(controller: 'image', action:'upload')}"
                                               data-role="footerlogo"
                                               data-owner-type="hubId"
@@ -371,7 +371,7 @@
                     </div>
                     <div class="offset-4 col-2">
                         <button type="button" class="btn  btn-sm btn-danger" data-bind="visible:logoUrl(), click:removeLogo"><i class="far fa-trash-alt"></i> Remove Logo</button>
-                        <span class="btn fileinput-button float-right btn-dark"
+                        <span class="btn fileinput-button float-end btn-dark"
                               data-url="${createLink(controller: 'image', action:'upload')}"
                               data-role="logo"
                               data-owner-type="hubId"
@@ -414,7 +414,7 @@
                 <div class="row">
                     <div class="col-10"></div>
                     <div class="col-2">
-                        <span class="btn fileinput-button float-right  btn-dark"
+                        <span class="btn fileinput-button float-end  btn-dark"
                               data-url="${createLink(controller: 'image', action:'upload')}"
                               data-role="banner"
                               data-owner-type="hubId"
@@ -636,7 +636,7 @@
             </div>
         </div>
         <div class="tab-pane" id="hubFacet">
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="default-facets-list">Default Facet Query (Searches will automatically include these facets)</label>
                 <div class="col-md-8 btn-space">
                     <ul id="default-facets-list" data-bind="foreach:defaultFacetQuery" class="list-unstyled">
@@ -741,7 +741,7 @@
                             <div>
                                 <h4>Homepage</h4>
                                 <div>
-                                    <select class="form-control" data-bind="value: homePageConfig">
+                                    <select class="form-select" data-bind="value: homePageConfig">
                                         <option value="projectfinder">Project finder</option>
                                         <option value="buttons">Buttons</option>
                                     </select>
@@ -771,13 +771,13 @@
 </div>
 <!-- ko stopBinding: true -->
 <!-- Introductory text Modal -->
-<div class="modal fade vh-100" id="introTextModal" data-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade vh-100" id="introTextModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Introductory text</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
             <div class="modal-body">
@@ -786,7 +786,7 @@
                 </bc:koLoading>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" data-bind="click: saveIntroductoryText">Save</button>
             </div>
         </div>
@@ -799,7 +799,7 @@
             <input class="form-control" type="text" data-bind="value: link.displayName"/>
         </td>
         <td>
-            <select class="form-control" data-bind="value: link.contentType">
+            <select class="form-select" data-bind="value: link.contentType">
                 <option value="content">Biocollect content</option>
                 <option value="static">Static page</option>
                 <option value="external">External link</option>
@@ -831,7 +831,7 @@
         <!-- /ko -->
         <!-- ko if:!disableRoles -->
         <td>
-            <select class="form-control" data-bind="value: link.role">
+            <select class="form-select" data-bind="value: link.role">
                 <option value="">Anyone</option>
                 <g:render template="/admin/userRoleOptions"/>
             </select>
@@ -895,7 +895,7 @@
 <script id="templateSocial" type="text/html">
     <tr>
         <td>
-            <select class="form-control" data-bind="value: contentType">
+            <select class="form-select" data-bind="value: contentType">
                 <option value="youtube">Youtube</option>
                 <option value="facebook">Facebook</option>
                 <option value="twitter">Twitter</option>
@@ -1138,14 +1138,14 @@
 <div class="accordion" id="homePageConfiguration">
     <div>
         <h4>
-            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Project Finder Home Page Config <i class="fas fa-chevron-down float-right"></i>
+            <button class="btn btn-link btn-block text-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Project Finder Home Page Config <i class="fas fa-chevron-down float-end"></i>
             </button>
         </h4>
         <div id="collapseOne" class="collapse show" data-parent="#homePageConfiguration">
             <!-- ko with: projectFinderConfig -->
-                <div class="pl-4">
-                    <div class="form-group row">
+                <div class="ps-4">
+                    <div class="mb-3 row">
                         <label class="col-form-label col-sm-4">Default content view:</label>
                         <div class="col-sm-8">
                             <div class="form-check">
@@ -1168,7 +1168,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="mb-3 row">
                         <label class="col-form-label col-sm-4">Default sort order:</label>
                         <div class="col-sm-8">
                             <div class="form-check">
@@ -1197,7 +1197,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="mb-3 row">
                         <div class="col-12">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="showProjectRegion" data-bind="checked: showProjectRegionSwitch">
@@ -1207,7 +1207,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="mb-3 row">
                         <div class="col-12">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="showProjectDownloadButton" data-bind="checked: showProjectDownloadButton">
@@ -1223,17 +1223,17 @@
     </div>
     <div>
         <h4>
-            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Buttons Home Page Config <i class="fas fa-chevron-down float-right"></i>
+            <button class="btn btn-link btn-block text-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                Buttons Home Page Config <i class="fas fa-chevron-down float-end"></i>
             </button>
         </h4>
         <div id="collapseTwo" class="collapse">
             <!-- ko with: buttonsConfig -->
-                <div class="pl-4">
-                    <div class="form-group row">
+                <div class="ps-4">
+                    <div class="mb-3 row">
                         <label class="col-md-4 col-form-label">Number of columns</label>
                         <div class="col-md-8">
-                            <select class="form-control" data-bind="value: numberOfColumns">
+                            <select class="form-select" data-bind="value: numberOfColumns">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -1282,7 +1282,7 @@
 </script>
 <script id="templateLinkNotes" type="text/html">
     <div class="alert alert-info">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
         <h4>Note!</h4> The value set for href value will vary according to content type selection.<br/>
         <strong>Biocollect content</strong> Href value must start with forward slash - '/' - e.g. '/hub/index'.<br/>
         <strong>Static page</strong> Href value should be a word. This word should be unique to the hub e.g. 'contact'<br/>
@@ -1296,7 +1296,7 @@
     <div class="container-fluid">
         <div class="row previewHeader" data-bind="style:{'background-color': menuBackgroundColor}">
             <div class="col-12">
-                <ul class="list-inline float-right">Choose between the following header option
+                <ul class="list-inline float-end">Choose between the following header option
                     <li class="list-inline-item"><a href="#" data-bind="style:{color: menuTextColor}">Home</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
                     <li class="list-inline-item"><a href="#" data-bind="style:{color: menuTextColor}">Data</a> <span class="divider" data-bind="style:{color: menuTextColor}">|</span></li>
                     <li class="list-inline-item"><a href="#" data-bind="style:{color: menuTextColor}">Help</a></li>
@@ -1360,12 +1360,12 @@
         </div>
         <div class="row previewFooter"  data-bind="style:{'background-color': footerBackgroundColor}">
             <div class="col-12">
-                <ul class="list-inline float-left">
+                <ul class="list-inline float-start">
                     <li class="list-inline-item"><a href="#" data-bind="style:{color: footerTextColor}">Contact us</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
                     <li class="list-inline-item"><a href="#" data-bind="style:{color: footerTextColor}">Disclaimer</a> <span class="divider" data-bind="style:{color: footerTextColor}">|</span></li>
                     <li class="list-inline-item"><a href="#" data-bind="style:{color: footerTextColor}">About us</a></li>
                 </ul>
-                <div class="float-right">
+                <div class="float-end">
                     <a class="do-not-mark-external" href="" data-bind="style:{color: socialTextColor}">
                         <span class="fa-stack fa-lg">
                             <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
@@ -1415,14 +1415,14 @@
             <input class="form-control" type="text" data-bind="value:title" placeholder="Give a custom name for facet.">
         </td>
         <td>
-            <select class="form-control" data-bind="value: state">
+            <select class="form-select" data-bind="value: state">
                 <option value="Expanded">Show - Expanded</option>
                 <option value="Collapsed">Show - Collapsed</option>
                 <option value="Hidden">Hidden - used for chart data</option>
             </select>
         </td>
         <td>
-            <select class="form-control" data-bind="value: facetTermType">
+            <select class="form-select" data-bind="value: facetTermType">
                 <option value="Default">Default</option>
                 <option value="ActiveOrCompleted">Active or Completed</option>
                 <option value="PresenceOrAbsence">Presence or Absence</option>
@@ -1435,7 +1435,7 @@
             <input class="form-control" type="number" data-bind="value:interval, disable: isNotHistogram" step="1" min="0">
         </td>
         <td class="btn-space">
-            <select class="form-control" data-bind="value: chartjsType">
+            <select class="form-select" data-bind="value: chartjsType">
                 <option value="none">None</option>
                 <option value="pie">Pie</option>
                 <option value="bar">Bar</option>
@@ -1465,12 +1465,12 @@
     <tfoot>
     <tr>
         <td colspan="8">
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <div class="col-label-form col-sm-2">
                     Pick a facet
                 </div>
                 <div class="col-sm-10 btn-space">
-                    <select class="form-control" data-bind="options: transients.facetList,
+                    <select class="form-select" data-bind="options: transients.facetList,
                         optionsText:'formattedName', value: transients.selectedFacet"></select>
                     <button class="btn btn-sm btn-dark" data-bind="click: add"><i class="fas fa-plus"></i> Add</button>
                 </div>
@@ -1504,15 +1504,15 @@
             <input class="form-control" type="text"  data-bind="value:displayName" placeholder="Give a custom name for column." />
         </td>
         <td>
-            <div class="custom-control custom-radio">
+            <div class="form-check">
 
             </div>
-            <div class="form-group form-check form-control-lg">
+            <div class="mb-3 form-check form-control-lg">
                 <input class="form-check-input" type="radio" name="sort" data-bind="value: code, checked: $parent.transients.sortColumn, disable: !isSortable()" />
             </div>
         </td>
         <td>
-            <select class="form-control" data-bind="value: order, disable: !isSortable()">
+            <select class="form-select" data-bind="value: order, disable: !isSortable()">
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
             </select>
@@ -1534,10 +1534,10 @@
     <tfoot>
     <tr>
         <td colspan="5">
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label">Pick a column</label>
                 <div class="col-sm-10 btn-space">
-                    <select class="form-control" data-bind="options: transients.defaultDataColumns, optionsText: 'name', value: transients.selectedDataColumn"></select>
+                    <select class="form-select" data-bind="options: transients.defaultDataColumns, optionsText: 'name', value: transients.selectedDataColumn"></select>
                     <button class="btn btn-sm btn-dark" data-bind="click: addDataColumn"><i class="fas fa-plus"></i> Add</button>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <div class="filter-group">
     <!-- ko foreach:facets -->
     <!-- ko if: terms().length -->
-    <button class="accordion-header collapsed" type="button" data-toggle="collapse"
+    <button class="accordion-header collapsed" type="button" data-bs-toggle="collapse"
             data-bind="text: metadata.displayName, attr: { 'data-target': '#' + name()}"
             aria-expanded="false" aria-controls="types">
     </button>

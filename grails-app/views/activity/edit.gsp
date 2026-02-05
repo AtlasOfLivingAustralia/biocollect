@@ -49,7 +49,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-12 ml-3">
+            <div class="col-sm-12 ms-3">
                 <!-- Common activity fields -->
                 <div class="row" data-bind="visible:transients.typeWarning()" style="display:none">
                     <div class="col-sm-12 alert alert-danger">
@@ -118,7 +118,7 @@
 <!-- templates -->
 <script type="text/html" id="activityTmpl">
     <div class="col-sm-6 required">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="plannedStartDate">Planned start date
             <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
             </label>
@@ -128,7 +128,7 @@
         </div>
     </div>
     <div class="col-sm-6 required">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="plannedEndDate">Planned end date
             <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
             </label>

@@ -4,14 +4,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="title" data-bind="text:title"></h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          
         </button>
       </div>
 
       <div class="modal-body">
         <div class="w-100 bg-white mb-2" id="editor-button-bar"></div>
-        <div class="pr-2">
+        <div class="pe-2">
           <g:textArea name="editorInput" id="editorInput" data-bind="value:initialValue" rows="16"
                       cols="120" style="width:100%;margin:0;"></g:textArea>
         </div>

@@ -14,12 +14,12 @@
 
             <div class="col-4">
                 <label>List Type</label>
-                <select class="form-control" data-validation-engine="validate[required]"
+                <select class="form-select" data-validation-engine="validate[required]"
                         data-bind="options: transients.allowedListTypes, optionsText:'name', optionsValue:'id', value: newSpeciesLists.listType, optionsCaption: 'Please select'"></select>
             </div>
             <div class="col-4">
                 <label>Licence</label>
-                <select class="form-control" data-validation-engine="validate[required]"
+                <select class="form-select" data-validation-engine="validate[required]"
                         data-bind="options: transients.allowedLicences, optionsText:'label', optionsValue:'value', value: newSpeciesLists.licence, optionsCaption: 'Please select'"></select>
             </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="row">
 
             <div class="col-12">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <label class="col-form-label col-4" for="newspeciesNameSearch">Start typing a species name and select one to add it</label>
                     <div class="col-8">
                         <div class="input-group">

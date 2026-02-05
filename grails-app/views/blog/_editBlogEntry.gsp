@@ -1,14 +1,14 @@
 <form id="blogEntry" class="form-horizontal validationEngineContainer">
 
-    <div class="row form-group required">
+    <div class="row mb-3 required">
         <label class="col-form-label col-md-3"
                for="type">Type: <fc:iconHelp>What type of entry is this?</fc:iconHelp></label>
         <div class="col-md-9">
-            <select class="form-control" id="type" data-bind="options:transients.blogEntryTypes, value:type"></select>
+            <select class="form-select" id="type" data-bind="options:transients.blogEntryTypes, value:type"></select>
         </div>
     </div>
 
-    <div class="row form-group required">
+    <div class="row mb-3 required">
         <label class="col-form-label col-md-3"
                for="date">Date: <fc:iconHelp>The date for this blog entry</fc:iconHelp></label>
         <div class="col-md-9">
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="row form-group required">
+    <div class="row mb-3 required">
         <label class="col-form-label col-md-3"
                for="title">Title: <fc:iconHelp>The title of this blog entry</fc:iconHelp></label>
         <div class="col-md-9">
@@ -27,7 +27,7 @@
     </div>
 
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <!-- ko if:type() !== 'Photo' -->
         <label class="col-form-label col-md-3"
                for="image">Feature image: <fc:iconHelp>An image that will be displayed alongside this blog entry</fc:iconHelp>
@@ -51,7 +51,7 @@
             <!-- ko if:type() !== 'Photo' -->
             <p data-bind="visible:!image() && !stockIcon()">Select or attach an image</p>
 
-            <select class="form-control" data-bind="visible:!image(), value:stockIcon">
+            <select class="form-select" data-bind="visible:!image(), value:stockIcon">
                 <option/>
                 <option value="fa-warning">Important<i class="fa fa-warning fa-3x"></i></option>
                 <option value="fa-newspaper-o">News<i class="fa fa-newspaper-o fa-3x"></i></option>
@@ -77,14 +77,14 @@
         </div>
     </div>
 
-    <div class="row form-group" data-bind="with:image">
+    <div class="row mb-3" data-bind="with:image">
         <label class="col-form-label col-md-3"
                for="attribution">Image attribution: <fc:iconHelp>Will be displayed alongside the image</fc:iconHelp></label>
         <div class="col-md-9">
             <input type="text" id="attribution" class="form-control" data-bind="value:attribution">
         </div>
     </div>
-    <div class="row form-group" data-bind="with:image">
+    <div class="row mb-3" data-bind="with:image">
         <label class="col-form-label required col-md-3"
                for="declaration">Privacy declaration: <fc:iconHelp>You must accept the declaration before the image can be saved.</fc:iconHelp></label>
         <div class="col-md-9">
@@ -96,7 +96,7 @@
     </div>
 
     <!-- ko if:type() !== 'Photo' -->
-    <div class="row form-group required">
+    <div class="row mb-3 required">
         <label class="col-form-label col-md-3" for="blog-content">Content: <fc:iconHelp>The content of this blog entry</fc:iconHelp></label>
         <div class="col-md-9 btn-space">
             <textarea rows="10" id="blog-content" class="form-control" data-bind="value:content" data-validation-engine="validate[required]" placeholder="Content goes here..."></textarea>
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <div class="row form-group">
+    <div class="row mb-3">
         <label class="col-form-label col-md-3"
                for="title">See More URL: <fc:iconHelp>If supplied, the blog entry will show a "see more" link at the end which will take the user to this URL</fc:iconHelp></label>
         <div class="col-md-9">

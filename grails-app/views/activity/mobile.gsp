@@ -104,7 +104,7 @@
                                     <label for="theme"><b>Major theme</b></label>
                                     <select id="theme"
                                             data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
-                                            class="form-control">
+                                            class="form-select">
                                     </select>
                                 </div>
 
