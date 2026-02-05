@@ -153,7 +153,7 @@
     <script src="${grailsApplication.config.google.maps.url}"></script>
     <asset:stylesheet src="projects-manifest.css"/>
     <asset:stylesheet src="project-index-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="wms.js"/>

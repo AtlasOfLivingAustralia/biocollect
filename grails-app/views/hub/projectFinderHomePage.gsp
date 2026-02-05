@@ -64,7 +64,7 @@
   }
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
-    <asset:javascript src="common-bs4.js" />
+    <asset:javascript src="common-bs5.js" />
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>

@@ -18,7 +18,7 @@
         }
     </script>
 
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="document.js"/>
 </head>
 

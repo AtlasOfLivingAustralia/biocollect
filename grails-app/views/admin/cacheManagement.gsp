@@ -3,7 +3,7 @@
 <head>
     <meta name="layout" content="adminLayout"/>
     <title>Cache Management | Admin | Data capture | Atlas of Living Australia</title>
-    <asset:stylesheet src="base-bs4.css"/>
+    <asset:stylesheet src="base-bs5.css"/>
 </head>
 
 <body>
@@ -18,6 +18,6 @@
     </ul>
 
 </div>
-<asset:javascript src="base-bs4.js"/>
+<asset:javascript src="base-bs5.js"/>
 </body>
 </html>

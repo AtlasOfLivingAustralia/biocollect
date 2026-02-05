@@ -50,7 +50,7 @@
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterActivityData.js"/>
     <asset:javascript src="meritActivity.js"/>

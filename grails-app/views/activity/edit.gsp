@@ -10,7 +10,7 @@
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="${activity.type}"/>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">

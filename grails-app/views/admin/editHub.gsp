@@ -33,7 +33,7 @@
 <asset:stylesheet src="ckeditor/ckeditor5/ckeditor5.css"/>
 <asset:javascript src="ckeditor/ckeditor5/ckeditor5.umd.js"/>
 <asset:javascript src="leaflet-manifest.js"/>
-<asset:javascript src="common-bs4.js"/>
+<asset:javascript src="common-bs5.js"/>
 <asset:javascript src="fileupload-manifest.js"/>
 %{-- Todo: cors/jquery.xdr-transport.js needed?--}%
 <asset:javascript src="cors/jquery.xdr-transport.js"/>

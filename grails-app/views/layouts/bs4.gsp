@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-theme.css"/>
     </g:if>
     <link href="${g.createLink(controller: 'hub', action: 'generateStylesheet')}?ver=${hubConfig.lastUpdated}" rel="stylesheet"/>
-    <asset:stylesheet src="base-bs4.css"/>
-    <asset:javascript src="base-bs4.js"/>
+    <asset:stylesheet src="base-bs5.css"/>
+    <asset:javascript src="base-bs5.js"/>
     <g:layoutHead/>
 </head>
 

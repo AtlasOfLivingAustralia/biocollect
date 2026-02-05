@@ -1,5 +1,5 @@
 <asset:stylesheet src="forms-manifest.css"/>
-<asset:stylesheet src="common-bs4.css"/>
+<asset:stylesheet src="common-bs5.css"/>
 <div class="container-fluid validationEngineContainer edit-view-meri-plan"  id="edit-meri-plan">
 	<p data-bind="if:detailsLastUpdated">Last updated <span data-bind="if:detailsLastUpdatedDisplayName"> by <span data-bind="text:detailsLastUpdatedDisplayName"></span></span> at <span data-bind="text:detailsLastUpdated.formattedDate"></span></p>
 

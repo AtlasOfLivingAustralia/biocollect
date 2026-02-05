@@ -4,9 +4,9 @@
 <head>
     <title></title>
     <meta name="layout" content="bs4"/>
-    <asset:stylesheet src="common-bs4.css" />
+    <asset:stylesheet src="common-bs5.css" />
     <asset:stylesheet src="wmd/wmd.css" />
-    <asset:javascript src="common-bs4.js" />
+    <asset:javascript src="common-bs5.js" />
     <asset:javascript src="wmd/wmd.js" />
     <asset:script type="text/javascript">
         $(document).ready(function (e) {
