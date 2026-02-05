@@ -8,7 +8,7 @@
     <meta name="breadcrumb"
           content="${messageSource.getMessage('projectActivity.create.bulkload.list', [].toArray(), '', Locale.default)}"/>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="bulk-import-view-models.js"/>
     <asset:script type="text/javascript">
         var fcConfig = {

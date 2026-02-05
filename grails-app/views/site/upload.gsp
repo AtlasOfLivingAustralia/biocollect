@@ -24,7 +24,7 @@
             },
             returnTo = "${params.returnTo}";
     </asset:script>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
 </head>
 
 <body>

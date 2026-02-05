@@ -6,7 +6,7 @@
     <meta name="layout" content="bs4"/>
     <title><g:message code="g.previewActivity"/> | <g:message code="g.biocollect"/></title>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
-    <asset:stylesheet src="common-bs4.css"/>
+    <asset:stylesheet src="common-bs5.css"/>
     <asset:stylesheet src="forms-manifest.css"/>
     <asset:script type="text/javascript">
     var fcConfig = {
@@ -42,7 +42,7 @@
         }
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
     <asset:javascript src="projectActivityInfo.js"/>

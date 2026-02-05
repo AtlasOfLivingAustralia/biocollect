@@ -47,7 +47,7 @@
 
     </asset:script>
     <asset:stylesheet src="project-create-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="organisation.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>

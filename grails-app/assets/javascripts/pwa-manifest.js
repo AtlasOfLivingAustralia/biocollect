@@ -1,4 +1,4 @@
-//= require base-bs4.js
+//= require base-bs5.js
 //= require knockout/3.4.0/knockout-3.4.0.js
 //= require knockout-custom-bindings.js
 //= require knockout-custom-extenders.js
