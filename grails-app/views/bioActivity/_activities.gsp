@@ -16,32 +16,72 @@
                     <div class="col col-sm-6 col-md-4 mb-3 text-end text-md-center order-2 order-md-1 ps-1">
                         <div class="btn-group">
                             <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a class="btn btn-outline-dark" id="data-grid-tab" data-bs-toggle="tab" type="button"
-                                   href="#dataGrid" title="<g:message code="data.grid.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.grid.title"/>">
+                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-grid-radio" autocomplete="off">
+                                <label class="btn btn-outline-dark"
+                                       id="data-grid-tab"
+                                       for="data-grid-radio"
+                                       data-bs-toggle="tab"
+                                       data-bs-target="#dataGrid"
+                                       title="${g.message(code:'data.grid.title')}"
+                                       role="tab"
+                                       aria-controls="dataGrid"
+                                       aria-selected="false">
                                     <i class="fas fa-th-large"></i>
-                                </a>
-                                <a class="btn btn-outline-dark active" id="data-list-tab" data-bs-toggle="tab" type="button"
-                                   href="#recordVis" title="<g:message code="data.list.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.list.title"/>" aria-selected="true">
+                                </label>
+
+                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-list-radio" autocomplete="off" checked>
+                                <label class="btn btn-outline-dark"
+                                       id="data-list-tab"
+                                       for="data-list-radio"
+                                       data-bs-toggle="tab"
+                                       data-bs-target="#recordVis"
+                                       title="${g.message(code:'data.list.title')}"
+                                       role="tab"
+                                       aria-controls="recordVis"
+                                       aria-selected="true">
                                     <i class="fas fa-list"></i>
-                                </a>
-                                <a class="btn btn-outline-dark" id="data-map-tab"
-                                   data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}" type="button"
-                                   href="#mapVis" title="<g:message code="data.map.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.map.title"/>">
+                                </label>
+
+                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-map-radio" autocomplete="off">
+                                <label class="btn btn-outline-dark"
+                                       id="data-map-tab"
+                                       for="data-map-radio"
+                                       data-bs-toggle="tab"
+                                       data-bs-target="#mapVis"
+                                       data-bind="attr:{'data-bs-toggle': activities().length > 0 ? 'tab' : null}"
+                                       title="${g.message(code:'data.map.title')}"
+                                       role="tab"
+                                       aria-controls="mapVis"
+                                       aria-selected="false">
                                     <i class="far fa-map"></i>
-                                </a>
-                                <a class="btn btn-outline-dark" id="data-image-tab" data-bs-toggle="tab" type="button"
-                                   href="#imageGallery" title="<g:message code="data.image.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.image.title"/>">
+                                </label>
+
+                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-image-radio" autocomplete="off">
+                                <label class="btn btn-outline-dark"
+                                       id="data-image-tab"
+                                       for="data-image-radio"
+                                       data-bs-toggle="tab"
+                                       data-bs-target="#imageGallery"
+                                       title="${g.message(code:'data.image.title')}"
+                                       role="tab"
+                                       aria-controls="imageGallery"
+                                       aria-selected="false">
                                     <i class="far fa-images"></i>
-                                </a>
-                                <a class="btn btn-outline-dark" id="data-chart-tab" data-bs-toggle="tab" type="button"
-                                   href="#chartGraph" title="<g:message code="data.chart.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.chart.title"/>">
+                                </label>
+
+                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-chart-radio" autocomplete="off">
+                                <label class="btn btn-outline-dark"
+                                       id="data-chart-tab"
+                                       for="data-chart-radio"
+                                       data-bs-toggle="tab"
+                                       data-bs-target="#chartGraph"
+                                       title="${g.message(code:'data.chart.title')}"
+                                       role="tab"
+                                       aria-controls="chartGraph"
+                                       aria-selected="false">
                                     <i class="fas fa-chart-pie"></i>
-                                </a>
+                                </label>
+
                             </div>
                         </div>
                     </div>
@@ -56,7 +96,10 @@
                              data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
 
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary" data-bind="click: download">Download</button>
+                                <button type="button" class="btn btn-dark" data-bind="click: download">
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
                                 <button type="button"
                                         class="btn btn-primary dropdown-toggle dropdown-toggle-split"
                                         data-bs-toggle="dropdown"
