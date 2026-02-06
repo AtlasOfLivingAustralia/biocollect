@@ -226,7 +226,7 @@
 
 #filters {
   position: absolute;
-  left: 0;
+  left: -16px;
   top: 0;
   background: #FFF;
   padding: 30px;
@@ -246,6 +246,7 @@
   @include media-breakpoint-down(sm) {
     position: fixed;
     top: 0;
+    left: 0;
     max-height: 100vh;
   }
 
