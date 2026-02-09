@@ -670,16 +670,17 @@ class FCTagLib {
 
             if (details.type == 'tab' && details.visible) {
                 def liClass = 'nav-item'
-                def linkAttributes = [href:'#'+name, id:name+'-tab', class: details.default ? 'active nav-link':"nav-link"]
+                def buttonAttributes = [id:name+'-tab', class: details.default ? 'active nav-link':"nav-link"]
                 if (!details.disabled) {
-                    linkAttributes << ["data-toggle":"tab"]
+                    buttonAttributes << ["data-bs-toggle":"tab"]
+                    buttonAttributes << ["data-bs-target":"#"+name]
                 }
                 if (details.click) {
-                    linkAttributes << ["data-bind": "click: ${details.click}"]
+                    buttonAttributes << ["data-bind": "click: ${details.click}"]
                 }
 
                 mb.li(class:liClass) {
-                    a(linkAttributes, details.label)
+                    button(buttonAttributes, details.label)
                 }
             }
         }
