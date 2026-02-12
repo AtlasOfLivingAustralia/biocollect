@@ -349,7 +349,14 @@ ko.bindingHandlers.imageUpload = {
                 });
             }
             else {
-                error(data.errorThrown);
+                var jqXHR = data.jqXHR;
+                if (jqXHR && jqXHR.status === 422) {
+                    var resp = jqXHR.responseJSON || {message: "File upload could not be processed. Possible virus detected."};
+                    error(resp.message);
+                }
+                else {
+                    error(data.errorThrown);
+                }
             }
 
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
