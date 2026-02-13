@@ -36,7 +36,7 @@ jobs:
 
       - name: Install and start elasticsearch
         run: |
-          curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.16.3-amd64.deb -o elasticsearch.deb
+          curl https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.29-amd64.deb -o elasticsearch.deb
           sudo dpkg -i --force-confnew elasticsearch.deb
           sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
           sudo sh -c 'echo ES_JAVA_OPTS=\"-Xmx1g -Xms1g\" >> /etc/default/elasticsearch'
