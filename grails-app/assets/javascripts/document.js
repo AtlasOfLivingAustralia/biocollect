@@ -332,7 +332,14 @@ function attachViewModelToFileUpload(uploadUrl, documentViewModel, uiSelector, p
         }
 
     }).on('fileuploadfail', function(e, data) {
-        documentViewModel.fileUploadFailed(data.errorThrown);
+        var jqXHR = data.jqXHR;
+        if (jqXHR && jqXHR.status === 422) {
+            var resp = jqXHR.responseJSON || {message: "File upload could not be processed. Possible virus detected."};
+            documentViewModel.fileUploadFailed(resp.message);
+        }
+        else {
+            documentViewModel.fileUploadFailed(data.errorThrown);
+        }
     });
 
     // We are keeping the reference to the helper here rather than the view model as it doesn't serialize correctly
