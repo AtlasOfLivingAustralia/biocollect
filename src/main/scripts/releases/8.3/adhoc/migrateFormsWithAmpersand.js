@@ -38,8 +38,10 @@ function replaceActivity(toChange) {
     cursor.forEach(function (activity) {
         activity.type = newName;
         var result = db.activity.updateOne({activityId: activity.activityId}, {$set: {type: newName}});
-        audit(activity, activity.activityId, 'au.org.ala.ecodata.Activity', userId, activity.projectId)
-        counter += result.modifiedCount;
+        if (result.modifiedCount) {
+            audit(activity, activity.activityId, 'au.org.ala.ecodata.Activity', userId, activity.projectId)
+            counter += result.modifiedCount;
+        }
     });
 
     console.log("Number of activities updated with new name " + newName + " - " + counter);
@@ -88,8 +90,10 @@ function replaceProjectActivity(toChange) {
         oldName = toChange.oldName;
     db.projectActivity.find({pActivityFormName: oldName}).forEach(function (pa){
         var result = db.projectActivity.updateOne({projectActivityId: pa.projectActivityId}, {$set: {pActivityFormName: newName}});
-        audit(pa, pa.projectActivityId, 'au.org.ala.ecodata.ProjectActivity', userId);
-        console.log("Number of project activity modified " + result.modifiedCount + " for " + pa.name);
+        if (result.modifiedCount) {
+            audit(pa, pa.projectActivityId, 'au.org.ala.ecodata.ProjectActivity', userId);
+            console.log("Number of project activity modified " + result.modifiedCount + " for " + pa.name);
+        }
     });
 
 }
