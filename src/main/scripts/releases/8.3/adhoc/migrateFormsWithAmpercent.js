@@ -1,7 +1,7 @@
 load("../../../mongo/utils/audit.js");
 // todo: after running the script update program model with new names;
 // todo: publish 'Nest Box Maintenance and Monitoring Form - Victoria'
-var userId = "system"
+var userId = "system";
 var activityFormNames = [
     {oldName:'Nest Box Monitoring and Maintenance Form - Victoria', newName: 'Nest Box Monitoring and Maintenance Form - Mullinmur'},
     {oldName:'Nest Box Monitoring & Maintenance Form - Victoria', newName: 'Nest Box Maintenance and Monitoring Form - Victoria'},
@@ -49,7 +49,7 @@ function replaceOutput(toChange) {
     var newName = toChange.newName,
         oldName = toChange.oldName,
         result,
-        outputCounter = 0;
+        outputCounter = 0,
         activityIds = [];
 
     // update section name
