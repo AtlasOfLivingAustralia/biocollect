@@ -58,12 +58,12 @@ function replaceOutput(toChange) {
         activityForm.sections.forEach(function (section) {
             if (section.name === oldName) {
                 section.name = newName;
-                modified = true
+                modified = true;
             }
         });
 
         if (modified) {
-            db.activityForm.updateOne({_id: activityForm._id}, {$set: activityForm});
+            db.activityForm.updateOne({_id: activityForm._id}, {$set: {sections: activityForm.sections}});
             activityIds.push.apply(activityIds, db.runCommand({distinct: "activity", query: {type: activityForm.name}, key: "activityId"}).values);
             console.log("Section in Activity form " + activityForm.name + " updated." );
         }
