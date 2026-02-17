@@ -21,6 +21,7 @@
   background-position: $form-select-bg-position;
   background-size: $form-select-bg-size;
   border: $form-select-border-width solid $form-select-border-color;
+  min-height: $input-height;
   @include border-radius($form-select-border-radius, 0);
   @include box-shadow($form-select-box-shadow);
   @include transition($form-select-transition);
@@ -56,6 +57,7 @@
 }
 
 .form-select-sm {
+  min-height: $input-height-sm;
   padding-top: $form-select-padding-y-sm;
   padding-bottom: $form-select-padding-y-sm;
   padding-left: $form-select-padding-x-sm;
@@ -64,6 +66,7 @@
 }
 
 .form-select-lg {
+  min-height: $input-height-lg;
   padding-top: $form-select-padding-y-lg;
   padding-bottom: $form-select-padding-y-lg;
   padding-left: $form-select-padding-x-lg;
