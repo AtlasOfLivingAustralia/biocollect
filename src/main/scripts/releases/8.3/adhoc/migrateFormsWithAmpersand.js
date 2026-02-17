@@ -89,6 +89,7 @@ function replaceProjectActivity(toChange) {
     var newName = toChange.newName,
         oldName = toChange.oldName;
     db.projectActivity.find({pActivityFormName: oldName}).forEach(function (pa){
+        pa.pActivityFormName = newName;
         var result = db.projectActivity.updateOne({projectActivityId: pa.projectActivityId}, {$set: {pActivityFormName: newName}});
         if (result.modifiedCount) {
             audit(pa, pa.projectActivityId, 'au.org.ala.ecodata.ProjectActivity', userId);
