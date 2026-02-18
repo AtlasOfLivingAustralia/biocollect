@@ -64,13 +64,13 @@
                                 <g:if test="${hubConfig.templateConfiguration?.header?.links}">
                                     <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
                                         <config:getLinkFromConfig config="${link}"
-                                                                  hubConfig="${hubConfig}" bs4="true"></config:getLinkFromConfig>
+                                                                  hubConfig="${hubConfig}" bs5="true"></config:getLinkFromConfig>
                                     </g:each>
                                 </g:if>
                                 <g:else>
                                     <g:each in="${grailsApplication.config.headerAndFooter?.header}" var="link">
                                         <config:getLinkFromConfig config="${link}"
-                                                                  hubConfig="${hubConfig}" bs4="true"></config:getLinkFromConfig>
+                                                                  hubConfig="${hubConfig}" bs5="true"></config:getLinkFromConfig>
                                     </g:each>
                                 </g:else>
                             </ul>

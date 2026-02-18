@@ -76,7 +76,7 @@ class TemplateTagLib {
             Map link = attrs.config
             String classes = attrs?.classes ?: ""
             String activeClass = attrs?.activeClass ?: "current-menu-item"
-            Boolean bs4 = Boolean.parseBoolean(attrs.bs4  ?: "false")
+            Boolean bs5 = Boolean.parseBoolean(attrs.bs5  ?: "false")
             if (link.role && !userService.doesUserHaveHubRole(link.role)) {
                 return
             }
@@ -87,7 +87,7 @@ class TemplateTagLib {
 
             switch (link.contentType){
                 case 'external':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a title=\"${link.displayName}\" href=\"${url}\" class=\"do-not-mark-external nav-link\">${link.displayName}</a>";
                         out << "</li>";
@@ -103,7 +103,7 @@ class TemplateTagLib {
                         classes += " ${activeClass}"
                     }
                 case 'content':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName}\" href=\"${url}\">${link.displayName}</a>";
                         out << "</li>";
@@ -114,7 +114,7 @@ class TemplateTagLib {
                     }
                     break;
                 case 'nolink':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<span class=\"nav-link\">${link.displayName}</span>";
                         out << "</li>";
@@ -127,7 +127,7 @@ class TemplateTagLib {
                     break;
                 case 'admin':
                     if(userService.userIsAlaAdmin()){
-                        if (bs4) {
+                        if (bs5) {
                             out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                             out << "<a class=\"nav-link\" title=\"${link.displayName?:'Admin'}\" href=\"${url}\">${link.displayName?:'Admin'}</a>";
                             out << "</li>";
@@ -140,7 +140,7 @@ class TemplateTagLib {
                     }
                     break;
                 case 'allrecords':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName?:'All Records'}\" href=\"${url}\">${link.displayName?:'All Records'}</a>";
                         out << "</li>";
@@ -152,7 +152,7 @@ class TemplateTagLib {
                     }
                     break;
                 case 'home':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName?:'Home'}\" href=\"${url}\">${link.displayName?:'Home'}</a>";
                         out << "</li>";
@@ -174,7 +174,7 @@ class TemplateTagLib {
                         logoutReturnToUrl = grailsApplication.config.getProperty("grails.serverURL") + grailsApplication.config.getProperty("logoutReturnToUrl",String, "/hub/index")
                     }
 
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << auth.loginLogout(
                                 ignoreCookie: "true", cssClass: "btn btn-primary btn-sm nav-button custom-header-login-logout",
@@ -198,7 +198,7 @@ class TemplateTagLib {
                     setHubParameter(hub)
                     break;
                 case 'newproject':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName?:'New project'}\" href=\"${url}\">${link.displayName?:'New project'}</a>";
                         out << "</li>";
@@ -209,7 +209,7 @@ class TemplateTagLib {
                     }
                     break;
                 case 'sites':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName?:'Sites'}\" href=\"${url}\">${link.displayName?:'Sites'}</a>";
                         out << "</li>";
@@ -220,7 +220,7 @@ class TemplateTagLib {
                     }
                     break;
                 case 'resources':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName?:'Resources'}\" href=\"${url}\">${link.displayName?:'Resources'}</a>";
                         out << "</li>";
@@ -231,7 +231,7 @@ class TemplateTagLib {
                     }
                     break;
                 case 'biocacheexplorer':
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<a class=\"nav-link\" title=\"${link.displayName?:'Occurrence explorer'}\" href=\"${url}\">${link.displayName?:'Occurrence explorer'}</a>";
                         out << "</li>";
@@ -244,7 +244,7 @@ class TemplateTagLib {
                 case 'recordSighting':
                     String disabled = isRequestForRecordASighting(link)?"disabled":"";
 
-                    if (bs4) {
+                    if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
                         out << "<button class=\"btn btn-primary\" style=\"font-size: 13px;\" title=\"Login required\" " +
                                 "${disabled} onclick=\"window.location = '${url}'\"><i class=\"fa fa-binoculars fa-inverse\">" +

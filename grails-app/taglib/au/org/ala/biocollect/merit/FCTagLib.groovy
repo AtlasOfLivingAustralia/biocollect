@@ -113,7 +113,7 @@ class FCTagLib {
      * @attr targetField
      * @attr printable
      * @attr required
-     * @attr bs4
+     * @attr bs5
      * @attr size optionally overrides the bootstrap size class for the input
      */
     def datePicker = { attrs ->
@@ -135,7 +135,7 @@ class FCTagLib {
                     class: attrs.size ?: 'input-xlarge'
             ]
 
-            def ignoreList = ['name', 'id', 'theme', 'bs4']
+            def ignoreList = ['name', 'id', 'theme', 'bs5']
             attrs.each {
                 if (!ignoreList.contains(it.key)) {
                     inputAttrs[it.key] = it.value
@@ -149,7 +149,7 @@ class FCTagLib {
             def content = {
                 mb.input(inputAttrs) {
                 }
-                String addOnClass = attrs.bs4 ? "btn ${attrs.theme ?: ''}" : "input-group-text add-on"
+                String addOnClass = attrs.bs5 ? "btn ${attrs.theme ?: ''}" : "input-group-text add-on"
                 String buttonClass = "fa fa-th "
                 def spanDateWrapper = {
                     mb.span(class: "${addOnClass} open-datepicker") {
@@ -168,8 +168,8 @@ class FCTagLib {
                     }
                 }
 
-                //  Bootstrap 4 needs the control to be wrapped in an input-group class
-                if (attrs.bs4){
+                //  Bootstrap 5 needs the control to be wrapped in an input-group class
+                if (attrs.bs5){
                     mb.div(class: "input-group-append") {
                         spanDateWrapper()
                         clearDateWrapper()
