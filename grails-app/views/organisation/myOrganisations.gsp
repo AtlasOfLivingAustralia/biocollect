@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>My Organisations | <g:message code="g.biocollect"/></title>
     <script type="text/javascript" src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:script type="text/javascript">

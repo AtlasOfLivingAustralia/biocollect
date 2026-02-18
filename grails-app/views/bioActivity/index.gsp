@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
+    <meta name="layout" content="${mobile ? 'mobile' : 'bs5'}"/>
     <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>

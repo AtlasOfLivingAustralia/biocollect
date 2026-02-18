@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
   <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"

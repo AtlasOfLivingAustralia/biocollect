@@ -3,7 +3,7 @@
 <head>
     <g:set var="title" value="${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}"/>
     <title>${title}</title>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>

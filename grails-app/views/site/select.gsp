@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Add existing site | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
         var fcConfig = {

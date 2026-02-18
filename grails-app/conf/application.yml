@@ -309,7 +309,7 @@ bootstrap4:
 
 # used by ala-admin-plugin
 skin:
-  layout: "bs4"
+  layout: "bs5"
 
 ---
 

@@ -4,7 +4,7 @@
 <head>
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
     <title>${title}</title>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>

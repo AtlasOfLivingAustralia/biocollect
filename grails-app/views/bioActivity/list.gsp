@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <g:set var="title" value="${utilService.getHeaderLinkForContentTypeOrURI(view, contentURI)?.displayName?:title}"/>
     <title>${title} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/' + hubConfig.urlPath)},Home"/>
