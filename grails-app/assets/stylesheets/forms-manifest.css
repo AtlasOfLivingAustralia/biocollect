@@ -84,8 +84,18 @@
     border-radius: 0;
 }
 
-.input-group .input-group-append .input-group-text, table .autocompleteSpecies .input-group-text {
-    height: auto;
+.input-group .input-group-prepend,
+.input-group .input-group-append {
+    display: flex;
+    align-items: stretch;
+}
+
+.input-group .input-group-prepend .input-group-text,
+.input-group .input-group-append .input-group-text,
+table .autocompleteSpecies .input-group-text {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 /*.card input[type=text], .card input[type=search], .card input[type=number], .card input[type=tel] {*/
