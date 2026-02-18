@@ -50,13 +50,21 @@ var observationCounter = 0, prevObject = void 0, Output_CoralWatch_coralObservat
             config: o
         }
     });
+    r.bleachingCategory = ko.observable().extend({
+        metadata: {
+            metadata: r.dataModel.bleachingCategory,
+            context: r.$context,
+            config: o
+        }
+    });
+
     var c = _.extend(o, {printable: "", dataFieldName: "coralSpecies", output: "CoralWatch", surveyName: ""});
     r.coralSpecies = new SpeciesViewModel({}, c), r.speciesPhoto = ko.observableArray([]), r.speciesPhoto = ko.observableArray([]), r.loadspeciesPhoto = function (e) {
         void 0 !== e && $.each(e, (function (e, a) {
             r.speciesPhoto.push(new ImageViewModel(a, !1, t))
         }))
     }, r.loadData = function (e) {
-        r.sampleId(ecodata.forms.orDefault(e.sampleId, observationCounter)), r.colourCodeLightest(ecodata.forms.orDefault(e.colourCodeLightest, void 0)), r.colourCodeDarkest(ecodata.forms.orDefault(e.colourCodeDarkest, void 0)), r.colourCodeAverage(ecodata.forms.orDefault(e.colourCodeAverage, 0)), r.typeOfCoral(ecodata.forms.orDefault(e.typeOfCoral, void 0)), r.coralSpecies.loadData(ecodata.forms.orDefault(e.coralSpecies, {})), r.loadspeciesPhoto(ecodata.forms.orDefault(e.speciesPhoto, []))
+        r.sampleId(ecodata.forms.orDefault(e.sampleId, observationCounter)), r.colourCodeLightest(ecodata.forms.orDefault(e.colourCodeLightest, void 0)), r.colourCodeDarkest(ecodata.forms.orDefault(e.colourCodeDarkest, void 0)), r.colourCodeAverage(ecodata.forms.orDefault(e.colourCodeAverage, 0)), r.typeOfCoral(ecodata.forms.orDefault(e.typeOfCoral, void 0)), r.bleachingCategory(ecodata.forms.orDefault(e.bleachingCategory, void 0)), r.coralSpecies.loadData(ecodata.forms.orDefault(e.coralSpecies, {})), r.loadspeciesPhoto(ecodata.forms.orDefault(e.speciesPhoto, []))
     }, r.loadData(e || {}), r.colourCodeLightest.subscribe((function (e) {
         var a = r.colourCodeLightest();
         if (a) {
