@@ -130,11 +130,12 @@ input[type="checkbox"], input[type="radio"] {
     box-sizing: border-box;
 }
 
-#content .boxed-heading:after {
-    content: attr(data-content);
+#content .boxed-heading::after {
+    content: "";
     position: absolute;
     top: -1px;
     left: -1px;
+    display: inline-block;
     padding: 7px 15px;
     font-size: 125%;
     font-weight: 300;
@@ -142,6 +143,14 @@ input[type="checkbox"], input[type="radio"] {
     border: 1px solid #ccc;
     color: inherit;
     line-height: 1;
+}
+
+#content .boxed-heading[data-content]::after {
+    content: attr(data-content);
+}
+
+#content .boxed-heading[data-bs-content]::after {
+    content: attr(data-bs-content);
 }
 
 #tagsBlock .tag {
