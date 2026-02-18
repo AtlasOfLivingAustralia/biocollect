@@ -1104,9 +1104,6 @@
             "description": "The count of unique values for type of coral."
           },
           {
-            "allowRowDelete": true,
-            "disableTableUpload": true,
-            "allowHeaderWrap": true,
             "columns": [
               {
                 "dataType": "number",
@@ -1555,7 +1552,7 @@
                           {
                             "allowRowDelete": true,
                             "allowHeaderWrap": true,
-                            "disableTableUpload": true,
+                            "disableTableUpload": false,
                             "columns": [
                               {
                                 "width": "5%",
