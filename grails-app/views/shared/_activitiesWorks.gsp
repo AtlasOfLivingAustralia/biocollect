@@ -456,7 +456,7 @@
     <div class="input-group">
         <fc:datePicker class="from-control" targetField="plannedStartDate.date" name="plannedStartDate"
                        data-validation-engine="validate[required,future[${formattedStartDate}]]"
-                       printable="${printView}" bs4="true" theme="btn-dark"/>
+                       printable="${printView}" bs5="true" theme="btn-dark"/>
     </div>
 </div>
 
@@ -469,7 +469,7 @@
     <div class="input-group">
         <fc:datePicker class="from-control" targetField="plannedEndDate.date" name="plannedEndDate"
                        data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]"
-                       printable="${printView}" bs4="true" theme="btn-dark"/>
+                       printable="${printView}" bs5="true" theme="btn-dark"/>
     </div>
 </div>
 </script>

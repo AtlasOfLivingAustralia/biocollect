@@ -146,7 +146,7 @@
                             <div class="input-group">
                                 <fc:datePicker targetField="startDate.date" name="startDate"
                                                data-validation-engine="validate[required]" printable="${printView}"
-                                               class="form-control" theme="btn-dark" bs4="true"/>
+                                               class="form-control" theme="btn-dark" bs5="true"/>
                             </div>
                         </g:else>
                     </div>
@@ -167,7 +167,7 @@
                             <div class="input-group">
                                 <fc:datePicker targetField="endDate.date" name="endDate"
                                                data-validation-engine="validate[future[startDate]]" printable="${printView}"
-                                               class="form-control" theme="btn-dark" bs4="true"/>
+                                               class="form-control" theme="btn-dark" bs5="true"/>
                             </div>
                         </g:else>
                     </div>

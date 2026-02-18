@@ -14,7 +14,7 @@
         <td class="date align-top">
             <div class="input-group">
             <fc:datePicker class="form-control" targetField="date.date" name="date" data-validation-engine="validate[required]" printable="${printView}"
-            bs4="true" theme="btn-dark"/>
+            bs5="true" theme="btn-dark"/>
             </div>
         </td>
         <td class="type align-top">

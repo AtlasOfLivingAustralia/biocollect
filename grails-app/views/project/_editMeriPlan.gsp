@@ -239,7 +239,7 @@
                         <td class="description"><textarea class="form-control" data-bind="value: description, disable: $parent.isProjectDetailsLocked()" rows="3"></textarea></td>
 						<td class="due-date mt-4" style="border: none !important;">
 							<div class="input-group">
-								<fc:datePicker class="form-control" targetField="dueDate.date" name="dueDate" bs4="true" theme="btn-dark"/>
+								<fc:datePicker class="form-control" targetField="dueDate.date" name="dueDate" bs5="true" theme="btn-dark"/>
 							</div>
 						</td>
 						<!-- ko foreach: costs -->

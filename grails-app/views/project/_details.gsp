@@ -171,7 +171,7 @@
                 <div class="col-12 col-md-4 col-xl-3">
                     <div class="input-group">
                         <fc:datePicker class="form-control" targetField="plannedStartDate.date" name="plannedStartDate"
-                                       id="plannedStartDate" data-validation-engine="validate[required]" bs4="true"
+                                       id="plannedStartDate" data-validation-engine="validate[required]" bs5="true"
                                        theme="btn-dark"/>
                     </div>
                 </div>
@@ -188,7 +188,7 @@
                         <fc:datePicker class="form-control" targetField="plannedEndDate.date" name="plannedEndDate"
                                        clearBtn="true"
                                        id="plannedEndDate" data-validation-engine="validate[future[plannedStartDate]]"
-                                       bs4="true" theme="btn-dark"/>
+                                       bs5="true" theme="btn-dark"/>
                     </div>
                     <small id="emailHelp" class="form-text text-muted"><g:message
                             code="project.details.plannedEndDate.extra"/></small>
@@ -207,7 +207,7 @@
                         <fc:datePicker class="form-control" targetField="plannedEndDate.date" name="plannedEndDate"
                                        id="plannedEndDate"
                                        data-validation-engine="validate[required,future[plannedStartDate]]"
-                                       data-errormessage-value-missing="Works projects must have an end date" bs4="true"
+                                       data-errormessage-value-missing="Works projects must have an end date" bs5="true"
                                        theme="btn-dark"/>
                     </div>
                 </div>

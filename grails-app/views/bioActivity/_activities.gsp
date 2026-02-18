@@ -96,7 +96,7 @@
                              data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
 
                             <div class="btn-group">
-                                <button type="button" class="btn btn-dark" data-bind="click: download">
+                                <button type="button" class="btn btn-primary" data-bind="click: download">
                                     <i class="fas fa-download"></i>
                                     Download
                                 </button>

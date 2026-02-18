@@ -28,7 +28,7 @@
                     <td class="date mt-5" style="border: none !important;">
                         <div class="input-group">
                             <fc:datePicker class="form-control" targetField="date.date" name="date" data-validation-engine="validate[required]"
-                                bs4="true" theme="btn-dark"/>
+                                bs5="true" theme="btn-dark"/>
                         </div>
                     </td>
 
