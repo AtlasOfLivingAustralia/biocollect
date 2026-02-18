@@ -22,7 +22,7 @@
 
 
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title><g:if test="${title}">${title}</g:if><g:else><g:message code="g.${label}"/></g:else> | <g:message
             code="g.biocollect"/></title>
     <asset:stylesheet src="project-finder-manifest.css"/>

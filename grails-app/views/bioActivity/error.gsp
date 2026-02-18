@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
+    <meta name="layout" content="${mobile ? 'mobile' : 'bs5'}"/>
     <title>${error}</title>
 </head>
 

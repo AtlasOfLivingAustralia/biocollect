@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
   <title>${settingType.title?:'About'} | <g:message code="g.biocollect"/></title>
   <asset:script type="text/javascript">
     var fcConfig = {
@@ -24,7 +24,7 @@
                 <h1>${settingType.title?:'About the website'}
                     <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
                         <span class="d-inline-block my-2">
-                            <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: settingType.name, params: [layout: 'bs4', returnUrl: raw(g.createLink(controller: params.controller, action: params.action, id: params.id, absolute: true))]))}"
+                            <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: settingType.name, params: [layout: 'bs5', returnUrl: raw(g.createLink(controller: params.controller, action: params.action, id: params.id, absolute: true))]))}"
                                class="btn btn-sm btn-dark"><i class="fas fa-pencil-alt"></i> Edit</a>
                         </span>
                     </g:if>
@@ -41,7 +41,7 @@
             <g:set var="newsText"><fc:getSettingContent settingType="${SettingPageType.NEWS}"/></g:set>
             <div class="col-md-5">
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
-                    <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: SettingPageType.NEWS.name, params: [layout: 'bs4', returnUrl: raw(g.createLink(controller: params.controller, action: params.action, absolute: true))]))}"
+                    <a href="${raw(g.createLink(controller:"admin",action:"editSettingText", id: SettingPageType.NEWS.name, params: [layout: 'bs5', returnUrl: raw(g.createLink(controller: params.controller, action: params.action, absolute: true))]))}"
                        class="btn btn-sm btn-dark float-end"><i class="fas fa-pencil-alt"></i> Edit</a>
                 </g:if>
                 ${raw(newsText)}

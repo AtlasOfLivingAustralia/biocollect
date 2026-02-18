@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title><g:message code="g.previewActivity"/> | <g:message code="g.biocollect"/></title>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:stylesheet src="common-bs5.css"/>

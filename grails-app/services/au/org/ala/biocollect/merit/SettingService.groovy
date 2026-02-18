@@ -124,7 +124,7 @@ class SettingService {
             log.warn("no settings returned for hub ${hub}!")
             settings = new HubSettings(
                     title:'Default',
-                    skin:'bs4',
+                    skin:'bs5',
                     urlPath:grailsApplication.config.app.default.hub?:'default',
                     availableFacets: ['isExternal','status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','mainThemeFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','otherFacet', 'gerSubRegionFacet','electFacet'],
                     adminFacets: ['electFacet'],

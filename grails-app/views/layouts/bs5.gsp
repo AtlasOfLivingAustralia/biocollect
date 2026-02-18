@@ -51,29 +51,34 @@
                 <div class="outer-nav-wrapper align-self-lg-end">
 
                     <div class="main-nav-wrapper">
-                        <a href="javascript:" class="navbar-toggler order-3 order-lg-2" type="button"
-                           data-bs-toggle="offcanvas" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
-                           aria-expanded="false" aria-label="Toggle navigation">
+                        <button class="navbar-toggler order-3 order-lg-2" type="button"
+                                data-bs-toggle="offcanvas" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+                                aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
-                        </a>
+                        </button>
 
 
                         <!-- The Main Menu goes here -->
-                        <div id="navbarNavDropdown" class="collapse navbar-collapse offcanvas-collapse">
-                            <ul class="navbar-nav ms-auto flex-lg-wrap">
-                                <g:if test="${hubConfig.templateConfiguration?.header?.links}">
-                                    <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
-                                        <config:getLinkFromConfig config="${link}"
-                                                                  hubConfig="${hubConfig}" bs4="true"></config:getLinkFromConfig>
-                                    </g:each>
-                                </g:if>
-                                <g:else>
-                                    <g:each in="${grailsApplication.config.headerAndFooter?.header}" var="link">
-                                        <config:getLinkFromConfig config="${link}"
-                                                                  hubConfig="${hubConfig}" bs4="true"></config:getLinkFromConfig>
-                                    </g:each>
-                                </g:else>
-                            </ul>
+                        <div id="navbarNavDropdown" class="offcanvas offcanvas-end offcanvas-lg" tabindex="-1" aria-labelledby="navbarNavDropdownLabel">
+                            <div class="offcanvas-header d-lg-none">
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <ul class="navbar-nav ms-auto flex-lg-wrap">
+                                    <g:if test="${hubConfig.templateConfiguration?.header?.links}">
+                                        <g:each in="${hubConfig.templateConfiguration?.header?.links}" var="link">
+                                            <config:getLinkFromConfig config="${link}"
+                                                                      hubConfig="${hubConfig}" bs4="true"></config:getLinkFromConfig>
+                                        </g:each>
+                                    </g:if>
+                                    <g:else>
+                                        <g:each in="${grailsApplication.config.headerAndFooter?.header}" var="link">
+                                            <config:getLinkFromConfig config="${link}"
+                                                                      hubConfig="${hubConfig}" bs4="true"></config:getLinkFromConfig>
+                                        </g:each>
+                                    </g:else>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
@@ -233,13 +238,6 @@
 <script>
     $(document).ready(function () {
         var delay = ${grailsApplication.config.pingDuration};
-        /**
-         * Mobile (off-canvas) menu
-         */
-        $('[data-bs-toggle="offcanvas"]').on('click', function () {
-            $('#page.site').toggleClass('offcanvas-open');
-        });
-
         /**
          * Ping server every 5 minutes (default value)  to keep session active
          */

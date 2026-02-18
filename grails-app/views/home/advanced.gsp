@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Advanced | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
