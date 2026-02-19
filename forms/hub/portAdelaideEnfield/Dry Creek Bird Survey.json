@@ -12,7 +12,7 @@
   "publicationStatus": "published",
   "externalIds": null,
   "gmsId": null,
-  "name": "Survey South Parkway Survey",
+  "name": "Dry Creek Bird Survey",
   "sections": [
     {
       "collapsedByDefault": false,
@@ -131,7 +131,11 @@
                 "constraints": [
                   "A",
                   "B",
-                  "C"
+                  "C",
+                  "D",
+                  "E",
+                  "F",
+                  "G"
                 ]
               },
               {
@@ -167,7 +171,7 @@
             "name": "observations"
           }
         ],
-        "modelName": "surveySouthParkwaySurvey",
+        "modelName": "dryCreekBirdSurvey",
         "record": "true",
         "viewModel": [
           {
@@ -309,7 +313,7 @@
                         "type": "row",
                         "items": [
                           {
-                            "source": "<img src='https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=Survey_South_Parkway_Survey.png&model=south_parkway_survey'>",
+                            "source": "<img src='https://biocollect.ala.org.au/download/getScriptFile?hub=ala&filename=Dry_Creek_Bird_Survey.png&model=dry_creek_bird_survey'>",
                             "type": "literal"
                           }
                         ]
@@ -426,12 +430,12 @@
         ]
       },
       "modelName": null,
-      "templateName": "surveySouthParkwaySurvey",
+      "templateName": "dryCreekBirdSurvey",
       "optional": false,
       "optionalQuestionText": null,
       "title": null,
       "collapsibleHeading": null,
-      "name": "Survey South Parkway Survey",
+      "name": "Dry Creek Bird Survey",
       "description": null
     }
   ],
