@@ -1208,7 +1208,6 @@
                 "name": "bleachingCategory",
                 "indexName": "bleachingCategory",
                 "description": "",
-                "validate": "required",
                 "constraints": [
                   "NB - No Bleaching",
                   "PBMI - Partial bleaching (minor)",
