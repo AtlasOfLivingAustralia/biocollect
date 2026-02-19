@@ -1104,9 +1104,6 @@
             "description": "The count of unique values for type of coral."
           },
           {
-            "allowRowDelete": true,
-            "disableTableUpload": true,
-            "allowHeaderWrap": true,
             "columns": [
               {
                 "dataType": "number",
@@ -1211,7 +1208,6 @@
                 "name": "bleachingCategory",
                 "indexName": "bleachingCategory",
                 "description": "",
-                "validate": "required",
                 "constraints": [
                   "NB - No Bleaching",
                   "PBMI - Partial bleaching (minor)",
@@ -1555,7 +1551,7 @@
                           {
                             "allowRowDelete": true,
                             "allowHeaderWrap": true,
-                            "disableTableUpload": true,
+                            "disableTableUpload": false,
                             "columns": [
                               {
                                 "width": "5%",
