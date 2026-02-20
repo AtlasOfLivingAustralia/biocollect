@@ -2,8 +2,8 @@ package au.org.ala.biocollect.merit
 
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.fs.FileSystemAssetResolver
-import asset.pipeline.jsass.SassAssetFile
-import asset.pipeline.jsass.SassProcessor
+import asset.pipeline.dart.SassAssetFile
+import asset.pipeline.dart.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
@@ -306,7 +306,7 @@ class SettingService {
         String scssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${grailsApplication.config.bootstrap4.themeExtension}"
         String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${scssFileName}"
         String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}"
-        SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileURI )
+        SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileName )
         String output
 
         if (hub && hub.templateConfiguration?.styles ) {
