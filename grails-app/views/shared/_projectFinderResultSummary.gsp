@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="col-12 col-md-4 text-center text-md-end order-0 order-md-2 ps-0 d-flex justify-content-end justify-content-md-end">
-        <div class="mb-3">
+        <div class="d-flex align-items-center gap-3 mb-3">
             <label for="sortBy" class="col-form-label">Sort by</label>
             <select id="sortBy" class="form-select col form-select" data-bind="value: sortBy" aria-label="Sort Order">
                 <option value="dateCreatedSort">Most Recent</option>
@@ -38,7 +38,7 @@
                 <option value="organisationSort">Organisation</option>
             </select>
         </div>
-        <div class="mb-3 ms-2 projects-from-select">
+        <div class="d-flex align-items-center gap-3 mb-3 ms-2 projects-from-select">
             <label for="projectsFrom" class="col-form-label">Projects from</label>
             <select id="projectsFrom" class="form-select col form-select" data-bind="value: isWorldWide" aria-label="Projects from">
                 <option value="false">Australia</option>
