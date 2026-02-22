@@ -57,6 +57,23 @@ var observationCounter = 0, prevObject = void 0, Output_CoralWatch_coralObservat
             config: o
         }
     });
+    function updateAverage() {
+        var light = r.colourCodeLightest && r.colourCodeLightest();
+        var dark  = r.colourCodeDarkest && r.colourCodeDarkest();
+
+        if (light && dark) {
+            var lightNum = parseInt(light.substring(1), 10);
+            var darkNum  = parseInt(dark.substring(1), 10);
+
+            if (!isNaN(lightNum) && !isNaN(darkNum)) {
+                var avg = (lightNum + darkNum) / 2;
+                r.colourCodeAverage(avg.toFixed(2));
+                return;
+            }
+        }
+
+        r.colourCodeAverage(0);
+    }
 
     var c = _.extend(o, {printable: "", dataFieldName: "coralSpecies", output: "CoralWatch", surveyName: ""});
     r.coralSpecies = new SpeciesViewModel({}, c), r.speciesPhoto = ko.observableArray([]), r.speciesPhoto = ko.observableArray([]), r.loadspeciesPhoto = function (e) {
@@ -65,6 +82,7 @@ var observationCounter = 0, prevObject = void 0, Output_CoralWatch_coralObservat
         }))
     }, r.loadData = function (e) {
         r.sampleId(ecodata.forms.orDefault(e.sampleId, observationCounter)), r.colourCodeLightest(ecodata.forms.orDefault(e.colourCodeLightest, void 0)), r.colourCodeDarkest(ecodata.forms.orDefault(e.colourCodeDarkest, void 0)), r.colourCodeAverage(ecodata.forms.orDefault(e.colourCodeAverage, 0)), r.typeOfCoral(ecodata.forms.orDefault(e.typeOfCoral, void 0)), r.bleachingCategory(ecodata.forms.orDefault(e.bleachingCategory, void 0)), r.coralSpecies.loadData(ecodata.forms.orDefault(e.coralSpecies, {})), r.loadspeciesPhoto(ecodata.forms.orDefault(e.speciesPhoto, []))
+        updateAverage();
     }, r.loadData(e || {}), r.colourCodeLightest.subscribe((function (e) {
         var a = r.colourCodeLightest();
         if (a) {
@@ -84,14 +102,17 @@ var observationCounter = 0, prevObject = void 0, Output_CoralWatch_coralObservat
                     cancel: {label: "Clear", className: "d-none"}
                 },
                 callback: function (e) {
-                    if (r.colourCodeDarkest(e), r.colourCodeDarkest() && r.colourCodeLightest()) {
-                        var a = parseInt(r.colourCodeDarkest().charAt(1)) + parseInt(r.colourCodeLightest().charAt(1));
-                        a > 0 && r.colourCodeAverage((a / 2).toFixed(2))
-                    }
+                    r.colourCodeDarkest(e);
+                    updateAverage();
                 }
             })
         }
-    })), r.typeOfCoral.subscribe((function (e) {
+
+    })),
+        r.colourCodeDarkest.subscribe((function () {
+            updateAverage();
+        })),
+        r.typeOfCoral.subscribe((function (e) {
         if (e) {
             switch (e) {
                 case"Plate corals":
