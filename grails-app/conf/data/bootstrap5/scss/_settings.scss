@@ -1,21 +1,19 @@
+$white: #fff;
+$gray-100: #f2f2f2;
+$gray-200: #e5e5e5;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #9d9d9d;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212121;
+$black: #000;
 
-$white: #fff ;
-$gray-100: #f2f2f2 ;
-$gray-200: #e5e5e5 ;
-$gray-300: #dee2e6 ;
-$gray-400: #ced4da ;
-$gray-500: #9d9d9d ;
-$gray-600: #6c757d ;
-$gray-700: #495057 ;
-$gray-800: #343a40 ;
-$gray-900: #212121 ;
-$black: #000 ;
-
-$grays: () ;
+$grays: (
+        );
 // stylelint-disable-next-line scss/dollar-variable-default
-$grays: map-merge(
-                (
-                        "100": $gray-100,
+$grays: map-merge(("100": $gray-100,
                         "200": $gray-200,
                         "300": $gray-300,
                         "400": $gray-400,
@@ -23,27 +21,25 @@ $grays: map-merge(
                         "600": $gray-600,
                         "700": $gray-700,
                         "800": $gray-800,
-                        "900": $gray-900
-                ),
+                        "900": $gray-900 ),
                 $grays
 );
 
-$blue: #007bff  !default;
-$indigo: #6610f2  !default;
-$purple: #6f42c1  !default;
-$pink: #e83e8c  !default;
-$red: #dc3545  !default;
-$orange: #fd7e14  !default;
-$yellow: #ffc107  !default;
-$green: #28a745  !default;
-$teal: #20c997  !default;
-$cyan: #17a2b8  !default;
+$blue: #007bff !default;
+$indigo: #6610f2 !default;
+$purple: #6f42c1 !default;
+$pink: #e83e8c !default;
+$red: #dc3545 !default;
+$orange: #fd7e14 !default;
+$yellow: #ffc107 !default;
+$green: #28a745 !default;
+$teal: #20c997 !default;
+$cyan: #17a2b8 !default;
 
-$colors: () ;
+$colors: (
+        );
 // stylelint-disable-next-line scss/dollar-variable-default
-$colors: map-merge(
-                (
-                        "blue": $blue,
+$colors: map-merge(("blue": $blue,
                         "indigo": $indigo,
                         "purple": $purple,
                         "pink": $pink,
@@ -55,26 +51,24 @@ $colors: map-merge(
                         "cyan": $cyan,
                         "white": $white,
                         "gray": $gray-600,
-                        "gray-dark": $gray-800
-                ),
+                        "gray-dark": $gray-800 ),
                 $colors
 );
 
 $primary: #f26649 !default;
 $primary-dark: #c44d34 !default;
 $secondary: #637073 !default;
-$success: $green  !default;
-$info: $cyan  !default;
-$warning: $yellow  !default;
-$danger: $red  !default;
-$light: $gray-100  !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $yellow !default;
+$danger: $red !default;
+$light: $gray-100 !default;
 $dark: $gray-900 !default;
 
-$theme-colors: () ;
+$theme-colors: (
+        );
 // stylelint-disable-next-line scss/dollar-variable-default
-$theme-colors: map-merge(
-                (
-                        "primary": $primary,
+$theme-colors: map-merge(("primary": $primary,
                         "primary-dark": $primary-dark,
                         "secondary": $secondary,
                         "success": $success,
@@ -83,8 +77,7 @@ $theme-colors: map-merge(
                         "danger": $danger,
                         "light": $light,
                         "dark": $dark,
-                        "white": #FFF
-                ),
+                        "white": #FFF),
                 $theme-colors
 );
 
@@ -94,21 +87,25 @@ $c-border: $gray-200;
 $c-page-background: $gray-100;
 $c-page-background-dark: #637073;
 
-// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+// Bootstrap 5 uses WCAG contrast calculation for variant text color.
+// Lowering this threshold from the default 4.5 restores Bootstrap 4-like
+// behavior where common themed button backgrounds still use white text.
+$min-contrast-ratio: 3 !default;
+
+// Retained for compatibility with legacy custom styles that still reference
+// Bootstrap 4 yiq variables.
 $yiq-contrasted-threshold: 150;
 
-$spacer: 1rem ;
-$spacers: () ;
+$spacer: 1rem;
+$spacers: (
+        );
 // stylelint-disable-next-line scss/dollar-variable-default
-$spacers: map-merge(
-                (
-                        0: 0,
+$spacers: map-merge((0: 0,
                         1: ($spacer * .25),
                         2: ($spacer * .5),
                         3: $spacer,
                         4: ($spacer * 2),
-                        5: ($spacer * 3)
-                ),
+                        5: ($spacer * 3)),
                 $spacers
 );
 
@@ -118,9 +115,9 @@ $body-color: $c-text-light !default;
 $block-spacing: 70px;
 $block-spacing-small: 30px;
 
-$border-radius:               .25rem !default;
-$border-radius-lg:            .3rem !default;
-$border-radius-sm:            .2rem !default;
+$border-radius: .25rem !default;
+$border-radius-lg: .3rem !default;
+$border-radius-sm: .2rem !default;
 
 // stylelint-disable value-keyword-case
 $font-family-sans-serif: 'Roboto', sans-serif;
@@ -134,20 +131,21 @@ $headings-line-height: 1.3;
 
 $font-size-base: 1rem;
 $font-size-lg: $font-size-base;
-$font-size-sm: ($font-size-base * .75) ;
+$font-size-sm: (
+        $font-size-base * .75);
 
 $line-height-base: 1.6;
 $line-height-lg: $line-height-base;
 $line-height-sm: $line-height-base;
 
-$border-width: 1px ;
+$border-width: 1px;
 $border-color: $gray-200;
 
-$h1-font-size: $font-size-base * 2 ;
-$h2-font-size: $font-size-base * 1.5 ;
-$h3-font-size: $font-size-base * 1.285 ;
-$h4-font-size: $font-size-base * 1.125 ;
-$h5-font-size: $font-size-base * 1.1 ;
+$h1-font-size: $font-size-base * 2;
+$h2-font-size: $font-size-base * 1.5;
+$h3-font-size: $font-size-base * 1.285;
+$h4-font-size: $font-size-base * 1.125;
+$h5-font-size: $font-size-base * 1.1;
 $h6-font-size: $font-size-base ;
 
 $link-color: $primary !default;
@@ -217,12 +215,12 @@ $table-cell-padding-x: 15px;
 $table-cell-padding-y: 15px;
 $table-cell-padding-sm: 10px;
 
-$table-bg: transparent ;
+$table-bg: transparent;
 // $table-accent-bg: rgba($black, .05) ;
-$table-hover-bg: rgba($black, .075) ;
+$table-hover-bg: rgba($black, .075);
 $table-active-bg: $table-hover-bg ;
 
-$table-border-color: rgba(0, 0, 0, 0.1) ;
+$table-border-color: rgba(0, 0, 0, 0.1);
 
 $table-head-bg: #DDD;
 $table-head-color: $c-text-light;
@@ -231,22 +229,22 @@ $table-striped-order: even;
 
 // Cards
 
-$card-spacer-y: .75rem ;
-$card-spacer-x: 1.25rem ;
+$card-spacer-y: .75rem;
+$card-spacer-x: 1.25rem;
 $card-border-width: $border-width !default;
 $card-border-radius: $border-radius !default;
-$card-border-color: rgba($black, .125) ;
+$card-border-color: rgba($black, .125);
 $card-inner-border-radius: $border-radius;
 $card-cap-bg: $c-page-background;
 $card-bg: $c-page-background;
 
-$card-img-overlay-padding: 1.25rem ;
+$card-img-overlay-padding: 1.25rem;
 
 //$card-group-margin:                 ($grid-gutter-width / 2) ;
 //$card-deck-margin:                  $card-group-margin ;
 
-$card-columns-count: 3 ;
-$card-columns-gap: 1.25rem ;
+$card-columns-count: 3;
+$card-columns-gap: 1.25rem;
 $card-columns-margin: $card-spacer-y ;
 
 // Forms
@@ -254,7 +252,7 @@ $card-columns-margin: $card-spacer-y ;
 $input-color: $c-text-light;
 $input-box-shadow: none;
 
-$input-height-border: $input-border-width * 2 ;
+$input-height-border: $input-border-width * 2;
 
 $input-height: 50px;
 $input-height-inner: $input-height - $input-height-border;
@@ -265,7 +263,8 @@ $input-height-inner-sm: $input-height-sm - $input-height-border;
 $input-height-lg: $input-height;
 $input-height-inner-lg: $input-height-inner;
 
-$input-transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out ;
+$input-transition: border-color .15s ease-in-out,
+        box-shadow .15s ease-in-out;
 $input-font-size-sm: $font-size-base;
 
 //popover

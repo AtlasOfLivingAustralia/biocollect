@@ -36,7 +36,7 @@
             </div>
 
             <div class="col-xs-12 col-lg-4 d-flex align-items-center justify-content-center justify-content-lg-end">
-                <div class="limiter text-end">
+                <div class="d-flex align-items-center gap-3 limiter text-end">
                     <g:message code="label.show"/>
                     <label for="projectsLimit" class="visually-hidden"><g:message code="label.items.page"/></label>
                     <select class="form-select projects-limiter" id="projectsLimit"
