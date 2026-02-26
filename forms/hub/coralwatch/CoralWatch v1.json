@@ -1104,9 +1104,6 @@
             "description": "The count of unique values for type of coral."
           },
           {
-            "allowRowDelete": true,
-            "disableTableUpload": true,
-            "allowHeaderWrap": true,
             "columns": [
               {
                 "dataType": "number",
@@ -1204,6 +1201,18 @@
                   "Branching corals",
                   "Plate corals",
                   "Soft corals"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "bleachingCategory",
+                "indexName": "bleachingCategory",
+                "description": "",
+                "constraints": [
+                  "NB - No Bleaching",
+                  "PBMI - Partial bleaching (minor)",
+                  "PBMA - Partial bleaching (major)",
+                  "FB - Fully bleached"
                 ]
               },
               {
@@ -1305,6 +1314,11 @@
                             "type": "col",
                             "items": [
                               {
+                                "preLabel": "Survey name",
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
                                 "computed": null,
                                 "type": "row",
                                 "items": [
@@ -1327,11 +1341,6 @@
                                 "preLabel": "Participating as",
                                 "source": "groupType",
                                 "type": "selectOne"
-                              },
-                              {
-                                "preLabel": "Submitted by",
-                                "source": "recordedBy",
-                                "type": "text"
                               },
                               {
                                 "preLabel": "Observation date",
@@ -1542,7 +1551,7 @@
                           {
                             "allowRowDelete": true,
                             "allowHeaderWrap": true,
-                            "disableTableUpload": true,
+                            "disableTableUpload": false,
                             "columns": [
                               {
                                 "width": "5%",
@@ -1571,13 +1580,19 @@
                                 "noEdit": "true"
                               },
                               {
-                                "width": "25%",
+                                "width": "15%",
                                 "source": "typeOfCoral",
                                 "title": "Coral Type",
                                 "type": "selectOne"
                               },
                               {
-                                "width": "25%",
+                                "width": "15%",
+                                "source": "bleachingCategory",
+                                "title": "Bleaching Category",
+                                "type": "selectOne"
+                              },
+                              {
+                                "width": "20%",
                                 "source": "coralSpecies",
                                 "title": "Species",
                                 "type": "speciesSelect"
