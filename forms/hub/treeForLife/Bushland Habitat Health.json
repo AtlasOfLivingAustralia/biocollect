@@ -1,0 +1,968 @@
+{
+  "id": "6763758b4de319028d85deda",
+  "dateCreated": "2024-12-19T01:23:23Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2024-12-19T01:27:09Z",
+  "createdUserId": "4228",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Bushland Habitat Health",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "bushlandHabitatHealth",
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "indexName": "recordedBy",
+            "description": "The person who added the record to the database."
+          },
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "indexName": "eventDate",
+            "description": "The date on which the survey took place.",
+            "validate": "required,past[now]"
+          },
+          {
+            "dataType": "stringList",
+            "name": "colourCodeAverageRecordLevelCount",
+            "indexName": "coralwatchColourCodeAverageRecordLevelCount",
+            "description": "The count of unique values for colour code average."
+          },
+          {
+            "dataType": "stringList",
+            "name": "typeOfCoralRecordLevelCount",
+            "indexName": "coralwatchTypeOfCoralRecordLevelCount",
+            "description": "The count of unique values for type of coral."
+          },
+          {
+            "allowRowDelete": false,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "stepNumber",
+                "validate": ""
+              },
+              {
+                "dataType": "text",
+                "name": "groundCover",
+                "indexName": "groundCover",
+                "description": "",
+                "validate": "required",
+                "constraints": [
+                  "Bare Ground",
+                  "Rock/gravel",
+                  "Leaf litter",
+                  "Live vegetation",
+                  "Moss/lichen"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "litterDepth",
+                "description": "0 - no leaf litter",
+                "validate": "required"
+              },
+              {
+                "dataType": "text",
+                "name": "litterBreakdown",
+                "indexName": "litterBreakdown",
+                "description": "<ul><li>0 - NA</li><li>1 - Few signs of decomposition</li><li>2 - Small fragments, in contact with soil</li><li>3 - Several distinct layers, some fungus visible, some decay</li><li>4 - At least 3 layers/stages of decomposition</li></ul>",
+                "validate": "required",
+                "constraints": [
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "4"
+                ]
+              }
+            ],
+            "dataType": "list",
+            "name": "groundCoverObservations",
+            "defaultRows": [
+              {
+                "stepNumber": "Step 0"
+              },
+              {
+                "stepNumber": "Step 1"
+              },
+              {
+                "stepNumber": "Step 2"
+              },
+              {
+                "stepNumber": "Step 3"
+              },
+              {
+                "stepNumber": "Step 4"
+              },
+              {
+                "stepNumber": "Step 5"
+              },
+              {
+                "stepNumber": "Step 6"
+              },
+              {
+                "stepNumber": "Step 7"
+              },
+              {
+                "stepNumber": "Step 8"
+              },
+              {
+                "stepNumber": "Step 9"
+              },
+              {
+                "stepNumber": "Step 10"
+              },
+              {
+                "stepNumber": "Step 11"
+              },
+              {
+                "stepNumber": "Step 12"
+              },
+              {
+                "stepNumber": "Step 13"
+              },
+              {
+                "stepNumber": "Step 14"
+              },
+              {
+                "stepNumber": "Step 15"
+              },
+              {
+                "stepNumber": "Step 16"
+              },
+              {
+                "stepNumber": "Step 17"
+              },
+              {
+                "stepNumber": "Step 18"
+              },
+              {
+                "stepNumber": "Step 19"
+              },
+              {
+                "stepNumber": "Step 20"
+              },
+              {
+                "stepNumber": "Step 21"
+              },
+              {
+                "stepNumber": "Step 22"
+              },
+              {
+                "stepNumber": "Step 23"
+              },
+              {
+                "stepNumber": "Step 24"
+              },
+              {
+                "stepNumber": "Step 25"
+              },
+              {
+                "stepNumber": "Step 26"
+              },
+              {
+                "stepNumber": "Step 27"
+              },
+              {
+                "stepNumber": "Step 28"
+              },
+              {
+                "stepNumber": "Step 29"
+              },
+              {
+                "stepNumber": "Step 30"
+              }
+            ]
+          },
+          {
+            "allowRowDelete": true,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "lifeForm",
+                "indexName": "lifeForm",
+                "description": "",
+                "validate": "required",
+                "constraints": [
+                  "Tree > 15m",
+                  "Tree 5-15m",
+                  "Tree < 5m",
+                  "Mallee > 5m",
+                  "Mallee < 5m",
+                  "Shrub > 2m",
+                  "Shrub 0.5-2m",
+                  "Shrub < 0.5m",
+                  "Sedges",
+                  "Forb",
+                  "Grass",
+                  "Fern",
+                  "Mistletoe",
+                  "Vine/scrambler",
+                  "Grass tree"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "plantName",
+                "description": "",
+                "validate": "required"
+              },
+              {
+                "dataType": "text",
+                "name": "niu",
+                "indexName": "niu",
+                "description": "",
+                "validate": "required",
+                "constraints": [
+                  "N",
+                  "I",
+                  "U"
+                ]
+              },
+              {
+                "dataType": "number",
+                "name": "noPlantTypes",
+                "description": "",
+                "validate": "integer,min[0]"
+              }
+            ],
+            "dataType": "list",
+            "name": "floraDiversity"
+          },
+          {
+            "allowRowDelete": false,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "percentCoverRating",
+                "indexName": "percentCoverRating",
+                "description": "",
+                "validate": "required",
+                "constraints": [
+                  "0",
+                  "1",
+                  "2",
+                  "3",
+                  "4",
+                  "5",
+                  "6"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "floraCoverLifeForm",
+                "validate": ""
+              }
+            ],
+            "dataType": "list",
+            "name": "floraCover",
+            "defaultRows": [
+              {
+                "floraCoverLifeForm": "Tree > 15m"
+              },
+              {
+                "floraCoverLifeForm": "Tree 5-15m"
+              },
+              {
+                "floraCoverLifeForm": "Tree < 5m"
+              },
+              {
+                "floraCoverLifeForm": "Mallee > 5m"
+              },
+              {
+                "floraCoverLifeForm": "Mallee < 5m"
+              },
+              {
+                "floraCoverLifeForm": "Shrub > 2m"
+              },
+              {
+                "floraCoverLifeForm": "Shrub 0.5-2m"
+              },
+              {
+                "floraCoverLifeForm": "Shrub 0.5m"
+              },
+              {
+                "floraCoverLifeForm": "Sedges"
+              },
+              {
+                "floraCoverLifeForm": "Forb"
+              },
+              {
+                "floraCoverLifeForm": "Grass"
+              },
+              {
+                "floraCoverLifeForm": "Fern"
+              },
+              {
+                "floraCoverLifeForm": "Mistletoe"
+              },
+              {
+                "floraCoverLifeForm": "Vine/scrambler"
+              },
+              {
+                "floraCoverLifeForm": "Grass tree"
+              }
+            ]
+          },
+          {
+            "allowRowDelete": false,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "coverRating",
+                "validate": ""
+              },
+              {
+                "dataType": "text",
+                "name": "percentCover",
+                "validate": ""
+              },
+              {
+                "dataType": "text",
+                "name": "area",
+                "validate": ""
+              }
+            ],
+            "dataType": "list",
+            "name": "floraCoverReference",
+            "defaultRows": [
+              {
+                "coverRating": "0",
+                "percentCover": "0",
+                "area": ""
+              },
+              {
+                "coverRating": "1",
+                "percentCover": "<1%",
+                "area": "1%   = 3m"
+              },
+              {
+                "coverRating": "2",
+                "percentCover": "1-5%",
+                "area": "5%   = 15m"
+              },
+              {
+                "coverRating": "3",
+                "percentCover": "6-25%",
+                "area": "25% = 75m"
+              },
+              {
+                "coverRating": "4",
+                "percentCover": "26-50%",
+                "area": "50% = 150m"
+              },
+              {
+                "coverRating": "5",
+                "percentCover": "51-75%",
+                "area": "75% = 225m"
+              },
+              {
+                "coverRating": "6",
+                "percentCover": ">75%",
+                "area": ""
+              }
+            ]
+          },
+          {
+            "allowRowDelete": true,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "species",
+                "name": "bushlandSpecies",
+                "dwcAttribute": "scientificName",
+                "description": "Scientific name of the species.<br>Unmatched taxon means the taxon has not been matched to ALA taxonomic database."
+              },
+              {
+                "dataType": "number",
+                "name": "seedling",
+                "description": "",
+                "validate": "integer,min[0]"
+              },
+              {
+                "dataType": "number",
+                "name": "juvenile",
+                "description": "",
+                "validate": "integer,min[0]"
+              },
+              {
+                "dataType": "number",
+                "name": "adult",
+                "description": "",
+                "validate": "integer,min[0]"
+              }
+            ],
+            "dataType": "list",
+            "name": "floraRecruitment"
+          },
+          {
+            "allowRowDelete": false,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "coarseCount",
+                "validate": ""
+              },
+              {
+                "dataType": "number",
+                "name": "mediumCount",
+                "description": "",
+                "validate": "integer,min[0]"
+              },
+              {
+                "dataType": "number",
+                "name": "largeCount",
+                "description": "",
+                "validate": "integer,min[0]"
+              }
+            ],
+            "dataType": "list",
+            "name": "coarseWoodyDebrisCount",
+            "defaultRows": [
+              {
+                "coarseCount": "Count"
+              }
+            ]
+          },
+          {
+            "allowRowDelete": false,
+            "disableTableUpload": true,
+            "allowHeaderWrap": true,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "evidenceHollows",
+                "validate": ""
+              },
+              {
+                "dataType": "text",
+                "name": "diebackLevel",
+                "indexName": "diebackLevel",
+                "description": "",
+                "validate": "required",
+                "constraints": [
+                  "< 30%",
+                  "30-70%",
+                  "> 70%"
+                ]
+              }
+            ],
+            "dataType": "list",
+            "name": "matureTrees"
+          },
+          {
+            "dataType": "text",
+            "description": "Provide any comments about your survey, e.g. name of other surveyors involved, 3 weeks after a cyclone, partly covered in sand, transect survey, crown-of-thorn.",
+            "name": "eventRemarks"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Trees For Life</h1><h4>Habitat Health</h4>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Details",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "computed": null,
+                            "type": "col",
+                            "items": [
+                              {
+                                "preLabel": "Submitted by",
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
+                                "preLabel": "Submitted date",
+                                "source": "eventDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Comments",
+                                "source": "eventRemarks",
+                                "type": "textarea"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              },
+              {
+                "computed": null,
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": false,
+                    "title": "",
+                    "type": "section",
+                    "items": [
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Groundcover and Leaf Litter",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": false,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "10%",
+                                "noEdit": true,
+                                "source": "stepNumber",
+                                "type": "text",
+                                "title": "Step Number"
+                              },
+                              {
+                                "width": "30%",
+                                "source": "groundCover",
+                                "title": "Ground Cover",
+                                "type": "selectOne"
+                              },
+                              {
+                                "width": "30%",
+                                "source": "litterDepth",
+                                "title": "Litter Depth (cm)",
+                                "type": "text"
+                              },
+                              {
+                                "width": "30%",
+                                "source": "litterBreakdown",
+                                "title": "Litter Breakdown",
+                                "type": "selectOne"
+                              }
+                            ],
+                            "userAddedRows": false,
+                            "source": "groundCoverObservations",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Flora Diversity",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": true,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "source": "",
+                                "type": "literal",
+                                "width": "10%",
+                                "preLabel": {
+                                  "computed": "\\'No. \\' || (index + 1)"
+                                },
+                                "title": "Plant Number"
+                              },
+                              {
+                                "width": "20%",
+                                "source": "lifeForm",
+                                "title": "Life Form",
+                                "type": "selectOne"
+                              },
+                              {
+                                "width": "30%",
+                                "source": "plantName",
+                                "title": "Plant Name",
+                                "type": "text"
+                              },
+                              {
+                                "width": "20%",
+                                "source": "niu",
+                                "title": "Native (N), Introduced (I) or unknown (U)",
+                                "type": "selectOne"
+                              },
+                              {
+                                "width": "20%",
+                                "source": "noPlantTypes",
+                                "title": "Number of Plant Types",
+                                "type": "number"
+                              }
+                            ],
+                            "userAddedRows": true,
+                            "source": "floraDiversity",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Flora Cover",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": false,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "30%",
+                                "noEdit": true,
+                                "source": "floraCoverLifeForm",
+                                "type": "text",
+                                "title": "Life Form"
+                              },
+                              {
+                                "width": "70%",
+                                "source": "percentCoverRating",
+                                "title": "Percent Cover Rating",
+                                "type": "selectOne"
+                              }
+                            ],
+                            "userAddedRows": false,
+                            "source": "floraCover",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": false,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "30%",
+                                "noEdit": true,
+                                "source": "coverRating",
+                                "type": "text",
+                                "title": "Cover Rating"
+                              },
+                              {
+                                "width": "35%",
+                                "noEdit": true,
+                                "source": "percentCover",
+                                "type": "text",
+                                "title": "Percent Cover"
+                              },
+                              {
+                                "width": "35%",
+                                "noEdit": true,
+                                "source": "area",
+                                "type": "text",
+                                "title": "Area"
+                              }
+                            ],
+                            "userAddedRows": false,
+                            "source": "floraCoverReference",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Flora Recruitment",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": true,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "40%",
+                                "source": "bushlandSpecies",
+                                "title": "Species",
+                                "type": "speciesSelect"
+                              },
+                              {
+                                "width": "20%",
+                                "title": "Seedling (Small survey area)",
+                                "source": "seedling",
+                                "type": "number"
+                              },
+                              {
+                                "width": "20%",
+                                "title": "Juvenile (large survey area)",
+                                "source": "juvenile",
+                                "type": "number"
+                              },
+                              {
+                                "width": "20%",
+                                "title": "Adult (large survey area)",
+                                "source": "adult",
+                                "type": "number"
+                              }
+                            ],
+                            "userAddedRows": true,
+                            "source": "floraRecruitment",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Coarse Woody Debris – count",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": false,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "30%",
+                                "noEdit": true,
+                                "source": "coarseCount",
+                                "type": "text",
+                                "title": ""
+                              },
+                              {
+                                "width": "35%",
+                                "source": "mediumCount",
+                                "title": "Medium (10-30cm diameter)",
+                                "type": "number"
+                              },
+                              {
+                                "width": "35%",
+                                "source": "largeCount",
+                                "title": "Large (>30cm diameter)",
+                                "type": "number"
+                              }
+                            ],
+                            "userAddedRows": false,
+                            "source": "coarseWoodyDebrisCount",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "Mature Trees",
+                "type": "section",
+                "items": [
+                  {
+                    "computed": null,
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "span": 8,
+                        "items": [
+                          {
+                            "allowRowDelete": false,
+                            "allowHeaderWrap": true,
+                            "disableTableUpload": true,
+                            "columns": [
+                              {
+                                "width": "40%",
+                                "source": "evidenceHollows ",
+                                "title": "Evidence of Hollows",
+                                "type": "text"
+                              },
+                              {
+                                "width": "70%",
+                                "source": "diebackLevel",
+                                "title": "Dieback level",
+                                "type": "selectOne"
+                              }
+                            ],
+                            "userAddedRows": false,
+                            "source": "matureTrees",
+                            "type": "table"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "class": ""
+              }
+            ],
+            "class": ""
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "bushlandHabitatHealth",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "bushlandHabitatHealth",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "4228",
+  "description": null,
+  "formVersion": 2
+}
