@@ -217,10 +217,10 @@
                 ]
               },
               {
-                "dataType": "text",
-                "name": "plantName",
-                "description": "",
-                "validate": "required"
+                "dataType": "species",
+                "name": "plantSpecies",
+                "dwcAttribute": "scientificName",
+                "description": "Scientific name of the species.<br>Unmatched taxon means the taxon has not been matched to ALA taxonomic database."
               },
               {
                 "dataType": "text",
@@ -389,7 +389,7 @@
             "columns": [
               {
                 "dataType": "species",
-                "name": "bushlandSpecies",
+                "name": "floraRecruitmentSpecies",
                 "dwcAttribute": "scientificName",
                 "description": "Scientific name of the species.<br>Unmatched taxon means the taxon has not been matched to ALA taxonomic database."
               },
@@ -476,6 +476,52 @@
             "dataType": "text",
             "description": "Provide any comments about your survey, e.g. name of other surveyors involved, 3 weeks after a cyclone, partly covered in sand, transect survey, crown-of-thorn.",
             "name": "eventRemarks"
+          },
+          {
+            "dataType": "boolean",
+            "name": "gpsDeviceUsed"
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": false,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "countryOfSurvey",
+            "indexName": "countries",
+            "description": "The country in which the reef is situated.",
+            "readOnly": true,
+            "noEdit": true,
+            "computed": {},
+            "jsMain": "https://biocollect.ala.org.au/download/getScriptFile?hub=coralwatch&filename=setCountry.js&model=coralWatch"
           }
         ],
         "viewModel": [
@@ -537,10 +583,55 @@
                 "type": "col",
                 "items": [
                   {
-                    "boxed": false,
-                    "title": "",
+                    "boxed": true,
+                    "title": "Location",
                     "type": "section",
                     "items": [
+                      {
+                        "computed": null,
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "includeNotes": false,
+                                    "orientation": "vertical",
+                                    "computed": null,
+                                    "autoLocalitySearch": false,
+                                    "readonly": false,
+                                    "includeSource": false,
+                                    "includeAccuracy": false,
+                                    "hideSiteSelection": false,
+                                    "source": "location",
+                                    "type": "geoMap",
+                                    "includeLocality": false
+                                  }
+                                ]
+                              },
+                              {
+                                "computed": null,
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "<font style='color:blue; font-size:0.9em;'><i>Please use WGS84 decimal degrees format.</i></font>",
+                                    "type": "literal"
+                                  }
+                                ]
+                              },
+                              {
+                                "preLabel": "I used a GPS device to obtain coordinates",
+                                "source": "gpsDeviceUsed",
+                                "type": "boolean"
+                              }
+                            ]
+                          }
+                        ]
+                      }
                     ],
                     "class": ""
                   }
@@ -647,9 +738,9 @@
                               },
                               {
                                 "width": "30%",
-                                "source": "plantName",
-                                "title": "Plant Name",
-                                "type": "text"
+                                "source": "plantSpecies",
+                                "title": "Species",
+                                "type": "speciesSelect"
                               },
                               {
                                 "width": "20%",
@@ -807,7 +898,7 @@
                             "columns": [
                               {
                                 "width": "40%",
-                                "source": "bushlandSpecies",
+                                "source": "floraRecruitmentSpecies",
                                 "title": "Species",
                                 "type": "speciesSelect"
                               },
