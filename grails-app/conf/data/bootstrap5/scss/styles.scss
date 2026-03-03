@@ -116,3 +116,13 @@ $homepage-text-btn: $menu-text-color !default;
 .form-group {
   margin-bottom: 1rem;
 }
+
+#cs-about-accordion .accordion-header::after {
+  content: none;
+  display: none;
+}
+
+#cs-about-accordion .accordion-button::after {
+  content: none;
+  display: none;
+}
