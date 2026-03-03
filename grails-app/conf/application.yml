@@ -299,8 +299,8 @@ management:
         exclude:
     enabled-by-default: false
 
-# bootstrap4 theme
-bootstrap4:
+# bootstrap5 theme
+bootstrap5:
   themeDirectory: "/bootstrap5/scss"
   themeFileName: "styles"
   themeExtension: "scss"

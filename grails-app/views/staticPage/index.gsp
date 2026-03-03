@@ -40,7 +40,7 @@
                 <g:if test="${flash.message}">
                     <div class="row">
                         <div class="col-12">
-                            <div class="alert alert-info alert-dismissible fade show">
+                            <div class="alert alert-dismissible alert-info fade show">
                                 ${flash.message}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     

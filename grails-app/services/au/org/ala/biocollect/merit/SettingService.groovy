@@ -45,7 +45,7 @@ class SettingService {
 
     def initService () {
 //        temp directory to copy files
-        String targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
+        String targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}"
         File target = new File(targetDir)
         // clean styles created previously
         FileUtils.deleteDirectory(target)
@@ -55,12 +55,12 @@ class SettingService {
 
         switch (Environment.current) {
             case Environment.PRODUCTION:
-                sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
-                targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}"
+                sourceDir = "/data/${grailsApplication.config.bootstrap5.copyFromDir}"
+                targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}"
                 break
             case Environment.TEST:
             case Environment.DEVELOPMENT:
-                sourceDir = "/data/${grailsApplication.config.bootstrap4.copyFromDir}"
+                sourceDir = "/data/${grailsApplication.config.bootstrap5.copyFromDir}"
                 targetDir = "${grailsApplication.config.temp.dir}"
                 break
         }
@@ -68,15 +68,15 @@ class SettingService {
         URL resource = getClass().getResource(sourceDir)
         target = new File(targetDir)
 
-        // copy bootstrap4 directory
+        // copy bootstrap5 directory
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
 
         // resolve bootstrap 4 scss file from temp directory.
-        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}", true)
+        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}", true)
         AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolver)
 
         // resolve bootstrap 4 scss file from temp directory.
-        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap4.copyFromDir}/scss", true)
+        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}/scss", true)
         AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolverChild)
 
         switch (Environment.current) {
@@ -303,9 +303,9 @@ class SettingService {
     }
 
     Map generateStyleSheetForHub(HubSettings hub) {
-        String scssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${grailsApplication.config.bootstrap4.themeExtension}"
-        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${scssFileName}"
-        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap4.themeDirectory}"
+        String scssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${grailsApplication.config.bootstrap5.themeExtension}"
+        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap5.themeDirectory}${File.separator}${scssFileName}"
+        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap5.themeDirectory}"
         SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileName )
         String output
 
@@ -315,8 +315,8 @@ class SettingService {
             Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
             String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss"
 
-            String cssFileURI = "${grailsApplication.config.bootstrap4.themeDirectory}${File.separator}${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}"
-            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${urlPath}.${lastUpdated}.css"
+            String cssFileURI = "${grailsApplication.config.bootstrap5.themeDirectory}${File.separator}${grailsApplication.config.bootstrap5.themeFileName}.${urlPath}.${lastUpdated}"
+            String cssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${urlPath}.${lastUpdated}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()){
@@ -369,7 +369,7 @@ class SettingService {
                 }
             }
         } else {
-            String cssFileName = "${grailsApplication.config.bootstrap4.themeFileName}.${hub.urlPath}.css"
+            String cssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${hub.urlPath}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()) {

@@ -22,8 +22,8 @@
     <g:if test="${flash.error || error}">
         <g:set var="error" value="${flash.error?:user?.error}"/>
         <div class="row-fluid">
-            <div class="alert alert-danger large-space-before">
-                <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+            <div class="alert alert-dismissible alert-danger large-space-before">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <span>Error: ${error}</span>
             </div>
         </div>

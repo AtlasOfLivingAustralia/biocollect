@@ -68,8 +68,8 @@
 <g:if test="${flash.error || results.error}">
     <g:set var="error" value="${flash.error?:results.error}"/>
     <div class="row-fluid">
-        <div class="alert alert-danger large-space-before">
-            <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+        <div class="alert alert-dismissible alert-danger large-space-before">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             <span>Error: ${error}</span>
         </div>
     </div>
@@ -129,7 +129,7 @@
                             <a href="#${fn}Modal" role="button" class="moreFacets tooltips" data-bs-toggle="modal" title="View full list of values"><i class="icon-hand-right"></i> choose more...</a>
                             <div id="${fn}Modal" class="modal hide fade">
                                	<div class="modal-header">
-	                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+	                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
 	                                    <h3>Filter by ${fName}</h3>
 	                                </div>
 	                                <div class="modal-body">

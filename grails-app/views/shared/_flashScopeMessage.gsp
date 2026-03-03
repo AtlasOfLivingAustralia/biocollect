@@ -9,7 +9,7 @@
 
     <g:if test="${flash.message}">
         <div class="row">
-            <div class="col-md-6 mb-0 alert alert-info alert-dismissible">
+            <div class="col-md-6 mb-0 alert alert-dismissible alert-info">
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                     
                 </button>

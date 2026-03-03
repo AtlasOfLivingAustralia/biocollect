@@ -64,14 +64,14 @@
 
 <body>
 <div class="container-fluid">
-    <div class="alert alert-info alert-dismissible" id="message" data-bind="slideVisible: message">
+    <div class="alert alert-dismissible alert-info alert-dismissible" id="message" data-bind="slideVisible: message">
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             
         </button>
         <span data-bind="text: message"></span>
     </div>
 
-    <div class="alert alert-info alert-dismissible">
+    <div class="alert alert-dismissible alert-info alert-dismissible">
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             
         </button>
@@ -111,7 +111,7 @@
     <div class="row">
         <div class="col-12 col-md-6"><!-- left block of header -->
             <g:if test="${flash.errorMessage || flash.message}">
-                <div class="alert alert-danger alert-dismissible">
+                <div class="alert alert-dismissible alert-danger alert-dismissible">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                             onclick="$('.alert').fadeOut();" aria-label="Close">
                         
