@@ -78,7 +78,6 @@ for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
 
     for (index in occurrences) {
         var occurrence = occurrences[index],
-            eventID = occurrence.eventID,
             oldOccurrenceID = occurrence.occurrenceID;
 
         if (counter != 0 && counter % 100 == 0) {
@@ -95,7 +94,7 @@ for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
                 let newOccurrenceID = record.outputSpeciesId || record.occurrenceID;
                 if (oldOccurrenceID !== newOccurrenceID) {
                     // also update output data so that next regeneration creates records with old occurrence ID.
-                    let outputs = db.output.find({activityId: eventID, status: 'active'}).toArray();
+                    let outputs = db.output.find({activityId: record.activityId, status: 'active'}).toArray();
                     outputs.forEach(output => {
                         var isUpdated = recurseDataAndUpdateOutputSpeciesID(output.data, oldOccurrenceID, newOccurrenceID);
                         if (isUpdated) {
