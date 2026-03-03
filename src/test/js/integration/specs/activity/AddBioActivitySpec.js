@@ -39,6 +39,7 @@ describe('Add BioActivity Spec', function () {
         await addBioActivityPage.setSpecies('acacia')
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityBeforeSave");
         // Save the activity
+        await addBioActivityPage.saveAtCheckTime();
         await addBioActivityPage.saveActivity();
         await browser.pause(30000);
         await addBioActivityPage.hasBeenReloaded();
@@ -75,6 +76,7 @@ describe('Add BioActivity Spec', function () {
 
         // go online
         await addBioActivityPage.setOnline()
+        await addBioActivityPage.saveAtCheckTime();
         await addBioActivityPage.saveActivity();
         await addBioActivityPage.hasBeenReloaded();
         expect(await viewBioActivityPage.at()).toBeTrue();
