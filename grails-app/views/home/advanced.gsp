@@ -38,8 +38,8 @@
 
     <g:if test="${flash.error}">
         <div class="row-fluid">
-            <div class="alert alert-danger">
-                <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+            <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <span>${flash.error}</span>
             </div>
         </div>

@@ -12,14 +12,14 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
 
     void setup() {
         temp = File.createTempDir("tmp", "")
-        uploadPath = new File(temp, "bootstrap4")
+        uploadPath = new File(temp, "bootstrap5")
         uploadPath.mkdir()
 
         URL resource = getClass().getResource("/data/test.scss")
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, uploadPath)
 
         grailsApplication.config.temp.dir = uploadPath.getAbsolutePath()
-        grailsApplication.config.bootstrap4 = [themeDirectory: "/",
+        grailsApplication.config.bootstrap5 = [themeDirectory: "/",
                                                themeFileName: "test",
                                                themeExtension: "scss"]
 

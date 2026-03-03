@@ -42,13 +42,13 @@
 <script src="${grailsApplication.config.google.maps.url}" async defer></script>
 <content tag="pageTitle">Manage Hubs</content>
 
-<div class="alert alert-info">
-    <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+<div class="alert alert-dismissible alert-info">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     <span>You are viewing the hub: ${hubConfig.urlPath}</span>
 </div>
 
-<div class="alert alert-info" data-bind="visible:message()">
-    <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+<div class="alert alert-dismissible alert-info" data-bind="visible:message()">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     <span data-bind="text:message"></span>
 </div>
 <div class="row">
@@ -1281,8 +1281,8 @@
     </div>
 </script>
 <script id="templateLinkNotes" type="text/html">
-    <div class="alert alert-info">
-        <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+    <div class="alert alert-dismissible alert-info">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         <h4>Note!</h4> The value set for href value will vary according to content type selection.<br/>
         <strong>Biocollect content</strong> Href value must start with forward slash - '/' - e.g. '/hub/index'.<br/>
         <strong>Static page</strong> Href value should be a word. This word should be unique to the hub e.g. 'contact'<br/>
