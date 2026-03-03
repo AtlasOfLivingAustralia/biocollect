@@ -6,7 +6,7 @@ class ViewBioActivityPage extends ReloadablePage {
     }
     async at() {
         var title = await browser.getTitle();
-        return /View \\| .* \\| BioCollect/i.test(title);
+        return /View \| .* \| BioCollect/i.test(title);
     }
 
     speciesSelector(name) {
