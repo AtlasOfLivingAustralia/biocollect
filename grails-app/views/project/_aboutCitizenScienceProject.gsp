@@ -1,14 +1,14 @@
 <div class="container-fluid" id="cs-about">
-    <div class="accordion">
-        <div class="card">
-            <div class="card-header">
+    <div class="accordion" id="cs-about-accordion">
+        <div class="accordion-item">
+            <div class="accordion-header">
                 <div class="row">
                     <div class="col-auto">
-                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-up about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1"></i></h2>
+                        <h2 class="p-0 mb-0 text-center"><i class="fas fa-chevron-up about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1"></i></h2>
                     </div>
                     <div class="col-11">
-                        <button class="btn btn-link btn-block p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
-                            <h2 class="p-0 mb-0">
+                        <button class="btn btn-link w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
+                            <h2 class="p-0 mb-0 text-center">
                                 ${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}
                                 <g:if test="${fc.userIsAlaOrFcAdmin()}">
                                     <g:render template="statusBadge"/>
@@ -18,8 +18,8 @@
                     </div>
                 </div>
             </div>
-            <div class="collapse show" id="cs-about-section1">
-                <div class="card-body">
+            <div class="accordion-collapse collapse show" id="cs-about-section1">
+                <div class="accordion-body">
                     <!-- ko if: aim -->
                     <h3>${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</h3>
                     <p data-bind="text:aim"></p>
@@ -39,22 +39,22 @@
         </div>
 
         <g:if test="${projectSite?.extent?.geometry}">
-            <div class="card">
-                <div class="card-header">
+            <div class="accordion-item">
+                <div class="accordion-header">
                     <div class="row">
                         <div class="col-auto">
-                            <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4"></i></h2>
+                            <h2 class="p-0 mb-0 text-center"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4"></i></h2>
                         </div>
                         <div class="col-11">
-                            <button class="btn btn-link btn-block p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
-                                <h2 class="p-0 mb-0">
+                            <button class="btn btn-link w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
+                                <h2 class="p-0 mb-0 text-center">
                                     ${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="collapse" id="cs-about-section4">
-                    <div class="card-body">
+                <div class="accordion-collapse collapse" id="cs-about-section4">
+                    <div class="accordion-body">
                         <div class="row">
                             <div class="col-12">
                                 <m:map id="projectSiteMap" width="100%" height="512px"/>
@@ -65,18 +65,18 @@
             </div>
         </g:if>
 
-        <div class="card">
-            <div class="card-header">
+        <div class="accordion-item">
+            <div class="accordion-header">
                 <div class="row">
                     <div class="col-auto">
-                        <h2 class="p-0 mb-0"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2"></i></h2>
+                        <h2 class="p-0 mb-0 text-center"><i class="fas fa-chevron-down about-chevron-selector" role="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2"></i></h2>
                     </div>
                     <div class="col-11">
-                        <button class="btn btn-link btn-block p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2">
-                            <h2 class="p-0 mb-0" data-bind="visible:projectType() == 'survey'">
+                        <button class="btn btn-link w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section2" aria-expanded="false" aria-controls="cs-about-section2">
+                            <h2 class="p-0 mb-0 text-center" data-bind="visible:projectType() == 'survey'">
                                 <g:message code="project.display.involved" />
                             </h2>
-                            <h2 class="p-0 mb-0" data-bind="visible:projectType() != 'survey'">
+                            <h2 class="p-0 mb-0 text-center" data-bind="visible:projectType() != 'survey'">
                                 ${hubConfig.getTextForProjectInformation(grailsApplication.config.content.defaultOverriddenLabels)}
                             </h2>
                         </button>
@@ -84,8 +84,8 @@
                     </div>
                 </div>
             </div>
-            <div class="collapse" id="cs-about-section2">
-                <div class="card-body">
+            <div class="accordion-collapse collapse" id="cs-about-section2">
+                <div class="accordion-body">
 
                     <!-- from - Other information-->
                     <h2><g:message code="project.display.other"/></h2>
@@ -477,7 +477,7 @@
 </script>
 <script>
     $("#cs-about .collapse").on("shown.bs.collapse hidden.bs.collapse", function (event) {
-        var child = $(this).parent().find('.card-header .about-chevron-selector');
+        var child = $(this).parent().find('.accordion-header .about-chevron-selector');
         switch (event.type) {
             case 'shown':
                 child.removeClass('fa-chevron-down').addClass('fa-chevron-up');
