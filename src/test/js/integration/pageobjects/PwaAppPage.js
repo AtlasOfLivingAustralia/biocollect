@@ -68,6 +68,9 @@ class PwaAppPage extends StubbedCasSpec {
     async start() {
         await this.getStarted.waitForDisplayed({ timeout: 10000 });
         await this.getStarted.click();
+        // Wait for the projects to load after clicking Get Started
+        // We'll wait for any element that looks like a project ID (starts with #project_)
+        await browser.pause(3000);
     }
 
     async logout(){
@@ -76,7 +79,11 @@ class PwaAppPage extends StubbedCasSpec {
     }
 
     async viewProject(projectId) {
-        await this.project(projectId).click()
+        let projectElement = this.project(projectId);
+        await projectElement.waitForExist({ timeout: 20000 });
+        await projectElement.scrollIntoView();
+        await browser.pause(500);
+        await projectElement.click();
     }
 
     async viewRecords(paId) {
@@ -101,7 +108,11 @@ class PwaAppPage extends StubbedCasSpec {
     }
 
     async addRecord(paId){
-        await this.addRecordBtn(paId).click();
+        let btn = this.addRecordBtn(paId);
+        await btn.waitForExist({ timeout: 20000 });
+        await btn.scrollIntoView();
+        await btn.waitForClickable({ timeout: 10000 });
+        await btn.click();
     }
 
     async closeModal(){
