@@ -78,6 +78,8 @@ class PwaAppPage extends StubbedCasSpec {
         await this.avatar.click();
         await this.signOut.waitForClickable({ timeout: 10000 });
         await this.signOut.click();
+        // wait for sign out to complete and sign in button to be visible again
+        await browser.pause(5000);
     }
 
     async viewProject(projectId) {
