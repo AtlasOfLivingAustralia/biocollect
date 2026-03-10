@@ -74,7 +74,9 @@ class PwaAppPage extends StubbedCasSpec {
     }
 
     async logout(){
+        await this.avatar.waitForClickable({ timeout: 20000 });
         await this.avatar.click();
+        await this.signOut.waitForClickable({ timeout: 10000 });
         await this.signOut.click();
     }
 
