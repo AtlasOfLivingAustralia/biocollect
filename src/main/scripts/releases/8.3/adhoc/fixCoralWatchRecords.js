@@ -1,32 +1,45 @@
 // Migrate all records with "Dive centre" as participating as value to "Dive Centre"
-load("../../../mongo/utils/audit.js");
+load("utils/audit.js");
 
 var userId = "system";
 var dryRun = false;
 
 var FROM = "Dive centre";
-var TO   = "Dive Centre";
+var TO = "Dive Centre";
 var PROJECT_ID = "9c55416c-f56a-4917-a65e-da1d64a851f7";
 
 var matched = 0;
 var updated = 0;
 var audited = 0;
-var errors  = 0;
+var errors = 0;
+
+var activityIds = db.activity.distinct("activityId", {
+    projectId: PROJECT_ID,
+    status: "active"
+});
+
+print("Activities found: " + activityIds.length);
 
 var query = {
-    projectId: PROJECT_ID,
+    activityId: { $in: activityIds },
     status: "active",
     "data.groupType": FROM
 };
 
-db.output.find(query, { outputId: 1, data: 1 }).forEach(function (output) {
+db.output.find(query, { outputId: 1, activityId: 1, data: 1 }).forEach(function (output) {
     matched++;
 
     try {
         if (!dryRun) {
             var result = db.output.updateOne(
-                { outputId: output.outputId, "data.groupType": FROM },
-                { $set: { "data.groupType": TO } }
+                {
+                    outputId: output.outputId,
+                    activityId: output.activityId,
+                    "data.groupType": FROM
+                },
+                {
+                    $set: { "data.groupType": TO }
+                }
             );
 
             if (result && result.modifiedCount) {
