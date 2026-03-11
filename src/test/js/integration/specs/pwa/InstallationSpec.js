@@ -192,7 +192,11 @@ describe("Application installation Spec", function () {
     });
 
     it("login with expired token", async function () {
+
         console.log("login with expired token - start");
+        console.log("Current URL " + await browser.getUrl());
+        console.log("Current title " + await browser.getTitle());
+        await pwaAppPage
         await pwaAppPage.logout();
         console.log("login with expired token - logout");
         await pwaAppPage.atSignIn();
