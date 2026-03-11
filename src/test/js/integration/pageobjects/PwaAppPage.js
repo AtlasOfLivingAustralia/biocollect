@@ -1,6 +1,6 @@
 const StubbedCasSpec = require('./StubbedCasSpec.js')
 const ReloadablePage = require('./ReloadablePage.js')
-class PwaAppPage extends StubbedCasSpec, ReloadablePage {
+class PwaAppPage extends ReloadablePage {
     url = browser.options.testConfig.pwaUrl;
 
     get getStarted() {
