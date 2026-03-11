@@ -1,5 +1,6 @@
 const StubbedCasSpec = require('./StubbedCasSpec.js')
-class PwaAppPage extends StubbedCasSpec {
+const ReloadablePage = require('./ReloadablePage.js')
+class PwaAppPage extends ReloadablePage {
     url = browser.options.testConfig.pwaUrl;
 
     get getStarted() {
@@ -53,7 +54,9 @@ class PwaAppPage extends StubbedCasSpec {
 
     async open() {
         console.log(`Opening ${this.url}`);
+        await this.saveAtCheckTime();
         await browser.url(this.url);
+        await this.hasBeenReloaded();
     }
 
     async at() {
@@ -74,8 +77,13 @@ class PwaAppPage extends StubbedCasSpec {
     }
 
     async logout(){
+        await this.avatar.waitForClickable({ timeout: 60000 });
         await this.avatar.click();
+        await this.signOut.waitForClickable({ timeout: 60000 });
         await this.signOut.click();
+        // wait for sign out to complete and sign in button to be visible again
+        await this.signOut.waitForDisplayed({timeout: 60000, reverse: true });
+        await browser.pause(10000);
     }
 
     async viewProject(projectId) {
