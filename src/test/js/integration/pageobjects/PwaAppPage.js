@@ -1,5 +1,6 @@
 const StubbedCasSpec = require('./StubbedCasSpec.js')
-class PwaAppPage extends StubbedCasSpec {
+const ReloadablePage = require('./ReloadablePage.js')
+class PwaAppPage extends StubbedCasSpec, ReloadablePage {
     url = browser.options.testConfig.pwaUrl;
 
     get getStarted() {
@@ -53,7 +54,9 @@ class PwaAppPage extends StubbedCasSpec {
 
     async open() {
         console.log(`Opening ${this.url}`);
+        await this.saveAtCheckTime();
         await browser.url(this.url);
+        await this.hasBeenReloaded();
     }
 
     async at() {
