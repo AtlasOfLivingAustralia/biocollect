@@ -196,7 +196,7 @@ class UrlMappings {
                 // Following api's are used by external mobile clients
 
                 "/ws/project/search"(controller: "project", action: 'search')
-                "/ws/hub/list"(controller: "hub", action: 'pwaHubs')
+                "/ws/hub/pwaList"(controller: "hub", action: 'pwaList')
                 "/ws/survey/list/$id"(controller:  "project", action: 'listSurveys')
                 "/ws/attachment/upload"(controller:  "image", action: 'upload')
                 "/ws/bioactivity/model/$id"(controller: "bioActivity", action: 'getActivityModel')

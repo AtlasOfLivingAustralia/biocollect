@@ -72,7 +72,7 @@ class HubController {
         render text: result.css, contentType: 'text/css', status: result.status
     }
 
-    def pwaHubs() {
+    def pwaList() {
         def hubs = settingService.listPWAHubs().collect {
             [
                     id: it.id,
