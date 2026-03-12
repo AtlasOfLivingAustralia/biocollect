@@ -57,7 +57,7 @@ echo "Dropping database"
 mongosh ecodata-functional-test --eval 'db.dropDatabase();'
 mongosh ecodata-functional-test --eval 'db.project.count();'
 cd "$BIOCOLLECT_DIR/src/integration-test/resources/data_common/"
-mongosh ecodata-functional-test loadAlaHub.js
+mongosh ecodata-functional-test loadAcsaHub.js
 
 echo "Hosts file configuration"
 cat /etc/hosts
