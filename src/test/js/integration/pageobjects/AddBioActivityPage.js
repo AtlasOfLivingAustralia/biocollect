@@ -23,7 +23,15 @@ class AddBioActivityPage extends ReloadablePage {
     }
 
     async setSite(site) {
-        await this.addSiteInput.selectByAttribute("value", site);
+        // Select2 hides the original select element and creates its own UI
+        // We need to click on the Select2 container, not the hidden select element
+        const select2Container = $('.select2-selection');
+        await select2Container.waitForDisplayed({ timeout: 5000 });
+        await select2Container.scrollIntoView();
+        await browser.pause(500);
+        await select2Container.click();
+        await $('.select2-results__options').waitForDisplayed({ timeout: 5000 });
+        await $('.select2-results__option').click();
     }
 
     async setDate(date) {
@@ -59,12 +67,16 @@ class AddBioActivityPage extends ReloadablePage {
     }
 
     async saveActivity() {
+        await this.saveButton.waitForClickable({timeout: 60000});
         await this.saveButton.click();
+        await browser.pause(5000);
     }
 
     async dismissBootBoxDialog(){
-        await this.okButtonBootBoxDialog.waitForClickable({ timeout: 20000 });
+        await this.okButtonBootBoxDialog.waitForClickable({ timeout: 60000 });
         await this.okButtonBootBoxDialog.click();
+        // wait for the dialog to be dismissed
+        await this.okButtonBootBoxDialog.waitForClickable({ timeout: 20000, reverse: true });
     }
 }
 

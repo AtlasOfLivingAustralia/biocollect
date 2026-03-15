@@ -54,6 +54,13 @@ jobs:
         with:
           mongodb-version: '5.0'
 
+      - name: Install mongosh
+        run: |
+          sudo apt-get install gnupg
+          wget -qO - https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+          echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-mongosh mongodb-database-tools
 
       - name: Read the biocollect version from the gradle.properties file
         id: read_property
@@ -88,7 +95,7 @@ jobs:
 
       - name: Run BioCollect functional tests
         run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev
-        continue-on-error: true
+        continue-on-error: false
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
