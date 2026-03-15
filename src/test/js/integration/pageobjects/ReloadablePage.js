@@ -17,10 +17,9 @@ class ReloadablePage extends StubbedCasSpec {
 
     async saveAtCheckTime() {
         this.atCheckTime = Date.now().toString()
-        let self = this;
-        await browser.execute(() => {
-            window.atCheckTime = self.atCheckTime;
-        });
+        await browser.execute((atCheckTime) => {
+            window.atCheckTime = atCheckTime;
+        }, this.atCheckTime);
     }
 
     async getAtCheckTime() {

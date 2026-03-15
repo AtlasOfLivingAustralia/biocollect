@@ -101,7 +101,7 @@ class StubbedCasSpec {
       this.loggedInUser = userDetails.userId;
     }
 
-    async logout(returnPage = 'EntryPage') {
+    async logout(returnPage = '') {
         const logoutButtonSelector = '.custom-header-login-logout';
         const logoutButton = await browser.$(logoutButtonSelector);
 
@@ -110,14 +110,19 @@ class StubbedCasSpec {
             if (buttonText.trim() === "Logout") {
                 try {
                     await logoutButton.click();
-                    await browser.waitUntil(async () => {
-                        const currentUrl = await browser.getUrl();
-                        // Adjust this condition to check if you are on the expected return page
-                        return currentUrl.includes(returnPage);
-                    }, {
-                        timeout: 25000, // Wait for up to 25 seconds
-                        timeoutMsg: 'Timed out after 25 seconds waiting for return page'
-                    });
+                    if (returnPage) {
+                        await browser.waitUntil(async () => {
+                            const currentUrl = await browser.getUrl();
+                            // Adjust this condition to check if you are on the expected return page
+                            return currentUrl.includes(returnPage);
+                        }, {
+                            timeout: 25000, // Wait for up to 25 seconds
+                            timeoutMsg: 'Timed out after 25 seconds waiting for return page'
+                        });
+                    } else {
+                        // Just wait a short time for the logout to complete
+                        await browser.pause(1000);
+                    }
                 } catch (error) {
                     console.warn("Test ended during page reload or with a modal backdrop resulting in failure to click logout button - directly navigating browser");
                     await this.logoutViaUrl();
