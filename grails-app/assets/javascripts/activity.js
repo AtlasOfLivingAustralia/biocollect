@@ -238,10 +238,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
 
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
-        if (fcConfig.projectId && url.indexOf('projectId=') === -1) {
-            url += '&projectId=' + fcConfig.projectId;
-        }
-
         url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
 
         if (self.total() > asyncDownloadThreshold) {
@@ -266,10 +262,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var includeShapefiles = $('#dl-include-shapefiles').is(':checked');
 
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
-
-        if (fcConfig.projectId && url.indexOf('projectId=') === -1) {
-            url += '&projectId=' + fcConfig.projectId;
-        }
 
         url += "&async=true&email=" + encodeURIComponent(self.transients.downloadEmail() || '');
         url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
@@ -815,6 +807,9 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             fq = [],
             rfq;
 
+        if (fcConfig.projectId && prefix.indexOf('projectId=') === -1) {
+            params.projectId = fcConfig.projectId;
+        }
 
         var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
@@ -831,7 +826,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }
         }
 
-        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
+        var url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
         return url + filters + rfilters;
     }
 
