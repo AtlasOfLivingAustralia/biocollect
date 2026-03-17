@@ -807,10 +807,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             fq = [],
             rfq;
 
-        if (fcConfig.projectId && prefix.indexOf('projectId=') === -1) {
-            params.projectId = fcConfig.projectId;
-        }
-
         var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
             params.searchTerm = self.searchTerm().trim();
