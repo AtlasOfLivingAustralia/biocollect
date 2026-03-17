@@ -237,6 +237,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var includeShapefiles = $('#dl-include-shapefiles').is(':checked');
 
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
+
         url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
 
         if (self.total() > asyncDownloadThreshold) {
@@ -259,7 +260,8 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         var includeData = $('#dl-include-data').is(':checked');
         var includeImages = $('#dl-include-images').is(':checked');
         var includeShapefiles = $('#dl-include-shapefiles').is(':checked');
-        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, true);
+
+        var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
         url += "&async=true&email=" + encodeURIComponent(self.transients.downloadEmail() || '');
         url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
@@ -805,7 +807,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             fq = [],
             rfq;
 
-
         var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
             params.searchTerm = self.searchTerm().trim();
@@ -821,7 +822,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }
         }
 
-        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
+        var url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
         return url + filters + rfilters;
     }
 
