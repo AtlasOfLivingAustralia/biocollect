@@ -14,7 +14,7 @@ fi
 
 PWA_BRANCH=$5
 if [ -z $PWA_BRANCH ]; then
-    PWA_BRANCH=feature/deps-upgrade
+    PWA_BRANCH=testing
 fi
 
 ECODATA_LOCAL_DIR=$2
