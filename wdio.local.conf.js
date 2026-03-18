@@ -15,7 +15,7 @@ const config = {
             browserName: 'chrome',
             'goog:chromeOptions': {
                 // args: ['--auto-open-devtools-for-tabs','disable-gpu']
-                // args: ['headless', 'disable-gpu', '--window-size=3000,3000']
+                args: ['headless', 'disable-gpu', '--window-size=3000,3000']
                 // args: ['--auto-open-devtools-for-tabs', 'disable-gpu', '--window-size=2000,2000']
             },
             'wdio:chromedriverOptions': {
