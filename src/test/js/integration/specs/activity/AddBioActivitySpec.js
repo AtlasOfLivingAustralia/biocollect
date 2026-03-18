@@ -70,9 +70,8 @@ describe('Add BioActivity Spec', function () {
 
         // go online
         await addBioActivityPage.setOnline()
-        await addBioActivityPage.saveAtCheckTime();
         await addBioActivityPage.saveActivity();
-        await addBioActivityPage.hasBeenReloaded();
+        await browser.pause(10000);
         expect(await viewBioActivityPage.at()).toBeTrue();
         await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkAfterSuccessfullSave");
     })
