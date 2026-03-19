@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 
 import grails.testing.services.ServiceUnitTest
+import spock.lang.Shared
 import spock.lang.Specification
 /*
  * Copyright (C) 2021 Atlas of Living Australia
@@ -21,6 +22,10 @@ import spock.lang.Specification
  */
 
 class SpeciesServiceSpec extends Specification implements ServiceUnitTest<SpeciesService> {
+    @Shared
+    Map match1 = [scientificName: "Turdus merula", commonName: "Blackbird", name: "Turdus merula (Blackbird)", guid: "123"]
+    @Shared
+    Map match2 = [scientificName: "Gymnorhina tibicen", commonName: "Australian magpie", name: "Gymnorhina tibicen (Australian magpie)", guid: "456"]
 
     def setup() {
         service.grailsApplication = grailsApplication
@@ -56,5 +61,25 @@ class SpeciesServiceSpec extends Specification implements ServiceUnitTest<Specie
         null               | null                 | service.SCIENTIFIC_NAME                   | ''
         null               | null                 | service.COMMON_NAME_SCIENTIFIC_NAME       | ''
         null               | null                 | service.SCIENTIFIC_NAME_COMMON_NAME       | ''
+    }
+
+    def "findMatch should pick a match based on provided name" (name, match) {
+        given:
+        Map matches = [autoCompleteList: [match1, match2]]
+
+        when:
+        Map result = service.findMatch(matches, name)
+
+        then:
+        result == match
+
+        where:
+        name | match
+        "turdus merula (Blackbird)" | match1
+        "blackbird" | match1
+        "TURDUS MERULA" | match1
+        "Australian magpie" | match2
+        "GYMNORhina tibicen" | match2
+        "Gymnorhina tibicen (Australian magpie)" | match2
     }
 }
