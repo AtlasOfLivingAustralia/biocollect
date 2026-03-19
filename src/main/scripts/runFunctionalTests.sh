@@ -71,18 +71,33 @@ echo "Starting biocollect-pwa"
 cd $PWA_LOCAL_DIR
 npm install
 npm run run:functionaltest &
-sleep 15
+# check that pwa app is running
+while ! nc -z localhost 5173; do
+  echo "Waiting for pwa app to start on port 5173..."
+  sleep 5
+done
+
 
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest &
-sleep 240
+
+# check that ecodata is running
+while ! nc -z localhost 8080; do
+  echo "Waiting for ecodata to start on port 8080..."
+  sleep 5
+done
+
 
 cd $BIOCOLLECT_DIR
 echo "Starting biocollect from `pwd`"
 GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087 &
-sleep 180
+# check that biocollect is running
+while ! nc -z localhost 8087; do
+  echo "Waiting for biocollect to start on port 8087..."
+  sleep 5
+done
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
 
 echo "Running functional tests"
