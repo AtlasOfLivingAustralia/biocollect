@@ -79,7 +79,6 @@ class PwaAppPage extends ReloadablePage {
     async logout(){
         await this.avatar.isDisplayed();
         await this.avatar.scrollIntoView();
-        await this.takeScreenshot("before_logout");
         await this.avatar.waitForClickable({ timeout: 60000 });
         await this.avatar.click();
         await this.signOut.waitForClickable({ timeout: 60000 });
