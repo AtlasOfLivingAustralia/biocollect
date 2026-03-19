@@ -16,7 +16,7 @@
     "@wdio/sauce-service": "^9.23.2",
     "@wdio/spec-reporter": "^9.23.2",
     "axios": "^1.13.2",
-    "chromedriver": "^145.0.3",
+    "chromedriver": "^145.0.6",
     "crypto": "^1.0.1",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
