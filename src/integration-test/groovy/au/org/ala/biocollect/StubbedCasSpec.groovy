@@ -252,7 +252,7 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
         Map token = [:]
         token.access_token = idToken
         token.id_token = idToken
-        token.refresh_token = null
+        token.refresh_token = idToken
         token.token_type = "bearer"
         token.expires_in = 86400
         token.scope = "openid profile ala roles email"
@@ -317,7 +317,7 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
         Map token = [:]
         token.access_token = idToken
         token.id_token = idToken
-        token.refresh_token = null
+        token.refresh_token = idToken
         token.token_type = "bearer"
         token.expires_in = 86400
         token.scope = testConfig.webservice["jwt-scopes"]

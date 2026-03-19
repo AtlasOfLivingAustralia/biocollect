@@ -67,6 +67,7 @@ class AddBioActivityPage extends ReloadablePage {
     }
 
     async saveActivity() {
+        await this.saveButton.scrollIntoView();
         await this.saveButton.waitForClickable({timeout: 60000});
         await this.saveButton.click();
         await browser.pause(5000);

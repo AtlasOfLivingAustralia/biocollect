@@ -60,7 +60,7 @@ class StubbedCasSpec {
     }
 
     get localStorageTokenKey() {
-        return `oidc.user:${browser.options.testConfig.wireMockBaseUrl}/cas/oidc/.well-known:${this.testConfig.oidc.clientId}`
+        return `oidc.user:${browser.options.testConfig.wireMockBaseUrl}/cas/oidc:${this.testConfig.oidc.clientId}`
     }
 
     async loginAsUser(userId) {
@@ -177,7 +177,7 @@ class StubbedCasSpec {
         return {
             access_token: idToken,
             id_token: idToken,
-            refresh_token: null,
+            refresh_token: idToken,
             token_type: 'bearer',
             expires_in: expiresIn,
             expires_at: expiresAt,
@@ -329,7 +329,7 @@ class StubbedCasSpec {
         let token = {}
         token.access_token = idToken
         token.id_token = idToken
-        token.refresh_token = null
+        token.refresh_token = idToken
         token.token_type = "bearer"
         token.expires_in = 86400
         token.scope = this.testConfig.webservice["jwt-scopes"]
@@ -394,6 +394,7 @@ class StubbedCasSpec {
     async setOffline(){
         console.log('Going offline - ' + this.baseUrl);
         this.offlineMock = await browser.mock(`${this.baseUrl}/**`);
+        this.offlineMock.on('request', (req) => console.log('Intercepted:', req.url));
         await this.offlineMock.abort("Failed");
     }
 
@@ -402,6 +403,10 @@ class StubbedCasSpec {
             console.log('Going online');
             await this.offlineMock.restore();
             this.offlineMock = null;
+            // Give the browser a tick to fully tear down the intercept
+            await browser.pause(100);
+            // Optionally reload to force the app to re-fetch
+            await browser.refresh();
         }
     }
 

@@ -1,8 +1,10 @@
-var alaHub = {
+var acsaHub = {
     "customBreadCrumbs" : [],
     "defaultProgram" : "Citizen Science Projects",
-    "hubId" : "alaId",
-    "urlPath" : "ala",
+    "hubId" : "acsaId",
+    "urlPath" : "acsa",
+    "showInPWA": true,
+    "description" : "A hub for citizen science projects in Australia",
     "dateCreated": ISODate('2019-06-30T14:00:00Z'),
     "lastUpdated": ISODate('2019-06-30T14:00:00Z'),
     "templateConfiguration" : {
