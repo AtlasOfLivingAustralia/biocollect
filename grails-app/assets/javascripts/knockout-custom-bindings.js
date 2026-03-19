@@ -315,9 +315,9 @@ ko.bindingHandlers.stagedImageUpload = {
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         }).on('fileuploadfail', function (e, data) {
             var jqXHR = data.jqXHR;
-            if (jqXHR && jqXHR.status === 422) {
-                var resp = jqXHR.responseJSON || {message: "File upload could not be processed. Possible virus detected."};
-                error(resp.message);
+            if (jqXHR && (jqXHR.status === 422 || jqXHR.status === 500)) {
+                var resp = jqXHR.responseJSON || {};
+                error(resp.message || jqXHR.responseText || 'An error occurred during file upload');
             }
             else {
                 error(data.errorThrown);
