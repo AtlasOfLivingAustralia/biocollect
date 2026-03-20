@@ -1,6 +1,5 @@
 package au.org.ala.biocollect.merit
 
-
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Shared
 import spock.lang.Specification
@@ -26,6 +25,8 @@ class SpeciesServiceSpec extends Specification implements ServiceUnitTest<Specie
     Map match1 = [scientificName: "Turdus merula", commonName: "Blackbird", name: "Turdus merula (Blackbird)", guid: "123"]
     @Shared
     Map match2 = [scientificName: "Gymnorhina tibicen", commonName: "Australian magpie", name: "Gymnorhina tibicen (Australian magpie)", guid: "456"]
+    @Shared
+    Map match3 = [scientificName: null, commonName: null, name: "", guid: "789"]
 
     def setup() {
         service.grailsApplication = grailsApplication
@@ -65,7 +66,7 @@ class SpeciesServiceSpec extends Specification implements ServiceUnitTest<Specie
 
     def "findMatch should pick a match based on provided name" (name, match) {
         given:
-        Map matches = [autoCompleteList: [match1, match2]]
+        Map matches = [autoCompleteList: [match1, match2, match3]]
 
         when:
         Map result = service.findMatch(matches, name)
@@ -81,5 +82,6 @@ class SpeciesServiceSpec extends Specification implements ServiceUnitTest<Specie
         "Australian magpie" | match2
         "GYMNORhina tibicen" | match2
         "Gymnorhina tibicen (Australian magpie)" | match2
+        "no match" | null
     }
 }
