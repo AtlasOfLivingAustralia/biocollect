@@ -338,9 +338,9 @@ class ActivityService {
                     Map speciesSearchResults = projectActivityService.searchSpecies(projectActivityId, name, 10, outputName, speciesField.name)
                     Map species = speciesService.findMatch(speciesSearchResults, name)
                     if (species) {
-                        row[speciesField.name] = [name: species.name, listId: species.listId, guid: species.guid, scientificName: species.scientificName, commonName: species.commonName]
+                        row[speciesField.name] = [name: species.name ?: name, listId: species.listId, guid: species.guid, scientificName: species.scientificName ?: name, commonName: species.commonName]
                     } else {
-                        row[speciesField.name] = [name: name, listId: 'unmatched', guid: null, scientificName: name, commonName: null]
+                        row[speciesField.name] = [name: name, listId: 'unmatched', guid: null, scientificName: name, commonName: ""]
                     }
                 }
             }

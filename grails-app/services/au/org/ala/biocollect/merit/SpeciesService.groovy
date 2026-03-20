@@ -122,11 +122,11 @@ class SpeciesService {
         List results = speciesSearchResults?.autoCompleteList ?: []
         // check scientific name, then common name, then the name field for a match.
         results.find { result ->
-            result.scientificName?.equalsIgnoreCase(name)
+            result.scientificName instanceof String ? result.scientificName.equalsIgnoreCase(name) : false
         } ?: results.find { result ->
-            result.commonName?.equalsIgnoreCase(name)
+            result.commonName instanceof String ? result.commonName.equalsIgnoreCase(name) : false
         } ?: results.find { result ->
-            result.name.equalsIgnoreCase(name)
+            result.name instanceof String ? result.name.equalsIgnoreCase(name) : false
         }
     }
 
