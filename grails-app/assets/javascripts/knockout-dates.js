@@ -81,23 +81,19 @@ function isValidDate(d) {
     return !isNaN(d.getTime());
 }
 
-function convertToSimpleDate(isoDate, includeTime, showInUserTimeZone) {
-    if (!isoDate) { return ''; }
-
-    if (typeof isoDate === 'object') {
-        if (!isValidDate(isoDate)) {
-            return '';
-        }
+function convertToSimpleDate(isoDate, includeTime) {
+    if (!isoDate) { return ''}
+    var date = isoDate, strDate;
+    if (typeof isoDate === 'string') {
+        date = Date.fromISO(isoDate);
     }
-
-    var timezone = "Australia/Sydney";
-    if (showInUserTimeZone === true) {
-        timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
+    if (!isValidDate(date)) { return '' }
+    strDate = pad(date.getDate(),2) + '-' + pad(date.getMonth() + 1,2) + '-' + date.getFullYear();
+    strDate = pad(date.getDate(),2) + '-' + pad(date.getMonth() + 1,2) + '-' + date.getFullYear();
+    if (includeTime) {
+        strDate = strDate + ' ' + pad(date.getHours(),2) + ':' + pad(date.getMinutes(),2);
     }
-
-    var date = moment.tz(isoDate, timezone);
-    var format = includeTime ? "DD-MM-YYYY HH:mm" : "DD-MM-YYYY";
-    return date.format(format);
+    return strDate;
 }
 
 function convertToIsoDate(date) {
@@ -163,18 +159,7 @@ function stringToDate(date) {
     //  a JS Date object - useful with datepicker; and
     //  a simple formatted date of the form dd-mm-yyyy useful for display.
     // The formatted date will include hh:MM if the includeTime argument is true
-    ko.extenders.simpleDate = function (target, options) {
-        var includeTime = false;
-        var showInUserTimeZone = false;
-
-        if (_.isObject(options)) {
-            includeTime = options.includeTime || false;
-            showInUserTimeZone = options.showInUserTimeZone || false;
-        }
-        else {
-            includeTime = options || false;
-        }
-
+    ko.extenders.simpleDate = function (target, includeTime) {
         target.date = ko.computed({
             read: function () {
                 return Date.fromISO(target());
@@ -196,7 +181,7 @@ function stringToDate(date) {
         });
         target.formattedDate = ko.computed({
             read: function () {
-                return convertToSimpleDate(target(), includeTime, showInUserTimeZone);
+                return convertToSimpleDate(target(), includeTime);
             },
 
             write: function (newValue) {
