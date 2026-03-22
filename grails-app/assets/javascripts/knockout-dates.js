@@ -92,7 +92,7 @@ function convertToSimpleDate(isoDate, includeTime, showInUserTimeZone) {
 
     var timezone = "Australia/Sydney";
     if (showInUserTimeZone === true) {
-        timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
+        timezone = moment.tz.guess() || timezone;
     }
 
     var date = moment.tz(isoDate, timezone);
