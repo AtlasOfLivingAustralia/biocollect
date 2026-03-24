@@ -1,0 +1,317 @@
+{
+  "id": "5d133338e4b00a475b28e203",
+  "dateCreated": "2019-06-26T08:56:25Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2019-11-11T23:11:03Z",
+  "createdUserId": "<anon>",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "GGBF Observation",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "GGBF Observation",
+        "dataModel": [
+          {
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "surveyDate",
+            "dwcAttribute": "eventDate",
+            "description": "The date on which the sighting was made.",
+            "validate": "required"
+          },
+          {
+            "dataType": "time",
+            "name": "surveyStartTime",
+            "dwcAttribute": "eventTime",
+            "description": "The time at which the sighting was made."
+          },
+          {
+            "dataType": "text",
+            "name": "notes",
+            "dwcAttribute": "eventRemarks",
+            "description": "General remarks about the survey event, including any characteristic site features, conditions, etc."
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who is attributed with making the sighting."
+          },
+          {
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "validate": "required"
+          },
+          {
+            "dataType": "species",
+            "name": "species",
+            "dwcAttribute": "scientificName",
+            "description": "The species name of the plant, animal or fungus observed.",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "bellFrogsHeard",
+            "validate": "required",
+            "description": "",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "otherFrogsSpeciesHeard",
+            "description": "",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "defaultValue": "0",
+            "dataType": "number",
+            "name": "ggbfSeen",
+            "dwcAttribute": "ggbfSeen",
+            "description": "",
+            "validate": "min[0]"
+          },
+          {
+            "defaultValue": "0",
+            "dataType": "number",
+            "name": "ggbfHeard",
+            "dwcAttribute": "ggbfHeard",
+            "description": "",
+            "validate": "min[0]"
+          },
+          {
+            "defaultValue": "0",
+            "dataType": "number",
+            "name": "temperature",
+            "dwcAttribute": "temperature",
+            "description": "",
+            "decimalPlaces": 1
+          },
+          {
+            "dataType": "text",
+            "name": "weatherConditions",
+            "description": "",
+            "constraints": [
+              "Clear",
+              "Cloudy",
+              "High wind",
+              "Medium wind",
+              "Low wind",
+              "Raining",
+              "Recent rainfall (last 24 hours)",
+              "No recent rain"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "comments",
+            "dwcAttribute": "notes",
+            "description": "Observation notes about the record."
+          },
+          {
+            "dataType": "image",
+            "name": "sightingPhoto",
+            "description": "Upload a photo taken of the species at the time of the record. This is essential for verification of the record.",
+            "validate": ""
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Record Information",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "computed": null,
+                                "source": "<h4>Step 1: Upload one or more of the best images of your sighting.</h4><i>This is strongly recommended so that the record can be validated and used in scientific work.</i>",
+                                "type": "literal"
+                              },
+                              {
+                                "preLabel": "Sighting photo",
+                                "computed": null,
+                                "source": "sightingPhoto",
+                                "type": "image"
+                              },
+                              {
+                                "computed": null,
+                                "source": "<h4>Step 2: Check & update or Record the details of your sighting.</h4>",
+                                "type": "literal"
+                              },
+                              {
+                                "computed": null,
+                                "source": "<h3>Sighting Event Information</h3>",
+                                "type": "literal"
+                              },
+                              {
+                                "preLabel": "Survey date",
+                                "computed": null,
+                                "source": "surveyDate",
+                                "type": "date"
+                              },
+                              {
+                                "preLabel": "Survey start time",
+                                "computed": null,
+                                "source": "surveyStartTime",
+                                "type": "time"
+                              },
+                              {
+                                "preLabel": "Notes",
+                                "computed": null,
+                                "source": "notes",
+                                "type": "textarea"
+                              },
+                              {
+                                "preLabel": "Recorded by",
+                                "computed": null,
+                                "source": "recordedBy",
+                                "type": "text"
+                              },
+                              {
+                                "computed": null,
+                                "source": "<h3>Single Species Sighting</h3>",
+                                "type": "literal"
+                              },
+                              {
+                                "preLabel": "Species name",
+                                "computed": null,
+                                "source": "species",
+                                "type": "autocomplete"
+                              },
+                              {
+                                "preLabel": "Bell frogs heard?",
+                                "computed": null,
+                                "source": "bellFrogsHeard",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Other frog species heard calling?",
+                                "computed": null,
+                                "source": "otherFrogsSpeciesHeard",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Number of GGBF seen",
+                                "computed": null,
+                                "source": "ggbfSeen",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Number of GGBF heard",
+                                "computed": null,
+                                "source": "ggbfHeard",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Temperature (deg C)",
+                                "computed": null,
+                                "source": "temperature",
+                                "type": "number"
+                              },
+                              {
+                                "preLabel": "Weather conditions",
+                                "computed": null,
+                                "source": "weatherConditions",
+                                "type": "selectOne"
+                              },
+                              {
+                                "preLabel": "Comments",
+                                "computed": null,
+                                "source": "comments",
+                                "type": "textarea"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "Location",
+                        "type": "section",
+                        "items": [
+                          {
+                            "computed": null,
+                            "type": "row",
+                            "items": [
+                              {
+                                "orientation": "vertical",
+                                "computed": null,
+                                "readonly": true,
+                                "source": "location",
+                                "type": "geoMap"
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "modelName": null,
+      "templateName": "ggbfObservation",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "GGBF Observation",
+      "description": null
+    }
+  ],
+  "type": "Activity",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "",
+  "description": null,
+  "formVersion": 1
+}

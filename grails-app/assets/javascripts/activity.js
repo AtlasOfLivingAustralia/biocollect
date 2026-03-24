@@ -232,7 +232,13 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
                 }
         }
 
+        var includeData = $('#dl-include-data').is(':checked');
+        var includeImages = $('#dl-include-images').is(':checked');
+        var includeShapefiles = $('#dl-include-shapefiles').is(':checked');
+
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
+
+        url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
 
         if (self.total() > asyncDownloadThreshold) {
             self.transients.showEmailDownloadPrompt(!self.transients.showEmailDownloadPrompt());
@@ -245,10 +251,20 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         }
     };
 
+    // This will keep the download options dropdown open when clicking checkboxes (BS4 default is to close)
+    $(document).on('click', '#download-data .dropdown-menu', function (e) {
+        e.stopPropagation();
+    });
+
     self.asyncDownload = function() {
+        var includeData = $('#dl-include-data').is(':checked');
+        var includeImages = $('#dl-include-images').is(':checked');
+        var includeShapefiles = $('#dl-include-shapefiles').is(':checked');
+
         var url = constructQueryUrl(fcConfig.downloadProjectDataUrl, 0, false);
 
-        url += "&async=true&email=" + self.transients.downloadEmail();
+        url += "&async=true&email=" + encodeURIComponent(self.transients.downloadEmail() || '');
+        url += '&includeData=' + includeData + '&includeImages=' + includeImages + '&includeShapefiles=' + includeShapefiles;
 
         $.ajax({
             url: url,
@@ -524,7 +540,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         fq = self.urlFacetParameter();
 
         fq.forEach(function (filter, index) {
-            fq[index] = encodeURI(filter)
+            fq[index] = encodeURIComponent(filter);
         });
 
         if(fq.length){
@@ -791,7 +807,6 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             fq = [],
             rfq;
 
-
         var filters = '', rfilters = '';
         if (_.isUndefined(facetOnly) || !facetOnly) {
             params.searchTerm = self.searchTerm().trim();
@@ -799,7 +814,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             fq = self.urlFacetParameter();
 
             fq.forEach(function (filter, index) {
-                fq[index] = encodeURI(filter)
+                fq[index] = encodeURIComponent(filter);
             });
 
             if(fq.length){
@@ -807,7 +822,7 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
             }
         }
 
-        url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
+        var url = prefix + ((prefix.indexOf('?') > -1) ? '&' : '?') + $.param(params);
         return url + filters + rfilters;
     }
 

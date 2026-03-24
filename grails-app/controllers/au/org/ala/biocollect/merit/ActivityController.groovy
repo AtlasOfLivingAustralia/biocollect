@@ -1,18 +1,17 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.ProjectActivityService
-import au.org.ala.biocollect.merit.SpeciesService
+import au.org.ala.web.NoSSO
+import au.org.ala.web.SSO
 import grails.converters.JSON
+import grails.core.GrailsApplication
 import org.apache.http.HttpStatus
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
-import org.grails.web.json.JSONArray
 import org.grails.plugins.excelimport.ExcelImportService
+import org.grails.web.json.JSONArray
 import org.springframework.context.MessageSource
-import grails.core.GrailsApplication
-import au.org.ala.web.NoSSO
-import au.org.ala.web.SSO
 
 @SSO
 class ActivityController {
@@ -451,10 +450,10 @@ class ActivityController {
 
                         def result = speciesService.searchByScientificName(scientificName)
                         if (result) {
-                            row[species.name] = [name:result.name, listId:result.listId, guid:result.guid]
+                            row[species.name] = [name:result.name, listId:result.listId, guid:result.guid, scientificName: result.scientificName ?: result.name, commonName: result.commonName]
                         }
                         else {
-                            row[species.name] = [name:scientificName, listId:'unmatched', guid:null]
+                            row[species.name] = [name:scientificName, listId:'unmatched', scientificName:scientificName, commonName: '', guid:null]
                         }
 
                     }

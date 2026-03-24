@@ -48,7 +48,6 @@ describe("Application installation Spec", function () {
     });
 
     it("submit record offline and publish it when network returns", async function () {
-        console.log(url);
         await pwaAppPage.start();
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOffline");
         await pwaAppPage.viewProject(project);
@@ -58,8 +57,8 @@ describe("Application installation Spec", function () {
         await stopServer();
         await pwaAppPage.addRecord(pa);
         await browser.pause(5000);
-        let iframe =  await browser.findElement('tag name', 'iframe');
-        let contextId = await browser.switchToFrame(iframe);
+        let iframe = $('iframe');
+        let contextId = await browser.switchFrame(iframe);
         console.log("iframe context id- " +contextId);
         await addBioActivityPage.setSite(site);
         await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`, true);
@@ -70,7 +69,7 @@ describe("Application installation Spec", function () {
         // Save the activity
         await addBioActivityPage.saveActivity();
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflineAfterSave");
-        contextId = await browser.switchToFrame(null);
+        contextId = await browser.switchFrame(null);
         console.log("main frame context id- " +contextId);
         contextId = await browser.switchFrame(null);
         console.log("main frame context id- " +contextId);
@@ -84,9 +83,9 @@ describe("Application installation Spec", function () {
         await pwaAppPage.viewUnpublishedRecords(pa);
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflineUnpublishedRecords");
 
-        iframe =  await browser.findElement('tag name', 'iframe');
+        iframe = $('iframe');
         console.log("iframe url  - " + JSON.stringify(iframe));
-        contextId = await browser.switchToFrame(iframe);
+        contextId = await browser.switchFrame(iframe);
         console.log("iframe context id- " +contextId);
 
         offlineListPage = new OfflineListPage();
@@ -99,7 +98,7 @@ describe("Application installation Spec", function () {
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
         await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
-        await browser.switchToFrame(null);
+        await browser.switchFrame(null);
         await pwaAppPage.closeModal();
 
         // check if the record is uploaded
@@ -119,17 +118,17 @@ describe("Application installation Spec", function () {
     });
 
     it("submit record offline and choose a site on map and publish it when network returns", async function () {
-        console.log(url);
         let getStarted = await pwaAppPage.getStarted;
         if (getStarted && (await getStarted.isDisplayed())) {
             await pwaAppPage.start();
         }
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMap");
         await pwaAppPage.viewProject(project);
+        await browser.pause(3000); // Wait for project activities to load before going offline
         await stopServer();
         await pwaAppPage.addRecord(pa);
         await browser.pause(5000);
-        let iframe =  await browser.findElement('tag name', 'iframe');
+        let iframe = $('iframe');
         let contextId = await browser.switchFrame($("iframe"));
         console.log("iframe context id- " +contextId);
         await addBioActivityPage.dropPin();
@@ -191,7 +190,11 @@ describe("Application installation Spec", function () {
     });
 
     it("login with expired token", async function () {
+
         console.log("login with expired token - start");
+        console.log("Current URL " + await browser.getUrl());
+        console.log("Current title " + await browser.getTitle());
+        await pwaAppPage.takeScreenShot("loginWithExpiredTokenBeforeLogout");
         await pwaAppPage.logout();
         console.log("login with expired token - logout");
         await pwaAppPage.atSignIn();
