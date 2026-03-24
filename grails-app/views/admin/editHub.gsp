@@ -158,13 +158,12 @@
             </div>
 
             <div class="form-group row">
-                <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="showInPWA" data-bind="checked: showInPWA">
-                        <label class="form-check-label">
-                            Show hub on PWA
-                        </label>
-                    </div>
+                <label class="col-md-4 col-form-label" for="pwa-hub-visibility">Progressive Web App visibility</label>
+                <div class="col-md-8">
+                    <label>
+                        <input type="checkbox" name="showInPWA" data-bind="checked: showInPWA">
+                        Show hub in PWA
+                    </label>
                 </div>
             </div>
         </div>
