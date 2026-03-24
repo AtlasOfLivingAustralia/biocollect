@@ -5,15 +5,11 @@
     <div id="survey-all-activities-and-records-content">
         <bc:koLoading>
             <div class="container-fluid data-expander data-container show">
-                <div class="row justify-content-end">
-                    <div class="col-12 col-md-4 mb-3">
-                        <g:render template="/bioActivity/search"/>
-                    </div>
-                </div>
-
-                <div id="sortBar" class="row d-flex">
-                    <div class="col col-md-4 mb-3 order-1 order-md-0 pr-1">
-                        <button data-toggle="collapse" data-target=".data-expander" aria-expanded="true" aria-controls="filters" class="btn btn-dark" title="Filter Data">
+                <div id="sortBar" class="row align-items-end">
+                    <div class="col-12 col-md-4 mb-3 order-1 order-md-0">
+                        <button data-toggle="collapse" data-target=".data-expander"
+                                aria-expanded="true" aria-controls="filters"
+                                class="btn btn-dark" title="Filter Data">
                             <i class="fas fa-filter"></i> Filter Data
                         </button>
                     </div>
@@ -49,12 +45,58 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 text-center text-md-right order-0 order-md-2">
-                        <button id="download-data" class="btn btn-dark padding-top-1"
-                                data-bind="click: download, disable: transients.loading"
-                                data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
-                            <i class="fas fa-download">&nbsp;</i> <g:message code="g.download"/>
-                        </button>
+
+                    <div class="col-12 col-md-4 mb-3 order-3 order-md-2 d-flex flex-column align-items-md-end">
+                        <div class="w-100 search-container">
+                            <g:render template="/bioActivity/search"/>
+                        </div>
+
+                        <div id="download-data"
+                             class="mt-2 d-flex flex-column align-items-end"
+                             data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
+
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" data-bind="click: download">Download</button>
+                                <button type="button"
+                                        class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <span class="sr-only"><g:message code="split.download.dropdown"/></span>
+                                </button>
+
+                                <div class="dropdown-menu dropdown-menu-right p-3 download-options">
+                                    <strong class="d-block mb-2"><g:message code="split.download.options"/></strong>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
+                                        <label class="form-check-label" for="dl-include-data">
+                                            <g:message code="split.download.data"/>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dl-include-images">
+                                        <label class="form-check-label" for="dl-include-images">
+                                            <g:message code="split.download.images"/>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="dl-include-shapefiles">
+                                        <label class="form-check-label" for="dl-include-shapefiles">
+                                            <g:message code="split.download.shapefiles"/>
+                                        </label>
+                                    </div>
+
+                                    <div class="dropdown-divider"></div>
+
+                                    <small class="text-muted d-block">
+                                        <g:message code="split.download.info"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -441,7 +483,8 @@
                                     <div>
                                         <!-- ko if: $parent.embargoed() -->
                                         <a href="#" class="helphover"
-                                           data-bind="popover: {title:'Embargoed.', content:'Indicates that only project members can access the record'}">
+                                           data-bind="popover: {title:'Embargoed.', content:'Indicates that only restricted members can access the record'}">
+                                        <span class="fas fa-lock"></span>
                                         </a>
                                         <!-- /ko -->
                                     </div>
@@ -565,6 +608,7 @@
 </div>
 <!-- /ko -->
 
+<asset:stylesheet src="activities.css"/>
 <asset:javascript src="chartjs/chart.min.js"/>
 <asset:script type="text/javascript">
     var activitiesAndRecordsViewModel, alaMap, results;

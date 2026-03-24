@@ -23,22 +23,20 @@ describe('Add BioActivity Spec', function () {
 
     it('should add an activity', async () => {
         await addBioActivityPage.loginAsUser('1');
-        let promises = [];
         // Navigate to the Add Bio Activity page
         await addBioActivityPage.open(projectActivityId);
         await addBioActivityPage.takeScreenShot("shouldAddAnActivitySurvey");
         // Set the site, date, and species
-        promises.push(addBioActivityPage.setSite(site));
-        promises.push(addBioActivityPage.setDate('01/01/2020'));
+        await addBioActivityPage.setSite(site);
+        await addBioActivityPage.setDate('01/01/2020');
 
         // Upload an image
-        promises.push(addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`));
+        await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`);
 
-        // Wait for all promises to resolve
-        await Promise.all(promises);
         await addBioActivityPage.setSpecies('acacia')
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityBeforeSave");
         // Save the activity
+        await addBioActivityPage.saveAtCheckTime();
         await addBioActivityPage.saveActivity();
         await browser.pause(30000);
         await addBioActivityPage.hasBeenReloaded();
@@ -49,19 +47,16 @@ describe('Add BioActivity Spec', function () {
 
     it("should not be able to submit an activity when no network", async () => {
         await addBioActivityPage.loginAsUser('1');
-        let promises = [];
         // Navigate to the Add Bio Activity page
         await addBioActivityPage.open(projectActivityId);
         await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkSurvey");
         // Set the site, date, and species
-        promises.push(addBioActivityPage.setSite(site));
-        promises.push(addBioActivityPage.setDate('01/01/2020'));
+        await addBioActivityPage.setSite(site);
+        await addBioActivityPage.setDate('01/01/2020');
 
         // Upload an image
-        promises.push(addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`));
+        await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`);
 
-        // Wait for all promises to resolve
-        await Promise.all(promises);
         await addBioActivityPage.setSpecies('acacia')
         await addBioActivityPage.setOffline();
         // Save the activity
@@ -76,7 +71,7 @@ describe('Add BioActivity Spec', function () {
         // go online
         await addBioActivityPage.setOnline()
         await addBioActivityPage.saveActivity();
-        await addBioActivityPage.hasBeenReloaded();
+        await browser.pause(10000);
         expect(await viewBioActivityPage.at()).toBeTrue();
         await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkAfterSuccessfullSave");
     })

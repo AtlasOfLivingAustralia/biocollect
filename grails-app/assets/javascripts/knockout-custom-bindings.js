@@ -314,7 +314,15 @@ ko.bindingHandlers.stagedImageUpload = {
             }
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         }).on('fileuploadfail', function (e, data) {
-            error(data.errorThrown);
+            var jqXHR = data.jqXHR;
+            if (jqXHR && (jqXHR.status === 422 || jqXHR.status === 500)) {
+                var resp = jqXHR.responseJSON || {};
+                error(resp.message || jqXHR.responseText || 'An error occurred during file upload');
+            }
+            else {
+                error(data.errorThrown);
+            }
+
             window.decreaseAsyncCounter && window.decreaseAsyncCounter();
         });
 

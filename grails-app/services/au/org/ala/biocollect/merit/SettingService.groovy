@@ -250,6 +250,13 @@ class SettingService {
         })
     }
 
+    List listPWAHubs() {
+        String url = grailsApplication.config.ecodata.service.url+'/hub/findPWAHubs'
+        Map resp = webService.getJson(url, null, false)
+
+        resp.list ?: []
+    }
+
     /**
      * Is the current hub a works hub
      * @return

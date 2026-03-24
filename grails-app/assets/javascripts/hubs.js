@@ -96,9 +96,11 @@ var HubSettings = function (settings, config) {
     self.urlPath = ko.observable();
     self.skin = ko.observable();
     self.title = ko.observable();
+    self.description = ko.observable();
     self.supportedPrograms = ko.observableArray();
     self.defaultFacetQuery = ko.observableArray();
     self.homePagePath = ko.observable();
+    self.showInPWA = ko.observable();
     self.bannerUrl = ko.observable();
     self.logoUrl = ko.observable();
     self.faviconlogoUrl = ko.observable();
@@ -247,9 +249,11 @@ var HubSettings = function (settings, config) {
         self.urlPath(settings.urlPath);
         self.skin(settings.skin);
         self.title(settings.title);
+        self.description(settings.description);
         self.fathomSiteId(settings.fathomSiteId);
         self.supportedPrograms(self.orEmptyArray(settings.supportedPrograms));
         self.defaultProgram(settings.defaultProgram);
+        self.showInPWA(settings.showInPWA || false);
         self.bannerUrl(self.orBlank(settings.bannerUrl));
         self.logoUrl(self.orBlank(settings.logoUrl));
         self.faviconlogoUrl(self.orBlank(settings.faviconlogoUrl));

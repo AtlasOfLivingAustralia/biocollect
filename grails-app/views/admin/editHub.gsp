@@ -103,6 +103,13 @@
             </div>
 
             <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="description">Description</label>
+                <div class="col-md-8 required">
+                    <textarea rows="3" class="form-control" data-bind="value:description" id="description" placeholder="Briefly describe the function of the hub"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label class="col-md-4 col-form-label" for="description">Home Page Path</label>
                 <div class="col-md-8 required">
                     <input type="text" class="form-control" data-bind="value:homePagePath" placeholder="Relative path to home page (leave blank for default)"></input>
@@ -147,6 +154,16 @@
                 <label class="col-md-4 col-form-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
                 <div class="col-md-8">
                     <select class="form-control" id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="pwa-hub-visibility">Progressive Web App visibility</label>
+                <div class="col-md-8">
+                    <label>
+                        <input id="pwa-hub-visibility" type="checkbox" name="showInPWA" data-bind="checked: showInPWA">
+                        Show hub in PWA
+                    </label>
                 </div>
             </div>
         </div>

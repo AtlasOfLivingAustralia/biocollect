@@ -8,13 +8,15 @@ const config = {
         //     './src/test/js/integration/specs/pwa/InstallationSpec.js'
         // ],
         maxInstances: 1,
+        maxInstancesPerCapability: 1,
         // services: ['devtools'],
         capabilities: [{
+            maxInstances: 1,
             browserName: 'chrome',
             'goog:chromeOptions': {
                 // args: ['--auto-open-devtools-for-tabs','disable-gpu']
-                args: ['headless', 'disable-gpu', '--window-size=1280,1024']
-                // args: ['disable-gpu', '--window-size=1280,1024']
+                args: ['headless', 'disable-gpu', '--window-size=3000,3000']
+                // args: ['--auto-open-devtools-for-tabs', 'disable-gpu', '--window-size=3000,3000']
             },
             'wdio:chromedriverOptions': {
                 binary: "./node_modules/chromedriver/lib/chromedriver/chromedriver"
