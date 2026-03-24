@@ -82,22 +82,29 @@ function isValidDate(d) {
 }
 
 function convertToSimpleDate(isoDate, includeTime, showInUserTimeZone) {
-    if (!isoDate) { return ''}
-    if (typeof isoDate === 'object') {
+    if (!isoDate) { return ''; }
+    var date;
+    if (typeof isoDate === 'string') {
+        date = Date.fromISO(isoDate);
+    }
+    else if (typeof isoDate === 'object') {
         // assume a date object
         if (!isValidDate(isoDate)) {
             return '';
         }
+        date = isoDate;
+    }
+    else {
+        return '';
     }
 
-    var date;
     if (showInUserTimeZone === true) {
         // default to user's local timezone
-        date = moment(isoDate);
+        date = moment(date);
     }
     else {
         // use existing behaviour
-        date = moment.tz(isoDate, "Australia/Sydney");
+        date = moment.tz(date, "Australia/Sydney");
     }
 
     var format = includeTime ? "DD-MM-YYYY HH:mm" : "DD-MM-YYYY";
