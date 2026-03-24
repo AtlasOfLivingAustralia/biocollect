@@ -161,7 +161,7 @@
                 <label class="col-md-4 col-form-label" for="pwa-hub-visibility">Progressive Web App visibility</label>
                 <div class="col-md-8">
                     <label>
-                        <input type="checkbox" name="showInPWA" data-bind="checked: showInPWA">
+                        <input id="pwa-hub-visibility" type="checkbox" name="showInPWA" data-bind="checked: showInPWA">
                         Show hub in PWA
                     </label>
                 </div>
