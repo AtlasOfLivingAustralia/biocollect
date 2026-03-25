@@ -22,6 +22,7 @@
           {
             "defaultValue": "${now}",
             "dataType": "date",
+            "indexName": "eventDate",
             "name": "eventDate",
             "dwcAttribute": "eventDate",
             "description": "The date of the Survey.",
@@ -44,18 +45,31 @@
           },
           {
             "dataType": "text",
-            "name": "additionalSurveyors",
+            "name": "otherSurveyors",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "otherSurveyors",
+            "measurementType": "text",
+            "indexName": "otherSurveyors",
             "description": "Names of other people involved in the survey"
           },
           {
             "indexName": "groupName",
             "dataType": "text",
             "name": "groupName",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "groupName",
+            "measurementType": "text",
             "description": "The name of the group or school"
           },
           {
             "dataType": "number",
             "name": "groupSize",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "groupSize",
+            "measurementType": "number",
             "description": "The number of people participating in the survey group.",
             "validate": "min[1],integer"
           },
@@ -68,6 +82,10 @@
           {
             "dataType": "text",
             "name": "surveyExtent",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "surveyExtent",
+            "measurementType": "text",
             "description": "",
             "constraints": [
               "From high to low water mark",
@@ -78,6 +96,10 @@
             "indexName": "surveyorExperience",
             "dataType": "text",
             "name": "surveyorExperience",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "surveyorExperience",
+            "measurementType": "text",
             "description": "",
             "constraints": [
               "Scientifically accurate",
@@ -89,6 +111,10 @@
           {
             "dataType": "number",
             "name": "distanceBetweenQuadratsInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "distanceBetweenQuadratsInMetres",
+            "measurementType": "number",
             "description": "",
             "decimalPlaces": 2,
             "validate": "min[0]"
@@ -97,6 +123,10 @@
             "indexName": "siteExposure",
             "dataType": "text",
             "name": "siteExposure",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "siteExposure",
+            "measurementType": "text",
             "description": "",
             "constraints": [
               "Very exposed",
@@ -109,7 +139,11 @@
             "columns": [
               {
                 "dataType": "text",
-                "name": "quadratNumber"
+                "name": "quadratNumber",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "quadratNumber",
+                "measurementType": "text"
               },
               {
                 "indexName": "mm2Substrate",
@@ -256,16 +290,25 @@
           },
           {
             "dataType": "text",
-            "name": "siteDescription"
+            "name": "siteDescription",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "siteDescription",
+            "measurementType": "text"
           },
           {
             "dataType": "image",
             "name": "locationPhoto",
+            "dwcAttribute": "associatedMedia",
             "description": "Photo of the survey location"
           },
           {
             "dataType": "text",
             "name": "photogrammetrySurveyUndertaken",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "photogrammetrySurveyUndertaken",
+            "measurementType": "text",
             "description": "",
             "constraints": [
               "Yes",
@@ -276,6 +319,10 @@
           {
             "dataType": "text",
             "name": "photogrammetrySurveyUrl",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "photogrammetrySurveyUrl",
+            "measurementType": "text",
             "description": "If you did a photogrammetry survey in conjunction with this survey, please insert the URL link to it here."
           },
           {
@@ -289,66 +336,110 @@
               {
                 "dataType": "number",
                 "name": "percentCoverQ1Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ1Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ2Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ2Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ3Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ3Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ4Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ4Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ5Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ5Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ6Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ6Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ7Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ7Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ8Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ8Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ9Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ9Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ10Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ10Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "percentCoverQ11Plants",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "percentCoverQ11Plants",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
@@ -379,66 +470,110 @@
               {
                 "dataType": "number",
                 "name": "individualCountQ1Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ1Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ2Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ2Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ3Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ3Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ4Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ4Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ5Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ5Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ6Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ6Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ7Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ7Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ8Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ8Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ9Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ9Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ10Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ10Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
               {
                 "dataType": "number",
                 "name": "individualCountQ11Animals",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "individualCountQ11Animals",
+                "measurementType": "number",
                 "description": "The number of individuals of species recorded in quadrat.",
                 "validate": "min[0],integer"
               },
@@ -498,7 +633,7 @@
                       },
                       {
                         "preLabel": "Other surveyors",
-                        "source": "additionalSurveyors",
+                        "source": "otherSurveyors",
                         "type": "text"
                       },
                       {
@@ -730,7 +865,7 @@
                                         "width": "15%",
                                         "source": "speciesPlants",
                                         "title": "Species",
-                                        "type": "speciesSelect"
+                                        "type": "autocomplete"
                                       },
                                       {
                                         "width": "5%",
@@ -839,7 +974,7 @@
                                         "width": "15%",
                                         "source": "speciesAnimals",
                                         "title": "Species",
-                                        "type": "speciesSelect"
+                                        "type": "autocomplete"
                                       },
                                       {
                                         "width": "5%",
