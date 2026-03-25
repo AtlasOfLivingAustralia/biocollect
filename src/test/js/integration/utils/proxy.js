@@ -29,6 +29,7 @@ async function startServer(blockUrl="", port=8081) {
 }
 
 function stopServer() {
+    console.log('request received to stop proxy server');
     if(server) {
         server.on('close', (err) => {
             console.log('shutting down server');
