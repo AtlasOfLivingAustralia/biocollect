@@ -26,7 +26,8 @@
             "name": "eventDate",
             "dwcAttribute": "eventDate",
             "description": "The date of the Survey.",
-            "validate": "required"
+            "validate": "required",
+            "showInUserTimeZone": true
           },
           {
             "dataType": "time",
