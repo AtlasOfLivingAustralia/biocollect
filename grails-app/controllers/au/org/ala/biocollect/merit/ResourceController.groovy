@@ -31,14 +31,26 @@ class ResourceController {
     // proxy this request to work around browsers (firefox) that don't follow redirects properly :(
     @NoSSO
     def pdfUrl() {
-        def url = params.file
+        def docUrl = params.file
+
+        try {
+            URI uri = new URI(docUrl)
+            if (!uri.isAbsolute()) {
+                docUrl = grailsApplication.config.getProperty('grails.serverURL') + uri.getPath()
+            }
+        }
+        catch (URISyntaxException e) {
+            log.warn("Invalid document URL for PDF generation: ${docUrl}", e)
+            render([error: 'Invalid document URL'] as JSON, status: 400)
+            return
+        }
 
         CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build()
 
         try {
             HttpClientContext context = HttpClientContext.create()
             URIBuilder builder = new URIBuilder("${grailsApplication.config.pdfgen.baseURL}")
-            builder.setPath("api/pdf").setParameter('docUrl', url)
+            builder.setPath("api/pdf").setParameter('docUrl', docUrl)
             URI uri = builder.build();
             HttpGet httpGet = new HttpGet(uri)
             log.debug("Sending file to be converted into pdf: " + httpGet.getRequestLine())
