@@ -63,9 +63,8 @@
                 if (email) {
                     // first check email address is a valid user
                     $.get("${g.createLink(controller:'user',action:'checkEmailExists')}?email=" + email, function(data) {
-                        const isValidUserId = /^(\d+|[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i.test(data);
-                        if (data && isValidUserId) {
-                            addUserWithRole( data, role, entityId);
+                        if (data) {
+                            addUserWithRole(data, role, entityId);
                         } else {
                             var $clone = $('.bbAlert1').clone();
                             bootbox.alert($clone.show());
