@@ -59,8 +59,12 @@ class StubbedCasSpec {
         return tokenSet;
     }
 
+    get pwaOidcAuthority() {
+        return `${this.testConfig.wireMockBaseUrl}/cas/oidc`;
+    }
+
     get localStorageTokenKey() {
-        return `oidc.user:${browser.options.testConfig.wireMockBaseUrl}/cas/oidc/.well-known:${this.testConfig.oidc.clientId}`
+        return `oidc.user:${this.pwaOidcAuthority}:${this.testConfig.oidc.clientId}`
     }
 
     async loginAsUser(userId) {
@@ -94,11 +98,11 @@ class StubbedCasSpec {
     }
 
     async login(userDetails) {
-      if (this.loggedInUser != userDetails.userId) {
-          await this.logout()
-      }
-      await this.oidcLogin(userDetails)
-      this.loggedInUser = userDetails.userId;
+        if (this.loggedInUser != userDetails.userId) {
+            await this.logout()
+        }
+        await this.oidcLogin(userDetails)
+        this.loggedInUser = userDetails.userId;
     }
 
     async logout(returnPage = '') {
@@ -178,7 +182,8 @@ class StubbedCasSpec {
             access_token: idToken,
             id_token: idToken,
             refresh_token: null,
-            token_type: 'bearer',
+            token_type: 'Bearer',
+            session_state: 'test_sid',
             expires_in: expiresIn,
             expires_at: expiresAt,
             scope: this.testConfig.oidc.scope
@@ -190,14 +195,15 @@ class StubbedCasSpec {
         let expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
         console.log('Expires In: ', expiresIn);
         console.log('Expires At: ', expiresAt);
-        let payload=  {
+        let payload = {
             at_hash: 'KX-L2Fj6Z9ow-gOpYfehRA',
             sub: userDetails.userId,
+            userid: userDetails.userId,
             username: userDetails.userId,
             email_verified: true,
             role: roles,
             amr: 'DelegatedClientAuthenticationHandler',
-            iss: `${this.testConfig.wireMockBaseUrl}/cas/oidc`,
+            iss: this.pwaOidcAuthority,
             preferred_username: userDetails.email,
             given_name: userDetails.firstName,
             family_name: userDetails.lastName,
@@ -292,7 +298,7 @@ class StubbedCasSpec {
                 method: 'GET',
                 url: '/cas/oidc/oidcProfile',
                 headers: {
-                    'Authorization':  {
+                    'Authorization': {
                         "equalTo": `Bearer ${userToken}`
                     }
                 }
@@ -365,12 +371,15 @@ class StubbedCasSpec {
         return this.privateKey;
     }
 
-    async signPayload(payload){
+    async signPayload(payload) {
         await this.createPrivateKey();
-        let accessToken = await jose.JWS.createSign({format:"compact", fields: {
+        let accessToken = await jose.JWS.createSign({
+            format: "compact",
+            fields: {
                 alg: 'RS256',
                 kid: "localhost:8018",
-            }}, this.privateKey)
+            }
+        }, this.privateKey)
             .update(JSON.stringify(payload))
             .final();
         console.log("Access Token Created: ", accessToken);
