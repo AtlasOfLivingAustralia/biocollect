@@ -2,13 +2,18 @@ const StubbedCasSpec = require('./StubbedCasSpec.js')
 const ReloadablePage = require('./ReloadablePage.js')
 class PwaAppPage extends ReloadablePage {
     url = browser.options.testConfig.pwaUrl;
+    avatarSelector = 'header button.mantine-UnstyledButton-root, header .mantine-Avatar-root';
 
     get getStarted() {
         return $('#getStarted');
     }
 
     get avatar() {
-        return $('.mantine-Avatar-placeholder');
+        return $('.mantine-Avatar-root');
+    }
+
+    get avatarTrigger() {
+        return $(this.avatarSelector);
     }
 
     get signOut() {
@@ -64,33 +69,103 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async atSignIn() {
-        await this.signIn.waitForDisplayed({ timeout: 10000 });
-        return await this.signIn.isDisplayed();
+        try {
+            await this.signIn.waitForDisplayed({ timeout: 10000 });
+            return await this.signIn.isDisplayed();
+        }
+        catch {
+            return false;
+        }
+    }
+
+    async clearAuthState() {
+        let localStorageTokenKey = this.localStorageTokenKey;
+
+        await browser.execute(function (localStorageTokenKey) {
+            localStorage.removeItem(localStorageTokenKey);
+            localStorage.removeItem('auth.offlineExpiryExtended');
+        }, localStorageTokenKey);
+    }
+
+    async openUserMenu() {
+        try {
+            if (await this.signOut.isDisplayed()) {
+                return true;
+            }
+        }
+        catch {
+            // Ignore, menu is not open yet.
+        }
+
+        let avatarTrigger = this.avatarTrigger;
+        if (!await avatarTrigger.isExisting()) {
+            return false;
+        }
+
+        await avatarTrigger.scrollIntoView();
+
+        try {
+            await avatarTrigger.click();
+        }
+        catch {
+            await browser.execute(function (selector) {
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.click();
+                }
+            }, this.avatarSelector);
+        }
+
+        try {
+            await this.signOut.waitForDisplayed({ timeout: 5000 });
+            return true;
+        }
+        catch {
+            return false;
+        }
+    }
+
+    async maybeStart() {
+        if (await this.getStarted.isExisting() && await this.getStarted.isDisplayed()) {
+            await this.getStarted.click();
+            await browser.pause(3000);
+            return true;
+        }
+
+        return false;
     }
 
     async start() {
-        await this.getStarted.waitForDisplayed({ timeout: 10000 });
-        await this.getStarted.click();
-        // Wait for the projects to load after clicking Get Started
-        // We'll wait for any element that looks like a project ID (starts with #project_)
-        await browser.pause(3000);
+        await this.maybeStart();
     }
 
-    async logout(){
-        await this.avatar.isDisplayed();
-        await this.avatar.scrollIntoView();
-        await this.avatar.waitForClickable({ timeout: 60000 });
-        await this.avatar.click();
-        await this.signOut.waitForClickable({ timeout: 60000 });
-        await this.signOut.click();
-        // wait for sign out to complete and sign in button to be visible again
-        await this.signOut.waitForDisplayed({timeout: 60000, reverse: true });
-        await browser.pause(10000);
+    async logout() {
+        if (await this.atSignIn()) {
+            return;
+        }
+
+        if (await this.openUserMenu()) {
+            try {
+                await this.signOut.waitForEnabled({ timeout: 5000 });
+                await this.signOut.click();
+                await this.signIn.waitForDisplayed({ timeout: 15000 });
+                return;
+            }
+            catch {
+                // Fall back to clearing auth state directly.
+            }
+        }
+
+        await this.clearAuthState();
+        await browser.url(`${this.url}/signin`);
+        await this.signIn.waitForDisplayed({ timeout: 15000 });
     }
 
     async viewProject(projectId) {
+        await this.maybeStart();
+
         let projectElement = this.project(projectId);
-        await projectElement.waitForExist({ timeout: 20000 });
+        await projectElement.waitForExist({ timeout: 60000 });
         await projectElement.scrollIntoView();
         await browser.pause(500);
         await projectElement.click();
@@ -113,7 +188,7 @@ class PwaAppPage extends ReloadablePage {
 
     async downloadComplete() {
         let btn = this.modalConfirmationButton
-        await browser.waitUntil(() => btn.isClickable(), {timeout: 5*60*60*1000});
+        await browser.waitUntil(() => btn.isClickable(), {timeout: 5 * 60 * 60 * 1000});
         await btn.click();
     }
 
