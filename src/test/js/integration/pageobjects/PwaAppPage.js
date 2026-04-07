@@ -182,17 +182,17 @@ class PwaAppPage extends ReloadablePage {
         await this.viewUnpublishedRecordsBtn(paId).click()
         await this.modalCloseBtn.waitForExist({ timeout: 10000 });
     }
-    async downloadProjectActivity(paId){
+    async downloadProjectActivity(paId) {
         await this.projectActivityDownload(paId).click();
     }
 
     async downloadComplete() {
         let btn = this.modalConfirmationButton
-        await browser.waitUntil(() => btn.isClickable(), {timeout: 5 * 60 * 60 * 1000});
+        await browser.waitUntil(() => btn.isClickable(), { timeout: 5 * 60 * 60 * 1000 });
         await btn.click();
     }
 
-    async addRecord(paId){
+    async addRecord(paId) {
         let btn = this.addRecordBtn(paId);
         await btn.waitForExist({ timeout: 20000 });
         await btn.scrollIntoView();
@@ -200,13 +200,13 @@ class PwaAppPage extends ReloadablePage {
         await btn.click();
     }
 
-    async closeModal(){
+    async closeModal() {
         let modal = this.modalCloseBtn;
         await modal.waitForEnabled({ timeout: 10000 });
         await modal.click();
     }
 
-    async viewNthRecord(number= 0){
+    async viewNthRecord(number = 0) {
         await this.viewRecordBtn[number].click();
         await this.modalCloseBtn.waitForExist({ timeout: 10000 });
     }

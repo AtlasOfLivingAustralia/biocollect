@@ -48,7 +48,6 @@ describe("Application installation Spec", function () {
     });
 
     it("submit record offline and publish it when network returns", async function () {
-        console.log(url);
         await pwaAppPage.start();
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOffline");
         await pwaAppPage.viewProject(project);
@@ -119,7 +118,6 @@ describe("Application installation Spec", function () {
     });
 
     it("submit record offline and choose a site on map and publish it when network returns", async function () {
-        console.log(url);
         let getStarted = await pwaAppPage.getStarted;
         if (getStarted && (await getStarted.isDisplayed())) {
             await pwaAppPage.start();
@@ -196,7 +194,7 @@ describe("Application installation Spec", function () {
         console.log("login with expired token - start");
         console.log("Current URL " + await browser.getUrl());
         console.log("Current title " + await browser.getTitle());
-        await pwaAppPage
+        await pwaAppPage.takeScreenShot("loginWithExpiredTokenBeforeLogout");
         await pwaAppPage.logout();
         console.log("login with expired token - logout");
         await pwaAppPage.atSignIn();

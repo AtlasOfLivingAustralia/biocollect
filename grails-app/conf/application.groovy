@@ -36,6 +36,7 @@ environments {
                 debugUI = true
                 loggerLevel = "DEBUG"
                 auth.baseURL = "https://auth-test.ala.org.au"
+                app.default.hub='ala'
         }
 
         test {
@@ -47,7 +48,7 @@ environments {
                 grails.serverURL = serverName
                 server.serverURL = serverName
                 layout.skin = "bs5"
-                app.default.hub='ala'
+                app.default.hub='acsa'
                 runWithNoExternalConfig = true
                 wiremock.port = 8018
                 grails.config.locations = []
@@ -113,6 +114,7 @@ environments {
                 debugUI = false
                 loggerLevel = "INFO"
                 auth.baseURL = "https://auth.ala.org.au"
+                app.default.hub='ala'
         }
 }
 

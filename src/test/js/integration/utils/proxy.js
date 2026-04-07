@@ -8,8 +8,8 @@ async function startServer(blockUrl="", port=8081) {
     const proxy = httpProxy.createProxyServer({});
     server = http.createServer((req, res) => {
         // Example blacklist: Block localhost:8080
-        console.log(`block: ${block}`);
         if (block) {
+            console.log(`block: ${block}`);
             console.log(`Blocking request to ${req.url}`);
             res.writeHead(503, { 'Content-Type': 'text/plain' });
             res.end('Service Unavailable - Simulating Offline Mode');
@@ -29,6 +29,7 @@ async function startServer(blockUrl="", port=8081) {
 }
 
 function stopServer() {
+    console.log('request received to stop proxy server');
     if(server) {
         server.on('close', (err) => {
             console.log('shutting down server');

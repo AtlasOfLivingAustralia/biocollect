@@ -146,7 +146,17 @@
             <div class="mb-3 row">
                 <label class="col-md-4 col-form-label" for="default-program">Default program (new projects created from this hub will inherit this program)</label>
                 <div class="col-md-8">
-                    <select class="form-select" id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
+                    <select class="form-control" id="default-program" data-bind="value:defaultProgram, options:supportedPrograms"></select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4 col-form-label" for="pwa-hub-visibility">Progressive Web App visibility</label>
+                <div class="col-md-8">
+                    <label>
+                        <input id="pwa-hub-visibility" type="checkbox" name="showInPWA" data-bind="checked: showInPWA">
+                        Show hub in PWA
+                    </label>
                 </div>
             </div>
         </div>

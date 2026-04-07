@@ -6,7 +6,10 @@
   "response": {
     "status": 200,
     "headers": {
-      "content-Type": "text/json"
+      "content-Type": "application/json",
+      "Access-Control-Allow-Headers":  "*",
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Allow-Origin": "*"
     },
     "transformers": [
       "response-template"
