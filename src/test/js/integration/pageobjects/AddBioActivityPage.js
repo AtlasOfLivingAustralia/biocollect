@@ -1,4 +1,5 @@
 // const StubbedCasSpec = require('./StubbedCasSpec.js')
+const path = require('node:path')
 const ReloadablePage = require('./ReloadablePage.js')
 class AddBioActivityPage extends ReloadablePage {
     get addSiteInput() { return $("#siteLocation"); }
@@ -53,7 +54,13 @@ class AddBioActivityPage extends ReloadablePage {
     }
 
     async uploadImage(imagePath, iframe = false) {
-        await this.imageUploadInput.addValue(imagePath);
+        const uploadInput = this.imageUploadInput;
+        const localImagePath = path.resolve(imagePath);
+        const remoteImagePath = await browser.uploadFile(localImagePath);
+
+        await uploadInput.waitForExist({ timeout: 10000 });
+
+        await uploadInput.setValue(remoteImagePath);
 
         if (iframe) {
             // iframe has difficulty checking if element is available
