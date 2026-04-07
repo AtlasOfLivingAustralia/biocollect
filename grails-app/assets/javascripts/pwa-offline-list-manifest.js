@@ -1,5 +1,6 @@
 //= require jquery/3.4.1/jquery-3.4.1.min.js
 //= require knockout/3.4.0/knockout-3.4.0.js
+//= require underscore/underscore-1.8.3.min.js
 //= require dexiejs/dexie.js
 //= require emitter/emitter.js
 //= require moment/moment.min.js

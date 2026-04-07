@@ -10,8 +10,6 @@ server:
       timeout: 3600
 
 app:
-  default:
-    hub: "ala"
   view:
     nocache: false
   http:

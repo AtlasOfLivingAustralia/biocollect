@@ -1,7 +1,7 @@
-load('../data/alaHub.js');
-var hubId = 'alaId'
-if (!db.hub.find({urlPath:alaHub.urlPath}).hasNext()) {
-    db.hub.insert(alaHub);
+load('../data/acsaHub.js');
+var hubId = 'acsaId'
+if (!db.hub.find({urlPath:acsaHub.urlPath}).hasNext()) {
+    db.hub.insert(acsaHub);
 }
 
 // setup some users with higher level MERIT roles to assist with functional tests for these roles
