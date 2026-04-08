@@ -14,15 +14,15 @@ ko.bindingHandlers.popover = {
     update: function (element, valueAccessor) {
 
         var $element = $(element);
-        $element.popover('dispose');
+        Biocollect.Bootstrap5.disposePopover($element);
         var options = ko.bindingHandlers.popover.initPopover(element, valueAccessor);
         if (options.autoShow) {
             if ($element.data('firstPopover') === false) {
-                $element.popover('show');
+                Biocollect.Bootstrap5.showPopover($element);
                 $('body').on('click', function (e) {
 
                     if (e.target != element && $element.find(e.target).length == 0) {
-                        $element.popover('hide');
+                        Biocollect.Bootstrap5.hidePopover($element);
                     }
                 });
             }
@@ -49,10 +49,10 @@ ko.bindingHandlers.popover = {
         ko.utils.extend(combinedOptions, options);
         combinedOptions.description = content;
 
-        $(element).popover(combinedOptions);
+        Biocollect.Bootstrap5.getPopover(element, combinedOptions);
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
-            $(element).popover("dispose");
+            Biocollect.Bootstrap5.disposePopover(element);
         });
         return options;
     }
@@ -67,16 +67,16 @@ ko.bindingHandlers.tooltip = {
         ko.utils.extend(options, ko.bindingHandlers.tooltip.options);
         ko.utils.extend(options, local);
 
-        $(element).tooltip(options);
+        Biocollect.Bootstrap5.getTooltip(element, options);
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
-            $(element).tooltip("dispose");
+            Biocollect.Bootstrap5.disposeTooltip(element);
         });
     },
     update: function (element, valueAccessor) {
 
         var $element = $(element);
-        $element.tooltip('dispose');
+        Biocollect.Bootstrap5.disposeTooltip($element);
 
         var local = ko.utils.unwrapObservable(valueAccessor()),
             options = {};
@@ -84,10 +84,10 @@ ko.bindingHandlers.tooltip = {
         ko.utils.extend(options, ko.bindingHandlers.tooltip.options);
         ko.utils.extend(options, local);
 
-        $(element).tooltip(options);
+        Biocollect.Bootstrap5.getTooltip(element, options);
 
         ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
-            $(element).tooltip("dispose");
+            Biocollect.Bootstrap5.disposeTooltip(element);
         });
 
     },
@@ -205,7 +205,7 @@ ko.bindingHandlers.onClickShowTab = {
         var newValueAccesssor = function () {
             return function () {
                 var tabId = ko.utils.unwrapObservable(allBindingsAccessor().tabId);
-                if (tabId) $(tabId).tab('show');
+                if (tabId) Biocollect.Bootstrap5.showTab(tabId);
                 originalFunction.apply(viewModel, arguments);
             }
         }
@@ -227,7 +227,7 @@ ko.bindingHandlers.showTabOrRedirect = {
             return function () {
                 var options = ko.utils.unwrapObservable(valueAccessor());
                 if (options.url == '' && options.tabId) {
-                    $(options.tabId).tab('show');
+                    Biocollect.Bootstrap5.showTab(options.tabId);
                 } else if (options.url != '') {
                     window.location.href = options.url;
                 }
@@ -951,7 +951,7 @@ ko.bindingHandlers.dismissModal = {
             $element = $(element);
 
         if(ko.unwrap(value)){
-            $element.modal('hide')
+            Biocollect.Bootstrap5.hideModal($element)
         }
     }
 };

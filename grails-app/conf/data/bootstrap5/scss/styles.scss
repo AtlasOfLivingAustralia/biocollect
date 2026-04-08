@@ -126,16 +126,3 @@ $homepage-text-btn: $menu-text-color !default;
   content: none;
   display: none;
 }
-
-
-.input-group-append .btn {
-  height: 100%;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.input-group-prepend .btn {
-  height: 100%;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}

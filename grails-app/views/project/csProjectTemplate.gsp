@@ -259,7 +259,7 @@
 
         //do not trigger validation on blur
         $('.validationEngineContainer').validationEngine({promptPosition: 'topLeft', validationEventTrigger: "none"});
-        $('.helphover').popover({animation: true, trigger:'hover'})
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'})
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');

@@ -28,7 +28,8 @@
     $(function() {
       var JsonEditorViewModel = function() {
           var self = this;
-          var $modal = $('#jsonEditor').modal({show:false});
+                    var $modal = $('#jsonEditor');
+                    Biocollect.Bootstrap5.getModal($modal, {show:false});
 
         self.title = ko.observable();
         self.initialValue = ko.observable();
@@ -38,18 +39,18 @@
             self.title(title);
             self.initialValue(JSON.stringify(koProperty(), null, 2));
             self.callback = koProperty;
-            $modal.modal('show');
+            Biocollect.Bootstrap5.showModal($modal);
         };
 
         self.save = function() {
             var rawValue = $('#jsonEditorInput').val() || '""';
             var newValue = JSON.parse(rawValue);
             self.callback(newValue);
-            $modal.modal('hide');
+            Biocollect.Bootstrap5.hideModal($modal);
         };
 
         self.cancel = function() {
-            $modal.modal('hide');
+            Biocollect.Bootstrap5.hideModal($modal);
         };
     };
     var jsonEditor = new JsonEditorViewModel();

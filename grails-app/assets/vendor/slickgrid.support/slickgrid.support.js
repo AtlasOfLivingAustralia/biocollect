@@ -368,7 +368,7 @@ var ValidationSupport = function() {
 };
 
 function helpHover(helpText) {
-    return '<a href="#" class="helphover" data-original-title="" data-bs-placement="top" data-bs-container="body" data-bs-content="'+helpText+'">'+
+    return '<a href="#" class="helphover" data-bs-placement="top" data-bs-container="body" data-bs-content="' + helpText + '">' +
         '<i class="icon-question-sign">&nbsp;</i>'+
         '</a>';
 };

@@ -204,7 +204,7 @@
                 amplify.store('ul-main-project-state', projectTab);
             }
 
-            $('.helphover').popover({animation: true, trigger:'hover'});
+            Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
             var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
             var project = <fc:modelAsJavascript model="${project}"/>;
@@ -248,38 +248,38 @@
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false}, project.projectId, project.mapConfiguration.defaultZoomArea);
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
                     var tableApi = $('#sites-table').DataTable( {
-                        "columnDefs": [
+                        columnDefs: [
                         {
-                            "targets": 0,
-                            "orderable": false,
-                            "searchable": false,
-                            "width":"1.2em"
+                            targets: 0,
+                            orderable: false,
+                            searchable: false,
+                            width: '1.2em'
                         },
                         {
-                            "targets": 1,
-                            "orderable": false,
-                            "searchable": false,
-                            "width":"7em"
+                            targets: 1,
+                            orderable: false,
+                            searchable: false,
+                            width: '7em'
                         },
                         {
-                            "targets":3,
-                            "sort":4
+                            targets: 3,
+                            orderData: [4]
 
                         },
                         {
-                            "targets":4,
-                            "visible":false,
-                            "width":"8em"
+                            targets: 4,
+                            visible: false,
+                            width: '8em'
 
                         }
                         ],
-                        "order":[3, "desc"],
-                        "language": {
-                            "search": '<div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div>_INPUT_</div>',
-                            "searchPlaceholder":"Search sites..."
+                        order: [[3, 'desc']],
+                        language: {
+                            search: '<div class="input-group"><span class="input-group-text"><i class="fa fa-search"></i></span>_INPUT_</div>',
+                            searchPlaceholder: 'Search sites...'
 
                         },
-                        "searchDelay":350
+                        searchDelay: 350
                         }
                     );
 
@@ -294,7 +294,7 @@
                         }
                         return visibleIndicies;
                     };
-                    $('#sites-table').dataTable().on('draw.dt', function(e) {
+                    tableApi.on('draw.dt', function() {
                         sitesViewModel.sitesFiltered(visibleIndicies());
                     });
                     $('#sites-table tbody').on( 'mouseenter', 'td', function () {
@@ -378,11 +378,11 @@
             });
 
             // BS tooltip
-            $('.tooltips').tooltip();
+            Biocollect.Bootstrap5.initTooltips('.tooltips');
 
             $('#gotoEditBlog').on('click',function () {
                 amplify.store('project-admin-tab-state', '#editProjectBlog');
-                $('#admin-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#admin-tab');
             });
 
 
@@ -392,16 +392,16 @@
         // Admin JS code only exposed to admin users
 
             // remember state of admin nav (vertical tabs)
-            $('#adminNav a[data-bs-toggle="tab"]').on('shown', function (e) {
+            $('#adminNav a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 var tab = e.currentTarget.hash;
                 amplify.store('project-admin-tab-state', tab);
             });
             var storedAdminTab = amplify.store('project-admin-tab-state');
             // restore state if saved
             if (storedAdminTab === '') {
-                $('#permissions-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#permissions-tab');
             } else {
-                $(storedAdminTab + "-tab").tab('show');
+                Biocollect.Bootstrap5.showTab(storedAdminTab + "-tab");
             }
 
 //            var project = <fc:modelAsJavascript model="${project}"/>;

@@ -746,6 +746,6 @@
             break;
     }
 
-    tabId && $(tabId).tab('show');
+    tabId && Biocollect.Bootstrap5.showTab(tabId);
 </asset:script>
 <g:render template="/shared/resizeFilter" model="[dependentDiv: '.data-expander.data-container', target: '#survey-all-activities-and-records-content #filters', listenTo: '#survey-all-activities-and-records-content']" />

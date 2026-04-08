@@ -7,25 +7,17 @@
         <div class="row mb-2">
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label for="associatedProgram" class="input-group-text">Program</label>
-                    </div>
+                    <label for="associatedProgram" class="input-group-text">Program</label>
                     <select id="associatedProgram" class="form-select" data-bind="options: associatedProgramFilterFieldOptions, optionsCaption: 'No Filters', value: associatedProgramFilterField"></select>
-                    <div class="input-group-append">
-                        <button id="addAssociatedProgram" class="btn btn-primary-dark" data-bind="click: addAssociatedProgram"><i class="fas fa-plus"></i> Add</button>
-                    </div>
+                    <button id="addAssociatedProgram" class="btn btn-primary-dark" type="button" data-bind="click: addAssociatedProgram"><i class="fas fa-plus"></i> Add</button>
                 </div>
             </div>
 
             <div class="col-sm-6 col-lg-3 mt-1 mt-lg-0">
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label for="electorate" class="input-group-text">Electorate</label>
-                    </div>
+                    <label for="electorate" class="input-group-text">Electorate</label>
                     <select id="electorate" class="form-select" data-bind="options: electorateFilterFieldOptions, optionsCaption: 'No Filters', value: electorateFilterField"></select>
-                    <div class="input-group-append">
-                        <button id="addElectorate" class="btn btn-primary-dark" data-bind="click: addElectorate"><i class="fas fa-plus"></i> Add</button>
-                    </div>
+                    <button id="addElectorate" class="btn btn-primary-dark" type="button" data-bind="click: addElectorate"><i class="fas fa-plus"></i> Add</button>
                 </div>
             </div>
 

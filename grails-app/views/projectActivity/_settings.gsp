@@ -56,12 +56,12 @@
 
                 <ul id="ul-survey-constraint-citizen-science" class="nav nav-pills">
                     <li class="nav-item"><a class="nav-link active" href="#survey-info" id="survey-info-tab" data-bs-toggle="tab">Survey Info</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-visibility" id="survey-visibility-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Visibility</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-alert" id="survey-alert-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Alert</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-form" id="survey-form-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Survey Form</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-species" id="survey-species-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Species</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-locations" id="survey-locations-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Locations</a></li>
-                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-publish" id="survey-publish-tab" data-bs-toggle="tab" data-bind="attr:{'data-toggle': dataToggleVal()}">Publish</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-visibility" id="survey-visibility-tab" data-bind="attr:{'data-bs-toggle': dataToggleVal()}, css:{disabled: !isSurveyInfoFormFilled()}">Visibility</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-alert" id="survey-alert-tab" data-bind="attr:{'data-bs-toggle': dataToggleVal()}">Alert</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-form" id="survey-form-tab" data-bind="attr:{'data-bs-toggle': dataToggleVal()}">Survey Form</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-species" id="survey-species-tab" data-bind="attr:{'data-bs-toggle': dataToggleVal()}">Species</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-locations" id="survey-locations-tab" data-bind="attr:{'data-bs-toggle': dataToggleVal()}">Locations</a></li>
+                    <li class="nav-item" data-bind="css:{disabled: !isSurveyInfoFormFilled()}"><a class="nav-link" href="#survey-publish" id="survey-publish-tab" data-bind="attr:{'data-bs-toggle': dataToggleVal()}">Publish</a></li>
                 </ul>
 
                 <div class="tab-content">

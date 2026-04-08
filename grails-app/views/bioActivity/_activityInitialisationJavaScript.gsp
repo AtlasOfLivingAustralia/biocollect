@@ -28,7 +28,7 @@
 
         $('#validation-container').validationEngine('attach', {scroll: true});
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#save').on('click',function () {
             master.save();

@@ -88,7 +88,7 @@
         });
 
         // tooltip needs to be initialised manually
-        $("[data-bs-toggle=\"tooltip\"]").tooltip();
+        Biocollect.Bootstrap5.initTooltips('[data-bs-toggle="tooltip"]');
     });
 
 </asset:script>

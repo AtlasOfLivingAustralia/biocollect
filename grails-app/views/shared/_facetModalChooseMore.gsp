@@ -16,11 +16,9 @@
                 <div class="row mb-3">
                     <div class="input-group input-group-sm col-12">
                         <input class="form-control" type="text" placeholder="Search" data-bind="value: searchText">
-                        <div class="input-group-append">
-                            <button class="btn btn-dark">
-                                <i class="fas fa-filter"></i>
-                            </button>
-                        </div>
+                        <button class="btn btn-dark" type="button">
+                            <i class="fas fa-filter"></i>
+                        </button>
                     </div>
                 </div>
 

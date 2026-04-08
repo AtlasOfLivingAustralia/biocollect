@@ -91,7 +91,7 @@ $(function(){
     viewModel.checkPublishedProjectActivities(projectActivities);
 
     $('#projectDetails').validationEngine();
-    $('.helphover').popover({animation: true, trigger:'hover'});
+    Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
     ko.applyBindings(viewModel, document.getElementById("projectDetails"));
 

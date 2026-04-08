@@ -152,32 +152,40 @@ class FCTagLib {
                 String addOnClass = attrs.bs5 ? "btn ${attrs.theme ?: ''}" : "input-group-text add-on"
                 String buttonClass = "fa fa-th "
                 def spanDateWrapper = {
-                    mb.span(class: "${addOnClass} open-datepicker") {
-                        mb.i(class: buttonClass) {
-                            mkp.yieldUnescaped("&nbsp;")
+                    if (attrs.bs5) {
+                        mb.button(type: 'button', class: "${addOnClass} open-datepicker", 'aria-label': 'Open date picker') {
+                            mb.i(class: buttonClass) {
+                                mkp.yieldUnescaped("&nbsp;")
+                            }
                         }
-                    }
-                }
-                def clearDateWrapper = {
-                    if (attrs.clearBtn?.toBoolean()){
-                        mb.span(class:"btn btn-danger clear-date") {
-                            mb.i(class: 'far fa-trash-alt') {
+                    } else {
+                        mb.span(class: "${addOnClass} open-datepicker") {
+                            mb.i(class: buttonClass) {
                                 mkp.yieldUnescaped("&nbsp;")
                             }
                         }
                     }
                 }
-
-                //  Bootstrap 5 needs the control to be wrapped in an input-group class
-                if (attrs.bs5){
-                    mb.div(class: "input-group-append") {
-                        spanDateWrapper()
-                        clearDateWrapper()
+                def clearDateWrapper = {
+                    if (attrs.clearBtn?.toBoolean()){
+                        if (attrs.bs5) {
+                            mb.button(type: 'button', class:'btn btn-danger clear-date', 'aria-label': 'Clear date') {
+                                mb.i(class: 'far fa-trash-alt') {
+                                    mkp.yieldUnescaped("&nbsp;")
+                                }
+                            }
+                        } else {
+                            mb.span(class:'btn btn-danger clear-date') {
+                                mb.i(class: 'far fa-trash-alt') {
+                                    mkp.yieldUnescaped("&nbsp;")
+                                }
+                            }
+                        }
                     }
-                } else {
-                    spanDateWrapper()
-                    clearDateWrapper()
                 }
+
+                spanDateWrapper()
+                clearDateWrapper()
             }
             content()
         } else {
@@ -207,9 +215,9 @@ class FCTagLib {
     def iconHelp = { attrs, body ->
         if (!attrs.printable) {
             def mb = new MarkupBuilder(out)
-            def spanAttrs = [tabindex: '-1', 'data-original-title':attrs.title, 'data-placement':'top', 'title':body(), 'data-toggle': 'tooltip']
+            def spanAttrs = [tabindex: '-1', 'data-bs-placement':'top', 'title':body(), 'data-bs-toggle': 'tooltip']
             if (attrs.container) {
-                spanAttrs << ['data-container':attrs.container]
+                spanAttrs << ['data-bs-container':attrs.container]
             }
             mb.span(spanAttrs) {
                 i(class:'fas fa-question-circle') {
@@ -782,16 +790,16 @@ class FCTagLib {
 
                     mb.dd(class: 'col-9') {
                         mb.div(id: idName) {
-                            mb.div(class: "facet-data collapse in") {
+                            mb.div(class: "facet-data collapse show") {
                                 mkp.yield(preview)
-                                mb.button(class: "btn btn-mini", 'data-toggle': 'collapse', 'data-target': "#${idName} .facet-data") {
+                                mb.button(class: "btn btn-mini", 'data-bs-toggle': 'collapse', 'data-bs-target': "#${idName} .facet-data") {
                                     mkp.yield(g.message(code: "site.btn.showmore.title"))
                                 }
                             }
 
                             mb.div(class: "facet-data collapse") {
                                 mkp.yield(details)
-                                mb.button(class: "btn btn-mini", 'data-toggle': 'collapse', 'data-target': "#${idName} .facet-data") {
+                                mb.button(class: "btn btn-mini", 'data-bs-toggle': 'collapse', 'data-bs-target': "#${idName} .facet-data") {
                                     mkp.yield(g.message(code: "site.btn.showless.title"))
                                 }
                             }

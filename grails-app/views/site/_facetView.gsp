@@ -2,7 +2,7 @@
     <!-- ko foreach:facets -->
     <!-- ko if: terms().length -->
     <button class="accordion-header collapsed" type="button" data-bs-toggle="collapse"
-            data-bind="text: metadata.displayName, attr: { 'data-target': '#' + name()}"
+            data-bind="text: metadata.displayName, attr: { 'data-bs-target': '#' + name()}"
             aria-expanded="false" aria-controls="types">
     </button>
     <div class="accordion-body collapse" data-bind="attr: { id: name}">

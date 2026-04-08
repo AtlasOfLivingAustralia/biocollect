@@ -44,13 +44,10 @@
                                data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection"
                                class="form-control" placeholder="Start typing a name here..." type="text"
                                data-validation-engine="validate[funcCall[validateOrganisationSelection]]"/>
-
-                        <div class="input-group-append">
-                            <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}"><i
-                                    class='fas fa-search'
-                                    data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
-                            </button>
-                        </div>
+                        <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}"><i
+                                class='fas fa-search'
+                                data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -266,15 +263,12 @@
                                            placeholder="Start typing a name here" maxlength="256"
                                            data-validation-engine="validate[condRequired[associatedOrgNotPresent],maxSize[256]]"
                                            data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'">
-
-                                    <div class="input-group-append">
-                                        <button
-                                                class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
-                                            <i
-                                                    class='fas fa-search'
-                                                    data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
-                                        </button>
-                                    </div>
+                                    <button
+                                            class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
+                                        <i
+                                                class='fas fa-search'
+                                                data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -402,11 +396,9 @@
                                             <div class="col-12">
                                                 <div class="input-group">
                                                     <input data-bind="value: $data" readonly>
-                                                    <div class="input-group-append">
-                                                        <a class="btn btn-danger btn-sm" href="#" data-bind="click: $root.transients.removeCountry">
-                                                            <i class="far fa-trash-alt"></i>
-                                                        </a>
-                                                    </div>
+                                                    <button class="btn btn-danger btn-sm" type="button" data-bind="click: $root.transients.removeCountry">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -429,11 +421,9 @@
                                                         <div class="col-12">
                                                         <div class="input-group">
                                                             <input data-bind="value: $data" readonly>
-                                                            <div class="input-group-append">
-                                                                <a class="btn btn-danger btn-sm" href="#" data-bind="click: $root.transients.removeUNRegion">
-                                                                    <i class="far fa-trash-alt"></i>
-                                                                </a>
-                                                            </div>
+                                                            <button class="btn btn-danger btn-sm" type="button" data-bind="click: $root.transients.removeUNRegion">
+                                                                <i class="far fa-trash-alt"></i>
+                                                            </button>
                                                         </div>
                                                     </div>
                                                     </div>
@@ -660,12 +650,10 @@
                             <input id="searchText2"
                                    data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection"
                                    class="form-control" placeholder="Start typing a name here..." type="text"/>
-                            <div class="input-group-append">
-                                <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
-                                    <i class='fas fa-search'
-                                        data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
-                                </button>
-                            </div>
+                            <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
+                                <i class='fas fa-search'
+                                    data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -723,12 +711,10 @@
                             <input id="searchText3"
                                    data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup', disable: selection"
                                    class="form-control" placeholder="Start typing a name here..." type="text"/>
-                            <div class="input-group-append">
-                                <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
-                                    <i class='fas fa-search'
-                                        data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
-                                </button>
-                            </div>
+                            <button class="btn" type="button" data-bind="click:clearSelection, css: {'btn-dark': !searchTerm(), 'btn-danger': searchTerm()}">
+                                <i class='fas fa-search'
+                                    data-bind="css:{'fas fa-search':!searchTerm(), 'far fa-trash-alt':searchTerm()}"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -797,7 +783,7 @@
 
                 <div class="row mb-3">
                     <label class="col-from-label col-md-4" for="category"><g:message
-                            code="project.details.category"/>&nbsp;<span tabindex="-1" data-original-title="" data-bs-placement="top" title="<g:message code="project.details.category.helptext"/>" data-bs-toggle="tooltip">
+                            code="project.details.category"/>&nbsp;<span tabindex="-1" data-bs-placement="top" title="<g:message code="project.details.category.helptext"/>" data-bs-toggle="tooltip">
                         <i class="fas fa-question-circle">&nbsp;</i>
                     </span>&nbsp;<i class="req-field"></i></label>
                     <div class="col-md-8">
@@ -982,11 +968,9 @@
                     <div class="input-group">
                         <g:textField class="form-control" type="url" name="urlWeb" data-bind="value:urlWeb"
                                      data-validation-engine="validate[custom[url]]"/>
-                        <div class="input-group-append">
-                            <button class="btn btn-danger" type="button" data-bind="click:removeUrlWeb">
-                                <i class="far fa-trash-alt"></i>
-                            </button>
-                        </div>
+                        <button class="btn btn-danger" type="button" data-bind="click:removeUrlWeb">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>

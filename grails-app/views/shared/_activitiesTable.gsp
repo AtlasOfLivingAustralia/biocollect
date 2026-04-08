@@ -212,15 +212,15 @@
                 // the check is required as 'show' seems to act like a toggle and the collapse code
                 // does not always know the correct state
                 $('#activityList div.collapse').each(function() {
-                    if (!$(this).hasClass('in')) {
-                        $(this).collapse('show');
+                    if (!$(this).hasClass('show')) {
+                        Biocollect.Bootstrap5.showCollapse(this);
                     }
                 });
             };
             self.collapseActivities = function () {
                 $('#activityList div.collapse').each(function() {
-                    if ($(this).hasClass('in')) {
-                        $(this).collapse('hide');
+                    if ($(this).hasClass('show')) {
+                        Biocollect.Bootstrap5.hideCollapse(this);
                     }
                 });
             };

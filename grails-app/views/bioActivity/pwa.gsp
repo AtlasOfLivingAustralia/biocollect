@@ -339,10 +339,8 @@
                 <p><g:message code="pwa.sites.choose.download.msg"/></p>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Search by site name" data-bind="value: siteSearchValue" aria-label="Search by site name"  aria-describedby="site-search">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="site-search" data-bind="click: searchSitesHandler" aria-label="Search by site name"><i class="fas fa-search"></i></button>
-                        <button class="btn btn-outline-secondary" type="button" id="site-clear" data-bind="click: clearSearch" aria-label="Clear search by site entry"><i class="far fa-times-circle"></i></button>
-                    </div>
+                    <button class="btn btn-outline-secondary" type="button" id="site-search" data-bind="click: searchSitesHandler" aria-label="Search by site name"><i class="fas fa-search"></i></button>
+                    <button class="btn btn-outline-secondary" type="button" id="site-clear" data-bind="click: clearSearch" aria-label="Clear search by site entry"><i class="far fa-times-circle"></i></button>
                 </div>
                 <div class="row h-75 overflow-y" data-bind="foreach: sites">
                     <div class="col-12">

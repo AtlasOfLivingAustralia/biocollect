@@ -91,7 +91,7 @@
 
         $('#form').validationEngine('attach', {scroll: false});
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#cancel').on('click',function () {
             document.location.href = returnTo;

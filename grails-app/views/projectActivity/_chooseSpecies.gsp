@@ -15,10 +15,8 @@
                                                     name: allSpeciesLists.searchName,
                                                     guid: allSpeciesLists.searchGuid
                                                 }">
-                        <div class="input-group-append">
-                            <button id="search" class="btn btn-dark" data-bind="click: allSpeciesLists.refreshPage(0)"><i class="fas fa-search"></i> Search</button>
-                            <button id="clear" class="btn btn-danger" data-bind="click: allSpeciesLists.clearSearch"><i class="far fa-trash-alt"></i> Clear</button>
-                        </div>
+                        <button id="search" class="btn btn-dark" type="button" data-bind="click: allSpeciesLists.refreshPage(0)"><i class="fas fa-search"></i> Search</button>
+                        <button id="clear" class="btn btn-danger" type="button" data-bind="click: allSpeciesLists.clearSearch"><i class="far fa-trash-alt"></i> Clear</button>
                     </div>
 
                 </div>

@@ -150,7 +150,7 @@
                 $content.html(data);
                 $loading.hide();
                 $content.show();
-                $('#dashboard-content .helphover').popover({animation: true, trigger:'hover', container:'body'});
+                Biocollect.Bootstrap5.initPopovers('#dashboard-content .helphover', {animation: true, trigger:'hover', container:'body'});
                 amplify.store(SELECTED_REPORT_KEY, reportType);
             });
 
@@ -170,7 +170,7 @@
         var storedTab = amplify.store(organisationTabStorageKey);
 
         if (storedTab) {
-            $(storedTab + '-tab').tab('show');
+            Biocollect.Bootstrap5.showTab(storedTab + '-tab');
         }
     <g:if test="${content.admin.visible}">
         populatePermissionsTable(fcConfig.organisationMembersUrl);

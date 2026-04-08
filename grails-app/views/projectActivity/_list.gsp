@@ -158,7 +158,7 @@
                         <!-- /ko -->
                     </g:if>
                     <button class="btn btn-sm btn-dark"
-                            type="button" data-bind="attr: {'data-target': '#showMetadata' + $index()}, click: transients.toggleMetadata"
+                            type="button" data-bind="attr: {'data-bs-target': '#showMetadata' + $index()}, click: transients.toggleMetadata"
                             data-bs-toggle="collapse" aria-expanded="false">
                         <i class="fas fa-chevron-down me-1"></i> <!-- ko if: transients.metadataToggle -->Show<!-- /ko -->
                         <!-- ko if: !transients.metadataToggle() -->Hide<!-- /ko --> metadata

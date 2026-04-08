@@ -61,9 +61,7 @@
                             <div class="input-group">
                                 <input class="form-control" type="text" data-bind="value: currentSearch"
                                        placeholder="Search by keyword" aria-label="Search by keyword" aria-describedby="search-site-button"/>
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary-dark" id="search-site-button" type="submit">Search</button>
-                                </div>
+                                <button class="btn btn-primary-dark" id="search-site-button" type="submit">Search</button>
                             </div>
                         </form>
                     </div>

@@ -180,7 +180,7 @@
                 </dl>
             </g:if>
             <script>
-                $('dt[data-bs-toggle="tooltip"]').tooltip()
+                Biocollect.Bootstrap5.initTooltips('dt[data-bs-toggle="tooltip"]')
             </script>
         </div>
 

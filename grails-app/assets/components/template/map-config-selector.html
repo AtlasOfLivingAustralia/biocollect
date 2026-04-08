@@ -13,11 +13,9 @@
                     <div class="col-8 btn-space">
                         <div class="input-group">
                             <select class="form-select" data-bind="options: allBaseLayers, optionsText: 'displayText', value: selectedBaseLayer, optionCaption: 'Choose base layer ...'"></select>
-                            <div class="input-group-append">
-                                <button class="btn btn-dark add-base-layer" data-bind="click: addBaseLayerClickHandler, disable: allBaseLayers().length == 0">
-                                    <i class="fas fa-plus"></i> Add
-                                </button>
-                            </div>
+                            <button class="btn btn-dark add-base-layer" type="button" data-bind="click: addBaseLayerClickHandler, disable: allBaseLayers().length == 0">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
                         </div>
 
                     </div>
@@ -133,11 +131,9 @@
                     <div class="col-8 btn-space">
                         <div class="input-group">
                             <select class="form-select" data-bind="options: allOverlays, optionsText: 'title', value: selectedOverlay, optionCaption: 'Choose overlay ...'"></select>
-                            <div class="input-group-append">
-                                <button class="btn btn-dark add-overlay" data-bind="click: addOverlayClickHandler, disable: allOverlays().length == 0">
-                                    <i class="fas fa-plus"></i> Add
-                                </button>
-                            </div>
+                            <button class="btn btn-dark add-overlay" type="button" data-bind="click: addOverlayClickHandler, disable: allOverlays().length == 0">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
                             </div>
                     </div>
                 </div>
@@ -204,7 +200,7 @@
                                 <div class="col-12 btn-space">
                                     <!-- ko if: Biocollect.MapUtilities.isContextualLayer(alaId) || $parent.showAdvancedFeatures -->
                                     <button class="btn btn-sm btn-dark" data-bs-toggle="collapse"
-                                            data-bind="attr: {'data-target': '#overlay-' + $index()},click: $parent.noDefaultAction">
+                                            data-bind="attr: {'data-bs-target': '#overlay-' + $index()},click: $parent.noDefaultAction">
                                         <i class="fas fa-cog"></i>
                                         More settings
                                     </button>
