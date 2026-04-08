@@ -252,28 +252,28 @@
                         self.progressText('Uploaded '+payload.sites.length+' of '+payload.sites.length+' sites');
                         self.progress('100%');
                         setTimeout(function() {
-                            $('#uploadProgress').modal('hide');
+                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
                             document.location.href = "${params.returnTo}";
                         }, 1000);
                     } else if(data.message == "error") {
                         self.progressText(data.error);
                         setTimeout(function() {
-                            $('#uploadProgress').modal('hide');
+                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
                         }, 3000);
                     } else {
                         self.progressText("Error uploading the sites, please try again later");
                         setTimeout(function() {
-                            $('#uploadProgress').modal('hide');
+                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
                         }, 3000);
                     }
                },
                error: function () {
-                   $('#uploadProgress').modal('hide');
+                   Biocollect.Bootstrap5.hideModal('#uploadProgress');
                    alert('There was a problem uploading sites.');
                }
           });
           self.progressText('Uploaded 0 of '+payload.sites.length+' sites');
-          $('#uploadProgress').modal({backdrop:'static'});
+          Biocollect.Bootstrap5.showModal('#uploadProgress', {backdrop:'static'});
           setTimeout(self.showProgress, 2000);
     };
 
@@ -326,7 +326,7 @@
     self.countSelectedSites();
 
 }
-$('#uploadProgress').modal({backdrop:'static', show:false});
+Biocollect.Bootstrap5.getModal('#uploadProgress', {backdrop:'static'});
 $('#sites-container').validationEngine();
 ko.applyBindings(new SiteUploadViewModel());
     </g:if>

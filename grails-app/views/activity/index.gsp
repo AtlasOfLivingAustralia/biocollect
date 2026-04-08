@@ -191,7 +191,7 @@
 
     $(function(){
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#cancel').on('click',function () {
             document.location.href = returnTo;

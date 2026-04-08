@@ -20,9 +20,7 @@
                 <input class="form-control" id="searchText" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
                        placeholder="Search organisations..." aria-label="Search organisations..." aria-describedby="org-search-button"/>
 
-                <div class="input-group-append">
-                    <button class="btn btn-primary btn-sm" id="org-search-button"><i class="fa fa-search"></i> Search</button>
-                </div>
+                <button class="btn btn-primary btn-sm" id="org-search-button" type="button"><i class="fa fa-search"></i> Search</button>
             </div>
         </div>
 

@@ -345,7 +345,7 @@
                 $content.show();
                 $loading.hide();
                 $content.html(data);
-                $('#reportView .helphover').popover({animation: true, trigger:'hover', container:'body'});
+                Biocollect.Bootstrap5.initPopovers('#reportView .helphover', {animation: true, trigger:'hover', container:'body'});
             });
         };
 
@@ -375,7 +375,7 @@
             }
         };
         // retain tab state for future re-visits
-        $('a[data-bs-toggle="tab"]').on('shown', function (e) {
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
             var tab = e.currentTarget.hash;
             amplify.store(TAB_STATE_KEY, tab);
             initialiseTab(tab);
@@ -383,7 +383,7 @@
 
         // re-establish the previous tab state
         var storedTab = amplify.store(TAB_STATE_KEY) || '#mapView';
-        $('.nav-tabs a[href="'+storedTab+'"]').tab('show');
+        Biocollect.Bootstrap5.showTab('.nav-tabs a[href="'+storedTab+'"]');
 
         // project list filter
         $('.filterinput').keyup(function() {
@@ -477,7 +477,7 @@
                 // so that map data can be loaded #HACK
                 delay = 2000;
             }
-            $('#mapView-tab').tab('show');
+            Biocollect.Bootstrap5.showTab('#mapView-tab');
             setTimeout(
                 function() {
                     //var fId = $(this).data("id");
@@ -490,18 +490,18 @@
         });
         $('#projectTable').on("click", "a.zoom-out",function(el) {
             el.preventDefault();
-            $('#mapView-tab').tab('show');
+            Biocollect.Bootstrap5.showTab('#mapView-tab');
             alaMap.map.setCenter(initCentre);
             alaMap.map.setZoom(initZoom);
         });
 
         // Tooltips
-        $('.projectTitle').tooltip({
+        Biocollect.Bootstrap5.initTooltips('.projectTitle', {
             placement: "right",
             container: "#projectTable",
             delay: 400
         });
-        $('.tooltips').tooltip({placement: "right"});
+        Biocollect.Bootstrap5.initTooltips('.tooltips', {placement: "right"});
 
 
         // sorting project table

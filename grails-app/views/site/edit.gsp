@@ -100,7 +100,7 @@
 
         $('#validation-container').validationEngine('attach', {scroll: false});
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         var siteViewModel = initSiteViewModel(true, ${!userCanEdit});
         $('#cancel').on('click',function () {

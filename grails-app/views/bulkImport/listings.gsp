@@ -33,9 +33,7 @@
                 <label for="searchBulkImport">Search</label>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" id="searchBulkImport" aria-describedby="searchHelp" data-bind="value: search, valueUpdate: 'input', enter: transients.searchHandler">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button" id="button-addon2" data-bind="click: transients.searchHandler"><i class="fas fa-search"></i></button>
-                    </div>
+                    <button class="btn btn-primary" type="button" id="button-addon2" data-bind="click: transients.searchHandler"><i class="fas fa-search"></i></button>
                 </div>
 
                 <small id="searchHelp" class="form-text text-muted">Search by project id, survey id, user id or bulk import id</small>

@@ -46,12 +46,12 @@
     $(document).ready(function() {
 
         $('#project-list').DataTable({
-            "bSort": false,
-            "oLanguage": {
-             "sSearch": "Search: "
+            ordering: false,
+            language: {
+             search: "Search: "
             }
         });
-        $('.dataTables_filter input').attr("placeholder", "Name or Description");
+        $('.dt-search input').attr("placeholder", "Name or Description");
 
         $("#btnProjectSearch").on('click',function(e) {
             e.preventDefault();

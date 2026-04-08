@@ -2,7 +2,7 @@
 <!-- ko if: $data instanceof FacetViewModel && $data.state() !== 'Hidden'-->
 %{--<!-- ko if: !adminOnly() -->--}%
 <button class="accordion-header" type="button" data-bs-toggle="collapse"
-        data-bind="attr: { 'data-target': '#' + name()}, css: {collapsed: state() === 'Collapsed'}, visible: showTermPanel"
+    data-bind="attr: { 'data-bs-target': '#' + name()}, css: {collapsed: state() === 'Collapsed'}, visible: showTermPanel"
         aria-expanded="true" aria-controls="types">
     <!-- ko text: displayName --><!-- /ko -->
     <a href="#" tabindex="-1" data-bind="visible: helpText, popover: {placement:'top', content: helpText }">
@@ -18,8 +18,8 @@
         <span data-bind="click: filterNow, text: displayName"></span>
     </label>
     <!-- /ko -->
-    <a href="#" role="button" class="moreFacets tooltips" data-bs-toggle="modal" title="" data-bs-target="#${modalName}"
-       data-original-title="View full list of values" data-bind="click: loadMoreTerms">
+    <a href="#" role="button" class="moreFacets tooltips" data-bs-toggle="modal" title="View full list of values" data-bs-target="#${modalName}"
+       data-bind="click: loadMoreTerms">
         <i class="far fa-hand-point-right"></i> <g:message code="facets.terms.moreOptions" />
     </a>
 </div>
@@ -28,7 +28,7 @@
 
 <!-- ko if: $data instanceof DatePickerViewModel -->
 <button class="accordion-header" type="button" data-bs-toggle="collapse"
-        data-bind="attr: { 'data-target': '#' + name()}, css: {collapsed: state() === 'Collapsed'}"
+    data-bind="attr: { 'data-bs-target': '#' + name()}, css: {collapsed: state() === 'Collapsed'}"
         aria-expanded="true" aria-controls="types">
     <!-- ko text: displayName --><!-- /ko -->
     <a href="#" tabindex="-1" data-bind="visible: helpText, popover: {placement:'top', content: helpText }">
@@ -46,11 +46,9 @@
                    id="fromDate" name="fromDate" type="text" placeholder="dd/mm/yyyy" targetfield="fromDate.date"
                    data-validation-engine="validate[date]">
 
-            <div class="input-group-append open-datepicker">
-                <button class="btn btn-outline-dark" type="button">
-                    <i class="far fa-calendar-alt"></i>
-                </button>
-            </div>
+            <button class="btn btn-outline-dark open-datepicker" type="button">
+                <i class="far fa-calendar-alt"></i>
+            </button>
         </div>
     </div>
 
@@ -63,11 +61,9 @@
                        id="toDate" type="text" targetfield="toDate.date" placeholder="dd/mm/yyyy"
                        data-validation-engine="validate[date,future[fromDate]]">
 
-                <div class="input-group-append open-datepicker">
-                    <button class="btn btn-outline-dark" type="button">
-                        <i class="far fa-calendar-alt"></i>
-                    </button>
-                </div>
+                <button class="btn btn-outline-dark open-datepicker" type="button">
+                    <i class="far fa-calendar-alt"></i>
+                </button>
         </div>
     </div>
 

@@ -128,7 +128,7 @@ var EditableBlogEntryViewModel = function(blogEntry, options) {
 
         ko.applyBindings(blogEntryViewModel);
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
     });
 
 

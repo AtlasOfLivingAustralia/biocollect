@@ -84,14 +84,6 @@
     border-radius: 0;
 }
 
-.input-group .input-group-prepend,
-.input-group .input-group-append {
-    display: flex;
-    align-items: stretch;
-}
-
-.input-group .input-group-prepend .input-group-text,
-.input-group .input-group-append .input-group-text,
 table .autocompleteSpecies .input-group-text {
     height: 100%;
     display: flex;

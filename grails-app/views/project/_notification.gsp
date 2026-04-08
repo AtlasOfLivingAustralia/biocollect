@@ -28,10 +28,8 @@
             <div class="row" data-bind="slideVisible: transients.recipients().length">
                 <div class="col-12" data-bind="foreach: transients.recipients">
                     <div class="input-group">
-                        <div class="input-group-append">
-                            <span class="input-group-text" data-bind="text: displayName"></span>
-                            <span class="btn btn-danger" data-bind="click: $parent.removeMember"><i class="far fa-trash-alt"></i></span>
-                        </div>
+                        <span class="input-group-text" data-bind="text: displayName"></span>
+                        <button class="btn btn-danger" type="button" data-bind="click: $parent.removeMember"><i class="far fa-trash-alt"></i></button>
                     </div>
                 </div>
             </div>

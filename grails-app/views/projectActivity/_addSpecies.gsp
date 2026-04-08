@@ -74,11 +74,9 @@
                                                                 matchUnknown: true,
                                                                 classes: {'ui-autocomplete': 'modal-zindex'}
                                                             }">
-                            <div class="input-group-append">
-                                <button class="btn btn-danger" data-bind="click: $parent.newSpeciesLists.clearSearchValue ">
-                                    <i class="far fa-trash-alt"></i>
-                                </button>
-                            </div>
+                            <button class="btn btn-danger" type="button" data-bind="click: $parent.newSpeciesLists.clearSearchValue ">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
                         </div>
                     </div>
                 </div>

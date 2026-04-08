@@ -480,10 +480,10 @@
                  printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
     </label>
 
-    <div class="input-group-append">
+    <div class="input-group">
         <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate"
                        data-validation-engine="validate[required,future[${formattedStartDate}]]"
-                       printable="${printView}"/>
+                       printable="${printView}" bs5="true" theme="btn-dark"/>
     </div>
 </div>
 </script>
@@ -578,15 +578,15 @@
 
     ko.bindingHandlers.showModal = {
         init: function (element, valueAccessor) {
-            $(element).modal({ backdrop: 'static', keyboard: true, show: false });
+            Biocollect.Bootstrap5.getModal(element, { backdrop: 'static', keyboard: true, show: false });
         },
         update: function (element, valueAccessor) {
             var value = valueAccessor();
             if (ko.utils.unwrapObservable(value)) {
-                $(element).modal('show');
+                Biocollect.Bootstrap5.showModal(element);
             }
             else {
-                $(element).modal('hide');
+                Biocollect.Bootstrap5.hideModal(element);
             }
         }
     };

@@ -378,7 +378,7 @@
         </g:if>
         </g:each>
 
-        $('.helphover').popover({animation: true, trigger: 'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger: 'hover'});
 
         $('#save').on('click',function () {
             master.save(activityNavigationModel.afterSave);

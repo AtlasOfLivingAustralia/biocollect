@@ -64,11 +64,9 @@
                         <div class="input-group" data-bind="tooltip: {title:config().transients.inputSettingsTooltip()}">
                             <input type="text" class="form-control form-control-lg"
                                    data-bind="disable: true, value: config().transients.inputSettingsSummary">
-                            <div class="input-group-append">
-                                <a target="_blank"
-                                   data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }"
-                                   class="btn btn-primary-dark"><i class="fas fa-cog"></i> <g:message code="project.survey.species.configure"/></a>
-                            </div>
+                            <a target="_blank"
+                               data-bind="click: function() { $parent.showSpeciesConfiguration(config(), transients.fieldName, $index ) }"
+                               class="btn btn-primary-dark"><i class="fas fa-cog"></i> <g:message code="project.survey.species.configure"/></a>
                         </div>
                     </td>
                     <td>

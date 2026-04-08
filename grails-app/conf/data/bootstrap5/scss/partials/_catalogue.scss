@@ -24,6 +24,13 @@
 
 #sortBar {
   font-size: 14px;
+  .project-finder-sort-controls {
+    width: 100%;
+  }
+  .project-finder-sort-group {
+    width: 100%;
+    margin-bottom: 0;
+  }
   .btn {
     font-size: inherit;
     i {
@@ -35,9 +42,10 @@
   }
   label {
     font-size: 12px;
+    margin-bottom: 0;
   }
   select {
-    width: auto;
+    width: 100%;
     color: $c-text;
     font-size: inherit;
     height: 42px;
@@ -48,9 +56,6 @@
   @include media-breakpoint-down(md) {
     font-size: 12px;
     .col-form-label {
-      position: absolute;
-      top: -33px;
-      right: 0;
       margin: 0;
     }
     select {
@@ -66,7 +71,18 @@
   @include media-breakpoint-down(sm) {
     .col-form-label {
       position: static;
+      margin-right: 0;
+    }
+  }
+  @include media-breakpoint-up(sm) {
+    .project-finder-sort-group {
+      width: auto;
+    }
+    .col-form-label {
       margin-right: 8px;
+    }
+    select {
+      width: auto;
     }
   }
 }

@@ -614,7 +614,7 @@ function ProjectFinder(config) {
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
         savedViewMode = savedViewMode || "grid-tab"; //Default is the new map-popup view
-        $('.project-finder-tab a#'+savedViewMode).tab('show');
+        Biocollect.Bootstrap5.showTab('.project-finder-tab a#' + savedViewMode);
 
         // Filters view
         var showPanel = amplify.store('pt-filter');

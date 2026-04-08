@@ -371,7 +371,7 @@
 
             $('#settings-validation').validationEngine();
 
-            $('.helphover').popover({animation: true, trigger:'hover'});
+            Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
             $('#cancel').on('click',function () {
                 document.location.href = "${createLink(action: 'index', id: project.projectId)}";
@@ -391,7 +391,7 @@
 
             var dashboardInitialised = false;
 
-            $('#projectTabs a[data-bs-toggle="tab"]').on('shown', function (e) {
+            $('#projectTabs a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 var tab = e.currentTarget.hash;
                 amplify.store('project-tab-state', tab);
                 // only init map when the tab is first shown
@@ -429,7 +429,7 @@
             });
 
             var newsAndEventsInitialised = false;
-            $('#editnewsandevents-tab').on('shown', function() {
+            $('#editnewsandevents-tab').on('shown.bs.tab', function() {
                 if (!newsAndEventsInitialised) {
                     var newsAndEventsViewModel = new window.newsAndEventsViewModel(viewModel, newsAndEventsMarkdown);
                     ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
@@ -438,7 +438,7 @@
 
             });
             var projectStoriesInitialised = false;
-            $('#editprojectstories-tab').on('shown', function() {
+            $('#editprojectstories-tab').on('shown.bs.tab', function() {
                 if (!projectStoriesInitialised) {
                     var projectStoriesViewModel = new window.projectStoriesViewModel(viewModel, projectStoriesMarkdown);
                     ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
@@ -450,9 +450,9 @@
             var storedTab = amplify.store('project-tab-state');
             var isEditor = ${user?.isEditor?:false};
             if (storedTab === '') {
-                $('#overview-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#overview-tab');
             } else if (isEditor) {
-                $(storedTab + '-tab').tab('show');
+                Biocollect.Bootstrap5.showTab(storedTab + '-tab');
             }
 
             // Non-editors should get tooltip and popup when trying to click other tabs
@@ -466,11 +466,11 @@
             });
 
             // BS tooltip
-            $('.tooltips').tooltip();
+            Biocollect.Bootstrap5.initTooltips('.tooltips');
 
             $('#gotoEditBlog').on('click',function () {
                 amplify.store('project-admin-tab-state', '#editProjectBlog');
-                $('#admin-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#admin-tab');
             });
 
         });// end window.load
@@ -513,16 +513,16 @@
             $(window).on('load',function () {
 
                 // remember state of admin nav (vertical tabs)
-                $('#adminNav a[data-bs-toggle="tab"]').on('shown', function (e) {
+                $('#adminNav a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                     var tab = e.currentTarget.hash;
                     amplify.store('project-admin-tab-state', tab);
                 });
                 var storedAdminTab = amplify.store('project-admin-tab-state');
                 // restore state if saved
                 if (storedAdminTab === '') {
-                    $('#permissions-tab').tab('show');
+                    Biocollect.Bootstrap5.showTab('#permissions-tab');
                 } else {
-                    $(storedAdminTab + "-tab").tab('show');
+                    Biocollect.Bootstrap5.showTab(storedAdminTab + "-tab");
                 }
             }); // end window.load
 

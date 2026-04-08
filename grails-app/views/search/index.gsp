@@ -184,7 +184,7 @@
 </div>
 <asset:script type="text/javascript">
     $(window).on('load',function () {
-        $('.tooltips').tooltip({placement: "right"});
+        Biocollect.Bootstrap5.initTooltips('.tooltips', {placement: "right"});
     });
 </asset:script>
 </body>

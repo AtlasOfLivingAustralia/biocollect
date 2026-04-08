@@ -202,10 +202,7 @@
             <div class="input-group">
                 <input class="form-control" id="startDate" data-bind="datepicker:startDate.date" type="text"
                        data-validation-engine="validate[required]"/>
-
-                <div class="input-group-append">
-                    <button class="btn btn-dark open-datepicker"><i class="far fa-calendar-alt"></i></button>
-                </div>
+                <button class="btn btn-dark open-datepicker" type="button"><i class="far fa-calendar-alt"></i></button>
             </div>
         </div>
     </div>
@@ -223,10 +220,7 @@
         <div class="col-12 col-md-8">
             <div class="input-group">
                 <input class="form-control" id="endDate" data-bind="datepicker:endDate.date" type="text"/>
-
-                <div class="input-group-append">
-                    <button class="btn btn-dark open-datepicker"><i class="far fa-calendar-alt"></i></button>
-                </div>
+                <button class="btn btn-dark open-datepicker" type="button"><i class="far fa-calendar-alt"></i></button>
             </div>
         </div>
     </div>

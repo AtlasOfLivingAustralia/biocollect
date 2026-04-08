@@ -389,7 +389,7 @@ var scroll = false;
     </g:if>
     $('#validation-container').validationEngine('attach', {scroll: scroll});
 
-    $('.helphover').popover({animation: true, trigger:'hover'});
+    Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
     $('#reset').on('click',function () {
     master.reset();

@@ -99,7 +99,7 @@ $(function(){
     viewModel.loadPrograms(programsModel);
 
     $('#projectDetails').validationEngine();
-    $('.helphover').popover({animation: true, trigger:'hover'});
+    Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");

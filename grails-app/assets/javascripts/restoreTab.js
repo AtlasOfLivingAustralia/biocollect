@@ -10,10 +10,10 @@ var RestoreTab = function (tabId, defaultHrefTab) {
     }
 
     if (storedTab && ($(storedTab).length > 0)) {
-        $(storedTab).tab('show');
+        Biocollect.Bootstrap5.showTab(storedTab);
     }
     else if (defaultHrefTab) {
-        $('#' + defaultHrefTab).tab('show');
+        Biocollect.Bootstrap5.showTab('#' + defaultHrefTab);
     }
 
     //Store tab reference

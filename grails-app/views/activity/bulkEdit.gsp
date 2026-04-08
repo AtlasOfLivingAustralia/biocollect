@@ -520,7 +520,7 @@
 
         // Slickgrid / jqueryValidationEngine integration for some amount of user experience consistency.
         $('.validationEngineContainer').validationEngine({scroll:false});
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#downloadTemplate').on('click',function() {
             var ids = []

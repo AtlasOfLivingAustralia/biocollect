@@ -32,7 +32,8 @@
   $(function() {
     var EditorViewModel = function() {
         var self = this;
-        var $modal = $('#markdownEditor').modal({show:false});
+      var $modal = $('#markdownEditor');
+      Biocollect.Bootstrap5.getModal($modal, {show:false});
         setup_wmd({
             output_format: "markdown",
             input: "editorInput",
@@ -50,16 +51,16 @@
             self.title(title);
             self.initialValue(koProperty());
             self.callback = koProperty;
-            $modal.modal('show');
+          Biocollect.Bootstrap5.showModal($modal);
         };
 
         self.save = function() {
             self.callback($('#editorInput').val());
-            $modal.modal('hide');
+          Biocollect.Bootstrap5.hideModal($modal);
         };
 
         self.cancel = function() {
-            $modal.modal('hide');
+          Biocollect.Bootstrap5.hideModal($modal);
         };
 
     };

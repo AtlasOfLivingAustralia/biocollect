@@ -122,8 +122,8 @@
             <label for="plannedStartDate">Planned start date
             <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
             </label>
-            <div class="input-group-append">
-                <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+            <div class="input-group">
+                <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}" bs5="true" theme="btn-dark"/>
             </div>
         </div>
     </div>
@@ -132,8 +132,8 @@
             <label for="plannedEndDate">Planned end date
             <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
             </label>
-            <div class="input-group-append">
-                <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
+            <div class="input-group">
+                <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" bs5="true" theme="btn-dark" />
             </div>
         </div>
     </div>
@@ -143,8 +143,8 @@
     <label for="plannedStartDate">Milestone date
     <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
     </label>
-    <div class="input-group-append">
-        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+    <div class="input-group">
+        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}" bs5="true" theme="btn-dark"/>
     </div>
 </div>
 </script>
@@ -257,7 +257,7 @@
             }
         }});
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#save').on('click',function () {
             master.save();
