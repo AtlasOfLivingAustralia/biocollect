@@ -10,15 +10,14 @@ function ChartjsManagerViewModel() {
     /**
      * Whether to show the list of charts.
      */
-    self.chartjsListShow = ko.computed(function () {
-        var ifChartjsListShow = self.chartjsList().length > 0
-        if(ifChartjsListShow){
-            $('#data-chart-tab').show()
+    self.chartjsListShow = ko.pureComputed(function () {
+        return self.chartjsList().length > 0;
+    });
+
+    self.chartjsListShow.subscribe(function (showCharts) {
+        if (!showCharts && $('#chartGraph').hasClass('active') && window.Biocollect && Biocollect.Bootstrap5) {
+            Biocollect.Bootstrap5.showTab('#data-list-tab');
         }
-        else {
-            $('#data-chart-tab').hide()
-        }
-        return ifChartjsListShow;
     });
 
     /**
