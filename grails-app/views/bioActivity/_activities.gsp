@@ -14,75 +14,68 @@
                         </button>
                     </div>
                     <div class="col col-sm-6 col-md-4 mb-3 text-end text-md-center order-2 order-md-1 ps-1">
-                        <div class="btn-group">
-                            <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-grid-radio" autocomplete="off">
-                                <label class="btn btn-outline-dark"
-                                       id="data-grid-tab"
-                                       for="data-grid-radio"
-                                       data-bs-toggle="tab"
-                                       data-bs-target="#dataGrid"
-                                       title="${g.message(code:'data.grid.title')}"
-                                       role="tab"
-                                       aria-controls="dataGrid"
-                                       aria-selected="false">
-                                    <i class="fas fa-th-large"></i>
-                                </label>
+                        <div class="btn-group activity-display-tabs" role="tablist" aria-label="Catalogue Display Options">
+                            <button class="btn btn-outline-dark"
+                                    id="data-grid-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#dataGrid"
+                                    title="${g.message(code:'data.grid.title')}"
+                                    role="tab"
+                                    aria-controls="dataGrid"
+                                    aria-selected="false">
+                                <i class="fas fa-th-large"></i>
+                            </button>
 
-                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-list-radio" autocomplete="off" checked>
-                                <label class="btn btn-outline-dark"
-                                       id="data-list-tab"
-                                       for="data-list-radio"
-                                       data-bs-toggle="tab"
-                                       data-bs-target="#recordVis"
-                                       title="${g.message(code:'data.list.title')}"
-                                       role="tab"
-                                       aria-controls="recordVis"
-                                       aria-selected="true">
-                                    <i class="fas fa-list"></i>
-                                </label>
+                            <button class="btn btn-outline-dark active"
+                                    id="data-list-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#recordVis"
+                                    title="${g.message(code:'data.list.title')}"
+                                    role="tab"
+                                    aria-controls="recordVis"
+                                    aria-selected="true">
+                                <i class="fas fa-list"></i>
+                            </button>
 
-                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-map-radio" autocomplete="off">
-                                <label class="btn btn-outline-dark"
-                                       id="data-map-tab"
-                                       for="data-map-radio"
-                                       data-bs-toggle="tab"
-                                       data-bs-target="#mapVis"
-                                       data-bind="attr:{'data-bs-toggle': activities().length > 0 ? 'tab' : null}"
-                                       title="${g.message(code:'data.map.title')}"
-                                       role="tab"
-                                       aria-controls="mapVis"
-                                       aria-selected="false">
-                                    <i class="far fa-map"></i>
-                                </label>
+                            <button class="btn btn-outline-dark"
+                                    id="data-map-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#mapVis"
+                                    title="${g.message(code:'data.map.title')}"
+                                    role="tab"
+                                    aria-controls="mapVis"
+                                    aria-selected="false">
+                                <i class="far fa-map"></i>
+                            </button>
 
-                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-image-radio" autocomplete="off">
-                                <label class="btn btn-outline-dark"
-                                       id="data-image-tab"
-                                       for="data-image-radio"
-                                       data-bs-toggle="tab"
-                                       data-bs-target="#imageGallery"
-                                       title="${g.message(code:'data.image.title')}"
-                                       role="tab"
-                                       aria-controls="imageGallery"
-                                       aria-selected="false">
-                                    <i class="far fa-images"></i>
-                                </label>
+                            <button class="btn btn-outline-dark"
+                                    id="data-image-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#imageGallery"
+                                    title="${g.message(code:'data.image.title')}"
+                                    role="tab"
+                                    aria-controls="imageGallery"
+                                    aria-selected="false">
+                                <i class="far fa-images"></i>
+                            </button>
 
-                                <input class="btn-check" type="radio" name="catalogueDisplay" id="data-chart-radio" autocomplete="off">
-                                <label class="btn btn-outline-dark"
-                                       id="data-chart-tab"
-                                       for="data-chart-radio"
-                                       data-bs-toggle="tab"
-                                       data-bs-target="#chartGraph"
-                                       title="${g.message(code:'data.chart.title')}"
-                                       role="tab"
-                                       aria-controls="chartGraph"
-                                       aria-selected="false">
-                                    <i class="fas fa-chart-pie"></i>
-                                </label>
-
-                            </div>
+                            <!-- ko if: chartjsManager() && chartjsManager().chartjsListShow() -->
+                            <button class="btn btn-outline-dark"
+                                    id="data-chart-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#chartGraph"
+                                    title="${g.message(code:'data.chart.title')}"
+                                    role="tab"
+                                    aria-controls="chartGraph"
+                                    aria-selected="false">
+                                <i class="fas fa-chart-pie"></i>
+                            </button>
+                            <!-- /ko -->
                         </div>
                     </div>
 
@@ -218,11 +211,11 @@
                     <div class="tab-pane" id="dataGrid" role="tabpanel">
                         <g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
                         <!-- .pagination -->
-                        <h3 class="text-center my-4">
-                            <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
+                        <h3 class="text-center my-4" data-bind="if: $root.transients.showEmptyState()">
+                            <span data-bind="if: $root.transients.showProjectEmptyMessage()">
                                 No data has been recorded for this project yet
                             </span>
-                            <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
+                            <span data-bind="if: $root.transients.showNoResultsMessage()">No results</span>
                         </h3>
                         <div class="records-list row d-flex flex-wrap mt-4 mt-md-4 mb-3">
                             <!-- ko if: activities().length == 0 -->
@@ -318,20 +311,20 @@
                         <!-- .pagination -->
                     </div>
                     <div class="tab-pane active" id="recordVis">
-                        <!-- ko if: activities().length == 0 -->
+                        <!-- ko if: transients.showEmptyState() -->
                         <div class="row">
                             <div class="col-12">
                                 <h3 class="text-center my-4">
-                                    <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
+                                    <span data-bind="if: $root.transients.showProjectEmptyMessage()">
                                         No data has been recorded for this project yet
                                     </span>
-                                    <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
+                                    <span data-bind="if: $root.transients.showNoResultsMessage()">No results</span>
                                 </h3>
                             </div>
                         </div>
                         <!-- /ko -->
 
-                        <!-- ko if: activities().length > 0 -->
+                        <!-- ko ifnot: transients.showEmptyState() -->
 
                         <div class="row" data-bind="visible: version().length == 0">
                             <div class="col-12">
