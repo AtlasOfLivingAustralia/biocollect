@@ -1147,8 +1147,8 @@
 <script id="templateHomePage" type="text/html">
 <div class="accordion" id="homePageConfiguration">
     <div>
-        <h4>
-            <button class="btn btn-link btn-block text-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <h4 class="d-grid gap-2 mb-0">
+            <button class="btn btn-link text-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                 Project Finder Home Page Config <i class="fas fa-chevron-down float-end"></i>
             </button>
         </h4>
@@ -1232,8 +1232,8 @@
         </div>
     </div>
     <div>
-        <h4>
-            <button class="btn btn-link btn-block text-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        <h4 class="d-grid gap-2 mb-0">
+            <button class="btn btn-link text-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 Buttons Home Page Config <i class="fas fa-chevron-down float-end"></i>
             </button>
         </h4>
