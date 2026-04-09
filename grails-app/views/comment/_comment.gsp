@@ -27,7 +27,9 @@
     </div>
     <div data-bind="visible: showLoadMore" class="row">
         <div class="col-12">
-            <button class="btn btn-block btn-primary-dark" data-bind="click: more"><i class="fas fa-chevron-circle-down"></i> load more comments</button>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary-dark" data-bind="click: more"><i class="fas fa-chevron-circle-down"></i> load more comments</button>
+            </div>
         </div>
     </div>
 </div>
