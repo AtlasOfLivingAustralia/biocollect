@@ -218,16 +218,14 @@
                     <div class="tab-pane" id="dataGrid" role="tabpanel">
                         <g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
                         <!-- .pagination -->
+                        <h3 class="text-center my-4">
+                            <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
+                                No data has been recorded for this project yet
+                            </span>
+                            <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
+                        </h3>
                         <div class="records-list row d-flex flex-wrap mt-4 mt-md-4 mb-3">
                             <!-- ko if: activities().length == 0 -->
-                            <div class="col-12 d-flex">
-                                <h3 class="text-center my-4">
-                                    <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
-                                        No data has been recorded for this project yet
-                                    </span>
-                                    <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
-                                </h3>
-                            </div>
                             <!-- /ko -->
                             <!-- ko foreach : activities -->
                             <!-- ko if : records().length > 0 -->
@@ -337,10 +335,10 @@
 
                         <div class="row" data-bind="visible: version().length == 0">
                             <div class="col-12">
-                                <div class="float-end mb-2 mt-1">
+                                <div class="float-end mb-1 mt-3">
                                     <!-- ko if:  transients.isBulkActionsEnabled -->
                                     <span><g:message code="data.bulk.actions.label"/>
-                                        <div class="btn-group" role="group" aria-label="<g:message code="data.bulk.actions.label" />">
+                                        <div class="btn-group ms-2" role="group" aria-label="<g:message code="data.bulk.actions.label" />">
                                             <button class="btn btn-sm btn-dark" data-bind="disable: !transients.activitiesToDelete().length, click: bulkDelete"><i class="fas fa-trash-alt">&nbsp;</i> <g:message code="project.bulkactions.delete"/></button>
                                             <button class="btn btn-sm btn-dark" data-bind="disable: !transients.activitiesToDelete().length, click: bulkEmbargo"><i class="fas fa-lock">&nbsp;</i> <g:message code="project.bulkactions.embargo"/></button>
                                             <button class="btn btn-sm btn-dark" data-bind="disable: !transients.activitiesToDelete().length, click: bulkRelease"><i class="fas fa-unlock">&nbsp;</i> <g:message code="project.bulkactions.release"/></button>
