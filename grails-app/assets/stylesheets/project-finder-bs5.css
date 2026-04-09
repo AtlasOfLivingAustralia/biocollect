@@ -18,6 +18,7 @@
 
 #sortBar .project-finder-sort-controls {
     width: 100%;
+    flex-wrap: wrap;
 }
 
 #sortBar .project-finder-sort-group {
