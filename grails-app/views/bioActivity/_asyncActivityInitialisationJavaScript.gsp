@@ -58,6 +58,10 @@
                     master.offlineSave();
                 });
 
+                $('#saveChanges').on('click',function () {
+                    master.incompleteSave();
+                });
+
 
                 $('#cancel').on('click',function () {
                     if (fcConfig.bulkUpload)

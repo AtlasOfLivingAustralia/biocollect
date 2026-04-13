@@ -83,6 +83,7 @@
                     </ol>
                 </td>
                 <td class="btn-space">
+                    <!-- ko ifnot: isInvalidDraft() -->
                     <button class="btn btn-success btn-sm upload-record" disabled data-bind="click: upload, enable: $parent.online, disable: disableUpload">
                         <!-- ko if: uploading -->
                         <i class="fa fa-spin fa-spinner"></i>
@@ -93,6 +94,7 @@
                         <g:message code="label.upload"/>
                     </button>
                     <a class="btn btn-primary btn-sm view-record" data-bind="attr: {href: transients.viewActivityUrl()}, disable: uploading"><i class="far fa-eye"></i> <g:message code="label.view"/></a>
+                    <!-- /ko -->
                     <a class="btn btn-dark btn-sm edit-record" data-bind="attr: {href: transients.editActivityUrl()}, disable: uploading"><i class="fas fa-pencil-alt"></i> <g:message code="label.edit"/></a>
                     <button class="btn btn-danger btn-sm delete-record" data-bind="click: deleteActivity, enable: $parent.online, disable: uploading"><i class="far fa-trash-alt"></i> <g:message code="label.delete"/></button>
                 </td>

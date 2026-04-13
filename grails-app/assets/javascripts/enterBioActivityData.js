@@ -184,10 +184,13 @@ function Master(activityId, config) {
         if ($('#validation-container').validationEngine('validate')) {
             var toSave = this.getAllModelAsJS();
             toSave.entityUpdated = true;
+            toSave.__valid = true;
             var projectId = toSave.projectId;
             var projectActivityId = toSave.projectActivityId;
+
             toSave = JSON.stringify(toSave);
             toSave = JSON.parse(toSave);
+
             blockUIWithMessage("Saving activity data...");
 
             entities.saveActivity(toSave).then(function (result) {
@@ -198,6 +201,24 @@ function Master(activityId, config) {
                     document.location.href = fcConfig.activityViewURL + "/" + projectActivityId + "?activityId=" + activityId + "&projectId=" + projectId;
             });
         }
+    },
+
+    self.incompleteSave = function () {
+        const valid = $('#validation-container').validationEngine('validate');
+        $('#validation-container').validationEngine('hideAll');
+
+        var toSave = this.getAllModelAsJS();
+        toSave.entityUpdated = true;
+        toSave.__valid = valid;
+
+        toSave = JSON.stringify(toSave);
+        toSave = JSON.parse(toSave);
+
+        blockUIWithMessage("Saving activity data...");
+
+        entities.saveActivity(toSave).always(function () {
+            $.unblockUI();
+        });
     },
 
     self.onlineSave = function () {

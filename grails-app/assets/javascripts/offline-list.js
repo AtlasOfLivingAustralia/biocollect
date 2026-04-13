@@ -8,7 +8,14 @@ function ActivitiesViewModel (config) {
     self.pagination = new PaginationViewModel({}, self);
     self.online = ko.observable(true);
     self.disableUpload = ko.computed(function () {
-        return self.activities().length === 0 || !self.online();
+        var activities = self.activities();
+        for (var i = 0; i < activities.length; i++) {
+            if (activities[i].canUpload()) {
+                return !self.online();
+            }
+        }
+
+        return true;
     });
     // check if any activity is uploading
     self.isUploading = ko.computed(function () {
@@ -102,6 +109,11 @@ function ActivitiesViewModel (config) {
 
     self.uploadAnActivity = function (activities, index) {
         if (index < activities.length) {
+            if (!activities[index].canUpload()) {
+                self.uploadAnActivity(activities, index + 1);
+                return;
+            }
+
             activities[index].upload().then(function () {
                 self.uploadAnActivity(activities, index + 1);
             }, function (error) {
@@ -148,8 +160,14 @@ function ActivityViewModel (activity, parent) {
     self.species = ko.observableArray();
     self.surveyDate = ko.observable().extend({simpleDate: false});
     self.uploading = ko.observable(false);
+    self.isInvalidDraft = ko.pureComputed(function () {
+        return activity.__valid === false || activity.__valid === undefined;
+    });
+    self.canUpload = ko.pureComputed(function () {
+        return !self.isInvalidDraft();
+    });
     self.disableUpload = ko.computed(function () {
-        return self.uploading() || !parent.online();
+        return self.uploading() || !parent.online() || !self.canUpload();
     });
     self.metaModel;
     self.imageViewModels = [];
@@ -158,7 +176,12 @@ function ActivityViewModel (activity, parent) {
             return fcConfig.activityViewUrl + "/" + self.projectActivityId + "?projectId=" + self.projectId + "&activityId=" + self.activityId + "&context=" + calledFromContext;
         },
         editActivityUrl: function() {
-            return fcConfig.activityEditUrl + "/" + self.projectActivityId + "?unpublished=true&projectId=" + self.projectId + "&activityId=" + self.activityId + "&context=" + calledFromContext;
+            var url = fcConfig.activityEditUrl + "/" + self.projectActivityId + "?projectId=" + self.projectId + "&activityId=" + self.activityId + "&context=" + calledFromContext;
+            if (!self.isInvalidDraft()) {
+                url += "&validDraft=true";
+            }
+
+            return url;
         }
     }
 
@@ -192,6 +215,11 @@ function ActivityViewModel (activity, parent) {
         var promises = [],
             deferred = $.Deferred(),
             forceOnline = false;
+        if (!self.canUpload()) {
+            deferred.reject({message: "Activity is incomplete and must be edited before upload"});
+            return deferred.promise();
+        }
+
         isOffline().then(function () {
             alert("You are offline. Please connect to the internet and try again.");
             deferred.reject();
@@ -266,12 +294,14 @@ function ActivityViewModel (activity, parent) {
     }
 
     self.uploadActivity = function() {
-        var oldActivityId = self.activityId;
-        if (entities.utils.isDexieEntityId(activity.activityId)) {
-            activity.activityId = undefined;
+        var oldActivityId = self.activityId,
+            activityToUpload = $.extend(true, {}, activity);
+        if (entities.utils.isDexieEntityId(activityToUpload.activityId)) {
+            activityToUpload.activityId = undefined;
         }
+        delete activityToUpload.__valid;
 
-        var toSave = JSON.stringify(activity),
+        var toSave = JSON.stringify(activityToUpload),
             deferred = $.Deferred(),
             url = fcConfig.bioActivityUpdate + "?pActivityId=" + activity.projectActivityId,
             ajaxRequestParams = {
