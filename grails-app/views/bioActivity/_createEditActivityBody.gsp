@@ -98,12 +98,9 @@
             <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
             <!-- /ko -->
             <g:if test="${isPwa}">
-            <!-- ko if: !window.validDraft -->
-            <button type="button" id="saveChanges" class="btn btn-outline-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
-            <!-- /ko -->
-            </g:if>
             <!-- ko if: window.unpublished -->
-            <button type="button" id="saveOffline" class="btn btn-primary-dark btn-lg"><i class="fas fa-hdd"></i> <g:message code="bioactivity.save"/></button>
+            <button type="button" id="saveChanges" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
+            </g:if>
             <!-- /ko -->
         </g:if>
         <g:if test="${bulkUpload || (showCreate && !mobile && !preview)}">

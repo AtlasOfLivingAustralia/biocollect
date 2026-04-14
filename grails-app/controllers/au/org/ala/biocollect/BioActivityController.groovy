@@ -418,6 +418,9 @@ class BioActivityController {
     def pwaSettings () {
     }
 
+    def pwaSync () {
+    }
+
     /**
      * Preview activity survey form template
      * @param formName Survey form name

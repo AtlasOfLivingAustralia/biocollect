@@ -14,8 +14,26 @@ function Master(activityId, config) {
     var self = this,
         viewModel,
         preventNavigationIfDirty = config.preventNavigationIfDirty === undefined ? true : config.preventNavigationIfDirty;
+
+    var autosaveActivityId = null;
+    var autosaveInProgress = false;
+    var autosaveInterval;
+    
     self.subscribers = [];
     self.deferredObjects = [];
+
+    function scheduleAutosaveInterval() {
+        const url = new URL(window.location.href);
+        const unpublished = url.searchParams.get('unpublished') === 'true';
+
+        if (!autosaveInterval && unpublished) {
+            autosaveInterval = setInterval(() => {
+                if (self.isDirty()) {
+                    self.offlineSave(false);
+                }
+            }, 10000);
+        }
+    }
 
     // client models register their name and methods to participate in saving
     self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
@@ -67,7 +85,7 @@ function Master(activityId, config) {
     self.modelAsJS = function () {
         var activityData, outputs = [];
         $.each(this.subscribers, function(i, obj) {
-            if (obj.isDirty()) {
+            if (obj.isDirty() || obj.model === 'activityModel') {
                 if (obj.model === 'activityModel') {
                     activityData = obj.get();
                 }
@@ -180,50 +198,61 @@ function Master(activityId, config) {
         }
     },
 
-    self.offlineSave = function () {
-        if ($('#validation-container').validationEngine('validate')) {
-            var toSave = this.getAllModelAsJS();
-            toSave.entityUpdated = true;
-            toSave.__valid = true;
-            var projectId = toSave.projectId;
-            var projectActivityId = toSave.projectActivityId;
-
-            toSave = JSON.stringify(toSave);
-            toSave = JSON.parse(toSave);
-
-            blockUIWithMessage("Saving activity data...");
-
-            entities.saveActivity(toSave).then(function (result) {
-                var activityId = result.data;
-                if (config.enableOffline) {
-                    document.location.href = config.returnTo;
-                } else
-                    document.location.href = fcConfig.activityViewURL + "/" + projectActivityId + "?activityId=" + activityId + "&projectId=" + projectId;
-            });
+    self.offlineSave = function (fromUI = false) {
+        if (autosaveInProgress) {
+            return;
         }
-    },
+        autosaveInProgress = true;
 
-    self.incompleteSave = function () {
-        const valid = $('#validation-container').validationEngine('validate');
-        $('#validation-container').validationEngine('hideAll');
+        const container = $('#validation-container');
 
-        var toSave = this.getAllModelAsJS();
-        toSave.entityUpdated = true;
-        toSave.__valid = valid;
+        // If we're silently autosaving in the background, don't trigger the UI errors
+        container.validationEngine('attach', { scroll: fromUI, showPrompts: fromUI, focusFirstField: fromUI });
 
-        toSave = JSON.stringify(toSave);
+        const valid = container.validationEngine('validate');
+        var currentModel = this.getAllModelAsJS();
+
+        if (!currentModel) {
+            return;
+        }
+
+        // Prevent autosaving duplicates
+        if (!currentModel.activityId && autosaveActivityId) {
+            currentModel.activityId = autosaveActivityId;
+        }
+
+        var savedModelSnapshot = JSON.stringify(currentModel);
+        currentModel.entityUpdated = true;
+        currentModel.__valid = valid;
+
+        var toSave = JSON.stringify(currentModel);
         toSave = JSON.parse(toSave);
 
-        blockUIWithMessage("Saving activity data...");
+        // Only block the UI if we've manually triggered the save action
+        if (fromUI) {
+            blockUIWithMessage("Saving activity data...");
+        }
 
-        entities.saveActivity(toSave).always(function () {
-            $.unblockUI();
+        return entities.saveActivity(toSave).always(function (result) {
+            autosaveActivityId = result;
+            autosaveInProgress = false;
+
+            if (fromUI) {
+                $.unblockUI();
+            }
         });
     },
 
     self.onlineSave = function () {
         if ($('#validation-container').validationEngine('validate')) {
             var toSave = this.modelAsJS();
+
+            // Replace offline numeric activityId with empty string
+            const isSavedActivity = entities.utils.isDexieEntityId(toSave.activityId);
+            if (isSavedActivity) {
+                toSave.activityId = '';
+            }
+
             toSave = JSON.stringify(toSave);
 
             // Don't allow another save to be initiated.
@@ -350,6 +379,8 @@ function Master(activityId, config) {
     }
 
     autoSaveModel(self, null, {preventNavigationIfDirty: preventNavigationIfDirty});
+
+    scheduleAutosaveInterval();
 };
 
 function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, config) {

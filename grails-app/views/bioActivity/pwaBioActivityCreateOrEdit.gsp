@@ -12,8 +12,7 @@
             projectId = url.searchParams.get("projectId"),
             projectActivityId = url.searchParams.get("projectActivityId"),
             activityId = url.searchParams.get("activityId"),
-            unpublished = url.searchParams.get("unpublished") || false,
-            validDraft = url.searchParams.get("validDraft") || false;
+            unpublished = url.searchParams.get("unpublished") || false;
 
         var fcConfig = {
         <g:applyCodec encodeAs="none">
