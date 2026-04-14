@@ -54,12 +54,8 @@
                     master.removeTemporarySite();
                 });
 
-                $('#saveOffline').on('click',function () {
-                    master.offlineSave();
-                });
-
                 $('#saveChanges').on('click',function () {
-                    master.incompleteSave();
+                    master.offlineSave(true);
                 });
 
 

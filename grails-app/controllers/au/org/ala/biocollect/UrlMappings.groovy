@@ -186,6 +186,7 @@ class UrlMappings {
 
                 "/pwa/offlineList" ( controller: 'bioActivity', action: 'pwaOfflineList' )
                 "/pwa/settings" (controller: 'bioActivity', action: 'pwaSettings')
+                "/pwa/sync" (controller: 'bioActivity', action: 'pwaSync')
 
                 "/referenceAssessment/requestRecords"(controller: "referenceAssessment", action: [POST: "requestRecords"])
 
