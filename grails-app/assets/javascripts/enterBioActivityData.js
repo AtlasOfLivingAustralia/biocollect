@@ -15,6 +15,17 @@ function Master(activityId, config) {
         viewModel,
         preventNavigationIfDirty = config.preventNavigationIfDirty === undefined ? true : config.preventNavigationIfDirty;
 
+    self.autosaveTimestamp = ko.observable(null);
+
+    self.lastAutosave = ko.pureComputed(function () {
+        var lastAutosaveTimestamp = self.autosaveTimestamp();
+        if (!lastAutosaveTimestamp) {
+            return 'N/A';
+        }
+
+        return lastAutosaveTimestamp.toLocaleTimeString();
+    });
+
     var autosaveActivityId = null;
     var autosaveInProgress = false;
     var autosaveInterval;
@@ -233,8 +244,10 @@ function Master(activityId, config) {
             blockUIWithMessage("Saving activity data...");
         }
 
-        return entities.saveActivity(toSave).always(function (result) {
-            autosaveActivityId = result;
+        return entities.saveActivity(toSave).done(function (result) {
+            autosaveActivityId = result.data;
+            self.autosaveTimestamp(new Date());
+        }).always(function () {
             autosaveInProgress = false;
 
             if (fromUI) {
@@ -370,6 +383,8 @@ function Master(activityId, config) {
 
     self.setViewModel = function (vm) {
         if (vm) {
+            vm.lastAutosave = self.lastAutosave;
+            vm.autosaveTimestamp = self.autosaveTimestamp;
             viewModel =  vm;
         }
     }

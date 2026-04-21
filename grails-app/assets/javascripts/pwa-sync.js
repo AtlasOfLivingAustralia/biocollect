@@ -133,6 +133,11 @@ window.addEventListener('message', async function(message) {
         return;
     }
 
+    if (!hasValue(payload.jwt)) {
+        warnMissingParameters(eventName, ['jwt']);
+        return;
+    }
+
     missingFields = getMissingFields(payload, handler.requiredFields || []);
     if (missingFields.length) {
         warnMissingParameters(eventName, missingFields);
@@ -140,6 +145,8 @@ window.addEventListener('message', async function(message) {
     }
 
     try {
+        await activitiesViewModel.setJwt(payload.jwt);
+
         config = handler.configure ? handler.configure(payload) : null;
         if (config) {
             await configureActivitiesViewModel(config);

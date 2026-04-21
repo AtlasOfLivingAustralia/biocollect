@@ -107,6 +107,9 @@
             <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
         </g:if>
     </div>
+    <!-- ko if: window.unpublished -->
+        <label class="mt-3"><b>Last autosave: </b><span data-bind="text: $root.lastAutosave"></span></label>
+    <!-- /ko -->
 </g:if>
 
 <g:if env="development" test="${!printView && !preview}">
