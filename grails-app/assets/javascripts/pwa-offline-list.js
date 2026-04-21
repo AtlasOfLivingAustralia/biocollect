@@ -8,6 +8,7 @@ function ActivitiesViewModel (config) {
     self.projectActivityId = ko.observable(null);
     self.projectId = ko.observable(null);
     self.jwt = ko.observable();
+    self.uploadAllProgressCallback = null;
 
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({}, self);
@@ -184,12 +185,35 @@ function ActivitiesViewModel (config) {
         return self.uploadAll();
     }
 
-    self.uploadAll = function() {
+    self.emitUploadProgress = function(summary, currentActivityId) {
+        if (!self.uploadAllProgressCallback) {
+            return;
+        }
+
+        self.uploadAllProgressCallback({
+            currentActivityId: currentActivityId,
+            failed: summary.failedActivityIds.length,
+            phase: summary.phase,
+            processed: summary.processedActivities,
+            skipped: summary.skippedActivityIds.length,
+            total: summary.totalUploadableActivities,
+            uploaded: summary.uploadedActivityIds.length
+        });
+    }
+
+    self.uploadAll = function(progressCallback) {
         var summary = {
             uploadedActivityIds: [],
             failedActivityIds: [],
-            errors: []
+            skippedActivityIds: [],
+            errors: [],
+            phase: 'preparing',
+            processedActivities: 0,
+            totalActivities: 0,
+            totalUploadableActivities: 0
         };
+
+        self.uploadAllProgressCallback = progressCallback || null;
 
         return self.getMatchingActivities().then(function(result) {
             var activities = result.data.activities || [],
@@ -197,14 +221,28 @@ function ActivitiesViewModel (config) {
                     return new ActivityViewModel(activity, self);
                 });
 
+            summary.totalActivities = activities.length;
+            summary.totalUploadableActivities = activityViewModels.filter(function(activityViewModel) {
+                return activityViewModel.canUpload();
+            }).length;
+            summary.phase = 'uploading';
+            self.emitUploadProgress(summary);
+
             return self.uploadActivityViewModels(activityViewModels, summary, 0);
         }).then(function() {
+            summary.phase = 'refreshing';
+            self.emitUploadProgress(summary);
+
             return self.load(0).then(function() {
+                summary.phase = 'complete';
                 return {data: summary};
             }, function(error) {
                 summary.refreshError = error;
+                summary.phase = 'complete';
                 return {data: summary};
             });
+        }).always(function() {
+            self.uploadAllProgressCallback = null;
         });
     }
 
@@ -212,7 +250,12 @@ function ActivitiesViewModel (config) {
         summary = summary || {
             uploadedActivityIds: [],
             failedActivityIds: [],
-            errors: []
+            skippedActivityIds: [],
+            errors: [],
+            phase: 'uploading',
+            processedActivities: 0,
+            totalActivities: 0,
+            totalUploadableActivities: 0
         };
 
         if (index >= activityViewModels.length) {
@@ -222,8 +265,11 @@ function ActivitiesViewModel (config) {
         var activityViewModel = activityViewModels[index];
 
         if (!activityViewModel.canUpload()) {
+            summary.skippedActivityIds.push(activityViewModel.activityId);
             return self.uploadActivityViewModels(activityViewModels, summary, index + 1);
         }
+
+        self.emitUploadProgress(summary, activityViewModel.activityId);
 
         return activityViewModel.upload().then(function(result) {
             summary.uploadedActivityIds.push(result.data.activityId);
@@ -232,6 +278,8 @@ function ActivitiesViewModel (config) {
             summary.failedActivityIds.push((error && error.data && error.data.activityId) || activityViewModel.activityId);
             summary.errors.push(error);
         }).then(function() {
+            summary.processedActivities += 1;
+            self.emitUploadProgress(summary, activityViewModel.activityId);
             return self.uploadActivityViewModels(activityViewModels, summary, index + 1);
         });
     }
