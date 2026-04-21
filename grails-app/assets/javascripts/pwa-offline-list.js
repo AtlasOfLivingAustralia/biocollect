@@ -7,6 +7,7 @@ function ActivitiesViewModel (config) {
 
     self.projectActivityId = ko.observable(null);
     self.projectId = ko.observable(null);
+    self.jwt = ko.observable();
 
     self.activities = ko.observableArray();
     self.pagination = new PaginationViewModel({}, self);
@@ -57,6 +58,21 @@ function ActivitiesViewModel (config) {
 
     self.refreshPage  = function (offset) {
         return self.load(offset);
+    }
+
+    self.setJwt = function(jwt) {
+        self.jwt(jwt);
+
+        return $.Deferred().resolve({data: {jwt: jwt}}).promise();
+    }
+
+    self.authorizeAjaxRequest = function(ajaxRequestParams) {
+        if (self.jwt()) {
+            ajaxRequestParams.headers = ajaxRequestParams.headers || {};
+            ajaxRequestParams.headers.Authorization = 'Bearer ' + self.jwt();
+        }
+
+        return ajaxRequestParams;
     }
 
     self.updateActivities = function(activities, total, offset) {
@@ -515,7 +531,7 @@ function ActivityViewModel (activity, parent) {
                 }
             };
 
-        $.ajax(ajaxRequestParams);
+        $.ajax(parent.authorizeAjaxRequest(ajaxRequestParams));
         return deferred.promise();
     }
 
@@ -570,13 +586,13 @@ function ActivityViewModel (activity, parent) {
                 id = site.siteId = undefined;
             }
 
-            $.ajax({
+            $.ajax(parent.authorizeAjaxRequest({
                 method: 'POST',
                 url: id ? fcConfig.updateSiteUrl + "?id=" + id : fcConfig.updateSiteUrl,
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 dataType: 'json'
-            }).then(function (result) {
+            })).then(function (result) {
                 if (result.id) {
                     deferred.resolve({data: {siteId: result.id, oldSiteId: siteId, site: site}});
                 }
@@ -645,13 +661,13 @@ function ActivityViewModel (activity, parent) {
         var blob = image.getBlob();
         var file = new File([blob], image.filename, {type: image.contentType()});
         formData.append("files", file);
-        return $.ajax({
+        return $.ajax(parent.authorizeAjaxRequest({
             url: fcConfig.imageUploadUrl,
             type: "POST",
             data: formData,
             processData: false,
             contentType: false
-        })
+        }))
         .then(function (result) {
             return (result.files && result.files[0]) || {};
         });
