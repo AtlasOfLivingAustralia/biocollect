@@ -357,6 +357,9 @@ function Master(activityId, config) {
                 $.unblockUI();
             }, 2000);
         }
+        else if (config.isPWA && window.parent) {
+            window.parent.postMessage({ event: 'close-frame' }, '*');
+        }
         else if (config.isMobile) {
             location.href = config.returnToMobile;
         }

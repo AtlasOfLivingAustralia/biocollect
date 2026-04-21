@@ -256,7 +256,7 @@ class BioActivityController {
                 String projectId = model.projectId = pActivity.projectId
                 Map project = projectService.get(projectId, "brief", params?.version)
                 if (!project.error) {
-                    model.isPwa = true
+                    model.isPWA = true
                     model.project = project
                     model.pActivity = pActivity
                     model.type = pActivity.pActivityFormName
@@ -291,7 +291,7 @@ class BioActivityController {
                 String projectId = model.projectId = pActivity.projectId
                 Map project = projectService.get(projectId, "brief", params?.version)
                 if (!project.error) {
-                    model.isPwa = true
+                    model.isPWA = true
                     model.project = project
                     model.pActivity = pActivity
                     model.type = pActivity.pActivityFormName
@@ -404,9 +404,6 @@ class BioActivityController {
         model.project = project
         model.id = projectActivityId
         render view: 'pwaBioActivityIndex', model: model
-    }
-
-    def pwaOfflineList() {
     }
 
     def pwa () {
