@@ -6,7 +6,8 @@ const SYNC_EVENTS = {
     projectActivityActivities: 'offline-project-activity-activities',
     deleteActivity: 'offline-delete-activity',
     uploadActivity: 'offline-upload-activity',
-    uploadAllActivities: 'offline-upload-all-activities'
+    uploadAllActivities: 'offline-upload-all-activities',
+    uploadAllActivitiesProgress: 'offline-upload-all-activities-progress'
 };
 
 function hasValue(value) {
@@ -115,7 +116,9 @@ eventHandlers[SYNC_EVENTS.uploadAllActivities] = {
         };
     },
     handle: function() {
-        return activitiesViewModel.uploadAll();
+        return activitiesViewModel.uploadAll(function(progress) {
+            sendMessage(SYNC_EVENTS.uploadAllActivitiesProgress, progress);
+        });
     },
     unwrapData: true
 };
