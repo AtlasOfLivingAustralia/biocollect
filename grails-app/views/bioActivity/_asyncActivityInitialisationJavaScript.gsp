@@ -60,10 +60,9 @@
 
 
                 $('#cancel').on('click',function () {
-                    if (fcConfig.bulkUpload)
-                        $(document).trigger('activitycreatecancelled')
-                    else
-                        document.location.href = fcConfig.returnTo;
+                    if (window.parent) {
+                        window.parent.postMessage({ event: 'close-frame' }, '*');
+                    }
                 });
 
                 $('#reset').on('click',function () {
