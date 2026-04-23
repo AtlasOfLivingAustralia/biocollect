@@ -14,3 +14,4 @@ out/
 grails-app/assets/components/compile/*
 node_modules
 logs
+bin

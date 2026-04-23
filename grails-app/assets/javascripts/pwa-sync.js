@@ -14,12 +14,19 @@ function hasValue(value) {
     return value !== undefined && value !== null && value !== '';
 }
 
-function sendMessage(event, payload) {
+function sendMessage(event, payload, requestId) {
+    var message;
+
     if (window.parent) {
-        window.parent.postMessage({
+        message = {
             event,
             payload
-        }, '*');
+        };
+        if (requestId) {
+            message.requestId = requestId;
+        }
+
+        window.parent.postMessage(message, '*');
         return;
     }
 
@@ -32,12 +39,18 @@ function getMissingFields(payload, requiredFields) {
     });
 }
 
-function warnMissingParameters(eventName, missingFields) {
-    console.warn('Missing parameters in ' + eventName + ' request: ' + missingFields.join(', '));
+function warnMissingParameters(eventName, missingFields, requestId) {
+    var message = 'Missing parameters in ' + eventName + ' request: ' + missingFields.join(', ');
+    console.warn(message);
+    sendError(eventName, message, requestId);
 }
 
-function sendResult(eventName, result, unwrapData) {
-    sendMessage(eventName, unwrapData && result ? result.data : result);
+function sendError(eventName, message, requestId) {
+    sendMessage(eventName, { error: message }, requestId);
+}
+
+function sendResult(eventName, result, unwrapData, requestId) {
+    sendMessage(eventName, unwrapData && result ? result.data : result, requestId);
 }
 
 async function configureActivitiesViewModel(config) {
@@ -115,9 +128,9 @@ eventHandlers[SYNC_EVENTS.uploadAllActivities] = {
             projectActivityId: hasValue(payload.projectActivityId) ? payload.projectActivityId : undefined
         };
     },
-    handle: function() {
+    handle: function(_payload, requestId) {
         return activitiesViewModel.uploadAll(function(progress) {
-            sendMessage(SYNC_EVENTS.uploadAllActivitiesProgress, progress);
+            sendMessage(SYNC_EVENTS.uploadAllActivitiesProgress, progress, requestId);
         });
     },
     unwrapData: true
@@ -127,6 +140,7 @@ window.addEventListener('message', async function(message) {
     var data = message.data || {},
         payload = data.payload || {},
         eventName = data.event,
+        requestId = data.requestId,
         handler = eventHandlers[eventName],
         missingFields,
         config,
@@ -137,13 +151,13 @@ window.addEventListener('message', async function(message) {
     }
 
     if (!hasValue(payload.jwt)) {
-        warnMissingParameters(eventName, ['jwt']);
+        warnMissingParameters(eventName, ['jwt'], requestId);
         return;
     }
 
     missingFields = getMissingFields(payload, handler.requiredFields || []);
     if (missingFields.length) {
-        warnMissingParameters(eventName, missingFields);
+        warnMissingParameters(eventName, missingFields, requestId);
         return;
     }
 
@@ -155,10 +169,11 @@ window.addEventListener('message', async function(message) {
             await configureActivitiesViewModel(config);
         }
 
-        result = await handler.handle(payload);
-        sendResult(eventName, result, handler.unwrapData);
+        result = await handler.handle(payload, requestId);
+        sendResult(eventName, result, handler.unwrapData, requestId);
     }
     catch (error) {
         console.error('PWA sync request failed for ' + eventName, error);
+        sendError(eventName, error?.message ? error.message : 'PWA sync request failed.', requestId);
     }
 });

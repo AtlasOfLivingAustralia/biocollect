@@ -54,6 +54,8 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/activity.js',
             'grails-app/assets/javascripts/biocollect-utils.js',
             'grails-app/assets/javascripts/pwa-index.js',
+            'src/test/js/PwaSyncFixture.js',
+            'grails-app/assets/javascripts/pwa-sync.js',
             'node_modules/leaflet/dist/leaflet.js',
             'grails-app/assets/vendor/leaflet-plugins-2.0.0/layer/tile/Google.js',
             'grails-app/assets/javascripts/MapUtilities.js',
