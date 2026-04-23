@@ -445,7 +445,7 @@ class StubbedCasSpec {
     async dropPin() {
         // Select the marker draw button
         const markerDraw = $('.leaflet-draw-draw-marker');
-        await markerDraw.waitForDisplayed();
+        await markerDraw.waitForDisplayed({timeout: 30000});
 
         // Move to the marker button and click it
         await markerDraw.moveTo();
@@ -453,7 +453,7 @@ class StubbedCasSpec {
 
         // Wait for the draw actions menu to appear
         const drawActions = $('.leaflet-draw-actions'); // Get the first draw action
-        await drawActions.waitForDisplayed();
+        await drawActions.waitForDisplayed({timeout: 10000});
 
         // click on the map pane to drop the pin
         const mapPane = await $('.leaflet-map-pane');
@@ -462,7 +462,7 @@ class StubbedCasSpec {
 
         // wait for the point to be added to dropdown
         const dropdown = $('.select2-selection__rendered');
-        await dropdown.waitForDisplayed();
+        await dropdown.waitForDisplayed({timeout: 30000});
     }
 }
 

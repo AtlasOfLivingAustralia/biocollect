@@ -18,6 +18,10 @@
             isCaching: ${params.getBoolean('cache', false)},
             enableOffline: true
         };
+
+        window.addEventListener('load', function () {
+            window.parent && window.parent.postMessage({event: 'viewmodelloadded', data: {}}, "*");
+        });
     </asset:script>
     <asset:javascript src="pwa-sync-manifest.js"/>
 </head>

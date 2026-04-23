@@ -10,8 +10,9 @@ class AddBioActivityPage extends ReloadablePage {
     get imageUploadInput() { return $("input[name=files][accept='image/*']"); }
     get imageTitleInput() { return $(".image-title-input"); }
     get saveButton() { return $("#save"); }
+    get saveDraftButton() { return $("#saveChanges"); }
     get okButtonBootBoxDialog(){ return $(".bootbox-accept")}
-    get iframe() { return $("iframe"); }
+    get iframe() { return $("#pwa-frame"); }
 
     async open(projectActivityId) {
         console.log(`Opening ${this.baseUrl}/bioActivity/create/${projectActivityId}`);
@@ -73,10 +74,24 @@ class AddBioActivityPage extends ReloadablePage {
         }
     }
 
+    async resolveSaveButton() {
+        if (await this.saveButton.isExisting()) {
+            return this.saveButton;
+        }
+
+        if (await this.saveDraftButton.isExisting()) {
+            return this.saveDraftButton;
+        }
+
+        throw new Error('Could not find a save button on the bio activity form');
+    }
+
     async saveActivity() {
-        await this.saveButton.scrollIntoView();
-        await this.saveButton.waitForClickable({timeout: 60000});
-        await this.saveButton.click();
+        const saveButton = await this.resolveSaveButton();
+
+        await saveButton.scrollIntoView();
+        await saveButton.waitForClickable({timeout: 60000});
+        await saveButton.click();
         await browser.pause(5000);
     }
 
