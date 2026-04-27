@@ -369,10 +369,22 @@ class PwaAppPage extends ReloadablePage {
         await this.publishedTab.click();
     }
 
-    async waitForPublishedRecord() {
+    async waitForPublishedRecord(timeout = 60000) {
+        let lastRefresh = 0;
+
         await browser.waitUntil(async () => {
-            return (await this.publishedCount()) > 0;
-        }, { timeout: 10000, timeoutMsg: 'Expected at least one published record' });
+            if ((await this.publishedCount()) > 0) {
+                return true;
+            }
+
+            const now = Date.now();
+            if (now - lastRefresh >= 3000) {
+                lastRefresh = now;
+                await this.refreshPublishedRecords();
+            }
+
+            return false;
+        }, { timeout, interval: 1000, timeoutMsg: 'Expected at least one published record' });
     }
 
     async viewNthPublishedRecord(number= 0){
@@ -380,6 +392,33 @@ class PwaAppPage extends ReloadablePage {
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();
         await this.modalCloseBtn.waitForExist({ timeout: 10000 });
+    }
+
+    async viewPublishedRecordContainingSpecies(speciesName, timeout = 60000) {
+        await browser.waitUntil(async () => {
+            const buttons = await this.viewPublishedRecordBtn;
+            for (let i = 0; i < buttons.length; i++) {
+                const currentButtons = await this.viewPublishedRecordBtn;
+                await currentButtons[i].waitForClickable({ timeout: 10000 });
+                await currentButtons[i].click();
+                await this.modalCloseBtn.waitForExist({ timeout: 10000 });
+                await browser.switchFrame(this.pwaFrame);
+
+                try {
+                    await $(`span=${speciesName}`).waitForExist({ timeout: 5000 });
+                    return true;
+                }
+                catch {
+                    // This published record is not the one created by the current scenario.
+                }
+
+                await this.switchToTopFrame();
+                await this.closeModal();
+            }
+
+            await this.refreshPublishedRecords();
+            return false;
+        }, { timeout, interval: 1000, timeoutMsg: `Expected a published record containing species ${speciesName}` });
     }
 
     async refreshPublishedRecords() {

@@ -135,8 +135,7 @@ describe("Application installation Spec", function () {
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSitePublishedDrawer");
 
         console.log('Viewing published record');
-        await pwaAppPage.viewNthPublishedRecord();
-        await browser.switchFrame(pwaAppPage.pwaFrame);
+        await pwaAppPage.viewPublishedRecordContainingSpecies("Acavomonidia");
 
         const publishedViewBioActivityPage = new ViewBioActivityPage();
         const publishedSpeciesEl = publishedViewBioActivityPage.speciesSelector("Acavomonidia");
@@ -194,8 +193,7 @@ describe("Application installation Spec", function () {
         await addBioActivityPage.takeScreenShot("offlineRecordMapPinPublishedDrawer");
 
         console.log('Viewing published record');
-        await pwaAppPage.viewNthPublishedRecord();
-        await browser.switchFrame(pwaAppPage.pwaFrame);
+        await pwaAppPage.viewPublishedRecordContainingSpecies("Fungi");
         const viewBioActivityPage = new ViewBioActivityPage();
         const speciesEl = viewBioActivityPage.speciesSelector("Fungi");
         await addBioActivityPage.takeScreenShot("offlineRecordMapPinViewPublishedRecord");

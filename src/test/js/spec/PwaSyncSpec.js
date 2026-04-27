@@ -81,6 +81,25 @@ describe('PwaSyncSpec', function () {
         });
     });
 
+    it('unwraps all activities responses', async () => {
+        dispatchSyncMessage('offline-all-activities', {
+            max: 10,
+            offset: 0,
+            jwt: 'test-jwt'
+        }, 'request-all-list');
+
+        await waitForPostMessage();
+
+        expect(window.parent.postMessage).toHaveBeenCalledWith({
+            event: 'offline-all-activities',
+            requestId: 'request-all-list',
+            payload: {
+                activities: [],
+                total: 0
+            }
+        }, '*');
+    });
+
     it('echoes request ids on upload-all progress and final messages', async function () {
         dispatchSyncMessage('offline-upload-all-activities', {
             projectActivityId: 'pa_1',

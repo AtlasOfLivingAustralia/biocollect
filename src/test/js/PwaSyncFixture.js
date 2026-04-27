@@ -25,6 +25,15 @@ window.ActivitiesViewModel.prototype.getActivitiesOfProjectActivity = function (
     });
 };
 
+window.ActivitiesViewModel.prototype.getAllActivities = () => {
+    return Promise.resolve({
+        data: {
+            activities: [],
+            total: 0
+        }
+    });
+};
+
 window.ActivitiesViewModel.prototype.deleteActivity = function (activityId) {
     return Promise.resolve({
         data: {

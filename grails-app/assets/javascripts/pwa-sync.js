@@ -70,7 +70,7 @@ eventHandlers[SYNC_EVENTS.allActivities] = {
     handle: function(payload) {
         return activitiesViewModel.getAllActivities(payload.max, payload.offset || 0);
     },
-    unwrapData: false
+    unwrapData: true
 };
 
 eventHandlers[SYNC_EVENTS.projectActivities] = {
