@@ -6,6 +6,7 @@ const {startServer, stopServer,blockSite, unblockSite} = require('../utils/proxy
 const util = require('node:util');
 const execFile = util.promisify(require('node:child_process').execFile);
 const path = require('node:path');
+const fs = require('node:fs');
 class StubbedCasSpec {
     READ_ONLY_USER_ID = '1000'
     GRANT_MANAGER_USER_ID = '1001'
@@ -434,8 +435,16 @@ class StubbedCasSpec {
     }
 
     async takeScreenShot(name){
-        var body = await $("body");
-        await body.saveScreenshot(`./logs/${name}.png`);
+        const logsDir = path.resolve(this.testConfig.dirName || process.cwd(), 'logs');
+        const screenshotPath = path.join(logsDir, `${name}.png`);
+
+        try {
+            fs.mkdirSync(logsDir, { recursive: true });
+            await browser.saveScreenshot(screenshotPath);
+        }
+        catch (error) {
+            console.warn(`Unable to save screenshot ${screenshotPath}:`, error);
+        }
     }
 
     /**
