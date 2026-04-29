@@ -181,12 +181,18 @@ class WebService {
         wr.flush()
         wr.close()
 
-        def headers = [HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.TRANSFER_ENCODING]
+        def headers = [HttpHeaders.CONTENT_DISPOSITION]
         response.setContentType(conn.getContentType())
-        response.setContentLength(conn.getContentLength())
+
+        if (conn.getContentLength() > -1) {
+            response.setContentLength(conn.getContentLength())
+        }
 
         headers.each { header ->
-            response.setHeader(header, conn.getHeaderField(header))
+            def headerValue = conn.getHeaderField(header)
+            if (headerValue) {
+                response.setHeader(header, headerValue)
+            }
         }
         response.status = conn.responseCode
 
