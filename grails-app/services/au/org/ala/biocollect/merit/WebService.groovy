@@ -159,51 +159,6 @@ class WebService {
 
     }
 
-    /**
-     * Proxies a request URL with post data but doesn't assume the response is text based. (Used for proxying requests to
-     * ecodata for excel-based reports)
-     */
-    def proxyPostRequest(HttpServletResponse response, String url, Map postBody, boolean includeUserId = true, Integer timeout = null) {
-
-        def charEncoding = 'utf-8'
-
-        HttpURLConnection conn = configureConnection(url, includeUserId)
-
-        def readTimeout = timeout?:defaultTimeout()
-        conn.setConnectTimeout(grailsApplication.config.webservice.connectTimeout as int)
-        conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}");
-        conn.setRequestMethod("POST")
-        conn.setReadTimeout(readTimeout)
-        conn.setDoOutput ( true );
-
-        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), charEncoding)
-        wr.write((postBody as JSON).toString())
-        wr.flush()
-        wr.close()
-
-        def headers = [HttpHeaders.CONTENT_DISPOSITION]
-        response.setContentType(conn.getContentType())
-
-        if (conn.getContentLength() > -1) {
-            response.setContentLength(conn.getContentLength())
-        }
-
-        headers.each { header ->
-            def headerValue = conn.getHeaderField(header)
-            if (headerValue) {
-                response.setHeader(header, headerValue)
-            }
-        }
-        response.status = conn.responseCode
-
-        // to make jqueryFiledownload plugin happy
-        def cookie = new Cookie("filedownload","true")
-        cookie.setPath("/")
-        response.addCookie(cookie)
-
-        response.outputStream << conn.inputStream
-    }
-
     def get(String url) {
         return get(url, true)
     }
