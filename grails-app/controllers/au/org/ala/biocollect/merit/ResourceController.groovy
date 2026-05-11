@@ -16,7 +16,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 
 class ResourceController {
 
-    EcpWebService webService
+    EcpWebService ecpWebService
 
     grails.core.GrailsApplication grailsApplication
     @NoSSO
@@ -42,7 +42,7 @@ class ResourceController {
             if (!uri.isAbsolute()) {
                 docUrl = grailsApplication.config.getProperty('grails.serverURL') + uri.getPath()
             }
-            else if (!webService.isValidDomain(uri.getHost())) {
+            else if (!ecpWebService.isValidDomain(uri.getHost())) {
                 render status: HttpStatus.SC_BAD_REQUEST, view:'/error'
                 return
             }
