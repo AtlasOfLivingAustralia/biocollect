@@ -112,25 +112,9 @@ class DocumentService {
 
     Map allDocumentsSearch(GrailsParameterMap requestParams) {
         Map params = populateDocumentSearchParameters(requestParams)
-        Map results = searchService.fulltextSearch(
-                params, true
-        )
+        Map results = searchService.fulltextSearch(params, true)
 
-        //add the associated projectId when viewing hub documents
-        if (!params.projectId) {
-            Map project
-
-            if (results) {
-                for (int i = 0; i < results.hits.hits.size(); i++) {
-                    project = projectService.get(results.hits.hits[i]._source.projectId)
-
-                    if (project)
-                        results.hits.hits[i]._source.put("projectName", project.name)
-                }
-            }
-        }
-
-        results
+        return results
     }
 
     Map populateDocumentSearchParameters(GrailsParameterMap requestParams) {
