@@ -490,4 +490,8 @@ class WebService {
         ecpWebService.postMultipart(url, params, file, contentType, originalFilename, fileParamName, useToken, userToken)
     }
 
+    boolean isValidDomain(String host) {
+        WHITE_LISTED_DOMAINS.any { host?.endsWith(it) }
+    }
+
 }
