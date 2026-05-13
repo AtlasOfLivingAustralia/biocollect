@@ -84,6 +84,7 @@
                 "photoSource": [
                   {
                     "name": "2_Blue_Tiger.jpg",
+                    "filename": "2_Blue_Tiger.jpg",
                     "size": 143340,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -102,6 +103,7 @@
                   },
                   {
                     "name": "1_Blue_Tiger_1.jpg",
+                    "filename": "1_Blue_Tiger_1.jpg",
                     "size": 182568,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -132,6 +134,7 @@
                 "photoSource": [
                   {
                     "name": "3_Common_Aeroplane_1.jpg",
+                    "filename": "3_Common_Aeroplane_1.jpg",
                     "size": 183636,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -150,6 +153,7 @@
                   },
                   {
                     "name": "4_Common_Aeroplane_2.jpg",
+                    "filename": "4_Common_Aeroplane_2.jpg",
                     "size": 147395,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -180,6 +184,7 @@
                 "photoSource": [
                   {
                     "name": "5_Common_Crow_1.jpg",
+                    "filename": "5_Common_Crow_1.jpg",
                     "size": 148025,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -198,6 +203,7 @@
                   },
                   {
                     "name": "6_Common_Crow_2.jpg",
+                    "filename": "6_Common_Crow_2.jpg",
                     "size": 133613,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -228,6 +234,7 @@
                 "photoSource": [
                   {
                     "name": "8_Monarch_Wanderer_2.jpg",
+                    "filename": "8_Monarch_Wanderer_2.jpg",
                     "size": 254478,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -246,6 +253,7 @@
                   },
                   {
                     "name": "7_Monarch_Wanderer_1.jpg",
+                    "filename": "7_Monarch_Wanderer_1.jpg",
                     "size": 169355,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -276,6 +284,7 @@
                 "photoSource": [
                   {
                     "name": "0_9_Orange_Ringlet_1.jpg",
+                    "filename": "0_9_Orange_Ringlet_1.jpg",
                     "size": 121493,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -294,6 +303,7 @@
                   },
                   {
                     "name": "10_Orange_Ringlet_2.jpg",
+                    "filename": "10_Orange_Ringlet_2.jpg",
                     "size": 235913,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -324,6 +334,7 @@
                 "photoSource": [
                   {
                     "name": "12_Tailed_Emperor_2.jpg",
+                    "filename": "12_Tailed_Emperor_2.jpg",
                     "size": 128461,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -342,6 +353,7 @@
                   },
                   {
                     "name": "11_Tailed_Emperor_1.jpg",
+                    "filename": "11_Tailed_Emperor_1.jpg",
                     "size": 148659,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -372,6 +384,7 @@
                 "photoSource": [
                   {
                     "name": "14_Australian_Admiral_2.jpg",
+                    "filename": "14_Australian_Admiral_2.jpg",
                     "size": 154596,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -390,6 +403,7 @@
                   },
                   {
                     "name": "13_Australian_Admiral_1.jpg",
+                    "filename": "13_Australian_Admiral_1.jpg",
                     "size": 152317,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -420,6 +434,7 @@
                 "photoSource": [
                   {
                     "name": "16_Swamp_Tiger_2.jpg",
+                    "filename": "16_Swamp_Tiger_2.jpg",
                     "size": 225350,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -438,6 +453,7 @@
                   },
                   {
                     "name": "15_Swamp_Tiger1.jpg",
+                    "filename": "15_Swamp_Tiger1.jpg",
                     "size": 159448,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -468,6 +484,7 @@
                 "photoSource": [
                   {
                     "name": "18_Glasswing_2.jpg",
+                    "filename": "18_Glasswing_2.jpg",
                     "size": 149668,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -486,6 +503,7 @@
                   },
                   {
                     "name": "17_Glasswing_1.jpg",
+                    "filename": "17_Glasswing_1.jpg",
                     "size": 149555,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -516,6 +534,7 @@
                 "photoSource": [
                   {
                     "name": "19_Australian_Painted_Lady_1.jpg",
+                    "filename": "19_Australian_Painted_Lady_1.jpg",
                     "size": 133281,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -534,6 +553,7 @@
                   },
                   {
                     "name": "20_Australian_Painted_Lady_2.jpg",
+                    "filename": "20_Australian_Painted_Lady_2.jpg",
                     "size": 188983,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -564,6 +584,7 @@
                 "photoSource": [
                   {
                     "name": "22_Meadow_Argus_2.jpg",
+                    "filename": "22_Meadow_Argus_2.jpg",
                     "size": 177306,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -582,6 +603,7 @@
                   },
                   {
                     "name": "21_Meadow_Argus_1.jpg",
+                    "filename": "21_Meadow_Argus_1.jpg",
                     "size": 133712,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -612,6 +634,7 @@
                 "photoSource": [
                   {
                     "name": "23_Lesser_Wanderer_1.jpg",
+                    "filename": "23_Lesser_Wanderer_1.jpg",
                     "size": 152061,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -630,6 +653,7 @@
                   },
                   {
                     "name": "24_Lesser_Wanderer_2.jpg",
+                    "filename": "24_Lesser_Wanderer_2.jpg",
                     "size": 161493,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -660,6 +684,7 @@
                 "photoSource": [
                   {
                     "name": "25_Dainty_Swallowtail_1.jpg",
+                    "filename": "25_Dainty_Swallowtail_1.jpg",
                     "size": 125202,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -678,6 +703,7 @@
                   },
                   {
                     "name": "26_Dainty_Swallowtail_2.jpg",
+                    "filename": "26_Dainty_Swallowtail_2.jpg",
                     "size": 161649,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -708,6 +734,7 @@
                 "photoSource": [
                   {
                     "name": "27_Blue_Triangle_1.jpg",
+                    "filename": "27_Blue_Triangle_1.jpg",
                     "size": 130533,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -726,6 +753,7 @@
                   },
                   {
                     "name": "28_Blue_Triangle_2.jpg",
+                    "filename": "28_Blue_Triangle_2.jpg",
                     "size": 148212,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -756,6 +784,7 @@
                 "photoSource": [
                   {
                     "name": "29_Chequered_Swallowtail_1.jpg",
+                    "filename": "29_Chequered_Swallowtail_1.jpg",
                     "size": 178167,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -774,6 +803,7 @@
                   },
                   {
                     "name": "30_Chequered_Swallowtail_2.jpg",
+                    "filename": "30_Chequered_Swallowtail_2.jpg",
                     "size": 178993,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -804,6 +834,7 @@
                 "photoSource": [
                   {
                     "name": "31_Australian_Gull_1.jpg",
+                    "filename": "31_Australian_Gull_1.jpg",
                     "size": 166536,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -822,6 +853,7 @@
                   },
                   {
                     "name": "32_Australian_Gull_2.jpg",
+                    "filename": "32_Australian_Gull_2.jpg",
                     "size": 125615,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -852,6 +884,7 @@
                 "photoSource": [
                   {
                     "name": "35_Common_Eggfly_3_female_underside.jpg",
+                    "filename": "35_Common_Eggfly_3_female_underside.jpg",
                     "size": 134681,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -870,6 +903,7 @@
                   },
                   {
                     "name": "34_Common_Eggfly_2_male_upper.jpg",
+                    "filename": "34_Common_Eggfly_2_male_upper.jpg",
                     "size": 138458,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -888,6 +922,7 @@
                   },
                   {
                     "name": "36_Common_Eggfly_4_female_upper.jpg",
+                    "filename": "36_Common_Eggfly_4_female_upper.jpg",
                     "size": 188949,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -906,6 +941,7 @@
                   },
                   {
                     "name": "33_Common_Eggfly_1_male_underside.jpg",
+                    "filename": "33_Common_Eggfly_1_male_underside.jpg",
                     "size": 115294,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -936,6 +972,7 @@
                 "photoSource": [
                   {
                     "name": "40_Evening_Brown_4_wet_season.jpg",
+                    "filename": "40_Evening_Brown_4_wet_season.jpg",
                     "size": 173892,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -954,6 +991,7 @@
                   },
                   {
                     "name": "37_Evening_Brown_1_Wet_season.jpg",
+                    "filename": "37_Evening_Brown_1_Wet_season.jpg",
                     "size": 172092,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -972,6 +1010,7 @@
                   },
                   {
                     "name": "38_Evening_Brown_2_Dry_Season.jpg",
+                    "filename": "38_Evening_Brown_2_Dry_Season.jpg",
                     "size": 169979,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -990,6 +1029,7 @@
                   },
                   {
                     "name": "39_Evening_Brown_3_Upper_Side.jpg",
+                    "filename": "39_Evening_Brown_3_Upper_Side.jpg",
                     "size": 136939,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1020,6 +1060,7 @@
                 "photoSource": [
                   {
                     "name": "42_Clearwing_Swallowtail_3_Female_underside.jpg",
+                    "filename": "42_Clearwing_Swallowtail_3_Female_underside.jpg",
                     "size": 190645,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1038,6 +1079,7 @@
                   },
                   {
                     "name": "41_Clearwing_Swallowtail_1_Male_underside.jpg",
+                    "filename": "41_Clearwing_Swallowtail_1_Male_underside.jpg",
                     "size": 121526,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1056,6 +1098,7 @@
                   },
                   {
                     "name": "44_Clearwing_Swallowtail_4_Female_upper.jpg",
+                    "filename": "44_Clearwing_Swallowtail_4_Female_upper.jpg",
                     "size": 175259,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1074,6 +1117,7 @@
                   },
                   {
                     "name": "43_Clearwing_Swallowtail_2_Male_upper.jpg",
+                    "filename": "43_Clearwing_Swallowtail_2_Male_upper.jpg",
                     "size": 154524,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1104,6 +1148,7 @@
                 "photoSource": [
                   {
                     "name": "47_Lemon_Migrant_3.jpg",
+                    "filename": "47_Lemon_Migrant_3.jpg",
                     "size": 109101,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1122,6 +1167,7 @@
                   },
                   {
                     "name": "49_Lemon_Migrant_5.jpg",
+                    "filename": "49_Lemon_Migrant_5.jpg",
                     "size": 102817,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1140,6 +1186,7 @@
                   },
                   {
                     "name": "46_Lemon_Migrant_2.jpg",
+                    "filename": "46_Lemon_Migrant_2.jpg",
                     "size": 136493,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1158,6 +1205,7 @@
                   },
                   {
                     "name": "48_Lemon_Migrant_4.jpg",
+                    "filename": "48_Lemon_Migrant_4.jpg",
                     "size": 139674,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1176,6 +1224,7 @@
                   },
                   {
                     "name": "50_Lemon_Migrant_6.jpg",
+                    "filename": "50_Lemon_Migrant_6.jpg",
                     "size": 102184,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1206,6 +1255,7 @@
                 "photoSource": [
                   {
                     "name": "52_Orchard_Swallowtail_female_upper.jpg",
+                    "filename": "52_Orchard_Swallowtail_female_upper.jpg",
                     "size": 210526,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1224,6 +1274,7 @@
                   },
                   {
                     "name": "51_Orchard_Swallowtail_1_Male_upper.jpg",
+                    "filename": "51_Orchard_Swallowtail_1_Male_upper.jpg",
                     "size": 164967,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1254,6 +1305,7 @@
                 "photoSource": [
                   {
                     "name": "53_Common_Red-eye.jpg",
+                    "filename": "53_Common_Red-eye.jpg",
                     "size": 174020,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1272,6 +1324,7 @@
                   },
                   {
                     "name": "54_Common_Red-eye_2.jpg",
+                    "filename": "54_Common_Red-eye_2.jpg",
                     "size": 157232,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1302,6 +1355,7 @@
                 "photoSource": [
                   {
                     "name": "56_Splendid_Ochre_2.jpg",
+                    "filename": "56_Splendid_Ochre_2.jpg",
                     "size": 145893,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1320,6 +1374,7 @@
                   },
                   {
                     "name": "55_Splendid_Ochre_1.jpg",
+                    "filename": "55_Splendid_Ochre_1.jpg",
                     "size": 168593,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1350,6 +1405,7 @@
                 "photoSource": [
                   {
                     "name": "58_Orange_Palm_Dart_2.jpg",
+                    "filename": "58_Orange_Palm_Dart_2.jpg",
                     "size": 140031,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1368,6 +1424,7 @@
                   },
                   {
                     "name": "57_Orange_Palm_Dart_1.jpg",
+                    "filename": "57_Orange_Palm_Dart_1.jpg",
                     "size": 147775,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1398,6 +1455,7 @@
                 "photoSource": [
                   {
                     "name": "59_Regent_Skipper_2.jpg",
+                    "filename": "59_Regent_Skipper_2.jpg",
                     "size": 178027,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1416,6 +1474,7 @@
                   },
                   {
                     "name": "60_Regent_Skipper.jpg",
+                    "filename": "60_Regent_Skipper.jpg",
                     "size": 190013,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1446,6 +1505,7 @@
                 "photoSource": [
                   {
                     "name": "64_Zebra_Blue_4.jpg",
+                    "filename": "64_Zebra_Blue_4.jpg",
                     "size": 139377,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1464,6 +1524,7 @@
                   },
                   {
                     "name": "62_Zebra_Blue_2.jpg",
+                    "filename": "62_Zebra_Blue_2.jpg",
                     "size": 130360,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1482,6 +1543,7 @@
                   },
                   {
                     "name": "63_Zebra_Blue_3.jpg",
+                    "filename": "63_Zebra_Blue_3.jpg",
                     "size": 135195,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1500,6 +1562,7 @@
                   },
                   {
                     "name": "61_Zebra_Blue_1.jpg",
+                    "filename": "61_Zebra_Blue_1.jpg",
                     "size": 140001,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1530,6 +1593,7 @@
                 "photoSource": [
                   {
                     "name": "66_Small_Green-banded_Blue_2.jpg",
+                    "filename": "66_Small_Green-banded_Blue_2.jpg",
                     "size": 152261,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1548,6 +1612,7 @@
                   },
                   {
                     "name": "65_Small_Green-banded_Blue_1.jpg",
+                    "filename": "65_Small_Green-banded_Blue_1.jpg",
                     "size": 135017,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1578,6 +1643,7 @@
                 "photoSource": [
                   {
                     "name": "67_Northern_Jezabel_1.jpg",
+                    "filename": "67_Northern_Jezabel_1.jpg",
                     "size": 186305,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1596,6 +1662,7 @@
                   },
                   {
                     "name": "69_Northern_Jezabel_3.jpg",
+                    "filename": "69_Northern_Jezabel_3.jpg",
                     "size": 169751,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1614,6 +1681,7 @@
                   },
                   {
                     "name": "70_Northern_Jezabel_4.jpg",
+                    "filename": "70_Northern_Jezabel_4.jpg",
                     "size": 131361,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1632,6 +1700,7 @@
                   },
                   {
                     "name": "68_Northern_Jezabel_2.jpg",
+                    "filename": "68_Northern_Jezabel_2.jpg",
                     "size": 151878,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1662,6 +1731,7 @@
                 "photoSource": [
                   {
                     "name": "71_Caper_White_1.jpg",
+                    "filename": "71_Caper_White_1.jpg",
                     "size": 196712,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1680,6 +1750,7 @@
                   },
                   {
                     "name": "73_Caper_White_3.jpg",
+                    "filename": "73_Caper_White_3.jpg",
                     "size": 177996,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1698,6 +1769,7 @@
                   },
                   {
                     "name": "74_Caper_White_4.jpg",
+                    "filename": "74_Caper_White_4.jpg",
                     "size": 159104,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1716,6 +1788,7 @@
                   },
                   {
                     "name": "72_Caper_White_2.jpg",
+                    "filename": "72_Caper_White_2.jpg",
                     "size": 145744,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1746,6 +1819,7 @@
                 "photoSource": [
                   {
                     "name": "77_Yellow_Albatross_2.jpg",
+                    "filename": "77_Yellow_Albatross_2.jpg",
                     "size": 155235,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1764,6 +1838,7 @@
                   },
                   {
                     "name": "76_Yellow_Albatross_3_Female.jpg",
+                    "filename": "76_Yellow_Albatross_3_Female.jpg",
                     "size": 139825,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1782,6 +1857,7 @@
                   },
                   {
                     "name": "75_Yellow_Albatross_4_Female.jpg",
+                    "filename": "75_Yellow_Albatross_4_Female.jpg",
                     "size": 130737,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1800,6 +1876,7 @@
                   },
                   {
                     "name": "78_Yellow_Albatross_1.jpg",
+                    "filename": "78_Yellow_Albatross_1.jpg",
                     "size": 133628,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1830,6 +1907,7 @@
                 "photoSource": [
                   {
                     "name": "79_Black_Jezabel_2.jpg",
+                    "filename": "79_Black_Jezabel_2.jpg",
                     "size": 162085,
                     "isoDate": null,
                     "contentType": "image/jpeg",
@@ -1848,6 +1926,7 @@
                   },
                   {
                     "name": "80_Black_Jezabel_1.jpg",
+                    "filename": "80_Black_Jezabel_1.jpg",
                     "size": 96058,
                     "isoDate": null,
                     "contentType": "image/jpeg",
