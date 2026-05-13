@@ -1,0 +1,2001 @@
+{
+  "id": "5f6046a3c2dc358c7075797e",
+  "dateCreated": "2020-09-15T04:44:19Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2020-10-05T22:15:50Z",
+  "createdUserId": "82292",
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Brisbane Butterfly Count",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "brisbaneButterflyCount",
+        "excludeAbsenceRecord": true,
+        "dataModel": [
+          {
+            "defaultValue": "${now}",
+            "dataType": "date",
+            "name": "eventDate",
+            "dwcAttribute": "eventDate",
+            "validate": "required"
+          },
+          {
+            "name": "recordedBy",
+            "dataType": "text",
+            "validate": "required",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who made the sighting"
+          },
+          {
+            "defaultAccuracy": 10,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "name": "butterfliesTable",
+            "dataType": "list",
+            "columns": [
+              {
+                "name": "species",
+                "dataType": "species",
+                "dwcAttribute": "scientificName",
+                "noEdit": true
+              },
+              {
+                "name": "individualCount",
+                "dwcAttribute": "individualCount",
+                "dataType": "number"
+              },
+              {
+                "name": "photoSource",
+                "dataType": "image",
+                "noEdit": true
+              },
+              {
+                "name": "family",
+                "dataType": "text",
+                "noEdit": true
+              }
+            ],
+            "defaultRows": [
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "2_Blue_Tiger.jpg",
+                    "size": 143340,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=2_Blue_Tiger.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=2_Blue_Tiger-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=2_Blue_Tiger.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=2_Blue_Tiger-thumb.jpg"
+                  },
+                  {
+                    "name": "1_Blue_Tiger_1.jpg",
+                    "size": 182568,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=1_Blue_Tiger_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=1_Blue_Tiger_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=1_Blue_Tiger_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=1_Blue_Tiger_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Blue Tiger (Tirumala hamata)",
+                  "scientificName": "Tirumala hamata",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:8d5ea387-5c1d-4eff-8b51-da90fd5ea4af",
+                  "commonName": "Blue Tiger"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "3_Common_Aeroplane_1.jpg",
+                    "size": 183636,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=3_Common_Aeroplane_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=3_Common_Aeroplane_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=3_Common_Aeroplane_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=3_Common_Aeroplane_1-thumb.jpg"
+                  },
+                  {
+                    "name": "4_Common_Aeroplane_2.jpg",
+                    "size": 147395,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=4_Common_Aeroplane_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=4_Common_Aeroplane_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=4_Common_Aeroplane_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=4_Common_Aeroplane_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Common Aeroplane (Phaedyma shepherdi)",
+                  "scientificName": "Phaedyma shepherdi",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:1d95e873-4cae-4970-9f79-3f2c2f484bec",
+                  "commonName": "White-Banded Plane"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "5_Common_Crow_1.jpg",
+                    "size": 148025,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=5_Common_Crow_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=5_Common_Crow_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=5_Common_Crow_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=5_Common_Crow_1-thumb.jpg"
+                  },
+                  {
+                    "name": "6_Common_Crow_2.jpg",
+                    "size": 133613,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=6_Common_Crow_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=6_Common_Crow_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=6_Common_Crow_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=6_Common_Crow_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Common Crow (Euploea corinna)",
+                  "scientificName": "Euploea corinna",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:2f0be016-96f9-4ae7-b65d-160679ab4ce1",
+                  "commonName": "Common Crow"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "8_Monarch_Wanderer_2.jpg",
+                    "size": 254478,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=8_Monarch_Wanderer_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=8_Monarch_Wanderer_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=8_Monarch_Wanderer_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=8_Monarch_Wanderer_2-thumb.jpg"
+                  },
+                  {
+                    "name": "7_Monarch_Wanderer_1.jpg",
+                    "size": 169355,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=7_Monarch_Wanderer_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=7_Monarch_Wanderer_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=7_Monarch_Wanderer_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=7_Monarch_Wanderer_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Monarch (Danaus plexippus)",
+                  "scientificName": "Danaus plexippus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:6785931a-ae1d-442e-a7d5-a669d11f7fac",
+                  "commonName": "Monarch"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "0_9_Orange_Ringlet_1.jpg",
+                    "size": 121493,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=0_9_Orange_Ringlet_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=0_9_Orange_Ringlet_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=0_9_Orange_Ringlet_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=0_9_Orange_Ringlet_1-thumb.jpg"
+                  },
+                  {
+                    "name": "10_Orange_Ringlet_2.jpg",
+                    "size": 235913,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=10_Orange_Ringlet_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=10_Orange_Ringlet_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=10_Orange_Ringlet_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=10_Orange_Ringlet_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Orange Ringlet (Hypocysta adiante)",
+                  "scientificName": "Hypocysta adiante",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:20f29e77-b1b6-4779-9c27-1f39993d85d2",
+                  "commonName": "Darwin Ringlet"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "12_Tailed_Emperor_2.jpg",
+                    "size": 128461,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=12_Tailed_Emperor_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=12_Tailed_Emperor_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=12_Tailed_Emperor_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=12_Tailed_Emperor_2-thumb.jpg"
+                  },
+                  {
+                    "name": "11_Tailed_Emperor_1.jpg",
+                    "size": 148659,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=11_Tailed_Emperor_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=11_Tailed_Emperor_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=11_Tailed_Emperor_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=11_Tailed_Emperor_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Tailed Emperor (Charaxes sempronius)",
+                  "scientificName": "Charaxes sempronius",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:77e4bd38-1cf5-4e4f-8670-ef91b0cb455b",
+                  "commonName": "Tailed Emperor"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "14_Australian_Admiral_2.jpg",
+                    "size": 154596,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=14_Australian_Admiral_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=14_Australian_Admiral_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=14_Australian_Admiral_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=14_Australian_Admiral_2-thumb.jpg"
+                  },
+                  {
+                    "name": "13_Australian_Admiral_1.jpg",
+                    "size": 152317,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=13_Australian_Admiral_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=13_Australian_Admiral_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=13_Australian_Admiral_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=13_Australian_Admiral_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Australian Admiral (Vanessa itea)",
+                  "scientificName": "Vanessa itea",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:3a3e5cac-6a21-4a95-b693-8a05a40b8f45",
+                  "commonName": "Yellow Admiral"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "16_Swamp_Tiger_2.jpg",
+                    "size": 225350,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=16_Swamp_Tiger_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=16_Swamp_Tiger_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=16_Swamp_Tiger_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=16_Swamp_Tiger_2-thumb.jpg"
+                  },
+                  {
+                    "name": "15_Swamp_Tiger1.jpg",
+                    "size": 159448,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=15_Swamp_Tiger1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=15_Swamp_Tiger1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=15_Swamp_Tiger1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=15_Swamp_Tiger1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Swamp Tiger (Danaus affinis)",
+                  "scientificName": "Danaus affinis",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:0624627d-12ed-4edf-8d5b-f5054e9fec13",
+                  "commonName": "Marsh Tiger"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "18_Glasswing_2.jpg",
+                    "size": 149668,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=18_Glasswing_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=18_Glasswing_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=18_Glasswing_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=18_Glasswing_2-thumb.jpg"
+                  },
+                  {
+                    "name": "17_Glasswing_1.jpg",
+                    "size": 149555,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=17_Glasswing_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=17_Glasswing_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=17_Glasswing_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=17_Glasswing_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Glasswing (Acraea andromacha)",
+                  "scientificName": "Acraea andromacha",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:44191413-81ca-4427-bff3-85a0bb4c548d",
+                  "commonName": "Glasswing"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "19_Australian_Painted_Lady_1.jpg",
+                    "size": 133281,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=19_Australian_Painted_Lady_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=19_Australian_Painted_Lady_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=19_Australian_Painted_Lady_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=19_Australian_Painted_Lady_1-thumb.jpg"
+                  },
+                  {
+                    "name": "20_Australian_Painted_Lady_2.jpg",
+                    "size": 188983,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=20_Australian_Painted_Lady_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=20_Australian_Painted_Lady_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=20_Australian_Painted_Lady_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=20_Australian_Painted_Lady_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Australian Painted Lady (Vanessa kershawi)",
+                  "scientificName": "Vanessa kershawi",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:1c88d468-8ce3-4a40-8661-b329c289b5bd",
+                  "commonName": "Australian Painted Lady"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "22_Meadow_Argus_2.jpg",
+                    "size": 177306,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=22_Meadow_Argus_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=22_Meadow_Argus_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=22_Meadow_Argus_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=22_Meadow_Argus_2-thumb.jpg"
+                  },
+                  {
+                    "name": "21_Meadow_Argus_1.jpg",
+                    "size": 133712,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=21_Meadow_Argus_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=21_Meadow_Argus_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=21_Meadow_Argus_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=21_Meadow_Argus_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Meadow Argus (Junonia villida)",
+                  "scientificName": "Junonia villida",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:8dcf225e-f8e3-482d-bc01-844b4ae21ca2",
+                  "commonName": "Meadow Argus"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "23_Lesser_Wanderer_1.jpg",
+                    "size": 152061,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=23_Lesser_Wanderer_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=23_Lesser_Wanderer_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=23_Lesser_Wanderer_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=23_Lesser_Wanderer_1-thumb.jpg"
+                  },
+                  {
+                    "name": "24_Lesser_Wanderer_2.jpg",
+                    "size": 161493,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=24_Lesser_Wanderer_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=24_Lesser_Wanderer_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=24_Lesser_Wanderer_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=24_Lesser_Wanderer_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Lesser Wanderer (Danaus petilia)",
+                  "scientificName": "Danaus petilia",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:bc89ffcb-d7fe-467f-9206-ee34300b5701",
+                  "commonName": "Lesser Wanderer"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "25_Dainty_Swallowtail_1.jpg",
+                    "size": 125202,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=25_Dainty_Swallowtail_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=25_Dainty_Swallowtail_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=25_Dainty_Swallowtail_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=25_Dainty_Swallowtail_1-thumb.jpg"
+                  },
+                  {
+                    "name": "26_Dainty_Swallowtail_2.jpg",
+                    "size": 161649,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=26_Dainty_Swallowtail_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=26_Dainty_Swallowtail_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=26_Dainty_Swallowtail_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=26_Dainty_Swallowtail_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Dainty Swallowtail (Papilio anactus)",
+                  "scientificName": "Papilio (Eleppone) anactus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:f60fa9a1-36a7-4c1a-be16-a9bbacd83f17",
+                  "commonName": "Dingy Swallowtail"
+                },
+                "family": "Swallowtails (Papilionidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "27_Blue_Triangle_1.jpg",
+                    "size": 130533,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=27_Blue_Triangle_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=27_Blue_Triangle_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=27_Blue_Triangle_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=27_Blue_Triangle_1-thumb.jpg"
+                  },
+                  {
+                    "name": "28_Blue_Triangle_2.jpg",
+                    "size": 148212,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=28_Blue_Triangle_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=28_Blue_Triangle_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=28_Blue_Triangle_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=28_Blue_Triangle_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Blue Triangle (Graphium choredon)",
+                  "scientificName": "Graphium choredon",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:a2b7dc2a-b182-4b22-9e9c-14bd21035d2a",
+                  "commonName": "Blue Fanny"
+                },
+                "family": "Swallowtails (Papilionidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "29_Chequered_Swallowtail_1.jpg",
+                    "size": 178167,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=29_Chequered_Swallowtail_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=29_Chequered_Swallowtail_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=29_Chequered_Swallowtail_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=29_Chequered_Swallowtail_1-thumb.jpg"
+                  },
+                  {
+                    "name": "30_Chequered_Swallowtail_2.jpg",
+                    "size": 178993,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=30_Chequered_Swallowtail_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=30_Chequered_Swallowtail_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=30_Chequered_Swallowtail_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=30_Chequered_Swallowtail_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Chequered Swallowtail (Papilio demoleus)",
+                  "scientificName": "Papilio (Princeps) demoleus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:1e809553-aadb-4a65-b38a-cf2e2119e703",
+                  "commonName": "Chequered Swallowtail"
+                },
+                "family": "Swallowtails (Papilionidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "31_Australian_Gull_1.jpg",
+                    "size": 166536,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=31_Australian_Gull_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=31_Australian_Gull_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=31_Australian_Gull_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=31_Australian_Gull_1-thumb.jpg"
+                  },
+                  {
+                    "name": "32_Australian_Gull_2.jpg",
+                    "size": 125615,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=32_Australian_Gull_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=32_Australian_Gull_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=32_Australian_Gull_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=32_Australian_Gull_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Australian Gull (Cepora perimale)",
+                  "scientificName": "Cepora perimale",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:58657a8b-7621-4935-964e-42ddcfdce147",
+                  "commonName": "Caper Gull"
+                },
+                "family": "Whites and Yellows (Pieridae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "35_Common_Eggfly_3_female_underside.jpg",
+                    "size": 134681,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=35_Common_Eggfly_3_female_underside.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=35_Common_Eggfly_3_female_underside-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=35_Common_Eggfly_3_female_underside.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=35_Common_Eggfly_3_female_underside-thumb.jpg"
+                  },
+                  {
+                    "name": "34_Common_Eggfly_2_male_upper.jpg",
+                    "size": 138458,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=34_Common_Eggfly_2_male_upper.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=34_Common_Eggfly_2_male_upper-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=34_Common_Eggfly_2_male_upper.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=34_Common_Eggfly_2_male_upper-thumb.jpg"
+                  },
+                  {
+                    "name": "36_Common_Eggfly_4_female_upper.jpg",
+                    "size": 188949,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=36_Common_Eggfly_4_female_upper.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=36_Common_Eggfly_4_female_upper-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=36_Common_Eggfly_4_female_upper.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=36_Common_Eggfly_4_female_upper-thumb.jpg"
+                  },
+                  {
+                    "name": "33_Common_Eggfly_1_male_underside.jpg",
+                    "size": 115294,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=33_Common_Eggfly_1_male_underside.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=33_Common_Eggfly_1_male_underside-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=33_Common_Eggfly_1_male_underside.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=33_Common_Eggfly_1_male_underside-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Common Eggfly (Hypolimnas bolina)",
+                  "scientificName": "Hypolimnas bolina",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:8f3a8258-50e2-4fd4-b857-903281c6ee65",
+                  "commonName": "Varied Eggfly"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "40_Evening_Brown_4_wet_season.jpg",
+                    "size": 173892,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=40_Evening_Brown_4_wet_season.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=40_Evening_Brown_4_wet_season-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=40_Evening_Brown_4_wet_season.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=40_Evening_Brown_4_wet_season-thumb.jpg"
+                  },
+                  {
+                    "name": "37_Evening_Brown_1_Wet_season.jpg",
+                    "size": 172092,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=37_Evening_Brown_1_Wet_season.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=37_Evening_Brown_1_Wet_season-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=37_Evening_Brown_1_Wet_season.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=37_Evening_Brown_1_Wet_season-thumb.jpg"
+                  },
+                  {
+                    "name": "38_Evening_Brown_2_Dry_Season.jpg",
+                    "size": 169979,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=38_Evening_Brown_2_Dry_Season.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=38_Evening_Brown_2_Dry_Season-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=38_Evening_Brown_2_Dry_Season.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=38_Evening_Brown_2_Dry_Season-thumb.jpg"
+                  },
+                  {
+                    "name": "39_Evening_Brown_3_Upper_Side.jpg",
+                    "size": 136939,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=39_Evening_Brown_3_Upper_Side.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=39_Evening_Brown_3_Upper_Side-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=39_Evening_Brown_3_Upper_Side.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=39_Evening_Brown_3_Upper_Side-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Evening Brown (Melanitis leda)",
+                  "scientificName": "Melanitis leda",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:e896db3c-a964-4387-93a0-f760d3119833",
+                  "commonName": "Common Evening-Brown"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "42_Clearwing_Swallowtail_3_Female_underside.jpg",
+                    "size": 190645,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=42_Clearwing_Swallowtail_3_Female_underside.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=42_Clearwing_Swallowtail_3_Female_underside-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=42_Clearwing_Swallowtail_3_Female_underside.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=42_Clearwing_Swallowtail_3_Female_underside-thumb.jpg"
+                  },
+                  {
+                    "name": "41_Clearwing_Swallowtail_1_Male_underside.jpg",
+                    "size": 121526,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=41_Clearwing_Swallowtail_1_Male_underside.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=41_Clearwing_Swallowtail_1_Male_underside-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=41_Clearwing_Swallowtail_1_Male_underside.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=41_Clearwing_Swallowtail_1_Male_underside-thumb.jpg"
+                  },
+                  {
+                    "name": "44_Clearwing_Swallowtail_4_Female_upper.jpg",
+                    "size": 175259,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=44_Clearwing_Swallowtail_4_Female_upper.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=44_Clearwing_Swallowtail_4_Female_upper-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=44_Clearwing_Swallowtail_4_Female_upper.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=44_Clearwing_Swallowtail_4_Female_upper-thumb.jpg"
+                  },
+                  {
+                    "name": "43_Clearwing_Swallowtail_2_Male_upper.jpg",
+                    "size": 154524,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=43_Clearwing_Swallowtail_2_Male_upper.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=43_Clearwing_Swallowtail_2_Male_upper-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=43_Clearwing_Swallowtail_2_Male_upper.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=43_Clearwing_Swallowtail_2_Male_upper-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Clearwing Swallowtail (Cressida cressida)",
+                  "scientificName": "Cressida",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:20ffa7e9-2ce1-4ede-8a3a-8d4065e912e3",
+                  "commonName": null
+                },
+                "family": "Swallowtails (Papilionidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "47_Lemon_Migrant_3.jpg",
+                    "size": 109101,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=47_Lemon_Migrant_3.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=47_Lemon_Migrant_3-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=47_Lemon_Migrant_3.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=47_Lemon_Migrant_3-thumb.jpg"
+                  },
+                  {
+                    "name": "49_Lemon_Migrant_5.jpg",
+                    "size": 102817,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=49_Lemon_Migrant_5.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=49_Lemon_Migrant_5-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=49_Lemon_Migrant_5.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=49_Lemon_Migrant_5-thumb.jpg"
+                  },
+                  {
+                    "name": "46_Lemon_Migrant_2.jpg",
+                    "size": 136493,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=46_Lemon_Migrant_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=46_Lemon_Migrant_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=46_Lemon_Migrant_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=46_Lemon_Migrant_2-thumb.jpg"
+                  },
+                  {
+                    "name": "48_Lemon_Migrant_4.jpg",
+                    "size": 139674,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=48_Lemon_Migrant_4.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=48_Lemon_Migrant_4-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=48_Lemon_Migrant_4.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=48_Lemon_Migrant_4-thumb.jpg"
+                  },
+                  {
+                    "name": "50_Lemon_Migrant_6.jpg",
+                    "size": 102184,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=50_Lemon_Migrant_6.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=50_Lemon_Migrant_6-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=50_Lemon_Migrant_6.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=50_Lemon_Migrant_6-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Lemon Migrant (Catopsilia pomona)",
+                  "scientificName": "Catopsilia pomona",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:90039846-3f30-4777-991e-5e309e630241",
+                  "commonName": "Lemon Migrant"
+                },
+                "family": "Whites and Yellows (Pieridae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "52_Orchard_Swallowtail_female_upper.jpg",
+                    "size": 210526,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=52_Orchard_Swallowtail_female_upper.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=52_Orchard_Swallowtail_female_upper-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=52_Orchard_Swallowtail_female_upper.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=52_Orchard_Swallowtail_female_upper-thumb.jpg"
+                  },
+                  {
+                    "name": "51_Orchard_Swallowtail_1_Male_upper.jpg",
+                    "size": 164967,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=51_Orchard_Swallowtail_1_Male_upper.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=51_Orchard_Swallowtail_1_Male_upper-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=51_Orchard_Swallowtail_1_Male_upper.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=51_Orchard_Swallowtail_1_Male_upper-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Orchard Swallowtail (Papilio aegeus)",
+                  "scientificName": "Papilio (Princeps) aegeus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:55d30eb8-ef6e-4ed4-a1d8-9b38efcdde81",
+                  "commonName": "Orchard Butterfly"
+                },
+                "family": "Swallowtails (Papilionidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "53_Common_Red-eye.jpg",
+                    "size": 174020,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=53_Common_Red-eye.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=53_Common_Red-eye-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=53_Common_Red-eye.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=53_Common_Red-eye-thumb.jpg"
+                  },
+                  {
+                    "name": "54_Common_Red-eye_2.jpg",
+                    "size": 157232,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=54_Common_Red-eye_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=54_Common_Red-eye_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=54_Common_Red-eye_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=54_Common_Red-eye_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Common Red-eye (Chaetocneme beata)",
+                  "scientificName": "Chaetocneme beata",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:78dbb7cc-445a-41f0-8480-53b7f70d344b",
+                  "commonName": "Common Red-Eye"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "56_Splendid_Ochre_2.jpg",
+                    "size": 145893,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=56_Splendid_Ochre_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=56_Splendid_Ochre_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=56_Splendid_Ochre_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=56_Splendid_Ochre_2-thumb.jpg"
+                  },
+                  {
+                    "name": "55_Splendid_Ochre_1.jpg",
+                    "size": 168593,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=55_Splendid_Ochre_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=55_Splendid_Ochre_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=55_Splendid_Ochre_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=55_Splendid_Ochre_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Splendid Ochre (Trapezites symmomus)",
+                  "scientificName": "Trapezites symmomus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:317cb694-e7ed-4752-94d6-43fba8b07f82",
+                  "commonName": "Splendid Ochre"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "58_Orange_Palm_Dart_2.jpg",
+                    "size": 140031,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=58_Orange_Palm_Dart_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=58_Orange_Palm_Dart_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=58_Orange_Palm_Dart_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=58_Orange_Palm_Dart_2-thumb.jpg"
+                  },
+                  {
+                    "name": "57_Orange_Palm_Dart_1.jpg",
+                    "size": 147775,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=57_Orange_Palm_Dart_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=57_Orange_Palm_Dart_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=57_Orange_Palm_Dart_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=57_Orange_Palm_Dart_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Orange Palm Dart (Cephrenes augiades)",
+                  "scientificName": "Cephrenes augiades",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:4d1a60ea-5289-4710-9e84-ff68dc674ff8",
+                  "commonName": "Orange Palm-Dart"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "59_Regent_Skipper_2.jpg",
+                    "size": 178027,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=59_Regent_Skipper_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=59_Regent_Skipper_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=59_Regent_Skipper_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=59_Regent_Skipper_2-thumb.jpg"
+                  },
+                  {
+                    "name": "60_Regent_Skipper.jpg",
+                    "size": 190013,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=60_Regent_Skipper.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=60_Regent_Skipper-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=60_Regent_Skipper.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=60_Regent_Skipper-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Regent Skipper (Euschemon rafflesia)",
+                  "scientificName": "Euschemon rafflesia",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:b911bd8b-4ab6-45df-9ec6-3305e8714c8f",
+                  "commonName": "Regent Skipper"
+                },
+                "family": "Nymphs (Nymphalidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "64_Zebra_Blue_4.jpg",
+                    "size": 139377,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=64_Zebra_Blue_4.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=64_Zebra_Blue_4-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=64_Zebra_Blue_4.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=64_Zebra_Blue_4-thumb.jpg"
+                  },
+                  {
+                    "name": "62_Zebra_Blue_2.jpg",
+                    "size": 130360,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=62_Zebra_Blue_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=62_Zebra_Blue_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=62_Zebra_Blue_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=62_Zebra_Blue_2-thumb.jpg"
+                  },
+                  {
+                    "name": "63_Zebra_Blue_3.jpg",
+                    "size": 135195,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=63_Zebra_Blue_3.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=63_Zebra_Blue_3-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=63_Zebra_Blue_3.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=63_Zebra_Blue_3-thumb.jpg"
+                  },
+                  {
+                    "name": "61_Zebra_Blue_1.jpg",
+                    "size": 140001,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=61_Zebra_Blue_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=61_Zebra_Blue_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=61_Zebra_Blue_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=61_Zebra_Blue_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Zebra Blue (Leptotes plinius)",
+                  "scientificName": "Leptotes plinius",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:cb5daeae-3e54-4d7f-bafe-a7b1190676db",
+                  "commonName": "Plumbago Blue"
+                },
+                "family": "Blues and Coppers (Lycanidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "66_Small_Green-banded_Blue_2.jpg",
+                    "size": 152261,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=66_Small_Green-banded_Blue_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=66_Small_Green-banded_Blue_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=66_Small_Green-banded_Blue_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=66_Small_Green-banded_Blue_2-thumb.jpg"
+                  },
+                  {
+                    "name": "65_Small_Green-banded_Blue_1.jpg",
+                    "size": 135017,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=65_Small_Green-banded_Blue_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=65_Small_Green-banded_Blue_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=65_Small_Green-banded_Blue_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=65_Small_Green-banded_Blue_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Small Green-banded Blue (Psychonotis caelius)",
+                  "scientificName": "Psychonotis caelius",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:674c8015-ab1d-4ffd-b71e-bcea481fbaa3",
+                  "commonName": "Small Green-Banded Blue"
+                },
+                "family": "Blues and Coppers (Lycanidae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "67_Northern_Jezabel_1.jpg",
+                    "size": 186305,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=67_Northern_Jezabel_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=67_Northern_Jezabel_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=67_Northern_Jezabel_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=67_Northern_Jezabel_1-thumb.jpg"
+                  },
+                  {
+                    "name": "69_Northern_Jezabel_3.jpg",
+                    "size": 169751,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=69_Northern_Jezabel_3.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=69_Northern_Jezabel_3-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=69_Northern_Jezabel_3.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=69_Northern_Jezabel_3-thumb.jpg"
+                  },
+                  {
+                    "name": "70_Northern_Jezabel_4.jpg",
+                    "size": 131361,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=70_Northern_Jezabel_4.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=70_Northern_Jezabel_4-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=70_Northern_Jezabel_4.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=70_Northern_Jezabel_4-thumb.jpg"
+                  },
+                  {
+                    "name": "68_Northern_Jezabel_2.jpg",
+                    "size": 151878,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=68_Northern_Jezabel_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=68_Northern_Jezabel_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=68_Northern_Jezabel_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=68_Northern_Jezabel_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Northern Jezabel (Delias argenthona)",
+                  "scientificName": "Delias argenthona",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:cd74ed7e-054a-4bf6-8984-bf3a888b40eb",
+                  "commonName": "Scarlet Jezebel"
+                },
+                "family": "Whites and Yellows (Pieridae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "71_Caper_White_1.jpg",
+                    "size": 196712,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=71_Caper_White_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=71_Caper_White_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=71_Caper_White_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=71_Caper_White_1-thumb.jpg"
+                  },
+                  {
+                    "name": "73_Caper_White_3.jpg",
+                    "size": 177996,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=73_Caper_White_3.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=73_Caper_White_3-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=73_Caper_White_3.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=73_Caper_White_3-thumb.jpg"
+                  },
+                  {
+                    "name": "74_Caper_White_4.jpg",
+                    "size": 159104,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=74_Caper_White_4.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=74_Caper_White_4-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=74_Caper_White_4.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=74_Caper_White_4-thumb.jpg"
+                  },
+                  {
+                    "name": "72_Caper_White_2.jpg",
+                    "size": 145744,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=72_Caper_White_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=72_Caper_White_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=72_Caper_White_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=72_Caper_White_2-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Caper White (Belenois java)",
+                  "scientificName": "Belenois java",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:153f4e4a-7e11-422d-8865-6e81191c100b",
+                  "commonName": "Caper White"
+                },
+                "family": "Whites and Yellows (Pieridae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "77_Yellow_Albatross_2.jpg",
+                    "size": 155235,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=77_Yellow_Albatross_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=77_Yellow_Albatross_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=77_Yellow_Albatross_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=77_Yellow_Albatross_2-thumb.jpg"
+                  },
+                  {
+                    "name": "76_Yellow_Albatross_3_Female.jpg",
+                    "size": 139825,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=76_Yellow_Albatross_3_Female.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=76_Yellow_Albatross_3_Female-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=76_Yellow_Albatross_3_Female.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=76_Yellow_Albatross_3_Female-thumb.jpg"
+                  },
+                  {
+                    "name": "75_Yellow_Albatross_4_Female.jpg",
+                    "size": 130737,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=75_Yellow_Albatross_4_Female.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=75_Yellow_Albatross_4_Female-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=75_Yellow_Albatross_4_Female.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=75_Yellow_Albatross_4_Female-thumb.jpg"
+                  },
+                  {
+                    "name": "78_Yellow_Albatross_1.jpg",
+                    "size": 133628,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=78_Yellow_Albatross_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=78_Yellow_Albatross_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=78_Yellow_Albatross_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=78_Yellow_Albatross_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Yellow Albatross (Appias paulina)",
+                  "scientificName": "Appias paulina",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:d0ab8525-f717-4605-8ef1-99b15631733b",
+                  "commonName": "Yellow Albatross"
+                },
+                "family": "Whites and Yellows (Pieridae)"
+              },
+              {
+                "individualCount": 0,
+                "photoSource": [
+                  {
+                    "name": "79_Black_Jezabel_2.jpg",
+                    "size": 162085,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=79_Black_Jezabel_2.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=79_Black_Jezabel_2-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=79_Black_Jezabel_2.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=79_Black_Jezabel_2-thumb.jpg"
+                  },
+                  {
+                    "name": "80_Black_Jezabel_1.jpg",
+                    "size": 96058,
+                    "isoDate": null,
+                    "contentType": "image/jpeg",
+                    "date": "Not available",
+                    "time": "",
+                    "decimalLatitude": "",
+                    "decimalLongitude": "",
+                    "verbatimLatitude": null,
+                    "verbatimLongitude": null,
+                    "url": "https://biocollect.ala.org.au/image?id=80_Black_Jezabel_1.jpg",
+                    "thumbnail_url": "https://biocollect.ala.org.au/image?id=80_Black_Jezabel_1-thumb.jpg",
+                    "delete_url": "https://biocollect.ala.org.au/image/delete?filename=80_Black_Jezabel_1.jpg",
+                    "delete_type": "DELETE",
+                    "attribution": "",
+                    "thumbnailUrl": "https://biocollect.ala.org.au/image?id=80_Black_Jezabel_1-thumb.jpg"
+                  }
+                ],
+                "species": {
+                  "name": "Black Jezabel (Delias nigrina)",
+                  "scientificName": "Delias nigrina",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:e410d242-78e6-47ef-80bb-73345baa3d15",
+                  "commonName": "Black Jezebel"
+                },
+                "family": "Whites and Yellows (Pieridae)"
+              }
+            ]
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>Brisbane's Big Butterfly Count</font>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Survey details",
+                    "items": [
+                      {
+                        "preLabel": "Name of observer",
+                        "source": "recordedBy",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Date",
+                        "source": "eventDate",
+                        "type": "date"
+                      },
+                      {
+                        "includeNotes": false,
+                        "orientation": "vertical",
+                        "autoLocalitySearch": false,
+                        "readonly": false,
+                        "includeSource": false,
+                        "includeAccuracy": false,
+                        "hideSiteSelection": false,
+                        "source": "location",
+                        "type": "geoMap"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "type": "section",
+                "title": "Butterflies",
+                "items": [
+                  {
+                    "userAddedRows": true,
+                    "source": "butterfliesTable",
+                    "allowHeaderWrap": true,
+                    "tableDataUploadVisible": false,
+                    "type": "table",
+                    "columns": [
+                      {
+                        "title": "Butterfly species",
+                        "source": "species",
+                        "type": "speciesSelect",
+                        "noEdit": true
+                      },
+                      {
+                        "title": "Count",
+                        "source": "individualCount",
+                        "type": "number"
+                      },
+                      {
+                        "title": "Images",
+                        "source": "photoSource",
+                        "type": "image",
+                        "noEdit": true
+                      },
+                      {
+                        "title": "Family",
+                        "source": "family",
+                        "noEdit": true,
+                        "type": "text"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<b>Acknowledgements</b><br>Images: CB—Chris Burwell; CE—CSIRO Entomology, CC BY 3.0; DM—Deborah Metters; GS—Garry Sankowsky; HK—Hongming Kan; JG—Jutta Godwin; JM—John T. Moss; PC—Peter Chew, Brisbane Insects; PH—Patrick Honan, Museum Victoria CC BY 4.0; RD—Russell Denton; RK—Ross Kendall; RM—Robert (Bob) Miller; SA—Sylvia Alexander, TW—Tony Wills, CC BY-SA 3.0.",
+                "type": "literal"
+              }
+            ]
+          }
+        ],
+        "title": "Brisbane Butterfly Count",
+        "record": true
+      },
+      "modelName": null,
+      "templateName": "brisbaneButterflyCount",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Brisbane Butterfly Count",
+      "description": null,
+      "embargoMultimedia": true
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "82292",
+  "description": null,
+  "formVersion": 1
+}
