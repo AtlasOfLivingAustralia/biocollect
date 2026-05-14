@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.ecodata.forms.SpeciesListService
 import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
@@ -9,7 +10,7 @@ import javax.annotation.PostConstruct
 
 class ProxyController {
     static responseFormats = ['json']
-    def webService, commonService, projectService
+    def webService, commonService, projectService, ecpWebService
     SpeciesService speciesService
     SpeciesListService speciesListService
     private int cacheDuration
@@ -158,7 +159,7 @@ class ProxyController {
         String includeDataPathHeader = params.includeDataPathHeader ?: false
 
         if (params.data) {
-            webService.proxyPostRequest(response, url,
+            ecpWebService.proxyPostRequest(response, url,
                     [listName:params.listName, type:params.type, data:params.data, editMode:params.editMode, allowExtraRows:params.allowExtraRows, autosizeColumns:false, expandList: expandList, includeDataPathHeader: includeDataPathHeader])
         }
         else {
@@ -179,7 +180,7 @@ class ProxyController {
 
         String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelBulkActivityTemplate"
 
-        webService.proxyPostRequest(response, url, params)
+        ecpWebService.proxyPostRequest(response, url, params)
         return null
     }
 
