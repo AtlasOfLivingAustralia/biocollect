@@ -94,13 +94,16 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async closeModalIfOpen() {
-        const closeBtn = this.modalCloseBtn;
-        if (await closeBtn.isExisting() && await closeBtn.isDisplayed()) {
-            await closeBtn.click();
-            await this.modalHeader.waitForDisplayed({
-                timeout: 10000,
-                reverse: true
-            });
+        if (await this.modalHeader.isExisting()) {
+            await this.modalCloseBtn.waitForClickable({ timeout: 10000 });
+            await this.modalCloseBtn.click();
+            await browser.waitUntil(
+                async () => !(await this.modalHeader.isExisting()),
+                {
+                    timeout: 10000,
+                    timeoutMsg: 'Modal did not close before logout'
+                }
+            );
         }
     }
 
