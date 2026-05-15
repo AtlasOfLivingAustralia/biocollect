@@ -813,7 +813,7 @@
                                 data-bind="click:deleteDocument, visible: dataManagementPolicyDocument"><i
                                 class="far fa-trash-alt"></i> Remove Document</button>
 
-                        <div class="row attachDocumentModal" data-bind="visible: !dataManagementPolicyDocument()">
+                        <div class="attachDocumentModal" data-bind="visible: !dataManagementPolicyDocument()">
                             <button class="btn btn-sm btn-primary-dark" id="doAttach"
                                     data-bind="click:attachDocument"><i
                                     class="fas fa-file-upload"></i> Attach Document</button>
