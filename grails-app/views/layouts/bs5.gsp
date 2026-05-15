@@ -195,7 +195,7 @@
                                                 <img class="footer-logo d-block d-md-inline-block" src="${logo.url}" alt="Website logo"/>
                                             </g:else>
                                         </g:each>
-                                        <a class="brand text-center text-md-start d-block d-md-inline-block" href="http://ala.org.au/" id="alaLink" title="ALA home page">
+                                        <a class="brand text-center text-md-start d-block d-md-inline-block text-decoration-none" href="https://ala.org.au/" id="alaLink" title="ALA home page">
                                             <img src="${asset.assetPath(src:'mdba/ALA-logo-BW-124x109.png')}" alt="Powered by ALA logo"
                                                  class="headerLogo"/>
                                             <div id="alaHeadingText"><div id="poweredBy">powered by</div>
