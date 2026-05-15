@@ -40,7 +40,13 @@ describe("Application installation Spec", function () {
     });
 
     afterEach(async function () {
-        await pwaAppPage.logout();
+        try {
+            await browser.switchFrame(null);
+            await pwaAppPage.logout();
+        }
+        catch (e) {
+            console.log("Logout failed:", e.message);
+        }
     });
 
     afterAll(async function () {
@@ -217,6 +223,7 @@ describe("Application installation Spec", function () {
             console.log("alert text:", await offlineListPage.alert.getText());
         }
 
+        console.log("test2: upload button disabled assertion");
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
         // await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
@@ -224,25 +231,55 @@ describe("Application installation Spec", function () {
         await pwaAppPage.closeModal();
 
         // check if the record is uploaded
+        console.log("test2: view records");
         await pwaAppPage.viewRecords(pa);
+
+        console.log("test2: wait after view records");
         await browser.pause(5000);
+
+        console.log("test2: view nth record");
         await pwaAppPage.viewNthRecord();
+
+        console.log("test2: wait after view nth record");
         await browser.pause(3000);
+
+        console.log("test2: switch to view record iframe");
         iframe = $("iframe");
         contextId = await browser.switchFrame(iframe);
-        console.log("iframe context id- " +contextId);
+        console.log("test2: iframe context id- " + contextId);
+
         let viewBioActivityPage = new ViewBioActivityPage();
         var speciesEl = viewBioActivityPage.speciesSelector("Fungi");
-        await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapViewPublishedRecord");
+
+        console.log("test2: wait for species");
+        await speciesEl.waitForExist({ timeout: 20000 });
+
+        console.log("test2: species exists");
         await speciesEl.scrollIntoView();
+
+        console.log("test2: species scrolled");
         await expect(speciesEl).toBeDisplayed();
-        // map pin should be displayed
+
+        console.log("test2: species displayed");
+
         const pin = await $('.leaflet-marker-icon');
+
+        console.log("test2: wait for pin exists");
         await pin.waitForExist({ timeout: 20000 });
+
+        console.log("test2: pin exists");
         await pin.waitForDisplayed({ timeout: 20000 });
+
+        console.log("test2: pin displayed");
         await expect(pin).toBeDisplayed();
+
+        console.log("test2: switch to main frame");
         await browser.switchFrame(null);
+
+        console.log("test2: close final modal");
         await pwaAppPage.closeModal(null);
+
+        console.log("test2: finished");
     });
 
     it("login with expired token", async function () {
