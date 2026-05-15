@@ -125,10 +125,12 @@ class PwaAppPage extends ReloadablePage {
         await btn.click();
     }
 
-    async closeModal(){
-        let modal = this.modalCloseBtn;
-        await modal.waitForEnabled({ timeout: 10000 });
+    async closeModal() {
+        const modal = this.modalCloseBtn;
+        await modal.waitForDisplayed({ timeout: 10000 });
+        await modal.waitForClickable({ timeout: 10000 });
         await modal.click();
+        await modal.waitForDisplayed({ timeout: 10000, reverse: true });
     }
 
     async viewNthRecord(number= 0){
