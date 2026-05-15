@@ -89,26 +89,32 @@ describe("Application installation Spec", function () {
         console.log("iframe context id- " +contextId);
 
         offlineListPage = new OfflineListPage();
+
+        console.log("offlineListPage.at:", await offlineListPage.at());
+        console.log("uploadAllButton exists before:", await offlineListPage.uploadAllButton.isExisting());
+        console.log("uploadAllButton enabled before:", await offlineListPage.uploadAllButton.isEnabled());
+        console.log("firstUploadButton exists before:", await offlineListPage.firstUploadButton.isExisting());
+        console.log("firstUploadButton enabled before:", await offlineListPage.firstUploadButton.isEnabled());
+        console.log("alert exists before:", await offlineListPage.alert.isExisting());
+
         expect(await offlineListPage.at()).toEqual(true);
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
+
+        console.log("calling uploadRecords");
         await offlineListPage.uploadRecords();
+        console.log("uploadRecords completed");
+
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflinePublishedRecords");
         await browser.pause(5000);
+
         console.log("uploadAllButton exists:", await offlineListPage.uploadAllButton.isExisting());
-
         console.log("uploadAllButton enabled:", await offlineListPage.uploadAllButton.isEnabled());
-
         console.log("firstUploadButton exists:", await offlineListPage.firstUploadButton.isExisting());
-
         console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
-
         console.log("alert exists:", await offlineListPage.alert.isExisting());
-
         if (await offlineListPage.alert.isExisting()) {
-
             console.log("alert text:", await offlineListPage.alert.getText());
-
         }
 
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
@@ -173,22 +179,30 @@ describe("Application installation Spec", function () {
         console.log("iframe context id- " +contextId);
 
         offlineListPage = new OfflineListPage();
+
+        console.log("offlineListPage.at:", await offlineListPage.at());
+        console.log("uploadAllButton exists before:", await offlineListPage.uploadAllButton.isExisting());
+        console.log("uploadAllButton enabled before:", await offlineListPage.uploadAllButton.isEnabled());
+        console.log("firstUploadButton exists before:", await offlineListPage.firstUploadButton.isExisting());
+        console.log("firstUploadButton enabled before:", await offlineListPage.firstUploadButton.isEnabled());
+        console.log("alert exists before:", await offlineListPage.alert.isExisting());
+
         expect(await offlineListPage.at()).toEqual(true);
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
+
+        console.log("calling uploadRecords");
         await offlineListPage.uploadRecords();
+        console.log("uploadRecords completed");
+
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapPublishedRecords");
         await browser.pause(5000);
+
         console.log("uploadAllButton exists:", await offlineListPage.uploadAllButton.isExisting());
-
         console.log("uploadAllButton enabled:", await offlineListPage.uploadAllButton.isEnabled());
-
         console.log("firstUploadButton exists:", await offlineListPage.firstUploadButton.isExisting());
-
         console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
-
         console.log("alert exists:", await offlineListPage.alert.isExisting());
-
         if (await offlineListPage.alert.isExisting()) {
             console.log("alert text:", await offlineListPage.alert.getText());
         }
