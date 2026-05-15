@@ -159,16 +159,19 @@ describe("Application installation Spec", function () {
         await pwaAppPage.viewProject(project);
         console.log("test2: view project done");
 
-        console.log("test2: wait before stop server");
-        await pwaAppPage.addRecordBtn(pa).waitForExist({ timeout: 20000 });
+        console.log("test2: wait for add record button");
+        const addRecordButton = pwaAppPage.addRecordBtn(pa);
+        await addRecordButton.waitForExist({ timeout: 20000 });
+        await addRecordButton.waitForDisplayed({ timeout: 20000 });
+        console.log("test2: add record button ready");
 
         console.log("test2: stop server");
         await stopServer();
         console.log("test2: stop server done");
 
-        console.log("test2: add record");
-        await pwaAppPage.addRecord(pa);
-        console.log("test2: add record done");
+        console.log("test2: click add record");
+        await addRecordButton.click();
+        console.log("test2: add record clicked");
 
         console.log("test2: switch iframe");
         await browser.pause(5000);
