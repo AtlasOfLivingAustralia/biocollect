@@ -110,10 +110,15 @@ describe("Application installation Spec", function () {
 
         console.log("uploadAllButton exists:", await offlineListPage.uploadAllButton.isExisting());
         console.log("uploadAllButton enabled:", await offlineListPage.uploadAllButton.isEnabled());
-        console.log("firstUploadButton exists:", await offlineListPage.firstUploadButton.isExisting());
-        console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
-        console.log("alert exists:", await offlineListPage.alert.isExisting());
-        if (await offlineListPage.alert.isExisting()) {
+        const firstUploadButtonExists = await offlineListPage.firstUploadButton.isExisting();
+        console.log("firstUploadButton exists:", firstUploadButtonExists);
+
+        if (firstUploadButtonExists) {
+            console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
+        }
+        const alertExists = await offlineListPage.alert.isExisting();
+        console.log("alert exists:", alertExists);
+        if (alertExists) {
             console.log("alert text:", await offlineListPage.alert.getText());
         }
 
@@ -200,10 +205,15 @@ describe("Application installation Spec", function () {
 
         console.log("uploadAllButton exists:", await offlineListPage.uploadAllButton.isExisting());
         console.log("uploadAllButton enabled:", await offlineListPage.uploadAllButton.isEnabled());
-        console.log("firstUploadButton exists:", await offlineListPage.firstUploadButton.isExisting());
-        console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
-        console.log("alert exists:", await offlineListPage.alert.isExisting());
-        if (await offlineListPage.alert.isExisting()) {
+        const firstUploadButtonExists = await offlineListPage.firstUploadButton.isExisting();
+        console.log("firstUploadButton exists:", firstUploadButtonExists);
+
+        if (firstUploadButtonExists) {
+            console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
+        }
+        const alertExists = await offlineListPage.alert.isExisting();
+        console.log("alert exists:", alertExists);
+        if (alertExists) {
             console.log("alert text:", await offlineListPage.alert.getText());
         }
 
