@@ -237,8 +237,9 @@ describe("Application installation Spec", function () {
         await speciesEl.scrollIntoView();
         await expect(speciesEl).toBeDisplayed();
         // map pin should be displayed
-        var pin =$('.leaflet-marker-icon');
-        await pin.scrollIntoView();
+        const pin = await $('.leaflet-marker-icon');
+        await pin.waitForExist({ timeout: 20000 });
+        await pin.waitForDisplayed({ timeout: 20000 });
         await expect(pin).toBeDisplayed();
         await browser.switchFrame(null);
         await pwaAppPage.closeModal(null);
