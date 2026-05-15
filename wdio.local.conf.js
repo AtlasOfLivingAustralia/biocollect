@@ -4,9 +4,9 @@ const sharedConfig = require('./wdio.shared.conf.js').config;
 const config = {
     ...sharedConfig,
     ...{
-        // specs: [
-        //     './src/test/js/integration/specs/pwa/InstallationSpec.js'
-        // ],
+         specs: [
+             './src/test/js/integration/specs/pwa/InstallationSpec.js'
+         ],
         maxInstances: 1,
         maxInstancesPerCapability: 1,
         // services: ['devtools'],
