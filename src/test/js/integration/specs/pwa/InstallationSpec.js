@@ -124,7 +124,8 @@ describe("Application installation Spec", function () {
         }
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMap");
         await pwaAppPage.viewProject(project);
-        await browser.pause(3000); // Wait for project activities to load before going offline
+        await pwaAppPage.downloadProjectActivity(pa);
+        await pwaAppPage.downloadComplete();
         await stopServer();
         await pwaAppPage.addRecord(pa);
         await browser.pause(5000);
