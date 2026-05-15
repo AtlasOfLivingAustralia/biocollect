@@ -2,6 +2,7 @@ const http = require('http');
 const httpProxy = require('http-proxy');
 // Start an HTTP server to handle requests
 let server
+let sockets = new Set();
 let block = ""
 const target_address = "http://localhost:8087"
 async function startServer(blockUrl="", port=8081) {
@@ -20,6 +21,11 @@ async function startServer(blockUrl="", port=8081) {
         }
     });
 
+    server.on('connection', socket => {
+        sockets.add(socket);
+        socket.on('close', () => sockets.delete(socket));
+    });
+
     return new Promise(resolve => {
         server.listen(port, () => {
             console.log(`Proxy server listening on port ${port}`);
@@ -31,15 +37,18 @@ async function startServer(blockUrl="", port=8081) {
 function stopServer() {
     console.log('request received to stop proxy server');
     if(server) {
-        server.on('close', (err) => {
-            console.log('shutting down server');
-        });
+        console.log('shutting down server');
 
         let promise = new Promise((resolve, reject) => {
+            for (const socket of sockets) {
+                socket.destroy();
+            }
+            sockets.clear();
             server.close((err) => {
                 if (err) {
                     reject(err);
                 } else {
+                    console.log('server closed');
                     resolve();
                     server = null;
                 }
