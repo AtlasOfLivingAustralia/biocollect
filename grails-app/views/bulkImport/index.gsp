@@ -74,7 +74,7 @@
             <textarea id="description" class="form-control" data-bind="value: activityImport.description"></textarea>
         </div>
         <div class="mb-3">
-            <label for="spreadsheetFile"><g:message code="bulkimport.steptwo.spreadsheet"/> </label>
+            <label class="form-label" for="spreadsheetFile"><g:message code="bulkimport.steptwo.spreadsheet"/> </label>
             <input id="spreadsheetFile" class="form-control" type="file" name="data" data-bind="event: {change: fileInputChangeHandler}"/>
         </div>
         <div class="mb-3">
