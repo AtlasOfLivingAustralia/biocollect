@@ -12,11 +12,10 @@
 
 <div class="collapse accordion-body" data-bind="attr: { id: name}, css: {show: state() == 'Expanded'}, visible: showTermPanel">
     <!-- ko foreach: terms -->
-    <label class="form-check-label d-block form-check text-truncate"
-           data-bind="attr: {title:displayName, for: term}">
+    <div class="form-check">
         <input class="form-check-input" type="checkbox" data-bind="checked: checked, attr: {id: term}">
-        <span data-bind="click: filterNow, text: displayName"></span>
-    </label>
+        <label class="form-check-label" data-bind="attr: {for: term}, text: displayName, click: filterNow"></label>
+    </div>
     <!-- /ko -->
     <a href="#" role="button" class="moreFacets tooltips" data-bs-toggle="modal" title="View full list of values" data-bs-target="#${modalName}"
        data-bind="click: loadMoreTerms">
