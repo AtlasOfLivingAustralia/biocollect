@@ -155,11 +155,22 @@ describe("Application installation Spec", function () {
             await pwaAppPage.start();
         }
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMap");
+        console.log("test2: view project");
         await pwaAppPage.viewProject(project);
+
+        console.log("test2: download activity");
         await pwaAppPage.downloadProjectActivity(pa);
+
+        console.log("test2: download complete");
         await pwaAppPage.downloadComplete();
+
+        console.log("test2: stop server");
         await stopServer();
+
+        console.log("test2: add record");
         await pwaAppPage.addRecord(pa);
+
+        console.log("test2: switch iframe");
         await browser.pause(5000);
         let iframe = $('iframe');
         let contextId = await browser.switchFrame($("iframe"));
