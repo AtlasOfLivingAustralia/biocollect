@@ -68,8 +68,7 @@ describe("Application installation Spec", function () {
         console.log("iframe context id- " +contextId);
         await addBioActivityPage.setSite(site);
         await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`, true);
-        // Wait for all promises to resolve
-        await Promise.all(promises);
+
         await addBioActivityPage.setDate('01/01/2020');
         await addBioActivityPage.setSpecies('Acavomonidia', true)
         // Save the activity
@@ -165,14 +164,22 @@ describe("Application installation Spec", function () {
         let iframe = $('iframe');
         let contextId = await browser.switchFrame($("iframe"));
         console.log("iframe context id- " +contextId);
+        console.log("test2: before dropPin");
         await addBioActivityPage.dropPin();
+
+        console.log("test2: before uploadImage");
         await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`, true);
-        // Wait for all promises to resolve
-        await Promise.all(promises);
+
+        console.log("test2: before setDate");
         await addBioActivityPage.setDate('01/01/2020');
-        await addBioActivityPage.setSpecies('Fungi', true)
-        // Save the activity
+
+        console.log("test2: before setSpecies");
+        await addBioActivityPage.setSpecies('Fungi', true);
+
+        console.log("test2: before saveActivity");
         await addBioActivityPage.saveActivity();
+
+        console.log("test2: after saveActivity");
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapAfterSave");
         contextId = await browser.switchFrame(null);
         console.log("main frame context id- " +contextId);
