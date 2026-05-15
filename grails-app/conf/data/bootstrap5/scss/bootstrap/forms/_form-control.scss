@@ -94,6 +94,7 @@
 
   // File input buttons theming
   &::file-selector-button {
+    min-height: $input-height;
     padding: $input-padding-y $input-padding-x;
     margin: (-$input-padding-y) (-$input-padding-x);
     margin-inline-end: $input-padding-x;
@@ -154,6 +155,7 @@
   @include border-radius($input-border-radius-sm);
 
   &::file-selector-button {
+    min-height: $input-height-sm;
     padding: $input-padding-y-sm $input-padding-x-sm;
     margin: (-$input-padding-y-sm) (-$input-padding-x-sm);
     margin-inline-end: $input-padding-x-sm;
@@ -167,6 +169,7 @@
   @include border-radius($input-border-radius-lg);
 
   &::file-selector-button {
+    min-height: $input-height-lg;
     padding: $input-padding-y-lg $input-padding-x-lg;
     margin: (-$input-padding-y-lg) (-$input-padding-x-lg);
     margin-inline-end: $input-padding-x-lg;
