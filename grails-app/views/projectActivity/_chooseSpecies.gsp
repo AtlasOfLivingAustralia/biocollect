@@ -1,6 +1,6 @@
 <!-- data-table select species list -->
 <span data-bind="visible: transients.showExistingSpeciesLists">
-    <button type="button" class="close me-2 mt-2"  data-bind="click:transients.toggleShowExistingSpeciesLists">&times;</button>
+    <button type="button" class="btn-close float-end me-2" data-bind="click:transients.toggleShowExistingSpeciesLists" aria-label="Close"></button>
     <div>
         <h4>Choose from existing species lists</h4>
         <div class="row mb-2">
