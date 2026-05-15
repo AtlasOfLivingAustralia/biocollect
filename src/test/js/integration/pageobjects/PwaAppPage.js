@@ -77,7 +77,6 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async logout(){
-        await this.closeModalIfOpen();
         await this.avatar.waitForDisplayed({ timeout: 60000 });
         await this.avatar.scrollIntoView();
         await this.avatar.waitForClickable({ timeout: 60000 });
@@ -85,26 +84,8 @@ class PwaAppPage extends ReloadablePage {
         await this.signOut.waitForClickable({ timeout: 60000 });
         await this.signOut.click();
         // wait for sign out to complete and sign in button to be visible again
-        await this.signOut.waitForDisplayed({ timeout: 60000, reverse: true });
-        await this.signIn.waitForDisplayed({ timeout: 60000 });
-    }
-
-    get modalHeader() {
-        return $('.mantine-Modal-header');
-    }
-
-    async closeModalIfOpen() {
-        if (await this.modalHeader.isExisting()) {
-            await this.modalCloseBtn.waitForClickable({ timeout: 10000 });
-            await this.modalCloseBtn.click();
-            await browser.waitUntil(
-                async () => !(await this.modalHeader.isExisting()),
-                {
-                    timeout: 10000,
-                    timeoutMsg: 'Modal did not close before logout'
-                }
-            );
-        }
+        await this.signOut.waitForDisplayed({timeout: 60000, reverse: true });
+        await browser.pause(10000);
     }
 
     async viewProject(projectId) {
