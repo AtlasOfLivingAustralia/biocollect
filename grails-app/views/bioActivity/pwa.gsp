@@ -106,7 +106,7 @@
     </asset:script>
 </head>
 <body>
-<div class="container" id="download-metadata">
+<div class="px-3 py-3" id="download-metadata">
     <h1><g:message code="pwa.offline.checklist"/> </h1>
     <p class="lead">
         <g:message code="pwa.offline.checklist.intro"/>
