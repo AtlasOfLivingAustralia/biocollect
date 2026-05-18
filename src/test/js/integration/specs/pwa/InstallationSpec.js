@@ -27,13 +27,9 @@ describe("Application installation Spec", function () {
     });
 
     beforeEach(async function () {
-        console.log("before each");
         await pwaAppPage.open();
-        console.log("before each - open");
         await pwaAppPage.loginAsPwaUser();
-        console.log("before each - login");
         await pwaAppPage.open();
-        console.log("before each - open again");
         // await browser.pause(5000);
         // await pwaAppPage.start();
         // console.log("before each - start");
@@ -79,7 +75,6 @@ describe("Application installation Spec", function () {
         contextId = await browser.switchFrame(null);
         console.log("main frame context id- " +contextId);
         await pwaAppPage.closeModal();
-        console.log("number of records checked again");
 
         await startServer();
         await pwaAppPage.open();
@@ -94,35 +89,20 @@ describe("Application installation Spec", function () {
         console.log("iframe context id- " +contextId);
 
         offlineListPage = new OfflineListPage();
-
-        console.log("offlineListPage.at:", await offlineListPage.at());
-        console.log("uploadAllButton exists before:", await offlineListPage.uploadAllButton.isExisting());
-        console.log("uploadAllButton enabled before:", await offlineListPage.uploadAllButton.isEnabled());
-        console.log("firstUploadButton exists before:", await offlineListPage.firstUploadButton.isExisting());
-        console.log("firstUploadButton enabled before:", await offlineListPage.firstUploadButton.isEnabled());
-        console.log("alert exists before:", await offlineListPage.alert.isExisting());
-
         expect(await offlineListPage.at()).toEqual(true);
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
 
-        console.log("calling uploadRecords");
         await offlineListPage.uploadRecords();
-        console.log("uploadRecords completed");
 
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflinePublishedRecords");
         await browser.pause(5000);
 
-        console.log("uploadAllButton exists:", await offlineListPage.uploadAllButton.isExisting());
-        console.log("uploadAllButton enabled:", await offlineListPage.uploadAllButton.isEnabled());
         const firstUploadButtonExists = await offlineListPage.firstUploadButton.isExisting();
-        console.log("firstUploadButton exists:", firstUploadButtonExists);
-
         if (firstUploadButtonExists) {
             console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
         }
         const alertExists = await offlineListPage.alert.isExisting();
-        console.log("alert exists:", alertExists);
         if (alertExists) {
             console.log("alert text:", await offlineListPage.alert.getText());
         }
@@ -155,50 +135,24 @@ describe("Application installation Spec", function () {
             await pwaAppPage.start();
         }
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMap");
-        console.log("test2: view project");
         await pwaAppPage.viewProject(project);
-        console.log("test2: view project done");
-
-        console.log("test2: wait for add record button");
         const addRecordButton = pwaAppPage.addRecordBtn(pa);
         await addRecordButton.waitForExist({ timeout: 20000 });
         await addRecordButton.waitForDisplayed({ timeout: 20000 });
-        console.log("test2: add record button ready");
-
-        console.log("test2: stop server");
         await stopServer();
-        console.log("test2: stop server done");
-
-        console.log("test2: click add record");
         await addRecordButton.click();
-        console.log("test2: add record clicked");
-
-        console.log("test2: switch iframe");
         await browser.pause(5000);
         let iframe = $('iframe');
         let contextId = await browser.switchFrame(iframe);
-        console.log("iframe context id- " +contextId);
-        console.log("test2: before dropPin");
         await addBioActivityPage.dropPin();
 
-        console.log("test2: before uploadImage");
         await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`, true);
-
-        console.log("test2: before setDate");
         await addBioActivityPage.setDate('01/01/2020');
-
-        console.log("test2: before setSpecies");
         await addBioActivityPage.setSpecies('Fungi', true);
-
-        console.log("test2: before saveActivity");
         await addBioActivityPage.saveActivity();
-
-        console.log("test2: after saveActivity");
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapAfterSave");
         contextId = await browser.switchFrame(null);
-        console.log("main frame context id- " +contextId);
         await pwaAppPage.closeModal();
-        console.log("number of records checked again");
 
         await startServer();
         await pwaAppPage.open();
@@ -212,39 +166,24 @@ describe("Application installation Spec", function () {
 
         offlineListPage = new OfflineListPage();
 
-        console.log("offlineListPage.at:", await offlineListPage.at());
-        console.log("uploadAllButton exists before:", await offlineListPage.uploadAllButton.isExisting());
-        console.log("uploadAllButton enabled before:", await offlineListPage.uploadAllButton.isEnabled());
-        console.log("firstUploadButton exists before:", await offlineListPage.firstUploadButton.isExisting());
-        console.log("firstUploadButton enabled before:", await offlineListPage.firstUploadButton.isEnabled());
-        console.log("alert exists before:", await offlineListPage.alert.isExisting());
-
         expect(await offlineListPage.at()).toEqual(true);
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
 
-        console.log("calling uploadRecords");
         await offlineListPage.uploadRecords();
-        console.log("uploadRecords completed");
 
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapPublishedRecords");
         await browser.pause(5000);
 
-        console.log("uploadAllButton exists:", await offlineListPage.uploadAllButton.isExisting());
-        console.log("uploadAllButton enabled:", await offlineListPage.uploadAllButton.isEnabled());
         const firstUploadButtonExists = await offlineListPage.firstUploadButton.isExisting();
-        console.log("firstUploadButton exists:", firstUploadButtonExists);
-
         if (firstUploadButtonExists) {
             console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
         }
         const alertExists = await offlineListPage.alert.isExisting();
-        console.log("alert exists:", alertExists);
         if (alertExists) {
             console.log("alert text:", await offlineListPage.alert.getText());
         }
 
-        console.log("test2: upload button disabled assertion");
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
         // await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
@@ -252,55 +191,27 @@ describe("Application installation Spec", function () {
         await pwaAppPage.closeModal();
 
         // check if the record is uploaded
-        console.log("test2: view records");
         await pwaAppPage.viewRecords(pa);
-
-        console.log("test2: wait after view records");
         await browser.pause(5000);
-
-        console.log("test2: view nth record");
         await pwaAppPage.viewNthRecord();
-
-        console.log("test2: wait after view nth record");
         await browser.pause(3000);
-
-        console.log("test2: switch to view record iframe");
         iframe = $("iframe");
         contextId = await browser.switchFrame(iframe);
-        console.log("test2: iframe context id- " + contextId);
 
         let viewBioActivityPage = new ViewBioActivityPage();
         var speciesEl = viewBioActivityPage.speciesSelector("Fungi");
 
-        console.log("test2: wait for species");
         await speciesEl.waitForExist({ timeout: 20000 });
-
-        console.log("test2: species exists");
         await speciesEl.scrollIntoView();
-
-        console.log("test2: species scrolled");
         await expect(speciesEl).toBeDisplayed();
 
-        console.log("test2: species displayed");
-
         const pin = await $('.leaflet-marker-icon');
-
-        console.log("test2: wait for pin exists");
         await pin.waitForExist({ timeout: 20000 });
-
-        console.log("test2: pin exists");
         await pin.waitForDisplayed({ timeout: 20000 });
-
-        console.log("test2: pin displayed");
         await expect(pin).toBeDisplayed();
 
-        console.log("test2: switch to main frame");
         await browser.switchFrame(null);
-
-        console.log("test2: close final modal");
         await pwaAppPage.closeModal(null);
-
-        console.log("test2: finished");
     });
 
     it("login with expired token", async function () {
