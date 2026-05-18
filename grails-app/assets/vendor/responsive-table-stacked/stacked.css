@@ -35,7 +35,7 @@
     }
 }
 
-@media (min-width:450px) and  (max-width: 1000px) {
+@media (min-width:450px) and (max-width: 1000px) {
     table.responsive-table-stacked,table.responsive-table-stacked thead,table.responsive-table-stacked tbody,table.responsive-table-stacked th,table.responsive-table-stacked td,table.responsive-table-stacked tr {
         display: block;
     }
@@ -61,7 +61,7 @@
         margin-right: 10px;
         margin-bottom: 2px;
         /** \a new line **/
-        content: attr(data-th) ;
+        content: attr(data-th);
         white-space: pre-line;
         font-weight: normal;
     }
@@ -74,5 +74,9 @@
 @media (min-width: 1000px) {
     .overflow-table{
         overflow-x: scroll;
+    }
+
+    table.responsive-table-stacked tbody td span.help {
+        display: none;
     }
 }
