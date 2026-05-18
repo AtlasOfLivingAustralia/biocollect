@@ -109,7 +109,6 @@ describe("Application installation Spec", function () {
 
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
-        // await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
 
@@ -186,7 +185,6 @@ describe("Application installation Spec", function () {
 
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
-        // await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
 
