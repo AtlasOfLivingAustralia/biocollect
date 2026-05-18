@@ -70,6 +70,7 @@
         white-space: pre-line;
         font-weight: normal;
     }
+
     table.responsive-table-stacked tfoot tr,
     table.responsive-table-stacked tfoot td{
         width: 100% !important;
@@ -89,4 +90,10 @@
     table.responsive-table-stacked tbody td span.help {
         display: none;
     }
+}
+
+/* Fix species autocomplete in tables more generally */
+table.responsive-table-stacked tbody td div.autocompleteSpecies.input-group > span.input-group-text {
+    height: auto !important;
+    align-self: stretch;
 }
