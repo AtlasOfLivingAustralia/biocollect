@@ -45,12 +45,12 @@ function stopServer() {
             }
             sockets.clear();
             server.close((err) => {
+                server = null;
                 if (err) {
                     reject(err);
                 } else {
                     console.log('server closed');
                     resolve();
-                    server = null;
                 }
             });
         });
