@@ -7,7 +7,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="geographicalExtentDescription"><g:message code="aekos.dataset.site"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.site"/>',
@@ -23,7 +23,7 @@
                 <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
             </span>
             <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
-                <span class="text-left margin-bottom-five">
+                <span class="text-start margin-bottom-five">
                     <span data-bind="if: transients.loading()">
                         <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
                     </span>
@@ -57,7 +57,7 @@
     <br/>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" ><g:message code="aekos.dataset.site.ibra"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.site.ibra"/>',
@@ -88,7 +88,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" ><g:message code="aekos.dataset.site.coordinate"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.site.coordinate"/>'}">
@@ -109,7 +109,7 @@
 <div id="collectionDates">
 --}%
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="collectionStartDate"><g:message code="aekos.activity.startDate"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.startDate"/>',
@@ -128,7 +128,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="collectionEndDate"><g:message code="aekos.activity.endDate"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.endDate"/>',

@@ -614,7 +614,7 @@ function ProjectFinder(config) {
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
         savedViewMode = savedViewMode || "grid-tab"; //Default is the new map-popup view
-        $('.project-finder-tab a#'+savedViewMode).tab('show');
+        Biocollect.Bootstrap5.showTab('.project-finder-tab a#' + savedViewMode);
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
@@ -817,7 +817,7 @@ function ProjectFinder(config) {
         amplify.store('pt-filter', active);
     });
 
-    $(".project-finder-tab a[data-toggle='tab']").on('shown.bs.tab', function (event) {
+    $(".project-finder-tab a[data-bs-toggle='tab']").on('shown.bs.tab', function (event) {
         // var viewMode = getActiveButtonValues($("#pt-view"));
         // pageWindow.listView(viewMode[0] == "listView");
         // pageWindow.viewMode(viewMode[0])

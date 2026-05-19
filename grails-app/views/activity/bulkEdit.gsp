@@ -2,7 +2,7 @@
 <g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Create | Activity | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -29,7 +29,7 @@
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <style type="text/css">
     input.editor-text {
@@ -105,12 +105,12 @@
                         class="icon-upload"></i> Upload data for this table</button>
 
                 <div id="bulkUpload" style="display:none;">
-                    <div class="text-left" style="margin:5px">
+                    <div class="text-start" style="margin:5px">
                         <a target="_blank" id="downloadTemplate"
                            class="btn btn-dark btn-sm">Step 1 - Download template (.xlsx)</a>
                     </div>
 
-                    <div class="text-left" style="margin:5px">
+                    <div class="text-start" style="margin:5px">
                         <span class="btn btn-dark btn-sm fileinput-button">
                             Step 2 - Upload populated template <input id="fileupload" type="file" name="templateFile">
                         </span>
@@ -520,7 +520,7 @@
 
         // Slickgrid / jqueryValidationEngine integration for some amount of user experience consistency.
         $('.validationEngineContainer').validationEngine({scroll:false});
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#downloadTemplate').on('click',function() {
             var ids = []

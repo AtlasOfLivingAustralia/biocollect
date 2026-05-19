@@ -6,9 +6,9 @@
 
             <div class="span12">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#survey-all-data-activities" id='survey-all-data-activities-tab' data-toggle="tab">Records</a></li>
-                    <li><a href="#survey-all-data-records" id='survey-all-data-records-tab' data-toggle="tab">Records</a></li>
-                    <li><a href="#survey-all-data-map" id='survey-all-data-map-tab' data-toggle="pill">Map</a></li>
+                    <li class="active"><a href="#survey-all-data-activities" id='survey-all-data-activities-tab' data-bs-toggle="tab">Records</a></li>
+                    <li><a href="#survey-all-data-records" id='survey-all-data-records-tab' data-bs-toggle="tab">Records</a></li>
+                    <li><a href="#survey-all-data-map" id='survey-all-data-map-tab' data-bs-toggle="pill">Map</a></li>
 
                 </ul>
 

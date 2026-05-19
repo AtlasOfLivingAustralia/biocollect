@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
@@ -104,7 +104,7 @@
                 <g:if test="${flash.errorMessage || flash.message}">
                     <div class="span5">
                         <div class="alert alert-danger">
-                            <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                            <button class="btn-close" onclick="$('.alert').fadeOut();" href="#">×</button>
                             ${flash.errorMessage?:flash.message}
                         </div>
                     </div>
@@ -125,14 +125,14 @@
     <!-- content tabs -->
     <g:set var="tabIsActive"><g:if test="${user?.hasViewAccess}">tab</g:if></g:set>
     <ul id="projectTabs" class="nav nav-tabs big-tabs">
-        <li class="active"><a href="#overview" id="overview-tab" data-toggle="tab">Overview</a></li>
-        <li><a href="#document" id="document-tab" data-toggle="${tabIsActive}">Documents</a></li>
-        <li><a href="#plan" id="plan-tab" data-toggle="${tabIsActive}">Activities</a></li>
+        <li class="active"><a href="#overview" id="overview-tab" data-bs-toggle="tab">Overview</a></li>
+        <li><a href="#document" id="document-tab" data-bs-toggle="${tabIsActive}">Documents</a></li>
+        <li><a href="#plan" id="plan-tab" data-bs-toggle="${tabIsActive}">Activities</a></li>
         %{--<g:if test="${!hubConfig?.defaultFacetQuery.contains('isWorks:true')}">--}%
-            %{--<li><a href="#site" id="site-tab" data-toggle="${tabIsActive}">Sites</a></li>--}%
+            %{--<li><a href="#site" id="site-tab" data-bs-toggle="${tabIsActive}">Sites</a></li>--}%
         %{--</g:if>--}%
-        <li><a href="#dashboard" id="dashboard-tab" data-toggle="${tabIsActive}">Dashboard</a></li>
-        <g:if test="${(user?.isAdmin || user?.isCaseManager) && user?.isEditor}"><li><a href="#admin" id="admin-tab" data-toggle="tab">Admin</a></li></g:if>
+        <li><a href="#dashboard" id="dashboard-tab" data-bs-toggle="${tabIsActive}">Dashboard</a></li>
+        <g:if test="${(user?.isAdmin || user?.isCaseManager) && user?.isEditor}"><li><a href="#admin" id="admin-tab" data-bs-toggle="tab">Admin</a></li></g:if>
     </ul>
     <div class="tab-content" style="overflow:visible;">
         <div class="tab-pane active" id="overview">
@@ -176,11 +176,11 @@
                     <div class="span3" data-bind="visible:status" style="margin-bottom: 0">
                         <span data-bind="if: status().toLowerCase() == 'active'">
                             Project Status:
-                            <span style="text-transform:uppercase;" data-bind="text:status" class="badge badge-success" style="font-size: 13px;"></span>
+                            <span style="text-transform:uppercase;" data-bind="text:status" class="badge text-bg-success" style="font-size: 13px;"></span>
                         </span>
                         <span data-bind="if: status().toLowerCase() == 'completed'">
                             Project Status:
-                            <span style="text-transform:uppercase;" data-bind="text:status" class="badge badge-info" style="font-size: 13px;"></span>
+                            <span style="text-transform:uppercase;" data-bind="text:status" class="badge text-bg-info" style="font-size: 13px;"></span>
                         </span>
 
                     </div>
@@ -257,16 +257,16 @@
                     <div class="span2 large-space-before">
                         <ul id="adminNav" class="nav nav-tabs nav-stacked ">
                             <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
-                                <li ${activeClass}><a href="#settings" id="settings-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
+                                <li ${activeClass}><a href="#settings" id="settings-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                                 <g:set var="activeClass" value=""/>
                             </g:if>
-                            <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Blog</a></li>
-                            <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
-                            <li><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
+                            <li><a href="#editProjectBlog" id="editProjectBlog-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> Edit Project Blog</a></li>
+                            <li><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> News and events</a></li>
+                            <li><a href="#editProjectStories" id="editprojectstories-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> Project stories</a></li>
 
-                            <li ${activeClass}><a href="#permissions" id="permissions-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Project access</a></li>
-                            <li><a href="#species" id="species-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Species of interest</a></li>
-                            <li><a href="#edit-documents" id="documents-tab" data-toggle="tab"><i class="icon-chevron-right"></i> Documents</a></li>
+                            <li ${activeClass}><a href="#permissions" id="permissions-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> Project access</a></li>
+                            <li><a href="#species" id="species-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> Species of interest</a></li>
+                            <li><a href="#edit-documents" id="documents-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> Documents</a></li>
                         </ul>
                     </div>
                     <div class="span10">
@@ -371,7 +371,7 @@
 
             $('#settings-validation').validationEngine();
 
-            $('.helphover').popover({animation: true, trigger:'hover'});
+            Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
             $('#cancel').on('click',function () {
                 document.location.href = "${createLink(action: 'index', id: project.projectId)}";
@@ -391,7 +391,7 @@
 
             var dashboardInitialised = false;
 
-            $('#projectTabs a[data-toggle="tab"]').on('shown', function (e) {
+            $('#projectTabs a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 var tab = e.currentTarget.hash;
                 amplify.store('project-tab-state', tab);
                 // only init map when the tab is first shown
@@ -429,7 +429,7 @@
             });
 
             var newsAndEventsInitialised = false;
-            $('#editnewsandevents-tab').on('shown', function() {
+            $('#editnewsandevents-tab').on('shown.bs.tab', function() {
                 if (!newsAndEventsInitialised) {
                     var newsAndEventsViewModel = new window.newsAndEventsViewModel(viewModel, newsAndEventsMarkdown);
                     ko.applyBindings(newsAndEventsViewModel, $('#editnewsAndEventsContent')[0]);
@@ -438,7 +438,7 @@
 
             });
             var projectStoriesInitialised = false;
-            $('#editprojectstories-tab').on('shown', function() {
+            $('#editprojectstories-tab').on('shown.bs.tab', function() {
                 if (!projectStoriesInitialised) {
                     var projectStoriesViewModel = new window.projectStoriesViewModel(viewModel, projectStoriesMarkdown);
                     ko.applyBindings(projectStoriesViewModel, $('#editprojectStoriesContent')[0]);
@@ -450,13 +450,13 @@
             var storedTab = amplify.store('project-tab-state');
             var isEditor = ${user?.isEditor?:false};
             if (storedTab === '') {
-                $('#overview-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#overview-tab');
             } else if (isEditor) {
-                $(storedTab + '-tab').tab('show');
+                Biocollect.Bootstrap5.showTab(storedTab + '-tab');
             }
 
             // Non-editors should get tooltip and popup when trying to click other tabs
-            $('#projectTabs li a').not('[data-toggle="tab"]').css('cursor', 'not-allowed') //.data('placement',"right")
+            $('#projectTabs li a').not('[data-bs-toggle="tab"]').css('cursor', 'not-allowed') //.data('placement',"right")
             .attr('title','Only available to project members').addClass('tooltips');
 
             // Star button click event
@@ -466,11 +466,11 @@
             });
 
             // BS tooltip
-            $('.tooltips').tooltip();
+            Biocollect.Bootstrap5.initTooltips('.tooltips');
 
             $('#gotoEditBlog').on('click',function () {
                 amplify.store('project-admin-tab-state', '#editProjectBlog');
-                $('#admin-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#admin-tab');
             });
 
         });// end window.load
@@ -513,16 +513,16 @@
             $(window).on('load',function () {
 
                 // remember state of admin nav (vertical tabs)
-                $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {
+                $('#adminNav a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                     var tab = e.currentTarget.hash;
                     amplify.store('project-admin-tab-state', tab);
                 });
                 var storedAdminTab = amplify.store('project-admin-tab-state');
                 // restore state if saved
                 if (storedAdminTab === '') {
-                    $('#permissions-tab').tab('show');
+                    Biocollect.Bootstrap5.showTab('#permissions-tab');
                 } else {
-                    $(storedAdminTab + "-tab").tab('show');
+                    Biocollect.Bootstrap5.showTab(storedAdminTab + "-tab");
                 }
             }); // end window.load
 

@@ -7,7 +7,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="samplingDesign"><g:message code="aekos.sampling.design"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.sampling.design"/>',
@@ -24,7 +24,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="measurementTheme"><g:message code="aekos.measurement.theme"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.measurement.theme"/>',
@@ -41,7 +41,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="measurement"><g:message code="aekos.method.measurement"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.method.measurement"/>',
@@ -59,7 +59,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="methodName"><g:message code="aekos.method.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.method.name"/>',
@@ -76,7 +76,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="methodAbstract"><g:message code="aekos.method.description"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.method.description"/>',
@@ -93,7 +93,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="methodDriftDescription"><g:message code="aekos.method.drift.description"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.method.drift.description"/>',
@@ -109,7 +109,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="artefacts"><g:message code="aekos.other.artefacts"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.other.artefacts"/>',

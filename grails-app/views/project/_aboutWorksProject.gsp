@@ -40,11 +40,11 @@
         <div class="span3" data-bind="visible:status" style="margin-bottom: 0">
             <span data-bind="if: status().toLowerCase() == 'active'">
                 Project Status:
-                <span style="text-transform:uppercase;" data-bind="text:status" class="badge badge-success" style="font-size: 13px;"></span>
+                <span style="text-transform:uppercase;" data-bind="text:status" class="badge text-bg-success" style="font-size: 13px;"></span>
             </span>
             <span data-bind="if: status().toLowerCase() == 'completed'">
                 Project Status:
-                <span style="text-transform:uppercase;" data-bind="text:status" class="badge badge-info" style="font-size: 13px;"></span>
+                <span style="text-transform:uppercase;" data-bind="text:status" class="badge text-bg-info" style="font-size: 13px;"></span>
             </span>
 
         </div>

@@ -2,7 +2,7 @@ const jose = require('node-jose');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const axios = require('axios');
-const {startServer, stopServer,blockSite, unblockSite} = require('../utils/proxy');
+const { startServer, stopServer, blockSite, unblockSite } = require('../utils/proxy');
 const util = require('node:util');
 const execFile = util.promisify(require('node:child_process').execFile);
 const path = require('node:path');
@@ -29,7 +29,7 @@ class StubbedCasSpec {
     };
     privateKey = '';
     systemToken = '';
-    constructor () {
+    constructor() {
         this.testConfig = browser.options.testConfig;
         this.baseUrl = this.testConfig.baseUrl;
         this.serverUrl = this.testConfig.serverUrl;
@@ -40,13 +40,13 @@ class StubbedCasSpec {
     }
 
     async loginAsAlaAdmin() {
-        await this.login({userId:this.ALA_ADMIN_USER_ID, role:"ROLE_ADMIN", userName: 'ala_admin@nowhere.com', email: 'ala_admin@nowhere.com', firstName:"ALA", lastName:"Administrator"})
+        await this.login({ userId: this.ALA_ADMIN_USER_ID, role: "ROLE_ADMIN", userName: 'ala_admin@nowhere.com', email: 'ala_admin@nowhere.com', firstName: "ALA", lastName: "Administrator" })
     }
 
     async loginAsPwaUser(expired = false) {
         let userDetails = this.getUserDetails('1');
         await this.setupUserProfileLookup(userDetails)
-        let {tokenSet, profile} = await this.setupOidcAuthForUser(userDetails, expired);
+        let { tokenSet, profile } = await this.setupOidcAuthForUser(userDetails, expired);
         tokenSet.profile = profile;
         let key = this.localStorageTokenKey;
         console.log(`key - ${key}`);
@@ -59,8 +59,12 @@ class StubbedCasSpec {
         return tokenSet;
     }
 
+    get pwaOidcAuthority() {
+        return `${this.testConfig.wireMockBaseUrl}/cas/oidc`;
+    }
+
     get localStorageTokenKey() {
-        return `oidc.user:${browser.options.testConfig.wireMockBaseUrl}/cas/oidc:${this.testConfig.oidc.clientId}`
+        return `oidc.user:${this.pwaOidcAuthority}:${this.testConfig.oidc.clientId}`
     }
 
     async loginAsUser(userId) {
@@ -94,11 +98,11 @@ class StubbedCasSpec {
     }
 
     async login(userDetails) {
-      if (this.loggedInUser != userDetails.userId) {
-          await this.logout()
-      }
-      await this.oidcLogin(userDetails)
-      this.loggedInUser = userDetails.userId;
+        if (this.loggedInUser != userDetails.userId) {
+            await this.logout()
+        }
+        await this.oidcLogin(userDetails)
+        this.loggedInUser = userDetails.userId;
     }
 
     async logout(returnPage = '') {
@@ -161,7 +165,7 @@ class StubbedCasSpec {
         }
 
         // Define ID Token Claims
-        let {payload, expiresIn, expiresAt} = this.getUserTokenClaim(userDetails, roles, clientId, expired);
+        let { payload, expiresIn, expiresAt } = this.getUserTokenClaim(userDetails, roles, clientId, expired);
         const idToken = await this.signPayload(payload);
         let tokenSet = this.getUserToken(idToken, expiresIn, expiresAt);
 
@@ -170,15 +174,16 @@ class StubbedCasSpec {
         let profile = await this.setupProfileEndpoint(userDetails, idToken);
 
         // Return the ID token
-        return {tokenSet, profile};
+        return { tokenSet, profile };
     }
 
     getUserToken(idToken, expiresIn, expiresAt) {
         return {
             access_token: idToken,
             id_token: idToken,
-            refresh_token: idToken,
-            token_type: 'bearer',
+            refresh_token: null,
+            token_type: 'Bearer',
+            session_state: 'test_sid',
             expires_in: expiresIn,
             expires_at: expiresAt,
             scope: this.testConfig.oidc.scope
@@ -190,14 +195,15 @@ class StubbedCasSpec {
         let expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
         console.log('Expires In: ', expiresIn);
         console.log('Expires At: ', expiresAt);
-        let payload=  {
+        let payload = {
             at_hash: 'KX-L2Fj6Z9ow-gOpYfehRA',
             sub: userDetails.userId,
+            userid: userDetails.userId,
             username: userDetails.userId,
             email_verified: true,
             role: roles,
             amr: 'DelegatedClientAuthenticationHandler',
-            iss: `${this.testConfig.wireMockBaseUrl}/cas/oidc`,
+            iss: this.pwaOidcAuthority,
             preferred_username: userDetails.email,
             given_name: userDetails.firstName,
             family_name: userDetails.lastName,
@@ -215,7 +221,7 @@ class StubbedCasSpec {
             email: userDetails.email,
             scope: this.testConfig.oidc.scope
         };
-        return {payload, expiresIn, expiresAt};
+        return { payload, expiresIn, expiresAt };
     }
 
     async setupUserProfileLookup(userDetails) {
@@ -248,7 +254,7 @@ class StubbedCasSpec {
         }
     }
 
-    async setupAccessToken(url, body, base64EncodedAuth){
+    async setupAccessToken(url, body, base64EncodedAuth) {
         try {
             // Set up POST request to "/cas/oidc/oidcAccessToken"
             await axios.post(`${this.testConfig.wireMockBaseUrl}/__admin/mappings`, {
@@ -276,7 +282,7 @@ class StubbedCasSpec {
         }
     }
 
-    async setupProfileEndpoint(userDetails, userToken){
+    async setupProfileEndpoint(userDetails, userToken) {
         // Create user profile
         const profile = {
             userid: userDetails.userId,
@@ -292,7 +298,7 @@ class StubbedCasSpec {
                 method: 'GET',
                 url: '/cas/oidc/oidcProfile',
                 headers: {
-                    'Authorization':  {
+                    'Authorization': {
                         "equalTo": `Bearer ${userToken}`
                     }
                 }
@@ -358,19 +364,22 @@ class StubbedCasSpec {
     async createPrivateKey() {
         if (!this.privateKey) {
             const keyStore = jose.JWK.createKeyStore();
-            this.privateKey = await keyStore.add(this.jwk, 'private', {kid: "localhost:8018"});
+            this.privateKey = await keyStore.add(this.jwk, 'private', { kid: "localhost:8018" });
             console.log("Private Key Created: ", this.privateKey);
         }
 
         return this.privateKey;
     }
 
-    async signPayload(payload){
+    async signPayload(payload) {
         await this.createPrivateKey();
-        let accessToken = await jose.JWS.createSign({format:"compact", fields: {
+        let accessToken = await jose.JWS.createSign({
+            format: "compact",
+            fields: {
                 alg: 'RS256',
                 kid: "localhost:8018",
-            }}, this.privateKey)
+            }
+        }, this.privateKey)
             .update(JSON.stringify(payload))
             .final();
         console.log("Access Token Created: ", accessToken);
@@ -387,18 +396,18 @@ class StubbedCasSpec {
         if (this.testConfig.databasePassword) {
             args.push(this.testConfig.databasePassword);
         }
-        const {error, stdout, stderr} = await execFile(this.testConfig.datasetLoadScript, args)
+        const { error, stdout, stderr } = await execFile(this.testConfig.datasetLoadScript, args)
         console.log(`result of command ${JSON.stringify(error)} \n\n ${JSON.stringify(stderr)} \n\n ${JSON.stringify(stdout)}`);
     }
 
-    async setOffline(){
+    async setOffline() {
         console.log('Going offline - ' + this.baseUrl);
         this.offlineMock = await browser.mock(`${this.baseUrl}/**`);
         this.offlineMock.on('request', (req) => console.log('Intercepted:', req.url));
         await this.offlineMock.abort("Failed");
     }
 
-    async setOnline(){
+    async setOnline() {
         if (this.offlineMock) {
             console.log('Going online');
             await this.offlineMock.restore();
@@ -421,10 +430,10 @@ class StubbedCasSpec {
                 }
                 return !!ko.dataFor(document.querySelector("${selector}"));`);
             return result;
-        }, {timeout: 180000});
+        }, { timeout: 180000 });
     }
 
-    async takeScreenShot(name){
+    async takeScreenShot(name) {
         var body = await $("body");
         await body.saveScreenshot(`./logs/${name}.png`);
     }
@@ -449,7 +458,7 @@ class StubbedCasSpec {
         // click on the map pane to drop the pin
         const mapPane = await $('.leaflet-map-pane');
         await mapPane.moveTo();
-        await mapPane.click({x: 100, y: 100});
+        await mapPane.click({ x: 100, y: 100 });
 
         // wait for the point to be added to dropdown
         const dropdown = $('.select2-selection__rendered');

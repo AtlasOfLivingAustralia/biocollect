@@ -416,13 +416,13 @@ function showDocumentAttachInModal(uploadUrl, documentViewModel, modalSelector, 
 
     // Close the modal and tidy up the bindings.
     var closeModal = function() {
-        $modal.modal('hide');
+        Biocollect.Bootstrap5.hideModal($modal);
     };
 
     ko.applyBindings(documentViewModel, $fileUpload[0]);
 
     // Do the binding from the model to the view?  Or assume done already?
-    $modal.modal({backdrop:'static'});
+    Biocollect.Bootstrap5.showModal($modal, {backdrop:'static'});
     $modal.on('shown.bs.modal', function() {
         $modal.find('form').validationEngine({'custom_error_messages': {
             '#thirdPartyConsentCheckbox': {

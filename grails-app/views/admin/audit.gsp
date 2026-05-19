@@ -11,7 +11,7 @@
         <asset:stylesheet src="datatables-manifest.css"/>
         <asset:javascript src="datatables-manifest.js"/>
     <h3>Audit</h3>
-        <form class="form-inline">
+        <form class="d-flex align-items-center">
             Search for a project:
             <g:textField id="searchTerm" name="searchTerm" placeholder="Search for projects..." value="${searchTerm}"></g:textField>
             <button class="btn" id="btnProjectSearch"><i class="icon-search"></i></button>
@@ -46,12 +46,12 @@
     $(document).ready(function() {
 
         $('#project-list').DataTable({
-            "bSort": false,
-            "oLanguage": {
-             "sSearch": "Search: "
+            ordering: false,
+            language: {
+             search: "Search: "
             }
         });
-        $('.dataTables_filter input').attr("placeholder", "Name or Description");
+        $('.dt-search input').attr("placeholder", "Name or Description");
 
         $("#btnProjectSearch").on('click',function(e) {
             e.preventDefault();

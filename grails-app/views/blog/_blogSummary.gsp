@@ -3,10 +3,10 @@
     <g:if test="${blog.size() > 0}">
         <!-- ko foreach:entries -->
         <div class="row mt-3" style="border-bottom: ridge">
-            <div class="col-12 media">
-                <img data-bind="visible:imageUrl(), attr:{src:imageUrl}" class="mr-2" width="50" height="50">
-                <i class="blog-icon pull-left fa fa-3x mr-2" data-bind="visible:stockIcon(), css:stockIcon"></i>
-                <div class="media-body">
+            <div class="col-12 d-flex">
+                <img data-bind="visible:imageUrl(), attr:{src:imageUrl}" class="me-2" width="50" height="50">
+                <i class="blog-icon pull-left fa fa-3x me-2" data-bind="visible:stockIcon(), css:stockIcon"></i>
+                <div class="flex-grow-1">
                     <h5 data-bind="text:title"></h5>
                     <p class="excerpt" data-bind="text:shortContent"></p>
                     <div class="row">

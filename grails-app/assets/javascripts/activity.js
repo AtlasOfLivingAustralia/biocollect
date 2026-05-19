@@ -55,6 +55,15 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
     self.transients.downloadEmail = ko.observable(user ? user.userName : null);
     self.transients.loading = ko.observable(false);
     self.transients.activitiesToDelete = ko.observableArray([]);
+    self.transients.showEmptyState = ko.pureComputed(function() {
+        return !self.transients.loading() && self.total() === 0;
+    });
+    self.transients.showProjectEmptyMessage = ko.pureComputed(function() {
+        return self.transients.showEmptyState() && self.searchTerm().trim() === '' && self.filterViewModel.selectedFacets().length === 0;
+    });
+    self.transients.showNoResultsMessage = ko.pureComputed(function() {
+        return self.transients.showEmptyState() && (self.searchTerm().trim() !== '' || self.filterViewModel.selectedFacets().length > 0);
+    });
     self.transients.isBulkActionsEnabled = ko.pureComputed(function () {
         var activities = self.activities(), show = false;
         activities.forEach(function (item) {

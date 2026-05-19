@@ -3,6 +3,7 @@ Thumbs.db
 .gradle
 build/
 out/
+bin/
 .idea
 *.iml
 *.ipr
@@ -12,3 +13,5 @@ out/
 .classpath
 .asscache
 grails-app/assets/components/compile/*
+node_modules
+logs

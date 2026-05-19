@@ -9,7 +9,7 @@
             <textarea id="commentMainTextarea" class="form-control" data-bind="value: newComment().text"></textarea>
         </div>
 
-        <div class="comment-footer float-right">
+        <div class="comment-footer float-end">
             <div class="btn btn-primary-dark btn-sm" data-bind="click: create"><i class="fas fa-plus"></i> post</div>
         </div>
     </div>
@@ -17,7 +17,7 @@
     <div id="commentDisplay">
         <div id="commentTools">
             <span>
-                <select class="form-control"
+                <select class="form-select"
                         data-bind="options: sortOptions, optionsText: 'text', value: selectedSort, event:{change: list}"></select>
             </span>
         </div>
@@ -27,19 +27,21 @@
     </div>
     <div data-bind="visible: showLoadMore" class="row">
         <div class="col-12">
-            <button class="btn btn-block btn-primary-dark" data-bind="click: more"><i class="fas fa-chevron-circle-down"></i> load more comments</button>
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary-dark" data-bind="click: more"><i class="fas fa-chevron-circle-down"></i> load more comments</button>
+            </div>
         </div>
     </div>
 </div>
 <script type="text/html" id="template-comment">
     <div class="comment-body">
-        <div class="media" >
-            <div class="float-left comment-indent" data-bind="css: { hide: !$data.parent()}"></div>
-            <div class="media-body" >
-                <b class="comment-username media-heading" data-bind="text: displayName, visible: !!displayName"></b>
+        <div class="d-flex" >
+            <div class="float-start comment-indent" data-bind="css: { hide: !$data.parent()}"></div>
+            <div class="flex-grow-1" >
+                <b class="comment-username d-flex-heading" data-bind="text: displayName, visible: !!displayName"></b>
                 <span data-bind="visible: !!lastUpdated()">commented on <span data-bind="text: lastUpdated.formattedDate"></span></span>
                 <div data-bind="visible: !edit()">
-                    <pre class="media" data-bind="text: text">
+                    <pre class="d-flex" data-bind="text: text">
                     </pre>
                     <div class="row btn-space">
                         <div class="col-12">

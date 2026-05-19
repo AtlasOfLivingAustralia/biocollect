@@ -20,8 +20,8 @@ var HubSettingsViewModel = function (programsModel, options) {
 
     self.transients = {
         programNames: programNames,
-        availableSkins: ['bs4'],
-        configurableTemplates: ['bs4'],
+        availableSkins: ['bs5'],
+        configurableTemplates: ['bs5'],
         defaultHomePage: '/project/citizenScience',
         hubHomePage: '/hub/index'
     };
@@ -637,7 +637,7 @@ var LinkViewModel = function (config) {
     self.role = ko.observable(config.role || '');
     self.introductoryText = ko.observable(config.introductoryText || '');
     self.launchModal = function () {
-        $(elementId).modal();
+        Biocollect.Bootstrap5.showModal(elementId);
         self.initialiseListeners();
     }
     self.initialiseListeners = function () {
@@ -655,7 +655,7 @@ var LinkViewModel = function (config) {
     self.saveIntroductoryText = function () {
         var editor = $(ckeditorElement)[0].editor;
         self.introductoryText(editor && editor.getData());
-        $(elementId).modal('hide');
+        Biocollect.Bootstrap5.hideModal(elementId);
     }
 };
 

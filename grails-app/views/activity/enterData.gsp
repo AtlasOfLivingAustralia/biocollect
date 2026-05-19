@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -50,7 +50,7 @@
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterActivityData.js"/>
     <asset:javascript src="meritActivity.js"/>
@@ -77,7 +77,7 @@
             <div class="col-sm-9">
                 <!-- Common activity fields -->
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
 
                     <div class="col-sm-9 required">
                         <label class="for-readonly" for="description">Description</label>
@@ -86,12 +86,12 @@
                     </div>
                 </div>
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
                     <div class="col-sm-9 " data-bind="visible:transients.themes && transients.themes.length > 1">
                         <label for="theme">Major theme</label>
                         <select id="theme"
                                 data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
-                                class="form-control">
+                                class="form-select">
                         </select>
                     </div>
 
@@ -102,7 +102,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
                     <div class="col-sm-6 d-flex flex-column">
                         <label class="for-readonly inline">Activity progress</label>
                         <button type="button" class="btn col-sm-2"
@@ -113,7 +113,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row space-after">
+                <div class="mb-3 row space-after">
 
                     <div class="col-sm-6" data-bind="visible:plannedStartDate()">
                         <div class="d-flex flex-column">
@@ -130,7 +130,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <div class="col-sm-6 required">
                         <label for="startDate"><b>Actual start date</b>
                             <fc:iconHelp title="Start date"
@@ -146,7 +146,7 @@
                             <div class="input-group">
                                 <fc:datePicker targetField="startDate.date" name="startDate"
                                                data-validation-engine="validate[required]" printable="${printView}"
-                                               class="form-control" theme="btn-dark" bs4="true"/>
+                                               class="form-control" theme="btn-dark" bs5="true"/>
                             </div>
                         </g:else>
                     </div>
@@ -167,7 +167,7 @@
                             <div class="input-group">
                                 <fc:datePicker targetField="endDate.date" name="endDate"
                                                data-validation-engine="validate[future[startDate]]" printable="${printView}"
-                                               class="form-control" theme="btn-dark" bs4="true"/>
+                                               class="form-control" theme="btn-dark" bs5="true"/>
                             </div>
                         </g:else>
                     </div>
@@ -378,7 +378,7 @@
         </g:if>
         </g:each>
 
-        $('.helphover').popover({animation: true, trigger: 'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger: 'hover'});
 
         $('#save').on('click',function () {
             master.save(activityNavigationModel.afterSave);

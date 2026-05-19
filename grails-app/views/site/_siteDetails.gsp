@@ -12,7 +12,7 @@
 
     <div class="row">
         <div class="col-12 col-md-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="name"><g:message code="site.details.siteName"/>
                     <fc:iconHelp title="Site name"><g:message code="site.details.siteName.help"/></fc:iconHelp>
                     <span class="req-field"></span>
@@ -24,7 +24,7 @@
         </div>
         <g:if test="${hideSiteMetadata != true}">
         <div class="col-12 col-md-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="siteArea"><g:message code="site.details.area"/>
                     <fc:iconHelp
                             title="${message(code: 'site.details.area')}"><g:message code="site.details.area.help"/></fc:iconHelp></label>
@@ -37,7 +37,7 @@
     <g:if test="${project && controllerName.equals('site')}">
     <div class="row">
         <div class="col-12">
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="projectName"><g:message code="site.details.projectName"/></label>
                 <label class="form-control" id="projectName" readonly>
                     <g:link controller="project" action="index"
@@ -52,7 +52,7 @@
 
     <div class="row">
         <div class="col-12 col-md-3">
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="externalId"><g:message code="site.details.externalId"/>
                 <fc:iconHelp title="${message(code: 'site.details.externalId')}"><g:message code="site.details.externalId.help"/></fc:iconHelp>
                 </label>
@@ -61,7 +61,7 @@
         </div>
 
         <div class="col-12 col-md-3">
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="siteType"><g:message code="site.details.type"/> <fc:iconHelp
                         title="${message(code: 'site.details.type')}"><g:message code="site.details.type.help"/></fc:iconHelp></label>
                 <g:select class="form-control"
@@ -74,7 +74,7 @@
         </div>
 
         <div class="col-12 col-md-6">
-            <div class="form-group">
+            <div class="mb-3">
                 <label for="catchment"><g:message code="site.details.catchment"/><fc:iconHelp
                         title="${message(code: 'site.details.catchment')}"><g:message code="site.details.catchment.help"/></fc:iconHelp></label>
                 <input class="form-control" id="catchment" data-bind="value: site().catchment" type="text"/>

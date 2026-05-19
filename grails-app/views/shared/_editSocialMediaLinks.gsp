@@ -1,4 +1,4 @@
-<div class="form-group row">
+<div class="mb-3 row">
     <label class="col-form-label ${isProject? 'col-sm-4' : 'col-sm-3'}"><g:message code="g.socialMedia" />:<fc:iconHelp><g:message code="g.socialMedia.help" args="[entity]"/></fc:iconHelp></label>
     <div class="${isProject? 'col-sm-8' : 'col-sm-9'}">
         <table class="table mb-0 align-middle">
@@ -12,7 +12,7 @@
             </tbody>
             <tfoot data-bind="visible:transients.socialMediaUnspecified().length > 0">
             <tr><td class="p-0" colspan="3">
-                <select class="form-control" id="addSocialMedia"
+                <select class="form-select" id="addSocialMedia"
                         data-bind="options:transients.socialMediaUnspecified,optionsText:'name',optionsValue:'role',value:transients.socialMediaToAdd,optionsCaption:'Add social media link...'"></select>
             </td></tr>
             </tfoot>
