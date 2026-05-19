@@ -27,22 +27,20 @@ describe("Application installation Spec", function () {
     });
 
     beforeEach(async function () {
+        console.log("before each");
         await pwaAppPage.open();
+        console.log("before each - open");
         await pwaAppPage.loginAsPwaUser();
+        console.log("before each - login");
         await pwaAppPage.open();
+        console.log("before each - open again");
         // await browser.pause(5000);
         // await pwaAppPage.start();
         // console.log("before each - start");
     });
 
     afterEach(async function () {
-        try {
-            await browser.switchFrame(null);
-            await pwaAppPage.logout();
-        }
-        catch (e) {
-            console.log("Logout failed:", e.message);
-        }
+        await pwaAppPage.logout();
     });
 
     afterAll(async function () {
@@ -64,7 +62,8 @@ describe("Application installation Spec", function () {
         console.log("iframe context id- " +contextId);
         await addBioActivityPage.setSite(site);
         await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`, true);
-
+        // Wait for all promises to resolve
+        await Promise.all(promises);
         await addBioActivityPage.setDate('01/01/2020');
         await addBioActivityPage.setSpecies('Acavomonidia', true)
         // Save the activity
@@ -75,6 +74,7 @@ describe("Application installation Spec", function () {
         contextId = await browser.switchFrame(null);
         console.log("main frame context id- " +contextId);
         await pwaAppPage.closeModal();
+        console.log("number of records checked again");
 
         await startServer();
         await pwaAppPage.open();
@@ -92,23 +92,12 @@ describe("Application installation Spec", function () {
         expect(await offlineListPage.at()).toEqual(true);
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
-
         await offlineListPage.uploadRecords();
-
         await addBioActivityPage.takeScreenShot("openProjectAndTakeItOfflinePublishedRecords");
         await browser.pause(5000);
-
-        const firstUploadButtonExists = await offlineListPage.firstUploadButton.isExisting();
-        if (firstUploadButtonExists) {
-            console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
-        }
-        const alertExists = await offlineListPage.alert.isExisting();
-        if (alertExists) {
-            console.log("alert text:", await offlineListPage.alert.getText());
-        }
-
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
+        await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
 
@@ -135,23 +124,26 @@ describe("Application installation Spec", function () {
         }
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMap");
         await pwaAppPage.viewProject(project);
-        const addRecordButton = pwaAppPage.addRecordBtn(pa);
-        await addRecordButton.waitForExist({ timeout: 20000 });
-        await addRecordButton.waitForDisplayed({ timeout: 20000 });
+        await browser.pause(3000); // Wait for project activities to load before going offline
         await stopServer();
-        await addRecordButton.click();
+        await pwaAppPage.addRecord(pa);
         await browser.pause(5000);
         let iframe = $('iframe');
-        let contextId = await browser.switchFrame(iframe);
+        let contextId = await browser.switchFrame($("iframe"));
+        console.log("iframe context id- " +contextId);
         await addBioActivityPage.dropPin();
-
         await addBioActivityPage.uploadImage(`${addBioActivityPage.testConfig.resourceDir}/images/10_years.png`, true);
+        // Wait for all promises to resolve
+        await Promise.all(promises);
         await addBioActivityPage.setDate('01/01/2020');
-        await addBioActivityPage.setSpecies('Fungi', true);
+        await addBioActivityPage.setSpecies('Fungi', true)
+        // Save the activity
         await addBioActivityPage.saveActivity();
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapAfterSave");
         contextId = await browser.switchFrame(null);
+        console.log("main frame context id- " +contextId);
         await pwaAppPage.closeModal();
+        console.log("number of records checked again");
 
         await startServer();
         await pwaAppPage.open();
@@ -164,27 +156,15 @@ describe("Application installation Spec", function () {
         console.log("iframe context id- " +contextId);
 
         offlineListPage = new OfflineListPage();
-
         expect(await offlineListPage.at()).toEqual(true);
         await expect(offlineListPage.uploadAllButton).toBeEnabled();
         await expect(offlineListPage.firstUploadButton).toBeEnabled();
-
         await offlineListPage.uploadRecords();
-
         await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapPublishedRecords");
         await browser.pause(5000);
-
-        const firstUploadButtonExists = await offlineListPage.firstUploadButton.isExisting();
-        if (firstUploadButtonExists) {
-            console.log("firstUploadButton enabled:", await offlineListPage.firstUploadButton.isEnabled());
-        }
-        const alertExists = await offlineListPage.alert.isExisting();
-        if (alertExists) {
-            console.log("alert text:", await offlineListPage.alert.getText());
-        }
-
         await expect(offlineListPage.uploadAllButton).toBeDisabled();
 
+        await expect(await offlineListPage.alert).toHaveText("Unpublished records not found");
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
 
@@ -195,19 +175,16 @@ describe("Application installation Spec", function () {
         await browser.pause(3000);
         iframe = $("iframe");
         contextId = await browser.switchFrame(iframe);
-
+        console.log("iframe context id- " +contextId);
         let viewBioActivityPage = new ViewBioActivityPage();
         var speciesEl = viewBioActivityPage.speciesSelector("Fungi");
-
-        await speciesEl.waitForExist({ timeout: 20000 });
+        await addBioActivityPage.takeScreenShot("pinSubmitRecordOfflineAndChooseSiteOnMapViewPublishedRecord");
         await speciesEl.scrollIntoView();
         await expect(speciesEl).toBeDisplayed();
-
-        const pin = await $('.leaflet-marker-icon');
-        await pin.waitForExist({ timeout: 20000 });
-        await pin.waitForDisplayed({ timeout: 20000 });
+        // map pin should be displayed
+        var pin =$('.leaflet-marker-icon');
+        await pin.scrollIntoView();
         await expect(pin).toBeDisplayed();
-
         await browser.switchFrame(null);
         await pwaAppPage.closeModal(null);
     });
