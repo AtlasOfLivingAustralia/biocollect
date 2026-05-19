@@ -19,7 +19,7 @@
             </p>
         </div>
         <div class="col-4" >
-            <select class="form-control" data-bind="options: transients.yesNoOptions, value: transients.alaHarvest, optionsCaption: 'Please select'"></select>
+            <select class="form-select" data-bind="options: transients.yesNoOptions, value: transients.alaHarvest, optionsCaption: 'Please select'"></select>
         </div>
     </div>
     <div class="row mt-2">

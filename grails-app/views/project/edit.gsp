@@ -2,7 +2,7 @@
 <g:set var="mapService" bean="mapService"></g:set>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${project.projectId},${project.name?.encodeAsHTML()}"/>
@@ -43,7 +43,7 @@
 
     </asset:script>
     <asset:stylesheet src="project-create-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="organisation.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -91,7 +91,7 @@ $(function(){
     viewModel.checkPublishedProjectActivities(projectActivities);
 
     $('#projectDetails').validationEngine();
-    $('.helphover').popover({animation: true, trigger:'hover'});
+    Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
     ko.applyBindings(viewModel, document.getElementById("projectDetails"));
 

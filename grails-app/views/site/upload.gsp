@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Upload | Sites | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -24,7 +24,7 @@
             },
             returnTo = "${params.returnTo}";
     </asset:script>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
 </head>
 
 <body>
@@ -36,9 +36,9 @@
         <g:if test="${flash.errorMessage || flash.message}">
         <div class="row">
             <div class="col-12">
-                <div class="alert alert-danger" role="alert">
-                    <button class="close" data-dismiss="alert" type="button" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                <div class="alert alert-dismissible alert-danger" role="alert">
+                    <button class="btn-close" data-bs-dismiss="alert" type="button" aria-label="Close">
+                        
                     </button>
                     ${flash.errorMessage ?: flash.message}
                 </div>
@@ -74,21 +74,21 @@
     <form id="sites">
         <fieldset>
             <div class="row mt-3">
-                <div class="col-4 form-group">
+                <div class="col-4 mb-3">
                     <label for="nameAttribute">Shapefile attribute to use as the site name:</label>
-                    <select class="form-control" id="nameAttribute" name="nameAttribute"
+                    <select class="form-select" id="nameAttribute" name="nameAttribute"
                             data-bind="value:nameAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                 </div>
 
-                <div class="col-4 form-group">
+                <div class="col-4 mb-3">
                     <label for="nameAttribute">Shapefile attribute to use as the site description:</label>
-                    <select class="form-control" id="descriptionAttribute" name="descriptionAttribute"
+                    <select class="form-select" id="descriptionAttribute" name="descriptionAttribute"
                             data-bind="value:descriptionAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                 </div>
 
-                <div class="col-4 form-group">
+                <div class="col-4 mb-3">
                     <label for="nameAttribute">Shapefile attribute to use as the site ID:</label>
-                    <select class="form-control" id="externalIdAttribute" name="externalIdAttribute"
+                    <select class="form-select" id="externalIdAttribute" name="externalIdAttribute"
                             data-bind="value:externalIdAttribute,options:attributeNames,optionsCaption:'Select an attribute'"></select>
                 </div>
             </div>
@@ -252,28 +252,28 @@
                         self.progressText('Uploaded '+payload.sites.length+' of '+payload.sites.length+' sites');
                         self.progress('100%');
                         setTimeout(function() {
-                            $('#uploadProgress').modal('hide');
+                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
                             document.location.href = "${params.returnTo}";
                         }, 1000);
                     } else if(data.message == "error") {
                         self.progressText(data.error);
                         setTimeout(function() {
-                            $('#uploadProgress').modal('hide');
+                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
                         }, 3000);
                     } else {
                         self.progressText("Error uploading the sites, please try again later");
                         setTimeout(function() {
-                            $('#uploadProgress').modal('hide');
+                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
                         }, 3000);
                     }
                },
                error: function () {
-                   $('#uploadProgress').modal('hide');
+                   Biocollect.Bootstrap5.hideModal('#uploadProgress');
                    alert('There was a problem uploading sites.');
                }
           });
           self.progressText('Uploaded 0 of '+payload.sites.length+' sites');
-          $('#uploadProgress').modal({backdrop:'static'});
+          Biocollect.Bootstrap5.showModal('#uploadProgress', {backdrop:'static'});
           setTimeout(self.showProgress, 2000);
     };
 
@@ -326,7 +326,7 @@
     self.countSelectedSites();
 
 }
-$('#uploadProgress').modal({backdrop:'static', show:false});
+Biocollect.Bootstrap5.getModal('#uploadProgress', {backdrop:'static'});
 $('#sites-container').validationEngine();
 ko.applyBindings(new SiteUploadViewModel());
     </g:if>

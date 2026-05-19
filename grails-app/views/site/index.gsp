@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>${site?.name?.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -56,7 +56,7 @@
     </asset:script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -64,20 +64,20 @@
 
 <body>
 <div class="container-fluid">
-    <div class="alert alert-info alert-dismissible" id="message" data-bind="slideVisible: message">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+    <div class="alert alert-dismissible alert-info alert-dismissible" id="message" data-bind="slideVisible: message">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            
         </button>
         <span data-bind="text: message"></span>
     </div>
 
-    <div class="alert alert-info alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+    <div class="alert alert-dismissible alert-info alert-dismissible">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            
         </button>
         <strong><g:message code="site.details.headsUp"/></strong> <g:message code="site.details.editWarning"/>
     </div>
-    <ul class="list-inline text-right">
+    <ul class="list-inline text-end">
         <li class="list-inline-item btn-space">
             <g:set var="disabled">${(!user) ? "disabled='disabled' title='login required'" : ''}</g:set>
         %{--Favourite functionality only available to authenticated users --}%
@@ -111,10 +111,10 @@
     <div class="row">
         <div class="col-12 col-md-6"><!-- left block of header -->
             <g:if test="${flash.errorMessage || flash.message}">
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert"
+                <div class="alert alert-dismissible alert-danger alert-dismissible">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"
                             onclick="$('.alert').fadeOut();" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        
                     </button>
                     ${flash.errorMessage ?: flash.message}
                 </div>
@@ -153,10 +153,10 @@
                         <fc:siteFacet label="NRM" site="${site}" facet="nrm" showPreview="${true}" trimSize="${80}"/>
                         <dt class="col-3"><g:message code="site.metadata.locality"/></dt>
                         <dd class="col-9">${site.extent.geometry.locality ?: 'Not specified'}</dd>
-                        <dt class="col-3" data-toggle="tooltip" title="NVIS major vegetation group"><g:message
+                        <dt class="col-3" data-bs-toggle="tooltip" title="NVIS major vegetation group"><g:message
                                 code="site.metadata.nvisGroup"/></dt>
                         <dd class="col-9">${site.extent.geometry.mvg ?: 'Not specified'}</dd>
-                        <dt class="col-3" data-toggle="tooltip" title="NVIS major vegetation subgroup"><g:message
+                        <dt class="col-3" data-bs-toggle="tooltip" title="NVIS major vegetation subgroup"><g:message
                                 code="site.metadata.nvisSubgroup"/></dt>
                         <dd class="col-9">${site.extent.geometry.mvs ?: 'Not specified'}</dd>
                     </g:if>
@@ -180,7 +180,7 @@
                 </dl>
             </g:if>
             <script>
-                $('dt[data-toggle="tooltip"]').tooltip()
+                Biocollect.Bootstrap5.initTooltips('dt[data-bs-toggle="tooltip"]')
             </script>
         </div>
 
@@ -197,12 +197,12 @@
     <div id="detailsLinkedToSite">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <g:if test="${site.projects}">
-                <li class="nav-item"><a class="nav-link" href="#siteProjects" data-toggle="tab"><g:message
+                <li class="nav-item"><a class="nav-link" href="#siteProjects" data-bs-toggle="tab"><g:message
                         code="g.projects"/></a></li>
             </g:if>
-            <li class="nav-item"><a class="nav-link active" href="#siteActivities" data-toggle="tab"><g:message
+            <li class="nav-item"><a class="nav-link active" href="#siteActivities" data-bs-toggle="tab"><g:message
                     code="site.details.associated.surveysAndActivities"/></a></li>
-            <li class="nav-item"><a class="nav-link" href="#sitePhotopoints" data-toggle="tab"><g:message
+            <li class="nav-item"><a class="nav-link" href="#sitePhotopoints" data-bs-toggle="tab"><g:message
                     code="site.details.photoPoints"/></a></li>
         </ul>
 
@@ -233,7 +233,7 @@
                 <!-- ko if: activities().length == 0 -->
                 <div class="row">
                     <div class="col-12">
-                        <h4 class="text-left margin-bottom-five">
+                        <h4 class="text-start margin-bottom-five">
                             <!-- ko if: $root.searchTerm() != "" || $root.selectedFilters().length > 0 -->
                             <g:message code="site.details.noResults"/>
                             <!-- /ko -->
@@ -251,7 +251,7 @@
 
                 <div class="row">
                     <div class="col-12 col-md-9">
-                        <h3 class="text-left margin-bottom-2"><g:message code="g.found"/> <span
+                        <h3 class="text-start margin-bottom-2"><g:message code="g.found"/> <span
                                 data-bind="text: total()"></span> <g:message code="g.records"/>
                         </h3>
                     </div>
@@ -263,7 +263,7 @@
                         <div class="record flex-grow-1">
                             <div class="row"
                                  data-bind="attr:{class: embargoed() ? 'searchResultSection locked' : 'searchResultSection'}">
-                                <div class="col-12 pl-sm-1">
+                                <div class="col-12 ps-sm-1">
                                     <h4>
                                         <!-- ko if: embargoed() -->
                                         <a href="#" class="helphover"
@@ -330,7 +330,7 @@
                 <g:render template="/shared/pagination" model="${[bs: 4]}"/>
                 <!-- ko if : activities().length > 0 -->
                 <div class="row">
-                    <div class="col-12 text-right">
+                    <div class="col-12 text-end">
                         <small>
                             <span class="fa fa-lock"></span> <g:message code="site.details.accessRestrictedTip"/>
                         </small>
@@ -342,7 +342,7 @@
             </div>
         </div>
     </div>
-    <small class="text-right">
+    <small class="text-end">
         <em>
             <g:message code="site.details.createdOn"/> <fc:formatDateString date="${site.dateCreated}"
                                                                             inputFormat="yyyy-MM-dd'T'HH:mm:ss'Z'"

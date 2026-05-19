@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Edit | ${activity.activityId ?: 'new'} | ${site.name} | ${site.projectName} | <g:message code="g.biocollect"/></title>
     <md:modelStyles model="${model}"/>
     <asset:stylesheet src="forms-manifest.css"/>

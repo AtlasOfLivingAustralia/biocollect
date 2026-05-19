@@ -3,7 +3,7 @@
         <h6>Base layers</h6>
         <div class="row">
             <div class="col-12 table-responsive">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <label class="col-form-label col-4">
                         Choose base layer
                         <a href="#" class="helphover" data-bind="popover: {content:'Select a base layer e.g. - Satellite map, Road map, Topographic map etc.'}">
@@ -12,12 +12,10 @@
                     </label>
                     <div class="col-8 btn-space">
                         <div class="input-group">
-                            <select class="custom-select" data-bind="options: allBaseLayers, optionsText: 'displayText', value: selectedBaseLayer, optionCaption: 'Choose base layer ...'"></select>
-                            <div class="input-group-append">
-                                <button class="btn btn-dark add-base-layer" data-bind="click: addBaseLayerClickHandler, disable: allBaseLayers().length == 0">
-                                    <i class="fas fa-plus"></i> Add
-                                </button>
-                            </div>
+                            <select class="form-select" data-bind="options: allBaseLayers, optionsText: 'displayText', value: selectedBaseLayer, optionCaption: 'Choose base layer ...'"></select>
+                            <button class="btn btn-dark add-base-layer" type="button" data-bind="click: addBaseLayerClickHandler, disable: allBaseLayers().length == 0">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
                         </div>
 
                     </div>
@@ -95,9 +93,9 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="alert alert-info">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                <div class="alert alert-dismissible alert-info">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        
                     </button>
                     <h6><strong>Base Layer Help!</strong></h6>
                     <p>
@@ -122,7 +120,7 @@
         <h6>Overlays</h6>
         <div class="row">
             <div class="col-12 table-responsive">
-                <div class="form-group row">
+                <div class="mb-3 row">
 
                     <div class="col-form-label col-4">
                         Choose overlay
@@ -132,12 +130,10 @@
                     </div>
                     <div class="col-8 btn-space">
                         <div class="input-group">
-                            <select class="custom-select" data-bind="options: allOverlays, optionsText: 'title', value: selectedOverlay, optionCaption: 'Choose overlay ...'"></select>
-                            <div class="input-group-append">
-                                <button class="btn btn-dark add-overlay" data-bind="click: addOverlayClickHandler, disable: allOverlays().length == 0">
-                                    <i class="fas fa-plus"></i> Add
-                                </button>
-                            </div>
+                            <select class="form-select" data-bind="options: allOverlays, optionsText: 'title', value: selectedOverlay, optionCaption: 'Choose overlay ...'"></select>
+                            <button class="btn btn-dark add-overlay" type="button" data-bind="click: addOverlayClickHandler, disable: allOverlays().length == 0">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
                             </div>
                     </div>
                 </div>
@@ -203,8 +199,8 @@
                         <div class="row">
                                 <div class="col-12 btn-space">
                                     <!-- ko if: Biocollect.MapUtilities.isContextualLayer(alaId) || $parent.showAdvancedFeatures -->
-                                    <button class="btn btn-sm btn-dark" data-toggle="collapse"
-                                            data-bind="attr: {'data-target': '#overlay-' + $index()},click: $parent.noDefaultAction">
+                                    <button class="btn btn-sm btn-dark" data-bs-toggle="collapse"
+                                            data-bind="attr: {'data-bs-target': '#overlay-' + $index()},click: $parent.noDefaultAction">
                                         <i class="fas fa-cog"></i>
                                         More settings
                                     </button>
@@ -221,7 +217,7 @@
                         <td colspan="5">
                             <div class="collapse" data-bind="attr: {id: 'overlay-' + $index()}">
                                 <!-- ko if: Biocollect.MapUtilities.isContextualLayer(alaId) -->
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     <label class="col-form-label col-4">
                                         Change the colour of overlay?
                                         <a href="#" class="helphover" data-bind="popover: {content:'It is possible to change the rendering of a contextual layer e.g. Australian state and territories.'}">
@@ -234,7 +230,7 @@
                                     </div>
                                 </div>
                                 <!-- ko if: changeLayerColour -->
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     <label class="col-form-label col-4">
                                         Border colour
                                             <a href="#" class="helphover" data-bind="popover: {content:'Overlay can have many shapes. Set border colour of the shape.'}">
@@ -246,7 +242,7 @@
                                                data-bind="value: boundaryColour" placeholder="hex colour e.g. #fdb863"/>
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     <label class="col-form-label col-4">
                                         Fill colour
                                         <a href="#" class="helphover" data-bind="popover: {content:'Set fill colour of the shape'}">
@@ -259,7 +255,7 @@
                                     </div>
                                 </div>
                                 <!-- /ko -->
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     <label class="col-form-label col-4">
                                         Display label on overlay
                                         <a href="#" class="helphover" data-bind="popover: {content:'The value of each shape can be displayed on the map. Check to display the text on overlay.'}">
@@ -272,7 +268,7 @@
                                     </div>
                                 </div>
                                 <div data-bind="slideVisible: showPropertyName">
-                                    <div class="form-group row">
+                                    <div class="mb-3 row">
                                         <label class="col-form-label col-4">
                                             Colour of label text
                                             <a href="#" class="helphover" data-bind="popover: {content:'Set label colour'}">
@@ -287,16 +283,16 @@
                                 </div>
                                 <!-- /ko -->
                                 <!-- ko if: $parent.showAdvancedFeatures -->
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     <label class="col-form-label col-4">User restriction</label>
                                     <div class="col-8">
-                                        <select class="form-control" data-bind="value: userAccessRestriction">
+                                        <select class="form-select" data-bind="value: userAccessRestriction">
                                             <option value="anyUser" selected>Any user</option>
                                             <option value="loggedInUser" selected>Logged in user</option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div class="mb-3 row">
                                     <label class="col-form-label col-4">In layer shape list</label>
                                     <div class="col-8 form-check">
                                         <input class="form-check-input" type="checkbox"
@@ -320,9 +316,9 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="alert alert-info">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                <div class="alert alert-dismissible alert-info">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        
                     </button>
                     <h6><strong>Overlay Help!</strong></h6>
                     <p>

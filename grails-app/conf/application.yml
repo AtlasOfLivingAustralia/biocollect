@@ -297,17 +297,17 @@ management:
         exclude:
     enabled-by-default: false
 
-# bootstrap4 theme
-bootstrap4:
-  themeDirectory: "/bootstrap4/scss"
+# bootstrap5 theme
+bootstrap5:
+  themeDirectory: "/bootstrap5/scss"
   themeFileName: "styles"
   themeExtension: "scss"
-  copyFromDir: "bootstrap4"
-  copyToDir: "bootstrap4"
+  copyFromDir: "bootstrap5"
+  copyToDir: "bootstrap5"
 
 # used by ala-admin-plugin
 skin:
-  layout: "bs4"
+  layout: "bs5"
 
 ---
 

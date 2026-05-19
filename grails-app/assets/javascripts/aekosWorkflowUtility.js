@@ -44,7 +44,7 @@ AEKOS.Utility = {
         return AEKOS.Utility.createModalElement(template, viewModel)
                 .pipe(function(modalElement) {
                    var deferredModalResult = $.Deferred();
-                   $(modalElement).modal();
+                   Biocollect.Bootstrap5.showModal(modalElement);
              //    viewModel.loadAekosData();
                    AEKOS.Utility.whenUIHiddenThenRemoveUI($(modalElement));
                    return deferredModalResult;
@@ -53,9 +53,9 @@ AEKOS.Utility = {
     whenUIHiddenThenRemoveUI: function($ui) {
         // Hidden event is also called when popover and dialog box within aekos modal closes
         // therefore, we need to filter that out. This is to remove aekosModal div once the user click on Close on aekosModal.
-        $ui.bind('hidden', function (event) {
+        $ui.on('hidden.bs.modal', function (event) {
             var target = $( event.target );
-            if (target.is("#aekosModal:not(.in)")) {
+            if (target.is("#aekosModal")) {
                 // Call ko.cleanNode before removal to prevent memory leaks.
                 $ui.each(function (index, element) {
                     ko.removeNode(element);
