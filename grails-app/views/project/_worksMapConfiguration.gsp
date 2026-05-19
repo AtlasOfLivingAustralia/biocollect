@@ -2,7 +2,7 @@
     <!-- ko with: mapConfiguration -->
     <div data-bind="css: {'ajax-opacity': transients.loading}">
         <div class="row">
-            <div class="col-sm-12 text-left">
+            <div class="col-sm-12 text-start">
                 <h2 class="strong"><g:message code="mapConfiguration.heading"/></h2>
             </div>
         </div>
@@ -16,7 +16,7 @@
         <div class="px-3" id="site-accordion" class="bg-light">
             <div>
                 <div class="p-3">
-                    <div class="form-check form-group m-0">
+                    <div class="form-check mb-3 m-0">
                         <input class="form-check-input" type="radio" name="siteType"
                                data-bind="checked: surveySiteOption, clickBubble: false" value="sitepick"/>
                         <label class="form-check-label">
@@ -24,7 +24,7 @@
                                 <h4 class="m-0"><g:message code="mapConfiguration.sites.pick.title"/></h4>
                             </a>
                         </label>
-                        <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                        <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
                     <!-- ko if: surveySiteOption() == 'sitepick' && !isSiteConfigValid() -->
                     <div class="formError inline mt-2" >
@@ -37,7 +37,7 @@
 
                 </div>
 
-                <div id="site-pick" class="collapse card ml-5 p-3">
+                <div id="site-pick" class="collapse card ms-5 p-3">
                     <div class="card-body mt-3" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick'}">
                         <div data-bind="if: surveySiteOption() === 'sitepick'">
                             <h5 class="card-title"><strong><g:message
@@ -53,7 +53,7 @@
 
             <div>
                 <div class="p-3">
-                    <div class="form-group form-check m-0">
+                    <div class="mb-3 form-check m-0">
                         <input class="form-check-input" type="radio" name="siteType"
                             data-bind="checked: surveySiteOption, clickBubble: false" value="sitecreate"/>
                         <label class="form-check-label">
@@ -61,7 +61,7 @@
                                 <h4 class="m-0"><g:message code="mapConfiguration.sites.create.title"/></h4>
                             </a>
                         </label>
-                        <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                        <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
                     <!-- ko if: surveySiteOption() == 'sitecreate' && !isSiteConfigValid() -->
                     <div class="formError inline mt-2" >
@@ -73,7 +73,7 @@
                     <!-- /ko -->
                 </div>
 
-                <div id="site-create" class="card ml-5 collapse">
+                <div id="site-create" class="card ms-5 collapse">
                     <div class="card-body" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitecreate'}">
                         <div data-bind="if: surveySiteOption() === 'sitecreate'">
                             <h5 class="card-title"><strong><g:message
@@ -89,7 +89,7 @@
 
             <div>
                 <div class="p-3">
-                    <div class="form-check form-group m-0">
+                    <div class="form-check mb-3 m-0">
                         <input class="form-check-input" type="radio" name="siteType"
                                data-bind="checked: surveySiteOption, clickBubble: false" value="sitepickcreate"/>
                         <label class="form-check-label">
@@ -97,7 +97,7 @@
                                 <h4 class="m-0"><g:message code="mapConfiguration.sites.both.title"/></h4>
                             </a>
                         </label>
-                        <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                        <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
                     <!-- ko if: surveySiteOption() == 'sitepickcreate' && !isSiteConfigValid() -->
                     <div class="formError inline mt-2" >
@@ -110,7 +110,7 @@
                     <!-- /ko -->
                 </div>
 
-                <div id="site-pick-create" class="card collapse ml-5">
+                <div id="site-pick-create" class="card collapse ms-5">
                     <div class="card-body bg-selected-color" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepickcreate'}">
                         <div data-bind="if: surveySiteOption() === 'sitepickcreate'">
                             <h5 class="card-title"><strong><g:message
@@ -174,7 +174,7 @@
     <div id="survey-site-list" class="row">
         <div class="col-sm-12">
             <div style="max-height: 500px; overflow-y: auto;">
-                <div class="row no-gutters" data-bind="if: transients.sites.length > 1">
+                <div class="row g-0" data-bind="if: transients.sites.length > 1">
                     <div class="col-sm-6">
                         <div class="custom-checkbox">
                             <input id="selectall" type="checkbox" data-bind="checked: transients.isSelectAllSites, click: transients.selectAllSites">
@@ -184,7 +184,7 @@
                 </div>
                 <!-- ko foreach: transients.sites -->
                 <!-- ko if: !$parent.transients.isProjectArea($data.siteId) -->
-                <div class="row no-gutters">
+                <div class="row g-0">
                     <div class="col-sm-6">
                         <label class="checkbox">
                             <input type="checkbox" data-bind="checkedValue: $data.siteId, checked: $parent.sites">
@@ -240,19 +240,19 @@
         <div class="col-sm-12">
             <div id="survey-site-create" class="row">
                 <div class="col-sm-12">
-                    <div class="form-group form-check">
+                    <div class="mb-3 form-check">
                         <input class="form-check-input" type="checkbox" data-bind="checked: allowPoints"/>
                         <label class="form-check-label">
                             <g:message code="mapConfiguration.site.point"/>
                         </label>
                     </div>
-                    <div class="form-group form-check">
+                    <div class="mb-3 form-check">
                         <input class="form-check-input" type="checkbox" data-bind="checked: allowPolygons"/>
                         <label class="form-check-label">
                             <g:message code="mapConfiguration.site.polygon"/>
                         </label>
                     </div>
-                    <div class="form-group form-check">
+                    <div class="mb-3 form-check">
                         <input class="form-check-input" type="checkbox" data-bind="checked: allowLine"/>
                         <label class="form-check-label">
                             <g:message code="mapConfiguration.site.line"/>
@@ -267,7 +267,7 @@
 <script id="template-site-add-to-project" type="text/html">
 <div class="row">
     <div class="col-sm-12">
-        <div class="form-group form-check">
+        <div class="mb-3 form-check">
             <input class="form-check-input" type="checkbox"
                    data-bind="checked: addCreatedSiteToListOfSelectedSites, disable: !!isUserSiteCreationConfigValid()"/>
             <label class="form-check-label">

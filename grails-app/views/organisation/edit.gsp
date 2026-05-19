@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Edit | ${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -28,7 +28,7 @@
     </asset:script>
     <asset:stylesheet src="fileupload-ui-manifest.css"/>
     <asset:stylesheet src="wmd/wmd.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="fileupload-manifest.js"/>
     <!-- todo: is cors/jquery.xdr-transport.js needed -->
     <asset:javascript src="cors/jquery.xdr-transport.js"/>

@@ -188,7 +188,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
         self.projectActivities.push(survey);
         survey.transients.subscribeOrDisposePActivityFormName(true);
         initialiseValidator();
-        $(surveyInfoTab).tab('show');
+        Biocollect.Bootstrap5.showTab(surveyInfoTab);
         showAlert("Successfully added.", "alert-success", self.placeHolder);
     };
 
@@ -202,7 +202,7 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
 
         if(!current.isEndDateAfterStartDate()) {
             showAlert("Survey end date must be after start date", "alert-danger", self.placeHolder);
-            $('#survey-info-tab').tab('show');
+            Biocollect.Bootstrap5.showTab('#survey-info-tab');
         } else if (current.isInfoValid() &&
             current.areSpeciesValid() &&
             jsData.pActivityFormName &&
@@ -536,16 +536,16 @@ var ProjectActivitiesSettingsViewModel = function (pActivitiesVM, placeHolder) {
     })
 
     /**
-     * This function checks if the survey info tab is valid and returns an appropriate string to fill data-toggle
+    * This function checks if the survey info tab is valid and returns an appropriate string to fill data-bs-toggle
      * attribute on the anchor tag. This logic is used to disable all tabs except survey info tab. It helps to force
      * users to fill the survey info tab before moving to other tabs.
-     * @returns {string} 'tab' or ''
+    * @returns {string|null} 'tab' or null
      */
     self.dataToggleVal = function(){
         if(self.isSurveyInfoFormFilled()){
             return 'tab'
         } else {
-            return ''
+            return null
         }
     }
 

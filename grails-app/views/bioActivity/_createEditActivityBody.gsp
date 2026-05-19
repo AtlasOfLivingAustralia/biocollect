@@ -16,7 +16,7 @@
             </div>
         </g:if>
 <g:if test="${isUserAdminModeratorOrEditor && pActivity?.adminVerification}">
-    <div class="form-group row">
+    <div class="mb-3 row">
         <label for="verificationStatusName" class="col-sm-2 col-form-label">
             <g:message code="record.edit.verificationStatus"/>
             <a href="#" class="helphover"
@@ -26,7 +26,7 @@
             </a>
         </label>
         <div class="col-4">
-            <select name="verificationStatusName" class="custom-select" data-bind="options:verificationStatusOptions, optionsText:'displayName', optionsValue:'code', value: verificationStatus"></select>
+            <select name="verificationStatusName" class="form-select" data-bind="options:verificationStatusOptions, optionsText:'displayName', optionsValue:'code', value: verificationStatus"></select>
         </div>
     </div>
 </g:if>
@@ -143,7 +143,7 @@
 
 <div id="timeoutMessage" class="hide">
 
-    <span class='badge badge-danger'>Important</span><h4>There was an error while trying to save your changes.</h4>
+    <span class='badge text-bg-danger'>Important</span><h4>There was an error while trying to save your changes.</h4>
 
     <p>This could be because your login has timed out or the internet is unavailable.</p>
 

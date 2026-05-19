@@ -81,8 +81,7 @@ var Biocollect = Biocollect || {};
   };
 
   var showTwitterBootstrapModal = function($ui) {
-    // Display the modal UI using Twitter Bootstrap's modal plug-in.
-    $ui.modal({
+    Biocollect.Bootstrap5.showModal($ui, {
       // Clicking the backdrop, or pressing Escape, shouldn't automatically close the modal by default.
       // The view model should remain in control of when to close.
       backdrop: "static",
@@ -94,7 +93,7 @@ var Biocollect = Biocollect || {};
     // When modal is closed (with or without a result)
     // Then always hide the UI.
     deferredModalResult.always(function () {
-      $ui.modal("hide");
+      Biocollect.Bootstrap5.hideModal($ui);
     });
   };
 
@@ -102,7 +101,7 @@ var Biocollect = Biocollect || {};
     // Hiding the modal can result in an animation.
     // The `hidden` event is raised after the animation finishes,
     // so this is the right time to remove the UI element.
-    $ui.on("hidden", function() {
+    $ui.on("hidden.bs.modal", function() {
       // Call ko.cleanNode before removal to prevent memory leaks.
       $ui.each(function (index, element) { ko.cleanNode(element); });
       $ui.remove();

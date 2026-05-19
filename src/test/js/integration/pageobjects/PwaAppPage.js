@@ -269,7 +269,7 @@ class PwaAppPage extends ReloadablePage {
         await this.rightDrawer.waitForExist({ timeout: 10000 });
     }
 
-    async downloadProjectActivity(paId){
+    async downloadProjectActivity(paId) {
         await this.waitForSurveyActions(paId);
         const btn = this.projectActivityDownload(paId);
         await btn.waitForDisplayed({ timeout: 30000 });
@@ -310,7 +310,7 @@ class PwaAppPage extends ReloadablePage {
         await btn.waitForDisplayed({ timeout: 10000, reverse: true });
     }
 
-    async addRecord(paId){
+    async addRecord(paId) {
         let btn = this.addRecordBtn(paId);
         await btn.waitForExist({ timeout: 20000 });
         await btn.scrollIntoView();
@@ -319,7 +319,7 @@ class PwaAppPage extends ReloadablePage {
         await this.pwaFrame.waitForExist({ timeout: 20000 });
     }
 
-    async closeModal(){
+    async closeModal() {
         await this.switchToTopFrame();
         let modal = this.modalCloseBtn;
         if (await modal.isExisting()) {
@@ -349,7 +349,7 @@ class PwaAppPage extends ReloadablePage {
         }
     }
 
-    async closeConfirmModal(){
+    async closeConfirmModal() {
         await this.switchToTopFrame();
         let modal = this.modalCloseBtn;
         if (await modal.isExisting()) {
@@ -387,7 +387,7 @@ class PwaAppPage extends ReloadablePage {
         }, { timeout, interval: 1000, timeoutMsg: 'Expected at least one published record' });
     }
 
-    async viewNthPublishedRecord(number= 0){
+    async viewNthPublishedRecord(number = 0) {
         let buttons = await this.viewPublishedRecordBtn;
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();
@@ -426,27 +426,27 @@ class PwaAppPage extends ReloadablePage {
         await this.refreshPublishedBtn.click();
     }
 
-    async viewNthUnpublishedRecord(number= 0){
+    async viewNthUnpublishedRecord(number = 0) {
         let buttons = await this.viewUnpublishedRecordBtn;
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();
         await this.modalCloseBtn.waitForExist({ timeout: 10000 });
     }
 
-    async editNthUnpublishedRecord(number= 0){
+    async editNthUnpublishedRecord(number = 0) {
         let buttons = await this.editUnpublishedRecordBtn;
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();
         await this.modalCloseBtn.waitForExist({ timeout: 10000 });
     }
 
-    async uploadNthUnpublishedRecord(number= 0){
+    async uploadNthUnpublishedRecord(number = 0) {
         let buttons = await this.uploadUnpublishedRecordBtn;
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();
     }
 
-    async invalidNthUnpublishedRecord(number= 0){
+    async invalidNthUnpublishedRecord(number = 0) {
         let invalidMessages = await this.invalidUnpublishedRecord;
         if (!invalidMessages[number]) {
             return false;
@@ -459,11 +459,11 @@ class PwaAppPage extends ReloadablePage {
         await this.refreshUnpublishedBtn.click();
     }
 
-    async unpublishedCount(){
+    async unpublishedCount() {
         return (await this.nthUnpublishedRecord).length;
     }
 
-    async publishedCount(){
+    async publishedCount() {
         return (await this.nthPublishedRecord).length;
     }
 

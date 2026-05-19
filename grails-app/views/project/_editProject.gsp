@@ -92,7 +92,7 @@
         </label>
         <div class="input-append">
             <fc:datePicker targetField="plannedStartDate.date" name="startDate" data-validation-engine="validate[required]" printable="${printView}"
-                           class="form-control" theme="btn-dark" bs4="true"/>
+                           class="form-control" theme="btn-dark" bs5="true"/>
         </div>
     </div>
     <div class="span4">
@@ -101,7 +101,7 @@
         </label>
         <div class="input-append">
             <fc:datePicker targetField="plannedEndDate.date" name="endDate" data-validation-engine="validate[future[startDate]]" printable="${printView}"
-                           class="form-control" theme="btn-dark" bs4="true"/>
+                           class="form-control" theme="btn-dark" bs5="true"/>
         </div>
 
     </div>

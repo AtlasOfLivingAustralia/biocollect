@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>${project?.name.encodeAsHTML()} | Project | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
@@ -153,7 +153,7 @@
     <script src="${grailsApplication.config.google.maps.url}"></script>
     <asset:stylesheet src="projects-manifest.css"/>
     <asset:stylesheet src="project-index-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="wms.js"/>
@@ -204,7 +204,7 @@
                 amplify.store('ul-main-project-state', projectTab);
             }
 
-            $('.helphover').popover({animation: true, trigger:'hover'});
+            Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
             var organisations = <fc:modelAsJavascript model="${organisations?:[]}"/>;
             var project = <fc:modelAsJavascript model="${project}"/>;
@@ -223,7 +223,7 @@
 
             var dashboardInitialised = false;
 
-            $('#ul-main-project a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+            $('#ul-main-project a[data-bs-toggle="tab"]').on('show.bs.tab', function (e) {
                 var tab = e.currentTarget.hash;
                 // only init map when the tab is first shown
                 if (tab === '#site' && map === undefined) {
@@ -248,38 +248,38 @@
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false}, project.projectId, project.mapConfiguration.defaultZoomArea);
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
                     var tableApi = $('#sites-table').DataTable( {
-                        "columnDefs": [
+                        columnDefs: [
                         {
-                            "targets": 0,
-                            "orderable": false,
-                            "searchable": false,
-                            "width":"1.2em"
+                            targets: 0,
+                            orderable: false,
+                            searchable: false,
+                            width: '1.2em'
                         },
                         {
-                            "targets": 1,
-                            "orderable": false,
-                            "searchable": false,
-                            "width":"7em"
+                            targets: 1,
+                            orderable: false,
+                            searchable: false,
+                            width: '7em'
                         },
                         {
-                            "targets":3,
-                            "sort":4
+                            targets: 3,
+                            orderData: [4]
 
                         },
                         {
-                            "targets":4,
-                            "visible":false,
-                            "width":"8em"
+                            targets: 4,
+                            visible: false,
+                            width: '8em'
 
                         }
                         ],
-                        "order":[3, "desc"],
-                        "language": {
-                            "search": '<div class="input-group"><div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-search"></i></span></div>_INPUT_</div>',
-                            "searchPlaceholder":"Search sites..."
+                        order: [[3, 'desc']],
+                        language: {
+                            search: '<div class="input-group"><span class="input-group-text"><i class="fa fa-search"></i></span>_INPUT_</div>',
+                            searchPlaceholder: 'Search sites...'
 
                         },
-                        "searchDelay":350
+                        searchDelay: 350
                         }
                     );
 
@@ -294,7 +294,7 @@
                         }
                         return visibleIndicies;
                     };
-                    $('#sites-table').dataTable().on('draw.dt', function(e) {
+                    tableApi.on('draw.dt', function() {
                         sitesViewModel.sitesFiltered(visibleIndicies());
                     });
                     $('#sites-table tbody').on( 'mouseenter', 'td', function () {
@@ -366,7 +366,7 @@
             });
 
             // Non-editors should get tooltip and popup when trying to click other tabs
-            $('#projectTabs li a').not('[data-toggle="tab"]').css('cursor', 'not-allowed') //.data('placement',"right")
+            $('#projectTabs li a').not('[data-bs-toggle="tab"]').css('cursor', 'not-allowed') //.data('placement',"right")
             .attr('title','Only available to project members').addClass('tooltips');
 
             new RestoreTab('ul-main-project', 'about-tab');
@@ -378,11 +378,11 @@
             });
 
             // BS tooltip
-            $('.tooltips').tooltip();
+            Biocollect.Bootstrap5.initTooltips('.tooltips');
 
             $('#gotoEditBlog').on('click',function () {
                 amplify.store('project-admin-tab-state', '#editProjectBlog');
-                $('#admin-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#admin-tab');
             });
 
 
@@ -392,16 +392,16 @@
         // Admin JS code only exposed to admin users
 
             // remember state of admin nav (vertical tabs)
-            $('#adminNav a[data-toggle="tab"]').on('shown', function (e) {
+            $('#adminNav a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
                 var tab = e.currentTarget.hash;
                 amplify.store('project-admin-tab-state', tab);
             });
             var storedAdminTab = amplify.store('project-admin-tab-state');
             // restore state if saved
             if (storedAdminTab === '') {
-                $('#permissions-tab').tab('show');
+                Biocollect.Bootstrap5.showTab('#permissions-tab');
             } else {
-                $(storedAdminTab + "-tab").tab('show');
+                Biocollect.Bootstrap5.showTab(storedAdminTab + "-tab");
             }
 
 //            var project = <fc:modelAsJavascript model="${project}"/>;

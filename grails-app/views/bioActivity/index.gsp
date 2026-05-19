@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
+    <meta name="layout" content="${mobile ? 'mobile' : 'bs5'}"/>
     <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2" content="${createLink(controller: 'project', action: 'index')}/${pActivity.projectId},Project"/>
@@ -55,7 +55,7 @@
         here = document.location.href;
     </asset:script>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
 </head>
@@ -70,13 +70,13 @@
         <bc:koLoading>
         <g:if test="${pActivity?.adminVerification && pActivity?.showVerificationStatus}">
             <div class="row">
-                <div class="col-sm-12 text-right">
+                <div class="col-sm-12 text-end">
                     <g:if test="${activity.verificationStatus == 'approved'}">
-                        <span class="badge badge-success"><g:message code="record.view.verificationStatus"></g:message>:
+                        <span class="badge text-bg-success"><g:message code="record.view.verificationStatus"></g:message>:
                             <g:message code="facets.verificationStatusFacet.${activity.verificationStatus}"></g:message></span>
                     </g:if>
                     <g:else >
-                        <span class="badge badge-danger"><g:message code="record.view.verificationStatus"></g:message>:
+                        <span class="badge text-bg-danger"><g:message code="record.view.verificationStatus"></g:message>:
                             <g:message code="facets.verificationStatusFacet.${activity.verificationStatus}"></g:message></span>
                     </g:else>
                 </div>
@@ -223,7 +223,7 @@
         var activityLevelData = new ActivityLevelData();
 
         $(function() {
-            $('.helphover').popover({animation: true, trigger:'hover'});
+            Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
             $('#cancel').on('click',function () {
                 document.location.href = returnTo;

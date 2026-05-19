@@ -5,7 +5,7 @@
                 <h2 class="d-inline">Registered Organisations</h2>
 
                 <g:if test="${user}">
-                    <button class="btn btn-success float-right"
+                    <button class="btn btn-success float-end"
                             data-bind="click:addOrganisation">Register new organisation</button>
                 </g:if>
             </div>
@@ -20,13 +20,11 @@
                 <input class="form-control" id="searchText" type="text" data-bind="value:searchTerm, hasFocus: searchHasFocus, valueUpdate:'keyup'"
                        placeholder="Search organisations..." aria-label="Search organisations..." aria-describedby="org-search-button"/>
 
-                <div class="input-group-append">
-                    <button class="btn btn-primary btn-sm" id="org-search-button"><i class="fa fa-search"></i> Search</button>
-                </div>
+                <button class="btn btn-primary btn-sm" id="org-search-button" type="button"><i class="fa fa-search"></i> Search</button>
             </div>
         </div>
 
-        <div class="col-md-4 text-right mt-2 mt-md-0">
+        <div class="col-md-4 text-end mt-2 mt-md-0">
             <g:if test="${fc.userIsAlaOrFcAdmin()}">
             <a class="btn btn-info" href="${g.createLink(action: 'create')}" role="button"><i class="fas fa-plus"></i>
                 Create Organisation</a>
