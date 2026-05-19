@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>${organisation.name.encodeAsHTML()} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -150,7 +150,7 @@
                 $content.html(data);
                 $loading.hide();
                 $content.show();
-                $('#dashboard-content .helphover').popover({animation: true, trigger:'hover', container:'body'});
+                Biocollect.Bootstrap5.initPopovers('#dashboard-content .helphover', {animation: true, trigger:'hover', container:'body'});
                 amplify.store(SELECTED_REPORT_KEY, reportType);
             });
 
@@ -158,7 +158,7 @@
 
         var organisationTabStorageKey = 'organisation-page-tab';
         var initialisedSites = false;
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
             var tab = e.currentTarget.hash;
             amplify.store(organisationTabStorageKey, tab);
             if (!initialisedSites && tab == '#sites') {
@@ -170,7 +170,7 @@
         var storedTab = amplify.store(organisationTabStorageKey);
 
         if (storedTab) {
-            $(storedTab + '-tab').tab('show');
+            Biocollect.Bootstrap5.showTab(storedTab + '-tab');
         }
     <g:if test="${content.admin.visible}">
         populatePermissionsTable(fcConfig.organisationMembersUrl);

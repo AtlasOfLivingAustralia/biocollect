@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-3">
         <div class="nav nav-pills flex-column" aria-orientation="vertical">
-            <a class="nav-link active" id="org-actions-tab" href="#admin-actions" data-toggle="pill" role="tab"><i class="fa fa-chevron-right"></i> Actions</a>
-            <a class="nav-link" id="org-members-tab" href="#admin-members" data-toggle="pill" role="tab"><i class="fa fa-chevron-right"></i> Members</a>
+            <a class="nav-link active" id="org-actions-tab" href="#admin-actions" data-bs-toggle="pill" role="tab"><i class="fa fa-chevron-right"></i> Actions</a>
+            <a class="nav-link" id="org-members-tab" href="#admin-members" data-bs-toggle="pill" role="tab"><i class="fa fa-chevron-right"></i> Members</a>
         </div>
     </div>
 

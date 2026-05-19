@@ -73,7 +73,7 @@
         <g:each var="it" in="${userNamesList}" status="s">namesArray[${s}] = "${it.userId} -- ${it.displayName?.toLowerCase()} -- ${it.userName?.toLowerCase()}";</g:each>
 
         $('.combobox2').combobox();
-        $('.tooltips').tooltip();
+        Biocollect.Bootstrap5.initTooltips('.tooltips');
     }); // end document.ready
 
     /**

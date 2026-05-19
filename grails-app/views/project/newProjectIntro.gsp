@@ -1,7 +1,7 @@
 <%@ page import="grails.converters.JSON; org.grails.web.json.JSONArray" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>${project?.name?.encodeAsHTML()} | <g:message code="g.projects"/> | <g:message
             code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: "/" + hubConfig.urlPath)},Home"/>

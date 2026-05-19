@@ -195,7 +195,7 @@
             </label>
 
             <div class="controls">
-                <select id="licence" data-bind="value:licence" class="form-control input-sm">
+                <select id="licence" data-bind="value:licence" class="form-select input-sm">
                     <option>CC BY</option>
                     <option>CC BY-NC</option>
                     <option>CC BY-SA</option>

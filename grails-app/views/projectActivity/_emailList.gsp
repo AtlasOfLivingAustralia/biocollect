@@ -6,7 +6,7 @@
 
 <div class="row mt-2">
     <div class="col-12">
-        <div class="row form-group">
+        <div class="row mb-3">
             <label class="col-form-label col-12 col-md-4" for="alertEmailAddress">
                 Email address:
                 <a href="#" class="helphover"
@@ -21,7 +21,7 @@
                 <input id="alertEmailAddress" class="form-control" type="text"
                        data-bind="value: alert.transients.emailAddress, valueUpdate:'afterkeyup'"
                        placeholder="Enter email address"/>
-                <button class="btn-dark btn btn-sm m-1" data-toggle="tooltip" title="Enter valid email address"
+                <button class="btn-dark btn btn-sm m-1" data-bs-toggle="tooltip" title="Enter valid email address"
                         data-bind="click: alert.addEmail, disable: alert.transients.disableAddEmail"><i
                         class="fas fa-plus"></i>  Add</button>
             </div>

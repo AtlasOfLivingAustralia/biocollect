@@ -4,7 +4,7 @@
 <head>
     <g:set var="title" value="${myFavourites? message(code: "site.myFavouriteSites.heading") : message(code: "site.allSites.heading")}"/>
     <title>${title}</title>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${title}"/>
     <script>
@@ -32,7 +32,7 @@
     </script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -50,10 +50,10 @@
                 </div>
 
                 <g:if test="${flash.errorMessage || flash.message}">
-                    <div class="alert alert-info alert-dismissable">
+                    <div class="alert alert-dismissible alert-info">
                         ${flash.errorMessage ?: flash.message}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            
                         </button>
                     </div>
                 </g:if>
@@ -65,10 +65,10 @@
                 </g:if>
 
                 <div id="sortBar" class="row d-flex">
-                    <div class="col col-md-4 mb-3 order-1 order-md-0 pr-1">
+                    <div class="col col-md-4 mb-3 order-1 order-md-0 pe-1">
                         <button
-                                data-toggle="collapse"
-                                data-target="#filters"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#filters"
                                 aria-expanded="false"
                                 aria-controls="filters"
                                 class="btn btn-dark"
@@ -76,19 +76,19 @@
                             <i class="fas fa-filter"></i> Filter Data
                         </button>
                     </div>
-                    <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
+                    <div class="col col-sm-6 col-md-4 mb-3 text-end text-md-center order-2 order-md-1 ps-1">
                         <div class="btn-group">
                             <div id="siteListResultTab" class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a class="btn btn-outline-dark active" id="list-tab" data-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
+                                <a class="btn btn-outline-dark active" id="list-tab" data-bs-toggle="tab" title="View as Grid" href="#list" role="tab" aria-controls="View as Grid" aria-selected="true"><i
                                         class="fas fa-th-large"></i></a>
-                                <a class="btn btn-outline-dark" id="map-tab" data-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i
+                                <a class="btn btn-outline-dark" id="map-tab" data-bs-toggle="tab" title="View as Map" href="#map" role="tab" aria-controls="View as Map"><i
                                         class="far fa-map"></i></a>
-                                <a class="btn btn-outline-dark" id="images-tab" data-toggle="tab" title="View as Images" href="#images" role="tab" aria-controls="View as Images"><i
+                                <a class="btn btn-outline-dark" id="images-tab" data-bs-toggle="tab" title="View as Images" href="#images" role="tab" aria-controls="View as Images"><i
                                         class="far fa-images"></i></a>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 text-center text-md-right order-0 order-md-2">
+                    <div class="col-12 col-md-4 text-center text-md-end order-0 order-md-2">
                         <g:render template="/site/searchSite"></g:render>
                     </div>
                 </div>
@@ -146,13 +146,12 @@
             </div>
             <div class="collapse" id="filters">
                 <button
-                        class="close"
-                        data-toggle="collapse"
-                        data-target="#filters"
+                        class="btn-close"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#filters"
                         title="Close Filters"
                         aria-expanded="false"
                         aria-controls="filters">
-                    <i class="far fa-times-circle"></i>
                 </button>
                 <div class="filter-group">
                     <bc:koLoading>

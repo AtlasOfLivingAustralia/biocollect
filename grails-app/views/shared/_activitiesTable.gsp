@@ -26,10 +26,10 @@
         <tbody data-bind="foreach:activities" id="activityList">
         <tr>
             <!-- first 2 td elements toggle the accordion -->
-            <td data-bind="attr:{href:'#'+activityId}" data-toggle="collapse" class="accordion-toggle">
+            <td data-bind="attr:{href:'#'+activityId}" data-bs-toggle="collapse" class="accordion-toggle">
                 <div><a data-bind="text:toggleState()"></a></div>
             </td>
-            <td data-bind="attr:{href:'#'+activityId}" data-toggle="collapse" class="accordion-toggle">
+            <td data-bind="attr:{href:'#'+activityId}" data-bs-toggle="collapse" class="accordion-toggle">
                 <span data-bind="text:type"></span>
             </td>
             <td><span data-bind="clickToPickDate:startDate"></span></td>
@@ -212,15 +212,15 @@
                 // the check is required as 'show' seems to act like a toggle and the collapse code
                 // does not always know the correct state
                 $('#activityList div.collapse').each(function() {
-                    if (!$(this).hasClass('in')) {
-                        $(this).collapse('show');
+                    if (!$(this).hasClass('show')) {
+                        Biocollect.Bootstrap5.showCollapse(this);
                     }
                 });
             };
             self.collapseActivities = function () {
                 $('#activityList div.collapse').each(function() {
-                    if ($(this).hasClass('in')) {
-                        $(this).collapse('hide');
+                    if ($(this).hasClass('show')) {
+                        Biocollect.Bootstrap5.hideCollapse(this);
                     }
                 });
             };

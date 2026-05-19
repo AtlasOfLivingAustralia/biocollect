@@ -44,7 +44,7 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
             if(self.speciesLists().length > 0) {
                 var speciesListsTooltip = '<p>Lists</p>';
                 for(var i =0 ; i < self.speciesLists().length; i++ ) {
-                    speciesListsTooltip += '<span class="pull-left text-left">' + self.speciesLists()[i].transients.truncatedListName() + '</span> <br/>\n';
+                    speciesListsTooltip += '<span class="pull-left text-start">' + self.speciesLists()[i].transients.truncatedListName() + '</span> <br/>\n';
                 }
 
                 speciesListsTooltip += '<br/>';
@@ -384,7 +384,7 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, templateSele
 
     // Close the modal and tidy up the bindings.
     var closeModal = function() {
-        $modal.modal('hide');
+        Biocollect.Bootstrap5.hideModal($modal);
     };
 
     ko.applyBindings(speciesFieldConfigViewModel, template);
@@ -395,13 +395,13 @@ function showSpeciesFieldConfigInModal(speciesFieldConfigViewModel, templateSele
 
     // Don't allow ESC to close dialog, it will bypass the cancel function and hence mess the KO binding/unbinding
     // mechanism
-    $modal.modal({
+    Biocollect.Bootstrap5.getModal($modal, {
             backdrop:'static',
             keyboard: false
         });
     $modal.addClass("modal-open");
     $("body").addClass("modal-open");
-    $modal.modal('show');
+    Biocollect.Bootstrap5.showModal($modal);
 
     $modal.on('shown.bs.modal', function() {
         $modal.find('form').validationEngine();

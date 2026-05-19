@@ -18,7 +18,10 @@ $(document).ready(initResponsiveTable).on('form-initialised', initResponsiveTabl
 $(window).resize(initResponsiveTable);
 
 function initResponsiveTable(){
-    $('table:not(.not-stacked-table):not(.responsive-table-stacked)').each(function(index, item){
+    $('table:not(.not-stacked-table):not(.responsive-table-stacked)').filter(function() {
+        // Nested tables keep their own layout; only the top-level table gets stacked labels.
+        return $(this).parents('table').length === 0;
+    }).each(function(index, item){
         $(this).addClass('responsive-table-stacked').parent().addClass('overflow-table');
         addAttributeToTd(item)
         watch(this, addAttributeToTd)
@@ -31,13 +34,68 @@ function initResponsiveTable(){
  * @param item
  */
 function addAttributeToTd(item){
-    $(item).find('thead th').each(function(col, th){
+    $(item).children('thead').children('tr').children('th').each(function(col, th){
         var colNum = col + 1;
-        var text = $(th).text()
+        var $th = $(th);
+        // Help triggers from nested tables should not be copied into this table's cells.
+        var $headerHelp = $th.find('[data-bs-toggle="tooltip"], [data-bs-toggle="popover"], [data-bind*="popover"], .helphover').filter(function() {
+            return $(this).parents('table')[0] === item;
+        }).first();
+        var text = $th.clone().find('[data-bs-toggle="tooltip"], [data-bs-toggle="popover"], [data-bind*="popover"], .helphover').remove().end().text()
         if(text){
-            $(item).find('tbody tr td:nth-child('+colNum+')').attr('data-th',text.trim());
+            var $td = $(item).children('tbody').children('tr').children('td:nth-child('+colNum+')');
+
+            if ($headerHelp.length > 0) {
+                $td.each(function(index, td) {
+                    var $cell = $(td);
+                    var $existingHelp = $cell.children('span.help, .helphover');
+                    if ($existingHelp.length === 0) {
+                        // Mirror the header help on the stacked cell label for small screens.
+                        var $help = $headerHelp.clone(false, false)
+                            .addClass('help')
+                            .removeAttr('aria-describedby');
+
+                        $cell.prepend($help);
+                        initClonedHelp($headerHelp, $help);
+                    }
+                });
+            }
+
+            $td.attr('data-th',text.trim());
         }
     });
+}
+
+function initClonedHelp($source, $target) {
+    if (!window.bootstrap) {
+        return;
+    }
+
+    var source = $source[0];
+    var target = $target[0];
+
+    // Prefer the header's live Bootstrap options so cloned help behaves the same way.
+    if (window.bootstrap.Popover) {
+        var popover = window.bootstrap.Popover.getInstance(source);
+        if (popover) {
+            window.bootstrap.Popover.getOrCreateInstance(target, $.extend({}, popover._config));
+            return;
+        }
+    }
+
+    if (window.bootstrap.Tooltip) {
+        var tooltip = window.bootstrap.Tooltip.getInstance(source);
+        if (tooltip) {
+            window.bootstrap.Tooltip.getOrCreateInstance(target, $.extend({}, tooltip._config));
+            return;
+        }
+    }
+
+    if ($target.attr('data-bs-toggle') === 'popover') {
+        window.bootstrap.Popover.getOrCreateInstance(target);
+    } else if ($target.attr('data-bs-toggle') === 'tooltip') {
+        window.bootstrap.Tooltip.getOrCreateInstance(target);
+    }
 }
 
 /**
