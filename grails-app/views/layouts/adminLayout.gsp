@@ -1,4 +1,4 @@
-<g:applyLayout name="bs4">
+<g:applyLayout name="bs5">
     <head>
         <title><g:layoutTitle /></title>
     </head>

@@ -73,7 +73,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="px-3 py-3">
         <h1><g:message code="pwa.edit.record"/></h1>
         <bc:koLoading>
             <div id="form-placeholder"></div>

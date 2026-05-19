@@ -96,7 +96,7 @@
             <g:if test="${targets}">
                 <h3 style="margin-top:0;">Output Targets</h3>
 
-                <div class="row no-gutters">
+                <div class="row g-0">
                 <div class="col-sm-4">
                     <g:set var="count" value="${targets.size()}"/>
                     <g:each in="${targets?.entrySet()}" var="metric" status="i">

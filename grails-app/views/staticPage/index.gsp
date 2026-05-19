@@ -19,7 +19,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="${mobile ? "mobile" : "bs4"}"/>
+    <meta name="layout" content="${mobile ? "mobile" : "bs5"}"/>
     <title></title>
     <asset:javascript src="common.js"/>
 </head>
@@ -40,10 +40,10 @@
                 <g:if test="${flash.message}">
                     <div class="row">
                         <div class="col-12">
-                            <div class="alert alert-info alert-dismissible fade show">
+                            <div class="alert alert-dismissible alert-info fade show">
                                 ${flash.message}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                    
                                 </button>
                             </div>
                         </div>

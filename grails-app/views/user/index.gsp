@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>User Dashboard | <g:message code="g.biocollect"/></title>
 </head>
 <body>
@@ -22,8 +22,8 @@
     <g:if test="${flash.error || error}">
         <g:set var="error" value="${flash.error?:user?.error}"/>
         <div class="row-fluid">
-            <div class="alert alert-danger large-space-before">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div class="alert alert-dismissible alert-danger large-space-before">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <span>Error: ${error}</span>
             </div>
         </div>
@@ -94,7 +94,7 @@
 </div>
 <asset:script type="text/javascript">
     $(window).on('load',function () {
-        $('.tooltips').tooltip({placement: "right"});
+        Biocollect.Bootstrap5.initTooltips('.tooltips', {placement: "right"});
     });
 </asset:script>
 </body>

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>${project.name} | Species | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -70,7 +70,7 @@
             <span id="project-filter-warning" class="label filter-label label-warning hide pull-left">Filtered</span>
             <div class="control-group pull-right dataTables_filter">
                 <div class="input-append">
-                    <g:textField class="filterinput input-medium" data-target="project"
+                    <g:textField class="filterinput input-medium" data-bs-target="project"
                                  title="Type a few characters to restrict the list." name="projects"
                                  placeholder="filter"/>
                     <button type="button" class="btn clearFilterBtn"
@@ -151,23 +151,33 @@ $(window).on('load',function(){
             });
             $.get('${createLink(controller:'proxy', action:'speciesLists')}', {}, function(data) {
                 self.availableLists = data.lists;
-                $('#speciesLists').dataTable({
-                    "aaData": self.availableLists,
-                    "aoColumns": [
-                        {"mData":"listName"},
-                        {"mData":function(obj, string, value) {return '<a href="#">'+obj.itemCount+'</a>';}},
-                        {"mData":function(obj, string, value){return '<button class="btn" data-listuid="'+obj.dataResourceUid+'"/>Use this list'}}
+                $('#speciesLists').DataTable({
+                    data: self.availableLists,
+                    columns: [
+                        {data: 'listName'},
+                        {
+                            data: null,
+                            render: function(obj) {
+                                return '<a href="#">' + obj.itemCount + '</a>';
+                            }
+                        },
+                        {
+                            data: null,
+                            orderable: false,
+                            render: function(obj) {
+                                return '<button type="button" class="btn btn-sm btn-dark" data-listuid="' + obj.dataResourceUid + '">Use this list</button>';
+                            }
+                        }
                     ],
-                    "sPaginationType": "bootstrap",
-                    "oLanguage": {
-                        "oPaginate": {
-                            "sNext": "▶",
-                            "sPrevious": "◀"
+                    language: {
+                        paginate: {
+                            next: '▶',
+                            previous: '◀'
                         }
                     },
-                    "bFilter": true,
-                    "bLengthChange": false,
-                    "bInfo": false
+                    searching: true,
+                    lengthChange: false,
+                    info: false
                 });
 
             },'json');

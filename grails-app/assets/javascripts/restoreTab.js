@@ -3,24 +3,55 @@
  */
 var RestoreTab = function (tabId, defaultHrefTab) {
 
-    //Restore tab reference if available else show default tab.
-    var storedTab = amplify.store(tabId + '-state');
-    if (storedTab && (storedTab.indexOf('#') != 0)) {
-        storedTab = '#' + storedTab;
+    var tabToggleSelector = '[data-bs-toggle="tab"], [data-bs-toggle="pill"], [data-bs-toggle="list"]';
+
+    function idSelector(id) {
+        if (!id) {
+            return null;
+        }
+        id = id.indexOf('#') === 0 ? id.substring(1) : id;
+        return '#' + ($.escapeSelector ? $.escapeSelector(id) : id);
     }
 
-    if (storedTab && ($(storedTab).length > 0)) {
-        $(storedTab).tab('show');
+    function findTabToggle(tabReference) {
+        var tabContainer = $('#' + tabId);
+        var selector = idSelector(tabReference);
+        var element = selector ? $(selector) : $();
+
+        if (element.is(tabToggleSelector)) {
+            return element.first();
+        }
+
+        return tabContainer.find(tabToggleSelector).filter(function () {
+            var target = tabReference && tabReference.indexOf('#') === 0 ? tabReference : selector;
+            return this.id === tabReference ||
+                '#' + this.id === tabReference ||
+                $(this).attr('href') === target ||
+                $(this).attr('data-bs-target') === target;
+        }).first();
+    }
+
+    function storeTabSelection(e) {
+        var tab = e.currentTarget.id || $(e.currentTarget).attr('data-bs-target') || $(e.currentTarget).attr('href');
+        saveTabSelection(tabId, tab);
+    }
+
+    //Restore tab reference if available else show default tab.
+    var storedTab = amplify.store(tabId + '-state');
+
+    var tabToggle = storedTab ? findTabToggle(storedTab) : $();
+    if (tabToggle.length) {
+        Biocollect.Bootstrap5.showTab(tabToggle);
     }
     else if (defaultHrefTab) {
-        $('#' + defaultHrefTab).tab('show');
+        tabToggle = findTabToggle(defaultHrefTab);
+        if (tabToggle.length) {
+            Biocollect.Bootstrap5.showTab(tabToggle);
+        }
     }
 
     //Store tab reference
-    $('#' + tabId + ' a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var tab = e.currentTarget.id;
-        saveTabSelection(tabId, tab);
-    });
+    $('#' + tabId + ' ' + tabToggleSelector).on('shown.bs.tab', storeTabSelection);
 
 };
 

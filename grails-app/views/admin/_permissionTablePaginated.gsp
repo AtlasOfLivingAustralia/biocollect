@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-12">
             <div id="formStatus" class="hide alert alert-success">
-                <button class="close" onclick="$('.alert').fadeOut();" href="#">×</button>
+                <button class="btn-close" onclick="$('.alert').fadeOut();" href="#">×</button>
                 <span></span>
             </div>
         </div>

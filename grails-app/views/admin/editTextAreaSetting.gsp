@@ -7,9 +7,9 @@
 		</style>
 	</head>
 	<body>
-        <asset:stylesheet src="common-bs4.css" />
+        <asset:stylesheet src="common-bs5.css" />
         <asset:stylesheet src="wmd/wmd.css" />
-        <asset:javascript src="common-bs4.js" />
+        <asset:javascript src="common-bs5.js" />
         <asset:javascript src="wmd/wmd.js" />
         <asset:script type="text/javascript">
                 $(document).ready(function (e) {
@@ -41,7 +41,7 @@
                                     <div class="row">
                                         <div class="col-12 w-100 bg-white" id="notes-button-bar"></div>
                                     </div>
-                                    <div class="row pr-2 mt-2">
+                                    <div class="row pe-2 mt-2">
                                         <div class="col-12">
                                             <g:textArea name="textValue" id="textValue" value="${textValue?:''.trim()}" rows="${!ajax ? 16 : 8}"
                                                     cols="120" style="width:100%;margin:0;"></g:textArea>
