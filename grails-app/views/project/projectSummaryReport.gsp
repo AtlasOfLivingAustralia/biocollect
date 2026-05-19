@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Project Summary | ${project.name}</title>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <asset:stylesheet src="projects-manifest.css"/>

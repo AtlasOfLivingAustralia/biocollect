@@ -20,7 +20,7 @@
     <div class="px-3" id="site-accordion">
         <div class="">
             <div class="bg-light p-3">
-                <div class="form-check form-group m-0">
+                <div class="form-check mb-3 m-0">
                     <input class="form-check-input" type="radio" name="siteType"
                            data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-link'}), clickBubble: false" value="sitepick"/>
                     <label class="form-check-label">
@@ -29,7 +29,7 @@
                             <h6 class="m-0"><g:message code="mapConfiguration.sites.pick.title"/></h6>
                         </a>
                     </label>
-                    <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                    <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
                 <!-- ko if: surveySiteOption() == 'sitepick' && !isSiteConfigValid() -->
                 <div class="formError inline mt-2" >
@@ -41,7 +41,7 @@
                 <!-- /ko -->
             </div>
 
-            <div id="site-pick" class="collapse card ml-5">
+            <div id="site-pick" class="collapse card ms-5">
                 <div class="mt-3 card-body" data-bind="css: {'bg-selected-color':  surveySiteOption() === 'sitepick'}, if: surveySiteOption() === 'sitepick'">
                     <div>
                         <h6 class="card-title"><g:message
@@ -56,7 +56,7 @@
 
         <div class="">
             <div class="bg-light p-3">
-                <div class="form-group form-check m-0">
+                <div class="mb-3 form-check m-0">
                     <input class="form-check-input" type="radio" name="siteType"
                            data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-create-link'}), clickBubble: false" value="sitecreate"/>
                     <label class="form-check-label">
@@ -64,7 +64,7 @@
                                 <h6 class="m-0"><g:message code="mapConfiguration.sites.create.title"/></h6>
                             </a>
                     </label>
-                    <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                    <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
                 <!-- ko if: surveySiteOption() == 'sitecreate' && !isSiteConfigValid() -->
                 <div class="formError inline mt-2" >
@@ -76,7 +76,7 @@
                 <!-- /ko -->
             </div>
 
-            <div id="site-create" class="card ml-5 collapse">
+            <div id="site-create" class="card ms-5 collapse">
                 <div class="card-body bg-selected-color" data-bind="if: surveySiteOption() === 'sitecreate'">
                     <div>
                         <h6 class="card-title"><g:message code="mapConfiguration.user.created.site.title"/></h6>
@@ -91,7 +91,7 @@
 
         <div class="">
             <div class="bg-light p-3">
-                <div class="form-check form-group m-0">
+                <div class="form-check mb-3 m-0">
                     <input class="form-check-input" type="radio" name="siteType"
                            data-bind="checked: surveySiteOption, click: transients.toggleSiteOptionPanel.bind({accordionLinkId:'#site-pick-create-link'}), clickBubble: false" value="sitepickcreate"/>
                     <label class="form-check-label">
@@ -99,7 +99,7 @@
                             <h6 class="m-0"><g:message code="mapConfiguration.sites.both.title"/></h6>
                         </a>
                     </label>
-                    <button class="btn btn-dark btn-sm ml-3" data-toggle="collapse" data-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
+                    <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
                 <!-- ko if: surveySiteOption() == 'sitepickcreate' && !isSiteConfigValid() -->
                 <div class="formError inline mt-2" >
@@ -112,7 +112,7 @@
                 <!-- /ko -->
             </div>
 
-            <div id="site-pick-create" class="collapse card ml-5">
+            <div id="site-pick-create" class="collapse card ms-5">
                 <div class="card-body bg-selected-color" data-bind="if: surveySiteOption() === 'sitepickcreate'">
                     <div>
                         <h6 class="card-title"><strong><g:message code="mapConfiguration.user.pick.site.title"/></strong></h6>
@@ -190,7 +190,7 @@
                     <div class="col-6">
                         <label class="checkbox">
                             <input type="checkbox" data-bind="checked: added">
-                            <a class="btn-link ml-2" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
+                            <a class="btn-link ms-2" target="_blank" data-bind="attr:{href: siteUrl}, text: name"></a>
                         </label>
                     </div>
                     <div class="col-6 btn-space">
@@ -238,20 +238,20 @@
     <div id="site-create-message-container"></div>
     <div id="survey-site-create" class="row">
         <div class="col-12">
-            <div class="form-group form-check">
+            <div class="mb-3 form-check">
                 <input class="form-check-input" type="checkbox" data-bind="checked: allowPoints"/>
                 <label class="form-check-label">
                     <g:message code="mapConfiguration.site.point" />
                 </label>
             </div>
-            <div class="form-group form-check">
+            <div class="mb-3 form-check">
                 <input class="form-check-input" type="checkbox" data-bind="checked: allowPolygons"/>
                 <label class="form-check-label">
                     <g:message code="mapConfiguration.site.polygon" />
                 </label>
             </div>
 
-            <div class="form-group form-check">
+            <div class="mb-3 form-check">
                 <input class="form-check-input" type="checkbox" data-bind="checked: allowLine"/>
                 <label class="form-check-label">
                     <g:message code="mapConfiguration.site.line" />
@@ -264,7 +264,7 @@
 <script id="template-site-add-to-project" type="text/html">
 <div class="row">
     <div class="col-12">
-        <div class="form-group form-check">
+        <div class="mb-3 form-check">
             <input class="form-check-input" type="checkbox" data-bind="checked: addCreatedSiteToListOfSelectedSites, disable: !!isUserSiteCreationConfigValid()"/>
             <label class="form-check-label">
                 <g:message code="mapConfiguration.site.create.add.to.project"/>
@@ -279,9 +279,9 @@
 <script id="template-site-zoom" type="text/html">
 <div class="row">
     <div class="col-12">
-        <div class="form-group">
+        <div class="mb-3">
             <label><g:message code="mapConfiguration.zoom.area"/></label>
-            <select class="form-control" id="siteToZoom1" data-bind="value: defaultZoomArea, foreach: sites">
+            <select class="form-select" id="siteToZoom1" data-bind="value: defaultZoomArea, foreach: sites">
                 <!-- ko if: added() || isProjectArea() -->
                 <option data-bind="text: name, value: siteId, attr: {selected: siteId() == $parent.defaultZoomArea()}"></option>
                 <!-- /ko -->

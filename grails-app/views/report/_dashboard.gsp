@@ -11,12 +11,14 @@
             <g:set var="categoryContent" value="category_${i}"/>
             <div class="card">
                 <div class="card-header">
-                    <button class="btn btn-link btn-block" data-toggle="collapse" data-parent="#reports"
-                       data-target="#${categoryContent}">
-                        ${category} <g:if test="${!scores[category]}"><span class="float-right"
-                                                                            style="font-weight:normal">[no data available]</span></g:if>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-link text-start" data-bs-toggle="collapse" data-parent="#reports"
+                           data-bs-target="#${categoryContent}">
+                            ${category} <g:if test="${!scores[category]}"><span class="float-end"
+                                                                                style="font-weight:normal">[no data available]</span></g:if>
 
-                    </button>
+                        </button>
+                    </div>
                 </div>
 
                 <div id="${categoryContent}" class="outputData collapse show">

@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>View | ${activity.type} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -51,7 +51,7 @@
         here = document.location.href;
     </asset:script>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="meritActivity.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -81,31 +81,31 @@
             </div>
         </div>
 
-        <div class="row mt-3 ml-3">
+        <div class="row mt-3 ms-3">
             <div class="${mapFeatures.toString() != '{}' ? 'col-sm-9' : 'col-sm-12'}" style="font-size: 1.2em">
                 <!-- Common activity fields -->
                 <div class="row">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Description:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Description:</span> <span
                             data-bind="text:description"></span></span>
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Type:</span> <span data-bind="text:type"></span></span>
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Type:</span> <span data-bind="text:type"></span></span>
                 </div>
 
                 <div class="row mt-3">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Starts:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Starts:</span> <span
                             data-bind="text:startDate.formattedDate"></span></span>
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Ends:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Ends:</span> <span
                             data-bind="text:endDate.formattedDate"></span></span>
                 </div>
 
                 <div class="row mt-3">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Project stage:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Project stage:</span> <span
                             data-bind="text:projectStage"></span></span>
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Major theme:</span> <span data-bind="text:mainTheme"></span>
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Major theme:</span> <span data-bind="text:mainTheme"></span>
                     </span>
                 </div>
 
                 <div class="row mt-3">
-                    <span class="col-sm-6"><span class="badge badge-secondary rounded-pill">Activity status:</span> <span
+                    <span class="col-sm-6"><span class="badge text-bg-secondary rounded-pill">Activity status:</span> <span
                             data-bind="text:progress"></span></span>
                 </div>
             </div>
@@ -140,7 +140,7 @@
             </div>
         </g:if>
     </div>
-    <div class="row ml-3 mr-3">
+    <div class="row ms-3 me-3">
         <div class="col-sm-12">
         <!-- ko stopBinding: true -->
         <g:each in="${metaModel?.outputs}" var="outputName">
@@ -191,7 +191,7 @@
 
     $(function(){
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#cancel').on('click',function () {
             document.location.href = returnTo;

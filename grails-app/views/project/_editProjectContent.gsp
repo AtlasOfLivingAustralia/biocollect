@@ -8,7 +8,7 @@
 </div>
 <div class="row">
     <div class="col-sm-5 alert" data-bind="visible:message(), css:{'alert-error':error(), 'alert-success':success()}">
-        <button class="close" data-bind="click:clearMessage" href="#">×</button>
+        <button class="btn-close" data-bind="click:clearMessage" href="#">×</button>
         <span data-bind="text:message"></span>
     </div>
 </div>

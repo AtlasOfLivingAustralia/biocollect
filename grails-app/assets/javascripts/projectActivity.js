@@ -239,7 +239,7 @@ var ProjectActivity = function (params) {
 
             self.previewUrl(link + "?formName=" + formName + "&projectId=" + projectId);
 
-            $("#previewModal").modal({
+            Biocollect.Bootstrap5.showModal("#previewModal", {
                 // Clicking the backdrop, or pressing Escape, shouldn't automatically close the modal by default.
                 // The view model should remain in control of when to close.
                 backdrop: "static",
@@ -252,7 +252,7 @@ var ProjectActivity = function (params) {
     };
 
     self.hideModal = function() {
-        $("#previewModal").modal('hide');
+        Biocollect.Bootstrap5.hideModal("#previewModal");
     };
 
     /**
@@ -495,7 +495,7 @@ var ProjectActivity = function (params) {
         var type = $(event.target).attr('data-document');
         var document = self.getDocumentFromUsageType(type);
         if (document) {
-            $(tabDocumentId).tab('show');
+            Biocollect.Bootstrap5.showTab(tabDocumentId);
             project.selectDocument(document);
         } else {
             alert("Could not find document. Let project administrator know.");
