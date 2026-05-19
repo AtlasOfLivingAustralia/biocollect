@@ -1414,6 +1414,7 @@
         <th>Display name</th>
         <th>Display State</th>
         <th>Facet term type</th>
+        <th>Sort</th>
         <th>Display interval</th>
         <th>Chart type</th>
         <th>Help text</th>
@@ -1449,6 +1450,12 @@
             </select>
         </td>
         <td>
+            <select class="form-control" data-bind="value: sortOrder">
+                <option value="count">Count</option>
+                <option value="term">Term / Name</option>
+            </select>
+        </td>
+        <td>
             <input class="form-control" type="number" data-bind="value:interval, disable: isNotHistogram" step="1" min="0">
         </td>
         <td class="btn-space">
@@ -1473,7 +1480,7 @@
     <!-- /ko -->
     <!-- ko ifnot: facets().length -->
     <tr>
-        <td colspan="8">
+        <td colspan="9">
             No Facets selected.
         </td>
     </tr>
@@ -1481,7 +1488,7 @@
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="8">
+        <td colspan="9">
             <div class="form-group row">
                 <div class="col-label-form col-sm-2">
                     Pick a facet
