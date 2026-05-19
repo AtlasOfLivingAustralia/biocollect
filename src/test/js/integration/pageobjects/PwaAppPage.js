@@ -441,9 +441,25 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async uploadNthUnpublishedRecord(number = 0) {
-        let buttons = await this.uploadUnpublishedRecordBtn;
-        await buttons[number].waitForClickable({ timeout: 10000 });
-        await buttons[number].click();
+        await browser.waitUntil(async () => {
+            const buttons = await this.uploadUnpublishedRecordBtn;
+            const button = buttons[number];
+            if (!button) {
+                return false;
+            }
+
+            if (!await button.isDisplayed()) {
+                return false;
+            }
+
+            return await button.isEnabled();
+        }, { timeout: 10000, interval: 250, timeoutMsg: `Upload button ${number} was not ready` });
+
+        const buttons = await this.uploadUnpublishedRecordBtn;
+        const target = buttons[number];
+        await target.scrollIntoView();
+        await target.waitForClickable({ timeout: 10000 });
+        await target.click();
     }
 
     async invalidNthUnpublishedRecord(number = 0) {
