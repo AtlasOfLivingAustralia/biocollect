@@ -93,7 +93,7 @@ var acsaHub = {
             }
         }
     },
-    "skin" : "bs4",
+    "skin" : "bs5",
     "content" : {
         "hideProjectAboutContributing" : false,
         "hideProjectFinderHelpButtons" : false,

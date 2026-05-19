@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Add existing site | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
         var fcConfig = {
@@ -29,7 +29,7 @@
         returnTo = "${params.returnTo}";
     </asset:script>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="siteSelection.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -57,13 +57,11 @@
                     </div>
                     <!-- /ko -->
                     <div class="col-12 col-md-7 order-0 order-md-1 mt-2 mt-md-0">
-                        <form class="text-md-right" data-bind="submit: searchSites">
+                        <form class="text-md-end" data-bind="submit: searchSites">
                             <div class="input-group">
                                 <input class="form-control" type="text" data-bind="value: currentSearch"
                                        placeholder="Search by keyword" aria-label="Search by keyword" aria-describedby="search-site-button"/>
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary-dark" id="search-site-button" type="submit">Search</button>
-                                </div>
+                                <button class="btn btn-primary-dark" id="search-site-button" type="submit">Search</button>
                             </div>
                         </form>
                     </div>
@@ -117,7 +115,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 text-right">
+                                <div class="col-12 text-end">
                                     <button class="btn btn-primary-dark mt-2" data-bind="click: useSelectedSites">Add selected sites</button>
                                     <button class="btn btn-dark mt-2" data-bind="click: cancelUpdate">Cancel</button>
                                 </div>

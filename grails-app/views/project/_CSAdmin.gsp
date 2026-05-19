@@ -3,26 +3,26 @@
     <div class="row mt-4">
         <div class="col-12 col-lg-2">
             <ul id="ul-cs-internal-project-admin" class="nav flex-row flex-lg-column nav-pills nav-fill">
-                <li class="nav-item text-left"><a class="nav-link active" href="#project-settings" id="project-settings-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.information"/></a></li>
-                <li class="nav-item text-left"><a class="nav-link" href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.blog"/></a></li>
-                <li class="nav-item text-left"><a class="nav-link" href="#edit-documents" id="edit-documents-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</a></li>
+                <li class="nav-item text-start"><a class="nav-link active" href="#project-settings" id="project-settings-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.information"/></a></li>
+                <li class="nav-item text-start"><a class="nav-link" href="#editProjectBlog" id="editProjectBlog-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.blog"/></a></li>
+                <li class="nav-item text-start"><a class="nav-link" href="#edit-documents" id="edit-documents-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</a></li>
 
                 <g:if test="${!project.isExternal}">
-                    <li class="nav-item text-left"><a class="nav-link" href="#project-activity" id="project-activity-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.settings"/></a></li>
+                    <li class="nav-item text-start"><a class="nav-link" href="#project-activity" id="project-activity-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.settings"/></a></li>
                     <g:if test="${hasLegacyNewsAndEvents}">
-                        <li class="nav-item text-left"><a class="nav-link" href="#edit-news-and-events" id="editnewsandevents-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.news"/></a></li>
+                        <li class="nav-item text-start"><a class="nav-link" href="#edit-news-and-events" id="editnewsandevents-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.news"/></a></li>
                     </g:if>
                     <g:if test="${hasLegacyProjectStories}">
-                        <li class="nav-item text-left"><a class="nav-link" href="#edit-project-stories" id="editprojectstories-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.stories"/></a></li>
+                        <li class="nav-item text-start"><a class="nav-link" href="#edit-project-stories" id="editprojectstories-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.stories"/></a></li>
                     </g:if>
                 </g:if>
 
-                <li class="nav-item text-left"><a class="nav-link" href="#permissions" id="permissions-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.members"/></a></li>
+                <li class="nav-item text-start"><a class="nav-link" href="#permissions" id="permissions-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.members"/></a></li>
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
                     <g:if test="${grailsApplication.config.notification.enabled?.toBoolean()}">
-                    <li class="nav-item text-left"><a class="nav-link" href="#project-notification" id="project-notification-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="notification.tabTitle"/></a></li>
+                    <li class="nav-item text-start"><a class="nav-link" href="#project-notification" id="project-notification-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="notification.tabTitle"/></a></li>
                     </g:if>
-                    <li class="nav-item text-left"><a class="nav-link" href="#project-audit" id="project-audit-tab" data-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.audit"/></a></li>
+                    <li class="nav-item text-start"><a class="nav-link" href="#project-audit" id="project-audit-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.audit"/></a></li>
                 </g:if>
             </ul>
         </div>

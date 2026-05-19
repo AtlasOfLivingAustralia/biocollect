@@ -7,7 +7,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="submissionName"><g:message code="aekos.submission.info.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.submission.info.name"/>',
@@ -25,7 +25,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="projectName"><g:message code="aekos.project.info.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.info.name"/>',
@@ -43,7 +43,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" %{--for="projectDescription"--}%><g:message code="aekos.project.info.description"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.info.description"/>',

@@ -165,7 +165,7 @@
                 <tr>
                     <td>
                         <button id="btnClearMetadataCache" class="btn btn-danger"><i class="far fa-trash-alt"></i> Clear&nbsp;Metadata&nbsp;Cache</button>
-                        <div class="form-group form-check">
+                        <div class="mb-3 form-check">
                             <input type="checkbox" id="clearEcodataCache" checked="checked">
                             <label class="form-check-label" for="clearEcodataCache">Also clear ecodata cache</label>
                         </div>
@@ -183,7 +183,7 @@
                         <p>
                             <g:uploadForm class="loadProjectData" controller="admin" action="importProjectData">
                                 <input id="projectData" type="file" accept="text/csv" name="projectData"/>
-                                <div class="form-group form-check">
+                                <div class="mb-3 form-check">
                                     <input type="checkbox" name="importWithErrors" id="importWithErrors">
                                     <label class="form-check-label" for="importWithErrors">Force import (even with validation errors)</label>
                                 </div>
@@ -199,7 +199,7 @@
                         <p>
                             <g:uploadForm class="loadPlanData" controller="admin" action="importPlanData">
                                 <input id="planData" type="file" accept="text/csv" name="planData"/>
-                                <div class="form-group form-check">
+                                <div class="mb-3 form-check">
                                     <input type="checkbox" name="overwriteActivities" id="overwriteActivities">
                                     <label class="form-check-label" for="overwriteActivities">Replace existing activities</label>
                                 </div>

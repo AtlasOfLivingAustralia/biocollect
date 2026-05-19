@@ -45,14 +45,14 @@
 
         function loadAuditData(){
             $('#project-list').DataTable({
-            "order": [[ 0, "desc" ]],
-            "aoColumnDefs": [{ "sType": "date-uk", "aTargets": [0] }],
-            "oLanguage": {
-                "sSearch": "Search: "
+            order: [[0, 'desc']],
+            columnDefs: [{ type: 'date-uk', targets: [0] }],
+            language: {
+                search: 'Search: '
             },
-            "processing": true,
-            "serverSide": true,
-            "ajax":{
+            processing: true,
+            serverSide: true,
+            ajax: {
                url: "${createLink(controller: 'project', action: 'getAuditMessagesForProject')}/${project.projectId}",
                data: function(options){
                     var col, order
@@ -66,7 +66,7 @@
                     options.q = (options.search && options.search.value) || ''
                }
             },
-            "columns": [{
+            columns: [{
                 data: 'date',
                 name: 'date'
             },{
@@ -85,19 +85,19 @@
                      id = row.entityId;
                     return name + ' ' + type + ' <small>(' + id + ')</small>'
                 },
-                bSortable : false
+                orderable: false
             },{
                 data: 'userName',
-                bSortable : false
+                orderable: false
             },{
                 render: function(data, type , row){
                     return '<a class="btn btn-sm btn-dark" href="'+ fcConfig.auditMessageUrl +'&id=' + row.id+'&searchTerm=${searchTerm}"><i class="fas fa-search"></i></a>';
 
                 },
-                bSortable : false
+                orderable: false
             }]
         });
-        $('.dataTables_filter input').attr("placeholder", "Action, Type, Name");
+        $('.dt-search input').attr("placeholder", "Action, Type, Name");
         }
 
     });

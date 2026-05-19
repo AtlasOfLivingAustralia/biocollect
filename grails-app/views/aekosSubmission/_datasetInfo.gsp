@@ -7,7 +7,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" %{--for="datasetTitle"--}%><g:message code="aekos.dataset.info.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.info.name"/>',
@@ -27,7 +27,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="datasetObjective"><g:message code="aekos.project.objective"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.objective"/>',
@@ -45,7 +45,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="datasetSummary"><g:message code="aekos.dataset.summary"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.summary"/>',
@@ -64,7 +64,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="datasetVersion"><g:message code="aekos.dataset.version"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.dataset.version"/>',
@@ -84,7 +84,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="projectKeywords"><g:message code="aekos.project.keywords"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.project.keywords"/>',
@@ -102,7 +102,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="usageGuide"><g:message code="aekos.activity.usageGuide"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.usageGuide"/>',
@@ -120,7 +120,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="relatedDatasets"><g:message code="aekos.activity.relatedDatasets"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.relatedDatasets"/>',
@@ -157,7 +157,7 @@
     <br>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="urlImage"><g:message code="aekos.activity.urlImage"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.activity.urlImage"/>',

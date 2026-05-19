@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Programme Report</title>
     <script type="text/javascript" src="//www.google.com/jsapi"></script>
     <g:set var="fluidLayout" value="false"/>

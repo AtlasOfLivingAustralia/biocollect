@@ -4,14 +4,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="title" data-bind="text:title"></h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          
         </button>
       </div>
 
       <div class="modal-body">
         <div class="w-100 bg-white mb-2" id="editor-button-bar"></div>
-        <div class="pr-2">
+        <div class="pe-2">
           <g:textArea name="editorInput" id="editorInput" data-bind="value:initialValue" rows="16"
                       cols="120" style="width:100%;margin:0;"></g:textArea>
         </div>
@@ -32,7 +32,8 @@
   $(function() {
     var EditorViewModel = function() {
         var self = this;
-        var $modal = $('#markdownEditor').modal({show:false});
+      var $modal = $('#markdownEditor');
+      Biocollect.Bootstrap5.getModal($modal, {show:false});
         setup_wmd({
             output_format: "markdown",
             input: "editorInput",
@@ -50,16 +51,16 @@
             self.title(title);
             self.initialValue(koProperty());
             self.callback = koProperty;
-            $modal.modal('show');
+          Biocollect.Bootstrap5.showModal($modal);
         };
 
         self.save = function() {
             self.callback($('#editorInput').val());
-            $modal.modal('hide');
+          Biocollect.Bootstrap5.hideModal($modal);
         };
 
         self.cancel = function() {
-            $modal.modal('hide');
+          Biocollect.Bootstrap5.hideModal($modal);
         };
 
     };
