@@ -48,7 +48,7 @@ class AddBioActivityPage extends ReloadablePage {
         }
         else {
             await browser.waitUntil(async () => {
-                return (await this.speciesAutocomplete.isDisplayed()) === true;
+                return (await $('.ui-autocomplete').isExisting()) === true;
             }, { timeout: 10000 });
         }
         await this.firstSpecies.click();
@@ -69,7 +69,7 @@ class AddBioActivityPage extends ReloadablePage {
         }
         else {
             await browser.waitUntil(async () => {
-                return (await this.imageTitleInput.isDisplayed()) === true;
+                return (await $('.image-title-input').isExisting()) === true;
             }, { timeout: 10000 });
         }
     }
