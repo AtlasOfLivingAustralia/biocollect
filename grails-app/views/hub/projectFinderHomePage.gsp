@@ -3,7 +3,7 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title><g:message code="hub.projectFinder"/> | ${hubConfig.title}</title>
     <asset:stylesheet src="project-finder-manifest.css"/>
 %{--    <asset:stylesheet src="project-finder.css" />--}%
@@ -64,7 +64,7 @@
   }
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
-    <asset:javascript src="common-bs4.js" />
+    <asset:javascript src="common-bs5.js" />
     <asset:javascript src="projects-manifest.js" />
     <asset:javascript src="project-finder.js" />
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>

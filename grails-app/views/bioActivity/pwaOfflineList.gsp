@@ -31,7 +31,7 @@
         <!-- ko template: {name: 'page-actions-buttons', data: $data } --><!-- /ko -->
     </div>
     <script id="page-actions-buttons" type="text/html">
-        <div class="my-2 float-right">
+        <div class="my-2 float-end">
             <button type="button" class="btn btn-success upload-records" disabled data-bind="click: uploadAllHandler, disable: disableUpload">
                 <!-- ko if: isUploading -->
                 <i class="fa fa-spin fa-spinner"></i>

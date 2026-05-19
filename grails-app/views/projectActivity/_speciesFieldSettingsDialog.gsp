@@ -5,8 +5,8 @@
             <div class="modal-header">
                 <h4 class="modal-title">Configure <span
                         data-bind="visible: transients.fieldName, text: transients.fieldName()"></span></h4>
-                <button type="button" class="close" data-bind="click:cancel" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bind="click:cancel" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
 
                 <div id="species-dialog-alert-placeholder"></div>
@@ -19,7 +19,7 @@
                             <div class="controls">
                                 <h5>Step 1. Constrain species available for selection</h5>
                                 <span class="req-field">
-                                    <select class="form-control" data-validation-engine="validate[required]"
+                                    <select class="form-select" data-validation-engine="validate[required]"
                                             data-prompt-position="centerRight"
                                             data-bind="options: speciesOptions, optionsText:'name', optionsValue:'id', value: type, optionsCaption: 'Please select'"></select>
                                 </span>
@@ -64,7 +64,7 @@
 
                                 <div class="row">
                                     <div class="col-12 col-md-6">
-                                        <div class="form-group row">
+                                        <div class="mb-3 row">
                                             <label class="col-form-label col-1"><span class="req-field"></span></label>
 
                                             <div class="col-11">
@@ -100,10 +100,10 @@
 
                     <div class="mt-2" data-bind="slideVisible: groupInfoVisible, if: speciesLists().length > 0">
                         <h5>Step 3. Construct species name using the following columns</h5>
-                        <label class="d-block">Scientific name is associated with column <select class="form-control"
+                        <label class="d-block">Scientific name is associated with column <select class="form-select"
                                 data-bind="options: commonFields, value: scientificNameField, valueAllowUnset: true"></select>
                         </label>
-                        <label class="d-block">Common name is associated with column <select class="form-control"
+                        <label class="d-block">Common name is associated with column <select class="form-select"
                                 data-bind="options: commonFields, value: commonNameField, valueAllowUnset: true"></select>
                         </label>
 

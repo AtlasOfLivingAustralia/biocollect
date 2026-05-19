@@ -80,7 +80,7 @@
                                     <div class="input-group">
                                         <fc:datePicker readonly="readonly" targetField="startDate.date" name="startDate"
                                                        data-validation-engine="validate[required]"
-                                                       class="form-control" theme="btn-dark" bs4="true"/>
+                                                       class="form-control" theme="btn-dark" bs5="true"/>
                                     </div>
 
                                 </div>
@@ -93,7 +93,7 @@
                                     <div class="input-group">
                                         <fc:datePicker readonly="readonly" targetField="endDate.date" name="endDate"
                                                        data-validation-engine="validate[future[startDate]]"
-                                                       class="form-control" theme="btn-dark" bs4="true"/>
+                                                       class="form-control" theme="btn-dark" bs5="true"/>
                                     </div>
 
                                 </div>
@@ -104,7 +104,7 @@
                                     <label for="theme"><b>Major theme</b></label>
                                     <select id="theme"
                                             data-bind="value:mainTheme, options:transients.themes, optionsCaption:'Choose..'"
-                                            class="form-control">
+                                            class="form-select">
                                     </select>
                                 </div>
 
@@ -389,7 +389,7 @@ var scroll = false;
     </g:if>
     $('#validation-container').validationEngine('attach', {scroll: scroll});
 
-    $('.helphover').popover({animation: true, trigger:'hover'});
+    Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
     $('#reset').on('click',function () {
     master.reset();

@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title><g:message code="g.citizenScience"/> | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {

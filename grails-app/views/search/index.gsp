@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Search Results | <g:message code="g.biocollect"/></title>
 </head>
 <body>
@@ -28,8 +28,8 @@
     <g:if test="${flash.error || results.error}">
         <g:set var="error" value="${flash.error?:results.error}"/>
         <div class="row-fluid">
-            <div class="alert alert-danger large-space-before">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div class="alert alert-dismissible alert-danger large-space-before">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <span>Error: ${error}</span>
             </div>
         </div>
@@ -94,10 +94,10 @@
                             </g:each>
                         </ul>
                         <g:if test="${f?.terms?.size() > max}">
-                            <a href="#${fn}Modal" role="button" class="moreFacets tooltips" data-toggle="modal" title="View full list of values"><i class="icon-hand-right"></i> choose more...</a>
+                            <a href="#${fn}Modal" role="button" class="moreFacets tooltips" data-bs-toggle="modal" title="View full list of values"><i class="icon-hand-right"></i> choose more...</a>
                             <div id="${fn}Modal" class="modal hide fade">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                                     <h3>Filter by ${fName}</h3>
                                 </div>
                                 <div class="modal-body">
@@ -112,7 +112,7 @@
                                     </ul>
                                 </div>
                                 <div class="modal-footer">
-                                    <a href="#" class="btn" data-dismiss="modal">Close</a>
+                                    <a href="#" class="btn" data-bs-dismiss="modal">Close</a>
                                 </div>
                             </div>
                         </g:if>
@@ -184,7 +184,7 @@
 </div>
 <asset:script type="text/javascript">
     $(window).on('load',function () {
-        $('.tooltips').tooltip({placement: "right"});
+        Biocollect.Bootstrap5.initTooltips('.tooltips', {placement: "right"});
     });
 </asset:script>
 </body>

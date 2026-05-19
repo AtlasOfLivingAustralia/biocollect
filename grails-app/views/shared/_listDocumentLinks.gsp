@@ -3,10 +3,10 @@
 <p>
     <span data-bind="foreach:transients.mobileApps">
         <!-- ko if: role != 'pwa' -->
-        <a data-bind="attr:{href:link.url, title: 'Connect with ' + role + ' app'}, css: role" class="do-not-mark-external pr-3"><i data-bind="attr: {class: 'fa-3x ' + icon()}"></i></a>
+        <a data-bind="attr:{href:link.url, title: 'Connect with ' + role + ' app'}, css: role" class="do-not-mark-external pe-3"><i data-bind="attr: {class: 'fa-3x ' + icon()}"></i></a>
         <!-- /ko -->
         <!-- ko if: role == 'pwa' -->
-        <a data-bind="attr:{href:pwaAppProjectUrl(), title: 'Connect with BioCollect PWA app'}, css: role" class="do-not-mark-external pr-3">
+        <a data-bind="attr:{href:pwaAppProjectUrl(), title: 'Connect with BioCollect PWA app'}, css: role" class="do-not-mark-external pe-3">
             <span class="pwa-mobile large">
                 <img src="${asset.assetPath(src: 'logo-dark-32x32.png')}"/>
             </span>
@@ -19,7 +19,7 @@
 <h4 class="text-small-heading"><g:message code="g.socialMedia" /></h4>
 <p>
     <span data-bind="foreach:transients.socialMedia">
-        <a data-bind="attr:{href:link.url, title: 'Connect with ' + role}, css: role" class="do-not-mark-external pr-3"><i data-bind="attr: {class: 'fa-3x ' + icon()}"></i></a>
+        <a data-bind="attr:{href:link.url, title: 'Connect with ' + role}, css: role" class="do-not-mark-external pe-3"><i data-bind="attr: {class: 'fa-3x ' + icon()}"></i></a>
     </span>
 </p>
 <!-- /ko -->

@@ -1,4 +1,4 @@
-<div class="row form-group">
+<div class="row mb-3">
     <label class="col-form-label col-md-4"><g:message code="g.mobileApps" />:<fc:iconHelp><g:message code="g.mobileApps.help" args="[entity]"/></fc:iconHelp></label>
     <table class="table links-table col-md-8">
         <tbody data-bind="foreach:transients.mobileApps">
@@ -27,7 +27,7 @@
         </tbody>
         <tfoot data-bind="visible:transients.mobileAppsUnspecified().length > 0">
         <tr><td colspan="2">
-            <select class="form-control" id="addMobileApp"
+            <select class="form-select" id="addMobileApp"
                     data-bind="options:transients.mobileAppsUnspecified,optionsText:'name',optionsValue:'role',value:transients.mobileAppToAdd,optionsCaption:'Add mobile app...'"></select>
         </td></tr>
         </tfoot>

@@ -3,25 +3,25 @@
         <div class="col-12 col-lg-2">
             <ul id="adminNav" class="nav flex-row flex-lg-column nav-pills nav-fil">
                 <g:if test="${params.userIsProjectAdmin}">
-                    <li ${activeClass} class="nav-item text-left"><a href="#settings" id="settings-tab" data-toggle="tab" class="nav-link active"><i class="fas fa-chevron-right"></i> Project settings</a></li>
+                    <li ${activeClass} class="nav-item text-start"><a href="#settings" id="settings-tab" data-bs-toggle="tab" class="nav-link active"><i class="fas fa-chevron-right"></i> Project settings</a></li>
                     <g:set var="activeClass" value=""/>
                 </g:if>
-                <li class="nav-item text-left"><a href="#reports" id="reports-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Project Reports</a> </li>
-                <li class="nav-item text-left"><a href="#editMeriPlan" id="editMeriPlan-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Edit Project Plan</a></li>
-                <li class="nav-item text-left"><a href="#editProjectBlog" id="editProjectBlog-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Edit Blog</a></li>
+                <li class="nav-item text-start"><a href="#reports" id="reports-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Project Reports</a> </li>
+                <li class="nav-item text-start"><a href="#editMeriPlan" id="editMeriPlan-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Edit Project Plan</a></li>
+                <li class="nav-item text-start"><a href="#editProjectBlog" id="editProjectBlog-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Edit Blog</a></li>
                 <g:if test="${hasLegacyNewsAndEvents}">
-                    <li class="nav-item text-left"><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> News and events</a></li>
+                    <li class="nav-item text-start"><a href="#editNewsAndEvents" id="editnewsandevents-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> News and events</a></li>
                 </g:if>
                 <g:if test="${hasLegacyProjectStories}">
-                    <li class="nav-item text-left"><a href="#editProjectStories" id="editprojectstories-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Project stories</a></li>
+                    <li class="nav-item text-start"><a href="#editProjectStories" id="editprojectstories-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Project stories</a></li>
                 </g:if>
-                <li ${activeClass} class="nav-item text-left"><a href="#permissions" id="permissions-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Project access</a></li>
+                <li ${activeClass} class="nav-item text-start"><a href="#permissions" id="permissions-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Project access</a></li>
                 <g:if test="${params.userIsProjectAdmin}">
-                    <li ${activeClass} class="nav-item text-left"><a href="#mapConfiguration" id="mapConfiguration-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Sites</a></li>
+                    <li ${activeClass} class="nav-item text-start"><a href="#mapConfiguration" id="mapConfiguration-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Sites</a></li>
                 </g:if>
-                <li class="nav-item text-left"><a href="#edit-documents" id="documents-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Resources</a></li>
+                <li class="nav-item text-start"><a href="#edit-documents" id="documents-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Resources</a></li>
                 <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
-                    <li class="nav-item text-left"><a href="#project-audit" id="project-audit-tab" data-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Audit</a></li>
+                    <li class="nav-item text-start"><a href="#project-audit" id="project-audit-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Audit</a></li>
                 </g:if>
             </ul>
         </div>

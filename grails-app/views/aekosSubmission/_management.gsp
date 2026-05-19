@@ -8,7 +8,7 @@
 
     <br/>
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="dataSharingLicense"><g:message code="aekos.management.datasharing.license"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.management.datasharing.license"/>',
@@ -28,7 +28,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="acknowledgement"><g:message code="aekos.acknowledgement"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.acknowledgement"/>',
@@ -44,7 +44,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="embargoOption"><g:message code="aekos.embargoOption"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.embargoOption"/>',
@@ -65,7 +65,7 @@
                 <div class="panel-heading"><h5 class="strong">Dataset Custodian(s)</h5></div>
                   <div class="panel-body">
                       <div class="row-fluid">
-                          <div class="span4 text-right">
+                          <div class="span4 text-end">
                               <label class="control-label" for="legalCustodianOrganisation"><g:message code="aekos.legalCustodianOrganisation"/>
                                   <a href="#" class="helphover"
                                      data-bind="popover: {title:'<g:message code="aekos.legalCustodianOrganisation"/>',
@@ -81,7 +81,7 @@
                       </div>
 
                       <div class="row-fluid">
-                          <div class="span4 text-right">
+                          <div class="span4 text-end">
                               <label class="control-label" for="legalCustodianOrganisationType"><g:message code="aekos.legalCustodianOrganisationType"/>
                                   <a href="#" class="helphover"
                                      data-bind="popover: {title:'<g:message code="aekos.legalCustodianOrganisationType"/>',
@@ -112,7 +112,7 @@
            <div class="panel-body">
 
                 <div class="row-fluid">
-                    <div class="span4 text-right">
+                    <div class="span4 text-end">
                         <label class="control-label" for="curationStatus"><g:message code="aekos.management.curation.status"/>
                             <a href="#" class="helphover"
                                data-bind="popover: {title:'<g:message code="aekos.management.curation.status"/>',
@@ -130,7 +130,7 @@
                 </div>
 
                 <div class="row-fluid">
-                    <div class="span4 text-right">
+                    <div class="span4 text-end">
                         <label class="control-label" for="curationActivitiesOther"><g:message code="aekos.management.curation.other"/>
                             <a href="#" class="helphover"
                                data-bind="popover: {title:'<g:message code="aekos.management.curation.other"/>',
@@ -148,7 +148,7 @@
                 </div>
 
                 <div class="row-fluid">
-                    <div class="span4 text-right">
+                    <div class="span4 text-end">
                         <label class="control-label" for="lastUpdated"><g:message code="aekos.management.lastUpdated"/>
                             <a href="#" class="helphover"
                                data-bind="popover: {title:'<g:message code="aekos.management.lastUpdated"/>',

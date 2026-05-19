@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<meta name="layout" content="bs4"/>
+		<meta name="layout" content="bs5"/>
 		<title>Admin - Audit Message Detail | Data capture | Atlas of Living Australia</title>
 		<style type="text/css" media="screen">
 		</style>

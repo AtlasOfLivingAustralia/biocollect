@@ -57,26 +57,31 @@ ko.virtualElements.allowedBindings.foreachModelOutput = true;
 
 // handle activity accordion
 $('#activities').
-    on('show', 'div.collapse', function() {
-        $(this).parents('tr').prev().find('td:first-child a').empty()
-            .html("&#9660;").attr('title','hide').parent('a').tooltip();
+    on('show.bs.collapse', 'div.collapse', function() {
+        updateAccordionToggle($(this), '&#9660;', 'hide');
     }).
-    on('hide', 'div.collapse', function() {
-        $(this).parents('tr').prev().find('td:first-child a').empty()
-            .html("&#9658;").attr('title','expand');
+    on('hide.bs.collapse', 'div.collapse', function() {
+        updateAccordionToggle($(this), '&#9658;', 'expand');
     }).
-    on('shown', 'div.collapse', function() {
+    on('shown.bs.collapse', 'div.collapse', function() {
         trackState();
     }).
-    on('hidden', 'div.collapse', function() {
+    on('hidden.bs.collapse', 'div.collapse', function() {
         trackState();
     });
+
+function updateAccordionToggle ($element, icon, title) {
+    var $toggle = $element.parents('tr').prev().find('td:first-child a');
+    $toggle.empty().html(icon).attr('title', title);
+    Biocollect.Bootstrap5.disposeTooltip($toggle);
+    Biocollect.Bootstrap5.getTooltip($toggle);
+}
 
 function trackState () {
     var $leaves = $('#activityList div.collapse'),
         state = [];
     $.each($leaves, function (i, leaf) {
-        if ($(leaf).hasClass('in')) {
+        if ($(leaf).hasClass('show')) {
             state.push($(leaf).attr('id'));
         }
     });
@@ -97,7 +102,7 @@ function readState () {
     $.each($leaves, function (i, leaf) {
         id = $(leaf).attr('id');
         if (($.inArray(id, state) > -1)) {
-            $(leaf).collapse('show');
+            Biocollect.Bootstrap5.showCollapse(leaf);
         }
     });
 }

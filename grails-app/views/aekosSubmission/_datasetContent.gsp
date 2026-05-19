@@ -7,7 +7,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label"><g:message code="aekos.dataset.content.fos"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'',
@@ -25,7 +25,7 @@
     </div>
 
     <div class="row-fluid">
-           <div class="span4 text-right">
+           <div class="span4 text-end">
                <label class="control-label"><g:message code="aekos.dataset.content.seo"/>
                    <a href="#" class="helphover"
                       data-bind="popover: {title:'',
@@ -43,7 +43,7 @@
        </div>
 
        <div class="row-fluid">
-           <div class="span4 text-right">
+           <div class="span4 text-end">
                <label class="control-label"><g:message code="aekos.dataset.content.research"/>
                    <a href="#" class="helphover"
                       data-bind="popover: {title:'',
@@ -61,7 +61,7 @@
        </div>
 
        <div class="row-fluid">
-           <div class="span4 text-right">
+           <div class="span4 text-end">
                <label class="control-label"><g:message code="aekos.dataset.content.threat"/>
                    <a href="#" class="helphover"
                       data-bind="popover: {title:'',
@@ -78,7 +78,7 @@
        </div>
 
        <div class="row-fluid">
-           <div class="span4 text-right">
+           <div class="span4 text-end">
                <label class="control-label"><g:message code="aekos.dataset.content.conservation"/>
                    <a href="#" class="helphover"
                       data-bind="popover: {title:'',

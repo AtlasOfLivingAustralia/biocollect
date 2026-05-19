@@ -47,7 +47,7 @@ environments {
                 serverName = "${grails.host}:${server.port}"
                 grails.serverURL = serverName
                 server.serverURL = serverName
-                layout.skin = "bs4"
+                layout.skin = "bs5"
                 app.default.hub='acsa'
                 runWithNoExternalConfig = true
                 wiremock.port = 8018

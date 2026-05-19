@@ -27,8 +27,8 @@
             <thead>
                 <tr>
                     <th>Page Id</th>
-                    <th class="min-width-68">View</th>
-                    <th class="min-width-68">Edit</th>
+                    <th class="min-collapse-horizontal-68">View</th>
+                    <th class="min-collapse-horizontal-68">Edit</th>
                 </tr>
             </thead>
             <tbody>

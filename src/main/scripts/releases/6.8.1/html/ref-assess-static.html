@@ -143,7 +143,7 @@
           >
             <span
               data-bind="style: { opacity: $parent.isMvgSelected($data) ? 1 : 0 }"
-              class="fa fa-check mr-3"
+              class="fa fa-check me-3"
             ></span>
             <p
               data-bind="text: $data"
@@ -167,7 +167,7 @@
           >
             <span
               data-bind="style: { opacity: $parent.isClimateSelected($data) ? 1 : 0 }"
-              class="fa fa-check mr-3"
+              class="fa fa-check me-3"
             ></span>
             <p
               data-bind="text: $data"
@@ -181,7 +181,7 @@
   </div>
   <div class="row">
     <div class="col-6">
-      <div class="py-3 pl-3">
+      <div class="py-3 ps-3">
         <button
           type="button"
           data-bind="click: function() { deIdentify(false) }, css: { 'bg-secondary': !deIdentify() }, enable: !isLoading()"
@@ -200,7 +200,7 @@
       </div>
     </div>
     <div class="col-6">
-      <div class="py-3 pr-3">
+      <div class="py-3 pe-3">
         <button
           type="button"
           data-bind="click: function() { deIdentify(true) }, css: { 'bg-secondary': deIdentify() }, enable: !isLoading()"
@@ -288,10 +288,10 @@
           data-bind="click: onRequestRecords, css: {disabled: mvgSelected().length === 0 || climateSelected().length === 0 || !privacyPolicy() || isLoading()}, enable: mvgSelected().length > 0 && climateSelected().length > 0 && !isLoading() && privacyPolicy()"
           class="btn btn-primary justify-self-end full-width"
         >
-          <i data-bind="visible: !isLoading()" class="far fa-copy mr-2"></i>
+          <i data-bind="visible: !isLoading()" class="far fa-copy me-2"></i>
           <span
             data-bind="visible: isLoading()"
-            class="fa fa-spin fa-spinner mr-2"
+            class="fa fa-spin fa-spinner me-2"
           ></span>
           Request Records
         </button>
