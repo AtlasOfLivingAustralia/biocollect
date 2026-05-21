@@ -1443,7 +1443,7 @@
             </select>
         </td>
         <td>
-            <select class="form-control" data-bind="value: sortOrder">
+            <select class="form-select" data-bind="value: sortOrder">
                 <option value="count">Count</option>
                 <option value="term">Term / Name</option>
             </select>
