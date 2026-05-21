@@ -3,14 +3,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Edit | ${activity.type} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
           content="${createLink(controller: 'project', action: 'index')}/${project.projectId},Project"/>
     <meta name="breadcrumb" content="${activity.type}"/>
     <asset:stylesheet src="forms-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"></script>
     <asset:script type="text/javascript">
@@ -49,7 +49,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-12 ml-3">
+            <div class="col-sm-12 ms-3">
                 <!-- Common activity fields -->
                 <div class="row" data-bind="visible:transients.typeWarning()" style="display:none">
                     <div class="col-sm-12 alert alert-danger">
@@ -118,22 +118,22 @@
 <!-- templates -->
 <script type="text/html" id="activityTmpl">
     <div class="col-sm-6 required">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="plannedStartDate">Planned start date
             <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
             </label>
-            <div class="input-group-append">
-                <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+            <div class="input-group">
+                <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}" bs5="true" theme="btn-dark"/>
             </div>
         </div>
     </div>
     <div class="col-sm-6 required">
-        <div class="form-group">
+        <div class="mb-3">
             <label for="plannedEndDate">Planned end date
             <fc:iconHelp title="Planned end date" printable="${printView}">Date the activity is intended to finish.</fc:iconHelp>
             </label>
-            <div class="input-group-append">
-                <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" />
+            <div class="input-group">
+                <fc:datePicker targetField="plannedEndDate.date" name="plannedEndDate" data-validation-engine="validate[future[plannedStartDate],past[${formattedEndDate}],required]" printable="${printView}" bs5="true" theme="btn-dark" />
             </div>
         </div>
     </div>
@@ -143,8 +143,8 @@
     <label for="plannedStartDate">Milestone date
     <fc:iconHelp title="Planned start date" printable="${printView}">Date the activity is intended to start.</fc:iconHelp>
     </label>
-    <div class="input-group-append">
-        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}"/>
+    <div class="input-group">
+        <fc:datePicker targetField="plannedStartDate.date" name="plannedStartDate" data-validation-engine="validate[required,future[${formattedStartDate}]]" printable="${printView}" bs5="true" theme="btn-dark"/>
     </div>
 </div>
 </script>
@@ -257,7 +257,7 @@
             }
         }});
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         $('#save').on('click',function () {
             master.save();

@@ -2,7 +2,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Advanced | <g:message code="g.biocollect"/></title>
     <asset:script type="text/javascript">
     var fcConfig = {
@@ -38,8 +38,8 @@
 
     <g:if test="${flash.error}">
         <div class="row-fluid">
-            <div class="alert alert-danger">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <span>${flash.error}</span>
             </div>
         </div>
@@ -53,7 +53,7 @@
                   style="display:none;">Filtered</span>
             <div class="control-group">
                 <div class="input-append">
-                    <g:textField class="filterinput input-medium" data-target="project"
+                    <g:textField class="filterinput input-medium" data-bs-target="project"
                                  title="Type a few characters to restrict the list." name="projects"
                                  placeholder="filter"/>
                     <button type="button" class="btn clearFilterBtn"
@@ -76,7 +76,7 @@
             %{--data-bind="visible:isSitesFiltered,valueUpdate:'afterkeyup'"--}%>Filtered</span>
             <div class="control-group">
                 <div class="input-append">
-                    <g:textField class="filterinput input-medium" data-target="site"
+                    <g:textField class="filterinput input-medium" data-bs-target="site"
                                  title="Type a few characters to restrict the list." name="sites"
                                  placeholder="filter"/>
                     <button type="button" class="btn clearFilterBtn"
@@ -109,7 +109,7 @@
                       style="display:none;">Filtered</span>
                 <div class="control-group">
                     <div class="input-append">
-                        <g:textField class="filterinput input-medium" data-target="activity"
+                        <g:textField class="filterinput input-medium" data-bs-target="activity"
                                      title="Type a few characters to restrict the list." name="activities"
                                      placeholder="filter"/>
                         <button type="button" class="btn clearFilterBtn"
@@ -133,7 +133,7 @@
                       style="display:none;">Filtered</span>
                 <div class="control-group">
                     <div class="input-append">
-                        <g:textField class="filterinput input-medium" data-target="assessment"
+                        <g:textField class="filterinput input-medium" data-bs-target="assessment"
                                      title="Type a few characters to restrict the list." name="assessments"
                                      placeholder="filter"/>
                         <button type="button" class="btn clearFilterBtn"

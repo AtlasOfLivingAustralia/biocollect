@@ -27,7 +27,7 @@
                 </p>
             </div>
             <g:uploadForm class="form-horizontal" action="uploadUserPermissionsCSV" enctype="multipart/form-data">
-                <div class="form-group">
+                <div class="mb-3">
                     <label for="userPermissions">Select a CSV file to upload</label>
                     <input type="file" accept="text/csv" class="form-control" name="projectData" id="userPermissions"/>
                 </div>

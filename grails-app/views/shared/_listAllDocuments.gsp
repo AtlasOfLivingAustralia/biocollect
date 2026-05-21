@@ -4,38 +4,30 @@
         <div class="row mb-2">
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group search-resources">
-                    <label id="lblSearchResources" for="searchResources" class="sr-only">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
+                    <label id="lblSearchResources" for="searchResources" class="visually-hidden">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
                     <input class="form-control" id="searchResources" type="text" data-bind="value:searchDoc, hasFocus: searchHasFocus, valueUpdate:'keyup'"
                            placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="lblSearchResources"/>
-                    <div class="input-group-append">
-                        <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
+                    <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
             </div>
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label for="searchType" class="input-group-text">Search in</label>
-                    </div>
-                    <select id="searchType" class="custom-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Filter"></select>
+                    <label for="searchType" class="input-group-text">Search in</label>
+                    <select id="searchType" class="form-select" data-bind="options: documentFilterFieldOptions, value: documentFilterField, optionsText: 'label'" aria-label="Filter"></select>
                 </div>
             </div>
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label for="searchInRole" class="input-group-text">Filter by type</label>
-                    </div>
-                    <select id="searchInRole" class="custom-select" data-bind="options:roleFilterFieldOptions, optionsText: 'name', optionsValue: 'id', value:roleFilterField"></select>
+                    <label for="searchInRole" class="input-group-text">Filter by type</label>
+                    <select id="searchInRole" class="form-select" data-bind="options:roleFilterFieldOptions, optionsText: 'name', optionsValue: 'id', value:roleFilterField"></select>
                 </div>
             </div>
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text"  for="sortBy">Sort by</label>
-                    </div>
-                    <select id="sortBy" class="custom-select" data-bind="value: sortBy" aria-label="Sort Order">
+                    <label class="input-group-text"  for="sortBy">Sort by</label>
+                    <select id="sortBy" class="form-select" data-bind="value: sortBy" aria-label="Sort Order">
                         <option value="dateCreated">Recently uploaded</option>
                         <option value="lastUpdated">Recently modified</option>
                     </select>
@@ -52,7 +44,7 @@
                         </div>
                         <div class="col-3">
                             <g:if test="${fc.userIsLoggedIn()}">
-                            <div class="btn btn-default float-right" data-bind="click: downloadDocuments">
+                            <div class="btn btn-default float-end" data-bind="click: downloadDocuments">
                                 <i class="fas fa-download"></i> <g:message code="g.download"/>
                             </div>
                             </g:if>

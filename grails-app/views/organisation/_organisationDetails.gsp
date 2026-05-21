@@ -4,7 +4,7 @@
         <div class="col-12">
             <h4 class="block-header"><g:message code="organisation.details.header"/></h4>
 
-            <div class="form-group row required">
+            <div class="mb-3 row required">
                 <label class="col-form-label col-12 col-sm-3" for="name">Name: <fc:iconHelp><g:message
                         code="organisation.name.help"/></fc:iconHelp></label>
 
@@ -13,7 +13,7 @@
                            data-validation-engine="validate[required,maxSize[256]]" placeholder="Organisation name">
                 </div>
             </div>
-            <div class="form-group row required">
+            <div class="mb-3 row required">
                 <label class="col-form-label col-sm-3" for="description">Description: <fc:iconHelp><g:message
                         code="organisation.description.help"/></fc:iconHelp></label>
 
@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-form-label col-sm-3" for="url">Web Site URL: <fc:iconHelp><g:message
                         code="organisation.webUrl.help"/></fc:iconHelp></label>
 
@@ -45,7 +45,7 @@
         <div class="col-12">
             <h4 class="block-header"><g:message code="organisation.images.header"/></h4>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-form-label col-sm-3" for="logo">Organisation Logo: <fc:iconHelp><g:message
                         code="organisation.logo.help"/></fc:iconHelp></label>
 
@@ -74,7 +74,7 @@
                 </span>
             </div>
 
-            <div class="form-group row">
+            <div class="mb-3 row">
                 <label class="col-form-label col-sm-3" for="mainImage">Feature Graphic: <fc:iconHelp><g:message
                         code="organisation.mainImage.help"/></fc:iconHelp></label>
 

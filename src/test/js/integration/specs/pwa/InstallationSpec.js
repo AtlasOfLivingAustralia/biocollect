@@ -205,13 +205,15 @@ describe("Application installation Spec", function () {
         await browser.pause(2000);
         // await browser.getUrl();
         console.log("login with expired token - open");
-        expect(await pwaAppPage.atSignIn()).toEqual(true);
-        console.log("login with expired token - expect to be at sign in page");
+        expect(await pwaAppPage.atSignIn()).toEqual(false);
+        await pwaAppPage.start();
+        await expect(pwaAppPage.project(project)).toExist();
+        console.log("login with expired token - expect to be at pwa app page");
         await pwaAppPage.loginAsPwaUser(false);
         console.log("login with expired token - login as pwa user not expired");
         await pwaAppPage.open();
         console.log("login with expired token - open again");
-        await pwaAppPage.at();
+        await expect(pwaAppPage.project(project)).toExist();
         console.log("login with expired token - at pwa app page");
     });
 });

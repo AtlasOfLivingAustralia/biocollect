@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
   <title> ${create ? 'New' : ('Edit | ' + site?.name?.encodeAsHTML())} | Sites | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumbParent2"
@@ -57,7 +57,7 @@
     </asset:script>
     <asset:stylesheet src="sites-manifest.css"/>
     <asset:stylesheet src="leaflet-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -100,7 +100,7 @@
 
         $('#validation-container').validationEngine('attach', {scroll: false});
 
-        $('.helphover').popover({animation: true, trigger:'hover'});
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
         var siteViewModel = initSiteViewModel(true, ${!userCanEdit});
         $('#cancel').on('click',function () {

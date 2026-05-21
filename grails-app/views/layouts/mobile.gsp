@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
     <link href="${g.createLink(controller: 'hub', action: 'generateStylesheet')}?ver=${hubConfig.lastUpdated}" rel="stylesheet"/>
-    <asset:stylesheet src="base-bs4.css"/>
-    <asset:javascript src="base-bs4.js"/>
+    <asset:stylesheet src="base-bs5.css"/>
+    <asset:javascript src="base-bs5.js"/>
     <g:layoutHead/>
     <style type="text/css">
     input[type=checkbox] {

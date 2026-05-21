@@ -1,6 +1,6 @@
 <div class="row-fluid bg-black-color">
     <div class="dropdown">
-        <button class="btn btn-link btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-list"></i> BioCollect
+        <button class="btn btn-link btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fa fa-list"></i> BioCollect
             <span class="caret"></span></button>
         <ul class="dropdown-menu">
             <li><a href="${createLink(controller: 'home', action: 'index')}" class="btnSearch"><span class="fa fa-search"></span> Search</a></li>

@@ -3,10 +3,10 @@
 <html>
 <head>
     <title></title>
-    <meta name="layout" content="bs4"/>
-    <asset:stylesheet src="common-bs4.css" />
+    <meta name="layout" content="bs5"/>
+    <asset:stylesheet src="common-bs5.css" />
     <asset:stylesheet src="wmd/wmd.css" />
-    <asset:javascript src="common-bs4.js" />
+    <asset:javascript src="common-bs5.js" />
     <asset:javascript src="wmd/wmd.js" />
     <asset:script type="text/javascript">
         $(document).ready(function (e) {
@@ -21,7 +21,7 @@
         });
     </asset:script>
 </head>
-<body data-offset="70" data-target="#page-nav" data-spy="scroll">
+<body data-bs-offset="70" data-bs-target="#page-nav" data-spy="scroll">
 <div class="${fluidLayout?'container-fluid':'container'}">
     <div class="inner">
         <div class="row">

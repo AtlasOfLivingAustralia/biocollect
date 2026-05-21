@@ -185,13 +185,13 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
 
     self.selectTab = function(data, event) {
         var tabId = event.currentTarget.id;
-        $("#" + tabId).tab('show');
+        Biocollect.Bootstrap5.showTab('#' + tabId);
         var tabNumber = tabId.substr(0, 5);
         self.selectedTab(tabNumber);
     };
 
     self.showTab = function(tabId) {
-        $("#" + tabId).tab('show');
+        Biocollect.Bootstrap5.showTab('#' + tabId);
         self.selectedTab(tabId);
     };
 
@@ -204,7 +204,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
     };
     self.selectNextTab = function() {
         var nextTabVal = nextTab();
-        $('#' + nextTabVal).tab('show');
+        Biocollect.Bootstrap5.showTab('#' + nextTabVal);
         self.selectedTab(nextTabVal);
     };
 
@@ -223,7 +223,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
             bootbox.confirm("You will lose unsaved changes. Are you sure you want to close this window?", function (result) {
                 if (result) {
                     alaMap = null;
-                    $("#aekosModal").modal('hide');
+                    Biocollect.Bootstrap5.hideModal('#aekosModal');
                     self.get();
                     // window.location.reload();
                     // self.aekosModalView(null);
@@ -234,7 +234,7 @@ AEKOS.AekosViewModel = function (pActivityVM, activityRec, projectViewModel, pro
                 }
             });
         } else {
-            $("#aekosModal").modal('hide');
+            Biocollect.Bootstrap5.hideModal('#aekosModal');
         }
 
     };

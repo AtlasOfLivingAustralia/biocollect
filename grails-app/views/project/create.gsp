@@ -4,7 +4,7 @@
 <g:set var="messageSource" bean="messageSource"></g:set>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title> <g:message code="g.create"/> | <g:message code="g.project"/> | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="Create Project"/>
@@ -47,7 +47,7 @@
 
     </asset:script>
     <asset:stylesheet src="project-create-manifest.css"/>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="organisation.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -99,7 +99,7 @@ $(function(){
     viewModel.loadPrograms(programsModel);
 
     $('#projectDetails').validationEngine();
-    $('.helphover').popover({animation: true, trigger:'hover'});
+    Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'});
 
     <g:if test="${citizenScience}">
     viewModel.transients.kindOfProject("citizenScience");
