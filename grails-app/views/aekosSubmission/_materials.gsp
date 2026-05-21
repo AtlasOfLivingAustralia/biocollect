@@ -7,7 +7,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="environmentFeaturesSelection"><g:message code="aekos.environment.features"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.environment.features"/>',
@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="materialType"><g:message code="aekos.supplementary.material.type"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.supplementary.material.type"/>',
@@ -42,7 +42,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="otherMaterials"><g:message code="aekos.other.materials"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.other.materials"/>',
@@ -58,7 +58,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="associatedMaterialName"><g:message code="aekos.associated.material.name"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.associated.material.name"/>',
@@ -74,7 +74,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="materialIdentifier"><g:message code="aekos.material.identifier"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.material.identifier"/>',
@@ -92,7 +92,7 @@
     </div>
 
     <div class="row-fluid">
-        <div class="span4 text-right">
+        <div class="span4 text-end">
             <label class="control-label" for="associatedMaterialIdentifier"><g:message code="aekos.associated.material.identifier"/>
                 <a href="#" class="helphover"
                    data-bind="popover: {title:'<g:message code="aekos.associated.material.identifier"/>',

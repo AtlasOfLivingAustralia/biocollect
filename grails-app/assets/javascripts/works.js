@@ -517,7 +517,7 @@ function PlanViewModel(config) {
 
     self.submitReport = function (e) {
         //bootbox.alert("Reporting has not been enabled yet.");
-        $('#declaration').modal('show');
+        Biocollect.Bootstrap5.showModal('#declaration');
     };
     self.getGanttData = function () {
         var values = [],

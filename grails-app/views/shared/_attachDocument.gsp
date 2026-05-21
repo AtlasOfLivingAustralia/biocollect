@@ -5,15 +5,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="title">Attach Document</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    
                 </button>
             </div>
 
             <div class="modal-body">
                 <form class="validationContainer" id="documentForm">
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentName">Title</label>
 
                         <div class="col-sm-9">
@@ -21,7 +21,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentDescription">Description</label>
 
                         <div class="col-sm-9">
@@ -29,7 +29,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentAttribution">Attribution</label>
 
                         <div class="col-sm-9">
@@ -38,15 +38,15 @@
                         </div>
                     </div>
 
-                    <div class="row form-group" data-bind="visible:roles.length > 1">
+                    <div class="row mb-3" data-bind="visible:roles.length > 1">
                         <label class="col-form-label col-sm-3" for="documentRole">Document type</label>
 
                         <div class="col-sm-9">
-                            <select class="form-control" id="documentRole" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
+                            <select class="form-select" id="documentRole" data-bind="options:roles, optionsText: 'name', optionsValue: 'id', value:role"></select>
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentDoi">DOI</label>
 
                         <div class="col-sm-9">
@@ -55,7 +55,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentexternalUrl">External Url</label>
 
                         <div class="col-sm-9">
@@ -64,7 +64,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentCitation">Citation</label>
 
                         <div class="col-sm-9">
@@ -72,7 +72,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentKeywords">Keywords</label>
 
                         <div class="col-sm-9">
@@ -80,7 +80,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="isbn">ISBN</label>
 
                         <div class="col-sm-9">
@@ -88,7 +88,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group">
+                    <div class="row mb-3">
                         <label class="col-form-label col-sm-3" for="documentLicense">License</label>
 
                         <div class="col-sm-9">
@@ -96,7 +96,7 @@
                         </div>
                     </div>
 
-                    <div class="row form-group" data-bind="visible: embeddedVideoVisible()">
+                    <div class="row mb-3" data-bind="visible: embeddedVideoVisible()">
                         <label class="col-sm-3" for="embeddedVideo">
                             Embed video
                         </label>
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <g:set var="labelResources" value="${hubConfig.getTextForResourceLabelOnModal(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}"/>
-                    <div class="row form-group" data-bind="visible:settings.showSettings">
+                    <div class="row mb-3" data-bind="visible:settings.showSettings">
                         <label class="col-form-label col-sm-3" for="public">Settings</label>
                         <div class="col-sm-9">
                             <div class="form-check">
@@ -123,7 +123,7 @@
 
                     </div>
 
-                    <div class="row form-group" data-bind="visible:thirdPartyConsentDeclarationRequired">
+                    <div class="row mb-3" data-bind="visible:thirdPartyConsentDeclarationRequired">
                         <label for="thirdPartyConsentDeclarationMade" class="col-sm-3 col-form-label">Privacy declaration</label>
                         <div id="thirdPartyConsentDeclarationMade" class="col-sm-9">
                             <div class=" form-check">
@@ -137,7 +137,7 @@
 
 
                     <div data-bind="visible: !embeddedVideoVisible()">
-                        <div class="row form-group">
+                        <div class="row mb-3">
                             <label class="col-sm-3 col-form-label" for="documentFile">File</label>
 
                             <div class="col-sm-9">
@@ -150,7 +150,7 @@
                             </div>
                         </div>
 
-                        <div class="row form-group">
+                        <div class="row mb-3">
                             <label class="col-form-label col-sm-3" for="fileLabel"></label>
 
                             <div class="col-sm-9">
@@ -164,15 +164,15 @@
                             </div>
                         </div>
 
-                        <div class="row form-group" data-bind="visible:hasPreview">
-                            <label class="col-form-group col-sm-3">Preview</label>
+                        <div class="row mb-3" data-bind="visible:hasPreview">
+                            <label class="col-mb-3 col-sm-3">Preview</label>
 
                             <div class="col-sm-9">
                                 <div id="preview" class="controls"></div>
                             </div>
                         </div>
 
-                        <div class="row form-group" data-bind="visible:progress() > 0">
+                        <div class="row mb-3" data-bind="visible:progress() > 0">
                             <label class="col-form-label col-sm-3" for="progress">Progress</label>
 
 %{--                            <div class="col-sm-9 progress progress-info active input-large" id="progress"--}%

@@ -4,7 +4,7 @@
  */
 
 jQuery.fn.button.Constructor.prototype.toggle = function () {
-    var $parent = this.$element.closest('[data-toggle="buttons-radio"]')
+    var $parent = this.$element.closest('[data-bs-toggle="buttons-radio"]')
 
     $parent && $parent
         .find('.active')

@@ -98,7 +98,7 @@ Modal settings copy pasted from bootstrap 3.3.7 and tweaked for species configur
 .modal-footer .btn-group .btn + .btn {
     margin-left: -1px;
 }
-.modal-footer .btn-block + .btn-block {
+.modal-footer .d-grid + .d-grid {
     margin-left: 0;
 }
 .modal-scrollbar-measure {

@@ -1,11 +1,11 @@
 <!-- data-table select species list -->
 <span data-bind="visible: transients.showExistingSpeciesLists">
-    <button type="button" class="close mr-2 mt-2"  data-bind="click:transients.toggleShowExistingSpeciesLists">&times;</button>
+    <button type="button" class="btn-close float-end me-2" data-bind="click:transients.toggleShowExistingSpeciesLists" aria-label="Close"></button>
     <div>
         <h4>Choose from existing species lists</h4>
         <div class="row mb-2">
             <div class="col-12">
-                <div class="form-group row">
+                <div class="mb-3 row">
                     <label class="col-12 col-md-5 col-form-label" for="speciesNameSearch">Enter a list name or select a species name to search for</label>
                     <div class="input-group input-group-sm col-12 col-md-7">
                         <input id="speciesNameSearch" class="form-control" type="text" placeholder="Search list or species"
@@ -15,10 +15,8 @@
                                                     name: allSpeciesLists.searchName,
                                                     guid: allSpeciesLists.searchGuid
                                                 }">
-                        <div class="input-group-append">
-                            <button id="search" class="btn btn-dark" data-bind="click: allSpeciesLists.refreshPage(0)"><i class="fas fa-search"></i> Search</button>
-                            <button id="clear" class="btn btn-danger" data-bind="click: allSpeciesLists.clearSearch"><i class="far fa-trash-alt"></i> Clear</button>
-                        </div>
+                        <button id="search" class="btn btn-dark" type="button" data-bind="click: allSpeciesLists.refreshPage(0)"><i class="fas fa-search"></i> Search</button>
+                        <button id="clear" class="btn btn-danger" type="button" data-bind="click: allSpeciesLists.clearSearch"><i class="far fa-trash-alt"></i> Clear</button>
                     </div>
 
                 </div>

@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="layout" content="${mobile ? 'mobile' : 'bs4'}"/>
+    <meta name="layout" content="${mobile ? 'mobile' : 'bs5'}"/>
     <title>${project?.name.encodeAsHTML()} | Project | BioCollect</title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/'+ hubConfig.urlPath)},Home"/>
     <meta name="breadcrumb" content="${project?.name}"/>
@@ -148,7 +148,7 @@
 %{--        </style>--}%
 %{--    <![endif]-->--}%
     <asset:stylesheet src="projects-manifest.css"/>
-    <asset:javascript src="common-bs4.js" asset-defer="true"/>
+    <asset:javascript src="common-bs5.js" asset-defer="true"/>
     <asset:javascript src="project-activity-manifest.js" asset-defer="true"/>
     <asset:javascript src="projects-manifest.js" asset-defer="true"/>
     <script src="${grailsApplication.config.google.maps.url}" async defer></script>
@@ -259,7 +259,7 @@
 
         //do not trigger validation on blur
         $('.validationEngineContainer').validationEngine({promptPosition: 'topLeft', validationEventTrigger: "none"});
-        $('.helphover').popover({animation: true, trigger:'hover'})
+        Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger:'hover'})
 
         //Main tab selection
         new RestoreTab('ul-main-project', 'about-tab');
