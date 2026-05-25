@@ -312,7 +312,7 @@ function FilterViewModel(config){
 
             if(facet && (facet.length == 1)){
                 var terms = facetVM.getTerms(facet[0]);
-                self.showMoreTermList(facetVM.sortTerms(terms))
+                self.showMoreTermList(terms);
             }
         })
     };
@@ -387,21 +387,6 @@ function FacetViewModel(facet) {
     }
     self.state = ko.observable(state);
 
-    self.sortOrder = facet.sortOrder || 'count';
-    self.sortTerms = function(terms) {
-        terms = terms || [];
-
-        if (self.sortOrder === 'term') {
-            return terms.sort(function(a, b) {
-                return (a.displayNameWithoutCount() || '').localeCompare(b.displayNameWithoutCount() || '');
-            });
-        }
-
-        return terms.sort(function(a, b) {
-            return (b.count() || 0) - (a.count() || 0);
-        });
-    };
-
     // stores the complete list of facet terms after is it loaded
     self.allTermsList = ko.observableArray([]);
 
@@ -445,7 +430,7 @@ function FacetViewModel(facet) {
         }
     };
 
-    self.terms(self.sortTerms(self.getTerms(facet)));
+    self.terms(self.getTerms(facet));
 
     /**
      * Set a flag on a term to indicate that it is selected. 
@@ -482,7 +467,7 @@ function FacetViewModel(facet) {
 
             if(facet && facet.length === 1){
                 const terms = self.getTerms(facet[0]);
-                self.allTermsList(self.sortTerms(terms));
+                self.allTermsList(terms);
             }
         });
     };
