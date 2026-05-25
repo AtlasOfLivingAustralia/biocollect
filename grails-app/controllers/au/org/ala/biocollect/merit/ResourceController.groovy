@@ -1,6 +1,5 @@
 package au.org.ala.biocollect.merit
 
-import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.web.NoSSO
 import grails.converters.JSON
 
@@ -16,7 +15,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 
 class ResourceController {
 
-    EcpWebService ecpWebService
+    WebService webService
 
     grails.core.GrailsApplication grailsApplication
     @NoSSO
@@ -42,7 +41,7 @@ class ResourceController {
             if (!uri.isAbsolute()) {
                 docUrl = grailsApplication.config.getProperty('grails.serverURL') + uri.getPath()
             }
-            else if (!ecpWebService.isValidDomain(uri.getHost())) {
+            else if (!webService.isValidDomain(uri.getHost())) {
                 render status: HttpStatus.SC_BAD_REQUEST, view:'/error'
                 return
             }
