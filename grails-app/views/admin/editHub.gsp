@@ -1444,8 +1444,10 @@
         </td>
         <td>
             <select class="form-select" data-bind="value: sortOrder">
-                <option value="count">Count</option>
-                <option value="term">Term / Name</option>
+                <option value="count">Count descending</option>
+                <option value="reverse_count">Count ascending</option>
+                <option value="term">Term ascending</option>
+                <option value="reverse_term">Term descending</option>
             </select>
         </td>
         <td>
