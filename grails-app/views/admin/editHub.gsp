@@ -1443,7 +1443,7 @@
             </select>
         </td>
         <td>
-            <select class="form-select" data-bind="value: sortOrder">
+            <select class="form-select" data-bind="value: sortOrder, enable: facetTermType() == 'Default'">
                 <option value="count">Count descending</option>
                 <option value="reverse_count">Count ascending</option>
                 <option value="term">Term ascending</option>
