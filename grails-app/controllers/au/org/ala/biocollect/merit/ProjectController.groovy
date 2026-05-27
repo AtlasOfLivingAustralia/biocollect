@@ -1082,7 +1082,7 @@ class ProjectController {
         Map trimmedParams = commonService.parseParams(params)
         HubSettings hub = SettingService.hubConfig
         List allFacetConfig = hub.getFacetsForProjectFinderPage() ?: projectService.getDefaultFacets()
-        trimmedParams.fsort = params.fsort
+        trimmedParams.fsort = params.fsort ?: 'term'
         trimmedParams.flimit = params.flimit?:15
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
