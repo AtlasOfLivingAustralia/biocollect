@@ -84,8 +84,8 @@ function ProjectFinder(config) {
             self.resetPageOffSet();
         };
 
-        vm.getFacetTerms = function (facets) {
-            return self.getFacetTerms(facets);
+        vm.getFacetTerms = function (facets, fsort) {
+            return self.getFacetTerms(facets, fsort);
         };
 
         vm.reset = function () {
@@ -528,11 +528,12 @@ function ProjectFinder(config) {
     /**
      * this is the function calling server with the latest query.
      */
-    this.getFacetTerms = function (facets) {
+    this.getFacetTerms = function (facets, fsort) {
         refreshSearch = false;
         var params = self.getParams();
         params.flimit = -1;
         params.facets = facets;
+        params.fsort = fsort || 'count';
         params.max = 0;
 
         return $.ajax({

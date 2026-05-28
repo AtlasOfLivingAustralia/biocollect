@@ -111,9 +111,11 @@ var ActivitiesAndRecordsViewModel = function (placeHolder, view, user, ignoreMap
         self.clearData();
     };
 
-    self.getFacetTerms = function (facets) {
+    self.getFacetTerms = function (facets, fsort) {
         var url = constructQueryUrl(fcConfig.searchProjectActivitiesUrl, null, false, -1);
-        url = url + ((url.indexOf('?') > -1) ? '&' : '?') + '&max=0&facets=' + facets;
+        url = url + ((url.indexOf('?') > -1) ? '&' : '?') +
+            '&max=0&facets=' + facets +
+            '&fsort=' + (fsort || 'count');
 
         return $.ajax({
             url: url

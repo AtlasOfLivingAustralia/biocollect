@@ -303,7 +303,7 @@ function FilterViewModel(config){
     self.getFacetTerms = function (facetVM) {
         self.searchText('');
         self.showMoreFacet(facetVM);
-        var promise = parent.getFacetTerms(facetVM.name());
+        var promise = parent.getFacetTerms(facetVM.name(), facetVM.sortOrder);
         promise.then(function (data) {
             var facets = data.facets;
             var facet = facets && $.grep(facets, function (facet) {
@@ -319,7 +319,7 @@ function FilterViewModel(config){
 
     // provide access to just the promise that loads the full facet term list
     self.getAllFacetTermItemsPromise = function(facetVM) {
-        return parent.getFacetTerms(facetVM.name());
+        return parent.getFacetTerms(facetVM.name(), facetVM.sortOrder);
     };
 
     self.displayTitle = function (title) {
@@ -380,6 +380,7 @@ function FacetViewModel(facet) {
         return self.title || cleanName(self.name()) || 'Unknown';
     });
     self.type = facet.type;
+    self.sortOrder = facet.sortOrder || 'count';
     self.adminOnly = ko.observable(facet.adminOnly || false);
 
     if(facet.ref.isFacetSelected(self)){
