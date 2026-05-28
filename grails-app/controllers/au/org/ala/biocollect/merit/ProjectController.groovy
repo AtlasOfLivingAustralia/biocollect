@@ -1082,7 +1082,7 @@ class ProjectController {
         Map trimmedParams = commonService.parseParams(params)
         HubSettings hub = SettingService.hubConfig
         List allFacetConfig = hub.getFacetsForProjectFinderPage() ?: projectService.getDefaultFacets()
-        trimmedParams.fsort = 'term'
+        trimmedParams.fsort = params.fsort ?: 'term'
         trimmedParams.flimit = params.flimit?:15
         trimmedParams.max = params.max && params.max.isNumber() ? params.max : 20
         trimmedParams.offset = params.offset && params.offset.isNumber() ? params.offset : 0
@@ -1128,14 +1128,16 @@ class ProjectController {
         }
 
         if(!trimmedParams.facets) {
-            trimmedParams.facets = HubSettings.getFacetConfigForElasticSearch(allFacetConfig)?.collect { it.name }?.join(",")
+            List facetsConfig = HubSettings.getFacetConfigForElasticSearch(allFacetConfig) ?: []
+
+            List facetNames = facetsConfig.collect { it.name }
+            List filteredFacetNames = removeFacetsFromProjectFinderPage(facetNames)?.split(',')?.findAll { it } ?: []
+
+            trimmedParams.facets = filteredFacetNames.join(',')
+            trimmedParams.fsort = filteredFacetNames.collect { facetName ->
+                facetsConfig.find { it.name == facetName }?.sortOrder ?: 'count'
+            }.join(',')
         }
-
-        List facetList = trimmedParams.facets.split(",")
-
-        //check and remove facets from Project Finder Page if there is any
-        if (facetList)
-            trimmedParams.facets = removeFacetsFromProjectFinderPage(facetList)
 
         List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(allFacetConfig)
         if(presenceAbsenceFacets){

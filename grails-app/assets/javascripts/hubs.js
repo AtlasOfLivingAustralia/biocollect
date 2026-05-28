@@ -843,6 +843,7 @@ function FacetConfigurationViewModel(config, availableFacets) {
             facetVM.state(facet.state);
             facetVM.title(facet.title);
             facetVM.facetTermType(facet.facetTermType || facetVM.facetTermType());
+            facetVM.sortOrder(facet.sortOrder || facetVM.sortOrder());
             facetVM.helpText(facet.helpText || facetVM.helpText());
             facetVM.interval(facet.interval || facetVM.interval());
             facetVM.chartjsType(facet.chartjsType);
@@ -869,6 +870,7 @@ function FacetViewModel(config){
     self.name = ko.observable(config.name || '');
     self.helpText = ko.observable(config.helpText||'');
     self.facetTermType = ko.observable(config.facetTermType||'Default');
+    self.sortOrder = ko.observable(config.sortOrder || 'count');
     self.interval = ko.observable(config.interval || 10);
     self.chartjsType = ko.observable(config.chartjsType || 'none');
     self.chartjsConfig = ko.observable(config.chartjsConfig || '');

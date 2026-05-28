@@ -1067,8 +1067,9 @@ class BioActivityController {
         List facetConfig = hubSettings.getFacetConfigForPage(projectActivityService.getDataPagePropertyFromViewName(params.view)) ?: activityService.getDefaultFacets()
 
         if(!queryParams.facets){
-            String facets = HubSettings.getFacetConfigForElasticSearch(facetConfig)?.collect{ it.name }?.join(',')
-            queryParams.facets = facets
+            List facetsConfig = HubSettings.getFacetConfigForElasticSearch(facetConfig)
+            queryParams.facets = facetsConfig?.collect { it.name }?.join(',')
+            queryParams.fsort = facetsConfig?.collect { it.sortOrder ?: 'count' }?.join(',')
         }
 
         List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(facetConfig)
