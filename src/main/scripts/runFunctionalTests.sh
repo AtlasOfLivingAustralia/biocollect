@@ -71,17 +71,6 @@ echo "Starting biocollect-pwa"
 
 echo "Installing PWA npm dependencies"
 npm ci
-npm rebuild chromedriver
-
-echo "Checking PWA chromedriver"
-npm ls chromedriver || true
-node -e "const cd = require('chromedriver'); console.log('path=', cd.path)"
-find node_modules/chromedriver -maxdepth 5 -type f -print || true
-CHROMEDRIVER_PATH=$(node -e "console.log(require('chromedriver').path)")
-echo "Chromedriver resolved path: $CHROMEDRIVER_PATH"
-ls -la "$CHROMEDRIVER_PATH" || true
-"$CHROMEDRIVER_PATH" --version || true
-
 npm run run:functionaltest &
 # check that pwa app is running
 while ! nc -z localhost 5173; do
