@@ -100,6 +100,14 @@ while ! nc -z localhost 8087; do
 done
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
 
+echo "Installing BioCollect npm dependencies"
+npm ci
+
+echo "Checking BioCollect chromedriver"
+npm ls chromedriver || true
+ls -la node_modules/chromedriver/lib/chromedriver/ || true
+node_modules/chromedriver/lib/chromedriver/chromedriver --version || true
+
 echo "Running functional tests"
 node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js
 
