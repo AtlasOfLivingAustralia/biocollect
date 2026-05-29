@@ -71,6 +71,7 @@ echo "Starting biocollect-pwa"
 
 echo "Installing PWA npm dependencies"
 npm ci
+npm rebuild chromedriver
 
 echo "Checking PWA chromedriver"
 npm ls chromedriver || true
@@ -109,6 +110,7 @@ chmod u+x src/main/scripts/loadFunctionalTestData.sh
 
 echo "Installing BioCollect npm dependencies"
 npm ci
+npm rebuild chromedriver
 
 echo "Checking BioCollect chromedriver"
 npm ls chromedriver || true
