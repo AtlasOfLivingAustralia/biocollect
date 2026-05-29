@@ -389,7 +389,8 @@ function ProjectFinder(config) {
             fq.push(facet.getQueryText());
         });
 
-        var query = this.getQuery(true);
+        var queryText = this.getQuery(true);
+        var query = queryText;
         if (query.length > 0) {
             query = query + ((queryString.length > 0)? ' AND ' + queryString: "");
         } else {
@@ -426,13 +427,13 @@ function ProjectFinder(config) {
             projectId: selectedProjectId,
             q: query,
             queryList: queryList,
-            queryText: this.getQuery(true),
+            queryText: queryText,
             // sending the value for logging use
             excludeNationwide: excludeNationwide
         };
 
         map.max =  pageWindow.pagination.resultsPerPage(); // Page size
-        map.sort = pageWindow.sortBy();
+        map.sort = queryText.length > 0 ? '_score' : pageWindow.sortBy();
 
         return map;
     };
