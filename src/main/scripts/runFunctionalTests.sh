@@ -75,8 +75,10 @@ npm rebuild chromedriver
 
 echo "Checking PWA chromedriver"
 npm ls chromedriver || true
-ls -la node_modules/chromedriver/lib/chromedriver/ || true
-node_modules/chromedriver/lib/chromedriver/chromedriver --version || true
+CHROMEDRIVER_PATH=$(node -e "console.log(require('chromedriver').path)")
+echo "Chromedriver resolved path: $CHROMEDRIVER_PATH"
+ls -la "$CHROMEDRIVER_PATH" || true
+"$CHROMEDRIVER_PATH" --version || true
 
 npm run run:functionaltest &
 # check that pwa app is running
@@ -114,8 +116,10 @@ npm rebuild chromedriver
 
 echo "Checking BioCollect chromedriver"
 npm ls chromedriver || true
-ls -la node_modules/chromedriver/lib/chromedriver/ || true
-node_modules/chromedriver/lib/chromedriver/chromedriver --version || true
+CHROMEDRIVER_PATH=$(node -e "console.log(require('chromedriver').path)")
+echo "Chromedriver resolved path: $CHROMEDRIVER_PATH"
+ls -la "$CHROMEDRIVER_PATH" || true
+"$CHROMEDRIVER_PATH" --version || true
 
 echo "Running functional tests"
 node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js
