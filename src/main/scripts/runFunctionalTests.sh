@@ -68,8 +68,15 @@ echo "Starting wire mock"
 
 cd $PWA_LOCAL_DIR
 echo "Starting biocollect-pwa"
-cd $PWA_LOCAL_DIR
-npm install
+
+echo "Installing PWA npm dependencies"
+npm ci
+
+echo "Checking PWA chromedriver"
+npm ls chromedriver || true
+ls -la node_modules/chromedriver/lib/chromedriver/ || true
+node_modules/chromedriver/lib/chromedriver/chromedriver --version || true
+
 npm run run:functionaltest &
 # check that pwa app is running
 while ! nc -z localhost 5173; do
