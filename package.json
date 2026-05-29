@@ -23,7 +23,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.6.0",
     "eslint-plugin-wdio": "9.2.11",
-    "http": "^0.0.1-security",
     "http-proxy": "^1.18.1",
     "jasmine": "^5.4.0",
     "jasmine-ajax": "^4.0.0",
