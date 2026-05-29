@@ -114,6 +114,8 @@ echo "Chromedriver resolved path: $CHROMEDRIVER_PATH"
 ls -la "$CHROMEDRIVER_PATH" || true
 "$CHROMEDRIVER_PATH" --version || true
 
+mkdir -p "$BIOCOLLECT_DIR/logs"
+
 echo "Running functional tests"
 node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js
 
