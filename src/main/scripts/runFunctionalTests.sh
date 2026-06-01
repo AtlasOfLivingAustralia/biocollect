@@ -105,15 +105,6 @@ echo "Installing BioCollect npm dependencies"
 npm ci
 npm rebuild chromedriver
 
-echo "Checking BioCollect chromedriver"
-npm ls chromedriver || true
-node -e "const cd = require('chromedriver'); console.log('path=', cd.path)"
-find node_modules/chromedriver -maxdepth 5 -type f -print || true
-CHROMEDRIVER_PATH=$(node -e "console.log(require('chromedriver').path)")
-echo "Chromedriver resolved path: $CHROMEDRIVER_PATH"
-ls -la "$CHROMEDRIVER_PATH" || true
-"$CHROMEDRIVER_PATH" --version || true
-
 mkdir -p "$BIOCOLLECT_DIR/logs"
 
 echo "Running functional tests"
