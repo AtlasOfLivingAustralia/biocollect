@@ -17,10 +17,11 @@ const config = {
                 // args: ['--auto-open-devtools-for-tabs','disable-gpu']
                 args: ['headless', 'disable-gpu', '--window-size=3000,3000']
                 // args: ['--auto-open-devtools-for-tabs', 'disable-gpu', '--window-size=3000,3000']
-            },
-            'wdio:chromedriverOptions': {
-                binary: "./node_modules/chromedriver/lib/chromedriver/chromedriver"
             }
+            // No 'wdio:chromedriverOptions.binary' override: WebdriverIO v9 automatically
+            // downloads a chromedriver that matches the installed Chrome version. Hardcoding a
+            // binary path tied to the `chromedriver` npm package broke CI whenever the runner's
+            // Chrome version drifted from the pinned package (spawn ... chromedriver ENOENT).
         }],
         testConfig: {
             baseUrl: 'http://localhost:8087',
