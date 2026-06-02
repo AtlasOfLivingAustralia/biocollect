@@ -27,7 +27,6 @@ function Master(activityId, config) {
     });
 
     var autosaveActivityId = null;
-    var autosaveInProgress = false;
     var autosaveInterval;
     
     self.subscribers = [];
@@ -44,6 +43,11 @@ function Master(activityId, config) {
                 }
             }, 10000);
         }
+    }
+
+    function isEditingUnpublished() {
+        var url = new URL(window.location.href);
+        return url.searchParams.get('unpublished') === 'true'
     }
 
     // client models register their name and methods to participate in saving
@@ -196,25 +200,19 @@ function Master(activityId, config) {
      * Validates the entire page before saving.
      */
     self.save = function () {
-        if (config.enableOffline) {
+        if (config.isPWA && isEditingUnpublished()) {
             isOffline().then(function(){
-                self.offlineSave();
+                self.offlineSave(false);
+                bootbox.alert('Cannot submit when offline. The record has been saved - please try again later.')
             }, function() {
-                self.onlineSave();
+                self.offlineSave(true, true);
             });
-        }
-        else {
-            // returned thenable object used by bulk upload script
-            return self.onlineSave();
+        } else {
+            self.onlineSave();
         }
     },
 
-    self.offlineSave = function (fromUI = false) {
-        if (autosaveInProgress) {
-            return;
-        }
-        autosaveInProgress = true;
-
+    self.offlineSave = function (fromUI = false, submitOnSave = false) {
         const container = $('#validation-container');
 
         // If we're silently autosaving in the background, don't trigger the UI errors
@@ -222,7 +220,6 @@ function Master(activityId, config) {
 
         const valid = container.validationEngine('validate');
         var currentModel = this.getAllModelAsJS();
-
         if (!currentModel) {
             return;
         }
@@ -232,9 +229,9 @@ function Master(activityId, config) {
             currentModel.activityId = autosaveActivityId;
         }
 
-        var savedModelSnapshot = JSON.stringify(currentModel);
         currentModel.entityUpdated = true;
         currentModel.__valid = valid;
+        currentModel.__upload = submitOnSave && valid;
 
         var toSave = JSON.stringify(currentModel);
         toSave = JSON.parse(toSave);
@@ -246,10 +243,15 @@ function Master(activityId, config) {
 
         return entities.saveActivity(toSave).done(function (result) {
             autosaveActivityId = result.data;
-            self.autosaveTimestamp(new Date());
-        }).always(function () {
-            autosaveInProgress = false;
 
+            if (submitOnSave && valid && window.parent) {
+                window.parent.postMessage({
+                    event: 'close-frame'
+                }, '*');
+            } else {
+                self.autosaveTimestamp(new Date());
+            }
+        }).always(function () {
             if (fromUI) {
                 $.unblockUI();
             }

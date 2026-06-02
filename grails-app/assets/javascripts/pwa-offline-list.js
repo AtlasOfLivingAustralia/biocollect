@@ -375,6 +375,9 @@ function ActivityViewModel (activity, parent) {
     self.isInvalidDraft = ko.pureComputed(function () {
         return activity.__valid === false || activity.__valid === undefined;
     });
+    self.uploadFlag = ko.pureComputed(function () {
+        return activity.__upload === true;
+    });
     self.canUpload = ko.pureComputed(function () {
         return !self.isInvalidDraft();
     });
@@ -431,6 +434,7 @@ function ActivityViewModel (activity, parent) {
                 surveyDate: self.surveyDate(),
                 uploading: self.uploading(),
                 isInvalidDraft: self.isInvalidDraft(),
+                uploadFlag: self.uploadFlag(),
                 canUpload: self.canUpload(),
                 disableUpload: self.disableUpload(),
                 transients: {
@@ -557,6 +561,7 @@ function ActivityViewModel (activity, parent) {
             activityToUpload.activityId = undefined;
         }
         delete activityToUpload.__valid;
+        delete activityToUpload.__upload;
 
         var toSave = JSON.stringify(activityToUpload),
             deferred = $.Deferred(),
