@@ -94,9 +94,7 @@
         <g:render template="/shared/termsOfUse"/>
         <br>
         <g:if test="${!preview}">
-            <!-- ko ifnot: window.unpublished -->
             <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
-            <!-- /ko -->
             <g:if test="${isPWA}">
             <!-- ko if: window.unpublished -->
             <button type="button" id="saveChanges" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
