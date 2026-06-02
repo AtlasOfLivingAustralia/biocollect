@@ -111,6 +111,7 @@ class UtilService {
             Map facetSetting = facetConfig.find { it.name == facet.name }
             facet.title = facetSetting?.title
             facet.helpText = facetSetting?.helpText
+            facet.sortOrder = facetSetting?.sortOrder ?: 'count'
             facet.adminOnly = facetSetting?.adminOnly || false
         }
     }
