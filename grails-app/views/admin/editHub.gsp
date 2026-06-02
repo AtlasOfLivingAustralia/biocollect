@@ -787,7 +787,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Introductory text</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    
+
                 </button>
             </div>
             <div class="modal-body">
@@ -1407,6 +1407,7 @@
         <th>Display name</th>
         <th>Display State</th>
         <th>Facet term type</th>
+        <th>Sort</th>
         <th>Display interval</th>
         <th>Chart type</th>
         <th>Help text</th>
@@ -1442,6 +1443,14 @@
             </select>
         </td>
         <td>
+            <select class="form-select" data-bind="value: sortOrder, enable: facetTermType() == 'Default'">
+                <option value="count">Count descending</option>
+                <option value="reverse_count">Count ascending</option>
+                <option value="term">Term ascending</option>
+                <option value="reverse_term">Term descending</option>
+            </select>
+        </td>
+        <td>
             <input class="form-control" type="number" data-bind="value:interval, disable: isNotHistogram" step="1" min="0">
         </td>
         <td class="btn-space">
@@ -1466,7 +1475,7 @@
     <!-- /ko -->
     <!-- ko ifnot: facets().length -->
     <tr>
-        <td colspan="8">
+        <td colspan="9">
             No Facets selected.
         </td>
     </tr>
@@ -1474,8 +1483,8 @@
     </tbody>
     <tfoot>
     <tr>
-        <td colspan="8">
-            <div class="mb-3 row">
+        <td colspan="9">
+            <div class="form-group row">
                 <div class="col-label-form col-sm-2">
                     Pick a facet
                 </div>
