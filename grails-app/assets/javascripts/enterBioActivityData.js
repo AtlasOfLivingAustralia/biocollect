@@ -39,7 +39,7 @@ function Master(activityId, config) {
         if (!autosaveInterval && unpublished) {
             autosaveInterval = setInterval(() => {
                 if (self.isDirty()) {
-                    self.offlineSave(false);
+                    self.offlineSave();
                 }
             }, 10000);
         }
@@ -202,7 +202,7 @@ function Master(activityId, config) {
     self.save = function () {
         if (config.isPWA && isEditingUnpublished()) {
             isOffline().then(function(){
-                self.offlineSave(false);
+                self.offlineSave();
                 bootbox.alert('Cannot submit when offline. The record has been saved - please try again later.')
             }, function() {
                 self.offlineSave(true, true);
@@ -216,7 +216,7 @@ function Master(activityId, config) {
         const container = $('#validation-container');
 
         // If we're silently autosaving in the background, don't trigger the UI errors
-        container.validationEngine('attach', { scroll: fromUI, showPrompts: fromUI, focusFirstField: fromUI });
+        container.validationEngine('attach', { scroll: submitOnSave, showPrompts: submitOnSave, focusFirstField: submitOnSave });
 
         const valid = container.validationEngine('validate');
         var currentModel = this.getAllModelAsJS();
@@ -246,7 +246,7 @@ function Master(activityId, config) {
 
             if (submitOnSave && valid && window.parent) {
                 window.parent.postMessage({
-                    event: 'close-frame'
+                    event: 'close-frame',
                 }, '*');
             } else {
                 self.autosaveTimestamp(new Date());
