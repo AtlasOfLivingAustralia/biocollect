@@ -27,9 +27,9 @@ jobs:
       - name: Install nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 24
+          node-version: '20.19.0'
 
-      - run: npm install
+      - run: npm ci
 
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
