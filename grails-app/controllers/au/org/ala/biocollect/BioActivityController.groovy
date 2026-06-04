@@ -1028,6 +1028,7 @@ class BioActivityController {
         render result as JSON
     }
 
+    @PreAuthorise(accessLevel = "loggedInUser")
     def downloadProjectData() {
         response.setContentType("application/zip")
         response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
