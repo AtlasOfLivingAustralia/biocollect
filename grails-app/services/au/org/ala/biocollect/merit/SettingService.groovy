@@ -40,8 +40,25 @@ class SettingService {
         return localHubConfig.get()
     }
 
-    def webService, cacheService, cookieService
+    def webService, cacheService
     def grailsApplication
+
+    /** Replacement for the discontinued grails-cookie plugin's cookieService.getCookie. */
+    static String getCookieValue(String name) {
+        GrailsWebRequest webRequest = GrailsWebRequest.lookup()
+        webRequest?.currentRequest?.cookies?.find { it.name == name }?.value
+    }
+
+    /** Replacement for the discontinued grails-cookie plugin's cookieService.setCookie. */
+    private static void setCookieValue(String name, String value, int maxAge, String path) {
+        GrailsWebRequest webRequest = GrailsWebRequest.lookup()
+        if (webRequest?.currentResponse != null && value != null) {
+            jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(name, value)
+            cookie.maxAge = maxAge
+            cookie.path = path
+            webRequest.currentResponse.addCookie(cookie)
+        }
+    }
 
     def initService () {
 //        temp directory to copy files
@@ -102,7 +119,7 @@ class SettingService {
     def loadHubConfig(hub) {
         def defaultHub = grailsApplication.config.getProperty('app.default.hub', String, 'default')
         if (!hub) {
-            hub = cookieService.getCookie(LAST_ACCESSED_HUB)
+            hub = getCookieValue(LAST_ACCESSED_HUB)
             hub = hub ?: defaultHub
         }
         else {
@@ -135,7 +152,7 @@ class SettingService {
         // Do not set cookie value to default hub since it overwrites genuine hub selection when calls are made with default hub.
         // This usually happens when calls are made without hub parameter like downloading images.
         if (settings?.urlPath != defaultHub)
-            cookieService.setCookie(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */, '/')
+            setCookieValue(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */, '/')
         GrailsWebRequest.lookup().params.hub = settings?.urlPath
         SettingService.setHubConfig(settings)
     }

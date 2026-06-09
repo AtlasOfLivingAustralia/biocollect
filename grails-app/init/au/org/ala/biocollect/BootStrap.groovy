@@ -5,7 +5,6 @@ import au.org.ala.ecodata.forms.TemplateFileAssetResolver
 import grails.converters.JSON
 import grails.util.BuildSettings
 import grails.util.Environment
-import net.sf.json.JSONNull
 
 
 class BootStrap {
@@ -22,7 +21,17 @@ class BootStrap {
         )
 
         JSON.createNamedConfig("nullSafe", { cfg ->
-            cfg.registerObjectMarshaller(JSONNull, {return ""})
+            // net.sf.json (json-lib) is no longer a direct dependency (http-builder-helper was
+            // removed); it may still arrive transitively via http-builder, so the marshaller is
+            // registered only when JSONNull is on the classpath. The named config must always
+            // exist because JSON.use("nullSafe") is called by SiteController/ReportService.
+            try {
+                Class jsonNull = Class.forName('net.sf.json.JSONNull')
+                cfg.registerObjectMarshaller(jsonNull, { return "" })
+            }
+            catch (ClassNotFoundException ignored) {
+                // json-lib not on the classpath - nothing to marshal
+            }
         })
 
         configService.computeConfig()

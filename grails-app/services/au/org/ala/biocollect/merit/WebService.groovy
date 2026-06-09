@@ -23,9 +23,9 @@ import org.grails.web.converters.exceptions.ConverterException
 import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
 
-import javax.annotation.PostConstruct
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletResponse
+import jakarta.annotation.PostConstruct
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import java.nio.charset.StandardCharsets
 
 import static org.apache.http.HttpHeaders.ACCEPT

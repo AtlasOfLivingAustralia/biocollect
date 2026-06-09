@@ -5,7 +5,7 @@ import grails.converters.JSON
 import org.apache.commons.lang.StringUtils
 import org.springframework.http.HttpStatus
 
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 class SearchController {
     static responseFormats = ['json']

@@ -471,7 +471,7 @@ class ReportService {
         scores.each {
             aggregations << [type:'HISTOGRAM', label:it.name, property:'data.'+it.property]
         }
-        Map filter = state?[type:'DISCRETE', property:'data.state']:[:]
+        Map filter = state ? [type:'DISCRETE', property:'data.state'] : [:]
         Map config = [groups:filter, childAggregations: aggregations, label:'Performance assessment by state']
 
         Map searchCriteria = [type:['Performance Management Framework - Self Assessment', 'Performance Management Framework - Self Assessment v2'], publicationStatus:REPORT_APPROVED, dateProperty:'toDate', 'startDate':(year-1)+'-07-01T10:00:00Z', 'endDate':year+'-07-01T10:00:00Z']

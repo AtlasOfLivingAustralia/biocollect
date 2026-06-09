@@ -3,7 +3,7 @@ package au.org.ala.biocollect.merit
 import groovy.json.JsonSlurper
 import org.apache.commons.lang.StringUtils
 import grails.web.servlet.mvc.GrailsParameterMap
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 /**
  * Service for ElasticSearch running on ecodata
  */

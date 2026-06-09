@@ -31,7 +31,6 @@ import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
-import javax.ws.rs.Produces
 import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
@@ -1002,7 +1001,7 @@ class BioActivityController {
         def postBody = request.JSON
         log.info "aekosSubmission Body: " + postBody
 
-        def jsonBody = new grails.web.JSONBuilder().build {postBody?.submissionBody}
+        def jsonBody = new groovy.json.JsonBuilder(postBody?.submissionBody)
 
         params["max"] = "10"
         params["offset"] = "0"
@@ -1966,7 +1965,8 @@ class BioActivityController {
             security = @SecurityRequirement(name = "auth")
     )
     @Path("ws/bioactivity/data/archive/{projectId}")
-    @Produces("application/zip")
+    // The zip content type is set by activityService when writing the archive to the response
+    // (javax.ws.rs @Produces removed with the jakarta migration; documented via @ApiResponse above).
     def getDarwinCoreArchiveForProject(String projectId){
         log.debug("projectId = ${projectId}")
 

@@ -40,4 +40,33 @@
         </resources>
     </cache>
 
+    <!-- Caches below were previously created on demand by the grails cache-ehcache plugin.
+         The JCache provider requires them to be declared explicitly. -->
+    <cache alias="homePageImages">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">2000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="vernacularNamesGroupedByTaxonId">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">2000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="styleSheetCache">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+
 </config>

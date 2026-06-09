@@ -6,7 +6,7 @@ import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 
-import static javax.servlet.http.HttpServletResponse.*
+import static jakarta.servlet.http.HttpServletResponse.*
 
 class RecordController {
 

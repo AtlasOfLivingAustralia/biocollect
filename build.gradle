@@ -1,17 +1,15 @@
 buildscript {
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://repo.grails.org/grails/core" }
         maven { url "https://nexus.ala.org.au/content/groups/public/" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "gradle.plugin.com.github.erdi.webdriver-binaries:webdriver-binaries-gradle-plugin:2.6"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:$assetPipelineVersion"
-        classpath 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
+        classpath "org.apache.grails:grails-gradle-plugins:$grailsVersion"
+        classpath "cloud.wondrify:asset-pipeline-gradle:$assetPipelineVersion"
+        classpath "cloud.wondrify:sass-asset-pipeline:$assetPipelineVersion"
         classpath 'com.bmuschko:gradle-clover-plugin:3.0.1'
-        classpath 'org.grails.plugins:quartz:2.0.13'
         classpath "gradle.plugin.com.github.william-hill-online:wiremock-gradle-plugin:0.4.3"
         classpath "com.github.tomakehurst:wiremock-jre8-standalone:2.28.0"
     }
@@ -28,10 +26,9 @@ apply plugin: "eclipse"
 apply plugin: "idea"
 apply plugin: "war"
 apply plugin: "groovy"
-apply plugin: "org.grails.grails-web"
-apply plugin:"com.github.erdi.webdriver-binaries"
-apply plugin: "com.bertramlabs.asset-pipeline"
-apply plugin: "org.grails.grails-gsp"
+apply plugin: "org.apache.grails.gradle.grails-web"
+apply plugin: "cloud.wondrify.asset-pipeline"
+apply plugin: "org.apache.grails.gradle.grails-gsp"
 apply plugin: "com.github.william-hill-online.wiremock"
 
 if (Boolean.valueOf(enableClover)) {
@@ -39,10 +36,14 @@ if (Boolean.valueOf(enableClover)) {
 }
 apply from: "${project.projectDir}/gradle/publish.gradle"
 
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 targetCompatibility = '17'
 repositories {
-    mavenLocal()
+    mavenLocal {
+        // ~/.m2 has the ehcache pom without the jakarta classifier jar, which breaks
+        // resolution of org.ehcache:ehcache:3.10.8:jakarta; force it to Maven Central
+        content { excludeGroup 'org.ehcache' }
+    }
     //for missing jai_core.jar
     //maven { url "https://mvnrepository.com" }
     maven { url "https://repo.osgeo.org/repository/release/" }
@@ -54,57 +55,69 @@ repositories {
         }
     }
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
+    maven { url "https://nexus.ala.org.au/content/repositories/snapshots" }
     mavenCentral()
 }
 
-configurations {
-    developmentOnly
-    runtimeClasspath {
-        extendsFrom developmentOnly
+// Groovy 4 artifacts moved from org.codehaus.groovy to org.apache.groovy.
+// Old transitive requests (http-builder, GPars) are retargeted here; the Grails BOM
+// constraints then upgrade them to the managed Groovy 4 version.
+configurations.configureEach {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        // groovy-bom is exempt: retargeting it to org.apache.groovy:groovy-bom turns a
+        // pom-only module into a platform-only module, which breaks library resolution
+        if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != 'groovy-bom') {
+            details.useTarget(group: 'org.apache.groovy', name: details.requested.name, version: details.requested.version)
+            details.because 'Groovy 4 coordinates moved to org.apache.groovy'
+        }
     }
 }
 
 dependencies {
-//    implementation "org.grails:grails-plugin-rest"
-    implementation "org.grails:grails-plugin-databinding"
-//    implementation "org.grails.plugins:async"
-//    implementation "org.grails.plugins:events"
-    implementation "org.grails.plugins:gsp"
+    implementation "org.apache.grails:grails-databinding"
+    implementation "org.apache.grails:grails-gsp"
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    compileOnly "io.micronaut:micronaut-inject-groovy"
-    console "org.grails:grails-console"
+    console "org.apache.grails:grails-console"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-autoconfigure"
-    implementation "org.grails:grails-core"
+    implementation "org.apache.grails:grails-core"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-tomcat"
-//    implementation "org.grails:grails-dependencies"
-    implementation "org.grails:grails-logging"
-    implementation "org.grails:grails-web-boot"
-    implementation "org.grails:grails-logging"
-    implementation "org.grails:grails-plugin-rest"
-    implementation "org.grails:grails-plugin-i18n"
-    implementation "org.grails:grails-plugin-services"
-    implementation "org.grails:grails-plugin-url-mappings"
-    implementation "org.grails:grails-plugin-interceptors"
-    implementation "org.grails.plugins:cache"
-    implementation "org.grails.plugins:cache-ehcache:3.0.0"
-    runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
-    runtimeOnly "org.glassfish.jaxb:jaxb-runtime:2.3.1"
-    implementation "org.grails.plugins:async"
-    implementation "org.grails:grails-async-gpars"
-    implementation "org.grails.plugins:scaffolding"
-    profile "org.grails.profiles:web"
+    implementation "org.apache.grails:grails-logging"
+    implementation "org.apache.grails:grails-web-boot"
+    implementation "org.apache.grails:grails-rest-transforms"
+    implementation "org.apache.grails:grails-services"
+    implementation "org.apache.grails:grails-url-mappings"
+    implementation "org.apache.grails:grails-interceptors"
+    // Sitemesh 2 layout support moved out of grails-gsp into its own plugin in Grails 7
+    implementation "org.apache.grails:grails-layout"
+    implementation "org.apache.grails:grails-cache"
+    // JCache/Ehcache 3 wiring (replaces the discontinued cache-ehcache plugin).
+    // Configured via spring.cache.jcache.config in application.yml (biocollect-ehcache.xml).
+    implementation "org.springframework.boot:spring-boot-starter-cache"
+    implementation "javax.cache:cache-api:1.1.1"
+    implementation("org.ehcache:ehcache:3.10.8:jakarta") {
+        // the jakarta classifier jar must not drag in the javax JAXB stack from the default pom
+        exclude group: 'javax.xml.bind'
+        exclude group: 'org.glassfish.jaxb'
+    }
+    runtimeOnly "jakarta.xml.bind:jakarta.xml.bind-api:4.0.2"
+    runtimeOnly "org.glassfish.jaxb:jaxb-runtime:4.0.5"
+    implementation "org.apache.grails:grails-async"
+    implementation "org.apache.grails.async:grails-async-gpars"
+    profile "org.apache.grails.profiles:web"
     implementation "com.nimbusds:nimbus-jose-jwt:9.40"
     implementation ("org.grails.plugins:ala-auth:$alaSecurityLibsVersion")
     implementation "org.grails.plugins:ala-ws-security-plugin:$alaSecurityLibsVersion"
     implementation ("org.grails.plugins:ala-ws-plugin:$alaSecurityLibsVersion")
     implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
-    implementation "com.bertramlabs.plugins:asset-pipeline-core:$assetPipelineVersion"
-    implementation "com.bertramlabs.plugins:asset-pipeline-grails:$assetPipelineVersion"
+    implementation "cloud.wondrify:asset-pipeline-core:$assetPipelineVersion"
+    implementation "cloud.wondrify:asset-pipeline-grails:$assetPipelineVersion"
+    implementation "cloud.wondrify:sass-asset-pipeline:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
-    implementation "commons-io:commons-io:2.6"
+    // POI 5.2.5 needs commons-io >= 2.7 (UnsynchronizedByteArrayOutputStream)
+    implementation "commons-io:commons-io:2.14.0"
     implementation "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
     implementation "org.imgscalr:imgscalr-lib:${imgscalrVersion}"
     implementation "org.apache.httpcomponents:httpmime:${httpmimeVersion}"
@@ -116,25 +129,15 @@ dependencies {
     implementation "org.geotools:gt-epsg-hsql:${geoToolsVersion}"
 
     implementation "joda-time:joda-time:2.3"
-    // Used by the scripts
-    implementation('org.grails.plugins:http-builder-helper:1.1.0') {
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
 
     implementation 'com.opencsv:opencsv:5.7.0'
     implementation "org.apache.httpcomponents:httpclient:4.5.7"
     runtimeOnly 'org.webjars:jquery:1.12.4'
-    implementation 'dk.glasius:external-config:3.0.0'
-    implementation "org.grails.plugins:excel-import:3.0.2"
-    implementation "org.grails.plugins:excel-export:2.1"
-    implementation 'org.grails.plugins:grails-google-visualization:2.2.1'
-    implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
-    implementation 'org.grails.plugins:mail:2.0.0.RC6'
+    // dk.glasius:external-config removed: external configuration (grails.config.locations)
+    // is built into Grails core as of Grails 7.0.
+    implementation 'org.grails.plugins:grails-mail:5.0.3'
     implementation "org.commonmark:commonmark:0.24.0"
     implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20240325.1"
-
-    implementation 'org.grails.plugins:grails-cookie:2.0.3'
-//    implementation 'org.grails.plugins:cache:5.0.0.RC1'
 
     //ALA plugins
     implementation("au.org.ala.plugins.grails:images-client-plugin:1.4") {
@@ -142,41 +145,34 @@ dependencies {
         exclude group: 'org.grails.plugins', module: 'ala-auth'
     }
 
-    implementation 'org.apache.poi:ooxml-schemas:1.4'
-    implementation 'org.apache.poi:poi:4.1.2'
-    implementation 'org.apache.poi:poi-ooxml:4.1.2'
-    implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
-    implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
-    runtimeOnly "org.grails.plugins:ala-bootstrap3:4.4.0"
+    // Apache POI (consolidated; also replaces the discontinued excel-import/excel-export plugins)
+    implementation 'org.apache.poi:poi:5.2.5'
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+    implementation "org.grails.plugins:ala-admin-plugin:3.0.0-SNAPSHOT"
+    runtimeOnly "org.grails.plugins:ala-bootstrap5:2.0.0-SNAPSHOT"
 
     //    swagger API
-    implementation 'au.org.ala.plugins:openapi:1.1.0'
+    implementation 'au.org.ala.plugins:openapi:1.3.0'
 
     implementation "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
-    implementation 'au.org.ala:ala-cas-client:2.5'
+    implementation 'au.org.ala:ala-cas-client:4.0.0-SNAPSHOT'
     runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
-    implementation 'com.bertramlabs.plugins:sass-asset-pipeline:3.2.5'
-    implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
+    implementation 'org.apache.groovy:groovy-dateutil'
     if (!Boolean.valueOf(inplace)) {
-        implementation "org.grails.plugins:ala-map-plugin:3.0.1"
+        implementation "org.grails.plugins:ala-map-plugin:5.0-SNAPSHOT"
         implementation "org.grails.plugins:ecodata-client-plugin:9.2-SNAPSHOT"
     }
 
-    testCompileOnly "org.grails:grails-test-mixins:3.3.0"
     testImplementation "org.pac4j:pac4j-jwt:5.4.3"
-    testImplementation "org.grails:grails-gorm-testing-support"
     testImplementation "org.mockito:mockito-core"
-    testImplementation "org.grails:grails-web-testing-support"
-    testImplementation ("org.grails.plugins:geb") {
-        exclude module: "grails-core"
-    }
+    testImplementation "org.apache.grails:grails-testing-support-web"
+    testImplementation "org.apache.grails:grails-geb"
     testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:2.28.0"
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testRuntimeOnly "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
-    testCompileOnly "com.codeborne:phantomjsdriver:1.3.0"
 }
 
 springBoot {
@@ -186,7 +182,6 @@ springBoot {
 bootRun {
     jvmArgs(
             '-Dspring.output.ansi.enabled=always',
-            '-noverify',
             '-XX:TieredStopAtLevel=1',
             '-Xmx2048m')
     sourceResources sourceSets.main
@@ -196,14 +191,14 @@ bootRun {
 
 bootJar {
     enabled = true
-    classifier = 'exec'
+    archiveClassifier = 'exec'
     launchScript()
 }
 
 assets {
     minifyJs = true
     minifyCss = true
-    maxThreads = 6
+    maxThreads = 4
     minifyOptions = [
             languageMode  : 'ES6', //languageIn
 //            targetLanguage: 'ES5', // languageOut
@@ -216,7 +211,6 @@ assets {
 
 if (Boolean.valueOf(inplace)) {
     grails {
-        exploded = true
         plugins {
             implementation(project(':ecodata-client-plugin'))
             implementation(project(':ala-map-plugin'))
@@ -269,10 +263,4 @@ wiremock {
     dir "${project.projectDir}/src/integration-test/resources/wiremock/"
     params "--port=8018 --global-response-templating --local-response-templating"
 //    params "--port=8018 --global-response-templating --local-response-templating --verbose --print-all-network-traffic --record-mappings"
-}
-
-assets {
-    minifyJs = true
-    minifyCss = true
-    maxThreads = 4
 }

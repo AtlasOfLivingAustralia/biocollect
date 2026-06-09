@@ -6,7 +6,7 @@ import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
 import au.org.ala.web.SSO
 
-import javax.annotation.PostConstruct
+import jakarta.annotation.PostConstruct
 
 class ProxyController {
     static responseFormats = ['json']

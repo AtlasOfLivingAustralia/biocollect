@@ -1,8 +1,11 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.util.WorkbookUtil
+import org.apache.poi.xssf.streaming.SXSSFWorkbook
 import org.grails.web.json.JSONArray
-import pl.touk.excel.export.WebXlsxExporter
 
 class ReportController {
 
@@ -130,18 +133,38 @@ class ReportController {
     def downloadReport() {
         Map body = request.JSON
         if (body) {
-            def headers = grailsApplication.config.report.download.collect { it.header }
-            def withProperties = grailsApplication.config.report.download.collect { it.property }
+            List headers = grailsApplication.config.report.download.collect { it.header }
+            List withProperties = grailsApplication.config.report.download.collect { it.property }
 
-            new WebXlsxExporter().with {
-                setResponseHeaders(response, 'report.xlsx')
+            // Inlined Apache POI replacement for the discontinued excel-export plugin's WebXlsxExporter.
+            response.setHeader('Content-Disposition', 'attachment; filename="report.xlsx"')
+            response.contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+            SXSSFWorkbook workbook = new SXSSFWorkbook()
+            try {
                 body.each { String sheetName, List rows ->
-                    sheet (sheetName).with {
-                        fillHeader(headers)
-                        add(rows, withProperties)
+                    Sheet sheet = workbook.createSheet(WorkbookUtil.createSafeSheetName(sheetName))
+                    Row headerRow = sheet.createRow(0)
+                    headers.eachWithIndex { header, int i ->
+                        headerRow.createCell(i).setCellValue(header as String)
+                    }
+                    rows.eachWithIndex { rowData, int rowIndex ->
+                        Row dataRow = sheet.createRow(rowIndex + 1)
+                        withProperties.eachWithIndex { property, int i ->
+                            def value = rowData[property]
+                            if (value instanceof Number) {
+                                dataRow.createCell(i).setCellValue(value.doubleValue())
+                            }
+                            else if (value != null) {
+                                dataRow.createCell(i).setCellValue(value as String)
+                            }
+                        }
                     }
                 }
-                save(response.outputStream)
+                workbook.write(response.outputStream)
+            }
+            finally {
+                workbook.dispose()
             }
 
             response.outputStream.flush()

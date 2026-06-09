@@ -8,6 +8,9 @@ server:
   servlet:
     session:
       timeout: 3600
+  tomcat:
+    # Tomcat 10.1 defaults to 10 parts per multipart request which breaks large multipart forms
+    max-part-count: 100
 
 app:
   view:
@@ -140,9 +143,6 @@ grails:
     profile: web
     codegen:
         defaultPackage: au.org.ala.biocollect
-    cache:
-       ehcache:
-            ehcacheXmlLocation: 'classpath:biocollect-ehcache.xml'
     mime:
         file:
           extensions: true
@@ -240,18 +240,15 @@ grails:
 spring:
   main:
     banner-mode: "off"
+  cache:
+    jcache:
+      config: classpath:biocollect-ehcache.xml
   groovy:
     template:
       check-template-location: false
   devtools:
     restart:
-      exclude:
-        - '*.gsp'
-        - '**/*.gsp'
-        - '*.gson'
-        - '**/*.gson'
-        - 'logback.groovy'
-        - '*.properties'
+      exclude: '*.gsp,**/*.gsp,*.gson,**/*.gson,logback.xml,*.properties'
 
 
 # Spring Actuator Endpoints are Disabled by Default

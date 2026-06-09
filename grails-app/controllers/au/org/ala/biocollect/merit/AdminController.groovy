@@ -2,9 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
-import org.grails.plugin.cache.GrailsCacheManager
-
-//import grails.plugin.cache.CacheEvict
+import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CacheEvict
 import grails.util.Environment
 import grails.util.GrailsNameUtils
@@ -33,7 +31,7 @@ class AdminController {
     UserService userService
     grails.core.GrailsApplication grailsApplication
     def roleService
-    GrailsCacheManager grailsCacheManager
+    CacheManager grailsCacheManager
 
     def index() {}
 
