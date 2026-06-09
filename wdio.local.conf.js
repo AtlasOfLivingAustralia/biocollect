@@ -17,9 +17,6 @@ const config = {
                 // args: ['--auto-open-devtools-for-tabs','disable-gpu']
                 args: ['headless', 'disable-gpu', 'window-size=3000,3000', 'disable-dev-shm-usage', 'no-sandbox', '--headless', '--disable-gpu', '--window-size=3000,3000', '--disable-dev-shm-usage', '--no-sandbox']
                 // args: ['--auto-open-devtools-for-tabs', 'disable-gpu', '--window-size=3000,3000']
-            },
-            'wdio:chromedriverOptions': {
-                binary: require('chromedriver').path
             }
         }],
         testConfig: {
