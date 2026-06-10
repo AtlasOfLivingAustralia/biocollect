@@ -88,6 +88,12 @@ class SearchService {
         params.includeImages = params.containsKey('includeImages') ? params.includeImages : false
         params.includeShapefiles = params.containsKey('includeShapefiles') ? params.includeShapefiles : false
 
+        String supportEmail = grailsApplication.config.biocollect.support.email.address
+        if (supportEmail) {
+            params.systemEmail = supportEmail
+            params.senderEmail = supportEmail
+        }
+
         def url = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}"
         log.debug("downloadProjectData proxy URL: ${url}")
         webService.proxyGetRequest(response, url)
