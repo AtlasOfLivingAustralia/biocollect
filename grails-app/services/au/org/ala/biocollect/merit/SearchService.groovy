@@ -88,7 +88,7 @@ class SearchService {
         params.includeImages = params.containsKey('includeImages') ? params.includeImages : false
         params.includeShapefiles = params.containsKey('includeShapefiles') ? params.includeShapefiles : false
 
-        String supportEmail = grailsApplication.config.biocollect.support.email.address
+        String supportEmail = grailsApplication.config.getProperty('biocollect.support.email.address', String)
         if (supportEmail) {
             params.systemEmail = supportEmail
             params.senderEmail = supportEmail
