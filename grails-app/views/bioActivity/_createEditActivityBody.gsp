@@ -97,9 +97,9 @@
             <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
             <g:if test="${isPWA}">
             <!-- ko if: window.unpublished -->
-            <button type="button" id="saveChanges" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
-            </g:if>
+                <button type="button" id="saveChanges" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
             <!-- /ko -->
+            </g:if>
         </g:if>
         <g:if test="${bulkUpload || (showCreate && !mobile && !preview)}">
             <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
