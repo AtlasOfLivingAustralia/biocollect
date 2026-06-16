@@ -3,6 +3,7 @@
 //= require utils.js
 //= require dexiejs/dexie.js
 //= require entities.js
+//= require images.js
 //= require metamodel.js
 //= require pagination.js
 //= require pwa-offline-list.js
