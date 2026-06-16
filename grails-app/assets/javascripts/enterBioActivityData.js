@@ -208,7 +208,7 @@ function Master(activityId, config) {
                 self.offlineSave(true, true);
             });
         } else {
-            self.onlineSave();
+            return self.onlineSave();
         }
     },
 
