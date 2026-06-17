@@ -68,8 +68,9 @@ echo "Starting wire mock"
 
 cd $PWA_LOCAL_DIR
 echo "Starting biocollect-pwa"
-cd $PWA_LOCAL_DIR
-npm install
+
+echo "Installing PWA npm dependencies"
+npm ci
 npm run run:functionaltest &
 # check that pwa app is running
 while ! nc -z localhost 5173; do
@@ -99,6 +100,12 @@ while ! nc -z localhost 8087; do
   sleep 5
 done
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
+
+echo "Installing BioCollect npm dependencies"
+npm ci
+npm rebuild chromedriver
+
+mkdir -p "$BIOCOLLECT_DIR/logs"
 
 echo "Running functional tests"
 node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js

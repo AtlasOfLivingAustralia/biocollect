@@ -10,7 +10,7 @@ import org.grails.web.converters.exceptions.ConverterException
 
 import static org.apache.http.HttpStatus.*
 
-@PreAuthorise(accessLevel = 'alaAdmin')
+@PreAuthorise(accessLevel = 'hubAdmin')
 class BulkImportController {
     static allowedMethods = ['create'                   : 'POST', 'get': 'GET', 'list': 'GET', 'update': ['PUT', 'POST'],
                              'publishActivitiesImported': ['PUT', 'POST'], "deleteActivitiesImported": "DELETE",
@@ -21,7 +21,7 @@ class BulkImportController {
     BulkImportService bulkImportService
     ProjectActivityService projectActivityService
 
-    @PreAuthorise(accessLevel = 'alaAdmin')
+    @PreAuthorise(accessLevel = 'hubAdmin')
     def list() {
         String sort = params.sort ?: "lastUpdated"
         String order = params.order ?: "desc"
