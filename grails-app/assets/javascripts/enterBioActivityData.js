@@ -32,22 +32,19 @@ function Master(activityId, config) {
     self.subscribers = [];
     self.deferredObjects = [];
 
-    function scheduleAutosaveInterval() {
-        const url = new URL(window.location.href);
-        const unpublished = url.searchParams.get('unpublished') === 'true';
+    function isEditingUnpublished() {
+        var url = new URL(window.location.href);
+        return url.searchParams.get('unpublished') === 'true'
+    }
 
-        if (!autosaveInterval && unpublished) {
+    function scheduleAutosaveInterval() {
+        if (!autosaveInterval && isEditingUnpublished()) {
             autosaveInterval = setInterval(() => {
                 if (self.isDirty()) {
                     self.offlineSave();
                 }
             }, 10000);
         }
-    }
-
-    function isEditingUnpublished() {
-        var url = new URL(window.location.href);
-        return url.searchParams.get('unpublished') === 'true'
     }
 
     // client models register their name and methods to participate in saving
