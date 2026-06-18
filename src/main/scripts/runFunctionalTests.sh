@@ -12,7 +12,9 @@ cleanup() {
 trap cleanup EXIT
 
 start_background() {
-    "$@" &
+    local log_name=$1
+    shift
+    "$@" >> "$BIOCOLLECT_DIR/logs/${log_name}.log" 2>&1 &
     BACKGROUND_PIDS+=($!)
 }
 
@@ -77,6 +79,7 @@ echo "Hosts file configuration"
 cat /etc/hosts
 
 cd $BIOCOLLECT_DIR
+mkdir -p "$BIOCOLLECT_DIR/logs"
 echo "Starting wire mock"
 ./gradlew startWireMock
 
@@ -85,7 +88,7 @@ echo "Starting biocollect-pwa"
 
 echo "Installing PWA pnpm dependencies"
 pnpm ci
-start_background pnpm run:functionaltest
+start_background pwa pnpm run:functionaltest
 # check that pwa app is running
 while ! nc -z localhost 5173; do
   echo "Waiting for pwa app to start on port 5173..."
@@ -96,7 +99,7 @@ done
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
-start_background env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
+start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
 
 # check that ecodata is running
 while ! nc -z localhost 8080; do
@@ -107,7 +110,7 @@ done
 
 cd $BIOCOLLECT_DIR
 echo "Starting biocollect from `pwd`"
-start_background env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087
+start_background biocollect env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087
 # check that biocollect is running
 while ! nc -z localhost 8087; do
   echo "Waiting for biocollect to start on port 8087..."
@@ -122,8 +125,6 @@ echo "Installing chromedriver matching system Chrome"
 DETECT_CHROMEDRIVER_VERSION=true pnpm rebuild chromedriver
 export CHROMEDRIVER_PATH="$(node -p "require('chromedriver').path")"
 echo "Using chromedriver at ${CHROMEDRIVER_PATH}"
-
-mkdir -p "$BIOCOLLECT_DIR/logs"
 
 echo "Running functional tests"
 node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js
