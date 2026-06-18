@@ -284,29 +284,6 @@ function ActivitiesViewModel (config) {
         });
     }
 
-    self.uploadAnActivity = function (activities, index) {
-        if (index < activities.length) {
-            if (!activities[index].canUpload()) {
-                self.uploadAnActivity(activities, index + 1);
-                return;
-            }
-
-            activities[index].upload().then(function () {
-                self.uploadAnActivity(activities, index + 1);
-            }, function (error) {
-                console.error(error);
-                self.uploadAnActivity(activities, index + 1);
-            });
-        } else {
-            // calling load with offset 0 will load the next batch of activities since current batch of activities are
-            // deleted from db.
-            if (self.pagination.totalResults() !== 0)
-                self.load(0).then(self.uploadAllHandler, function (error) {
-                    console.error("Error loading next page of activities" + error);
-                });
-        }
-    }
-
     /**
      * Soft delete an activity from list
      * @param activity
