@@ -18,7 +18,15 @@ module.exports = function (config) {
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
 
-        plugins: ['@metahub/karma-jasmine-jquery', 'karma-*', 'karma-verbose-reporter'],
+        // pnpm isolates karma's node_modules, so the karma-* glob cannot discover sibling plugins.
+        plugins: [
+            'karma-jasmine',
+            '@metahub/karma-jasmine-jquery',
+            'karma-jquery',
+            'karma-coverage',
+            'karma-chrome-launcher',
+            'karma-verbose-reporter'
+        ],
         htmlReporter: {
             outputFile: 'tests/units.html'
         },
