@@ -69,9 +69,9 @@ echo "Starting wire mock"
 cd $PWA_LOCAL_DIR
 echo "Starting biocollect-pwa"
 
-echo "Installing PWA npm dependencies"
-npm ci
-npm run run:functionaltest &
+echo "Installing PWA pnpm dependencies"
+pnpm ci
+pnpm run:functionaltest &
 # check that pwa app is running
 while ! nc -z localhost 5173; do
   echo "Waiting for pwa app to start on port 5173..."
@@ -101,9 +101,9 @@ while ! nc -z localhost 8087; do
 done
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
 
-echo "Installing BioCollect npm dependencies"
-npm ci
-npm rebuild chromedriver
+echo "Installing BioCollect pnpm dependencies"
+pnpm ci
+pnpm rebuild chromedriver
 
 mkdir -p "$BIOCOLLECT_DIR/logs"
 
