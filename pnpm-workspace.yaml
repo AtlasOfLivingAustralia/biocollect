@@ -1,0 +1,7 @@
+allowBuilds:
+  '@ffmpeg-installer/darwin-arm64': true
+  '@ffmpeg-installer/linux-x64': true
+  chromedriver: true
+  edgedriver: true
+  esbuild: true
+  geckodriver: true

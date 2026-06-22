@@ -1,22 +1,31 @@
 const AddBioActivityPage = require('../../pageobjects/AddBioActivityPage.js');
 const ViewBioActivityPage = require('../../pageobjects/ViewBioActivityPage.js');
-const projectId = "project_1"
 const projectActivityId = 'pa_1'
 const site = "ab9ec9af-241b-49f7-adcf-ca40e474d119"
 
-describe('Add BioActivity Spec', function () {
+async function waitForViewBioActivityPage(viewBioActivityPage) {
+    await browser.waitUntil(async () => {
+        return await viewBioActivityPage.at()
+    }, {
+        timeout: 120000,
+        interval: 1000,
+        timeoutMsg: 'Expected the View BioActivity page to load after saving the activity'
+    })
+}
+
+describe('Add BioActivity Spec', () => {
     let addBioActivityPage, viewBioActivityPage;
-    beforeAll(async function() {
+    beforeAll(async () => {
         addBioActivityPage = new AddBioActivityPage();
         viewBioActivityPage = new ViewBioActivityPage();
         await addBioActivityPage.loadDataSet('dataset1');
         await addBioActivityPage.setupTokenForSystem();
     });
 
-    afterAll(async function() {
+    afterAll(async () => {
     });
 
-    afterEach(async function() {
+    afterEach(async () => {
         await addBioActivityPage.takeScreenShot("afterEachAddBioActivitySpec");
         await addBioActivityPage.logout();
     });
@@ -36,12 +45,9 @@ describe('Add BioActivity Spec', function () {
         await addBioActivityPage.setSpecies('acacia')
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityBeforeSave");
         // Save the activity
-        await addBioActivityPage.saveAtCheckTime();
         await addBioActivityPage.saveActivity();
-        await browser.pause(30000);
-        await addBioActivityPage.hasBeenReloaded();
         // Verify that the ViewBioActivityPage is loaded
-        expect(await viewBioActivityPage.at()).toBeTrue();
+        await waitForViewBioActivityPage(viewBioActivityPage);
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityAtViewBioActivityPage");
     });
 
@@ -71,8 +77,7 @@ describe('Add BioActivity Spec', function () {
         // go online
         await addBioActivityPage.setOnline()
         await addBioActivityPage.saveActivity();
-        await browser.pause(10000);
-        expect(await viewBioActivityPage.at()).toBeTrue();
+        await waitForViewBioActivityPage(viewBioActivityPage);
         await addBioActivityPage.takeScreenShot("shouldNotBeAbleToSubmitAnActivityWhenNoNetworkAfterSuccessfullSave");
     })
 

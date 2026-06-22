@@ -7,11 +7,9 @@ self.addEventListener('install', e => {
     e.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
-                cacheNames.map(cache => {
-                    if (pwaConfig.oldCacheToDelete === cache) {
-                        console.log('Service Worker: Clearing Old Cache');
-                        return caches.delete(cache);
-                    }
+                cacheNames.filter(cache => pwaConfig.oldCacheToDelete === cache).map(cache => {
+                    console.log('Service Worker: Clearing Old Cache');
+                    return caches.delete(cache);
                 })
             );
         })
@@ -35,7 +33,7 @@ self.addEventListener('fetch', e => {
                 // Open cache
                 if (res.ok) {
                     caches.open(pwaConfig.cacheName).then(cache => {
-                        var path = getPath(e.request.url);
+                        let path = getPath(e.request.url);
                         if (!ignoreCachingForPath(path)) {
                             path = getCachePath(e.request.url);
                             cache.put(path, resClone);
@@ -45,8 +43,8 @@ self.addEventListener('fetch', e => {
 
                 return res;
             })
-            .catch(err => {
-                var path = getPath(e.request.url);
+            .catch(() => {
+                let path = getPath(e.request.url);
                 if (!ignoreCachingForPath(path)) {
                     path = getCachePath(e.request.url);
                     return caches.match(path).then(res => {
@@ -58,12 +56,16 @@ self.addEventListener('fetch', e => {
                                 if (res) {
                                     return res;
                                 }
+
+                                return Response.error();
                             });
                         }
+
+                        return Response.error();
                     });
                 }
 
-                return err;
+                return Response.error();
             })
     );
 });
@@ -73,9 +75,9 @@ function getPath(url) {
 }
 
 function getCachePath(url) {
-    var path =  new URL(url).pathname;
-    for (var i in pwaConfig.cachePathForRequestsStartingWith) {
-        var cachePath = pwaConfig.cachePathForRequestsStartingWith[i];
+    const path =  new URL(url).pathname;
+    for (const i in pwaConfig.cachePathForRequestsStartingWith) {
+        const cachePath = pwaConfig.cachePathForRequestsStartingWith[i];
         if (path.indexOf(cachePath) === 0) {
             return path;
         }
@@ -85,9 +87,9 @@ function getCachePath(url) {
 }
 
 function ignoreCachingForPath(urlPath) {
-    for (var i in pwaConfig.pathsToIgnoreCache) {
-        var path = pwaConfig.pathsToIgnoreCache[i];
-        if (urlPath.indexOf(path) == 0) {
+    for (const i in pwaConfig.pathsToIgnoreCache) {
+        const path = pwaConfig.pathsToIgnoreCache[i];
+        if (urlPath.indexOf(path) === 0) {
             return true;
         }
     }
@@ -102,7 +104,7 @@ function isFetchingBaseMap (url) {
 async function precache() {
     const cache = await caches.open(pwaConfig.cacheName);
 
-    for(var i = 0; i < pwaConfig.filesToPreCache.length; i++) {
+    for(let i = 0; i < pwaConfig.filesToPreCache.length; i++) {
         await cache.delete(pwaConfig.filesToPreCache[i]);
     }
 
