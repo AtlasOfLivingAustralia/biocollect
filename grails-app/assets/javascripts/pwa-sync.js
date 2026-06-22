@@ -14,13 +14,25 @@ function hasValue(value) {
     return value !== undefined && value !== null && value !== '';
 }
 
+function serializeForPostMessage(value) {
+    if (value === undefined || value === null) {
+        return value;
+    }
+
+    if (typeof ko !== 'undefined' && ko.toJS) {
+        return ko.toJS(value);
+    }
+
+    return JSON.parse(JSON.stringify(value));
+}
+
 function sendMessage(event, payload, requestId) {
     var message;
 
     if (window.parent) {
         message = {
             event,
-            payload
+            payload: serializeForPostMessage(payload)
         };
         if (requestId) {
             message.requestId = requestId;

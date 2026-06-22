@@ -74,24 +74,21 @@ class AddBioActivityPage extends ReloadablePage {
         }
     }
 
-    async resolveSaveButton() {
-        if (await this.saveButton.isExisting()) {
-            return this.saveButton;
-        }
+    async saveActivity() {
+        await this.saveButton.isExisting();
 
-        if (await this.saveDraftButton.isExisting()) {
-            return this.saveDraftButton;
-        }
-
-        throw new Error('Could not find a save button on the bio activity form');
+        await this.saveButton.scrollIntoView();
+        await this.saveButton.waitForClickable({timeout: 60000});
+        await this.saveButton.click();
+        await browser.pause(5000);
     }
 
-    async saveActivity() {
-        const saveButton = await this.resolveSaveButton();
+    async saveActivityChanges() {
+        await this.saveDraftButton.isExisting();
 
-        await saveButton.scrollIntoView();
-        await saveButton.waitForClickable({timeout: 60000});
-        await saveButton.click();
+        await this.saveDraftButton.scrollIntoView();
+        await this.saveDraftButton.waitForClickable({timeout: 60000});
+        await this.saveDraftButton.click();
         await browser.pause(5000);
     }
 

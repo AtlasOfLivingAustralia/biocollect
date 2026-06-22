@@ -251,12 +251,44 @@ class PwaAppPage extends ReloadablePage {
         await this.viewRecordsBtn(paId).waitForExist({ timeout: 30000 });
     }
 
+    /**
+     * Scrolls an element into view while waiting for it to become displayed.
+     *
+     * The survey cards are rendered inside an off-screen container that the
+     * browser skips painting (a `content-visibility: auto` optimisation). Until
+     * the element is scrolled near the viewport, `isDisplayed()` (which relies on
+     * `Element.checkVisibility({ contentVisibilityAuto: true })`) reports it as
+     * not displayed even though it exists in the DOM. Scrolling on each poll
+     * forces the container to render so the visibility check can succeed.
+     *
+     * `getElement` is re-invoked on every poll so that the element handle is
+     * always fresh. The survey cards re-render (e.g. while download/sync state
+     * updates), which would otherwise leave us holding a stale element reference.
+     */
+    async scrollIntoViewAndWaitForDisplayed(getElement, selector, timeout = 30000) {
+        await browser.waitUntil(async () => {
+            const element = await getElement();
+            if (!await element.isExisting()) {
+                return false;
+            }
+
+            try {
+                await element.scrollIntoView({ block: 'center' });
+                return await element.isDisplayed();
+            }
+            catch {
+                // Ignore transient failures (stale element / move target out of
+                // bounds) and retry with a freshly resolved element next poll.
+                return false;
+            }
+        }, { timeout, interval: 500, timeoutMsg: `element ("${selector}") still not displayed after ${timeout}ms` });
+    }
+
     async viewRecords(paId) {
         await this.waitForSurveyActions(paId);
+        await this.scrollIntoViewAndWaitForDisplayed(() => this.viewRecordsBtn(paId), `#${paId}ViewRecord`);
         const btn = this.viewRecordsBtn(paId);
-        await btn.waitForDisplayed({ timeout: 30000 });
         await btn.waitForEnabled({ timeout: 30000 });
-        await btn.scrollIntoView();
         try {
             await btn.waitForClickable({ timeout: 10000 });
             await btn.click();
@@ -271,10 +303,9 @@ class PwaAppPage extends ReloadablePage {
 
     async downloadProjectActivity(paId) {
         await this.waitForSurveyActions(paId);
+        await this.scrollIntoViewAndWaitForDisplayed(() => this.projectActivityDownload(paId), `#${paId}Download`);
         const btn = this.projectActivityDownload(paId);
-        await btn.waitForDisplayed({ timeout: 30000 });
         await btn.waitForEnabled({ timeout: 30000 });
-        await btn.scrollIntoView();
         try {
             await btn.waitForClickable({ timeout: 10000 });
             await btn.click();
