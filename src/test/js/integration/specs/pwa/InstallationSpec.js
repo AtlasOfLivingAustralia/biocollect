@@ -6,6 +6,33 @@ const HomePage = require("../../pageobjects/HomePage");
 const {startServer, stopServer} = require('../../utils/proxy');
 const {browser} = require("@wdio/globals");
 
+/**
+ * Waits for an element to be scrolled into view and displayed, re-resolving a
+ * fresh element handle on every poll.
+ *
+ * On CI (Linux + WebDriver BiDi) a stale element handle passed to `isDisplayed`
+ * surfaces as a fatal "invalid argument - Invalid input in arguments/0" error
+ * rather than a clean stale-element error, and `expect(el).toBeDisplayed()`
+ * rethrows it instead of retrying. Re-querying the element each poll (and
+ * swallowing transient stale/invalid-argument errors) avoids that flakiness.
+ */
+async function waitForDisplayedStable(getElement, description, timeout = 30000) {
+    await browser.waitUntil(async () => {
+        try {
+            const element = await getElement();
+            if (!await element.isExisting()) {
+                return false;
+            }
+
+            await element.scrollIntoView({ block: 'center' });
+            return await element.isDisplayed();
+        }
+        catch {
+            return false;
+        }
+    }, { timeout, interval: 500, timeoutMsg: `${description} still not displayed after ${timeout}ms` });
+}
+
 describe("Application installation Spec", function () {
     var pa = 'pa_1', project = 'project_1', site = "ab9ec9af-241b-49f7-adcf-ca40e474d119",
         adminToolsPage, pwaAppPage, addBioActivityPage, homePage;
@@ -116,10 +143,8 @@ describe("Application installation Spec", function () {
         await browser.switchFrame(pwaAppPage.pwaFrame);
 
         const unpublishedViewBioActivityPage = new ViewBioActivityPage();
-        const unpublishedSpeciesEl = unpublishedViewBioActivityPage.speciesSelector("Acavomonidia");
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSiteViewUnpublishedRecord");
-        await unpublishedSpeciesEl.scrollIntoView();
-        await expect(unpublishedSpeciesEl).toBeDisplayed();
+        await waitForDisplayedStable(() => unpublishedViewBioActivityPage.speciesSelector("Acavomonidia"), 'unpublished species Acavomonidia');
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
 
@@ -138,10 +163,8 @@ describe("Application installation Spec", function () {
         await pwaAppPage.viewPublishedRecordContainingSpecies("Acavomonidia");
 
         const publishedViewBioActivityPage = new ViewBioActivityPage();
-        const publishedSpeciesEl = publishedViewBioActivityPage.speciesSelector("Acavomonidia");
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSiteViewPublishedRecord");
-        await publishedSpeciesEl.scrollIntoView();
-        await expect(publishedSpeciesEl).toBeDisplayed();
+        await waitForDisplayedStable(() => publishedViewBioActivityPage.speciesSelector("Acavomonidia"), 'published species Acavomonidia');
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
     });
@@ -195,14 +218,10 @@ describe("Application installation Spec", function () {
         console.log('Viewing published record');
         await pwaAppPage.viewPublishedRecordContainingSpecies("Fungi");
         const viewBioActivityPage = new ViewBioActivityPage();
-        const speciesEl = viewBioActivityPage.speciesSelector("Fungi");
         await addBioActivityPage.takeScreenShot("offlineRecordMapPinViewPublishedRecord");
-        await speciesEl.scrollIntoView();
-        await expect(speciesEl).toBeDisplayed();
+        await waitForDisplayedStable(() => viewBioActivityPage.speciesSelector("Fungi"), 'published species Fungi');
         // map pin should be displayed
-        var pin =$('.leaflet-marker-icon');
-        await pin.scrollIntoView();
-        await expect(pin).toBeDisplayed();
+        await waitForDisplayedStable(() => $('.leaflet-marker-icon'), 'map pin');
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
     });
