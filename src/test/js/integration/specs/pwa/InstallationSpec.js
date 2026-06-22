@@ -74,7 +74,7 @@ describe("Application installation Spec", function () {
 
         // Save the activity
         console.log('Saving unfinished activity & closing modal...')
-        await addBioActivityPage.saveActivity();
+        await addBioActivityPage.saveActivityChanges();
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSiteIncompleteRecordSaved");
 
         await browser.switchFrame(null);
@@ -93,7 +93,7 @@ describe("Application installation Spec", function () {
 
         // Save record and close modal
         console.log('Saving finished activity & closing modal...')
-        await addBioActivityPage.saveActivity();
+        await addBioActivityPage.saveActivityChanges();
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSiteCompleteRecordSaved");
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
@@ -169,7 +169,7 @@ describe("Application installation Spec", function () {
         await addBioActivityPage.takeScreenShot("offlineRecordMapPinCompletedForm");
 
         // Save the activity
-        await addBioActivityPage.saveActivity();
+        await addBioActivityPage.saveActivityChanges();
         await addBioActivityPage.takeScreenShot("offlineRecordMapPinSavedRecord");
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();

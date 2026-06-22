@@ -400,14 +400,14 @@ function ActivityViewModel (activity, parent) {
 
     self.toPwaOfflineListJson = function() {
         return loadPromise.then(function() {
-            return {
+            return ko.toJS({
                 activityId: self.activityId,
                 projectId: self.projectId,
                 projectActivityId: self.projectActivityId,
                 featureImage: self.featureImage() ? {
                     thumbnailUrl: self.featureImage().thumbnailUrl
                 } : null,
-                species: ko.toJS(self.species()),
+                species: self.species(),
                 surveyDate: self.surveyDate(),
                 uploading: self.uploading(),
                 isInvalidDraft: self.isInvalidDraft(),
@@ -418,7 +418,7 @@ function ActivityViewModel (activity, parent) {
                     viewActivityUrl: self.transients.viewActivityUrl(),
                     editActivityUrl: self.transients.editActivityUrl()
                 }
-            };
+            });
         });
     }
 
