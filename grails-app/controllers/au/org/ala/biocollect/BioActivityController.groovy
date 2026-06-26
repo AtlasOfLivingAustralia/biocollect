@@ -868,6 +868,7 @@ class BioActivityController {
                 model: [
                         view: 'allrecords',
                         contentURI: '/bioActivity/allRecords',
+                        user: userService.user,
                         title: messageSource.getMessage('allrecords.title', [].toArray(), '', Locale.default),
                         userIsAdmin: userIsAdmin,
                         returnTo: g.createLink(controller: 'bioActivity', action: 'allRecords')
@@ -887,6 +888,7 @@ class BioActivityController {
                         view: 'bulkimport',
                         bulkImportId: id,
                         contentURI: '/bioActivity/bulkimport',
+                        user: userService.user,
                         title: messageSource.getMessage('bulkimport.title', [].toArray(), '', Locale.default),
                         userIsAdmin: userIsAdmin,
                         returnTo: g.createLink(controller: 'bulkImport', action: 'index', params: [id: id])
@@ -909,6 +911,7 @@ class BioActivityController {
                 model: [
                         view: view,
                         contentURI: '/bioActivity/projectRecords',
+                        user: userService.user,
                         projectId: id,
                         project: project,
                         title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
