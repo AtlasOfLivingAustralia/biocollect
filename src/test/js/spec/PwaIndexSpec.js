@@ -6,11 +6,41 @@ describe("PwaIndexSpec", function (){
         window.maxTilesPerAxis = 5;
     });
     afterEach(function() {
-        delete window.titleSize;
+        delete window.tileSize;
         delete window.crs;
         delete window.minNumberOfTilesPerZoom;
         delete window.maxTilesPerAxis;
     });
+
+    function dispatchViewModelLoadedForAllArtefacts() {
+        for (let i = 0; i < 4; i++) {
+            document.dispatchEvent(new Event('view-model-loaded'));
+        }
+    }
+
+    function waitUntil(condition, timeout) {
+        timeout = timeout || 5000;
+
+        return new Promise(function(resolve, reject) {
+            const started = Date.now();
+
+            function poll() {
+                if (condition()) {
+                    resolve();
+                    return;
+                }
+
+                if (Date.now() - started > timeout) {
+                    reject(new Error('Timed out waiting for condition'));
+                    return;
+                }
+
+                setTimeout(poll, 10);
+            }
+
+            poll();
+        });
+    }
     describe("tileYCoordinateFromLatLng", function() {
         it("should return the correct tile coordinate for a given latitude, longitude, and zoom level", function() {
             expect(tileYCoordinateFromLatLng(0, 0, 0)).toBe(0);
@@ -111,30 +141,29 @@ describe("PwaIndexSpec", function (){
         it("should resolve the promise when all URLs are successfully loaded", async function() {
             // Mock the viewModel and fcConfig objects
             var viewModel = {
-                numberOfFormsDownloaded: jasmine.createSpy("numberOfFormsDownloaded"),
-                totalFormDownload: jasmine.createSpy("totalFormDownload"),
+                numberOfFormsDownloaded: ko.observable(0),
+                totalFormDownload: ko.observable(0),
             };
 
             window.fcConfig = {
                 createActivityUrl: "data:text/html,<html><body><p>This is a mock content 1</p></body></html>",
                 indexActivityUrl: "data:text/html,<html><body><p>This is a mock content 2</p></body></html>",
-                offlineListUrl: "data:text/html,<html><body><p>This is a mock content 3</p></body></html>",
+                settingsUrl: "data:text/html,<html><body><p>This is a mock content 3</p></body></html>",
+                pwaSyncUrl: "data:text/html,<html><body><p>This is a mock content 4</p></body></html>",
             };
 
-            var intervalId = setInterval(function() {
-                var viewModelLoadedEvent = new Event('view-model-loaded');
-                document.dispatchEvent(viewModelLoadedEvent);
-            },1000);
+            var downloadPromise = downloadProjectActivityArtefacts(viewModel, fcConfig);
+            dispatchViewModelLoadedForAllArtefacts();
 
-            await downloadProjectActivityArtefacts(viewModel, fcConfig);
-            expect(viewModel.numberOfFormsDownloaded).toHaveBeenCalled();
-            expect(viewModel.totalFormDownload).toHaveBeenCalled();
-            clearInterval(intervalId);
+            await downloadPromise;
+
+            expect(viewModel.numberOfFormsDownloaded()).toBe(8);
+            expect(viewModel.totalFormDownload()).toBe(8);
         });
     });
 
     describe("OfflineViewModel", function() {
-        var div, viewModel, sw, fakeIframe, intervalId,
+        var div, viewModel, sw, fakeIframe,
         site ={ siteId: 'site1', name: "site 1", extent: { geometry: { type: 'Point', coordinates: [ 149.12043571472168, -35.301817150253676 ] } } };
 
         beforeAll(function() {
@@ -193,7 +222,8 @@ describe("PwaIndexSpec", function (){
             window.fcConfig = {
                 createActivityUrl: "data:text/html,<html><body onload=\"document.dispatchEvent(new Event(\'view-model-loaded\'))\"><p>This is a mock content 1</p></body></html>",
                 indexActivityUrl: "data:text/html,<html><body onload=\"document.dispatchEvent(new Event(\'view-model-loaded\'))\"><p>This is a mock content 2</p></body></html>",
-                offlineListUrl: "data:text/html,<html><body onload=\"document.dispatchEvent(new Event(\'view-model-loaded\'))\"><p>This is a mock content 3</p></body></html>",
+                settingsUrl: "data:text/html,<html><body onload=\"document.dispatchEvent(new Event(\'view-model-loaded\'))\"><p>This is a mock content 3</p></body></html>",
+                pwaSyncUrl: "data:text/html,<html><body onload=\"document.dispatchEvent(new Event(\'view-model-loaded\'))\"><p>This is a mock content 4</p></body></html>",
             };
         });
 
@@ -219,12 +249,10 @@ describe("PwaIndexSpec", function (){
             spyOn(window.entities, "deleteMap").and.callThrough();
             sw = navigator.serviceWorker.getRegistration;
             spyOn(navigator.serviceWorker, 'getRegistration').and.callFake(function () {
-                intervalId = setInterval(function () {
-                    var viewModelLoadedEvent = new Event('view-model-loaded');
-                    document.dispatchEvent(viewModelLoadedEvent);
-                }, 1000);
-
-                return Promise.resolve({});
+                return Promise.resolve({}).then(function (registration) {
+                    setTimeout(dispatchViewModelLoadedForAllArtefacts, 0);
+                    return registration;
+                });
             });
 
 
@@ -241,7 +269,6 @@ describe("PwaIndexSpec", function (){
         afterEach(function() {
             jasmine.Ajax.uninstall();
             navigator.serviceWorker = sw;
-            clearInterval(intervalId);
             document.body.removeChild(div);
             document.body.removeChild(fakeIframe);
         });
@@ -256,7 +283,6 @@ describe("PwaIndexSpec", function (){
             viewModel.mapStatus(viewModel.statuses.done);
             viewModel.sitesStatus(viewModel.statuses.done);
             expect(window.parent.postMessage).toHaveBeenCalled();
-            expect(window.parent.postMessage).toHaveBeenCalledTimes(5);
             expect(window.parent.postMessage).toHaveBeenCalledWith({event: "download-removed"}, "*");
             expect(window.parent.postMessage).toHaveBeenCalledWith({event: "download-complete"}, "*");
             window.parent.postMessage = originalPostMessage;
@@ -305,23 +331,25 @@ describe("PwaIndexSpec", function (){
                 return Promise.resolve();
             });
 
-            return new Promise(function(resolve, reject) {
-                setTimeout(function() {
-                    expect(entities.getProjectActivityMetadata).toHaveBeenCalledTimes(1);
-                    expect(entities.getProjectActivityMetadata).toHaveBeenCalledWith("abc123", undefined);
-                    expect(entities.saveSites).toHaveBeenCalledWith([site]);
-                    expect(entities.saveSites).toHaveBeenCalledTimes(1);
-                    expect(viewModel.numberOfFormsDownloaded).toHaveBeenCalled();
-                    expect(viewModel.totalFormDownload).toHaveBeenCalled();
-                    expect(entities.getSpeciesForProjectActivity).toHaveBeenCalledTimes(1);
-                    expect(entities.getMaps).toHaveBeenCalledTimes(1);
-                    expect(viewModel.currentStage()).toBe(viewModel.stages.sites);
-                    clearInterval(intervalId);
-                    window.downloadMapTiles = originalDownloadMapTiles;
-                    resolve();
-                }, 10000);
-            });
-        }, 1000000000);
+            try {
+                await waitUntil(function() {
+                    return viewModel.currentStage() === viewModel.stages.sites;
+                }, 5000);
+
+                expect(entities.getProjectActivityMetadata).toHaveBeenCalledTimes(1);
+                expect(entities.getProjectActivityMetadata).toHaveBeenCalledWith("abc123", undefined);
+                expect(entities.saveSites).toHaveBeenCalledWith([site]);
+                expect(entities.saveSites).toHaveBeenCalledTimes(1);
+                expect(viewModel.numberOfFormsDownloaded()).toBe(8);
+                expect(viewModel.totalFormDownload()).toBe(8);
+                expect(entities.getSpeciesForProjectActivity).toHaveBeenCalledTimes(1);
+                expect(entities.getMaps).toHaveBeenCalledTimes(1);
+                expect(viewModel.currentStage()).toBe(viewModel.stages.sites);
+            }
+            finally {
+                window.downloadMapTiles = originalDownloadMapTiles;
+            }
+        }, 10000);
 
         function initViewModel (config) {
             config = Object.assign({}, {

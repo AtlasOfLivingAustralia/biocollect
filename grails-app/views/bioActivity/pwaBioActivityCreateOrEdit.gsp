@@ -59,18 +59,15 @@
         uploadImagesUrl: "${createLink(controller: 'image', action: 'upload')}",
         originUrl: "${grailsApplication.config.getProperty('server.serverURL')}",
         pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}",
+        isPWA: ${isPWA},
         bulkUpload: false,
         enableOffline: true,
         isCaching: ${params.getBoolean('cache', false)},
         preventNavigationIfDirty: ${params.getBoolean('cache', false) ? false : true},
-        globalReturnToAddress: '${createLink(uri: "/pwa/offlineList")}',
-        surveyReturnToAddress: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}',
         overrideUseAlaFlag: true
         </g:applyCodec>
         },
         here = document.location.href;
-
-        fcConfig.returnTo = biocollect.utils.getReturnToAddressForPWA();
     </asset:script>
     <asset:javascript src="pwa-bio-activity-create-or-edit-manifest.js"/>
 </head>

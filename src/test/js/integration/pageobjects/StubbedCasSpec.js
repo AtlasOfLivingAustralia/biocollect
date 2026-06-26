@@ -2,10 +2,11 @@ const jose = require('node-jose');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const axios = require('axios');
-const { startServer, stopServer, blockSite, unblockSite } = require('../utils/proxy');
+const {startServer, stopServer,blockSite, unblockSite} = require('../utils/proxy');
 const util = require('node:util');
 const execFile = util.promisify(require('node:child_process').execFile);
 const path = require('node:path');
+const fs = require('node:fs');
 class StubbedCasSpec {
     READ_ONLY_USER_ID = '1000'
     GRANT_MANAGER_USER_ID = '1001'
@@ -29,7 +30,7 @@ class StubbedCasSpec {
     };
     privateKey = '';
     systemToken = '';
-    constructor() {
+    constructor () {
         this.testConfig = browser.options.testConfig;
         this.baseUrl = this.testConfig.baseUrl;
         this.serverUrl = this.testConfig.serverUrl;
@@ -40,13 +41,13 @@ class StubbedCasSpec {
     }
 
     async loginAsAlaAdmin() {
-        await this.login({ userId: this.ALA_ADMIN_USER_ID, role: "ROLE_ADMIN", userName: 'ala_admin@nowhere.com', email: 'ala_admin@nowhere.com', firstName: "ALA", lastName: "Administrator" })
+        await this.login({userId:this.ALA_ADMIN_USER_ID, role:"ROLE_ADMIN", userName: 'ala_admin@nowhere.com', email: 'ala_admin@nowhere.com', firstName:"ALA", lastName:"Administrator"})
     }
 
     async loginAsPwaUser(expired = false) {
         let userDetails = this.getUserDetails('1');
         await this.setupUserProfileLookup(userDetails)
-        let { tokenSet, profile } = await this.setupOidcAuthForUser(userDetails, expired);
+        let {tokenSet, profile} = await this.setupOidcAuthForUser(userDetails, expired);
         tokenSet.profile = profile;
         let key = this.localStorageTokenKey;
         console.log(`key - ${key}`);
@@ -165,7 +166,7 @@ class StubbedCasSpec {
         }
 
         // Define ID Token Claims
-        let { payload, expiresIn, expiresAt } = this.getUserTokenClaim(userDetails, roles, clientId, expired);
+        let {payload, expiresIn, expiresAt} = this.getUserTokenClaim(userDetails, roles, clientId, expired);
         const idToken = await this.signPayload(payload);
         let tokenSet = this.getUserToken(idToken, expiresIn, expiresAt);
 
@@ -174,7 +175,7 @@ class StubbedCasSpec {
         let profile = await this.setupProfileEndpoint(userDetails, idToken);
 
         // Return the ID token
-        return { tokenSet, profile };
+        return {tokenSet, profile};
     }
 
     getUserToken(idToken, expiresIn, expiresAt) {
@@ -221,7 +222,7 @@ class StubbedCasSpec {
             email: userDetails.email,
             scope: this.testConfig.oidc.scope
         };
-        return { payload, expiresIn, expiresAt };
+        return {payload, expiresIn, expiresAt};
     }
 
     async setupUserProfileLookup(userDetails) {
@@ -254,7 +255,7 @@ class StubbedCasSpec {
         }
     }
 
-    async setupAccessToken(url, body, base64EncodedAuth) {
+    async setupAccessToken(url, body, base64EncodedAuth){
         try {
             // Set up POST request to "/cas/oidc/oidcAccessToken"
             await axios.post(`${this.testConfig.wireMockBaseUrl}/__admin/mappings`, {
@@ -282,7 +283,7 @@ class StubbedCasSpec {
         }
     }
 
-    async setupProfileEndpoint(userDetails, userToken) {
+    async setupProfileEndpoint(userDetails, userToken){
         // Create user profile
         const profile = {
             userid: userDetails.userId,
@@ -364,7 +365,7 @@ class StubbedCasSpec {
     async createPrivateKey() {
         if (!this.privateKey) {
             const keyStore = jose.JWK.createKeyStore();
-            this.privateKey = await keyStore.add(this.jwk, 'private', { kid: "localhost:8018" });
+            this.privateKey = await keyStore.add(this.jwk, 'private', {kid: "localhost:8018"});
             console.log("Private Key Created: ", this.privateKey);
         }
 
@@ -396,18 +397,18 @@ class StubbedCasSpec {
         if (this.testConfig.databasePassword) {
             args.push(this.testConfig.databasePassword);
         }
-        const { error, stdout, stderr } = await execFile(this.testConfig.datasetLoadScript, args)
+        const {error, stdout, stderr} = await execFile(this.testConfig.datasetLoadScript, args)
         console.log(`result of command ${JSON.stringify(error)} \n\n ${JSON.stringify(stderr)} \n\n ${JSON.stringify(stdout)}`);
     }
 
-    async setOffline() {
+    async setOffline(){
         console.log('Going offline - ' + this.baseUrl);
         this.offlineMock = await browser.mock(`${this.baseUrl}/**`);
         this.offlineMock.on('request', (req) => console.log('Intercepted:', req.url));
         await this.offlineMock.abort("Failed");
     }
 
-    async setOnline() {
+    async setOnline(){
         if (this.offlineMock) {
             console.log('Going online');
             await this.offlineMock.restore();
@@ -430,12 +431,20 @@ class StubbedCasSpec {
                 }
                 return !!ko.dataFor(document.querySelector("${selector}"));`);
             return result;
-        }, { timeout: 180000 });
+        }, {timeout: 180000});
     }
 
-    async takeScreenShot(name) {
-        var body = await $("body");
-        await body.saveScreenshot(`./logs/${name}.png`);
+    async takeScreenShot(name){
+        const logsDir = path.resolve(this.testConfig.dirName || process.cwd(), 'logs');
+        const screenshotPath = path.join(logsDir, `${name}.png`);
+
+        try {
+            fs.mkdirSync(logsDir, { recursive: true });
+            await browser.saveScreenshot(screenshotPath);
+        }
+        catch (error) {
+            console.warn(`Unable to save screenshot ${screenshotPath}:`, error);
+        }
     }
 
     /**
@@ -445,7 +454,7 @@ class StubbedCasSpec {
     async dropPin() {
         // Select the marker draw button
         const markerDraw = $('.leaflet-draw-draw-marker');
-        await markerDraw.waitForDisplayed();
+        await markerDraw.waitForDisplayed({timeout: 30000});
 
         // Move to the marker button and click it
         await markerDraw.moveTo();
@@ -453,16 +462,16 @@ class StubbedCasSpec {
 
         // Wait for the draw actions menu to appear
         const drawActions = $('.leaflet-draw-actions'); // Get the first draw action
-        await drawActions.waitForDisplayed();
+        await drawActions.waitForDisplayed({timeout: 10000});
 
         // click on the map pane to drop the pin
         const mapPane = await $('.leaflet-map-pane');
         await mapPane.moveTo();
-        await mapPane.click({ x: 100, y: 100 });
+        await mapPane.click({x: 100, y: 100});
 
         // wait for the point to be added to dropdown
         const dropdown = $('.select2-selection__rendered');
-        await dropdown.waitForDisplayed();
+        await dropdown.waitForDisplayed({timeout: 30000});
     }
 }
 

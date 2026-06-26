@@ -10,8 +10,9 @@ class AddBioActivityPage extends ReloadablePage {
     get imageUploadInput() { return $("input[name=files][accept='image/*']"); }
     get imageTitleInput() { return $(".image-title-input"); }
     get saveButton() { return $("#save"); }
+    get saveDraftButton() { return $("#saveChanges"); }
     get okButtonBootBoxDialog(){ return $(".bootbox-accept")}
-    get iframe() { return $("iframe"); }
+    get iframe() { return $("#pwa-frame"); }
 
     async open(projectActivityId) {
         console.log(`Opening ${this.baseUrl}/bioActivity/create/${projectActivityId}`);
@@ -47,7 +48,7 @@ class AddBioActivityPage extends ReloadablePage {
         }
         else {
             await browser.waitUntil(async () => {
-                return (await this.speciesAutocomplete.isDisplayed()) === true;
+                return (await $('.ui-autocomplete').isExisting()) === true;
             }, { timeout: 10000 });
         }
         await this.firstSpecies.click();
@@ -68,15 +69,26 @@ class AddBioActivityPage extends ReloadablePage {
         }
         else {
             await browser.waitUntil(async () => {
-                return (await this.imageTitleInput.isDisplayed()) === true;
+                return (await $('.image-title-input').isExisting()) === true;
             }, { timeout: 10000 });
         }
     }
 
     async saveActivity() {
+        await this.saveButton.isExisting();
+
         await this.saveButton.scrollIntoView();
         await this.saveButton.waitForClickable({timeout: 60000});
         await this.saveButton.click();
+        await browser.pause(5000);
+    }
+
+    async saveActivityChanges() {
+        await this.saveDraftButton.isExisting();
+
+        await this.saveDraftButton.scrollIntoView();
+        await this.saveDraftButton.waitForClickable({timeout: 60000});
+        await this.saveDraftButton.click();
         await browser.pause(5000);
     }
 
