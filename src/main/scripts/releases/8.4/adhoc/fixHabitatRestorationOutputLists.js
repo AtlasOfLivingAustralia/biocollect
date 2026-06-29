@@ -44,24 +44,101 @@ const fundingAllowed = [
     "Private - volunteer"
 ];
 
-function cleanList(value, allowed) {
-    if (!Array.isArray(value)) {
-        return value;
-    }
+const sitePreparationMethodsAllowed = [
+    "Ripping",
+    "Raking",
+    "Scalping"
+];
 
-    return value.filter(v => allowed.includes(v));
+const fireAssistedRegenerationMethodsAllowed = [
+    "Cool burn",
+    "Pile burn",
+    "Gas burner",
+    "Smoke water",
+    "Cultural burning"
+];
+
+const plantProtectionMethodAllowed = [
+    "No protection used",
+    "Stock fencing",
+    "Predator fencing",
+    "Combined stock-predator fencing",
+    "Wildlife friendly fencing",
+    "Plant guards",
+    "Other"
+];
+
+const weedTreatmentMethodsAllowed = [
+    "Manual weeding",
+    "Spray circles (herbicide)",
+    "Broard-scale spray (herbicide)",
+    "Selective spot spraying (herbicide)",
+    "Injection (herbicide)",
+    "Slashing",
+    "Scraping",
+    "Cut and paint",
+    "Biological control agents",
+    "Traditional burning",
+    "Other",
+    "None"
+];
+
+const habitatFeaturesAllowed = [
+    "Bird perches",
+    "Hollow logs",
+    "Hollow creation",
+    "Nest boxes",
+    "Coarse woody debris",
+    "Other"
+];
+
+function asArray(value) {
+    return Array.isArray(value) ? value : [];
+}
+
+function unique(values) {
+    return [...new Set(values.filter(v => v !== null && v !== undefined && v !== ""))];
 }
 
 function sameArray(a, b) {
-    return JSON.stringify(a || []) === JSON.stringify(b || []);
+    return JSON.stringify(asArray(a)) === JSON.stringify(asArray(b));
 }
+
+function redistribute(fields, source) {
+    const allValues = unique(
+        Object.keys(fields).flatMap(fieldName => asArray(source[fieldName]))
+    );
+
+    const result = {};
+
+    Object.keys(fields).forEach(fieldName => {
+        result[fieldName] = allValues.filter(v => fields[fieldName].includes(v));
+    });
+
+    return result;
+}
+
+const topLevelFields = {
+    interventionProjectAims: aimsAllowed,
+    projectCollaborators: collaboratorsAllowed,
+    fundingType: fundingAllowed
+};
+
+const sitePreparationFields = {
+    sitePreparationMethods: sitePreparationMethodsAllowed,
+    fireAssistedRegenerationMethods: fireAssistedRegenerationMethodsAllowed,
+    plantProtectionMethod: plantProtectionMethodAllowed,
+    weedTreatmentMethods: weedTreatmentMethodsAllowed,
+    habitatFeatures: habitatFeaturesAllowed
+};
 
 const query = {
     name: outputName,
     $or: [
-        { "data.interventionProjectAims": { $in: collaboratorsAllowed.concat(fundingAllowed) } },
-        { "data.projectCollaborators": { $in: aimsAllowed.concat(fundingAllowed) } },
-        { "data.fundingType": { $in: aimsAllowed.concat(collaboratorsAllowed) } }
+        { "data.interventionProjectAims": { $exists: true } },
+        { "data.projectCollaborators": { $exists: true } },
+        { "data.fundingType": { $exists: true } },
+        { "data.sitePreparationTable": { $exists: true } }
     ]
 };
 
@@ -72,22 +149,33 @@ let updated = 0;
 db.output.find(query).forEach(output => {
     examined++;
 
-    const original = {
+    const originalTopLevel = {
         interventionProjectAims: output.data?.interventionProjectAims,
         projectCollaborators: output.data?.projectCollaborators,
         fundingType: output.data?.fundingType
     };
 
-    const cleaned = {
-        interventionProjectAims: cleanList(original.interventionProjectAims, aimsAllowed),
-        projectCollaborators: cleanList(original.projectCollaborators, collaboratorsAllowed),
-        fundingType: cleanList(original.fundingType, fundingAllowed)
-    };
+    const cleanedTopLevel = redistribute(topLevelFields, originalTopLevel);
 
-    const hasChanged =
-        !sameArray(original.interventionProjectAims, cleaned.interventionProjectAims) ||
-        !sameArray(original.projectCollaborators, cleaned.projectCollaborators) ||
-        !sameArray(original.fundingType, cleaned.fundingType);
+    const originalSitePreparationTable = output.data?.sitePreparationTable || [];
+    const cleanedSitePreparationTable = originalSitePreparationTable.map(row => {
+        const cleanedRowValues = redistribute(sitePreparationFields, row);
+
+        return {
+            ...row,
+            ...cleanedRowValues
+        };
+    });
+
+    const topLevelChanged =
+        !sameArray(originalTopLevel.interventionProjectAims, cleanedTopLevel.interventionProjectAims) ||
+        !sameArray(originalTopLevel.projectCollaborators, cleanedTopLevel.projectCollaborators) ||
+        !sameArray(originalTopLevel.fundingType, cleanedTopLevel.fundingType);
+
+    const sitePreparationChanged =
+        JSON.stringify(originalSitePreparationTable) !== JSON.stringify(cleanedSitePreparationTable);
+
+    const hasChanged = topLevelChanged || sitePreparationChanged;
 
     if (!hasChanged) {
         return;
@@ -97,9 +185,7 @@ db.output.find(query).forEach(output => {
 
     printjson({
         outputId: output.outputId,
-        activityId: output.activityId,
-        before: original,
-        after: cleaned
+        activityId: output.activityId
     });
 
     if (!dryRun) {
@@ -107,9 +193,10 @@ db.output.find(query).forEach(output => {
             { outputId: output.outputId },
             {
                 $set: {
-                    "data.interventionProjectAims": cleaned.interventionProjectAims,
-                    "data.projectCollaborators": cleaned.projectCollaborators,
-                    "data.fundingType": cleaned.fundingType,
+                    "data.interventionProjectAims": cleanedTopLevel.interventionProjectAims,
+                    "data.projectCollaborators": cleanedTopLevel.projectCollaborators,
+                    "data.fundingType": cleanedTopLevel.fundingType,
+                    "data.sitePreparationTable": cleanedSitePreparationTable,
                     lastUpdated: new Date(),
                     lastUpdatedUserId: adminUserId
                 }
