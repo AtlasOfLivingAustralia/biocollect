@@ -63,6 +63,16 @@ function Master(activityId, config) {
         }
     };
 
+    /**
+     * Begins the autosave polling. This is deliberately not started until the user
+     * actually begins entering data - programmatic model changes during initialisation
+     * (e.g. reloadGeodata forcing a map redraw) mark the model as dirty but must not
+     * trigger autosaves before the user has interacted with the form.
+     */
+    self.startAutosave = function () {
+        scheduleAutosaveInterval();
+    };
+
     self.dirtyCheck = function () {
         self.dirtyFlag.isDirty(self.isDirty());
     };
@@ -396,8 +406,6 @@ function Master(activityId, config) {
     }
 
     autoSaveModel(self, null, {preventNavigationIfDirty: preventNavigationIfDirty});
-
-    scheduleAutosaveInterval();
 };
 
 function ActivityHeaderViewModel (act, site, project, metaModel, pActivity, config) {
