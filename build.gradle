@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath "org.apache.grails:grails-gradle-plugins:$grailsVersion"
         classpath "cloud.wondrify:asset-pipeline-gradle:$assetPipelineVersion"
-        classpath "cloud.wondrify:sass-asset-pipeline:$assetPipelineVersion"
+        classpath "cloud.wondrify:sass-dart-asset-pipeline:$assetPipelineVersion"
         classpath 'com.bmuschko:gradle-clover-plugin:3.0.1'
         classpath "gradle.plugin.com.github.william-hill-online:wiremock-gradle-plugin:0.4.3"
         classpath "com.github.tomakehurst:wiremock-jre8-standalone:2.28.0"
@@ -77,6 +77,8 @@ dependencies {
     implementation "org.apache.grails:grails-databinding"
     implementation "org.apache.grails:grails-gsp"
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    developmentOnly "net.java.dev.jna:jna"
+    developmentOnly "io.methvin:directory-watcher"
     console "org.apache.grails:grails-console"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-validation"
@@ -114,7 +116,7 @@ dependencies {
     implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
     implementation "cloud.wondrify:asset-pipeline-core:$assetPipelineVersion"
     implementation "cloud.wondrify:asset-pipeline-grails:$assetPipelineVersion"
-    implementation "cloud.wondrify:sass-asset-pipeline:$assetPipelineVersion"
+    implementation "cloud.wondrify:sass-dart-asset-pipeline:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
     // POI 5.2.5 needs commons-io >= 2.7 (UnsynchronizedByteArrayOutputStream)
     implementation "commons-io:commons-io:2.14.0"
@@ -140,8 +142,9 @@ dependencies {
     implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20240325.1"
 
     //ALA plugins
-    implementation("au.org.ala.plugins.grails:images-client-plugin:1.4") {
-        exclude group: 'commons-httpclient', module: 'commons-httpclient'
+    implementation("au.org.ala.plugins.grails:images-client-plugin:1.5-SNAPSHOT") {
+        // ala-auth is provided by BioCollect directly (8.0.0-SNAPSHOT); avoid a duplicate.
+        // commons-httpclient is intentionally kept: the plugin's *WebService classes use it at runtime.
         exclude group: 'org.grails.plugins', module: 'ala-auth'
     }
 
@@ -152,7 +155,13 @@ dependencies {
     runtimeOnly "org.grails.plugins:ala-bootstrap5:2.0.0-SNAPSHOT"
 
     //    swagger API
-    implementation 'au.org.ala.plugins:openapi:1.3.0'
+    // openapi 2.0.0-SNAPSHOT is the Grails 7 / Jakarta build. The older 1.3.0 was a Grails 4-era
+    // plugin whose controller was compiled against javax.servlet and which dragged in the entire
+    // Grails 4.0.x framework (duplicate plugin descriptors that made plugin discovery hang).
+    implementation 'au.org.ala.plugins:openapi:2.0.0-SNAPSHOT'
+    // BioCollect controllers use io.swagger.v3.oas.annotations.* directly. openapi 2.0.0 scopes
+    // swagger as an implementation detail (not exposed transitively), so declare it here.
+    implementation "io.swagger.core.v3:swagger-annotations:2.2.23"
 
     implementation "org.codehaus.groovy.modules.http-builder:http-builder:0.7.1"
     implementation 'au.org.ala:ala-cas-client:4.0.0-SNAPSHOT'
@@ -221,6 +230,16 @@ if (Boolean.valueOf(inplace)) {
     assetCompile.dependsOn("ecodata-client-plugin:_Events")
     compileGroovy.dependsOn("ecodata-client-plugin:_Events")
     bootRun.dependsOn("ecodata-client-plugin:_Events")
+
+    // The plugin subprojects each ship their own Application/bootRun so they can be run
+    // standalone. When included inplace, an unqualified `bootRun` would otherwise also try
+    // to start them (they crash: no CAS config, no UrlMappingsHolder). Only BioCollect
+    // should be booted, so disable the plugins' boot run tasks here.
+    ['ecodata-client-plugin', 'ala-map-plugin'].each { pluginName ->
+        project(":$pluginName").tasks
+                .matching { it.name in ['bootRun', 'bootTestRun'] }
+                .configureEach { enabled = false }
+    }
 }
 
 task _Events {

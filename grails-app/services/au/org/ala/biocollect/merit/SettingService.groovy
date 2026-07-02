@@ -2,8 +2,8 @@ package au.org.ala.biocollect.merit
 
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.fs.FileSystemAssetResolver
-import asset.pipeline.jsass.SassAssetFile
-import asset.pipeline.jsass.SassProcessor
+import asset.pipeline.dart.SassAssetFile
+import asset.pipeline.dart.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
@@ -421,7 +421,7 @@ class SettingService {
 
     String processScssContent(String contentScss, SassAssetFile input, String cssFileFullPath) {
         String output
-        SassProcessor processor = new SassProcessor()
+        SassProcessor processor = new SassProcessor(null)
         output = processor.process(contentScss, input)
         def minifyCssProcessor = new CssMinifyPostProcessor()
         try {

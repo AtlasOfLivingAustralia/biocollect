@@ -17,7 +17,7 @@ class UrlMappings {
 
                 "/$hub/$controller/$action?/$id?(.$format)?"{
                         constraints {
-                                hub validator: {val, obj -> isHubValid( val)}
+                                hub validator: {val, obj -> UrlMappings.isHubValid( val)}
                         }
                 }
 
@@ -30,7 +30,7 @@ class UrlMappings {
 
                 "/$hub/$controller/$id?"(parseRequest:true) {
                         constraints {
-                                hub validator: {val, obj -> isHubValid( val)}
+                                hub validator: {val, obj -> UrlMappings.isHubValid( val)}
                         }
                         action = [GET: "get", POST: "upload", PUT: "upload", DELETE: "delete"]
                 }
@@ -74,18 +74,18 @@ class UrlMappings {
 
                 "/$hub/"(controller: 'hub', action: 'index') {
                         constraints {
-                                hub validator: {val, obj -> isHubValid( val)}
+                                hub validator: {val, obj -> UrlMappings.isHubValid( val)}
                         }
                 }
                 "/$hub"(controller: 'hub', action: 'index') {
                         constraints {
-                                hub validator: {val, obj -> isHubValid( val)}
+                                hub validator: {val, obj -> UrlMappings.isHubValid( val)}
                         }
                 }
 
                 "/$hub/nocas/geoService"(controller: 'home', action: 'geoService') {
                         constraints {
-                                hub validator: {val, obj -> isHubValid( val)}
+                                hub validator: {val, obj -> UrlMappings.isHubValid( val)}
                         }
                 }
                 "/nocas/geoService"(controller: 'home', action: 'geoService') {
@@ -93,7 +93,7 @@ class UrlMappings {
                 }
                 "/$hub/myProfile"(controller: 'home', action: 'myProfile') {
                         constraints {
-                                hub validator: {val, obj -> isHubValid( val)}
+                                hub validator: {val, obj -> UrlMappings.isHubValid( val)}
                         }
                 }
                 "/myProfile"(controller: 'home', action: 'myProfile') {
@@ -102,7 +102,7 @@ class UrlMappings {
 
                 "/$hub/admin/user/$id"(controller: "user", action: "show") {
                         constraints {
-                                hub validator: {val, obj -> isHubValid( val)}
+                                hub validator: {val, obj -> UrlMappings.isHubValid( val)}
                         }
                 }
                 "/admin/user/$id"(controller: "user", action: "show") {
