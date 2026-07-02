@@ -38,12 +38,12 @@
                 fetchSpeciesUrl: "${createLink(controller: 'search', action: 'searchSpecies')}",
                 metadataURL: "/ws/projectActivity/activity",
                 siteUrl: '${createLink(controller: 'site', action: 'index' )}',
-                offlineListUrl: '${createLink(uri: "/pwa/offlineList", params: [cache: true] )}',
                 totalUrl: '/ws/species/totalSpecies',
                 downloadSpeciesUrl: '/ws/species/speciesDownload',
                 originUrl: "${grailsApplication.config.getProperty("server.serverURL")}",
                 bulkUpload: true,
                 pwaAppUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}",
+                pwaSyncUrl: "/pwa/sync?cache=true",
                 maxAreaInKm: ${grailsApplication.config.getProperty("pwa.maxAreaInKm")},
                 isCaching: ${params.getBoolean('cache', false)},
                 enableOffline: true

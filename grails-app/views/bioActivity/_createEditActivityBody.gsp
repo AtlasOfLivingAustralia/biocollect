@@ -94,17 +94,20 @@
         <g:render template="/shared/termsOfUse"/>
         <br>
         <g:if test="${!preview}">
-            <!-- ko ifnot: window.unpublished -->
             <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
-            <!-- /ko -->
+            <g:if test="${isPWA}">
             <!-- ko if: window.unpublished -->
-            <button type="button" id="saveOffline" class="btn btn-primary-dark btn-lg"><i class="fas fa-hdd"></i> <g:message code="bioactivity.save"/></button>
+                <button type="button" id="saveChanges" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
             <!-- /ko -->
+            </g:if>
         </g:if>
         <g:if test="${bulkUpload || (showCreate && !mobile && !preview)}">
             <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
         </g:if>
     </div>
+    <!-- ko if: window.unpublished -->
+        <label class="mt-3"><b>Last autosave: </b><span data-bind="text: $root.lastAutosave"></span></label>
+    <!-- /ko -->
 </g:if>
 
 <g:if env="development" test="${!printView && !preview}">

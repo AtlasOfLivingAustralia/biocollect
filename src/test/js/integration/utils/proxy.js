@@ -14,7 +14,7 @@ async function startServer(blockUrl="", port=8081) {
             res.writeHead(503, { 'Content-Type': 'text/plain' });
             res.end('Service Unavailable - Simulating Offline Mode');
         } else {
-            console.log(`Received request for ${req.url}`);
+            // console.log(`Received request for ${req.url}`);
             // Otherwise, forward the request to the target server
             proxy.web(req, res, { target: target_address });
         }

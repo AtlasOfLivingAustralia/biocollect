@@ -84,55 +84,57 @@
                             <g:render template="/bioActivity/search"/>
                         </div>
 
-                        <div id="download-data"
-                             class="mt-2 d-flex flex-column align-items-end"
-                             data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
+                        <g:if test="${user}">
+                            <div id="download-data"
+                                 class="mt-2 d-flex flex-column align-items-end"
+                                 data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
 
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary" data-bind="click: download">
-                                    <i class="fas fa-download"></i>
-                                    Download
-                                </button>
-                                <button type="button"
-                                        class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                                        data-bs-toggle="dropdown"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <span class="visually-hidden"><g:message code="split.download.dropdown"/></span>
-                                </button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary" data-bind="click: download">
+                                        <i class="fas fa-download"></i>
+                                        Download
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                        <span class="visually-hidden"><g:message code="split.download.dropdown"/></span>
+                                    </button>
 
-                                <div class="dropdown-menu dropdown-menu-end p-3 download-options">
-                                    <strong class="d-block mb-2"><g:message code="split.download.options"/></strong>
+                                    <div class="dropdown-menu dropdown-menu-end p-3 download-options">
+                                        <strong class="d-block mb-2"><g:message code="split.download.options"/></strong>
 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
-                                        <label class="form-check-label" for="dl-include-data">
-                                            <g:message code="split.download.data"/>
-                                        </label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
+                                            <label class="form-check-label" for="dl-include-data">
+                                                <g:message code="split.download.data"/>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="dl-include-images">
+                                            <label class="form-check-label" for="dl-include-images">
+                                                <g:message code="split.download.images"/>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="dl-include-shapefiles">
+                                            <label class="form-check-label" for="dl-include-shapefiles">
+                                                <g:message code="split.download.shapefiles"/>
+                                            </label>
+                                        </div>
+
+                                        <div class="dropdown-divider"></div>
+
+                                        <small class="text-muted d-block">
+                                            <g:message code="split.download.info"/>
+                                        </small>
                                     </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="dl-include-images">
-                                        <label class="form-check-label" for="dl-include-images">
-                                            <g:message code="split.download.images"/>
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="dl-include-shapefiles">
-                                        <label class="form-check-label" for="dl-include-shapefiles">
-                                            <g:message code="split.download.shapefiles"/>
-                                        </label>
-                                    </div>
-
-                                    <div class="dropdown-divider"></div>
-
-                                    <small class="text-muted d-block">
-                                        <g:message code="split.download.info"/>
-                                    </small>
                                 </div>
                             </div>
-                        </div>
+                        </g:if>
                     </div>
                 </div>
 
@@ -170,18 +172,20 @@
                             <span class="d-none" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner"></i> Preparing download, please wait...</span>
                         </div>
                     </div>
-                    <div class="row" data-bind="visible: transients.showEmailDownloadPrompt()">
-                        <div class="col-12">
-                            <div class="mb-2 alert alert-info" role="alert">
-                                <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
+                    <g:if test="${user}">
+                        <div class="row" data-bind="visible: transients.showEmailDownloadPrompt()">
+                            <div class="col-12">
+                                <div class="mb-2 alert alert-info" role="alert">
+                                    <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email">Email address</label>
+                                    <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
+                                </div>
+                                <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                             </div>
-                            <div class="mb-3">
-                                <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
-                            </div>
-                            <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                         </div>
-                    </div>
+                    </g:if>
                     <g:set var="divideSection" value="${hubConfig.content?.showNote && isProjectContributingDataToALA}"/>
                     <g:if test="${hubConfig.content?.showNote || isProjectContributingDataToALA}">
                         <div class="row d-flex my-3 align-items-center">

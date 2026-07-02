@@ -255,6 +255,7 @@ class BioActivityController {
                 String projectId = model.projectId = pActivity.projectId
                 Map project = projectService.get(projectId, "brief", params?.version)
                 if (!project.error) {
+                    model.isPWA = true
                     model.project = project
                     model.pActivity = pActivity
                     model.type = pActivity.pActivityFormName
@@ -289,6 +290,7 @@ class BioActivityController {
                 String projectId = model.projectId = pActivity.projectId
                 Map project = projectService.get(projectId, "brief", params?.version)
                 if (!project.error) {
+                    model.isPWA = true
                     model.project = project
                     model.pActivity = pActivity
                     model.type = pActivity.pActivityFormName
@@ -403,9 +405,6 @@ class BioActivityController {
         render view: 'pwaBioActivityIndex', model: model
     }
 
-    def pwaOfflineList() {
-    }
-
     def pwa () {
     }
 
@@ -413,6 +412,9 @@ class BioActivityController {
     }
 
     def pwaSettings () {
+    }
+
+    def pwaSync () {
     }
 
     /**
@@ -1027,6 +1029,7 @@ class BioActivityController {
         render result as JSON
     }
 
+    @PreAuthorise(accessLevel = "loggedInUser")
     def downloadProjectData() {
         response.setContentType("application/zip")
         response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')

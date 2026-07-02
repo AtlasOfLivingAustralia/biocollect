@@ -52,8 +52,8 @@ const config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'trace',
-    outputDir: path.resolve(__dirname, 'logs'),
+    logLevel: 'info',
+    //outputDir: path.resolve(__dirname, 'logs'),
     //
     // Set specific log levels per logger
     // loggers:
@@ -65,10 +65,10 @@ const config = {
     // - @wdio/cli, @wdio/config, @wdio/sync, @wdio/utils
     // Level of logging verbosity: trace | debug | info | warn | error | silent
     logLevels: {
-        webdriver: 'trace',
-        '@wdio/devtools-service': 'trace',
-        '@wdio/jasmine-framework': 'trace',
-        '@wdio/local-runner': 'trace'
+        webdriver: 'warn',
+        '@wdio/devtools-service': 'warn',
+        '@wdio/jasmine-framework': 'info',
+        '@wdio/local-runner': 'info'
     },
     //
     // If you only want to run your tests until a specific amount of tests have failed use
