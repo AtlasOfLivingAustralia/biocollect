@@ -5,7 +5,7 @@
             <ul id="ul-cs-internal-project-admin" class="nav flex-row flex-lg-column nav-pills nav-fill">
                 <li class="nav-item text-start"><a class="nav-link active" href="#project-settings" id="project-settings-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.information"/></a></li>
                 <li class="nav-item text-start"><a class="nav-link" href="#editProjectBlog" id="editProjectBlog-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.blog"/></a></li>
-                <li class="nav-item text-start"><a class="nav-link" href="#edit-documents" id="edit-documents-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</a></li>
+                <li class="nav-item text-start"><a class="nav-link" href="#edit-documents" id="edit-documents-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</a></li>
 
                 <g:if test="${!project.isExternal}">
                     <li class="nav-item text-start"><a class="nav-link" href="#project-activity" id="project-activity-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.settings"/></a></li>
@@ -18,8 +18,8 @@
                 </g:if>
 
                 <li class="nav-item text-start"><a class="nav-link" href="#permissions" id="permissions-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.members"/></a></li>
-                <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
-                    <g:if test="${grailsApplication.config.notification.enabled?.toBoolean()}">
+                <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole')) || fc.userInRole(role: grailsApplication.config.getProperty('security.cas.adminRole')) || user.isAdmin}">
+                    <g:if test="${grailsApplication.config.getProperty('notification.enabled')?.toBoolean()}">
                     <li class="nav-item text-start"><a class="nav-link" href="#project-notification" id="project-notification-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="notification.tabTitle"/></a></li>
                     </g:if>
                     <li class="nav-item text-start"><a class="nav-link" href="#project-audit" id="project-audit-tab" data-bs-toggle="tab"><i class="fas fa-chevron-right"></i> <g:message code="project.admin.audit"/></a></li>
@@ -40,7 +40,7 @@
 
                 <!-- DOCUMENTS -->
                 <div id="edit-documents" class="tab-pane" role="tabpanel">
-                    <h4 class="mt-3 mt-lg-0">Project ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
+                    <h4 class="mt-3 mt-lg-0">Project ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h4>
                     <div class="row">
                         <div class="col-12">
                             <g:render template="/shared/editDocuments"
@@ -76,11 +76,11 @@
                 </div>
 
                 <!--AUDIT-->
-                <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
+                <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole')) || fc.userInRole(role: grailsApplication.config.getProperty('security.cas.adminRole')) || user.isAdmin}">
                     <div id="project-audit" class="tab-pane" role="tabpanel">
                         <g:render template="/admin/auditProject"/>
                     </div>
-                    <g:if test="${grailsApplication.config.notification.enabled?.toBoolean()}">
+                    <g:if test="${grailsApplication.config.getProperty('notification.enabled')?.toBoolean()}">
                     <div id="project-notification" class="tab-pane" role="tabpanel">
                         <g:render template="/project/notification"/>
                     </div>

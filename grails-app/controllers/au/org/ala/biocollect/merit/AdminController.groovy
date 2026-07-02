@@ -178,7 +178,7 @@ class AdminController {
     def reloadConfig = {
         // reload system config
         def resolver = new PathMatchingResourcePatternResolver()
-        def resource = resolver.getResource(grailsApplication.config.reloadable.cfgs[0])
+        def resource = resolver.getResource(grailsApplication.config.getProperty('reloadable.cfgs', List)?.getAt(0))
         if (!resource) {
             def warning = "No external config to reload. grailsApplication.config.grails.config.locations is empty."
             println warning
@@ -218,7 +218,7 @@ class AdminController {
                 render res + "</ul>"
             }
             catch (FileNotFoundException fnf) {
-                def error = "No external config to reload configuration. Looking for ${grailsApplication.config.grails.config.locations[0]}"
+                def error = "No external config to reload configuration. Looking for ${grailsApplication.config.getProperty('grails.config.locations', List)?.getAt(0)}"
                 log.error error
                 flash.message = error
                 render error
@@ -516,7 +516,7 @@ class AdminController {
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def syncSpeciesWithBie(){
         //It's a async task..
-        webService.get("${grailsApplication.config.ecodata.service.url}/admin/initiateSpeciesRematch")
+        webService.get("${grailsApplication.config.getProperty('ecodata.service.url')}/admin/initiateSpeciesRematch")
         render text: [message:'Species rematch initiated.'] as JSON, contentType: 'application/json'
     }
 

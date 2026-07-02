@@ -12,7 +12,7 @@
     <asset:script type="text/javascript">
         var fcConfig = {
         <g:applyCodec encodeAs="none">
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
+            serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
             organisationSaveUrl: "${createLink(action: 'ajaxUpdate')}",
             organisationViewUrl: "${createLink(action: 'index')}",
             documentUpdateUrl: "${createLink(controller: "proxy", action: "documentUpdate")}",

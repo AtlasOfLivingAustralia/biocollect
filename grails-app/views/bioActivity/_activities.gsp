@@ -87,7 +87,7 @@
                         <g:if test="${user}">
                             <div id="download-data"
                                  class="mt-2 d-flex flex-column align-items-end"
-                                 data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
+                                 data-email-threshold="${grailsApplication.config.getProperty('download.email.threshold') ?: 200}">
 
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary" data-bind="click: download">

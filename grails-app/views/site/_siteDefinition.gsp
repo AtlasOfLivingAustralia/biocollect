@@ -268,7 +268,7 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
         regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: '${grailsApplication.config.spatial.geoserverUrl}',
+        spatialWms: '${grailsApplication.config.getProperty('spatial.geoserverUrl')}',
         allowPointsOfInterest: allowPointsOfInterest,
         readonly: edit? true : false,
         useMyLocation: ${showMyLocation ?: false},

@@ -33,21 +33,21 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        baseUrl: "${grailsApplication.config.grails.serverURL}",
+        baseUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
         regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
-        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
+        geocodeUrl: "${grailsApplication.config.getProperty('google.geocode.url')}",
         siteMetaDataUrl: "${createLink(controller: 'site', action: 'locationMetadataForPoint')}",
-        spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-        spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-        spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
-        sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-        sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+        spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+        spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+        spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
+        sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+        sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         hubDefaultSortBy : "${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultSort}",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.getProperty('defaultSearchRadiusMetersForPoint') ?: "100"}",
         imageLocation:"${asset.assetPath(src: '')}",
         logoLocation:"${asset.assetPath(src: 'filetypes')}",
         projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect']))}",
@@ -56,10 +56,10 @@
         isCitizenScience: true,
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src: 'merit_project_logo.jpg')}",
-        flimit: ${grailsApplication.config.facets.flimit},
+        flimit: ${grailsApplication.config.getProperty('facets.flimit')},
         noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         sciStarterImageUrl: '${asset.assetPath(src: 'robot.png')}',
-        paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
+        paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}',
         enablePartialSearch: ${hubConfig.content.enablePartialSearch ?: false},
         downloadWorksProjectsUrl: "${createLink(controller: 'project', action: 'downloadWorksProjects')}",
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
@@ -95,8 +95,8 @@
         </g:applyCodec>
         dashboardUrl: "${createLink(controller: 'report', action: 'dashboardReport', params: params)}"
         }
-        <g:if test="${grailsApplication.config.merit.projectLogo}">
-            fcConfig.meritProjectLogo = fcConfig.imageLocation + "${raw(grailsApplication.config.merit.projectLogo)}";
+        <g:if test="${grailsApplication.config.getProperty('merit.projectLogo')}">
+            fcConfig.meritProjectLogo = fcConfig.imageLocation + "${raw(grailsApplication.config.getProperty('merit.projectLogo'))}";
         </g:if>
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>
@@ -105,7 +105,7 @@
     <asset:javascript src="project-activity-manifest.js"/>
     <asset:javascript src="projects-manifest.js"/>
     <asset:javascript src="project-finder.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 
 <body>

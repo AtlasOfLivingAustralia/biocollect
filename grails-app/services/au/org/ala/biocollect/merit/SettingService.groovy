@@ -62,7 +62,7 @@ class SettingService {
 
     def initService () {
 //        temp directory to copy files
-        String targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}"
+        String targetDir = "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
         File target = new File(targetDir)
         // clean styles created previously
         FileUtils.deleteDirectory(target)
@@ -72,13 +72,13 @@ class SettingService {
 
         switch (Environment.current) {
             case Environment.PRODUCTION:
-                sourceDir = "/data/${grailsApplication.config.bootstrap5.copyFromDir}"
-                targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}"
+                sourceDir = "/data/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
+                targetDir = "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
                 break
             case Environment.TEST:
             case Environment.DEVELOPMENT:
-                sourceDir = "/data/${grailsApplication.config.bootstrap5.copyFromDir}"
-                targetDir = "${grailsApplication.config.temp.dir}"
+                sourceDir = "/data/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
+                targetDir = "${grailsApplication.config.getProperty('temp.dir')}"
                 break
         }
 
@@ -89,11 +89,11 @@ class SettingService {
         au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
 
         // resolve bootstrap 4 scss file from temp directory.
-        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}", true)
+        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}", true)
         AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolver)
 
         // resolve bootstrap 4 scss file from temp directory.
-        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}/scss", true)
+        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}/scss", true)
         AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolverChild)
 
         switch (Environment.current) {
@@ -142,7 +142,7 @@ class SettingService {
             settings = new HubSettings(
                     title:'Default',
                     skin:'bs5',
-                    urlPath:grailsApplication.config.app.default.hub?:'default',
+                    urlPath:grailsApplication.config.getProperty('app.default.hub')?:'default',
                     availableFacets: ['isExternal','status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','mainThemeFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','otherFacet', 'gerSubRegionFacet','electFacet'],
                     adminFacets: ['electFacet'],
                     availableMapFacets: ['status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','electFacet']
@@ -194,7 +194,7 @@ class SettingService {
     }
 
     private def get(key) {
-        String url = grailsApplication.config.ecodata.service.url + "/setting/ajaxGetSettingTextForKey?key=${key}"
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + "/setting/ajaxGetSettingTextForKey?key=${key}"
         def res = cacheService.get(key,{ webService.getJson(url) })
         return res?.settingText?:""
     }
@@ -208,7 +208,7 @@ class SettingService {
 
     private def set(key, settings) {
         cacheService.clear(key)
-        String url = grailsApplication.config.ecodata.service.url + "/setting/ajaxSetSettingText/${key}"
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + "/setting/ajaxSetSettingText/${key}"
         webService.doPost(url, [settingText: settings, key: key])
     }
 
@@ -245,7 +245,7 @@ class SettingService {
     HubSettings getHubSettings(String urlPath) {
 
         cacheService.get(hubCacheKey(urlPath), {
-            String url = grailsApplication.config.ecodata.service.url + '/hub/findByUrlPath/' + urlPath
+            String url = grailsApplication.config.getProperty('ecodata.service.url') + '/hub/findByUrlPath/' + urlPath
             Map json = webService.getJson(url)
             json.hubId ? new HubSettings(new HashMap(json)) : null
         })
@@ -255,20 +255,20 @@ class SettingService {
         cacheService.clear(HUB_LIST_CACHE_KEY)
         cacheService.clear(hubCacheKey(settings.urlPath))
 
-        String url = grailsApplication.config.ecodata.service.url+'/hub/'+(settings.hubId?:'')
+        String url = grailsApplication.config.getProperty('ecodata.service.url')+'/hub/'+(settings.hubId?:'')
         webService.doPost(url, settings)
     }
 
     List listHubs() {
         cacheService.get(HUB_LIST_CACHE_KEY, {
-            String url = grailsApplication.config.ecodata.service.url+'/hub/'
+            String url = grailsApplication.config.getProperty('ecodata.service.url')+'/hub/'
             Map resp = webService.getJson(url, null, false)
             resp.list ?: []
         })
     }
 
     List listPWAHubs() {
-        String url = grailsApplication.config.ecodata.service.url+'/hub/findPWAHubs'
+        String url = grailsApplication.config.getProperty('ecodata.service.url')+'/hub/findPWAHubs'
         Map resp = webService.getJson(url, null, false)
 
         resp.list ?: []
@@ -327,9 +327,9 @@ class SettingService {
     }
 
     Map generateStyleSheetForHub(HubSettings hub) {
-        String scssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${grailsApplication.config.bootstrap5.themeExtension}"
-        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap5.themeDirectory}${File.separator}${scssFileName}"
-        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap5.themeDirectory}"
+        String scssFileName = "${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${grailsApplication.config.getProperty('bootstrap5.themeExtension')}"
+        String scssFileURI = "${grailsApplication.config.getProperty('temp.dir')}${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}${File.separator}${scssFileName}"
+        String themeDir = "${grailsApplication.config.getProperty('temp.dir')}${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}"
         SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileURI )
         String output
 
@@ -339,8 +339,8 @@ class SettingService {
             Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
             String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss"
 
-            String cssFileURI = "${grailsApplication.config.bootstrap5.themeDirectory}${File.separator}${grailsApplication.config.bootstrap5.themeFileName}.${urlPath}.${lastUpdated}"
-            String cssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${urlPath}.${lastUpdated}.css"
+            String cssFileURI = "${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}${File.separator}${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${urlPath}.${lastUpdated}"
+            String cssFileName = "${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${urlPath}.${lastUpdated}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()){
@@ -393,7 +393,7 @@ class SettingService {
                 }
             }
         } else {
-            String cssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${hub.urlPath}.css"
+            String cssFileName = "${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${hub.urlPath}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()) {

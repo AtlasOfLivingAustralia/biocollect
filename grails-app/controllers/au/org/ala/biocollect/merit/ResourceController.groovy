@@ -56,7 +56,7 @@ class ResourceController {
 
         try {
             HttpClientContext context = HttpClientContext.create()
-            URIBuilder builder = new URIBuilder("${grailsApplication.config.pdfgen.baseURL}")
+            URIBuilder builder = new URIBuilder("${grailsApplication.config.getProperty('pdfgen.baseURL')}")
             builder.setPath("api/pdf").setParameter('docUrl', docUrl)
             URI uri = builder.build();
             HttpGet httpGet = new HttpGet(uri)

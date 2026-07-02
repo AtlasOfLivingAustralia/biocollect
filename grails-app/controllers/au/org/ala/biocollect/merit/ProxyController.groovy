@@ -27,7 +27,7 @@ class ProxyController {
     }
 
     def geojsonFromPid(String pid) {
-        def shpUrl = "${grailsApplication.config.spatial.layersUrl}/shape/geojson/${pid}"
+        def shpUrl = "${grailsApplication.config.getProperty('spatial.layersUrl')}/shape/geojson/${pid}"
         log.debug "requesting pid ${pid} URL: ${shpUrl}"
         def resp = webService.get(shpUrl, false)
         //log.debug resp
@@ -55,15 +55,15 @@ class ProxyController {
     }
 
     def intersect(){
-        render webService.get("${grailsApplication.config.spatial.layersUrl}/intersect/${params.layerId}/${params.lat}/${params.lng}", false)
+        render webService.get("${grailsApplication.config.getProperty('spatial.layersUrl')}/intersect/${params.layerId}/${params.lat}/${params.lng}", false)
     }
 
     def features(){
-        render webService.get("${grailsApplication.config.spatial.layersUrl}/objects/${params.layerId}", false)
+        render webService.get("${grailsApplication.config.getProperty('spatial.layersUrl')}/objects/${params.layerId}", false)
     }
 
     def feature(){
-        render webService.get("${grailsApplication.config.spatial.layersUrl}/object/${params.featureId}", false)
+        render webService.get("${grailsApplication.config.getProperty('spatial.layersUrl')}/object/${params.featureId}", false)
     }
 
     def speciesProfile(String id) {
@@ -98,13 +98,13 @@ class ProxyController {
     @SSO
     def documentUpdate(String id) {
 
-        def url = grailsApplication.config.ecodata.service.url + "/document" + (id ? "/" + id : '')
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/document" + (id ? "/" + id : '')
         if (request.respondsTo('getFile')) {
             def f = request.getFile('files')
             def originalFilename = f.getOriginalFilename()
             if(originalFilename){
                 def extension = FilenameUtils.getExtension(originalFilename)?.toLowerCase()
-                if (extension && !grailsApplication.config.upload.extensions.blacklist.contains(extension)){
+                if (extension && !grailsApplication.config.getProperty('upload.extensions.blacklist', List, []).contains(extension)){
                     def result =  webService.postMultipart(url, [document:params.document], f).content as JSON
                     // iframe submit no longer supported.
                     response.setContentType('application/json')
@@ -144,7 +144,7 @@ class ProxyController {
     @SSO
     def deleteDocument(String id) {
         println 'deleting doc with id:'+id
-        def url = grailsApplication.config.ecodata.service.url + "/document/" + id
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/document/" + id
         def responseCode = webService.doDelete(url)
         render status: responseCode
     }
@@ -153,7 +153,7 @@ class ProxyController {
      * Returns an excel template that can be used to populate a table of data in an output form.
      */
     def excelOutputTemplate() {
-        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelOutputTemplate"
+        String url =  "${grailsApplication.config.getProperty('ecodata.service.url')}/metadata/excelOutputTemplate"
         String expandList = params.expandList?:""
         String listName = params.listName?:null
         String includeDataPathHeader = params.includeDataPathHeader ?: false
@@ -178,7 +178,7 @@ class ProxyController {
      */
     def excelBulkActivityTemplate() {
 
-        String url =  "${grailsApplication.config.ecodata.service.url}/metadata/excelBulkActivityTemplate"
+        String url =  "${grailsApplication.config.getProperty('ecodata.service.url')}/metadata/excelBulkActivityTemplate"
 
         ecpWebService.proxyPostRequest(response, url, params)
         return null
@@ -186,7 +186,7 @@ class ProxyController {
 
     /** Proxies the ALA image service as the development server doesn't support SSL. */
     def getImageInfo(String id) {
-        def detailsUrl = "${grailsApplication.config.images.baseURL}/ws/getImageInfo?id=${id}"
+        def detailsUrl = "${grailsApplication.config.getProperty('images.baseURL')}/ws/getImageInfo?id=${id}"
         def result = webService.getJson(detailsUrl) as JSON
 
         if (params.callback) {

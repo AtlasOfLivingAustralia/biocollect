@@ -21,7 +21,7 @@
     <asset:script type="text/javascript">
     var fcConfig = {
         <g:applyCodec encodeAs="none">
-        serverUrl: "${grailsApplication.config.grails.serverURL}",
+        serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
@@ -40,7 +40,7 @@
         // a hack to not add action name after activity - /activity
         activityJsonUrl: "${createLink(controller: 'activity', action: ' ')}",
         activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
-        speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+        speciesPage: "${grailsApplication.config.getProperty('bie.baseURL')}/species/",
         searchProjectActivitiesUrl: "${raw(createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId]))}",
         downloadProjectDataUrl: "${raw(createLink(controller: 'bioActivity', action: 'downloadProjectData',params: [projectId:project.projectId]))}",
         getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping'))}",
@@ -51,16 +51,16 @@
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",
         projectMembersUrl: "${createLink(controller: 'project', action: 'getMembersForProjectId')}",
-        spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-        spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-        spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
+        spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+        spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+        spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-        sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+        sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+        sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         projectActivityCreateUrl: "${raw(createLink(controller: 'projectActivity', action: 'ajaxCreate', params: [projectId:project.projectId]))}",
         projectActivityUpdateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxUpdate')}",
@@ -72,8 +72,8 @@
         speciesListsServerUrl: "${speciesListServerURL}",
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
-        bieUrl: "${grailsApplication.config.bie.baseURL}",
-        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
+        bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+        bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
         documentDownloadUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch', params: [format: 'zip'])}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
@@ -118,14 +118,14 @@
         project: <fc:modelAsJavascript model="${project?: [:]}" />,
         commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
-        defaultSpeciesConfiguration: <fc:modelAsJavascript model="${grailsApplication.config.speciesConfiguration.default}"/>,
+        defaultSpeciesConfiguration: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('speciesConfiguration.default', Map)}"/>,
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}"/>,
-        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}"/>,
+        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.baseLayers', List)}"/>,
+        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.overlays', List)}"/>,
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
         sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}",
         pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
@@ -150,7 +150,7 @@
 %{--            }--}%
 %{--        </style>--}%
 %{--    <![endif]-->--}%
-    <script src="${grailsApplication.config.google.maps.url}"></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}"></script>
     <asset:stylesheet src="projects-manifest.css"/>
     <asset:stylesheet src="project-index-manifest.css"/>
     <asset:javascript src="common-bs5.js"/>
@@ -233,14 +233,14 @@
                         highlightOnHover:true,
                         features:[],
                         featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                        wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+                        wmsServer: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}"
                     };
 
                     map = init_map_with_features({
                             mapContainer: "map",
                             scrollwheel: false,
                             featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                            wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+                            wmsServer: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}"
                         },
                         mapOptions
                     );

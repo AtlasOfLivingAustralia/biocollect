@@ -21,7 +21,7 @@ class AdminService {
      * Triggers a full site re-index.
      */
     def reIndexAll() {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/admin/reIndexAll', 50000)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/admin/reIndexAll', 50000)
     }
 
     static outputDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ")
@@ -36,7 +36,7 @@ class AdminService {
 
         if (!photoPoints) {
             def outputs = outputService.list();
-            def url = "${grailsApplication.config.ecodata.service.url}document"
+            def url = "${grailsApplication.config.getProperty('ecodata.service.url')}document"
 
             photoPoints = outputs.findAll{it.name == 'Photo Points'}
         }
@@ -75,7 +75,7 @@ class AdminService {
                                     photoPoint.photo?.each { photo ->
                                         String filename = photo.name
                                         if (filename == null || filename  == 'null' && photo.id) {
-                                            def imageDetailsUrl = "${grailsApplication.config.images.baseURL}ws/getImageInfo?id=${photo.id}"
+                                            def imageDetailsUrl = "${grailsApplication.config.getProperty('images.baseURL')}ws/getImageInfo?id=${photo.id}"
                                             def result = webService.getJson(imageDetailsUrl)
                                             if (result.originalFileName) {
                                                 filename = result.originalFileName
@@ -194,7 +194,7 @@ class AdminService {
 
 
     def syncCollectoryOrgs() {
-        def url = "${grailsApplication.config.ecodata.service.url}admin/syncCollectoryOrgs"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}admin/syncCollectoryOrgs"
         webService.doPost(url, [:])
     }
 }

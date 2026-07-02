@@ -465,9 +465,9 @@ class BioActivityController {
     }
 
     def mobileCreate(String id) {
-        if(grailsApplication.config.app.mobile.hub) {
-            settingService.loadHubConfig(grailsApplication.config.app.mobile.hub)
-            params.hub = grailsApplication.config.app.mobile.hub
+        if(grailsApplication.config.getProperty('app.mobile.hub')) {
+            settingService.loadHubConfig(grailsApplication.config.getProperty('app.mobile.hub'))
+            params.hub = grailsApplication.config.getProperty('app.mobile.hub')
         }
 
         addXFrameOptionsHeader()
@@ -479,9 +479,9 @@ class BioActivityController {
     }
 
     def mobileEdit(String id) {
-        if(grailsApplication.config.app.mobile.hub) {
-            settingService.loadHubConfig(grailsApplication.config.app.mobile.hub)
-            params.hub = grailsApplication.config.app.mobile.hub
+        if(grailsApplication.config.getProperty('app.mobile.hub')) {
+            settingService.loadHubConfig(grailsApplication.config.getProperty('app.mobile.hub'))
+            params.hub = grailsApplication.config.getProperty('app.mobile.hub')
         }
 
         addXFrameOptionsHeader()
@@ -528,7 +528,7 @@ class BioActivityController {
         String projectId = pActivity?.projectId
         String type = pActivity?.pActivityFormName
         if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.getProperty('biocollect.support.email.address')}"
             if (!mobile) {
                 flash.message = model.error
                 redirect(controller: 'project', action: 'index', id: projectId)
@@ -580,7 +580,7 @@ class BioActivityController {
             result.message = "Access denied: This survey is closed."
         }
         else if (!pActivity.publicAccess && !projectService.canUserEditProject(userId, projectId, false)) {
-            result.message = "Access denied: Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            result.message = "Access denied: Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.getProperty('biocollect.support.email.address')}"
         }
         else if (projectService.canUserEditProject(userId, projectId, false) ||
                 (pActivity.publicAccess && userId)) {
@@ -623,7 +623,7 @@ class BioActivityController {
         def model = [:]
 
         if (!userId) {
-            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            model.error = "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.getProperty('biocollect.support.email.address')}"
             if(!mobile){
                 flash.message = model.error
                 redirect(controller: 'project', action: 'index', id: projectId)
@@ -1647,7 +1647,7 @@ class BioActivityController {
     }
 
     def uploadFile() {
-        String stagingDirPath = grailsApplication.config.upload.path
+        String stagingDirPath = grailsApplication.config.getProperty('upload.path')
         Map result = [:]
         if (request.respondsTo('getFile')) {
             MultipartFile multipartFile = request.getFile('files')
@@ -1666,7 +1666,7 @@ class BioActivityController {
                         name       : filename,
                         size       : multipartFile.size,
                         contentType: multipartFile.contentType,
-                        url        : FileUtils.encodeUrl(grailsApplication.config.grails.serverURL + "/download/file?filename=", filename),
+                        url        : FileUtils.encodeUrl(grailsApplication.config.getProperty('grails.serverURL') + "/download/file?filename=", filename),
                         attribution: '',
                         notes      : '',
                         status     : "active"
@@ -2190,8 +2190,8 @@ class BioActivityController {
      */
     private addDefaultSpecies (Map activity) {
         if (params.taxonId) {
-            String speciesModelName = grailsApplication.config.individualSightings.dataTypeName
-            String outputName = grailsApplication.config.individualSightings.outputName
+            String speciesModelName = grailsApplication.config.getProperty('individualSightings.dataTypeName')
+            String outputName = grailsApplication.config.getProperty('individualSightings.outputName')
             String speciesDisplayFormat
             Map species = [:]
             Map result = speciesService.getSpeciesDetailsForTaxonId(params.taxonId, false);
@@ -2240,8 +2240,8 @@ class BioActivityController {
      */
     public spotter(){
         if(params.spotterId){
-            String pActivity = grailsApplication.config.individualSightings.pActivity,
-                   hub = grailsApplication.config.individualSightings.hub;
+            String pActivity = grailsApplication.config.getProperty('individualSightings.pActivity'),
+                   hub = grailsApplication.config.getProperty('individualSightings.hub');
 
             params.projectActivityId = pActivity
             params.hub = hub
@@ -2258,7 +2258,7 @@ class BioActivityController {
     }
 
     def getDataColumns () {
-        List columns = grailsApplication.config.datapage.allColumns
+        List columns = grailsApplication.config.getProperty('datapage.allColumns', List)
         columns += activityService.getDynamicIndexNamesAsColumnConfig()
         render text: [columns: columns] as JSON, contentType: 'application/json'
     }

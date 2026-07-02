@@ -25,7 +25,7 @@ class SiteService {
     SiteService siteService
     WebService webService
     def list() {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/site/').list
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/site/').list
     }
 
     /**
@@ -96,13 +96,13 @@ class SiteService {
         if (!siteId) {
             throw new IllegalArgumentException("The siteId parameter cannot be null")
         }
-        def url = "${grailsApplication.config.ecodata.service.url}/site/${siteId}/poi"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/site/${siteId}/poi"
         webService.doPost(url, poi)
     }
 
     def get(id, Map urlParams = [:], String format = '') {
         if (!id) return null
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/site/' + id + format +
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/site/' + id + format +
                 commonService.buildUrlParamsFromMap(urlParams))
     }
 
@@ -142,25 +142,25 @@ class SiteService {
     }
 
     def create(body) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/site/', body)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/site/', body)
     }
 
     def update(id, body) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/site/' + id, body)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/site/' + id, body)
     }
 
     def updateProjectAssociations(body) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/project/updateSites/' + body.projectId, body)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/project/updateSites/' + body.projectId, body)
     }
 
     def addProjectToSite(String siteId, String projectId) {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/site/' + siteId + '?projectId=' + projectId)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/site/' + siteId + '?projectId=' + projectId)
     }
 
     /** uploads a shapefile to the spatial portal */
     def uploadShapefile(shapefile) {
         def userId = userService.getUser().userId
-        def url = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp?user_id=${userId}"
+        def url = "${grailsApplication.config.getProperty('spatial.layersUrl')}/shape/upload/shp?user_id=${userId}"
 
         return webService.postMultipart(url, [:], shapefile, 'files')
     }
@@ -176,7 +176,7 @@ class SiteService {
      * @return error message
      */
     String createSiteFromUploadedShapefile(shapeFileId, siteId, externalId, name, description, projectId, forceAddToWhiteList) {
-        def baseUrl = "${grailsApplication.config.spatial.layersUrl}/shape/upload/shp"
+        def baseUrl = "${grailsApplication.config.getProperty('spatial.layersUrl')}/shape/upload/shp"
         def userId = userService.getUser().userId
 
         def site = [name:name, description: description, user_id:userId]
@@ -227,7 +227,7 @@ class SiteService {
      */
     def createSitesFromKml(kml, projectId) {
 
-        def url = "${grailsApplication.config.spatial.layersUrl}/shape/upload/wkt"
+        def url = "${grailsApplication.config.getProperty('spatial.layersUrl')}/shape/upload/wkt"
         def userId = userService.getUser().userId
 
         Parser parser = new Parser(new KMLConfiguration())
@@ -277,7 +277,7 @@ class SiteService {
     /** Returns the centroid (as a Point) of a site in the spatial portal */
     def calculateSiteCentroid(spatialPortalSiteId) {
 
-        def getWktUrl = "${grailsApplication.config.spatial.baseURL}/ws/shape/wkt"
+        def getWktUrl = "${grailsApplication.config.getProperty('spatial.baseURL')}/ws/shape/wkt"
         def wkt = webService.get("${getWktUrl}/${spatialPortalSiteId}")
         Geometry geom = new WKTReader().read(wkt)
         return geom?.getCentroid()
@@ -292,11 +292,11 @@ class SiteService {
     }
 
     def delete(id) {
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/site/' + id)
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/site/' + id)
     }
 
     def deleteSitesFromProject(projectId) {
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/project/deleteSites/' + projectId)
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/project/deleteSites/' + projectId)
     }
 
     /**
@@ -330,7 +330,7 @@ class SiteService {
      * Get images for a list of sites. Number of images returned can be limited by max and offset parameters.
      */
     List getImages(GrailsParameterMap params) throws SocketTimeoutException, Exception {
-        String url = grailsApplication.config.ecodata.service.url + '/site/getImages';
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + '/site/getImages';
         Map response = webService.doGet(url, params);
         if (response.resp) {
             return response.resp;
@@ -348,7 +348,7 @@ class SiteService {
      * Get images for a point of interest id. Number of images returned can be limited by max and offset parameters.
      */
     Map getPoiImages(GrailsParameterMap params) throws SocketTimeoutException, Exception {
-        String url = grailsApplication.config.ecodata.service.url + '/site/getPoiImages';
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + '/site/getPoiImages';
         Map response = webService.doGet(url, params);
         if (response.resp) {
             return response.resp;
@@ -595,7 +595,7 @@ class SiteService {
 
     Boolean isSiteNameUnique(String id, String entityType, String name) {
 
-        def response = webService.getJson(grailsApplication.config.ecodata.service.url + "/site/uniqueName/${enc(id)}?name=${enc(name)}&entityType=${enc(entityType)}")
+        def response = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + "/site/uniqueName/${enc(id)}?name=${enc(name)}&entityType=${enc(entityType)}")
         // convert an exception to a string and back again...
         if (response.error) {
             if (response.error.contains('Timed out')) {
@@ -762,8 +762,8 @@ class SiteService {
     }
 
     Map getLocationMetadataForPoint(String lat, String lng) {
-        if (grailsApplication.config.google.api.key) {
-            def localityUrl = grailsApplication.config.google.geocode.url + "${lat},${lng}&key=${grailsApplication.config.google.maps.apiKey}"
+        if (grailsApplication.config.getProperty('google.api.key')) {
+            def localityUrl = grailsApplication.config.getProperty('google.geocode.url') + "${lat},${lng}&key=${grailsApplication.config.getProperty('google.maps.apiKey')}"
             def result = webService.getJson(localityUrl)
             if (!result?.error) {
                 return result.results ? result.results[0] : null

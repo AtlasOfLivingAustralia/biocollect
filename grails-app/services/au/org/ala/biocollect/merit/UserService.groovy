@@ -19,7 +19,7 @@ class UserService {
     /*@PostConstruct
     private void init() {
         try {
-            auditBaseUrl = grailsApplication.config.ecodata.service.url + '/audit'
+            auditBaseUrl = grailsApplication.config.getProperty('ecodata.service.url') + '/audit'
         } catch (e) {
             log.debug("This configuration property does not get initialized in test environment", e.toString())
         }
@@ -65,19 +65,19 @@ class UserService {
     }
 
     def userIsSiteAdmin() {
-        userInRole(grailsApplication.config.security.cas.officerRole) || userInRole(grailsApplication.config.security.cas.adminRole) || userInRole(grailsApplication.config.security.cas.alaAdminRole)
+        userInRole(grailsApplication.config.getProperty('security.cas.officerRole')) || userInRole(grailsApplication.config.getProperty('security.cas.adminRole')) || userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole'))
     }
 
     Boolean  userIsAlaAdmin() {
-        userInRole(grailsApplication.config.security.cas.alaAdminRole)
+        userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole'))
     }
 
     def userIsAlaOrFcAdmin() {
-        userInRole(grailsApplication.config.security.cas.adminRole) || userInRole(grailsApplication.config.security.cas.alaAdminRole)
+        userInRole(grailsApplication.config.getProperty('security.cas.adminRole')) || userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole'))
     }
 
     def userHasReadOnlyAccess() {
-        userInRole(grailsApplication.config.security.cas.readOnlyOfficerRole)
+        userInRole(grailsApplication.config.getProperty('security.cas.readOnlyOfficerRole'))
     }
 
     def getRecentEditsForUserId(userId) {
@@ -86,131 +86,131 @@ class UserService {
     }
 
     def getProjectsForUserId(userId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getProjectsForUserId/${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getProjectsForUserId/${userId}"
         webService.getJson(url)
     }
 
     def getOrganisationIdsForUserId(userId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getOrganisationIdsForUserId/${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getOrganisationIdsForUserId/${userId}"
         webService.getJson(url)
     }
 
     def getOrganisationsForUserId(userId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getOrganisationsForUserId/${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getOrganisationsForUserId/${userId}"
         webService.getJson(url)
     }
 
     def getStarredProjectsForUserId(userId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getStarredProjectsForUserId/${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getStarredProjectsForUserId/${userId}"
         webService.getJson(url)
     }
 
     def getStarredSiteIdsForUserId(String userId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getStarredSiteIdsForUserId/${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getStarredSiteIdsForUserId/${userId}"
         webService.getJson(url)
     }
 
 
 
     def isProjectStarredByUser(String userId, String projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isProjectStarredByUser?userId=${userId}&projectId=${projectId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isProjectStarredByUser?userId=${userId}&projectId=${projectId}"
         webService.getJson(url)
     }
 
     def addStarProjectForUser(String userId, String projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/addStarProjectForUser?userId=${userId}&projectId=${projectId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/addStarProjectForUser?userId=${userId}&projectId=${projectId}"
         webService.getJson(url)
     }
 
     def removeStarProjectForUser(String userId, String projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/removeStarProjectForUser?userId=${userId}&projectId=${projectId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/removeStarProjectForUser?userId=${userId}&projectId=${projectId}"
         webService.getJson(url)
     }
 
     Map isUserInRoleForProject(String userId, String projectId, String role) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserInRoleForProject?userId=${userId}&projectId=${projectId}&role=${role}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserInRoleForProject?userId=${userId}&projectId=${projectId}&role=${role}"
         webService.getJson(url)
     }
 
     def addStarSiteForUser(String userId, String siteId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/addStarSiteForUser"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/addStarSiteForUser"
         webService.doPostWithParams(url, [userId: userId, siteId: siteId])
     }
 
     def removeStarSiteForUser(String userId, String siteId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/removeStarSiteForUser"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/removeStarSiteForUser"
         webService.doPostWithParams(url, [userId: userId, siteId: siteId])
     }
 
     def isSiteStarredByUser(String userId, String siteId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isSiteStarredByUser?userId=${userId}&siteId=${siteId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isSiteStarredByUser?userId=${userId}&siteId=${siteId}"
         webService.getJson(url)
     }
 
     def addUserAsRoleToProject(String userId, String projectId, String role) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/addUserAsRoleToProject?userId=${userId}&projectId=${projectId}&role=${role}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/addUserAsRoleToProject?userId=${userId}&projectId=${projectId}&role=${role}"
         webService.getJson(url)
     }
 
     def removeUserWithRole(projectId, userId, role) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/removeUserWithRoleFromProject?projectId=${projectId}&userId=${userId}&role=${role}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/removeUserWithRoleFromProject?projectId=${projectId}&userId=${userId}&role=${role}"
         webService.getJson(url)
     }
 
     def addUserAsRoleToOrganisation(String userId, String organisationId, String role) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/addUserAsRoleToOrganisation?userId=${userId}&organisationId=${organisationId}&role=${role}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/addUserAsRoleToOrganisation?userId=${userId}&organisationId=${organisationId}&role=${role}"
         webService.getJson(url)
     }
 
     def removeUserWithRoleFromOrganisation(String userId, String organisationId, String role) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/removeUserWithRoleFromOrganisation?organisationId=${organisationId}&userId=${userId}&role=${role}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/removeUserWithRoleFromOrganisation?organisationId=${organisationId}&userId=${userId}&role=${role}"
         webService.getJson(url)
     }
 
     def isUserAdminForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserAdminForProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserAdminForProject?projectId=${projectId}&userId=${userId}"
         def results = webService.getJson(url)
         return results?.userIsAdmin
     }
 
     def isUserCaseManagerForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserCaseManagerForProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserCaseManagerForProject?projectId=${projectId}&userId=${userId}"
         def results = webService.getJson(url)
         return results?.userIsCaseManager
     }
 
     def isUserEditorForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserEditorForProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserEditorForProject?projectId=${projectId}&userId=${userId}"
         def results = webService.getJson(url)
         return results?.userIsEditor
     }
 
     def isUserEditorForProjects(userId, projectIds) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserEditorForProjects?projectIds=${projectIds}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserEditorForProjects?projectIds=${projectIds}&userId=${userId}"
         def results = webService.getJson(url)
         return results?.userIsEditor
     }
 
     def canUserEditProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/canUserEditProject?projectId=${projectId}&userId=${userId}"
         def results = webService.getJson(url)
         return results?.userIsEditor
     }
 
     Boolean canUserModerateForProjects(userId, projectIds) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserModerateProjects"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/canUserModerateProjects"
         def results = webService.doPostWithParams(url, [projectIds: projectIds, userId: userId])?.resp
         return results?.userCanModerate
     }
 
     def isUserAdminForOrganisation(userId, organisationId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserAdminForOrganisation?organisationId=${organisationId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserAdminForOrganisation?organisationId=${organisationId}&userId=${userId}"
         def results = webService.getJson(url)
         return results?.userIsAdmin
     }
 
     def isUserGrantManagerForOrganisation(userId, organisationId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserGrantManagerForOrganisation?organisationId=${organisationId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserGrantManagerForOrganisation?organisationId=${organisationId}&userId=${userId}"
         def results = webService.getJson(url)
         return results?.userIsGrantManager
     }

@@ -49,7 +49,7 @@ class HubController {
     }
 
     def defaultOverriddenLabels() {
-        render text: grailsApplication.config.content.defaultOverriddenLabels as JSON, contentType: 'application/json'
+        render text: grailsApplication.config.getProperty('content.defaultOverriddenLabels', List) as JSON, contentType: 'application/json'
     }
 
     def generateStylesheet(){

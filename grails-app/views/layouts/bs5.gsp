@@ -18,7 +18,7 @@
     </g:else>
     <link href="//fonts.googleapis.com/css?family=Lato:700,900|Roboto:400,400i,500" rel="stylesheet">
     <g:if test="${hubConfig.templateConfiguration?.header?.type == 'ala' || hubConfig.templateConfiguration?.footer?.type == 'ala'}">
-    <link rel="stylesheet" href="${grailsApplication.config.headerAndFooter.baseURL}/css/ala-theme.css"/>
+    <link rel="stylesheet" href="${grailsApplication.config.getProperty('headerAndFooter.baseURL')}/css/ala-theme.css"/>
     </g:if>
     <link href="${g.createLink(controller: 'hub', action: 'generateStylesheet')}?ver=${hubConfig.lastUpdated}" rel="stylesheet"/>
     <asset:stylesheet src="base-bs5.css"/>
@@ -72,7 +72,7 @@
                                         </g:each>
                                     </g:if>
                                     <g:else>
-                                        <g:each in="${grailsApplication.config.headerAndFooter?.header}" var="link">
+                                        <g:each in="${grailsApplication.config.getProperty('headerAndFooter.header', List)}" var="link">
                                             <config:getLinkFromConfig config="${link}"
                                                                       hubConfig="${hubConfig}" bs5="true"></config:getLinkFromConfig>
                                         </g:each>
@@ -226,7 +226,7 @@
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-            ga('create', '${grailsApplication.config.googleAnalyticsID}', 'auto');
+            ga('create', '${grailsApplication.config.getProperty('googleAnalyticsID')}', 'auto');
             ga('send', 'pageview');
         </script>
         <!-- End Google Analytics -->
@@ -237,7 +237,7 @@
 <asset:deferredScripts />
 <script>
     $(document).ready(function () {
-        var delay = ${grailsApplication.config.pingDuration};
+        var delay = ${grailsApplication.config.getProperty('pingDuration')};
         /**
          * Ping server every 5 minutes (default value)  to keep session active
          */

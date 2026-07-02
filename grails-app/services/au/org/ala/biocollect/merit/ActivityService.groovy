@@ -65,27 +65,27 @@ class ActivityService {
     }
 
     def list() {
-        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/')
+        def resp = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/')
         // inject constructed name
         resp.list.collect(constructName)
     }
 
     def assessments() {
-        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/assessment/')
+        def resp = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/assessment/')
         // inject constructed name
         resp.list.collect(constructName)
     }
 
     def getProjectActivityCount(id){
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/countByProjectActivity/'+ id)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/countByProjectActivity/'+ id)
     }
 
     def getSitesWithDataForProjectActivity(id){
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProjectActivity/'+ id)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/getDistinctSitesForProjectActivity/'+ id)
     }
 
     def getSitesWithDataForProject(id){
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDistinctSitesForProject/'+ id)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/getDistinctSitesForProject/'+ id)
     }
 
     def get(id, version = null, userId = null, hideMemberOnlyFlds = false, includeSiteData = false) {
@@ -100,28 +100,28 @@ class ActivityService {
             params += '&view=site'
         }
 
-        def activity = webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/' + id + params)
+        def activity = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/' + id + params)
         activity
     }
 
     def activitiesForUser(userId, query){
         def params = '?'+ query.collect { k,v -> "$k=$v" }.join('&')
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/listForUser/' + userId + params)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/listForUser/' + userId + params)
     }
 
     def activitiesForProject(id, query){
         def params = '?'+ query.collect { k,v -> "$k=$v" }.join('&')
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/listByProject/' + id + params)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/listByProject/' + id + params)
     }
 
     def listRecordsForDataResourceId(GrailsParameterMap params){
-        String url = grailsApplication.config.ecodata.service.url + '/harvest/listRecordsForDataResourceId/' + commonService.buildUrlParamsFromMap(params)
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + '/harvest/listRecordsForDataResourceId/' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
 
     def getDarwinCoreArchiveForProject(String projectId, HttpServletResponse response, String force){
-        String url = grailsApplication.config.ecodata.service.url + "/project/$projectId/archive?force=${force}"
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + "/project/$projectId/archive?force=${force}"
         log.debug "url = $url"
         webService.proxyGetRequest(response, url)
     }
@@ -131,19 +131,19 @@ class ActivityService {
     }
 
     def update(id, body) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/activity/' + id, body)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/' + id, body)
     }
 
     def deleteByProjectActivity(id){
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/deleteByProjectActivity/' + id)
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/deleteByProjectActivity/' + id)
     }
 
     def delete(id) {
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/activity/' + id)
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/' + id)
     }
 
     def bulkDelete(List ids, boolean destroy = false) {
-        String url = grailsApplication.config.ecodata.service.url + '/activityBulkDelete'
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + '/activityBulkDelete'
         if(destroy)
             url += '?destroy=true'
         webService.doPost(url, [ids: ids])
@@ -167,7 +167,7 @@ class ActivityService {
     def bulkEmbargo(List ids) {
         if (ids) {
             String params = "id=" + ids.join('&id=')
-            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: true])
+            webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + "/activities/?${params}", [embargoed: true])
         }
     }
 
@@ -194,7 +194,7 @@ class ActivityService {
     def bulkRelease(List ids) {
         if (ids) {
             String params = "id=" + ids.join('&id=')
-            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false])
+            webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + "/activities/?${params}", [embargoed: false])
         }
     }
 
@@ -219,7 +219,7 @@ class ActivityService {
     }
 
     def isUserOwnerForActivity(userId, id) {
-        webService.doGet(grailsApplication.config.ecodata.service.url + '/activity/isUserOwnerForActivity/'+id, [userId: userId])?.resp?.userIsOwner
+        webService.doGet(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/isUserOwnerForActivity/'+id, [userId: userId])?.resp?.userIsOwner
     }
 
     /**
@@ -233,7 +233,7 @@ class ActivityService {
      * @param id of the project
      */
     def activitiesForProject(String id) {
-        def list = webService.getJson(grailsApplication.config.ecodata.service.url + '/activitiesForProject/' + id)?.list
+        def list = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activitiesForProject/' + id)?.list
         // inject the metadata model for each activity
         list.each {
             it.model = metadataService.getActivityModel(it.type)
@@ -262,13 +262,13 @@ class ActivityService {
 
         def ids = activityIds.collect{"id=${it}"}.join('&')
         def body = ['publicationStatus':status]
-        webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?$ids", body)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + "/activities/?$ids", body)
 
     }
 
     def bulkUpdateActivities(activityIds, props) {
         def ids = activityIds.collect{"id=${it}"}.join('&')
-        webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?$ids", props)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + "/activities/?$ids", props)
     }
 
     /** @see au.org.ala.ecodata.ActivityController for a description of the criteria required. */
@@ -364,12 +364,12 @@ class ActivityService {
     }
 
     Map getDynamicFacets(){
-        webService.getJson(grailsApplication.config.ecodata.service.url+'/metadata/getIndicesForDataModels')
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url')+'/metadata/getIndicesForDataModels')
     }
 
     List getDefaultFacets(){
         cacheService.get('default-facets-for-data', {
-            webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDefaultFacets')
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/getDefaultFacets')
         })
     }
 
@@ -445,7 +445,7 @@ class ActivityService {
     def addAdditionalProperties (List additionalPropertyConfig, Map doc, Map result) {
         additionalPropertyConfig?.each { Map config ->
             def value = doc
-            List path = grailsApplication.config.activitypropertypath[config.propertyName] ?: [config.propertyName]
+            List path = grailsApplication.config.getProperty('activitypropertypath', Map)?.getAt(config.propertyName) ?: [config.propertyName]
             path?.each { String prop ->
                 if (value instanceof Map) {
                     value = value[prop]
@@ -465,7 +465,7 @@ class ActivityService {
     }
 
     def convertExcelToOutputData(String id, String type, def file){
-        webService.postMultipart(grailsApplication.config.ecodata.service.url + "/metadata/extractOutputDataFromActivityExcelTemplate", [pActivityId: id, type: type], file, 'data')
+        webService.postMultipart(grailsApplication.config.getProperty('ecodata.service.url') + "/metadata/extractOutputDataFromActivityExcelTemplate", [pActivityId: id, type: type], file, 'data')
     }
 
     /**
@@ -526,7 +526,7 @@ class ActivityService {
         Boolean embargoed = (activity?.embargoed == true) || projectActivityService.isEmbargoed(pActivity)
 
         if (!userId) {
-            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.biocollect.support.email.address}"
+            result.message =  "Only members associated to this project can submit record. For more information, please contact ${grailsApplication.config.getProperty('biocollect.support.email.address')}"
         }  else if (projectService.isUserEditorForProjects(userId, projectId)) {
             result.message = "User is authorized to view activity"
             result.authorized = true

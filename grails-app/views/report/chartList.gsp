@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <g:set var="title" value="${hubConfig.getTextForCharts(grailsApplication.config.content.defaultOverriddenLabels)}"/>
+    <g:set var="title" value="${hubConfig.getTextForCharts(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}"/>
     <title>${title}</title>
     <meta name="layout" content="bs5"/>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>

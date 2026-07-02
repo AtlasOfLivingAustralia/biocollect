@@ -23,15 +23,15 @@
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        serverUrl: "${grailsApplication.config.grails.serverURL}",
+        serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
-        bieUrl: "${grailsApplication.config.bie.baseURL}",
-        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
+        bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+        bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
         imageLocation:"${asset.assetPath(src:'')}",
         createCommentUrl : "${commentUrl}",
         commentListUrl:"${commentUrl}",
@@ -54,7 +54,7 @@
         },
         here = document.location.href;
     </asset:script>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
     <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>

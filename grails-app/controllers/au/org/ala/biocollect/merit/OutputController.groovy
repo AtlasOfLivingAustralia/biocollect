@@ -136,7 +136,7 @@ class OutputController {
     def delete(String id) {
         outputService.delete(id);
         if (params.returnTo) {
-            redirect url: grailsApplication.config.grails.serverURL + '/' +
+            redirect url: grailsApplication.config.getProperty('grails.serverURL') + '/' +
                     params.returnTo
         } else {
             redirect controller: 'home'

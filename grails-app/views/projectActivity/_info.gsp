@@ -83,7 +83,7 @@
             <select id="methodType" class="form-select" data-bind="value: methodType"
                     data-validation-engine="validate[required]">
                 <option value=""><g:message code="project.survey.info.methodType.noSelection.displayName"/></option>
-                <g:each in="${grailsApplication.config.methodType}" var="type">
+                <g:each in="${grailsApplication.config.getProperty('methodType', List)}" var="type">
                     <option value="${type}"><g:message code="facets.methodType.${type}"/></option>
                 </g:each>
             </select>
@@ -604,15 +604,15 @@
                  data-validation-engine="validate[required]">
                 <g:set var="multiple" value="${2}"/>
                 <g:set var="ceil"
-                       value="${(Integer) Math.ceil(grailsApplication.config.dataQualityAssuranceMethods.size() / 2)}"/>
+                       value="${(Integer) Math.ceil(grailsApplication.config.getProperty('dataQualityAssuranceMethods', List, []).size() / 2)}"/>
                 <g:each in="${0..<ceil}" var="index">
                     <g:set var="start" value="${index * multiple}"/>
                     <g:set var="end" value="${(index + 1) * multiple - 1}"/>
-                    <g:if test="${end >= grailsApplication.config.dataQualityAssuranceMethods.size()}">
+                    <g:if test="${end >= grailsApplication.config.getProperty('dataQualityAssuranceMethods', List, []).size()}">
                         <g:set var="end" value="${end - 1}"/>
                     </g:if>
                     <div class="row">
-                        <g:each in="${grailsApplication.config.dataQualityAssuranceMethods[start..end]}" var="dqMethod">
+                        <g:each in="${grailsApplication.config.getProperty('dataQualityAssuranceMethods', List)[start..end]}" var="dqMethod">
                             <div class="col-6">
                                 <label class="form-check">
                                     <input class="form-check-input" type="checkbox" value="${dqMethod}"

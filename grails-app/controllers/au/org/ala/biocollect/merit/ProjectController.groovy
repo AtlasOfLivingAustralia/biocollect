@@ -181,7 +181,7 @@ class ProjectController {
         else if (project.isMERIT) {
             // MERIT projects have different security / access rules to BioCollect so it's best to simply
             // redirect to MERIT to view the project.
-            redirect(uri:grailsApplication.config.merit.project.url+'/'+id)
+            redirect(uri:grailsApplication.config.getProperty('merit.project.url')+'/'+id)
         }
 
         else {
@@ -322,7 +322,7 @@ class ProjectController {
 
         def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, default: true],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.content.defaultOverriddenLabels), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
+         documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List)), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab'],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -350,7 +350,7 @@ class ProjectController {
 
         def config = [about:[label:'About', template:'aboutCitizenScienceProject', visible: true, type:'tab', projectSite:project.projectSite, default: false],
          news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-         documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.content.defaultOverriddenLabels), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', default: true],
+         documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List)), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', default: true],
          activities:[label:'Surveys', visible:!project.isExternal, template:'/projectActivity/list', showSites:true, site:project.sites, wordForActivity:'Survey', type:'tab'],
          data:[label:'Data', visible:true, template:'/bioActivity/activities', showSites:true, site:project.sites, wordForActivity:'Data', type:'tab'],
          admin:[label:'Admin', template:'CSAdmin', visible:(user?.isAdmin || user?.isCaseManager) && !params.version, type:'tab', hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories]]
@@ -393,7 +393,7 @@ class ProjectController {
 
         Map content = [overview:[label:'About', template:'aboutCitizenScienceProject', visible: true, default: true, type:'tab', projectSite:project.projectSite],
                        news:[label:'Blog', template:'projectBlog', visible: true, type:'tab', blog:blog, hasNewsAndEvents: hasNewsAndEvents, hasProjectStories:hasProjectStories, hasLegacyNewsAndEvents: hasLegacyNewsAndEvents, hasLegacyProjectStories:hasLegacyProjectStories],
-                       documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.content.defaultOverriddenLabels), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', project:project],
+                       documents:[label:SettingService.getHubConfig().getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List)), template:'/shared/listAllDocuments', useExistingModel: true, editable:false, filterBy: 'all', visible: true, containerId:'overviewDocumentList', type:'tab', project:project],
                        activities:[label:'Work Schedule', template:'/shared/activitiesWorks', visible:!project.isExternal, disabled:!user?.hasViewAccess, wordForActivity:"Activity",type:'tab', activities:activities ?: [], sites:project.sites ?: [], showSites:false],
                        site:[label:'Sites', template:'/site/worksSites', visible: !project.isExternal, disabled:!user?.hasViewAccess, wordForSite:'Site', canEditSites: canEditSites, type:'tab'],
                        meriPlan:[label:'Project Plan', disable:false, visible:user?.isEditor, meriPlanVisibleToUser: user?.isEditor, canViewRisks: canViewRisks, type:'tab', template:'viewMeriPlan'],
@@ -1018,7 +1018,7 @@ class ProjectController {
      *  AlaAdmin and not in user page
      */
     private String removeFacetsFromProjectFinderPage(List facets) {
-        List facetsToRemove = grailsApplication.config.lists.facetsToRemoveFromProjectFinderPage
+        List facetsToRemove = grailsApplication.config.getProperty('lists.facetsToRemoveFromProjectFinderPage', List)
 
         def user = userService.getUser()
         boolean isAlaAdmin = userService.userIsAlaAdmin()
@@ -1045,7 +1045,7 @@ class ProjectController {
     def downloadWorksProjects() {
         if (userService.doesUserHaveHubRole(RoleService.PROJECT_ADMIN_ROLE)) {
 
-            String downloadUrl = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData.xlsx"
+            String downloadUrl = "${grailsApplication.config.getProperty('ecodata.service.url')}/search/downloadAllData.xlsx"
 
             params.fq = params.getList('fq') ?: params.getList('fq[]')
 
@@ -1277,7 +1277,7 @@ class ProjectController {
 
         queryParams.put("geoSearchJSON", params.geoSearchJSON)
 
-        params.url = grailsApplication.config.grails.serverURL
+        params.url = grailsApplication.config.getProperty('grails.serverURL')
         queryParams
     }
 
@@ -1492,7 +1492,7 @@ class ProjectController {
     @PreAuthorise(accessLevel = 'admin', redirectController ='home', redirectAction = 'index')
     def downloadShapefile(String id) {
 
-        def url = grailsApplication.config.ecodata.baseURL + "/ws/project/${id}.shp"
+        def url = grailsApplication.config.getProperty('ecodata.baseURL') + "/ws/project/${id}.shp"
         def resp = webService.proxyGetRequest(response, url, true, 960000)
         if (resp.status != 200) {
             render view:'/error', model:[error:resp.error]
@@ -1538,7 +1538,7 @@ class ProjectController {
 
     @PreAuthorise(accessLevel = 'admin')
     def sendEmailToMembers(String id) {
-        if(grailsApplication.config.notification.enabled?.toBoolean()){
+        if(grailsApplication.config.getProperty('notification.enabled')?.toBoolean()){
             Map payload = request.JSON
             List recipients = payload?.recipients
             String subject = payload?.subject
@@ -1563,7 +1563,7 @@ class ProjectController {
 
     @PreAuthorise(accessLevel = 'admin')
     def sendTestEmail(String id) {
-        if(grailsApplication.config.notification.enabled?.toBoolean()){
+        if(grailsApplication.config.getProperty('notification.enabled')?.toBoolean()){
             Map payload = request.JSON
             String subject = payload?.subject
             String body = payload?.body

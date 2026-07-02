@@ -16,12 +16,12 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
             layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
-            blogUpdateUrl: "${grailsApplication.config.grails.serverURL}/blog/update?id=${blogEntry.blogEntryId}",
-            blogViewUrl: "${grailsApplication.config.grails.serverURL}/blog/index",
-            documentUpdateUrl: "${grailsApplication.config.grails.serverURL}/document/documentUpdate",
+            serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
+            blogUpdateUrl: "${grailsApplication.config.getProperty('grails.serverURL')}/blog/update?id=${blogEntry.blogEntryId}",
+            blogViewUrl: "${grailsApplication.config.getProperty('grails.serverURL')}/blog/index",
+            documentUpdateUrl: "${grailsApplication.config.getProperty('grails.serverURL')}/document/documentUpdate",
             </g:applyCodec>
             returnTo: "${params.returnTo}"
             };

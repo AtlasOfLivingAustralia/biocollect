@@ -39,7 +39,7 @@
     <g:message code="project.admin.permissions.noemail"/>
     <ul>
         <li><g:message code="project.admin.permissions.incorrectemail"/></li>
-        <li><g:message code="project.admin.permissions.emailnotregistered"/> <a href="${grailsApplication.config.user.registration.url}"
+        <li><g:message code="project.admin.permissions.emailnotregistered"/> <a href="${grailsApplication.config.getProperty('user.registration.url')}"
                 target='_blank'><u><g:message code="project.admin.permissions.signup"/>sign-up page</u></a>.
         </li>
     </ul>

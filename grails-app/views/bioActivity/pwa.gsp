@@ -28,7 +28,7 @@
                 intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
                 featuresService: "${createLink(controller: 'proxy', action: 'features')}",
                 featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-                spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+                spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
                 layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
                 createActivityUrl: "/pwa/bioActivity/edit/" + params.projectActivityId + "?cache=true",
                 indexActivityUrl: "/pwa/bioActivity/index/" + params.projectActivityId+ "?cache=true",

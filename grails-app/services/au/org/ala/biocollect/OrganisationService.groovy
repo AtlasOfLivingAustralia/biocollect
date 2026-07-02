@@ -20,13 +20,13 @@ class OrganisationService {
 
 
     Map get(String id, String view = '') {
-        def url = "${grailsApplication.config.ecodata.service.url}/organisation/" + id.encodeAsURL() + "?view=" + view.encodeAsURL()
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/organisation/" + id.encodeAsURL() + "?view=" + view.encodeAsURL()
         webService.getJson(url)
     }
 
     Map getByName(String orgName) {
 
-        def url = "${grailsApplication.config.ecodata.service.url}/organisation/?name=" + orgName.encodeAsURL()
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/organisation/?name=" + orgName.encodeAsURL()
         def org = webService.getJson(url)
 
         if(org && org.statusCode == 404) {
@@ -74,7 +74,7 @@ class OrganisationService {
             result.error = error
             result.detail = ''
         } else {
-            String url = "${grailsApplication.config.ecodata.service.url}/organisation/$id"
+            String url = "${grailsApplication.config.getProperty('ecodata.service.url')}/organisation/$id"
             result = webService.doPost(url, organisation)
         }
         result
@@ -102,7 +102,7 @@ class OrganisationService {
      * @param organisationId the organisationId of interest.
      */
     List getMembersOfOrganisation(organisationId) {
-        String url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForOrganisation/${organisationId}"
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getMembersForOrganisation/${organisationId}"
         webService.getJson(url)
     }
 

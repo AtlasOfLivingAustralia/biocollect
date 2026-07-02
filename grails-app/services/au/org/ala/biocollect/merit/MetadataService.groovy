@@ -16,20 +16,20 @@ class MetadataService {
 
     def activitiesModel() {
         return cacheService.get('activity-model',{
-            webService.getJson(grailsApplication.config.ecodata.service.url +
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') +
                 '/metadata/activitiesModel')
         })
     }
 
     def annotatedOutputDataModel(type) {
         return cacheService.get('annotated-output-model'+type,{
-            Collections.unmodifiableList(webService.getJson(grailsApplication.config.ecodata.service.url +
+            Collections.unmodifiableList(webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') +
                     '/metadata/annotatedOutputDataModel?type='+type.encodeAsURL()))
         })
     }
 
     def updateActivitiesModel(model) {
-        def result = webService.doPost(grailsApplication.config.ecodata.service.url +
+        def result = webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') +
                 '/metadata/updateActivitiesModel', [model: model])
         cacheService.clear('activity-model')
         result
@@ -37,7 +37,7 @@ class MetadataService {
 
     def programsModel() {
         def allPrograms = cacheService.get('programs-model',{
-            webService.getJson(grailsApplication.config.ecodata.service.url +
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') +
                 '/metadata/programsModel')
         })
 
@@ -66,7 +66,7 @@ class MetadataService {
     }
 
     def updateProgramsModel(model) {
-        def result = webService.doPost(grailsApplication.config.ecodata.service.url +
+        def result = webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') +
                 '/metadata/updateProgramsModel', [model: model])
         cacheService.clear('programs-model')
         result
@@ -98,7 +98,7 @@ class MetadataService {
 
     def getDataModel(template) {
         return cacheService.get(template + '-model',{
-            webService.getJson(grailsApplication.config.ecodata.service.url +
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') +
                     "/metadata/dataModel/${template}")
         })
     }
@@ -106,7 +106,7 @@ class MetadataService {
     def updateOutputDataModel(model, template) {
         log.debug "updating template ${template}"
         //log.debug "model class is ${model.getClass()}"
-        def result = webService.doPost(grailsApplication.config.ecodata.service.url +
+        def result = webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') +
                 '/metadata/updateOutputDataModel/' + template, [model: model])
         cacheService.clear(template + '-model')
         result
@@ -125,7 +125,7 @@ class MetadataService {
 
     def activityTypesList(program = '') {
         cacheService.get('activitiesSelectList'+program, {
-            String url = grailsApplication.config.ecodata.service.url + '/metadata/activitiesList'
+            String url = grailsApplication.config.getProperty('ecodata.service.url') + '/metadata/activitiesList'
             if (program) {
                 url += '?program='+program.encodeAsURL()
             }
@@ -207,7 +207,7 @@ class MetadataService {
 
 
     def clearEcodataCache() {
-        webService.doGet(grailsApplication.config.ecodata.service.url + "/admin/clearMetadataCache" , null)
+        webService.doGet(grailsApplication.config.getProperty('ecodata.service.url') + "/admin/clearMetadataCache" , null)
     }
 
     def outputTypesList() {
@@ -216,13 +216,13 @@ class MetadataService {
 
     def getAccessLevels() {
         return cacheService.get('accessLevels',{
-            webService.getJson(grailsApplication.config.ecodata.service.url +  "/permissions/getAllAccessLevels?baseLevel="+RoleService.PROJECT_PARTICIPANT_ROLE)
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') +  "/permissions/getAllAccessLevels?baseLevel="+RoleService.PROJECT_PARTICIPANT_ROLE)
         })
     }
 
     def getLocationMetadataForPoint(lat, lng) {
         cacheService.get("spatial-point-${lat}-${lng}", {
-            webService.getJson(grailsApplication.config.ecodata.service.url + "/metadata/getLocationMetadataForPoint?lat=${lat}&lng=${lng}")
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + "/metadata/getLocationMetadataForPoint?lat=${lat}&lng=${lng}")
         })
     }
 
@@ -246,17 +246,17 @@ class MetadataService {
 
             def results = [:].withDefault{[:]}
 
-            def facetConfig = webService.getJson(grailsApplication.config.ecodata.service.url + "/metadata/getGeographicFacetConfig")
+            def facetConfig = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + "/metadata/getGeographicFacetConfig")
             facetConfig.grouped.each { k, v ->
                 v.each { name, fid ->
-                    def objects = webService.getJson(grailsApplication.config.spatial.baseURL + '/ws/objects/'+fid)
+                    def objects = webService.getJson(grailsApplication.config.getProperty('spatial.baseURL') + '/ws/objects/'+fid)
                     results[k] << [(objects[0].fieldname):objects[0]] // Using the fieldname instead of the name for grouped facets is a temp workaround for the GER.
                 }
 
             }
 
             facetConfig.contextual.each { name, fid ->
-                def objects = webService.getJson(grailsApplication.config.spatial.baseURL + '/ws/objects/'+fid)
+                def objects = webService.getJson(grailsApplication.config.getProperty('spatial.baseURL') + '/ws/objects/'+fid)
                 objects.each {
                     results[name] << [(it.name):it]
                 }
@@ -272,7 +272,7 @@ class MetadataService {
      * @return returns a map with [status:statusCode, error:errorMessage (if there was an error), data:the data (if there was no error)]
      */
     Map extractOutputDataFromExcelOutputTemplate(Map params, MultipartFile file) {
-        def url = grailsApplication.config.ecodata.service.url + '/metadata/extractOutputDataFromExcelOutputTemplate'
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + '/metadata/extractOutputDataFromExcelOutputTemplate'
         def data = webService.postMultipart(url, params, file, 'data')
 
         def result
@@ -296,7 +296,7 @@ class MetadataService {
 
     List<Map> getScores(boolean includeConfig) {
         cacheService.get("scores-${includeConfig}", {
-            String url = grailsApplication.config.ecodata.service.url + "/metadata/scores"
+            String url = grailsApplication.config.getProperty('ecodata.service.url') + "/metadata/scores"
             if (includeConfig) {
                 url+='?view=config'
             }

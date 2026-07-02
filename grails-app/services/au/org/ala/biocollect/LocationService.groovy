@@ -27,7 +27,7 @@ class LocationService {
 
     def getBookmarkLocationsForUser(String userId) {
         def bookmarks = []
-        JSONElement results = webService.getJson("${grailsApplication.config.ecodata.service.url}/location/user/$userId?pageSize=20")
+        JSONElement results = webService.getJson("${grailsApplication.config.getProperty('ecodata.service.url')}/location/user/$userId?pageSize=20")
 
         if (results.hasProperty('error')) {
             return [error: results.error]
@@ -41,7 +41,7 @@ class LocationService {
     }
 
     def addBookmarkLocation(JSONObject bookmarkLocation) {
-        def url = grailsApplication.config.ecodata.service.url + "/location/"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/location/"
         def result = webService.doPost(url, bookmarkLocation)
         log.debug "ecodata post bookmark result = ${result}"
         // if error return Map below

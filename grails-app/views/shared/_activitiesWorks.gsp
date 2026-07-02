@@ -290,7 +290,7 @@
                         </div>
                     </div>
 
-                    <g:if test="${grailsApplication.config.debugUI}">
+                    <g:if test="${grailsApplication.config.getProperty('debugUI', Boolean)}">
                         <div class="expandable-debug">
                             <h3>Debug</h3>
 

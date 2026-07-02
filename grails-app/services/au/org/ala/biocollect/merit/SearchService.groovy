@@ -62,7 +62,7 @@ class SearchService {
         params.facets = params.facets?:"statesFacet,lgasFacet,nrmsFacet,organisationFacet,mvgsFacet"
         //def url = elasticBaseUrl + commonService.buildUrlParamsFromMap(params)
         String url = "${elasticSearchBaseUrl}/elasticHome" + commonService.buildUrlParamsFromMap(params)
-      //  def url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+      //  def url = grailsApplication.config.getProperty('ecodata.service.url') + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
@@ -78,7 +78,7 @@ class SearchService {
             addDefaultFacetQuery(params)
         }
         String url = "${elasticSearchBaseUrl}/elasticHome" + commonService.buildUrlParamsFromMap(params)
-        //String url = grailsApplication.config.ecodata.service.url + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
+        //String url = grailsApplication.config.getProperty('ecodata.service.url') + '/search/elasticHome' + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
     }
@@ -94,13 +94,13 @@ class SearchService {
             params.senderEmail = supportEmail
         }
 
-        def url = "${grailsApplication.config.ecodata.service.url}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}"
+        def url = "${grailsApplication.config.getProperty('ecodata.service.url')}/search/downloadAllData${commonService.buildUrlParamsFromMap(params)}"
         log.debug("downloadProjectData proxy URL: ${url}")
         webService.proxyGetRequest(response, url)
     }
 
     Map searchProjectActivity(GrailsParameterMap params, String q = null){
-       // String url = grailsApplication.config.ecodata.service.url + '/search/elasticProjectActivity' + commonService.buildUrlParamsFromMap(params)
+       // String url = grailsApplication.config.getProperty('ecodata.service.url') + '/search/elasticProjectActivity' + commonService.buildUrlParamsFromMap(params)
         String url = "${elasticSearchBaseUrl}/elasticProjectActivity" + commonService.buildUrlParamsFromMap(params)
         log.debug "url = $url"
         webService.getJson(url)
@@ -114,7 +114,7 @@ class SearchService {
      * @throws Exception
      */
     Map searchForSites(GrailsParameterMap params) throws SocketTimeoutException, Exception{
-        //String url = grailsApplication.config.ecodata.service.url + '/search/elasticPost'
+        //String url = grailsApplication.config.getProperty('ecodata.service.url') + '/search/elasticPost'
         String url = "${elasticSearchBaseUrl}/elasticPost"
         log.debug "url = $url"
         Map response = webService.doPost(url, params)

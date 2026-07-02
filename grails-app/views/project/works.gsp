@@ -7,40 +7,40 @@
     <asset:script type="text/javascript">
     var fcConfig = {
         <g:applyCodec encodeAs="none">
-        baseUrl: "${grailsApplication.config.grails.serverURL}",
+        baseUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         regionListUrl: "${createLink(controller: 'regions', action: 'regionsList')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
-        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
+        geocodeUrl: "${grailsApplication.config.getProperty('google.geocode.url')}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
-        spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-        spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-        spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
-        sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-        sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+        spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+        spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+        spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
+        sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+        sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         hubDefaultSortBy : "${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultSort}",
-        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
+        defaultSearchRadiusMetersForPoint: "${grailsApplication.config.getProperty('defaultSearchRadiusMetersForPoint') ?: "100"}",
         imageLocation:"${asset.assetPath(src:'')}",
         logoLocation:"${asset.assetPath(src:'filetypes')}",
         projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params:[initiator:'biocollect']))}",
         projectIndexBaseUrl : "${createLink(controller:'project',action:'index')}/",
         organisationBaseUrl : "${createLink(controller:'organisation',action:'index')}/",
-        paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
+        paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}',
         isCitizenScience: false,
         showAllProjects: false,
         meritProjectLogo:"${asset.assetPath(src:'merit_project_logo.jpg')}",
         associatedPrograms: <fc:modelAsJavascript model="${associatedPrograms}"/>,
-        flimit: ${grailsApplication.config.facets.flimit},
+        flimit: ${grailsApplication.config.getProperty('facets.flimit')},
         pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
         </g:applyCodec>
         dashboardUrl: "${g.createLink(controller: 'report', action: 'dashboardReport', params: params)}"
     }
-        <g:if test = "${grailsApplication.config.merit.projectLogo}" >
-            fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.merit.projectLogo}";
+        <g:if test = "${grailsApplication.config.getProperty('merit.projectLogo')}" >
+            fcConfig.meritProjectLogo = fcConfig.imageLocation + "${grailsApplication.config.getProperty('merit.projectLogo')}";
         </g:if>
     </asset:script>
     <g:render template="/shared/conditionalLazyLoad"/>

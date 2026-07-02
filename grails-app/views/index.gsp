@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="layout" content="bs5"/>
-    <title>Welcome to ${grailsApplication.config.appName?.capitalize()}!</title>
+    <title>Welcome to ${grailsApplication.config.getProperty('appName')?.capitalize()}!</title>
 </head>
 
 <body>
@@ -11,7 +11,7 @@
         <bc:koLoading>
 
         </bc:koLoading>
-        <h3>Welcome to ${grailsApplication.config.appName?.capitalize()}!</h3>
+        <h3>Welcome to ${grailsApplication.config.getProperty('appName')?.capitalize()}!</h3>
     </div>
 </div>
 

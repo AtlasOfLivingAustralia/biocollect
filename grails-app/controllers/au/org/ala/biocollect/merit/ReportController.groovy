@@ -108,7 +108,7 @@ class ReportController {
     }
 
     def populateElectorates() {
-        def SPATIAL_URL = grailsApplication.config.spatial.baseURL
+        def SPATIAL_URL = grailsApplication.config.getProperty('spatial.baseURL')
 
         String uniqueIdResponse = new URL(SPATIAL_URL + "/ws/objects/cl958")?.text
 
@@ -133,8 +133,8 @@ class ReportController {
     def downloadReport() {
         Map body = request.JSON
         if (body) {
-            List headers = grailsApplication.config.report.download.collect { it.header }
-            List withProperties = grailsApplication.config.report.download.collect { it.property }
+            List headers = grailsApplication.config.getProperty('report.download', List, []).collect { it.header }
+            List withProperties = grailsApplication.config.getProperty('report.download', List, []).collect { it.property }
 
             // Inlined Apache POI replacement for the discontinued excel-export plugin's WebXlsxExporter.
             response.setHeader('Content-Disposition', 'attachment; filename="report.xlsx"')

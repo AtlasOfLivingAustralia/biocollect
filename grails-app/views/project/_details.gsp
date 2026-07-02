@@ -1103,7 +1103,7 @@
         </div>
     </div>
 
-    <g:if test="${grailsApplication.config.termsOfUseUrl}">
+    <g:if test="${grailsApplication.config.getProperty('termsOfUseUrl')}">
         <div class="card mt-3" style="display: none" data-bind="visible: !isExternal()">
             <div class="card-body">
                 <h4 class="card-title"><g:message code="project.details.termsOfUseAgreement"/></h4>
@@ -1120,7 +1120,7 @@
                                data-validation-engine="validate[required]"
                                title="<g:message code="project.details.termsOfUseAgreement.checkboxTip"/>"/>
                         <label for="termsOfUseAgreement"><span></span> I confirm that have read and accept the <a
-                                href="${grailsApplication.config.termsOfUseUrl}" data-bind="click: clickTermsOfUse"
+                                href="${grailsApplication.config.getProperty('termsOfUseUrl')}" data-bind="click: clickTermsOfUse"
                                 target="_blank">Terms of Use</a>.</label>
                         </div>
 

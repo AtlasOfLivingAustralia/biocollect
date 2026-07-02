@@ -66,7 +66,7 @@
     </g:if>
 <!-- ko if: visibility.alaAdminEnforcedEmbargo() -->
     <span class="text-muted"><g:message code="project.survey.visibility.adminEmbargo.important"/><a
-            href='${grailsApplication.config.biocollect.support.email.address}'>${grailsApplication.config.biocollect.support.email.address}</a>
+            href='${grailsApplication.config.getProperty('biocollect.support.email.address')}'>${grailsApplication.config.getProperty('biocollect.support.email.address')}</a>
     </span>
     <!-- /ko -->
     <g:render template="/projectActivity/indexingNote"/>

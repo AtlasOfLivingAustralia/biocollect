@@ -36,7 +36,7 @@ class ProjectActivityService {
     SettingService settingService
 
     def search(params) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/projectActivity/search', params)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/projectActivity/search', params)
     }
 
     def getAllByProject(projectId, levelOfDetail = "", version = null, stats = false) {
@@ -44,14 +44,14 @@ class ProjectActivityService {
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
         params += version ? "version=${version}&" : ''
         params += "stats=${stats}"
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/getAllByProject/' + projectId + params).list
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/projectActivity/getAllByProject/' + projectId + params).list
     }
 
     def get(projectActivityId, levelOfDetail = "", version = null) {
         def params = '?'
         params += levelOfDetail ? "view=${levelOfDetail}&" : ''
         params += version ? "version=${version}&" : ''
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/projectActivity/get/' + projectActivityId + params)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/projectActivity/get/' + projectActivityId + params)
     }
 
     def validate(props, projectActivityId) {
@@ -227,14 +227,14 @@ class ProjectActivityService {
             result.error = error
             result.detail = ''
         } else {
-            result = webService.doPost(grailsApplication.config.ecodata.service.url + '/projectActivity/' + id, body)
+            result = webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/projectActivity/' + id, body)
         }
 
         result
     }
 
     def delete(id) {
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/projectActivity/' + id)
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/projectActivity/' + id)
     }
 
     /**
@@ -370,8 +370,8 @@ class ProjectActivityService {
         URLConnection conn = new URL(downloadUrl).openConnection()
         conn.setConnectTimeout(10 * 1000);
 
-        log.info("Set read timeout: " + grailsApplication.config.aekos?.downloadReadTimeout ?: 20 * 1000)
-        conn.setReadTimeout(grailsApplication.config.aekos?.downloadReadTimeout ?: 20 * 1000);
+        log.info("Set read timeout: " + grailsApplication.config.getProperty('aekos.downloadReadTimeout', Integer) ?: 20 * 1000)
+        conn.setReadTimeout(grailsApplication.config.getProperty('aekos.downloadReadTimeout', Integer) ?: 20 * 1000);
 
         def status = conn.responseCode
 
@@ -383,7 +383,7 @@ class ProjectActivityService {
 
 
         def result = [:]
-        if (status == 200 && grailsApplication.config.aekosSubmission?.url) {
+        if (status == 200 && grailsApplication.config.getProperty('aekosSubmission.url')) {
             File tempFile = new File("/data/biocollect/temp/dataset-${UUID.randomUUID()}.zip")
 
             try {
@@ -396,7 +396,7 @@ class ProjectActivityService {
                 //  def is = byteArrayOutputStream.toByteArray() //conn.getInputStream().getBytes()
 
                 // External Aekos Submission Url
-                def aekosUrl = grailsApplication.config.aekosSubmission?.url
+                def aekosUrl = grailsApplication.config.getProperty('aekosSubmission.url')
                 //?: "http://shared-uat.ecoinformatics.org.au:8080/shared-web/api/submission/create"
 
                 log.info("Sending data to SHaRED url: " + aekosUrl)
@@ -434,7 +434,7 @@ class ProjectActivityService {
                 log.error("Exception occurred while trying to send data to AEKOS. ${e.getClass()} ${e.getMessage()}", e)
             }
 
-        } else if (grailsApplication.config.aekosSubmission?.url) {
+        } else if (grailsApplication.config.getProperty('aekosSubmission.url')) {
             result = [status: 504, error: "Timeout downloading data.zip."]
             log.info("Error occurred while downloading data: " + result + " Download status error: " + status)
         } else {
@@ -471,7 +471,7 @@ class ProjectActivityService {
      */
     List getDefaultActivity(){
         cacheService.get('default-facets-for-data-pages', {
-            webService.getJson(grailsApplication.config.ecodata.service.url + '/activity/getDefaultFacets')
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/activity/getDefaultFacets')
         })
     }
 
@@ -480,8 +480,8 @@ class ProjectActivityService {
      * @return
      */
     List getSurveyMethods(){
-        String urlPath = grailsApplication.config.app.default.hub ?: "ala"
-        String key = grailsApplication.config.settings.surveyMethods
+        String urlPath = grailsApplication.config.getProperty('app.default.hub') ?: "ala"
+        String key = grailsApplication.config.getProperty('settings.surveyMethods')
         String content = settingService.getSettingText(urlPath, key)
         content = utilService.removeHTMLTags(content)
         List entries = []

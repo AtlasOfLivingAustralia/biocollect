@@ -6,31 +6,31 @@ class RecordService {
 
     def listUserRecords(userId, query){
         def params = '?'+ query.collect { k,v -> "$k=$v" }.join('&')
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForUser/' + userId + params)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/record/listForUser/' + userId + params)
     }
 
     def listProjectRecords(id, query){
         def params = '?'+ query.collect { k,v -> "$k=$v" }.join('&')
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForProject/' + id + params)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/record/listForProject/' + id + params)
     }
 
     def listActivityRecords(id){
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/listForActivity/' + id, null)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/record/listForActivity/' + id, null)
     }
 
     def listProjectActivityAndUserRecords(String projectActivityId, String userId) {
-        webService.getJson(grailsApplication.config.ecodata.service.url + "/record/listForProjectActivityAndUser/$projectActivityId?userId=$userId", null)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + "/record/listForProjectActivityAndUser/$projectActivityId?userId=$userId", null)
     }
 
     def get(id) {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/' + id)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/record/' + id)
     }
 
     def getForOutputIdentifier(id) {
-        webService.getJson(grailsApplication.config.ecodata.service.url + '/record/getRecordForOutputSpeciesId/' + id)
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/record/getRecordForOutputSpeciesId/' + id)
     }
 
     def delete(id) {
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/record/' + id)
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/record/' + id)
     }
 }

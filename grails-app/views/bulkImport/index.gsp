@@ -27,13 +27,13 @@
         downloadTemplateFormUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate', params: [type: pActivityFormName, expandList: true, includeDataPathHeader: true])}",
         listBulkImportUrl: "${createLink(controller: 'bulkImport', action: 'list')}",
         bulkImportCreateUrl: "${createLink(uri: "/${hubConfig.urlPath}/bulkImport/create", params: [projectId: projectId, projectActivityId: projectActivityId])}",
-        originUrl: "${grailsApplication.config.server.serverURL}",
+        originUrl: "${grailsApplication.config.getProperty('server.serverURL')}",
         </g:applyCodec>
         returnTo: "${returnTo ?: (createLink(controller: 'project', action: 'index') + "/" + projectId)}"
         },
         here = document.location.href;
     </asset:script>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
     <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="bulk-import-view-models.js"/>
 </head>

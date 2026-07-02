@@ -70,7 +70,7 @@ class WebService {
     }
 
     private int defaultTimeout() {
-        grailsApplication.config.webservice.readTimeout as int
+        grailsApplication.config.getProperty('webservice.readTimeout', Integer)
     }
 
     private boolean isDomainWhitelisted(URL url) {
@@ -136,7 +136,7 @@ class WebService {
 
         HttpURLConnection conn = configureConnection(url, includeUserId)
         def readTimeout = timeout?:defaultTimeout()
-        conn.setConnectTimeout(grailsApplication.config.webservice.connectTimeout as int)
+        conn.setConnectTimeout(grailsApplication.config.getProperty('webservice.connectTimeout', Integer))
         conn.setReadTimeout(readTimeout)
 
         def headers = [HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.CACHE_CONTROL, HttpHeaders.EXPIRES, HttpHeaders.LAST_MODIFIED, HttpHeaders.ETAG]
@@ -236,7 +236,7 @@ class WebService {
 
             def user = getUserService().getUser()
             if (user) {
-                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId) // used by ecodata
+                conn.setRequestProperty(grailsApplication.config.getProperty('app.http.header.userId'), user.userId) // used by ecodata
                 conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, charEncoding)) // used by specieslist
             }
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), charEncoding)
@@ -273,7 +273,7 @@ class WebService {
 
             def user = getUserService().getUser()
             if (user) {
-                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId) // used by ecodata
+                conn.setRequestProperty(grailsApplication.config.getProperty('app.http.header.userId'), user.userId) // used by ecodata
                 conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, charEncoding)) // used by specieslist
             }
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), charEncoding)
@@ -309,7 +309,7 @@ class WebService {
 
             def user = getUserService().getUser()
                         if (user) {
-                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId) // used by ecodata
+                conn.setRequestProperty(grailsApplication.config.getProperty('app.http.header.userId'), user.userId) // used by ecodata
                 conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, charEncoding)) // used by specieslist
             }
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), charEncoding)
@@ -356,7 +356,7 @@ class WebService {
 
             def user = getUserService().getUser()
             if (user) {
-                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId) // used by ecodata
+                conn.setRequestProperty(grailsApplication.config.getProperty('app.http.header.userId'), user.userId) // used by ecodata
                 conn.setRequestProperty("Cookie", "ALA-Auth="+java.net.URLEncoder.encode(user.userName, StandardCharsets.UTF_8.toString())) // used by specieslist
             }
             def resp = conn.inputStream.text
@@ -385,7 +385,7 @@ class WebService {
 
             def user = getUserService().getUser()
             if (user) {
-                conn.setRequestProperty(grailsApplication.config.app.http.header.userId, user.userId)
+                conn.setRequestProperty(grailsApplication.config.getProperty('app.http.header.userId'), user.userId)
             }
             return conn.getResponseCode()
         } catch(Exception e){

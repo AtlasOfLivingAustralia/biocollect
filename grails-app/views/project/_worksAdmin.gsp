@@ -20,7 +20,7 @@
                     <li ${activeClass} class="nav-item text-start"><a href="#mapConfiguration" id="mapConfiguration-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Sites</a></li>
                 </g:if>
                 <li class="nav-item text-start"><a href="#edit-documents" id="documents-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Resources</a></li>
-                <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
+                <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole')) || fc.userInRole(role: grailsApplication.config.getProperty('security.cas.adminRole')) || user.isAdmin}">
                     <li class="nav-item text-start"><a href="#project-audit" id="project-audit-tab" data-bs-toggle="tab" class="nav-link"><i class="fas fa-chevron-right"></i> Audit</a></li>
                 </g:if>
             </ul>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
                 <!--AUDIT-->
-                <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || user.isAdmin}">
+                <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole')) || fc.userInRole(role: grailsApplication.config.getProperty('security.cas.adminRole')) || user.isAdmin}">
                     <div id="project-audit" class="tab-pane">
                         <g:render template="/admin/auditProject"/>
                     </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <g:set var="title" value="${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}"/>
+    <g:set var="title" value="${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}"/>
     <title>${title}</title>
     <meta name="layout" content="bs5"/>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/')},Home"/>
@@ -24,7 +24,7 @@
 
 <body>
 <content tag="bannertitle">
-    ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}
+    ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}
 </content>
 
 <div id="documentSearch">

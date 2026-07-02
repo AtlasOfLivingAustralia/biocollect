@@ -69,7 +69,7 @@ class CacheService {
      */
     def loadStaticCacheFromFile(key) {
         println 'loading static data from file'
-        def json = new File(grailsApplication.config.fieldcapture.data.file as String).text
+        def json = new File(grailsApplication.config.getProperty('fieldcapture.data.file') as String).text
         if (json) {
             JSON.parse(json).each { k,v ->
                 cache.put k, [resp: v, time: new Date()]

@@ -56,7 +56,7 @@ class PdfGenerationService {
             pdfGenParams.options += ' -O landscape'
         }
 
-        String url = grailsApplication.config.pdfgen.baseURL + PDFGEN_PATH + commonService.buildUrlParamsFromMap(pdfGenParams)
+        String url = grailsApplication.config.getProperty('pdfgen.baseURL') + PDFGEN_PATH + commonService.buildUrlParamsFromMap(pdfGenParams)
         Map result
         try {
             result = webService.proxyGetRequest(response, url, false, TIMEOUT)
