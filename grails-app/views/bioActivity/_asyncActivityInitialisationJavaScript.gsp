@@ -58,11 +58,56 @@
                     master.offlineSave(true);
                 });
 
+                $('#saveAndClose').on('click',function () {
+                    var saving = master.offlineSave(true);
+                    function closeFrame() {
+                        if (window.parent) {
+                            window.parent.postMessage({ event: 'close-frame' }, '*');
+                        }
+                    }
+                    if (saving && typeof saving.done === 'function') {
+                        saving.done(closeFrame);
+                    } else {
+                        closeFrame();
+                    }
+                });
+
 
                 $('#cancel').on('click',function () {
                     if (window.parent) {
                         window.parent.postMessage({ event: 'close-frame' }, '*');
                     }
+                });
+
+                // Disable the submit button while offline - records can only be submitted online.
+                function setSubmitButtonOfflineState(offline) {
+                    $('#save').prop('disabled', offline);
+                }
+                document.addEventListener('offline', function () {
+                    setSubmitButtonOfflineState(true);
+                });
+                document.addEventListener('online', function () {
+                    setSubmitButtonOfflineState(false);
+                });
+                isOffline().then(function () {
+                    setSubmitButtonOfflineState(true);
+                }, function () {
+                    setSubmitButtonOfflineState(false);
+                });
+                checkOfflineForIntervalAndTriggerEvents();
+
+                // Only begin autosaving once the user actually starts entering data.
+                // Form widgets (select2, date pickers, maps, etc.) programmatically fire
+                // change/input events while initialising, so we can't rely on the event type
+                // alone. Genuine user interaction produces a trusted native event, whereas
+                // jQuery-triggered events have no originalEvent and dispatched events are
+                // not trusted - both are ignored here.
+                $('#validation-container').on('input.autosave change.autosave', function (e) {
+                    if (!e.originalEvent || !e.originalEvent.isTrusted) {
+                        return;
+                    }
+                    $('#validation-container').off('.autosave');
+                    master.startAutosave();
                 });
 
                 $('#reset').on('click',function () {
