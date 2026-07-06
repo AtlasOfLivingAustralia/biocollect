@@ -1,3 +1,4 @@
+load("../../../mongo/utils/audit.js");
 let dryRun = true; // set to false to perform actual updates
 
 const adminUserId = "system";
@@ -197,11 +198,14 @@ db.output.find(query).forEach(output => {
                     "data.projectCollaborators": cleanedTopLevel.projectCollaborators,
                     "data.fundingType": cleanedTopLevel.fundingType,
                     "data.sitePreparationTable": cleanedSitePreparationTable,
-                    lastUpdated: new Date(),
+                    lastUpdated: ISODate(),
                     lastUpdatedUserId: adminUserId
                 }
             }
         );
+
+        var projectId = db.activity.findOne({activityId: output.activityId}, {projectId: 1})?.projectId;
+        audit(output, output.outputId, "au.org.ala.ecodata.Output", adminUserId, projectId, "Update");
 
         updated++;
     }
