@@ -197,7 +197,7 @@
                                 </div>
                             </g:if>
                             <g:if test="${isProjectContributingDataToALA}">
-                                <div class="col-12 ${divideSection ? "col-md-4" : "col-md-12"} text-right">
+                                <div class="col-12 ${divideSection ? "col-md-4" : "col-md-12"} text-end">
                                     <div class="btn-space">
                                         <a class="btn btn-sm btn-dark" data-bind="attr:{href: biocacheUrl}">
                                             <i class="fas fa-globe"></i> View in occurrence explorer
