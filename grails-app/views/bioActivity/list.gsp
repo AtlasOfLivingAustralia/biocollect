@@ -88,7 +88,7 @@
 </div>
 </g:if>
 <div class="main-content">
-    <g:render template="/bioActivity/activities"/>
+    <g:render template="/bioActivity/activities" model="[user: user]"/>
 </div>
 <div class="loading-message">
     <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
