@@ -433,7 +433,7 @@ function ProjectFinder(config) {
         };
 
         map.max =  pageWindow.pagination.resultsPerPage(); // Page size
-        map.sort = queryText.length > 0 ? '_score' : pageWindow.sortBy();
+        map.sort = pageWindow.sortBy();
 
         return map;
     };
@@ -869,8 +869,9 @@ function ProjectFinder(config) {
     $("#clearFilterByRegionButton").on('click',clearGeoSearch);
 
 
-    $('#pt-search-link').on('click',function () {
+    $('#pt-search-link').on('click', function () {
         self.setTextSearchSettings();
+        pageWindow.sortBy('_score');
         self.resetPageOffSet();
         self.doSearch();
     });
@@ -879,6 +880,8 @@ function ProjectFinder(config) {
         if (event.which == 13) {
             event.preventDefault();
             self.setTextSearchSettings();
+            pageWindow.sortBy('_score');
+            self.resetPageOffSet();
             self.doSearch();
         }
     });
