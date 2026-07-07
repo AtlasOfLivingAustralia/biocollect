@@ -204,8 +204,9 @@ db.output.find(query).forEach(output => {
             }
         );
 
-        var projectId = db.activity.findOne({activityId: output.activityId}, {projectId: 1})?.projectId;
-        audit(output, output.outputId, "au.org.ala.ecodata.Output", adminUserId, projectId, "Update");
+        var updatedOutput = db.output.findOne({ outputId: output.outputId });
+        var projectId = db.activity.findOne({ activityId: updatedOutput.activityId }, { projectId: 1 })?.projectId;
+        audit(updatedOutput, updatedOutput.outputId, "au.org.ala.ecodata.Output", adminUserId, projectId, "Update");
 
         updated++;
     }
