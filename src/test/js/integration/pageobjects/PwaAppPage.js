@@ -32,6 +32,14 @@ class PwaAppPage extends ReloadablePage {
         return $('#publishedTab');
     }
 
+    get myRecords() {
+        return $('#myRecords');
+    }
+
+    get allRecords() {
+        return $('#allRecords');
+    }
+
     get refreshPublishedBtn() {
         return $('#publishedRefresh');
     }
@@ -400,7 +408,14 @@ class PwaAppPage extends ReloadablePage {
         await this.publishedTab.click();
     }
 
+    async switchToAllRecords() {
+        await this.allRecords.waitForClickable({ timeout: 10000 });
+        await this.allRecords.click();
+    }
+
     async waitForPublishedRecord(timeout = 60000) {
+        await this.switchToAllRecords();
+
         let lastRefresh = 0;
 
         await browser.waitUntil(async () => {
