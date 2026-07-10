@@ -168,8 +168,8 @@ dependencies {
     runtimeOnly("org.springframework.boot:spring-boot-properties-migrator")
     implementation 'org.apache.groovy:groovy-dateutil'
     if (!Boolean.valueOf(inplace)) {
-        implementation "org.grails.plugins:ala-map-plugin:5.0-SNAPSHOT"
-        implementation "org.grails.plugins:ecodata-client-plugin:9.2-SNAPSHOT"
+        implementation "org.grails.plugins:ala-map-plugin:6.0-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:10.0-SNAPSHOT"
     }
 
     testImplementation "org.pac4j:pac4j-jwt:5.4.3"
