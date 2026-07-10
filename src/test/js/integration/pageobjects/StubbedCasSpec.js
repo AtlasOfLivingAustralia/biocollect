@@ -435,6 +435,10 @@ class StubbedCasSpec {
     }
 
     async takeScreenShot(name){
+        if (this.testConfig.disableCapture) {
+            return;
+        }
+
         const logsDir = path.resolve(this.testConfig.dirName || process.cwd(), 'logs');
         const screenshotPath = path.join(logsDir, `${name}.png`);
 

@@ -127,6 +127,7 @@ export CHROMEDRIVER_PATH="$(node -p "require('chromedriver').path")"
 echo "Using chromedriver at ${CHROMEDRIVER_PATH}"
 
 echo "Running functional tests"
+export DISABLE_FUNCTIONAL_TEST_CAPTURE=1
 node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js
 
 RETURN_VALUE=$?
