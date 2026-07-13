@@ -139,7 +139,7 @@
                             <i class="fas fa-download me-1"></i>
                             <g:message code="project.survey.downloadTemplate"/>
                         </a>
-                        <g:if test="${fc.userIsAlaAdmin()}">
+                        <g:if test="${fc.userIsHubAdmin()}">
                         <a class="btn btn-sm btn-dark"
                            data-bind="attr: { href: bulkImportUrl}"
                            title="<g:message code="project.survey.bulkupload.title"/>">
