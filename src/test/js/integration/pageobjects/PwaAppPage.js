@@ -1,15 +1,11 @@
-const StubbedCasSpec = require('./StubbedCasSpec.js')
-const ReloadablePage = require('./ReloadablePage.js')
+const StubbedCasSpec = require('./StubbedCasSpec.js');
+const ReloadablePage = require('./ReloadablePage.js');
+
 class PwaAppPage extends ReloadablePage {
     url = browser.options.testConfig.pwaUrl;
-    avatarSelector = 'header button.mantine-UnstyledButton-root, header .mantine-Avatar-root';
-
-    get getStarted() {
-        return $('#getStarted');
-    }
 
     get avatarTrigger() {
-        return $(this.avatarSelector);
+        return $('[data-testid="user-menu-avatar"]');
     }
 
     get signOut() {
@@ -20,16 +16,24 @@ class PwaAppPage extends ReloadablePage {
         return $('#signIn');
     }
 
-    get unpublishedTab() {
-        return $('#unpublishedTab');
-    }
-
     get refreshUnpublishedBtn() {
         return $('#unpublishedRefresh');
     }
 
     get publishedTab() {
         return $('#publishedTab');
+    }
+
+    get allRecords() {
+        return $('#allRecords');
+    }
+
+    get allRecordsSegment() {
+        return $('.mantine-Drawer-content input[type="radio"][value="project"]');
+    }
+
+    get publishedRecordsSegmentedControl() {
+        return $('.mantine-Drawer-content .mantine-SegmentedControl-root');
     }
 
     get refreshPublishedBtn() {
@@ -82,6 +86,10 @@ class PwaAppPage extends ReloadablePage {
 
     get modalConfirmationButton() {
         return $('#confirmDownloadModal');
+    }
+
+    get recordsCloseBtn() {
+        return $('#recordsClose');
     }
 
     get modalCloseBtn() {
@@ -138,43 +146,8 @@ class PwaAppPage extends ReloadablePage {
         }
     }
 
-    async clearAuthState() {
-        let localStorageTokenKey = this.localStorageTokenKey;
-
-        await browser.execute(function (localStorageTokenKey) {
-            localStorage.removeItem(localStorageTokenKey);
-            localStorage.removeItem('auth.offlineExpiryExtended');
-        }, localStorageTokenKey);
-    }
-
     async openUserMenu() {
-        try {
-            if (await this.signOut.isDisplayed()) {
-                return true;
-            }
-        }
-        catch {
-            // Ignore, menu is not open yet.
-        }
-
-        let avatarTrigger = this.avatarTrigger;
-        if (!await avatarTrigger.isExisting()) {
-            return false;
-        }
-
-        await avatarTrigger.scrollIntoView();
-
-        try {
-            await avatarTrigger.click();
-        }
-        catch {
-            await browser.execute(function (selector) {
-                const element = document.querySelector(selector);
-                if (element) {
-                    element.click();
-                }
-            }, this.avatarSelector);
-        }
+        await this.avatarTrigger.click();
 
         try {
             await this.signOut.waitForDisplayed({ timeout: 5000 });
@@ -185,21 +158,6 @@ class PwaAppPage extends ReloadablePage {
         }
     }
 
-    async maybeStart() {
-        let getStarted = this.getStarted;
-        if (await getStarted.isExisting() && await getStarted.isDisplayed()) {
-            await getStarted.click();
-            await getStarted.waitForDisplayed({ timeout: 30000, reverse: true });
-            return true;
-        }
-
-        return false;
-    }
-
-    async start() {
-        await this.maybeStart();
-    }
-
     async logout() {
         await this.switchToTopFrame();
 
@@ -207,38 +165,19 @@ class PwaAppPage extends ReloadablePage {
             return;
         }
 
-        if (await this.openUserMenu()) {
-            try {
-                await this.signOut.waitForEnabled({ timeout: 5000 });
-                await this.signOut.click();
-                await this.signIn.waitForDisplayed({ timeout: 15000 });
-                return;
-            }
-            catch {
-                // Fall back to clearing auth state directly.
-            }
-        }
-
-        await this.clearAuthState();
-        await browser.url(`${this.url}/signin`);
-        try {
-            await this.signIn.waitForDisplayed({ timeout: 15000 });
-        }
-        catch {
-            await browser.url(this.url);
-        }
+        await this.openUserMenu();
+        await this.signOut.waitForEnabled({ timeout: 5000 });
+        await this.signOut.click();
+        await this.signIn.waitForDisplayed({ timeout: 15000 });
     }
 
     async viewProject(projectId) {
-        await this.maybeStart();
-
         let projectElement = this.project(projectId);
         try {
             await projectElement.waitForExist({ timeout: 30000 });
         }
         catch {
             await this.open();
-            await this.maybeStart();
             await projectElement.waitForExist({ timeout: 30000 });
         }
         await projectElement.scrollIntoView();
@@ -265,7 +204,7 @@ class PwaAppPage extends ReloadablePage {
      * always fresh. The survey cards re-render (e.g. while download/sync state
      * updates), which would otherwise leave us holding a stale element reference.
      */
-    async scrollIntoViewAndWaitForDisplayed(getElement, selector, timeout = 30000) {
+    async scrollIntoViewAndWaitForDisplayed(getElement, timeout = 30000) {
         await browser.waitUntil(async () => {
             const element = await getElement();
             if (!await element.isExisting()) {
@@ -281,12 +220,12 @@ class PwaAppPage extends ReloadablePage {
                 // bounds) and retry with a freshly resolved element next poll.
                 return false;
             }
-        }, { timeout, interval: 500, timeoutMsg: `element ("${selector}") still not displayed after ${timeout}ms` });
+        }, { timeout, interval: 500, timeoutMsg: `element still not displayed after ${timeout}ms` });
     }
 
     async viewRecords(paId) {
         await this.waitForSurveyActions(paId);
-        await this.scrollIntoViewAndWaitForDisplayed(() => this.viewRecordsBtn(paId), `#${paId}ViewRecord`);
+        await this.scrollIntoViewAndWaitForDisplayed(() => this.viewRecordsBtn(paId));
         const btn = this.viewRecordsBtn(paId);
         await btn.waitForEnabled({ timeout: 30000 });
         try {
@@ -303,7 +242,7 @@ class PwaAppPage extends ReloadablePage {
 
     async downloadProjectActivity(paId) {
         await this.waitForSurveyActions(paId);
-        await this.scrollIntoViewAndWaitForDisplayed(() => this.projectActivityDownload(paId), `#${paId}Download`);
+        await this.scrollIntoViewAndWaitForDisplayed(() => this.projectActivityDownload(paId));
         const btn = this.projectActivityDownload(paId);
         await btn.waitForEnabled({ timeout: 30000 });
         try {
@@ -343,11 +282,14 @@ class PwaAppPage extends ReloadablePage {
 
     async addRecord(paId) {
         let btn = this.addRecordBtn(paId);
-        await btn.waitForExist({ timeout: 20000 });
-        await btn.scrollIntoView();
-        await btn.waitForClickable({ timeout: 10000 });
+        await this.scrollIntoViewAndWaitForDisplayed(() => btn);
         await btn.click();
         await this.pwaFrame.waitForExist({ timeout: 20000 });
+    }
+
+    async closeDrawer() {
+        await this.recordsCloseBtn.waitForExist({ timeout: 10000 });
+        await this.recordsCloseBtn.click();
     }
 
     async closeModal() {
@@ -398,9 +340,56 @@ class PwaAppPage extends ReloadablePage {
     async switchToPublishedTab() {
         await this.publishedTab.waitForClickable({ timeout: 10000 });
         await this.publishedTab.click();
+        await this.refreshPublishedBtn.waitForExist({ timeout: 10000 });
+    }
+
+    async waitForPublishedRecordsReady(timeout = 30000) {
+        await browser.waitUntil(async () => {
+            const segmentedControl = this.publishedRecordsSegmentedControl;
+            if (!await segmentedControl.isExisting()) {
+                return false;
+            }
+
+            return (await segmentedControl.getAttribute('data-disabled')) !== 'true';
+        }, { timeout, interval: 250, timeoutMsg: 'Published records view did not finish loading' });
+    }
+
+    async switchToAllRecords() {
+        await this.waitForPublishedRecordsReady();
+
+        await browser.waitUntil(async () => {
+            const segment = this.allRecordsSegment;
+            if (!await segment.isExisting()) {
+                return false;
+            }
+
+            if (await segment.isSelected()) {
+                return true;
+            }
+
+            await this.scrollIntoViewAndWaitForDisplayed(() => this.allRecords, 10000);
+
+            const clicked = await browser.execute(() => {
+                const input = document.querySelector('.mantine-Drawer-content input[type="radio"][value="project"]');
+                if (!input || input.disabled) {
+                    return false;
+                }
+
+                input.click();
+                return true;
+            });
+
+            if (!clicked) {
+                return false;
+            }
+
+            return await segment.isSelected();
+        }, { timeout: 10000, interval: 500, timeoutMsg: 'Failed to switch to All Records view' });
     }
 
     async waitForPublishedRecord(timeout = 60000) {
+        await this.switchToAllRecords();
+
         let lastRefresh = 0;
 
         await browser.waitUntil(async () => {
@@ -472,6 +461,7 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async uploadNthUnpublishedRecord(number = 0) {
+        console.log('Waiting for enabled upload button...');
         await browser.waitUntil(async () => {
             const buttons = await this.uploadUnpublishedRecordBtn;
             const button = buttons[number];
@@ -488,7 +478,9 @@ class PwaAppPage extends ReloadablePage {
 
         const buttons = await this.uploadUnpublishedRecordBtn;
         const target = buttons[number];
-        await target.scrollIntoView();
+        await this.scrollIntoViewAndWaitForDisplayed(() => target);
+
+        console.log('Waiting for upload button clickable...');
         await target.waitForClickable({ timeout: 10000 });
         await target.click();
     }
