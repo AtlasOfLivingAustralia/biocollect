@@ -20,8 +20,8 @@ var HubSettingsViewModel = function (programsModel, options) {
 
     self.transients = {
         programNames: programNames,
-        availableSkins: ['bs4'],
-        configurableTemplates: ['bs4'],
+        availableSkins: ['bs5'],
+        configurableTemplates: ['bs5'],
         defaultHomePage: '/project/citizenScience',
         hubHomePage: '/hub/index'
     };
@@ -637,7 +637,7 @@ var LinkViewModel = function (config) {
     self.role = ko.observable(config.role || '');
     self.introductoryText = ko.observable(config.introductoryText || '');
     self.launchModal = function () {
-        $(elementId).modal();
+        Biocollect.Bootstrap5.showModal(elementId);
         self.initialiseListeners();
     }
     self.initialiseListeners = function () {
@@ -655,7 +655,7 @@ var LinkViewModel = function (config) {
     self.saveIntroductoryText = function () {
         var editor = $(ckeditorElement)[0].editor;
         self.introductoryText(editor && editor.getData());
-        $(elementId).modal('hide');
+        Biocollect.Bootstrap5.hideModal(elementId);
     }
 };
 
@@ -843,6 +843,7 @@ function FacetConfigurationViewModel(config, availableFacets) {
             facetVM.state(facet.state);
             facetVM.title(facet.title);
             facetVM.facetTermType(facet.facetTermType || facetVM.facetTermType());
+            facetVM.sortOrder(facet.sortOrder || facetVM.sortOrder());
             facetVM.helpText(facet.helpText || facetVM.helpText());
             facetVM.interval(facet.interval || facetVM.interval());
             facetVM.chartjsType(facet.chartjsType);
@@ -869,6 +870,7 @@ function FacetViewModel(config){
     self.name = ko.observable(config.name || '');
     self.helpText = ko.observable(config.helpText||'');
     self.facetTermType = ko.observable(config.facetTermType||'Default');
+    self.sortOrder = ko.observable(config.sortOrder || 'count');
     self.interval = ko.observable(config.interval || 10);
     self.chartjsType = ko.observable(config.chartjsType || 'none');
     self.chartjsConfig = ko.observable(config.chartjsConfig || '');

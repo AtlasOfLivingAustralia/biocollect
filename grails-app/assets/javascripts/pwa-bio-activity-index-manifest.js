@@ -1,6 +1,6 @@
 //= require jstz/jstz.min.js
-//= require base-bs4.js
-//= require common-bs4.js
+//= require base-bs5.js
+//= require common-bs5.js
 //= require knockout-custom-bindings.js
 //= require forms-manifest.js
 //= require enterBioActivityData.js

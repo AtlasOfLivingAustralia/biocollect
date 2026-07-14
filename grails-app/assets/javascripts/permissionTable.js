@@ -3,19 +3,19 @@
  */
 function initialise(roles, currentUserId, projectId) {
     var table = $('#member-list').DataTable({
-        "bFilter": false,
-        "processing": true,
-        "serverSide": true,
-        "ajax": fcConfig.getMembersForProjectIdPaginatedUrl + "/" + projectId,
-        "columns": [{
+        searching: false,
+        processing: true,
+        serverSide: true,
+        ajax: fcConfig.getMembersForProjectIdPaginatedUrl + "/" + projectId,
+        columns: [{
             data: 'userId',
             name: 'userId',
-            bSortable: false
+            orderable: false
         },
             {
                 data: 'displayName',
                 name: 'displayName',
-                bSortable: false
+                orderable: false
             },
             {
                 data: 'role',
@@ -37,7 +37,7 @@ function initialise(roles, currentUserId, projectId) {
                     });
                     return $select.prop("outerHTML");
                 },
-                bSortable: false
+                orderable: false
             },
             {
                 render: function (data, type, row) {
@@ -48,7 +48,7 @@ function initialise(roles, currentUserId, projectId) {
                         return '<a class="btn btn-sm btn-danger tooltips href="" title="remove this user and role combination"><i class="far fa-trash-alt"></i></a>';
                     }
                 },
-                bSortable: false
+                orderable: false
             }]
     });
 

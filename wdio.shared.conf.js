@@ -3,6 +3,13 @@ const path = require('node:path')
 
 // const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
+function isFunctionalTestCaptureDisabled() {
+    const value = process.env.DISABLE_FUNCTIONAL_TEST_CAPTURE
+    return /^(1|true|yes)$/i.test(value || '')
+}
+
+const captureDisabled = isFunctionalTestCaptureDisabled()
+
 const config = {
     //
     // ====================
@@ -52,8 +59,8 @@ const config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'trace',
-    outputDir: path.resolve(__dirname, 'logs'),
+    logLevel: 'info',
+    //outputDir: path.resolve(__dirname, 'logs'),
     //
     // Set specific log levels per logger
     // loggers:
@@ -65,10 +72,10 @@ const config = {
     // - @wdio/cli, @wdio/config, @wdio/sync, @wdio/utils
     // Level of logging verbosity: trace | debug | info | warn | error | silent
     logLevels: {
-        webdriver: 'trace',
-        '@wdio/devtools-service': 'trace',
-        '@wdio/jasmine-framework': 'trace',
-        '@wdio/local-runner': 'trace'
+        webdriver: 'warn',
+        '@wdio/devtools-service': 'warn',
+        '@wdio/jasmine-framework': 'info',
+        '@wdio/local-runner': 'info'
     },
     //
     // If you only want to run your tests until a specific amount of tests have failed use
@@ -109,7 +116,7 @@ const config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter.html
-    reporters: ['spec', ['video', {
+    reporters: captureDisabled ? ['spec'] : ['spec', ['video', {
         saveAllVideos: true,       // If true, also saves videos for successful test cases
         videoSlowdownMultiplier: 10, // Higher to get slower videos, lower for faster videos [Value 1-100]
     }]],
@@ -259,4 +266,4 @@ const config = {
     //}
 }
 
-module.exports = { config };
+module.exports = { config, isFunctionalTestCaptureDisabled };

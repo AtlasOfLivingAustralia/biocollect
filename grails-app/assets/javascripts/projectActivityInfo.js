@@ -50,7 +50,7 @@ var pActivityInfo = function(o, selected, startDate, organisationName, pActivity
     };
 
     self.listActivityRecords = function() {
-        $('#data-tab').tab('show');
+        Biocollect.Bootstrap5.showTab('#data-tab');
         if (!_.isUndefined(activitiesAndRecordsViewModel)) {
             activitiesAndRecordsViewModel.selectSurveyFacet(self.name());
         }

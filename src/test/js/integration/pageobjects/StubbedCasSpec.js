@@ -6,6 +6,7 @@ const {startServer, stopServer,blockSite, unblockSite} = require('../utils/proxy
 const util = require('node:util');
 const execFile = util.promisify(require('node:child_process').execFile);
 const path = require('node:path');
+const fs = require('node:fs');
 class StubbedCasSpec {
     READ_ONLY_USER_ID = '1000'
     GRANT_MANAGER_USER_ID = '1001'
@@ -59,8 +60,12 @@ class StubbedCasSpec {
         return tokenSet;
     }
 
+    get pwaOidcAuthority() {
+        return `${this.testConfig.wireMockBaseUrl}/cas/oidc`;
+    }
+
     get localStorageTokenKey() {
-        return `oidc.user:${browser.options.testConfig.wireMockBaseUrl}/cas/oidc:${this.testConfig.oidc.clientId}`
+        return `oidc.user:${this.pwaOidcAuthority}:${this.testConfig.oidc.clientId}`
     }
 
     async loginAsUser(userId) {
@@ -94,11 +99,11 @@ class StubbedCasSpec {
     }
 
     async login(userDetails) {
-      if (this.loggedInUser != userDetails.userId) {
-          await this.logout()
-      }
-      await this.oidcLogin(userDetails)
-      this.loggedInUser = userDetails.userId;
+        if (this.loggedInUser != userDetails.userId) {
+            await this.logout()
+        }
+        await this.oidcLogin(userDetails)
+        this.loggedInUser = userDetails.userId;
     }
 
     async logout(returnPage = '') {
@@ -177,8 +182,9 @@ class StubbedCasSpec {
         return {
             access_token: idToken,
             id_token: idToken,
-            refresh_token: idToken,
-            token_type: 'bearer',
+            refresh_token: null,
+            token_type: 'Bearer',
+            session_state: 'test_sid',
             expires_in: expiresIn,
             expires_at: expiresAt,
             scope: this.testConfig.oidc.scope
@@ -190,14 +196,15 @@ class StubbedCasSpec {
         let expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
         console.log('Expires In: ', expiresIn);
         console.log('Expires At: ', expiresAt);
-        let payload=  {
+        let payload = {
             at_hash: 'KX-L2Fj6Z9ow-gOpYfehRA',
             sub: userDetails.userId,
+            userid: userDetails.userId,
             username: userDetails.userId,
             email_verified: true,
             role: roles,
             amr: 'DelegatedClientAuthenticationHandler',
-            iss: `${this.testConfig.wireMockBaseUrl}/cas/oidc`,
+            iss: this.pwaOidcAuthority,
             preferred_username: userDetails.email,
             given_name: userDetails.firstName,
             family_name: userDetails.lastName,
@@ -292,7 +299,7 @@ class StubbedCasSpec {
                 method: 'GET',
                 url: '/cas/oidc/oidcProfile',
                 headers: {
-                    'Authorization':  {
+                    'Authorization': {
                         "equalTo": `Bearer ${userToken}`
                     }
                 }
@@ -365,12 +372,15 @@ class StubbedCasSpec {
         return this.privateKey;
     }
 
-    async signPayload(payload){
+    async signPayload(payload) {
         await this.createPrivateKey();
-        let accessToken = await jose.JWS.createSign({format:"compact", fields: {
+        let accessToken = await jose.JWS.createSign({
+            format: "compact",
+            fields: {
                 alg: 'RS256',
                 kid: "localhost:8018",
-            }}, this.privateKey)
+            }
+        }, this.privateKey)
             .update(JSON.stringify(payload))
             .final();
         console.log("Access Token Created: ", accessToken);
@@ -425,8 +435,20 @@ class StubbedCasSpec {
     }
 
     async takeScreenShot(name){
-        var body = await $("body");
-        await body.saveScreenshot(`./logs/${name}.png`);
+        if (this.testConfig.disableCapture) {
+            return;
+        }
+
+        const logsDir = path.resolve(this.testConfig.dirName || process.cwd(), 'logs');
+        const screenshotPath = path.join(logsDir, `${name}.png`);
+
+        try {
+            fs.mkdirSync(logsDir, { recursive: true });
+            await browser.saveScreenshot(screenshotPath);
+        }
+        catch (error) {
+            console.warn(`Unable to save screenshot ${screenshotPath}:`, error);
+        }
     }
 
     /**
@@ -436,7 +458,7 @@ class StubbedCasSpec {
     async dropPin() {
         // Select the marker draw button
         const markerDraw = $('.leaflet-draw-draw-marker');
-        await markerDraw.waitForDisplayed();
+        await markerDraw.waitForDisplayed({timeout: 30000});
 
         // Move to the marker button and click it
         await markerDraw.moveTo();
@@ -444,7 +466,7 @@ class StubbedCasSpec {
 
         // Wait for the draw actions menu to appear
         const drawActions = $('.leaflet-draw-actions'); // Get the first draw action
-        await drawActions.waitForDisplayed();
+        await drawActions.waitForDisplayed({timeout: 10000});
 
         // click on the map pane to drop the pin
         const mapPane = await $('.leaflet-map-pane');
@@ -453,7 +475,7 @@ class StubbedCasSpec {
 
         // wait for the point to be added to dropdown
         const dropdown = $('.select2-selection__rendered');
-        await dropdown.waitForDisplayed();
+        await dropdown.waitForDisplayed({timeout: 30000});
     }
 }
 

@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -25,11 +25,16 @@ jobs:
           distribution: 'adopt'
 
       - name: Install nodejs
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
-      - run: npm install
+      - name: Install pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.12.0 --activate
+
+      - run: pnpm ci
 
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
@@ -94,7 +99,7 @@ jobs:
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
 
       - name: Run BioCollect functional tests
-        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev /tmp/biocollect-pwa
         continue-on-error: false
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}

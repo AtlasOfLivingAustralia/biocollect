@@ -7,7 +7,8 @@
  * = require works-project.css
  * = require blog.css
  * = require facets-filter-view.css
- * = require image-gallery.css
+ *= require fancybox/jquery.fancybox.css
+ *= require image-gallery.css
  * = require datatables-manifest.css
  * = require project-daystogo.css
  * = require projectSpeciesFieldsConfiguration.css

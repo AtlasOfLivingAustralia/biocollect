@@ -51,18 +51,15 @@
         bulkUpload: false,
         enableOffline: true,
         isCaching: ${params.getBoolean('cache', false)},
-        globalReturnToAddress: '${createLink(uri: "/pwa/offlineList")}',
-        surveyReturnToAddress: '${createLink(uri: "/pwa/offlineList", params:  [projectActivityId: projectActivityId])}',
         ${(params?.version) ? ',version: ' + params?.version : ''}
         </g:applyCodec>
         },
         here = document.location.href;
-        fcConfig.returnTo = biocollect.utils.getReturnToAddressForPWA()
     </asset:script>
 </head>
 
 <body>
-    <div class="container">
+    <div class="px-3 py-3">
         <h1><g:message code="pwa.view.record"/></h1>
         <bc:koLoading>
             <div id="form-placeholder"></div>
@@ -72,10 +69,13 @@
             var urlObject = new URL(window.location.href)
             var activityId = getActivityId();
 
-            $("#backButton").on('click', function () {
-                // "${createLink(controller: 'bioActivity', action: 'pwaOfflineList', params: [projectActivityId: projectActivityId])}"
-                document.location.href = fcConfig.returnTo;
-            })
+            function closePWAFrame() {
+                if (window.parent) {
+                    window.parent.postMessage({ event: 'close-frame' }, '*');
+                }
+            }
+
+            $("#backButton").on('click', closePWAFrame);
 
             function getMetadataAndInitialise () {
                 var projectActivityMetadataPromise = entities.getProjectActivityMetadata(fcConfig.projectActivityId, activityId);
@@ -139,11 +139,9 @@
                     if (window.viewModel)
                         return
 
-                    $('.helphover').popover({animation: true, trigger: 'hover'});
+                    Biocollect.Bootstrap5.initPopovers('.helphover', {animation: true, trigger: 'hover'});
 
-                    $('#cancel').on('click', function () {
-                        document.location.href = returnTo;
-                    });
+                    $('#cancel').on('click', closePWAFrame);
 
                     function ViewModel(act, site, project, metaModel, pActivity) {
                         var self = this;

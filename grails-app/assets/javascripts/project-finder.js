@@ -84,8 +84,8 @@ function ProjectFinder(config) {
             self.resetPageOffSet();
         };
 
-        vm.getFacetTerms = function (facets) {
-            return self.getFacetTerms(facets);
+        vm.getFacetTerms = function (facets, fsort) {
+            return self.getFacetTerms(facets, fsort);
         };
 
         vm.reset = function () {
@@ -389,7 +389,8 @@ function ProjectFinder(config) {
             fq.push(facet.getQueryText());
         });
 
-        var query = this.getQuery(true);
+        var queryText = this.getQuery(true);
+        var query = queryText;
         if (query.length > 0) {
             query = query + ((queryString.length > 0)? ' AND ' + queryString: "");
         } else {
@@ -426,7 +427,7 @@ function ProjectFinder(config) {
             projectId: selectedProjectId,
             q: query,
             queryList: queryList,
-            queryText: this.getQuery(true),
+            queryText: queryText,
             // sending the value for logging use
             excludeNationwide: excludeNationwide
         };
@@ -528,11 +529,12 @@ function ProjectFinder(config) {
     /**
      * this is the function calling server with the latest query.
      */
-    this.getFacetTerms = function (facets) {
+    this.getFacetTerms = function (facets, fsort) {
         refreshSearch = false;
         var params = self.getParams();
         params.flimit = -1;
         params.facets = facets;
+        params.fsort = fsort || 'count';
         params.max = 0;
 
         return $.ajax({
@@ -614,7 +616,7 @@ function ProjectFinder(config) {
         // Results view
         var savedViewMode = amplify.store('pt-view-state');
         savedViewMode = savedViewMode || "grid-tab"; //Default is the new map-popup view
-        $('.project-finder-tab a#'+savedViewMode).tab('show');
+        Biocollect.Bootstrap5.showTab('.project-finder-tab a#' + savedViewMode);
 
         // Filters view
         var showPanel = amplify.store('pt-filter');
@@ -817,7 +819,7 @@ function ProjectFinder(config) {
         amplify.store('pt-filter', active);
     });
 
-    $(".project-finder-tab a[data-toggle='tab']").on('shown.bs.tab', function (event) {
+    $(".project-finder-tab a[data-bs-toggle='tab']").on('shown.bs.tab', function (event) {
         // var viewMode = getActiveButtonValues($("#pt-view"));
         // pageWindow.listView(viewMode[0] == "listView");
         // pageWindow.viewMode(viewMode[0])
@@ -867,8 +869,9 @@ function ProjectFinder(config) {
     $("#clearFilterByRegionButton").on('click',clearGeoSearch);
 
 
-    $('#pt-search-link').on('click',function () {
+    $('#pt-search-link').on('click', function () {
         self.setTextSearchSettings();
+        pageWindow.sortBy('_score');
         self.resetPageOffSet();
         self.doSearch();
     });
@@ -877,6 +880,8 @@ function ProjectFinder(config) {
         if (event.which == 13) {
             event.preventDefault();
             self.setTextSearchSettings();
+            pageWindow.sortBy('_score');
+            self.resetPageOffSet();
             self.doSearch();
         }
     });

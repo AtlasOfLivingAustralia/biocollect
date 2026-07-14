@@ -5,7 +5,7 @@
         <div class="col-12 col-lg-6 d-flex" data-bind="visible: name">
             <div class="record flex-grow-1">
                 <div class="row">
-                    <div class="col-12 pl-sm-1">
+                    <div class="col-12 ps-sm-1">
                         <h4><a data-bind="attr:{href:getSiteUrl()}, text: name"></a></h4>
                         <ul class="detail-list">
                             <li data-bind="visible: description"><span class="label"><g:message

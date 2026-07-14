@@ -10,13 +10,13 @@
             <div class="row">
                 %{-- quick links --}%
                 <div class="col-12">
-                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-end']}"></g:render>
                 </div>
                 %{--quick links END--}%
             </div>
         </g:if>
 <g:if test="${isUserAdminModeratorOrEditor && pActivity?.adminVerification}">
-    <div class="form-group row">
+    <div class="mb-3 row">
         <label for="verificationStatusName" class="col-sm-2 col-form-label">
             <g:message code="record.edit.verificationStatus"/>
             <a href="#" class="helphover"
@@ -26,7 +26,7 @@
             </a>
         </label>
         <div class="col-4">
-            <select name="verificationStatusName" class="custom-select" data-bind="options:verificationStatusOptions, optionsText:'displayName', optionsValue:'code', value: verificationStatus"></select>
+            <select name="verificationStatusName" class="form-select" data-bind="options:verificationStatusOptions, optionsText:'displayName', optionsValue:'code', value: verificationStatus"></select>
         </div>
     </div>
 </g:if>
@@ -94,17 +94,21 @@
         <g:render template="/shared/termsOfUse"/>
         <br>
         <g:if test="${!preview}">
-            <!-- ko ifnot: window.unpublished -->
             <button type="button" id="save" class="btn btn-primary-dark btn-lg"><i class="fas fa-upload"></i> <g:message code="g.submit"/></button>
-            <!-- /ko -->
+            <g:if test="${isPWA}">
             <!-- ko if: window.unpublished -->
-            <button type="button" id="saveOffline" class="btn btn-primary-dark btn-lg"><i class="fas fa-hdd"></i> <g:message code="bioactivity.save"/></button>
+                <button type="button" id="saveChanges" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
+                <button type="button" id="saveAndClose" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.saveAndClose" default="Save and close"/></button>
             <!-- /ko -->
+            </g:if>
         </g:if>
         <g:if test="${bulkUpload || (showCreate && !mobile && !preview)}">
             <button type="button" id="cancel" class="btn btn-dark btn-lg"><i class="far fa-times-circle"></i> <g:message code="g.cancel"/></button>
         </g:if>
     </div>
+    <!-- ko if: window.unpublished -->
+        <label class="mt-3"><b>Last autosave: </b><span data-bind="text: $root.lastAutosave"></span></label>
+    <!-- /ko -->
 </g:if>
 
 <g:if env="development" test="${!printView && !preview}">
@@ -138,7 +142,7 @@
 
 <div id="timeoutMessage" class="hide">
 
-    <span class='badge badge-danger'>Important</span><h4>There was an error while trying to save your changes.</h4>
+    <span class='badge text-bg-danger'>Important</span><h4>There was an error while trying to save your changes.</h4>
 
     <p>This could be because your login has timed out or the internet is unavailable.</p>
 

@@ -256,6 +256,7 @@ class BioActivityController {
                 String projectId = model.projectId = pActivity.projectId
                 Map project = projectService.get(projectId, "brief", params?.version)
                 if (!project.error) {
+                    model.isPWA = true
                     model.project = project
                     model.pActivity = pActivity
                     model.type = pActivity.pActivityFormName
@@ -290,6 +291,7 @@ class BioActivityController {
                 String projectId = model.projectId = pActivity.projectId
                 Map project = projectService.get(projectId, "brief", params?.version)
                 if (!project.error) {
+                    model.isPWA = true
                     model.project = project
                     model.pActivity = pActivity
                     model.type = pActivity.pActivityFormName
@@ -404,9 +406,6 @@ class BioActivityController {
         render view: 'pwaBioActivityIndex', model: model
     }
 
-    def pwaOfflineList() {
-    }
-
     def pwa () {
     }
 
@@ -414,6 +413,9 @@ class BioActivityController {
     }
 
     def pwaSettings () {
+    }
+
+    def pwaSync () {
     }
 
     /**
@@ -868,6 +870,7 @@ class BioActivityController {
                 model: [
                         view: 'allrecords',
                         contentURI: '/bioActivity/allRecords',
+                        user: userService.user,
                         title: messageSource.getMessage('allrecords.title', [].toArray(), '', Locale.default),
                         userIsAdmin: userIsAdmin,
                         returnTo: g.createLink(controller: 'bioActivity', action: 'allRecords')
@@ -887,6 +890,7 @@ class BioActivityController {
                         view: 'bulkimport',
                         bulkImportId: id,
                         contentURI: '/bioActivity/bulkimport',
+                        user: userService.user,
                         title: messageSource.getMessage('bulkimport.title', [].toArray(), '', Locale.default),
                         userIsAdmin: userIsAdmin,
                         returnTo: g.createLink(controller: 'bulkImport', action: 'index', params: [id: id])
@@ -909,6 +913,7 @@ class BioActivityController {
                 model: [
                         view: view,
                         contentURI: '/bioActivity/projectRecords',
+                        user: userService.user,
                         projectId: id,
                         project: project,
                         title: messageSource.getMessage('project.records.title', [].toArray(), '', Locale.default),
@@ -1028,6 +1033,7 @@ class BioActivityController {
         render result as JSON
     }
 
+    @PreAuthorise(accessLevel = "loggedInUser")
     def downloadProjectData() {
         response.setContentType("application/zip")
         response.setHeader('Content-Disposition', 'Attachment;Filename="data.zip"')
@@ -1067,8 +1073,9 @@ class BioActivityController {
         List facetConfig = hubSettings.getFacetConfigForPage(projectActivityService.getDataPagePropertyFromViewName(params.view)) ?: activityService.getDefaultFacets()
 
         if(!queryParams.facets){
-            String facets = HubSettings.getFacetConfigForElasticSearch(facetConfig)?.collect{ it.name }?.join(',')
-            queryParams.facets = facets
+            List facetsConfig = HubSettings.getFacetConfigForElasticSearch(facetConfig)
+            queryParams.facets = facetsConfig?.collect { it.name }?.join(',')
+            queryParams.fsort = facetsConfig?.collect { it.sortOrder ?: 'count' }?.join(',')
         }
 
         List presenceAbsenceFacets = HubSettings.getFacetConfigWithPresenceAbsenceSetting(facetConfig)

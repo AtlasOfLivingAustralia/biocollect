@@ -3,7 +3,7 @@
         <!-- ko if: documents().length > 0 -->
             <div data-bind="foreach: { data: documents, afterAdd: showListItem, beforeRemove: hideListItem }">
                 <div data-bind="{ if: (role() == '${filterBy}' || 'all' == '${filterBy}') && role() != '${ignore}' && role() != 'variation' }">
-                    <div class="media" data-bind="template:ko.utils.unwrapObservable(type) === 'image' ? 'imageDocEditTmpl' : 'objDocEditTmpl'"></div>
+                    <div class="d-flex" data-bind="template:ko.utils.unwrapObservable(type) === 'image' ? 'imageDocEditTmpl' : 'objDocEditTmpl'"></div>
                 </div>
             </div>
         <!-- /ko -->

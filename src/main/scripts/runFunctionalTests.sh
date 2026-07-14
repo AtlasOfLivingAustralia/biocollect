@@ -1,6 +1,22 @@
 #!/bin/bash -v
 
 BIOCOLLECT_DIR=$PWD
+BACKGROUND_PIDS=()
+
+cleanup() {
+    local pid
+    for pid in "${BACKGROUND_PIDS[@]}"; do
+        kill "$pid" 2>/dev/null || true
+    done
+}
+trap cleanup EXIT
+
+start_background() {
+    local log_name=$1
+    shift
+    "$@" >> "$BIOCOLLECT_DIR/logs/${log_name}.log" 2>&1 &
+    BACKGROUND_PIDS+=($!)
+}
 
 GEB_ENV=$1
 if [ -z $GEB_ENV ]; then
@@ -63,14 +79,16 @@ echo "Hosts file configuration"
 cat /etc/hosts
 
 cd $BIOCOLLECT_DIR
+mkdir -p "$BIOCOLLECT_DIR/logs"
 echo "Starting wire mock"
 ./gradlew startWireMock
 
 cd $PWA_LOCAL_DIR
 echo "Starting biocollect-pwa"
-cd $PWA_LOCAL_DIR
-npm install
-npm run run:functionaltest &
+
+echo "Installing PWA pnpm dependencies"
+pnpm ci
+start_background pwa pnpm run:functionaltest
 # check that pwa app is running
 while ! nc -z localhost 5173; do
   echo "Waiting for pwa app to start on port 5173..."
@@ -81,7 +99,7 @@ done
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
-GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest &
+start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
 
 # check that ecodata is running
 while ! nc -z localhost 8080; do
@@ -92,7 +110,7 @@ done
 
 cd $BIOCOLLECT_DIR
 echo "Starting biocollect from `pwd`"
-GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087 &
+start_background biocollect env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087
 # check that biocollect is running
 while ! nc -z localhost 8087; do
   echo "Waiting for biocollect to start on port 8087..."
@@ -100,16 +118,21 @@ while ! nc -z localhost 8087; do
 done
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
 
+echo "Installing BioCollect pnpm dependencies"
+pnpm ci
+
+echo "Installing chromedriver matching system Chrome"
+DETECT_CHROMEDRIVER_VERSION=true pnpm rebuild chromedriver
+export CHROMEDRIVER_PATH="$(node -p "require('chromedriver').path")"
+echo "Using chromedriver at ${CHROMEDRIVER_PATH}"
+
 echo "Running functional tests"
+export DISABLE_FUNCTIONAL_TEST_CAPTURE=1
 node_modules/@wdio/cli/bin/wdio.js run wdio.local.conf.js
 
 RETURN_VALUE=$?
 
-jobs
-
-kill %4
-kill %3
-kill %2
-kill %1
+trap - EXIT
+cleanup
 
 exit $RETURN_VALUE

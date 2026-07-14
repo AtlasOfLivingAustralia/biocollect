@@ -7,42 +7,75 @@
             <div class="container-fluid data-expander data-container show">
                 <div id="sortBar" class="row align-items-end">
                     <div class="col-12 col-md-4 mb-3 order-1 order-md-0">
-                        <button data-toggle="collapse" data-target=".data-expander"
+                        <button data-bs-toggle="collapse" data-bs-target=".data-expander"
                                 aria-expanded="true" aria-controls="filters"
                                 class="btn btn-dark" title="Filter Data">
                             <i class="fas fa-filter"></i> Filter Data
                         </button>
                     </div>
-                    <div class="col col-sm-6 col-md-4 mb-3 text-right text-md-center order-2 order-md-1 pl-1">
-                        <div class="btn-group">
-                            <div class="btn-group nav nav-tabs" role="group" aria-label="Catalogue Display Options">
-                                <a class="btn btn-outline-dark" id="data-grid-tab" data-toggle="tab" type="button"
-                                   href="#dataGrid" title="<g:message code="data.grid.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.grid.title"/>">
-                                    <i class="fas fa-th-large"></i>
-                                </a>
-                                <a class="btn btn-outline-dark active" id="data-list-tab" data-toggle="tab" type="button"
-                                   href="#recordVis" title="<g:message code="data.list.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.list.title"/>" aria-selected="true">
-                                    <i class="fas fa-list"></i>
-                                </a>
-                                <a class="btn btn-outline-dark" id="data-map-tab"
-                                   data-bind="attr:{'data-toggle': activities().length > 0 ? 'tab' : ''}" type="button"
-                                   href="#mapVis" title="<g:message code="data.map.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.map.title"/>">
-                                    <i class="far fa-map"></i>
-                                </a>
-                                <a class="btn btn-outline-dark" id="data-image-tab" data-toggle="tab" type="button"
-                                   href="#imageGallery" title="<g:message code="data.image.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.image.title"/>">
-                                    <i class="far fa-images"></i>
-                                </a>
-                                <a class="btn btn-outline-dark" id="data-chart-tab" data-toggle="tab" type="button"
-                                   href="#chartGraph" title="<g:message code="data.chart.title"/>"
-                                   role="tab" aria-controls="<g:message code="data.chart.title"/>">
-                                    <i class="fas fa-chart-pie"></i>
-                                </a>
-                            </div>
+                    <div class="col col-sm-6 col-md-4 mb-3 text-end text-md-center order-2 order-md-1 ps-1">
+                        <div class="btn-group activity-display-tabs" role="tablist" aria-label="Catalogue Display Options">
+                            <button class="btn btn-outline-dark"
+                                    id="data-grid-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#dataGrid"
+                                    title="${g.message(code:'data.grid.title')}"
+                                    role="tab"
+                                    aria-controls="dataGrid"
+                                    aria-selected="false">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+
+                            <button class="btn btn-outline-dark active"
+                                    id="data-list-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#recordVis"
+                                    title="${g.message(code:'data.list.title')}"
+                                    role="tab"
+                                    aria-controls="recordVis"
+                                    aria-selected="true">
+                                <i class="fas fa-list"></i>
+                            </button>
+
+                            <button class="btn btn-outline-dark"
+                                    id="data-map-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#mapVis"
+                                    title="${g.message(code:'data.map.title')}"
+                                    role="tab"
+                                    aria-controls="mapVis"
+                                    aria-selected="false">
+                                <i class="far fa-map"></i>
+                            </button>
+
+                            <button class="btn btn-outline-dark"
+                                    id="data-image-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#imageGallery"
+                                    title="${g.message(code:'data.image.title')}"
+                                    role="tab"
+                                    aria-controls="imageGallery"
+                                    aria-selected="false">
+                                <i class="far fa-images"></i>
+                            </button>
+
+                            <!-- ko if: chartjsManager() && chartjsManager().chartjsListShow() -->
+                            <button class="btn btn-outline-dark"
+                                    id="data-chart-tab"
+                                    type="button"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#chartGraph"
+                                    title="${g.message(code:'data.chart.title')}"
+                                    role="tab"
+                                    aria-controls="chartGraph"
+                                    aria-selected="false">
+                                <i class="fas fa-chart-pie"></i>
+                            </button>
+                            <!-- /ko -->
                         </div>
                     </div>
 
@@ -51,52 +84,57 @@
                             <g:render template="/bioActivity/search"/>
                         </div>
 
-                        <div id="download-data"
-                             class="mt-2 d-flex flex-column align-items-end"
-                             data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
+                        <g:if test="${user}">
+                            <div id="download-data"
+                                 class="mt-2 d-flex flex-column align-items-end"
+                                 data-email-threshold="${grailsApplication.config.download.email.threshold ?: 200}">
 
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary" data-bind="click: download">Download</button>
-                                <button type="button"
-                                        class="btn btn-primary dropdown-toggle dropdown-toggle-split"
-                                        data-toggle="dropdown"
-                                        aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <span class="sr-only"><g:message code="split.download.dropdown"/></span>
-                                </button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary" data-bind="click: download">
+                                        <i class="fas fa-download"></i>
+                                        Download
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                        <span class="visually-hidden"><g:message code="split.download.dropdown"/></span>
+                                    </button>
 
-                                <div class="dropdown-menu dropdown-menu-right p-3 download-options">
-                                    <strong class="d-block mb-2"><g:message code="split.download.options"/></strong>
+                                    <div class="dropdown-menu dropdown-menu-end p-3 download-options">
+                                        <strong class="d-block mb-2"><g:message code="split.download.options"/></strong>
 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
-                                        <label class="form-check-label" for="dl-include-data">
-                                            <g:message code="split.download.data"/>
-                                        </label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="dl-include-data" checked>
+                                            <label class="form-check-label" for="dl-include-data">
+                                                <g:message code="split.download.data"/>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="dl-include-images">
+                                            <label class="form-check-label" for="dl-include-images">
+                                                <g:message code="split.download.images"/>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="dl-include-shapefiles">
+                                            <label class="form-check-label" for="dl-include-shapefiles">
+                                                <g:message code="split.download.shapefiles"/>
+                                            </label>
+                                        </div>
+
+                                        <div class="dropdown-divider"></div>
+
+                                        <small class="text-muted d-block">
+                                            <g:message code="split.download.info"/>
+                                        </small>
                                     </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="dl-include-images">
-                                        <label class="form-check-label" for="dl-include-images">
-                                            <g:message code="split.download.images"/>
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="dl-include-shapefiles">
-                                        <label class="form-check-label" for="dl-include-shapefiles">
-                                            <g:message code="split.download.shapefiles"/>
-                                        </label>
-                                    </div>
-
-                                    <div class="dropdown-divider"></div>
-
-                                    <small class="text-muted d-block">
-                                        <g:message code="split.download.info"/>
-                                    </small>
                                 </div>
                             </div>
-                        </div>
+                        </g:if>
                     </div>
                 </div>
 
@@ -130,22 +168,24 @@
                                 Indicates species absence record
                             </span>
                         </div>
-                        <div class="order-1 order-xl-2 col-6 col-xl-auto flex-shrink-1 text-right">
+                        <div class="order-1 order-xl-2 col-6 col-xl-auto flex-shrink-1 text-end">
                             <span class="d-none" id="downloadStartedMsg"><i class="fa fa-spin fa-spinner"></i> Preparing download, please wait...</span>
                         </div>
                     </div>
-                    <div class="row" data-bind="visible: transients.showEmailDownloadPrompt()">
-                        <div class="col-12">
-                            <div class="mb-2 alert alert-info" role="alert">
-                                <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
+                    <g:if test="${user}">
+                        <div class="row" data-bind="visible: transients.showEmailDownloadPrompt()">
+                            <div class="col-12">
+                                <div class="mb-2 alert alert-info" role="alert">
+                                    <span class="fas fa-info-circle">&nbsp;&nbsp;</span>This download may take several minutes. Please provide your email address, and we will notify you by email when the download is ready.
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email">Email address</label>
+                                    <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
+                                </div>
+                                <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                             </div>
-                            <div class="form-group">
-                                <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="email" data-bind="value: transients.downloadEmail" name="email">
-                            </div>
-                            <button data-bind="click: asyncDownload" class="btn btn-primary-dark pt-1"><i class="fas fa-download">&nbsp;</i>Download</button>
                         </div>
-                    </div>
+                    </g:if>
                     <g:set var="divideSection" value="${hubConfig.content?.showNote && isProjectContributingDataToALA}"/>
                     <g:if test="${hubConfig.content?.showNote || isProjectContributingDataToALA}">
                         <div class="row d-flex my-3 align-items-center">
@@ -157,7 +197,7 @@
                                 </div>
                             </g:if>
                             <g:if test="${isProjectContributingDataToALA}">
-                                <div class="col-12 ${divideSection ? "col-md-4" : "col-md-12"} text-right">
+                                <div class="col-12 ${divideSection ? "col-md-4" : "col-md-12"} text-end">
                                     <div class="btn-space">
                                         <a class="btn btn-sm btn-dark" data-bind="attr:{href: biocacheUrl}">
                                             <i class="fas fa-globe"></i> View in occurrence explorer
@@ -175,16 +215,14 @@
                     <div class="tab-pane" id="dataGrid" role="tabpanel">
                         <g:render template="/shared/pagination" model="[bs:4, classes:'mb-3']"/>
                         <!-- .pagination -->
+                        <h3 class="text-center my-4" data-bind="if: $root.transients.showEmptyState()">
+                            <span data-bind="if: $root.transients.showProjectEmptyMessage()">
+                                No data has been recorded for this project yet
+                            </span>
+                            <span data-bind="if: $root.transients.showNoResultsMessage()">No results</span>
+                        </h3>
                         <div class="records-list row d-flex flex-wrap mt-4 mt-md-4 mb-3">
                             <!-- ko if: activities().length == 0 -->
-                            <div class="col-12 d-flex">
-                                <h3 class="text-left mb-1">
-                                    <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
-                                        No data has been recorded for this project yet
-                                    </span>
-                                    <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
-                                </h3>
-                            </div>
                             <!-- /ko -->
                             <!-- ko foreach : activities -->
                             <!-- ko if : records().length > 0 -->
@@ -196,7 +234,7 @@
                                             <img onload="findLogoScalingClass(this, 200, 150);addClassForImage(this, '${noImageUrl}', 'w-25')" data-bind="attr:{src: thumbnailUrl}"
                                                  onerror="imageError(this, '${noImageUrl}');"/>
                                         </div>
-                                        <div class="col-12 col-sm-7 pl-sm-1">
+                                        <div class="col-12 col-sm-7 ps-sm-1">
                                             <h4 data-bind="text: name"></h4>
                                             <ul class="detail-list">
                                                 <li><span class="label">Submitted On:</span>
@@ -239,7 +277,7 @@
                                             <img data-bind="attr:{src: transients.thumbnailUrl}" onload="findLogoScalingClass(this, 200, 150)"
                                                  onerror="imageError(this, '${noImageUrl}');"/>
                                         </div>
-                                        <div class="col-12 col-sm-7 pl-sm-1">
+                                        <div class="col-12 col-sm-7 ps-sm-1">
                                             <h4 data-bind="text: name"></h4>
                                             <ul class="detail-list">
                                                 <li><span class="label">Submitted On:</span>
@@ -277,27 +315,27 @@
                         <!-- .pagination -->
                     </div>
                     <div class="tab-pane active" id="recordVis">
-                        <!-- ko if: activities().length == 0 -->
+                        <!-- ko if: transients.showEmptyState() -->
                         <div class="row">
                             <div class="col-12">
-                                <h3 class="text-left mb-1">
-                                    <span data-bind="if: $root.searchTerm() == '' && $root.filterViewModel.selectedFacets().length == 0 && !$root.transients.loading()">
+                                <h3 class="text-center my-4">
+                                    <span data-bind="if: $root.transients.showProjectEmptyMessage()">
                                         No data has been recorded for this project yet
                                     </span>
-                                    <span data-bind="if: $root.searchTerm() != '' || $root.filterViewModel.selectedFacets().length > 0 && !$root.transients.loading()">No results</span>
+                                    <span data-bind="if: $root.transients.showNoResultsMessage()">No results</span>
                                 </h3>
                             </div>
                         </div>
                         <!-- /ko -->
 
-                        <!-- ko if: activities().length > 0 -->
+                        <!-- ko ifnot: transients.showEmptyState() -->
 
                         <div class="row" data-bind="visible: version().length == 0">
                             <div class="col-12">
-                                <div class="float-right mb-2 mt-1">
+                                <div class="float-end mb-1 mt-3">
                                     <!-- ko if:  transients.isBulkActionsEnabled -->
                                     <span><g:message code="data.bulk.actions.label"/>
-                                        <div class="btn-group" role="group" aria-label="<g:message code="data.bulk.actions.label" />">
+                                        <div class="btn-group ms-2" role="group" aria-label="<g:message code="data.bulk.actions.label" />">
                                             <button class="btn btn-sm btn-dark" data-bind="disable: !transients.activitiesToDelete().length, click: bulkDelete"><i class="fas fa-trash-alt">&nbsp;</i> <g:message code="project.bulkactions.delete"/></button>
                                             <button class="btn btn-sm btn-dark" data-bind="disable: !transients.activitiesToDelete().length, click: bulkEmbargo"><i class="fas fa-lock">&nbsp;</i> <g:message code="project.bulkactions.embargo"/></button>
                                             <button class="btn btn-sm btn-dark" data-bind="disable: !transients.activitiesToDelete().length, click: bulkRelease"><i class="fas fa-unlock">&nbsp;</i> <g:message code="project.bulkactions.release"/></button>
@@ -575,7 +613,7 @@
                             <i class="fa fa-spin fa-spinner"></i>&nbsp;Loading...
                         </span>
                         <span data-bind="visible: transients.totalPoints() == 0 && !transients.loadingMap()">
-                            <span class="text-left mb-1">
+                            <span class="text-start mb-1">
                                 <span data-bind="if: transients.loading()">
                                     <i class="fa fa-spin fa-spinner"></i>&nbsp;Loading...
                                 </span>
@@ -703,6 +741,6 @@
             break;
     }
 
-    tabId && $(tabId).tab('show');
+    tabId && Biocollect.Bootstrap5.showTab(tabId);
 </asset:script>
 <g:render template="/shared/resizeFilter" model="[dependentDiv: '.data-expander.data-container', target: '#survey-all-activities-and-records-content #filters', listenTo: '#survey-all-activities-and-records-content']" />

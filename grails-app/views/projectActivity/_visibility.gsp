@@ -46,10 +46,7 @@
                         <input class="form-control" name="embargoUntilDate" id="embargoUntilDate"
                                data-bind="datepicker: visibility.embargoUntil.date, datePickerOptions: {endDate: '+12m', startDate: '+1d'}, disable: transients.disableEmbargoUntil"
                                data-validation-engine="validate[funcCall[isEmbargoDateRequired]]" type="text"/>
-
-                        <div class="input-group-append">
-                            <button class="btn btn-dark open-datepicker"><i class="far fa-calendar-alt"></i></button>
-                        </div>
+                        <button class="btn btn-dark open-datepicker" type="button"><i class="far fa-calendar-alt"></i></button>
                 </label>
             </span>
             </div>

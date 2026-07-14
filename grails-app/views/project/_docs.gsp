@@ -3,7 +3,7 @@
         <div class="span2 ">
             <b>Project documents:</b>
         </div>
-        <div class="span10 text-left">
+        <div class="span10 text-start">
             <!-- <div id="documents" data-bind="css: { span3: primaryImages() != null, span7: primaryImages() == null }"> -->
             <div id="documents">
                 <div data-bind="visible:documents().length == 0">

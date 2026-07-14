@@ -159,45 +159,6 @@ class WebService {
 
     }
 
-    /**
-     * Proxies a request URL with post data but doesn't assume the response is text based. (Used for proxying requests to
-     * ecodata for excel-based reports)
-     */
-    def proxyPostRequest(HttpServletResponse response, String url, Map postBody, boolean includeUserId = true, Integer timeout = null) {
-
-        def charEncoding = 'utf-8'
-
-        HttpURLConnection conn = configureConnection(url, includeUserId)
-
-        def readTimeout = timeout?:defaultTimeout()
-        conn.setConnectTimeout(grailsApplication.config.webservice.connectTimeout as int)
-        conn.setRequestProperty("Content-Type", "application/json;charset=${charEncoding}");
-        conn.setRequestMethod("POST")
-        conn.setReadTimeout(readTimeout)
-        conn.setDoOutput ( true );
-
-        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), charEncoding)
-        wr.write((postBody as JSON).toString())
-        wr.flush()
-        wr.close()
-
-        def headers = [HttpHeaders.CONTENT_DISPOSITION, HttpHeaders.TRANSFER_ENCODING]
-        response.setContentType(conn.getContentType())
-        response.setContentLength(conn.getContentLength())
-
-        headers.each { header ->
-            response.setHeader(header, conn.getHeaderField(header))
-        }
-        response.status = conn.responseCode
-
-        // to make jqueryFiledownload plugin happy
-        def cookie = new Cookie("filedownload","true")
-        cookie.setPath("/")
-        response.addCookie(cookie)
-
-        response.outputStream << conn.inputStream
-    }
-
     def get(String url) {
         return get(url, true)
     }
@@ -488,6 +449,14 @@ class WebService {
      */
     Map postMultipart(String url, Map params, File file, String contentType, String originalFilename, String fileParamName = 'files', boolean useToken = false, boolean userToken = false) {
         ecpWebService.postMultipart(url, params, file, contentType, originalFilename, fileParamName, useToken, userToken)
+    }
+
+    /**
+     *
+     * NOTE: Method will be deleted once EcpWebService is updated to version 9.*
+     */
+    boolean isValidDomain(String host) {
+        WHITE_LISTED_DOMAINS.any { host?.endsWith(it) }
     }
 
 }

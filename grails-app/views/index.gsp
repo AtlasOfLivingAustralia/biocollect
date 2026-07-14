@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <title>Welcome to ${grailsApplication.config.appName?.capitalize()}!</title>
 </head>
 

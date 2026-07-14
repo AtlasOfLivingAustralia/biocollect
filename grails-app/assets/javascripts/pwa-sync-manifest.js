@@ -1,0 +1,10 @@
+//= require jquery/3.4.1/jquery-3.4.1.min.js
+//= require knockout/3.4.0/knockout-3.4.0.js
+//= require utils.js
+//= require dexiejs/dexie.js
+//= require entities.js
+//= require images.js
+//= require metamodel.js
+//= require pagination.js
+//= require pwa-offline-list.js
+//= require pwa-sync.js

@@ -3,7 +3,8 @@ package au.org.ala.biocollect.merit
 import au.org.ala.web.NoSSO
 import grails.converters.JSON
 
-import org.apache.http.HttpHost;
+import org.apache.http.HttpHost
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext
 import org.apache.http.client.utils.URIBuilder;
@@ -13,6 +14,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 
 class ResourceController {
+
+    WebService webService
 
     grails.core.GrailsApplication grailsApplication
     @NoSSO
@@ -31,14 +34,30 @@ class ResourceController {
     // proxy this request to work around browsers (firefox) that don't follow redirects properly :(
     @NoSSO
     def pdfUrl() {
-        def url = params.file
+        def docUrl = params.file
+
+        try {
+            URI uri = new URI(docUrl)
+            if (!uri.isAbsolute()) {
+                docUrl = grailsApplication.config.getProperty('grails.serverURL') + uri.getPath()
+            }
+            else if (!webService.isValidDomain(uri.getHost())) {
+                render status: HttpStatus.SC_BAD_REQUEST, view:'/error'
+                return
+            }
+        }
+        catch (URISyntaxException e) {
+            log.warn("Invalid document URL for PDF generation: ${docUrl}", e)
+            render([error: 'Invalid document URL'] as JSON, status: 400)
+            return
+        }
 
         CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build()
 
         try {
             HttpClientContext context = HttpClientContext.create()
             URIBuilder builder = new URIBuilder("${grailsApplication.config.pdfgen.baseURL}")
-            builder.setPath("api/pdf").setParameter('docUrl', url)
+            builder.setPath("api/pdf").setParameter('docUrl', docUrl)
             URI uri = builder.build();
             HttpGet httpGet = new HttpGet(uri)
             log.debug("Sending file to be converted into pdf: " + httpGet.getRequestLine())

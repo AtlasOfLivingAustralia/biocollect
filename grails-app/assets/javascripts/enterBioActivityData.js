@@ -14,8 +14,38 @@ function Master(activityId, config) {
     var self = this,
         viewModel,
         preventNavigationIfDirty = config.preventNavigationIfDirty === undefined ? true : config.preventNavigationIfDirty;
+
+    self.autosaveTimestamp = ko.observable(null);
+
+    self.lastAutosave = ko.pureComputed(function () {
+        var lastAutosaveTimestamp = self.autosaveTimestamp();
+        if (!lastAutosaveTimestamp) {
+            return 'N/A';
+        }
+
+        return lastAutosaveTimestamp.toLocaleTimeString();
+    });
+
+    var autosaveActivityId = null;
+    var autosaveInterval;
+    
     self.subscribers = [];
     self.deferredObjects = [];
+
+    function isEditingUnpublished() {
+        var url = new URL(window.location.href);
+        return url.searchParams.get('unpublished') === 'true'
+    }
+
+    function scheduleAutosaveInterval() {
+        if (!autosaveInterval && isEditingUnpublished()) {
+            autosaveInterval = setInterval(() => {
+                if (self.isDirty()) {
+                    self.offlineSave();
+                }
+            }, 10000);
+        }
+    }
 
     // client models register their name and methods to participate in saving
     self.register = function (modelInstanceName, getMethod, isDirtyMethod, resetMethod) {
@@ -31,6 +61,16 @@ function Master(activityId, config) {
                 self.dirtyCheck();
             });
         }
+    };
+
+    /**
+     * Begins the autosave polling. This is deliberately not started until the user
+     * actually begins entering data - programmatic model changes during initialisation
+     * (e.g. reloadGeodata forcing a map redraw) mark the model as dirty but must not
+     * trigger autosaves before the user has interacted with the form.
+     */
+    self.startAutosave = function () {
+        scheduleAutosaveInterval();
     };
 
     self.dirtyCheck = function () {
@@ -67,7 +107,7 @@ function Master(activityId, config) {
     self.modelAsJS = function () {
         var activityData, outputs = [];
         $.each(this.subscribers, function(i, obj) {
-            if (obj.isDirty()) {
+            if (obj.isDirty() || obj.model === 'activityModel') {
                 if (obj.model === 'activityModel') {
                     activityData = obj.get();
                 }
@@ -167,42 +207,74 @@ function Master(activityId, config) {
      * Validates the entire page before saving.
      */
     self.save = function () {
-        if (config.enableOffline) {
+        if (config.isPWA && isEditingUnpublished()) {
             isOffline().then(function(){
                 self.offlineSave();
+                bootbox.alert('Cannot submit when offline. The record has been saved - please try again later.')
             }, function() {
-                self.onlineSave();
+                self.offlineSave(true, true);
             });
-        }
-        else {
-            // returned thenable object used by bulk upload script
+        } else {
             return self.onlineSave();
         }
     },
 
-    self.offlineSave = function () {
-        if ($('#validation-container').validationEngine('validate')) {
-            var toSave = this.getAllModelAsJS();
-            toSave.entityUpdated = true;
-            var projectId = toSave.projectId;
-            var projectActivityId = toSave.projectActivityId;
-            toSave = JSON.stringify(toSave);
-            toSave = JSON.parse(toSave);
-            blockUIWithMessage("Saving activity data...");
+    self.offlineSave = function (fromUI = false, submitOnSave = false) {
+        const container = $('#validation-container');
 
-            entities.saveActivity(toSave).then(function (result) {
-                var activityId = result.data;
-                if (config.enableOffline) {
-                    document.location.href = config.returnTo;
-                } else
-                    document.location.href = fcConfig.activityViewURL + "/" + projectActivityId + "?activityId=" + activityId + "&projectId=" + projectId;
-            });
+        // If we're silently autosaving in the background, don't trigger the UI errors
+        container.validationEngine('attach', { scroll: submitOnSave, showPrompts: submitOnSave, focusFirstField: submitOnSave });
+
+        const valid = container.validationEngine('validate');
+        var currentModel = this.getAllModelAsJS();
+        if (!currentModel) {
+            return;
         }
+
+        // Prevent autosaving duplicates
+        if (!currentModel.activityId && autosaveActivityId) {
+            currentModel.activityId = autosaveActivityId;
+        }
+
+        currentModel.entityUpdated = true;
+        currentModel.__valid = valid;
+        currentModel.__upload = submitOnSave && valid;
+
+        var toSave = JSON.stringify(currentModel);
+        toSave = JSON.parse(toSave);
+
+        // Only block the UI if we've manually triggered the save action
+        if (fromUI) {
+            blockUIWithMessage("Saving activity data...");
+        }
+
+        return entities.saveActivity(toSave).done(function (result) {
+            autosaveActivityId = result.data;
+
+            if (submitOnSave && valid && window.parent) {
+                window.parent.postMessage({
+                    event: 'close-frame',
+                }, '*');
+            } else {
+                self.autosaveTimestamp(new Date());
+            }
+        }).always(function () {
+            if (fromUI) {
+                $.unblockUI();
+            }
+        });
     },
 
     self.onlineSave = function () {
         if ($('#validation-container').validationEngine('validate')) {
             var toSave = this.modelAsJS();
+
+            // Replace offline numeric activityId with empty string
+            const isSavedActivity = entities.utils.isDexieEntityId(toSave.activityId);
+            if (isSavedActivity) {
+                toSave.activityId = '';
+            }
+
             toSave = JSON.stringify(toSave);
 
             // Don't allow another save to be initiated.
@@ -294,6 +366,9 @@ function Master(activityId, config) {
                 $.unblockUI();
             }, 2000);
         }
+        else if (config.isPWA && window.parent) {
+            window.parent.postMessage({ event: 'close-frame' }, '*');
+        }
         else if (config.isMobile) {
             location.href = config.returnToMobile;
         }
@@ -320,6 +395,8 @@ function Master(activityId, config) {
 
     self.setViewModel = function (vm) {
         if (vm) {
+            vm.lastAutosave = self.lastAutosave;
+            vm.autosaveTimestamp = self.autosaveTimestamp;
             viewModel =  vm;
         }
     }

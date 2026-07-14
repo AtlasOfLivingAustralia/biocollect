@@ -702,16 +702,30 @@ function downloadProjectActivityArtefacts(viewModel) {
     var IFRAME_ID = 'form-content',
         iframeWindow,
         delay = 4 * 60 * 1000, // four minutes
+        pendingTimeout,
+        finished = false,
         deferred = $.Deferred();
 
-    var urls = [fcConfig.createActivityUrl, fcConfig.indexActivityUrl, fcConfig.offlineListUrl, fcConfig.settingsUrl],
+    var urls = [fcConfig.createActivityUrl, fcConfig.indexActivityUrl, fcConfig.settingsUrl, fcConfig.pwaSyncUrl],
         urlsIndex = 0;
 
-    document.addEventListener('view-model-loaded',function () {
+    function onViewModelLoaded() {
+        if (finished) {
+            return;
+        }
+
         increaseFormDownloadedCount();
         ++urlsIndex;
         loadIframe();
-    });
+    }
+
+    document.addEventListener('view-model-loaded', onViewModelLoaded);
+
+    function finish() {
+        finished = true;
+        clearTimeout(pendingTimeout);
+        document.removeEventListener('view-model-loaded', onViewModelLoaded);
+    }
 
     function loadIframe () {
         if (urlsIndex < urls.length) {
@@ -723,6 +737,7 @@ function downloadProjectActivityArtefacts(viewModel) {
             increaseFormDownloadedCount();
         } else {
             console.info("Finished downloading artefacts!");
+            finish();
             deferred.resolve();
         }
     }
@@ -732,8 +747,10 @@ function downloadProjectActivityArtefacts(viewModel) {
     }
 
     function rejectPromiseIfErrorLoadingPage (index) {
-        setTimeout(function () {
-            if (index == urlsIndex) {
+        clearTimeout(pendingTimeout);
+        pendingTimeout = setTimeout(function () {
+            if (index === urlsIndex) {
+                finish();
                 deferred.reject();
             }
         }, delay);

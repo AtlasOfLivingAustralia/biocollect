@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta name="layout" content="bs4"/>
+    <meta name="layout" content="bs5"/>
     <g:set var="title" value="${utilService.getHeaderLinkForContentTypeOrURI(view, contentURI)?.displayName?:title}"/>
     <title>${title} | <g:message code="g.biocollect"/></title>
     <meta name="breadcrumbParent1" content="${createLink(uri: '/' + hubConfig.urlPath)},Home"/>
@@ -62,7 +62,7 @@
         },
         here = document.location.href;
     </asset:script>
-    <asset:javascript src="common-bs4.js"/>
+    <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="enterBioActivityData.js"/>
     <asset:javascript src="projectActivityInfo.js"/>
@@ -81,14 +81,14 @@
     <div class="row">
         %{-- quick links --}%
         <div class="col-12">
-            <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
+            <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-end']}"></g:render>
         </div>
         %{--quick links END--}%
     </div>
 </div>
 </g:if>
 <div class="main-content">
-    <g:render template="/bioActivity/activities"/>
+    <g:render template="/bioActivity/activities" model="[user: user]"/>
 </div>
 <div class="loading-message">
     <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...
