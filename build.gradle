@@ -146,7 +146,7 @@ dependencies {
     implementation 'org.apache.poi:poi:4.1.2'
     implementation 'org.apache.poi:poi-ooxml:4.1.2'
     implementation 'org.apache.poi:poi-ooxml-schemas:4.1.2'
-    implementation "org.grails.plugins:ala-admin-plugin:2.3.0"
+    implementation "org.grails.plugins:ala-admin-plugin:2.4.0"
     runtimeOnly "org.grails.plugins:ala-bootstrap3:4.4.0"
 
     //    swagger API
