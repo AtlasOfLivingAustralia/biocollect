@@ -43,6 +43,7 @@ describe("Application installation Spec", function () {
         homePage = new HomePage();
         pwaAppPage = new PwaAppPage();
         addBioActivityPage = new AddBioActivityPage();
+
         await startServer();
         await adminToolsPage.loadDataSet('dataset1');
         await adminToolsPage.setupTokenForSystem();
@@ -73,9 +74,6 @@ describe("Application installation Spec", function () {
     });
 
     it("submit record offline and publish it when network returns", async function () {
-        // Start the PWA, download a survey & go offline
-        console.log('Starting the PWA');
-        await pwaAppPage.start();
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSiteProjectList");
         await pwaAppPage.viewProject(project);
 
@@ -167,11 +165,10 @@ describe("Application installation Spec", function () {
         await waitForDisplayedStable(() => publishedViewBioActivityPage.speciesSelector("Acavomonidia"), 'published species Acavomonidia');
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
+        await pwaAppPage.closeDrawer();
     });
 
     it("submit record offline and choose a site on map and publish it when network returns", async function () {
-        // Start the PWA, download a survey & go offline
-        await pwaAppPage.start();
         await addBioActivityPage.takeScreenShot("offlineRecordMapPinProjectList");
         await pwaAppPage.viewProject(project);
 
@@ -224,6 +221,7 @@ describe("Application installation Spec", function () {
         await waitForDisplayedStable(() => $('.leaflet-marker-icon'), 'map pin');
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
+        await pwaAppPage.closeDrawer();
     });
 
     it("login with expired token", async function () {
@@ -242,7 +240,6 @@ describe("Application installation Spec", function () {
         await pwaAppPage.open();
         console.log("login with expired token - open");
         expect(await pwaAppPage.atSignIn()).toEqual(false);
-        await pwaAppPage.start();
         await pwaAppPage.project(project).waitForExist({ timeout: 30000 });
         await expect(pwaAppPage.project(project)).toExist();
         await pwaAppPage.takeScreenShot("loginWithExpiredTokenProjectListAfterExpiredLogin");

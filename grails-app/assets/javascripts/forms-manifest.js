@@ -8,7 +8,7 @@
 //= require responsive-table-stacked/stacked.js
 
 // fileupload
-//= require fileupload-ui-manifest.js
+//= require file-upload-with-tmpl-manifest.js
 
 // timepicker
 //= require jquery.timeentry.package-2.0.1/jquery.plugin.min.js

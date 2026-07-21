@@ -1,5 +1,5 @@
 const path = require('node:path');
-const sharedConfig = require('./wdio.shared.conf.js').config;
+const { config: sharedConfig, isFunctionalTestCaptureDisabled } = require('./wdio.shared.conf.js');
 
 const config = {
     ...sharedConfig,
@@ -15,16 +15,16 @@ const config = {
             browserName: 'chrome',
             'goog:chromeOptions': {
                 // args: ['--auto-open-devtools-for-tabs','disable-gpu']
-                args: ['headless', 'disable-gpu', 'window-size=3000,3000', 'disable-dev-shm-usage', 'no-sandbox', '--headless', '--disable-gpu', '--window-size=3000,3000', '--disable-dev-shm-usage', '--no-sandbox']
-                // args: ['--auto-open-devtools-for-tabs', 'disable-gpu', '--window-size=3000,3000']
-            },
-            'wdio:chromedriverOptions': {
-                // Use the driver installed by runFunctionalTests.sh (DETECT_CHROMEDRIVER_VERSION)
-                // so WebdriverIO does not download chromedriver at test runtime.
-                binary: process.env.CHROMEDRIVER_PATH || require('chromedriver').path
+                args: ['headless', 'disable-gpu', 'window-size=3000,1400', 'disable-dev-shm-usage', 'no-sandbox', '--headless', '--disable-gpu', '--window-size=3000,3000', '--disable-dev-shm-usage', '--no-sandbox']
+                // args: ['--auto-open-devtools-for-tabs', 'disable-gpu', '--window-size=3000,1400']
             }
+            // No 'wdio:chromedriverOptions.binary' override: WebdriverIO v9 automatically
+            // downloads a chromedriver that matches the installed Chrome version. Hardcoding a
+            // binary path tied to the `chromedriver` npm package broke CI whenever the runner's
+            // Chrome version drifted from the pinned package (spawn ... chromedriver ENOENT).
         }],
         testConfig: {
+            disableCapture: isFunctionalTestCaptureDisabled(),
             baseUrl: 'http://localhost:8087',
             serverUrl: 'http://localhost:8087',
             wireMockBaseUrl: 'http://localhost:8018',

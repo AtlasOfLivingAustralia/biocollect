@@ -6,7 +6,7 @@
   "response": {
     "status": 200,
     "headers": {
-      "content-Type": "text/json"
+      "content-Type": "application/json"
     },
     "transformers": ["response-template"],
     "jsonBody": {

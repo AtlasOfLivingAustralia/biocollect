@@ -24,15 +24,15 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11
-
       - name: Install nodejs
         uses: actions/setup-node@v6
         with:
           node-version: 24
+
+      - name: Install pnpm via Corepack
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.12.0 --activate
 
       - run: pnpm ci
 

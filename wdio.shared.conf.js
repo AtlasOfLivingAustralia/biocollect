@@ -3,6 +3,13 @@ const path = require('node:path')
 
 // const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
+function isFunctionalTestCaptureDisabled() {
+    const value = process.env.DISABLE_FUNCTIONAL_TEST_CAPTURE
+    return /^(1|true|yes)$/i.test(value || '')
+}
+
+const captureDisabled = isFunctionalTestCaptureDisabled()
+
 const config = {
     //
     // ====================
@@ -109,7 +116,7 @@ const config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter.html
-    reporters: ['spec', ['video', {
+    reporters: captureDisabled ? ['spec'] : ['spec', ['video', {
         saveAllVideos: true,       // If true, also saves videos for successful test cases
         videoSlowdownMultiplier: 10, // Higher to get slower videos, lower for faster videos [Value 1-100]
     }]],
@@ -259,4 +266,4 @@ const config = {
     //}
 }
 
-module.exports = { config };
+module.exports = { config, isFunctionalTestCaptureDisabled };

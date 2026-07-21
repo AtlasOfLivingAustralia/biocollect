@@ -81,14 +81,14 @@
     <div class="row">
         %{-- quick links --}%
         <div class="col-12">
-            <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
+            <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-end']}"></g:render>
         </div>
         %{--quick links END--}%
     </div>
 </div>
 </g:if>
 <div class="main-content">
-    <g:render template="/bioActivity/activities"/>
+    <g:render template="/bioActivity/activities" model="[user: user]"/>
 </div>
 <div class="loading-message">
     <span class="fa fa-spin fa-spinner"></span>&nbsp;Loading...

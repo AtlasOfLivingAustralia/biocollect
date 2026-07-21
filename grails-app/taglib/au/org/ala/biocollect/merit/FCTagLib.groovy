@@ -514,6 +514,12 @@ class FCTagLib {
         }
     }
 
+    def userIsHubAdmin = { attrs ->
+        if (userService.doesUserHaveHubRole(RoleService.ADMIN_ROLE)) {
+            out << true
+        }
+    }
+
     /**
      * Build HTML for drop down menu "My projects"
      */

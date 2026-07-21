@@ -10,7 +10,7 @@
             <div class="row">
                 %{-- quick links --}%
                 <div class="col-12">
-                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-right']}"></g:render>
+                    <g:render template="/shared/quickLinks" model="${[cssClasses: 'float-end']}"></g:render>
                 </div>
                 %{--quick links END--}%
             </div>
@@ -98,6 +98,7 @@
             <g:if test="${isPWA}">
             <!-- ko if: window.unpublished -->
                 <button type="button" id="saveChanges" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.save"/></button>
+                <button type="button" id="saveAndClose" class="btn btn-dark btn-lg"><i class="fas fa-save"></i> <g:message code="g.saveAndClose" default="Save and close"/></button>
             <!-- /ko -->
             </g:if>
         </g:if>

@@ -1,0 +1,2790 @@
+{
+  "id": "60f417a8c2dc74b0b4feca39",
+  "dateCreated": "2021-07-18T11:59:36Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-07-01T05:56:47Z",
+  "createdUserId": "35",
+  "embargoMultimedia": false,
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Habitat Restoration - Combined Site and Work Details",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Habitat Restoration - Combined Site and Work Details",
+        "record": true,
+        "dataModel": [
+          {
+            "dataType": "text",
+            "description": "The entity responsible for the record in the database.",
+            "name": "recordedBy",
+            "readOnly": true,
+            "noEdit": true,
+            "dwcAttribute": "recordedBy",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "Person who entered in the database.",
+            "name": "dataEnteredBy",
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "description": "The date that the database record was created.",
+            "name": "recordDateCreated",
+            "indexName": "recordDateCreated",
+            "defaultValue": "${now}",
+            "validate": "required,past[now]"
+          },
+          {
+            "dataType": "text",
+            "description": "Enter the name (acronym) of the restoration or funding program the work was conducted under. If the work was funded independently of a broader program, enter Not Applicable.",
+            "name": "restorationProgram",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "restorationProgram",
+            "measurementType": "text",
+            "indexName": "restorationProgram"
+          },
+          {
+            "dataType": "text",
+            "description": "A unique code for the site for databasing and referencing purposes. [THIS IS PROVIDED BY THE PROJECT ADMINISTRATOR]",
+            "name": "siteCode",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "siteCode",
+            "measurementType": "text",
+            "indexName": "siteCode",
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "description": "The duration of intervention activities on the site in years.",
+            "name": "interventionDurationInYearsHistorical",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "interventionDurationInYearsHistorical",
+            "measurementType": "number",
+            "validate": "integer"
+          },
+          {
+            "dataType": "text",
+            "description": "The nearest population centre to the site.",
+            "name": "nearestPopulationCentre",
+            "indexName": "nearestPopulationCentre",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nearestPopulationCentre",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "The local government area in which the site is located.",
+            "name": "localGovernmentArea",
+            "indexName": "localGovernmentArea",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "localGovernmentArea",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "description": "The year in which intervention work on the site commenced. [enter a number in the format YYYY]",
+            "name": "interventionCommencementYear",
+            "indexName": "interventionCommencementYear",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "interventionCommencementYear",
+            "measurementType": "number",
+            "validation": "required,integer,min[1985],max[2050]"
+          },
+          {
+            "dataType": "text",
+            "description": "The month in which intervention work on the site commenced.",
+            "name": "interventionCommencementMonth",
+            "indexName": "interventionCommencementMonth",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "interventionCommencementMonth",
+            "measurementType": "text",
+            "constraints": [
+              "January",
+              "February",
+              "March",
+              "April",
+              "May",
+              "June",
+              "July",
+              "August",
+              "September",
+              "October",
+              "November",
+              "December"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "The year in which intervention activities on the site were completed. [enter a number in the format YYYY]",
+            "name": "interventionCompletionYear",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "interventionCompletionYear",
+            "measurementType": "number",
+            "validation": "integer,min[1985],max[2050]"
+          },
+          {
+            "dataType": "text",
+            "description": "Species targeted in the intervention works.",
+            "name": "targetFaunaSpecies",
+            "indexName": "targetFaunaSpecies",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "targetFaunaSpecies",
+            "measurementType": "text",
+            "constraints": [
+              "Koala",
+              "Glossy Black Cockatoo",
+              "Grey-headed flying fox",
+              "Other",
+              "Not applicable"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "Secondary species targeted in the intervention works.",
+            "name": "targetFaunaSpeciesSecondary",
+            "indexName": "targetFaunaSpeciesSecondary",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "targetFaunaSpeciesSecondary",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "number",
+            "description": "Enter '0' if the target species has been observed on the work site.",
+            "name": "targetSpeciesProximityInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "targetSpeciesProximityInMetres",
+            "measurementType": "number",
+            "validate": "integer"
+          },
+          {
+            "dataType": "boolean",
+            "description": "Check if the distance to the nearest target species sighting is unknown.",
+            "name": "targetSpeciesProximityUnknown",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "targetSpeciesProximityUnknown",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "number",
+            "description": "A value of '0' indicates that all or part of the site is located within remnant vegetation.",
+            "name": "distanceToRemnantVegetationInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "distanceToRemnantVegetationInMetres",
+            "measurementType": "number",
+            "validate": "integer"
+          },
+          {
+            "dataType": "number",
+            "description": "Distance in metres to the nearest permanent natural or artificial watering point which the target species can access and use.",
+            "name": "distanceToPermanentWaterInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "distanceToPermanentWaterInMetres",
+            "measurementType": "number",
+            "validate": "integer"
+          },
+          {
+            "dataType": "stringList",
+            "description": "The aim or expected outcome to be achieved by undertaking the project works.",
+            "name": "interventionProjectAims",
+            "indexName": "interventionProjectAims",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "interventionProjectAims",
+            "measurementType": "text",
+            "constraints": [
+              "Not defined",
+              "Habitat restoration",
+              "Biodiversity conservation",
+              "Carbon sequestration",
+              "Amenity revegetation",
+              "Timber production",
+              "Education",
+              "Research",
+              "Riparian repair/erosion control",
+              "Agricultural resilience",
+              "Agricultural productivity"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "stringList",
+            "description": "Types of entities that collaborated in the project.",
+            "name": "projectCollaborators",
+            "indexName": "projectCollaborators",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "projectCollaborators",
+            "measurementType": "text",
+            "constraints": [
+              "Research institution",
+              "Non-government organisation (NGO)",
+              "World Wildlife Fund (WWF)",
+              "Government agencies",
+              "Communities",
+              "Landcare",
+              "Traditional owners / communities",
+              "Landholders",
+              "Training institution",
+              "Commercial / developer",
+              "Other 'Care' groups (eg. Bushcare, Coastcare, Rivercare, etc.)"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "stringList",
+            "description": "Sources of funding (both cash and in-kind) used to deliver the project.",
+            "name": "fundingType",
+            "indexName": "fundingType",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "fundingType",
+            "measurementType": "text",
+            "constraints": [
+              "Public - commonwealth",
+              "Public - state",
+              "Public - local",
+              "Public - in-kind",
+              "Private - in-kind",
+              "Private - industry",
+              "Private - philanthropic",
+              "Private - bequeath/other",
+              "Private - NGO",
+              "Private - volunteer"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "description": "Total whole dollar value of cash funds spent to deliver the project.",
+            "name": "projectFundingCashInDollars",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "projectFundingCashInDollars",
+            "measurementType": "number",
+            "validate": "min[0]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "description": "Total whole dollar value of in-kind contributions to deliver the project.",
+            "name": "projectFundingInKindInDollars",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "projectFundingInKindInDollars",
+            "measurementType": "number",
+            "validate": "min[0]",
+            "decimalPlaces": 2
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "fundingTotal",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "fundingTotal",
+            "measurementType": "number",
+            "computed": {
+              "expression": "projectFundingCashInDollars+projectFundingInKindInDollars",
+              "dependents": {
+                "source": [
+                  "projectFundingCashInDollars",
+                  "projectFundingInKindInDollars"
+                ]
+              },
+              "decimalPlaces": 2,
+              "noEdit": true,
+              "readOnly": true
+            }
+          },
+          {
+            "dataType": "list",
+            "allowRowDelete": false,
+            "name": "workforceRoles",
+            "columns": [
+              {
+                "dataType": "text",
+                "description": "",
+                "name": "workforceType",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "workforceType",
+                "measurementType": "text",
+                "readOnly": true,
+                "noEdit": true
+              },
+              {
+                "dataType": "boolean",
+                "description": "",
+                "name": "workforceRoleAdministration",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "workforceRoleAdministration",
+                "measurementType": "boolean"
+              },
+              {
+                "dataType": "boolean",
+                "description": "",
+                "name": "workforceRolePlanning",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "workforceRolePlanning",
+                "measurementType": "boolean"
+              },
+              {
+                "dataType": "boolean",
+                "description": "",
+                "name": "workforceRoleImplementation",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "workforceRoleImplementation",
+                "measurementType": "boolean"
+              },
+              {
+                "dataType": "boolean",
+                "description": "",
+                "name": "workforceRoleReportingCommunications",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "workforceRoleReportingCommunications",
+                "measurementType": "boolean"
+              },
+              {
+                "dataType": "boolean",
+                "description": "",
+                "name": "workforceRoleMonitoring",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "workforceRoleMonitoring",
+                "measurementType": "boolean"
+              },
+              {
+                "dataType": "boolean",
+                "description": "",
+                "name": "workforceRoleResearch",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "workforceRoleResearch",
+                "measurementType": "boolean"
+              }
+            ],
+            "defaultRows": [
+              {
+                "workforceType": "Landholder",
+                "workforceRoleAdministration": "",
+                "workforceRolePlanning": "",
+                "workforceRoleImplementation": "",
+                "workforceRoleReportingCommunications": "",
+                "workforceRoleMonitoring": "",
+                "workforceRoleResearch": ""
+              },
+              {
+                "workforceType": "Volunteers",
+                "workforceRoleAdministration": "",
+                "workforceRolePlanning": "",
+                "workforceRoleImplementation": "",
+                "workforceRoleReportingCommunications": "",
+                "workforceRoleMonitoring": "",
+                "workforceRoleResearch": ""
+              },
+              {
+                "workforceType": "Contractors",
+                "workforceRoleAdministration": "",
+                "workforceRolePlanning": "",
+                "workforceRoleImplementation": "",
+                "workforceRoleReportingCommunications": "",
+                "workforceRoleMonitoring": "",
+                "workforceRoleResearch": ""
+              },
+              {
+                "workforceType": "Government agencies",
+                "workforceRoleAdministration": "",
+                "workforceRolePlanning": "",
+                "workforceRoleImplementation": "",
+                "workforceRoleReportingCommunications": "",
+                "workforceRoleMonitoring": "",
+                "workforceRoleResearch": ""
+              },
+              {
+                "workforceType": "Non-government organisations",
+                "workforceRoleAdministration": "",
+                "workforceRolePlanning": "",
+                "workforceRoleImplementation": "",
+                "workforceRoleReportingCommunications": "",
+                "workforceRoleMonitoring": "",
+                "workforceRoleResearch": ""
+              },
+              {
+                "workforceType": "Landcare",
+                "workforceRoleAdministration": "",
+                "workforceRolePlanning": "",
+                "workforceRoleImplementation": "",
+                "workforceRoleReportingCommunications": "",
+                "workforceRoleMonitoring": "",
+                "workforceRoleResearch": ""
+              },
+              {
+                "workforceType": "Traditional owners / managers",
+                "workforceRoleAdministration": "",
+                "workforceRolePlanning": "",
+                "workforceRoleImplementation": "",
+                "workforceRoleReportingCommunications": "",
+                "workforceRoleMonitoring": "",
+                "workforceRoleResearch": ""
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "The principal tenure (ownership) of the land on which the site is situated.",
+            "name": "landTenure",
+            "indexName": "landTenure",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "landTenure",
+            "measurementType": "text",
+            "constraints": [
+              "Public - council land",
+              "Public - crown land",
+              "Public - state/national park",
+              "Private land",
+              "Private - under conservation agreement",
+              "Private - traditional owners",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "The area in hectares of the revegetation works area.",
+            "name": "areaOfRevegetationInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "areaOfRevegetationInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "The length in metres of the revegetation works area. This field should only be used for linear sites.",
+            "name": "lengthOfPlantingInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "lengthOfPlantingInMetres",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "The principal landuse of the land on which the site is situated prior to commencement of the intervention works.",
+            "name": "landusePreIntervention",
+            "indexName": "landusePreIntervention",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "landusePreIntervention",
+            "measurementType": "text",
+            "constraints": [
+              "Cleared",
+              "Grazed",
+              "Cropped",
+              "Forestry",
+              "Industrial",
+              "Introduced vegetation",
+              "Conservation",
+              "Native vegetation",
+              "Native vegetation - regrowth",
+              "Native vegetation - bushfire affected",
+              "Native vegetation - degraded"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "The predominant slope of the site in percent.",
+            "name": "siteSlopeInPercent",
+            "indexName": "siteSlopeInPercent",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "siteSlopeInPercent",
+            "measurementType": "text",
+            "constraints": [
+              "Gentle slope (< 10%)",
+              "Moderate slope (10 - 30%)",
+              "Steep slope (30 - 40%)",
+              "Very steep slope (> 40%)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "The predominant aspect of the site.",
+            "name": "siteAspectCategorical",
+            "indexName": "siteAspectCategorical",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "siteAspectCategorical",
+            "measurementType": "text",
+            "constraints": [
+              "Flat land",
+              "North (N)",
+              "North East (NE)",
+              "East (E)",
+              "South East (SE)",
+              "South (S)",
+              "South West (SW)",
+              "West (W)",
+              "North West (NW)"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "Indicate whether the site is situated within a riparian zone.",
+            "name": "isRiparianTrue",
+            "indexName": "isRiparianTrue",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "isRiparianTrue",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "Indicate the frequency of frost impact on the site.",
+            "name": "isFrostAffectedCategorical",
+            "indexName": "isFrostAffectedCategorical",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "isFrostAffectedCategorical",
+            "measurementType": "text",
+            "constraints": [
+              "Never",
+              "Occasionally (1 year in 5)",
+              "Every 2-4 years",
+              "Every year"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "Indicate the frequency of fire impact on the site.",
+            "name": "isFireAffectedCategorical",
+            "indexName": "isFireAffectedCategorical",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "isFireAffectedCategorical",
+            "measurementType": "text",
+            "constraints": [
+              ">30 years",
+              "10-30 years",
+              "<10 years",
+              "Unknown"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "timeSinceLastFireInYears",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "timeSinceLastFireInYears",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "boolean",
+            "description": "Check if the time since the last fire is unknown.",
+            "name": "timeSinceLastFireUnknown",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "timeSinceLastFireUnknown",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "text",
+            "description": "The frequency of flooding on the site.",
+            "name": "isFloodAffectedCategorical",
+            "indexName": "isFloodAffectedCategorical",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "isFloodAffectedCategorical",
+            "measurementType": "text",
+            "constraints": [
+              "Never",
+              "1 year in 5",
+              "2-4 years",
+              "Every year"
+            ]
+          },
+          {
+            "dataType": "list",
+            "name": "dominantPlantSpeciesPreIntervention",
+            "columns": [
+              {
+                "dataType": "species",
+                "description": "The dominant plant species on the site at the time of commencement of the intervention works. [LIST UP TO 4 SPECIES PER STRATUM]",
+                "name": "dominantSpeciesPreIntervention",
+                "indexName": "dominantSpeciesPreIntervention",
+                "dwcAttribute": "scientificName"
+              },
+              {
+                "dataType": "text",
+                "description": "The vegetation stratum occupied by the species in it's mature state.",
+                "name": "dominantSpeciesPreInterventionStratum",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "dominantSpeciesPreInterventionStratum",
+                "measurementType": "text",
+                "constraints": [
+                  "Canopy",
+                  "Midstory",
+                  "Ground stratum"
+                ]
+              },
+              {
+                "dataType": "text",
+                "description": "Is the site within the natural distribution of the species.",
+                "name": "naturalStatusPreIntervention",
+                "indexName": "naturalStatusPreIntervention",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "naturalStatusPreIntervention",
+                "measurementType": "text",
+                "constraints": [
+                  "Naturally occurring",
+                  "Introduced"
+                ]
+              }
+            ]
+          },
+          {
+            "dataType": "list",
+            "name": "dominantPlantSpeciesPostIntervention",
+            "columns": [
+              {
+                "dataType": "species",
+                "description": "The dominant plant species on the site after the intervention works.[LIST UP TO 4 SPECIES PER STRATUM]",
+                "name": "dominantSpeciesPostIntervention",
+                "indexName": "dominantSpeciesPostIntervention",
+                "dwcAttribute": "scientificName",
+                "required": true
+              },
+              {
+                "dataType": "text",
+                "description": "The vegetation stratum occupied by the species in it's mature state.",
+                "name": "dominantSpeciesPostInterventionStratum",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "dominantSpeciesPostInterventionStratum",
+                "measurementType": "text",
+                "constraints": [
+                  "Canopy",
+                  "Midstory",
+                  "Ground stratum"
+                ]
+              },
+              {
+                "dataType": "text",
+                "description": "Is the site within the natural distribution of the species.",
+                "name": "naturalStatusPostIntervention",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "naturalStatusPostIntervention",
+                "measurementType": "text",
+                "constraints": [
+                  "Naturally occurring",
+                  "Introduced"
+                ]
+              }
+            ]
+          },
+          {
+            "dataType": "geoMap",
+            "name": "location",
+            "columns": [
+              {
+                "source": "locationLatitude",
+                "dwcAttribute": "verbatimLatitude"
+              },
+              {
+                "source": "locationLongitude",
+                "dwcAttribute": "verbatimLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": false,
+            "zoomToProjectArea": true,
+            "defaultAccuracy": 10,
+            "hideMyLocation": false,
+            "validate": "required"
+          },
+          {
+            "dataType": "image",
+            "name": "sitePhoto",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "sitePhoto",
+            "measurementType": "associatedMedia",
+            "description": "One or more photos of the work site. These may be established as photo points."
+          },
+          {
+            "dataType": "text",
+            "name": "sitePhotoDeclaration",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "sitePhotoDeclaration",
+            "measurementType": "text",
+            "description": "If any attached photos contain people, those people should provide consent to be inculed in the images.",
+            "constraints": [
+              "consent given",
+              "no identifiable people"
+            ]
+          },
+          {
+            "dataType": "document",
+            "name": "siteDocuments",
+            "description": ""
+          },
+          {
+            "dataType": "text",
+            "description": "General notes and/or comments about the site or intervention activities.",
+            "name": "locationRemarks",
+            "dwcAttribute": "locationRemarks",
+            "defaultRows": "10"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "revegetationMethod",
+            "indexName": "revegetationMethod",
+            "constraints": [
+              "Aerial seeding",
+              "Direct seeding - direct drill small implements",
+              "Direct seeding - direct drill machine",
+              "Direct seeding - hand broadcast",
+              "Hand planting",
+              "Machine planting",
+              "Infill plantings",
+              "Assisted regeneration (weed removal, etc)",
+              "Combined assisted regeneration planting",
+              "Combined assisted regeneration / seeding"
+            ],
+            "dwcAttribute": "establishmentMeans",
+            "validate": "required"
+          },
+          {
+            "dataType": "stringList",
+            "description": "The method used to select species for planting.",
+            "name": "speciesSelectionMethod",
+            "indexName": "speciesSelectionMethod",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "speciesSelectionMethod",
+            "measurementType": "text",
+            "constraints": [
+              "Selected from existing or local reference vegetation",
+              "Availability of stock",
+              "Plant preferences of target fauna",
+              "Climate change considerations",
+              "Traditional knowledge",
+              "Other",
+              "Unknown"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "Indicate whether mulching was applied to the site as part of the revegatation/restoration project.",
+            "name": "establishmentMulching",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "establishmentMulching",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "Description of the mulch and mulching method used.",
+            "name": "establishmentMulchingRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "establishmentMulchingRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "text",
+            "description": "Indicate whether watering was applied as part of establishing the revegatation/restoration site.",
+            "name": "establishmentWatering",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "establishmentWatering",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "No",
+              "Not applicable"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "Description of the watering method used.",
+            "name": "establishmentWateringRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "establishmentWateringRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "text",
+            "description": "Indicate whether fertilizer was applied as part of establishing the revegatation/restoration site.",
+            "name": "establishmentFertilizing",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "establishmentFertilizing",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "Description of the fertilizer and fertilizing method used.",
+            "name": "establishmentFertilizingRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "establishmentFertilizingRemarks",
+            "measurementType": "text"
+          },
+          {
+            "name": "sitePreparationTable",
+            "dataType": "list",
+            "allowRowDelete": false,
+            "columns": [
+              {
+                "dataType": "stringList",
+                "description": "Methods applied to prepare ground for restoration work.",
+                "name": "sitePreparationMethods",
+                "indexName": "sitePreparationMethods",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "sitePreparationMethods",
+                "measurementType": "text",
+                "constraints": [
+                  "Ripping",
+                  "Raking",
+                  "Scalping"
+                ]
+              },
+              {
+                "dataType": "stringList",
+                "description": "Fire methods applied to assist natural regeneration.",
+                "name": "fireAssistedRegenerationMethods",
+                "indexName": "fireAssistedRegenerationMethods",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "fireAssistedRegenerationMethods",
+                "measurementType": "text",
+                "constraints": [
+                  "Cool burn",
+                  "Pile burn",
+                  "Gas burner",
+                  "Smoke water",
+                  "Cultural burning"
+                ]
+              },
+              {
+                "dataType": "stringList",
+                "description": "Method used to protect restoration work.",
+                "name": "plantProtectionMethod",
+                "indexName": "plantProtectionMethod",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "plantProtectionMethod",
+                "measurementType": "text",
+                "constraints": [
+                  "No protection used",
+                  "Stock fencing",
+                  "Predator fencing",
+                  "Combined stock-predator fencing",
+                  "Wildlife friendly fencing",
+                  "Plant guards",
+                  "Other"
+                ]
+              },
+              {
+                "dataType": "stringList",
+                "description": "Broad methods used to control and manage weeds.",
+                "name": "weedTreatmentMethods",
+                "indexName": "weedTreatmentMethods",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "weedTreatmentMethods",
+                "measurementType": "text",
+                "constraints": [
+                  "Manual weeding",
+                  "Spray circles (herbicide)",
+                  "Broard-scale spray (herbicide)",
+                  "Selective spot spraying (herbicide)",
+                  "Injection (herbicide)",
+                  "Slashing",
+                  "Scraping",
+                  "Cut and paint",
+                  "Biological control agents",
+                  "Traditional burning",
+                  "Other",
+                  "None"
+                ]
+              },
+              {
+                "dataType": "text",
+                "description": "Description of treament actions undertaken to manage pest animals at the site.",
+                "name": "PestManagementActions",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "PestManagementActions",
+                "measurementType": "text",
+                "indexName": "PestManagementActions"
+              },
+              {
+                "dataType": "stringList",
+                "description": "Habitat features retained and/or enhanced via assisted natural regeneration management.",
+                "name": "habitatFeatures",
+                "indexName": "habitatFeatures",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "habitatFeatures",
+                "measurementType": "text",
+                "constraints": [
+                  "Bird perches",
+                  "Hollow logs",
+                  "Hollow creation",
+                  "Nest boxes",
+                  "Coarse woody debris",
+                  "Other"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "traditionalPracticesTable",
+            "dataType": "list",
+            "allowRowDelete": false,
+            "defaultRows": [
+              {
+                "traditionalPractice": "Cultural reactivation activities (stories, song, dance)",
+                "traditionalPracticeComments": ""
+              },
+              {
+                "traditionalPractice": "Respect shown for cultural protocols",
+                "traditionalPracticeComments": ""
+              }
+            ],
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "traditionalPractice",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "traditionalPractice",
+                "measurementType": "text",
+                "indexName": "",
+                "readOnly": true,
+                "noEdit": true,
+                "constraints": [
+                  "Cultural reactivation activities (stories, song, dance)",
+                  "Respect shown for cultural protocols"
+                ]
+              },
+              {
+                "dataType": "text",
+                "name": "traditionalPracticeComments",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "traditionalPracticeComments",
+                "measurementType": "text",
+                "description": "Provide comments for traditional practices as appropriate."
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "Please enter any additional comments or notes about this planting activity",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks"
+          },
+          {
+            "dataType": "text",
+            "description": "The name or identifier of the revegetation works site.",
+            "name": "siteName",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "siteName",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "description": "The distance between adjacent plants within the restoration site.",
+            "name": "plantSpacingInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "plantSpacingInMetres",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "boolean",
+            "description": "Check if the distance between plants is unknown.",
+            "name": "plantSpacingUnknown",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "plantSpacingUnknown",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "number",
+            "description": "For use when direct seeding - the density of seed distribution per square metre within the restoration site.",
+            "name": "directSeedingDensityInSeedsPerSquareMetre",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "directSeedingDensityInSeedsPerSquareMetre",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "list",
+            "name": "planting",
+            "columns": [
+              {
+                "speciesList": "project",
+                "dataType": "species",
+                "noTotal": "true",
+                "description": "The species planted / sown. (start typing a  scientific or common name for a species)",
+                "name": "species",
+                "dwcAttribute": "scientificName"
+              },
+              {
+                "dataType": "text",
+                "noTotal": "true",
+                "description": "The structural layer of vegetation that plants will occupy when mature",
+                "name": "structuralLayer",
+                "indexName": "structuralLayer",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "structuralLayer",
+                "measurementType": "text",
+                "constraints": [
+                  "Canopy",
+                  "Midstory",
+                  "Ground"
+                ]
+              },
+              {
+                "dataType": "number",
+                "description": "",
+                "name": "numberPlanted",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "numberPlanted",
+                "measurementType": "number",
+                "validate": "integer,min[0]"
+              },
+              {
+                "dataType": "boolean",
+                "description": "Check if the number of plants is unknown.",
+                "name": "numberPlantedUnknown",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "numberPlantedUnknown",
+                "measurementType": "text"
+              },
+              {
+                "dataType": "text",
+                "noTotal": "true",
+                "description": "",
+                "name": "stockType",
+                "indexName": "stockType",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "stockType",
+                "measurementType": "text",
+                "constraints": [
+                  "Tube",
+                  "Advanced",
+                  "Other"
+                ]
+              },
+              {
+                "dataType": "number",
+                "description": "Weight of seed direct sown in kilograms",
+                "name": "seedSownKg",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "seedSownKg",
+                "measurementType": "number",
+                "validate": "min[0]"
+              },
+              {
+                "dataType": "boolean",
+                "description": "Check if the amount of seed is unknown.",
+                "name": "seedSownKgUnknown",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "seedSownKgUnknown",
+                "measurementType": "boolean"
+              },
+              {
+                "dataType": "text",
+                "description": "The name of the locality from which the seedstock was collected",
+                "name": "stockProvenance",
+                "indexName": "stockProvenance",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "stockProvenance",
+                "measurementType": "text"
+              },
+              {
+                "dataType": "text",
+                "description": "Was the seedstock locally collected",
+                "name": "localSeedStockBoolean",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "localSeedStockBoolean",
+                "measurementType": "text",
+                "constraints": [
+                  "Yes",
+                  "No",
+                  "Unknown"
+                ]
+              },
+              {
+                "dataType": "text",
+                "description": "Was climate change adaptation considered when sourcing stock?",
+                "name": "climateAdaptedStockSelection",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "climateAdaptedStockSelection",
+                "measurementType": "text",
+                "constraints": [
+                  "Yes",
+                  "No",
+                  "Unknown"
+                ]
+              }
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "Aggregate total number of plants planted",
+            "primaryResult": "true",
+            "name": "totalNumberPlanted",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "totalNumberPlanted",
+            "measurementType": "number",
+            "validate": "integer"
+          },
+          {
+            "dataType": "number",
+            "description": "Aggregate total of seed sown in kilograms",
+            "primaryResult": "true",
+            "name": "totalSeedSownKg",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "totalSeedSownKg",
+            "measurementType": "number",
+            "decimalPlaces": "2"
+          },
+          {
+            "dataType": "text",
+            "description": "Please enter any comments or notes about establishing this planting activity",
+            "name": "establishmentRemarks",
+            "dwcAttribute": "establishmentRemarks"
+          },
+          {
+            "dataType": "list",
+            "disableTableUpload": true,
+            "allowRowDelete": "false",
+            "name": "postEstablishmentManagementTable",
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "postEstablishmentManagementAction",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "postEstablishmentManagementAction",
+                "measurementType": "text",
+                "readOnly": true,
+                "noEdit": true
+              },
+              {
+                "dataType": "text",
+                "name": "frequencyOfManagementAction",
+                "indexName": "frequencyOfManagementAction",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "frequencyOfManagementAction",
+                "measurementType": "text",
+                "constraints": [
+                  "Not undertaken",
+                  "Once",
+                  "Weekly",
+                  "Monthly",
+                  "3 Monthly",
+                  "Other"
+                ]
+              },
+              {
+                "dataType": "text",
+                "description": "Please enter any comments or notes about the post-establishment management activities (generally undertaken within the first year after establishment)",
+                "name": "postEstablishmentRemarks",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "postEstablishmentRemarks",
+                "measurementType": "text"
+              }
+            ],
+            "defaultRows": [
+              {
+                "name": "postEstablishmentWeedControlActions",
+                "dataType": "text",
+                "postEstablishmentManagementAction": "Weed control",
+                "frequencyOfManagementAction": "",
+                "postEstablishmentRemarks": ""
+              },
+              {
+                "name": "postEstablishmentWatering",
+                "dataType": "text",
+                "postEstablishmentManagementAction": "Watering",
+                "frequencyOfManagementAction": "",
+                "postEstablishmentRemarks": ""
+              }
+            ]
+          },
+          {
+            "dataType": "list",
+            "disableTableUpload": true,
+            "allowRowDelete": "false",
+            "name": "postEstablishmentManagementTableInfill",
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "postEstablishmentManagementActionInfill",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "postEstablishmentManagementActionInfill",
+                "measurementType": "text",
+                "readOnly": true,
+                "noEdit": true
+              },
+              {
+                "dataType": "text",
+                "name": "infillActionApplied",
+                "indexName": "infillActionApplied",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "infillActionApplied",
+                "measurementType": "text",
+                "constraints": [
+                  "Yes",
+                  "No"
+                ]
+              },
+              {
+                "dataType": "text",
+                "description": "Please enter any comments or notes about the post-establishment management activities (generally undertaken within the first year after establishment)",
+                "name": "postEstablishmentInfillRemarks",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "postEstablishmentInfillRemarks",
+                "measurementType": "text"
+              }
+            ],
+            "defaultRows": [
+              {
+                "name": "postEstablishmentReplacementSeeding",
+                "dataType": "text",
+                "postEstablishmentManagementActionInfill": "Replacement or infill seeding",
+                "frequencyOfManagementAction": "",
+                "postEstablishmentRemarks": ""
+              },
+              {
+                "name": "postEstablishmentInfillPlantings",
+                "dataType": "text",
+                "postEstablishmentManagementActionInfill": "Replacement or infill planting",
+                "frequencyOfManagementAction": "",
+                "postEstablishmentRemarks": ""
+              },
+              {
+                "name": "postEstablishmentAssistedRegen",
+                "dataType": "text",
+                "postEstablishmentManagementActionInfill": "Assisted regeneration",
+                "frequencyOfManagementAction": "",
+                "postEstablishmentRemarks": ""
+              }
+            ]
+          },
+          {
+            "dataType": "list",
+            "disableTableUpload": true,
+            "allowRowDelete": "false",
+            "name": "maintenanceTable",
+            "defaultRows": [
+              {
+                "name": "maintenanceWeedControlActions",
+                "dataType": "text",
+                "maintenanceAction": "Weed control",
+                "frequencyOfMaintenanceAction": "",
+                "maintenanceRemarks": ""
+              },
+              {
+                "name": "postEstablishmentWatering",
+                "dataType": "text",
+                "maintenanceAction": "Watering",
+                "frequencyOfMaintenanceAction": "",
+                "maintenanceRemarks": ""
+              }
+            ],
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "maintenanceAction",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "maintenanceAction",
+                "measurementType": "text",
+                "readOnly": true,
+                "noEdit": true
+              },
+              {
+                "dataType": "text",
+                "name": "frequencyOfMaintenanceAction",
+                "indexName": "frequencyOfMaintenanceAction",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "frequencyOfMaintenanceAction",
+                "measurementType": "text",
+                "constraints": [
+                  "Not undertaken",
+                  "3 Monthly",
+                  "6 Monthly",
+                  "Annually",
+                  "Other"
+                ]
+              },
+              {
+                "dataType": "text",
+                "description": "Please enter any comments or notes about the post-establishment maintenance activities (generally undertaken after the first year following establishment)",
+                "name": "maintenanceRemarks",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "maintenanceRemarks",
+                "measurementType": "text"
+              }
+            ]
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "SITE INFORMATION",
+                "type": "section",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "source": "<h1>Habitat Restoration - Site Information</h1><h4>This survey documents restoration work conducted by three general techniques: assisted regeneration, planting and direct seeding.<br> Only one technique can be assigned to each work site. Where more than one is used in a restoration project, separate work sites must be created for each area.</h4>",
+                        "type": "literal"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "SITE REGISTRATION DETAILS",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "source": "siteCode",
+                                            "preLabel": "Site code [PROVIDED BY THE PROJECT ADMINISTRATOR]",
+                                            "type": "text"
+                                          },
+                                          {
+                                            "source": "restorationProgram",
+                                            "preLabel": "Restoration program",
+                                            "type": "text"
+                                          },
+                                          {
+                                            "source": "dataEnteredBy",
+                                            "preLabel": "Name of the person entering the data",
+                                            "type": "text"
+                                          },
+                                          {
+                                            "source": "recordedBy",
+                                            "preLabel": "Name of the entity responsible for the data",
+                                            "readOnly": true,
+                                            "noEdit": true,
+                                            "type": "text"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "RESTORATION SUMMARY INFORMATION",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "interventionCommencementYear",
+                                                "preLabel": "Year that on ground restoration activities commenced [YYYY]",
+                                                "type": "number"
+                                              },
+                                              {
+                                                "source": "interventionCommencementMonth",
+                                                "preLabel": "Month restoration activities commenced",
+                                                "type": "selectOne"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "interventionCompletionYear",
+                                                "preLabel": "If major work has been completed, year on ground activities ended [YYYY]",
+                                                "type": "number"
+                                              },
+                                              {
+                                                "source": "interventionDurationInYearsHistorical",
+                                                "preLabel": "How long have you worked on the site (years).",
+                                                "type": "number"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "class": "output-section"
+                                  },
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "targetFaunaSpecies",
+                                                "preLabel": "Is there a target fauna species? (common name + scientific name)",
+                                                "type": "selectOne"
+                                              },
+                                              {
+                                                "source": "targetSpeciesProximityInMetres",
+                                                "preLabel": "Distance to the nearest sighting of the target species (m)",
+                                                "type": "number"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "targetFaunaSpeciesSecondary",
+                                                "preLabel": "Is there a secondary target fauna species? (common name + scientific name)",
+                                                "type": "text"
+                                              },
+                                              {
+                                                "source": "targetSpeciesProximityUnknown",
+                                                "preLabel": "Distance to the nearest sighting of the target species unknown",
+                                                "type": "boolean"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "distanceToRemnantVegetationInMetres",
+                                                "preLabel": "Distance to nearest remnant of native vegetation (m)",
+                                                "type": "number"
+                                              },
+                                              {
+                                                "source": "distanceToPermanentWaterInMetres",
+                                                "preLabel": "Distance to the nearest permanent water (m)",
+                                                "type": "number"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "class": "output-section"
+                                  },
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "interventionProjectAims",
+                                                "preLabel": "Aims of the work",
+                                                "type": "selectMany"
+                                              },
+                                              {
+                                                "source": "projectCollaborators",
+                                                "preLabel": "Collaborators",
+                                                "type": "selectMany"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "class": "output-section"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "SITE NAME AND LOCATION",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "<font style='color:blue; font-size:0.9em;'><i>Zoom into the map, click on your choice of polygon tool and then click on the map to draw the shape of the site where the activity was undertaken. If the site was already created, select it from the drop-down list.</i></font>",
+                                                "type": "literal"
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "includeNotes": false,
+                                                "orientation": "vertical",
+                                                "autoLocalitySearch": true,
+                                                "readonly": true,
+                                                "includeSource": false,
+                                                "includeAccuracy": true,
+                                                "hideSiteSelection": false,
+                                                "hideMyLocation": false,
+                                                "source": "location",
+                                                "type": "geoMap",
+                                                "includeLocality": false
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "source": "localGovernmentArea",
+                                            "preLabel": "Local government area",
+                                            "type": "text"
+                                          },
+                                          {
+                                            "source": "nearestPopulationCentre",
+                                            "preLabel": "Nearest town or city",
+                                            "type": "text"
+                                          },
+                                          {
+                                            "source": "locationRemarks",
+                                            "preLabel": "Comments / Notes",
+                                            "type": "textarea",
+                                            "defaultRows": "10"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "SITE ASSOCIATED INFORMATION",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "source": "sitePhoto",
+                                                    "preLabel": "Photo(s) of site",
+                                                    "type": "image"
+                                                  }
+                                                ]
+                                              },
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "source": "siteDocuments",
+                                                    "preLabel": "Document(s) associated with the site",
+                                                    "type": "document"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "source": "sitePhotoDeclaration",
+                                                "preLabel": "I declare that all people identifiable in images attached to this record have given consent to being included in these images.",
+                                                "type": "selectOne"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "class": ""
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "SITE CHARACTERISTICS",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "source": "areaOfRevegetationInHectares",
+                                        "preLabel": "Restoration area (Ha)",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "source": "lengthOfPlantingInMetres",
+                                        "preLabel": "Length of restoration work (m), [for linear sites]",
+                                        "type": "number"
+                                      }
+                                    ],
+                                    "class": "output-section"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "source": "timeSinceLastFireInYears",
+                                        "preLabel": "Time since last fire (years)",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "source": "timeSinceLastFireUnknown",
+                                        "preLabel": "Unknown",
+                                        "type": "boolean"
+                                      }
+                                    ],
+                                    "class": "output-section"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "source": "landTenure",
+                                            "preLabel": "Land tenure",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "landusePreIntervention",
+                                            "preLabel": "Land use prior to restoration",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "siteAspectCategorical",
+                                            "preLabel": "Predominate aspect of the site",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "siteSlopeInPercent",
+                                            "preLabel": "Site slope",
+                                            "type": "selectOne"
+                                          }
+                                        ],
+                                        "class": "output-section"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": "output-section"
+                              },
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "source": "isRiparianTrue",
+                                            "preLabel": "Is the site riparian? (within 30m of river, creek, ephemeral creek, large dam)",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "isFrostAffectedCategorical",
+                                            "preLabel": "How frequently is the site affected by frost?",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "isFireAffectedCategorical",
+                                            "preLabel": "How frequently has the site been affected by fire?",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "isFloodAffectedCategorical",
+                                            "preLabel": "How frequently does your site flood?",
+                                            "type": "selectOne"
+                                          }
+                                        ],
+                                        "class": "output-section"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "class": "output-section"
+                      }
+                    ],
+                    "class": ""
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "FUNDING and WORKFORCE",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "fundingType",
+                                    "preLabel": "Sources of funding",
+                                    "type": "selectMany"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "source": "projectFundingCashInDollars",
+                                            "preLabel": "Total cash funds spent ($)",
+                                            "type": "number"
+                                          },
+                                          {
+                                            "source": "projectFundingInKindInDollars",
+                                            "preLabel": "Value of in-kind contributions (eg. volunteers, materials, use of equipment, technical support, etc.)",
+                                            "type": "number"
+                                          },
+                                          {
+                                            "source": "fundingTotal",
+                                            "preLabel": "Total cost ($)",
+                                            "type": "number",
+                                            "readOnly": true,
+                                            "noEdit": true
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": "output-section"
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "<h5>Select which groups are involved in the project and which aspects of the work they are engaged in</h5>",
+                                "type": "literal"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "title": "",
+                                    "source": "workforceRoles",
+                                    "columns": [
+                                      {
+                                        "title": "",
+                                        "source": "workforceType",
+                                        "width": "40%",
+                                        "type": "text",
+                                        "noEdit": true,
+                                        "readOnly": true
+                                      },
+                                      {
+                                        "title": "Administration",
+                                        "source": "workforceRoleAdministration",
+                                        "width": "10%",
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "title": "Planning",
+                                        "source": "workforceRolePlanning",
+                                        "width": "10%",
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "title": "Implementation",
+                                        "source": "workforceRoleImplementation",
+                                        "width": "10%",
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "title": "Reporting / Communications",
+                                        "source": "workforceRoleReportingCommunications",
+                                        "width": "10%",
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "title": "Monitoring",
+                                        "source": "workforceRoleMonitoring",
+                                        "width": "10%",
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "title": "Research",
+                                        "source": "workforceRoleResearch",
+                                        "width": "10%",
+                                        "type": "boolean"
+                                      }
+                                    ],
+                                    "userAddedRows": false,
+                                    "type": "table",
+                                    "allowRowDelete": false,
+                                    "allowHeaderWrap": true,
+                                    "disableTableUpload": true
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": "output-section"
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "PRE-RESTORATION DOMINANT SPECIES",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "title": "",
+                                            "source": "dominantPlantSpeciesPreIntervention",
+                                            "columns": [
+                                              {
+                                                "title": "Pre-restoration dominant species (native or introduced)",
+                                                "source": "dominantSpeciesPreIntervention",
+                                                "width": "50%",
+                                                "type": "speciesSelect"
+                                              },
+                                              {
+                                                "title": "Stratum",
+                                                "source": "dominantSpeciesPreInterventionStratum",
+                                                "width": "25%",
+                                                "type": "selectOne"
+                                              },
+                                              {
+                                                "title": "Does the species occur naturally in the local area?",
+                                                "source": "naturalStatusPreIntervention",
+                                                "width": "25%",
+                                                "type": "selectOne"
+                                              }
+                                            ],
+                                            "userAddedRows": true,
+                                            "type": "table",
+                                            "allowRowDelete": true,
+                                            "allowHeaderWrap": true,
+                                            "disableTableUpload": true
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "POST-RESTORATION DOMINANT SPECIES",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "title": "",
+                                            "source": "dominantPlantSpeciesPostIntervention",
+                                            "columns": [
+                                              {
+                                                "title": "Post-restoration dominant species (native or introduced)",
+                                                "source": "dominantSpeciesPostIntervention",
+                                                "width": "50%",
+                                                "type": "speciesSelect",
+                                                "required": true,
+                                                "validate": "required"
+                                              },
+                                              {
+                                                "title": "Stratum",
+                                                "source": "dominantSpeciesPostInterventionStratum",
+                                                "width": "25%",
+                                                "type": "selectOne"
+                                              },
+                                              {
+                                                "title": "Does the species occur naturally in the local area?",
+                                                "source": "naturalStatusPostIntervention",
+                                                "width": "25%",
+                                                "type": "selectOne"
+                                              }
+                                            ],
+                                            "userAddedRows": true,
+                                            "type": "table",
+                                            "allowRowDelete": true,
+                                            "allowHeaderWrap": true,
+                                            "disableTableUpload": true
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "boxed": true,
+                "title": "WORK DETAILS",
+                "type": "section",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "source": "<h1>Habitat Restoration - Work Details</h1><h4>This project documents restoration work conducted by three general techniques: assisted regeneration, planting and direct seeding.<br> Only one technique can be assigned to each work site. Where more than one is used in a restoration project, separate work sites must be created for each area.</h4>",
+                        "type": "literal"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "RESTORATION METHOD",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "source": "revegetationMethod",
+                                        "preLabel": "Primary method used to restore the site.",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "source": "speciesSelectionMethod",
+                                        "preLabel": "Method(s) of species selection",
+                                        "type": "selectMany"
+                                      }
+                                    ],
+                                    "class": ""
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "TRADITIONAL KNOWLEDGE & PRACTICES",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "table",
+                                    "source": "traditionalPracticesTable",
+                                    "allowRowDelete": false,
+                                    "userAddedRows": false,
+                                    "allowHeaderWrap": true,
+                                    "disableTableUpload": true,
+                                    "columns": [
+                                      {
+                                        "source": "traditionalPractice",
+                                        "title": "Traditional practice",
+                                        "type": "text",
+                                        "width": "40%",
+                                        "noEdit": true,
+                                        "readOnly": true
+                                      },
+                                      {
+                                        "source": "traditionalPracticeComments",
+                                        "title": "Comments",
+                                        "type": "textarea"
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "col",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "boxed": true,
+                                    "title": "SITE PREPARATION",
+                                    "type": "section",
+                                    "items": [
+                                      {
+                                        "type": "table",
+                                        "source": "sitePreparationTable",
+                                        "allowRowDelete": false,
+                                        "userAddedRows": false,
+                                        "allowHeaderWrap": true,
+                                        "disableTableUpload": true,
+                                        "columns": [
+                                          {
+                                            "source": "sitePreparationMethods",
+                                            "title": "Soil disturbance",
+                                            "type": "selectMany"
+                                          },
+                                          {
+                                            "source": "fireAssistedRegenerationMethods",
+                                            "title": "Fire",
+                                            "type": "selectMany"
+                                          },
+                                          {
+                                            "source": "plantProtectionMethod",
+                                            "title": "Plant protection",
+                                            "type": "selectMany"
+                                          },
+                                          {
+                                            "source": "weedTreatmentMethods",
+                                            "title": "Weed treatment",
+                                            "type": "selectMany"
+                                          },
+                                          {
+                                            "source": "PestManagementActions",
+                                            "title": "Pest management actions",
+                                            "type": "textarea"
+                                          },
+                                          {
+                                            "source": "habitatFeatures",
+                                            "title": "Habitat elements retained or introduced",
+                                            "type": "selectMany"
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "class": ""
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "eventRemarks",
+                                    "preLabel": "Comments / Notes:",
+                                    "type": "textarea"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "PLANT AND SEED STOCK",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "source": "plantSpacingInMetres",
+                                        "preLabel": "Spacing between plants (m)",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "source": "plantSpacingUnknown",
+                                        "preLabel": "Plant spacing unknown",
+                                        "type": "boolean"
+                                      }
+                                    ],
+                                    "class": "output-section"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "source": "directSeedingDensityInSeedsPerSquareMetre",
+                                        "preLabel": "Number of seeds sown per m2",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "source": "directSeedingDensityUnknown",
+                                        "preLabel": "Direct seeding density unknown",
+                                        "type": "boolean"
+                                      }
+                                    ],
+                                    "class": "output-section"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "footer": {
+                                      "rows": [
+                                        {
+                                          "columns": [
+                                            {
+                                              "colspan": 1,
+                                              "source": "",
+                                              "type": "literal"
+                                            },
+                                            {
+                                              "source": "Total Seedlings Planted:",
+                                              "colspan": 1,
+                                              "type": "literal"
+                                            },
+                                            {
+                                              "source": "totalNumberPlanted",
+                                              "type": "number",
+                                              "colspan": 2
+                                            },
+                                            {
+                                              "source": "Total Seed Sown (Kg):",
+                                              "type": "literal",
+                                              "colspan": 1
+                                            },
+                                            {
+                                              "source": "totalSeedSownKg",
+                                              "type": "number",
+                                              "colspan": 2
+                                            },
+                                            {
+                                              "colspan": 3,
+                                              "source": "",
+                                              "type": "literal"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "title": "Please list the numbers of each species planted during this activity and any additional information that you can that is relevant:",
+                                    "source": "planting",
+                                    "columns": [
+                                      {
+                                        "title": "Species planted / sown",
+                                        "source": "species",
+                                        "width": "20%",
+                                        "type": "speciesSelect"
+                                      },
+                                      {
+                                        "title": "Structural Layer",
+                                        "source": "structuralLayer",
+                                        "width": "10%",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "title": "No. Planted:",
+                                        "source": "numberPlanted",
+                                        "width": "8%",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "title": "No. of plants unknown",
+                                        "source": "numberPlantedUnknown",
+                                        "width": "5%",
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "title": "Type of plant stock",
+                                        "source": "stockType",
+                                        "width": "10%",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "title": "Seed Sown (Kg):",
+                                        "source": "seedSownKg",
+                                        "width": "7%",
+                                        "type": "number"
+                                      },
+                                      {
+                                        "title": "Amount of seed unknown",
+                                        "source": "seedSownKgUnknown",
+                                        "width": "5%",
+                                        "type": "boolean"
+                                      },
+                                      {
+                                        "title": "Stock Provenance",
+                                        "source": "stockProvenance",
+                                        "width": "15%",
+                                        "type": "text"
+                                      },
+                                      {
+                                        "title": "Seed from local stock (Y/N)",
+                                        "source": "localSeedStockBoolean",
+                                        "width": "10%",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "title": "Stock climate change adapted (Y/N)",
+                                        "source": "climateAdaptedStockSelection",
+                                        "width": "10%",
+                                        "type": "selectOne"
+                                      }
+                                    ],
+                                    "userAddedRows": true,
+                                    "type": "table",
+                                    "allowRowDelete": true,
+                                    "allowHeaderWrap": true,
+                                    "disableTableUpload": false
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "PLANTING TREATMENTS",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "establishmentWatering",
+                                    "preLabel": "Were plants watered?",
+                                    "type": "selectOne"
+                                  },
+                                  {
+                                    "source": "establishmentWateringRemarks",
+                                    "preLabel": "Watering comments",
+                                    "type": "textarea"
+                                  }
+                                ],
+                                "class": ""
+                              },
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "establishmentFertilizing",
+                                    "preLabel": "Were plants fertilized?",
+                                    "type": "selectOne"
+                                  },
+                                  {
+                                    "source": "establishmentFertilizingRemarks",
+                                    "preLabel": "Fertilizing comments",
+                                    "type": "textarea"
+                                  }
+                                ],
+                                "class": ""
+                              },
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "establishmentMulching",
+                                    "preLabel": "Were plants mulched?",
+                                    "type": "selectOne"
+                                  },
+                                  {
+                                    "source": "establishmentMulchingRemarks",
+                                    "preLabel": "Mulching comments",
+                                    "type": "textarea"
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "establishmentRemarks",
+                                    "type": "textarea",
+                                    "preLabel": "Comments"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "FOLLOW-UP MANAGEMENT ACTIONS",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "<h5>Management work undertaken before weeds have stabilised (typically year 1)</h5>",
+                                "type": "literal"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "title": "",
+                                    "source": "postEstablishmentManagementTable",
+                                    "columns": [
+                                      {
+                                        "title": "Management action",
+                                        "source": "postEstablishmentManagementAction",
+                                        "width": "20%",
+                                        "type": "text",
+                                        "readOnly": true,
+                                        "noEdit": true
+                                      },
+                                      {
+                                        "title": "Frequency of management action",
+                                        "source": "frequencyOfManagementAction",
+                                        "width": "20%",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "title": "Comments",
+                                        "source": "postEstablishmentRemarks",
+                                        "width": "40%",
+                                        "type": "textarea"
+                                      }
+                                    ],
+                                    "userAddedRows": false,
+                                    "type": "table",
+                                    "allowRowDelete": false,
+                                    "allowHeaderWrap": true,
+                                    "disableTableUpload": true
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ],
+                            "class": "output-section"
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "title": "",
+                                    "source": "postEstablishmentManagementTableInfill",
+                                    "columns": [
+                                      {
+                                        "title": "Management action",
+                                        "source": "postEstablishmentManagementActionInfill",
+                                        "width": "20%",
+                                        "type": "text",
+                                        "readOnly": true,
+                                        "noEdit": true
+                                      },
+                                      {
+                                        "title": "Infill action applied",
+                                        "source": "infillActionApplied",
+                                        "width": "20%",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "title": "Comments",
+                                        "source": "postEstablishmentInfillRemarks",
+                                        "width": "40%",
+                                        "type": "textarea"
+                                      }
+                                    ],
+                                    "userAddedRows": false,
+                                    "type": "table",
+                                    "allowRowDelete": false,
+                                    "allowHeaderWrap": true,
+                                    "disableTableUpload": true
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ],
+                            "class": "output-section"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "MAINTENANCE MANAGEMENT ACTIONS",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "source": "<h5>Management work undertaken after weeds have stabilised</h5>",
+                                "type": "literal"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "title": "",
+                                    "source": "maintenanceTable",
+                                    "columns": [
+                                      {
+                                        "title": "Maintenance action",
+                                        "source": "maintenanceAction",
+                                        "width": "20%",
+                                        "type": "text",
+                                        "readOnly": true,
+                                        "noEdit": true
+                                      },
+                                      {
+                                        "title": "Frequency of maintenance action",
+                                        "source": "frequencyOfMaintenanceAction",
+                                        "width": "20%",
+                                        "type": "selectOne"
+                                      },
+                                      {
+                                        "title": "Comments",
+                                        "source": "maintenanceRemarks",
+                                        "width": "40%",
+                                        "type": "textarea"
+                                      }
+                                    ],
+                                    "userAddedRows": false,
+                                    "type": "table",
+                                    "allowRowDelete": false,
+                                    "allowHeaderWrap": true,
+                                    "disableTableUpload": true
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ],
+                            "class": "output-section"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Habitat Restoration - Combined Site and Work Details"
+      },
+      "modelName": null,
+      "templateName": "habitatRestorationCombinedSiteAndWorkDetails",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Habitat Restoration - Combined Site and Work Details",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": null,
+  "formVersion": 1
+}
