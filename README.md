@@ -33,17 +33,6 @@ New server side classes that are custom to BioCollect should be under the packag
 
 * An external configuration file is required at `/data/biocollect/config/biocollect-config.properties` (or as configured in `application.yml`). External configuration is built into Grails 7; no plugin is needed.
 
-* BioCollect builds with its plugins in-place by default (`inplace=true` in `gradle.properties`). `settings.gradle` includes [ecodata-client-plugin](https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin) and [ala-map-plugin](https://github.com/AtlasOfLivingAustralia/ala-map-plugin) as subprojects, so both repositories must be cloned into the same parent folder as BioCollect:
-
-```
-parent-folder/
-├── biocollect/
-├── ecodata-client-plugin/
-└── ala-map-plugin/
-```
-
-* The ALA dependency stack (ala-auth, ala-ws-security-plugin, ala-ws-plugin, userdetails-service-client `8.0.0-SNAPSHOT`, ala-admin-plugin `3.0.0-SNAPSHOT`, ala-bootstrap5 `2.0.0-SNAPSHOT`, ala-cas-client `4.0.0-SNAPSHOT`) currently resolves from `mavenLocal()`. Until these snapshots are published to the ALA nexus, build each dependency from its `grails7` branch and install it locally with `./gradlew publishToMavenLocal`.
-
 * [Use this guide to setup BioCollect in IntelliJ](setup.md)
 
 ### Running BioCollect
