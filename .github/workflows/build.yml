@@ -88,10 +88,11 @@ jobs:
           package-version-ids: "${{ steps.versions.outputs.ids }}"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: build biocollect before running js unit test to compile dependent js templates
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          arguments: _Events
+
+      - name: build biocollect before running js unit test to compile dependent js templates
+        run: ./gradlew _Events
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -112,16 +113,12 @@ jobs:
           path: ./logs
 
       - name: Clean to remove clover instrumentation
-        uses: gradle/actions/setup-gradle@v6
         if: ${{ success() }}
-        with:
-          arguments: clean
+        run: ./gradlew clean
 
       - name: Publish the JAR to the repository
-        uses: gradle/actions/setup-gradle@v6
         if: ${{ success() }}
-        with:
-          arguments: publish
+        run: ./gradlew publish
         env:
           TRAVIS_DEPLOY_USERNAME: ${{secrets.DEPLOY_USERNAME}}
           TRAVIS_DEPLOY_PASSWORD: ${{secrets.DEPLOY_PASSWORD}}
