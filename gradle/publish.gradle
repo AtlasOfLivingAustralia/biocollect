@@ -15,16 +15,24 @@ publishing {
 
             pom.withXml {
                 def pomNode = asNode()
-                pomNode.dependencyManagement.replaceNode {}
+                def localPart = { node ->
+                    def name = node.name()
+                    name.metaClass.respondsTo(name, 'getLocalPart') ? name.localPart : name.toString()
+                }
+                pomNode.children().findAll { localPart(it) == 'dependencyManagement' }.each {
+                    it.replaceNode {}
+                }
 
                 // simply remove dependencies without a version
                 // version-less dependencies are handled with dependencyManagement
                 // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
-                pomNode.dependencies.dependency.findAll {
-                    it.version.text().isEmpty()
-                }.each {
-                    it.replaceNode {}
-                }
+                def dependenciesNode = pomNode.children().find { localPart(it) == 'dependencies' }
+                dependenciesNode?.children()?.findAll { dep ->
+                    localPart(dep) == 'dependency' &&
+                        !dep.children().any { child ->
+                            localPart(child) == 'version' && child.text()
+                        }
+                }?.each { it.replaceNode {} }
             }
             artifact bootJar
         }
