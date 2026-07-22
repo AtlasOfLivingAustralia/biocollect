@@ -128,8 +128,22 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
+        browsers: ['ChromeHeadlessCI'],
 
+        customLaunchers: {
+            // GitHub Actions / container runners need these flags; without them Chrome can
+            // connect then stall (no test start) until browserNoActivityTimeout fires.
+            ChromeHeadlessCI: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
+            }
+        },
+
+        // CDN scripts + coverage preprocess can exceed the 30s default on cold CI runners
+        browserNoActivityTimeout: 120000,
+        browserDisconnectTimeout: 20000,
+        browserDisconnectTolerance: 3,
+        captureTimeout: 120000,
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits

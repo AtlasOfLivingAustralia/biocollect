@@ -97,7 +97,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run javascript unit tests
-        run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
+        run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadlessCI
 
       - name: Run BioCollect functional tests
         run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev /tmp/biocollect-pwa
