@@ -1,4 +1,4 @@
-<%@ page import="org.apache.tomcat.jni.Local" contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <g:set var="mapService" bean="mapService"></g:set>
 <g:set var="messageSource" bean="messageSource"></g:set>
 <html>
