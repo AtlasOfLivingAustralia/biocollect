@@ -20,7 +20,7 @@
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
             allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.baseLayers', List)}"/>,
             allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.overlays', List)}"/>,
-            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/1.6.0/dist/images')}"
             </g:applyCodec>
         };
     </asset:script>

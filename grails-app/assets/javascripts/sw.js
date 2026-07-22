@@ -103,11 +103,18 @@ function isFetchingBaseMap (url) {
 
 async function precache() {
     const cache = await caches.open(pwaConfig.cacheName);
+    const files = pwaConfig.filesToPreCache || [];
 
-    for(let i = 0; i < pwaConfig.filesToPreCache.length; i++) {
-        await cache.delete(pwaConfig.filesToPreCache[i]);
+    for (let i = 0; i < files.length; i++) {
+        await cache.delete(files[i]);
     }
 
-    return cache.addAll(pwaConfig.filesToPreCache);
+    // Prefer per-URL caching over addAll: one 404 must not fail the whole install.
+    const results = await Promise.allSettled(files.map(url => cache.add(url)));
+    results.forEach((result, i) => {
+        if (result.status === 'rejected') {
+            console.warn('SW: Failed to precache', files[i], result.reason);
+        }
+    });
 }
 console.debug("SW Script: end reading");
