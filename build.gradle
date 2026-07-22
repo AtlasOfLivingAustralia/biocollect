@@ -142,7 +142,7 @@ dependencies {
     implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20240325.1"
 
     //ALA plugins
-    implementation("au.org.ala.plugins.grails:images-client-plugin:1.5-SNAPSHOT") {
+    implementation("au.org.ala.plugins.grails:images-client-plugin:2.0-SNAPSHOT") {
         // ala-auth is provided by BioCollect directly (8.0.0-SNAPSHOT); avoid a duplicate.
         // commons-httpclient is intentionally kept: the plugin's *WebService classes use it at runtime.
         exclude group: 'org.grails.plugins', module: 'ala-auth'
