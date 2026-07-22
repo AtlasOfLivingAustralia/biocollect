@@ -215,7 +215,10 @@ assets {
     ]
 
     includes = []
-    excludes = ["**/*.scss", '**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
+    // Exclude HTML: demo/example pages (esp. webjars) are not served assets, and HtmlProcessor
+    // crashes on quoted '%' (e.g. leaflet.markercluster progress bar: ... + '%').
+    // Knockout templates under assets/components/template are compiled to JS by _events.groovy.
+    excludes = ["**/*.scss", "**/*.html", '**/build/hintrc.js', 'hintrc.unminified.js', '**/spec.hintrc.js', 'spec.hintrc.unminified.js', 'node_modules/**']
 }
 
 if (Boolean.valueOf(inplace)) {
