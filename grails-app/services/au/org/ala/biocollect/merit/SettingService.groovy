@@ -11,10 +11,9 @@ import grails.util.Environment
 import groovy.text.GStringTemplateEngine
 import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
-import org.springframework.scheduling.annotation.Async
 import org.springframework.web.context.request.RequestAttributes
 
-import static groovyx.gpars.GParsPool.withPool
+import static grails.async.Promises.task
 
 //import grails.plugin.cache.Cacheable
 
@@ -25,7 +24,6 @@ class SettingService {
     private static final String HUB_CACHE_KEY_SUFFIX = '_hub'
     public static final String HUB_CONFIG_ATTRIBUTE_NAME = 'hubConfig'
     public static final String LAST_ACCESSED_HUB = 'recentHub'
-    private static final int THREAD_COUNT = 4
 
     public static void setHubConfig(HubSettings hubSettings) {
         localHubConfig.set(hubSettings)
@@ -83,18 +81,21 @@ class SettingService {
         }
 
         URL resource = getClass().getResource(sourceDir)
-        target = new File(targetDir)
+        target = copyDestinationForResource(resource, new File(targetDir))
 
         // copy bootstrap5 directory
-        au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
+        if (!au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)) {
+            throw new IllegalStateException("Unable to copy Bootstrap resources from ${resource} to ${target}")
+        }
 
-        // resolve bootstrap 4 scss file from temp directory.
+        // Put the local Bootstrap resolvers before the classpath resolvers.  Sass resolves
+        // every import through this list, and scanning the executable jar first makes each
+        // hub compilation prohibitively expensive in production.
         def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}", true)
-        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolver)
+        AssetPipelineConfigHolder.resolvers.add(0, scssFileSystemAssetResolver)
 
-        // resolve bootstrap 4 scss file from temp directory.
         def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}/scss", true)
-        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolverChild)
+        AssetPipelineConfigHolder.resolvers.add(0, scssFileSystemAssetResolverChild)
 
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
@@ -103,9 +104,23 @@ class SettingService {
                 break
             case Environment.PRODUCTION:
             default:
-                generateStyleSheetForHubs()
+                // Sass compilation is CPU intensive.  Run it after startup and keep it
+                // off the servlet threads so the application remains responsive.
+                task {
+                    try {
+                        generateStyleSheetForHubs()
+                    } catch (Exception e) {
+                        log.error("Error generating hub stylesheets", e)
+                    }
+                }
                 break
         }
+    }
+
+    static File copyDestinationForResource(URL resource, File extractedResourceDir) {
+        // File resources retain their root directory when copied, while jar resources
+        // copy only the root directory's contents.
+        resource.protocol == 'file' ? extractedResourceDir.parentFile : extractedResourceDir
     }
 
     /**
@@ -315,14 +330,14 @@ class SettingService {
         item?.breadCrumbs
     }
 
-    @Async
     void generateStyleSheetForHubs() {
         List hubs = listHubs()
-        withPool(THREAD_COUNT) {
-            hubs?.eachParallel {  hubMap ->
-                HubSettings hub = new HubSettings(new HashMap(hubMap))
-                generateStyleSheetForHub(hub)
-            }
+        // SassProcessor and the asset-pipeline resolvers are expensive under parallel
+        // access.  Compiling one hub at a time prevents stylesheet generation from
+        // consuming every available CPU and starving request processing.
+        hubs?.each { hubMap ->
+            HubSettings hub = new HubSettings(new HashMap(hubMap))
+            generateStyleSheetForHub(hub)
         }
     }
 
@@ -419,7 +434,7 @@ class SettingService {
         }
     }
 
-    String processScssContent(String contentScss, SassAssetFile input, String cssFileFullPath) {
+    synchronized String processScssContent(String contentScss, SassAssetFile input, String cssFileFullPath) {
         String output
         SassProcessor processor = new SassProcessor(null)
         output = processor.process(contentScss, input)

@@ -1,7 +1,6 @@
 package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
-import grails.plugin.cookie.CookieService
 import grails.testing.services.ServiceUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -26,6 +25,32 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
         service.grailsApplication = grailsApplication
     }
 
+    def "should preserve the Bootstrap resource directory in exploded and packaged applications"() {
+        given:
+        File extractedResourceDir = new File(temp, "bootstrap5")
+
+        expect:
+        SettingService.copyDestinationForResource(resource, extractedResourceDir) ==
+                (copyToParent ? extractedResourceDir.parentFile : extractedResourceDir)
+
+        where:
+        resource                                              | copyToParent
+        new URL("file:/application/data/bootstrap5")          | true
+        new URL("jar:file:/application.jar!/data/bootstrap5") | false
+    }
+
+    def "should copy exploded Bootstrap resources to the configured theme path"() {
+        given:
+        URL resource = getClass().getResource("/data/bootstrap5")
+        File destination = SettingService.copyDestinationForResource(resource, uploadPath)
+
+        when:
+        boolean copied = au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, destination)
+
+        then:
+        copied
+        new File(uploadPath, "scss/styles.scss").isFile()
+    }
 
     def "should generate basic style when template configuration is missing"() {
         setup:
@@ -57,7 +82,6 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
     def "should not load invalid value to cookie"() {
         setup:
         grailsApplication.config.app.default.hub = "xyz"
-        service.cookieService = new CookieService()
         service.cacheService = new CacheService()
         service.webService = Mock(WebService)
 
