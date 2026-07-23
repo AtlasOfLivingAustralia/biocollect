@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import asset.pipeline.AssetPipelineConfigHolder
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.testing.services.ServiceUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
@@ -50,6 +51,23 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
         then:
         copied
         new File(uploadPath, "scss/styles.scss").isFile()
+    }
+
+    def "should initialize Bootstrap resources under temp dir"() {
+        given:
+        List originalResolvers = new ArrayList(AssetPipelineConfigHolder.resolvers)
+        grailsApplication.config.temp.dir = temp.absolutePath
+        grailsApplication.config.bootstrap5.copyFromDir = "bootstrap5"
+
+        when:
+        service.initService()
+
+        then:
+        new File(temp, "bootstrap5/scss/styles.scss").isFile()
+
+        cleanup:
+        AssetPipelineConfigHolder.resolvers.clear()
+        AssetPipelineConfigHolder.resolvers.addAll(originalResolvers)
     }
 
     def "should generate basic style when template configuration is missing"() {

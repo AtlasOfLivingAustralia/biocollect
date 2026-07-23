@@ -59,29 +59,18 @@ class SettingService {
     }
 
     def initService () {
-//        temp directory to copy files
-        String targetDir = "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
-        File target = new File(targetDir)
+        String copyFromDir = grailsApplication.config.getProperty('bootstrap5.copyFromDir')
+        File extractedResourceDir = new File(grailsApplication.config.getProperty('temp.dir'), copyFromDir)
+
         // clean styles created previously
-        FileUtils.deleteDirectory(target)
-        FileUtils.forceMkdir(target)
-        // load resource from classpath when code is run in production environment
-        String sourceDir
+        FileUtils.deleteDirectory(extractedResourceDir)
+        FileUtils.forceMkdir(extractedResourceDir)
 
-        switch (Environment.current) {
-            case Environment.PRODUCTION:
-                sourceDir = "/data/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
-                targetDir = "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
-                break
-            case Environment.TEST:
-            case Environment.DEVELOPMENT:
-                sourceDir = "/data/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}"
-                targetDir = "${grailsApplication.config.getProperty('temp.dir')}"
-                break
+        URL resource = getClass().getResource("/data/${copyFromDir}")
+        if (resource == null) {
+            throw new IllegalStateException("Bootstrap resource /data/${copyFromDir} was not found")
         }
-
-        URL resource = getClass().getResource(sourceDir)
-        target = copyDestinationForResource(resource, new File(targetDir))
+        File target = copyDestinationForResource(resource, extractedResourceDir)
 
         // copy bootstrap5 directory
         if (!au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)) {
