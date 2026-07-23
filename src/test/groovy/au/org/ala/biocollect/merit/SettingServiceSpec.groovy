@@ -56,18 +56,44 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
     def "should initialize Bootstrap resources under temp dir"() {
         given:
         List originalResolvers = new ArrayList(AssetPipelineConfigHolder.resolvers)
+        CacheService cacheService = Mock()
+        service.cacheService = cacheService
         grailsApplication.config.temp.dir = temp.absolutePath
         grailsApplication.config.bootstrap5.copyFromDir = "bootstrap5"
+        grailsApplication.config.bootstrap5.themeDirectory = "/bootstrap5/scss"
+        grailsApplication.config.bootstrap5.themeFileName = "styles"
+        grailsApplication.config.bootstrap5.themeExtension = "scss"
 
         when:
         service.initService()
+        Map result = service.generateStyleSheetForHub(new HubSettings([urlPath: "test-hub"]))
 
         then:
         new File(temp, "bootstrap5/scss/styles.scss").isFile()
+        new File(temp, "bootstrap5/scss/styles.test-hub.css").isFile()
+        result.status == 200
+        0 * cacheService._
 
         cleanup:
         AssetPipelineConfigHolder.resolvers.clear()
         AssetPipelineConfigHolder.resolvers.addAll(originalResolvers)
+    }
+
+    def "should generate all hub styles sequentially"() {
+        given:
+        SettingService stylesheetService = Spy(SettingService)
+
+        when:
+        stylesheetService.generateStyleSheetForHubs()
+
+        then:
+        1 * stylesheetService.listHubs() >> [[urlPath: "first"], [urlPath: "second"]]
+
+        then:
+        1 * stylesheetService.generateStyleSheetForHub({ it.urlPath == "first" }) >> [status: 200]
+
+        then:
+        1 * stylesheetService.generateStyleSheetForHub({ it.urlPath == "second" }) >> [status: 200]
     }
 
     def "should generate basic style when template configuration is missing"() {

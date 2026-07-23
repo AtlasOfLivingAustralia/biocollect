@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath "org.apache.grails:grails-gradle-plugins:$grailsVersion"
         classpath "cloud.wondrify:asset-pipeline-gradle:$assetPipelineVersion"
-        classpath "cloud.wondrify:sass-dart-asset-pipeline:$assetPipelineVersion"
+        classpath "cloud.wondrify:sass-asset-pipeline:$assetPipelineVersion"
         classpath 'com.bmuschko:gradle-clover-plugin:3.0.1'
         classpath "gradle.plugin.com.github.william-hill-online:wiremock-gradle-plugin:0.4.3"
         classpath "com.github.tomakehurst:wiremock-jre8-standalone:2.28.0"
@@ -116,7 +116,7 @@ dependencies {
     implementation "au.org.ala:userdetails-service-client:$alaSecurityLibsVersion"
     implementation "cloud.wondrify:asset-pipeline-core:$assetPipelineVersion"
     implementation "cloud.wondrify:asset-pipeline-grails:$assetPipelineVersion"
-    implementation "cloud.wondrify:sass-dart-asset-pipeline:$assetPipelineVersion"
+    implementation "cloud.wondrify:sass-asset-pipeline:$assetPipelineVersion"
     implementation "com.github.ben-manes.caffeine:caffeine:2.9.3"
     // POI 5.2.5 needs commons-io >= 2.7 (UnsynchronizedByteArrayOutputStream)
     implementation "commons-io:commons-io:2.14.0"

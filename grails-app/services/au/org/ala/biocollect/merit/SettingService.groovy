@@ -2,8 +2,8 @@ package au.org.ala.biocollect.merit
 
 import asset.pipeline.AssetPipelineConfigHolder
 import asset.pipeline.fs.FileSystemAssetResolver
-import asset.pipeline.dart.SassAssetFile
-import asset.pipeline.dart.SassProcessor
+import asset.pipeline.jsass.SassAssetFile
+import asset.pipeline.jsass.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
@@ -89,12 +89,11 @@ class SettingService {
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
             case Environment.TEST:
-                // do nothing
                 break
             case Environment.PRODUCTION:
             default:
-                // Sass compilation is CPU intensive.  Run it after startup and keep it
-                // off the servlet threads so the application remains responsive.
+                // Generate styles off the bootstrap and servlet threads. The generation
+                // method deliberately processes one hub at a time.
                 task {
                     try {
                         generateStyleSheetForHubs()
@@ -320,17 +319,13 @@ class SettingService {
     }
 
     void generateStyleSheetForHubs() {
-        List hubs = listHubs()
-        // SassProcessor and the asset-pipeline resolvers are expensive under parallel
-        // access.  Compiling one hub at a time prevents stylesheet generation from
-        // consuming every available CPU and starving request processing.
-        hubs?.each { hubMap ->
+        listHubs()?.each { hubMap ->
             HubSettings hub = new HubSettings(new HashMap(hubMap))
             generateStyleSheetForHub(hub)
         }
     }
 
-    Map generateStyleSheetForHub(HubSettings hub) {
+    synchronized Map generateStyleSheetForHub(HubSettings hub) {
         String scssFileName = "${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${grailsApplication.config.getProperty('bootstrap5.themeExtension')}"
         String scssFileURI = "${grailsApplication.config.getProperty('temp.dir')}${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}${File.separator}${scssFileName}"
         String themeDir = "${grailsApplication.config.getProperty('temp.dir')}${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}"
@@ -423,7 +418,7 @@ class SettingService {
         }
     }
 
-    synchronized String processScssContent(String contentScss, SassAssetFile input, String cssFileFullPath) {
+    String processScssContent(String contentScss, SassAssetFile input, String cssFileFullPath) {
         String output
         SassProcessor processor = new SassProcessor(null)
         output = processor.process(contentScss, input)
