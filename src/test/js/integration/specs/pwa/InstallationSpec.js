@@ -66,6 +66,7 @@ describe("Application installation Spec", function () {
         await browser.switchFrame(null);
         await stopServer();
         await startServer();
+        await pwaAppPage.closeDrawerIfOpen();
         await pwaAppPage.logout();
     });
 
@@ -148,7 +149,10 @@ describe("Application installation Spec", function () {
 
         console.log('Uploading the record');
         await pwaAppPage.uploadNthUnpublishedRecord();
-        await pwaAppPage.waitForUnpublishedCount(0, 30000);
+        // The PWA upload bridge uses a 30-second attempt timeout and may retry.
+        // Polling with a refresh also observes uploads that complete after the
+        // parent page's original request has timed out on a slower CI runner.
+        await pwaAppPage.waitForUnpublishedCount(0, 120000, true);
         expect(await pwaAppPage.unpublishedCount()).toBe(0);
 
         console.log('Checking that the published record exists');
@@ -166,7 +170,7 @@ describe("Application installation Spec", function () {
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
         await pwaAppPage.closeDrawer();
-    });
+    }, 360000);
 
     it("submit record offline and choose a site on map and publish it when network returns", async function () {
         await addBioActivityPage.takeScreenShot("offlineRecordMapPinProjectList");
@@ -203,7 +207,7 @@ describe("Application installation Spec", function () {
 
         console.log('Uploading the record');
         await pwaAppPage.uploadNthUnpublishedRecord();
-        await pwaAppPage.waitForUnpublishedCount(0, 30000);
+        await pwaAppPage.waitForUnpublishedCount(0, 120000, true);
         expect(await pwaAppPage.unpublishedCount()).toBe(0);
 
         console.log('Checking that the published record exists');
@@ -222,7 +226,7 @@ describe("Application installation Spec", function () {
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
         await pwaAppPage.closeDrawer();
-    });
+    }, 360000);
 
     it("login with expired token", async function () {
 
