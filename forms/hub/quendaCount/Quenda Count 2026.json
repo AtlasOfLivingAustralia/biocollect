@@ -1,0 +1,441 @@
+{
+  "id": "5f3f4c6fc2dc7eba0f10c8a3",
+  "dateCreated": "2020-08-21T04:24:15Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2026-08-05T02:48:22Z",
+  "createdUserId": "82292",
+  "embargoMultimedia": false,
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Quenda Count 2026",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "quendaCount2026",
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person who made the sighting",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "contactPermission",
+            "constraints": [
+              "Yes",
+              "No"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "surveySiteSize",
+            "description": "The preferred search area is 50m x 50m."
+          },
+          {
+            "dataType": "text",
+            "name": "locationDescription",
+            "constraints": [
+              "Suburban garden",
+              "Semi-rural house-block",
+              "Suburban park/sports field/golf course",
+              "Native bushland e.g. national park",
+              "Bushland adjacent to wetland/river",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "locationRemarks",
+            "dwcAttribute": "locationRemarks"
+          },
+          {
+            "dataType": "text",
+            "name": "coneShapedDiggings",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "evidenceBreeding",
+            "constraints": [
+              "Yes",
+              "No"
+            ]
+          },
+          {
+            "dataType": "text",
+            "constraints": [
+              "Yes",
+              "No"
+            ],
+            "name": "patchyMissingFur"
+          },
+          {
+              "dataType": "text",
+              "name": "additionalComments"
+          },
+          {
+            "dataType": "list",
+            "name": "deadQuendaTable",
+            "allowRowDelete": false,
+            "columns": [
+              {
+                "dataType": "text",
+                "name": "causeOfDeath"
+              },
+              {
+                "dataType": "number",
+                "name": "deadQuendaCount",
+                "defaultValue": 0
+              }
+            ],
+            "defaultRows": [
+              {
+                "deadQuendaCount": 0,
+                "causeOfDeath": "Road kill"
+              },
+              {
+                "deadQuendaCount": 0,
+                "causeOfDeath": "Cat"
+              },
+              {
+                "deadQuendaCount": 0,
+                "causeOfDeath": "Dog"
+              },
+              {
+                "deadQuendaCount": 0,
+                "causeOfDeath": "Fox"
+              },
+              {
+                "deadQuendaCount": 0,
+                "causeOfDeath": "Swimming pool"
+              },
+              {
+                "deadQuendaCount": 0,
+                "causeOfDeath": "Other"
+              },
+              {
+                "deadQuendaCount": 0,
+                "causeOfDeath": "Total"
+              }
+            ]
+          },
+          {
+            "defaultAccuracy": 10,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "streetAddress"
+          },
+          {
+            "dataType": "list",
+            "name": "quendaSightingsTable",
+            "allowRowDelete": false,
+            "columns": [
+              {
+                "name": "day",
+                "dataType": "text",
+                "noEdit": true
+              },
+              {
+                "name": "eventDate",
+                "dwcAttribute": "eventDate",
+                "dataType": "date",
+                "validate": "required"
+              },
+              {
+                "name": "timeSearching",
+                "dataType": "number",
+                "validate": "required",
+                "units": "minutes",
+                "displayOptions": {
+                  "displayUnits": true
+                }
+              },
+              {
+                "name": "species",
+                "dwcAttribute": "scientificName",
+                "dataType": "species",
+                "noEdit": true
+              },
+              {
+                "name": "individualCount",
+                "dwcAttribute": "individualCount",
+                "dataType": "number",
+                "validate": "required"
+              }
+            ],
+            "defaultRows": [
+              {
+                "day": "1",
+                "eventDate": "",
+                "timeSearching": "",
+                "species": {
+                  "name": "Isoodon obesulus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:219c139b-029f-4fbe-aa69-09e420013341",
+                  "scientificName": "Isodon obesulus",
+                  "commonName": "Quenda"
+                },
+                "individualCount": 0
+              },
+              {
+                "day": "2",
+                "eventDate": "",
+                "timeSearching": "",
+                "species": {
+                  "name": "Isoodon obesulus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:219c139b-029f-4fbe-aa69-09e420013341",
+                  "scientificName": "Isodon obesulus",
+                  "commonName": "Quenda"
+                },
+                "individualCount": 0
+              },
+              {
+                "day": "3",
+                "eventDate": "",
+                "timeSearching": "",
+                "species": {
+                  "name": "Isoodon obesulus",
+                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:219c139b-029f-4fbe-aa69-09e420013341",
+                  "scientificName": "Isodon obesulus",
+                  "commonName": "Quenda"
+                },
+                "individualCount": 0
+              }
+            ]
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>2026 Quenda Count Data Sheet</font>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "Survey Site",
+                    "type": "section",
+                    "items": [
+                      {
+                        "computed": null,
+                        "type": "col",
+                        "items": [
+                          {
+                            "preLabel": "Name of lead observer(s)",
+                            "source": "recordedBy",
+                            "type": "text"
+                          },
+                          {
+                            "preLabel": "Estimate size of survey site",
+                            "source": "surveySiteSize",
+                            "type": "text"
+                          },
+                          {
+                            "preLabel": "Description of survey site",
+                            "source": "locationDescription",
+                            "type": "selectOne"
+                          },
+                          {
+                            "preLabel": "More location detail",
+                            "source": "locationRemarks",
+                            "type": "textarea"
+                          },
+                          {
+                            "preLabel": "Did you see fresh cone-shaped diggings at your site?",
+                            "type": "selectOne",
+                            "source": "coneShapedDiggings"
+                          },
+                          {
+                            "preLabel": "Have you seen any evidence of breeding at your site?",
+                            "type": "selectOne",
+                            "source": "evidenceBreeding"
+                          },
+                          {
+                            "preLabel": "Have you noticed any quenda with patchy or missing fur?",
+                            "type": "selectOne",
+                            "source": "patchyMissingFur"
+                          },
+                          {
+                            "preLabel": "Any other site comments",
+                            "type": "textarea",
+                            "source": "additionalComments"
+                          },
+                          {
+                            "allowHeaderWrap": "true",
+                            "columns": [
+                              {
+                                "width": "70%",
+                                "noEdit": true,
+                                "source": "causeOfDeath",
+                                "title": "If you have seen any dead quenda, please indicate what you believe to be the cause of death?",
+                                "type": "text"
+                              },
+                              {
+                                "width": "30%",
+                                "source": "deadQuendaCount",
+                                "title": "Count",
+                                "type": "number"
+                              }
+                            ],
+                            "source": "deadQuendaTable",
+                            "type": "table",
+                            "disableTableUpload": true,
+                            "allowRowDelete": false
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ],
+                "class": ""
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "includeNotes": false,
+                                "orientation": "vertical",
+                                "computed": null,
+                                "autoLocalitySearch": false,
+                                "readonly": true,
+                                "includeSource": false,
+                                "includeAccuracy": false,
+                                "hideSiteSelection": false,
+                                "source": "location",
+                                "type": "geoMap",
+                                "zoomToProjectArea": true,
+                                "includeLocality": false
+                              }
+                            ]
+                          },
+                          {
+                            "preLabel": "Street Address",
+                            "source": "streetAddress",
+                            "type": "text"
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "section",
+                "boxed": true,
+                "title": "Survey Data",
+                "items": [
+                  {
+                    "columns": [
+                      {
+                        "width": "25%",
+                        "title": "Day",
+                        "type": "text",
+                        "noEdit": true,
+                        "source": "day"
+                      },
+                      {
+                        "width": "25%",
+                        "title": "Date",
+                        "type": "date",
+                        "source": "eventDate"
+                      },
+                      {
+                        "width": "25%",
+                        "title": "Total time spent looking each day",
+                        "type": "number",
+                        "source": "timeSearching",
+                        "displayOptions": {
+                          "displayUnits": true
+                        }
+                      },
+                      {
+                        "width": "25%",
+                        "title": "Max number of quendas seen on that day",
+                        "type": "number",
+                        "source": "individualCount"
+                      }
+                    ],
+                    "source": "quendaSightingsTable",
+                    "type": "table",
+                    "disableTableUpload": true,
+                    "allowRowDelete": false
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Quenda Count 2026"
+      },
+      "modelName": null,
+      "templateName": "quendaCount2026",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Quenda Count 2026",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "82292",
+  "description": null,
+  "formVersion": 1
+}
