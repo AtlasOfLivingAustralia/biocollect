@@ -248,20 +248,9 @@
                contentType: 'application/json',
                data: JSON.stringify(payload),
                success: function (data) {
-                    if(data.message == "success") {
-                        self.progressText('Uploaded '+payload.sites.length+' of '+payload.sites.length+' sites');
-                        self.progress('100%');
-                        setTimeout(function() {
-                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
-                            document.location.href = "${params.returnTo}";
-                        }, 1000);
-                    } else if(data.message == "error") {
-                        self.progressText(data.error);
-                        setTimeout(function() {
-                            Biocollect.Bootstrap5.hideModal('#uploadProgress');
-                        }, 3000);
-                    } else {
-                        self.progressText("Error uploading the sites, please try again later");
+                    // Site creation runs asynchronously; completion is tracked via showProgress.
+                    if (data && data.message == "error") {
+                        self.progressText(data.error || "Error uploading the sites, please try again later");
                         setTimeout(function() {
                             Biocollect.Bootstrap5.hideModal('#uploadProgress');
                         }, 3000);
@@ -289,6 +278,18 @@
             }
             if (!finished) {
                 setTimeout(self.showProgress, 2000);
+            } else if (progress.error) {
+                self.progressText(progress.error);
+                setTimeout(function() {
+                    Biocollect.Bootstrap5.hideModal('#uploadProgress');
+                }, 3000);
+            } else {
+                self.progressText('Uploaded '+progress.total+' of '+progress.total+' sites');
+                self.progress('100%');
+                setTimeout(function() {
+                    Biocollect.Bootstrap5.hideModal('#uploadProgress');
+                    document.location.href = "${params.returnTo}";
+                }, 1000);
             }
         });
     }
