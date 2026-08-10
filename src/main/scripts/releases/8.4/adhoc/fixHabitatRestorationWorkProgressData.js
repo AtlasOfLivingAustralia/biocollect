@@ -1,6 +1,6 @@
 load("../../../mongo/utils/audit.js");
 
-let dryRun = true;
+let dryRun = false;
 
 const adminUserId = "system";
 const outputName = "Habitat Restoration - Work Progress and follow-up";

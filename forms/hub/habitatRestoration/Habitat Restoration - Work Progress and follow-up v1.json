@@ -1,0 +1,1744 @@
+{
+  "id": "64365969766ea21ca0835028",
+  "dateCreated": "2023-04-12T07:10:33Z",
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "lastUpdated": "2025-07-11T03:08:04Z",
+  "createdUserId": "35",
+  "embargoMultimedia": false,
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "publicationStatus": "published",
+  "externalIds": null,
+  "gmsId": null,
+  "name": "Habitat Restoration - Work Progress and follow-up",
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Habitat Restoration - Work Progress and follow-up",
+        "record": true,
+        "dataModel": [
+          {
+            "dataType": "text",
+            "description": "The entity responsible for the record in the database.",
+            "name": "recordedBy",
+            "readOnly": true,
+            "noEdit": true,
+            "dwcAttribute": "recordedBy",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "Person who entered in the database.",
+            "name": "dataEnteredBy",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "dataEnteredBy",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "description": "The date that the database record was created.",
+            "name": "recordDateCreated",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "recordDateCreated",
+            "measurementType": "date",
+            "defaultValue": "${now}",
+            "validate": "required,past[now]"
+          },
+          {
+            "dataType": "text",
+            "description": "Enter the name (acronym) of the restoration or funding program the work was conducted under. If the work was funded independently of a broader program, enter Not Applicable.",
+            "name": "restorationProgram",
+            "indexName": "restorationProgram",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "restorationProgram",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "reportingPeriodDurationInMonths",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "reportingPeriodDurationInMonths",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "date",
+            "description": "",
+            "name": "progressMonitoringPeriodEndDate",
+            "indexName": "progressMonitoringPeriodEndDate",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "datetime",
+            "measurementUnitID": "progressMonitoringPeriodEndDate",
+            "measurementType": "date"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "recordType",
+            "indexName": "recordType",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "recordType",
+            "measurementType": "text",
+            "constraints": [
+              "Progress report",
+              "Follow-up",
+              "Unknown"
+            ],
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "description": "To be completed when follow-up activities have been funded separately to initial work. The amount should be exclusive of funding entered in the <i>Combined site and work details</i> form.",
+            "name": "totalCashExpenditureForReportingPeriodInAud",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "totalCashExpenditureForReportingPeriodInAud",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "To be completed when follow-up activities have been funded separately to initial work. The amount should be exclusive of funding entered in the <i>Combined site and work details</i> form.",
+            "name": "totalInKindForReportingPeriodInAud",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "totalInKindForReportingPeriodInAud",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "revegetationMethod",
+            "indexName": "revegetationMethod",
+            "constraints": [
+              "Aerial seeding",
+              "Direct seeding - direct drill small implements",
+              "Direct seeding - direct drill machine",
+              "Direct seeding - hand broadcast",
+              "Hand planting",
+              "Machine planting",
+              "Infill plantings",
+              "Assisted regeneration (weed removal, etc)",
+              "Combined assisted regeneration planting",
+              "Combined assisted regeneration / seeding"
+            ],
+            "dwcAttribute": "establishmentMeans",
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "totalAreaOfRestorationWorkInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "totalAreaOfRestorationWorkInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "restorationAreaPreparedInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "restorationAreaPreparedInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "Do not include area of infill planting, which is entered below.",
+            "name": "restorationAreaPlantedInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "restorationAreaPlantedInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "numberOfTubestockPlanted",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "numberOfTubestockPlanted",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "targetSpeciesAcquisitionSuccessful",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "targetSpeciesAcquisitionSuccessful",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "No",
+              "Unknown"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "plantingStockQuality",
+            "indexName": "plantingStockQuality",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "plantingStockQuality",
+            "measurementType": "text",
+            "constraints": [
+              "Poor",
+              "Average",
+              "Good"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "causeOfPoorStockQuality",
+            "indexName": "causeOfPoorStockQuality",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "causeOfPoorStockQuality",
+            "measurementType": "text",
+            "constraints": [
+              "Pot-bound",
+              "Poorly developed",
+              "Dead",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "numberOfSpeciesPropagated",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "numberOfSpeciesPropagated",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "restorationAreaSeededInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "restorationAreaSeededInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "amountOfSeedSownInKilograms",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "amountOfSeedSownInKilograms",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "NOTE: ‘Infill’ activities are undertaken to fill gaps in restoration primary works areas caused by poor germination or survival of planted material. These will generally be in small-medium sized patches within a larger area of previous primary restoration work.",
+            "name": "infillPlantingOrSeedingAreaInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "infillPlantingOrSeedingAreaInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "NOTE: ‘Replacement’ activities are undertaken in response to one or more events which cause substantial damage and loss across a large area of previous primary restoration work.",
+            "name": "replacementPlantingOrSeedingAreaInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "replacementPlantingOrSeedingAreaInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "Enter the total area of assisted regeneration works conducted at this site in the recording period. Include sole Assisted regeneration work, Combined assisted regeneration/ planting, and Combined assisted  regeneration/ seeding.",
+            "name": "assistedRegenerationAreaInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "assistedRegenerationAreaInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "causeOfReplacementWork",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "causeOfReplacementWork",
+            "measurementType": "text",
+            "constraints": [
+              "Fire",
+              "Flood",
+              "Drought",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "list",
+            "name": "planting",
+            "columns": [
+              {
+                "speciesList": "project",
+                "dataType": "species",
+                "noTotal": "true",
+                "description": "The species planted / sown. (start typing a  scientific or common name for a species)",
+                "name": "species",
+                "dwcAttribute": "scientificName"
+              },
+              {
+                "dataType": "text",
+                "noTotal": "true",
+                "description": "The structural layer of vegetation that plants will occupy when mature",
+                "name": "structuralLayer",
+                "indexName": "structuralLayer",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "structuralLayer",
+                "measurementType": "text",
+                "constraints": [
+                  "Canopy",
+                  "Midstory",
+                  "Ground"
+                ]
+              },
+              {
+                "dataType": "number",
+                "description": "",
+                "name": "numberPlanted",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "integer",
+                "measurementUnitID": "numberPlanted",
+                "measurementType": "number",
+                "validate": "integer,min[0]"
+              },
+              {
+                "dataType": "text",
+                "description": "",
+                "name": "establishmentReason",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "unitless",
+                "measurementUnitID": "establishmentReason",
+                "measurementType": "text",
+                "constraints": [
+                  "New work",
+                  "Infill planting",
+                  "Extensive replacement planting"
+                ],
+                "validate": ""
+              },
+              {
+                "dataType": "boolean",
+                "description": "Number of plants is unknown.",
+                "name": "numberPlantedUnknown",
+                "dwcAttribute": "measurementValue",
+                "measurementUnit": "boolean",
+                "measurementUnitID": "numberPlantedUnknown",
+                "measurementType": "boolean"
+              }
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "newAreaProtectedByFenceInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "newAreaProtectedByFenceInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "lengthOfNewFencingInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "lengthOfNewFencingInMetres",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "lengthOfExistingFencingMaintainedInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "lengthOfExistingFencingMaintainedInMetres",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "areaOfWeedControlInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "areaOfWeedControlInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "frequencyOfWeedControl",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "frequencyOfWeedControl",
+            "measurementType": "text",
+            "constraints": [
+              "Not undertaken",
+              "3 Monthly",
+              "6 Monthly",
+              "Annually",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "list",
+            "name": "weedSpeciesTreatedList",
+            "columns": [
+              {
+                "dataType": "species",
+                "description": "Priority weed species treated. [LIST UP TO 4 SPECIES]",
+                "name": "weedSpeciesTreated",
+                "dwcAttribute": "scientificName"
+              }
+            ]
+          },
+          {
+            "dataType": "stringList",
+            "description": "Broad methods used to control and manage weeds.",
+            "name": "weedTreatmentMethods",
+            "indexName": "weedTreatmentMethods",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "weedTreatmentMethods",
+            "measurementType": "text",
+            "constraints": [
+              "Manual weeding",
+              "Spray circles (herbicide)",
+              "Broad-scale spray (herbicide)",
+              "Selective spot spraying (herbicide)",
+              "Injection (herbicide)",
+              "Slashing",
+              "Scraping",
+              "Cut and paint",
+              "Biological control agents",
+              "Traditional burning",
+              "Other",
+              "None"
+            ]
+          },
+          {
+            "dataType": "stringList",
+            "description": "",
+            "name": "herbicideUsed",
+            "indexName": "herbicideUsed",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "herbicideUsed",
+            "measurementType": "text",
+            "constraints": [
+              "Glyphosate",
+              "Metsulfuron methyl",
+              "Other",
+              "None"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "weedControlRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "weedControlRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "fertilizerTypeUsed",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "fertilizerTypeUsed",
+            "measurementType": "text",
+            "constraints": [
+              "Slow release tablet",
+              "Dynamic lifter",
+              "Liquid seaweed",
+              "Fish emulsion",
+              "Other",
+              "None"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "weedSuppressantUsed",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "weedSuppressantUsed",
+            "measurementType": "text",
+            "constraints": [
+              "Tea tree",
+              "Baled grass",
+              "Sugar cane",
+              "Weed mat",
+              "Other",
+              "None"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "wateringFrequency",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "wateringFrequency",
+            "measurementType": "text",
+            "constraints": [
+              "Not undertaken",
+              "Once",
+              "Weekly",
+              "Monthly",
+              "3 Monthly",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "areaTreatedWithFireInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "areaTreatedWithFireInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "numberOfBurnsConducted",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "numberOfBurnsConducted",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "stringList",
+            "description": "",
+            "name": "vertebratePestsTargeted",
+            "indexName": "vertebratePestsTargeted",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "vertebratePestsTargeted",
+            "measurementType": "text",
+            "constraints": [
+              "Rabbits",
+              "Hares",
+              "Pigs",
+              "Wallabies",
+              "Kangaroos",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "stringList",
+            "description": "",
+            "name": "vertebratePestControlMethods",
+            "indexName": "vertebratePestControlMethods",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "vertebratePestControlMethods",
+            "measurementType": "text",
+            "constraints": [
+              "Bait",
+              "Trap",
+              "Shoot",
+              "Biocontrol",
+              "Exclusion fence",
+              "Plant guards"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "numberOfVertebratePestsEliminated",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "numberOfVertebratePestsEliminated",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "vertebratePestControlRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "vertebratePestControlRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "erosionAreaStabilisedInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "erosionAreaStabilisedInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "erosionLengthStabilisedInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "erosionLengthStabilisedInMetres",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "stringList",
+            "description": "",
+            "name": "erosionControlMethods",
+            "indexName": "erosionControlMethods",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "erosionControlMethods",
+            "measurementType": "text",
+            "constraints": [
+              "Engineered structures",
+              "Revegetation",
+              "Jute matting",
+              "Exclusion fencing",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "plannedObjectiveHabitatConnectivity",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "plannedObjectiveHabitatConnectivity",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "No",
+              "Unknown"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "existingVegetationConnected",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "existingVegetationConnected",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "No",
+              "Unknown"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "reducedDistanceToRemnantVegetationAchievedInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "reducedDistanceToRemnantVegetationAchievedInMetres",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "areaOfRemnantVegetationLinkedInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "areaOfRemnantVegetationLinkedInHectares",
+            "measurementType": "text",
+            "constraints": [
+              "1 - 10 Ha",
+              "11 - 50 Ha",
+              "> 51 Ha"
+            ]
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "widthOfConnectingWorkInMetres",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "widthOfConnectingWorkInMetres",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "finalAreaOfRestorationWorkInHectares",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "decimal",
+            "measurementUnitID": "finalAreaOfRestorationWorkInHectares",
+            "measurementType": "number",
+            "validate": "min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "achievedOutcomeAnomaly",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "achievedOutcomeAnomaly",
+            "measurementType": "text",
+            "constraints": [
+              "Yes",
+              "Smaller than funded",
+              "Greater than funded",
+              "No change",
+              "Unknown"
+            ]
+          },
+          {
+            "dataType": "stringList",
+            "description": "",
+            "name": "achievedOutcomeAnomalyReason",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "achievedOutcomeAnomalyReason",
+            "measurementType": "text",
+            "constraints": [
+              "Natural disaster (flood, fire, erosion)",
+              "Climatic constraints (drought, unsuitable for burn)",
+              "Change in resources (materials, tubestock/seeds)",
+              "Change in capacity (labour, nursery propagation, coordinating agency)",
+              "Change in accessibility",
+              "Change in landholder decisions",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "achievedOutcomeAnomalyRemarks",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "achievedOutcomeAnomalyRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "text",
+            "description": "The name or identifier of the revegetation works site.",
+            "name": "siteName",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "siteName",
+            "measurementType": "text",
+            "readOnly": true,
+            "noEdit": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "number",
+            "description": "",
+            "name": "numberOfConservationAgreementsEstablished",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "numberOfConservationAgreementsEstablished",
+            "measurementType": "number",
+            "validate": "integer,min[0]"
+          },
+          {
+            "dataType": "text",
+            "description": "",
+            "name": "eventRemarks",
+            "dwcAttribute": "eventRemarks",
+            "measurementType": "text"
+          },
+          {
+            "dataType": "geoMap",
+            "name": "location",
+            "columns": [
+              {
+                "source": "locationLatitude",
+                "dwcAttribute": "verbatimLatitude"
+              },
+              {
+                "source": "locationLongitude",
+                "dwcAttribute": "verbatimLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": false,
+            "zoomToProjectArea": true,
+            "defaultAccuracy": 10,
+            "hideMyLocation": false,
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "The nearest population centre to the site.",
+            "name": "nearestPopulationCentre",
+            "indexName": "nearestPopulationCentre",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nearestPopulationCentre",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "description": "The local government area in which the site is located.",
+            "name": "localGovernmentArea",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "localGovernmentArea",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "image",
+            "name": "sitePhoto",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "sitePhoto",
+            "measurementType": "associatedMedia",
+            "description": "One or more photos of the work site. These may be established as photo points."
+          },
+          {
+            "dataType": "text",
+            "name": "sitePhotoDeclaration",
+            "description": "If any attached photos contain people, those people should provide consent to be inculed in the images.",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "sitePhotoDeclaration",
+            "measurementType": "text",
+            "constraints": [
+              "consent given",
+              "no identifiable people"
+            ]
+          },
+          {
+            "dataType": "document",
+            "name": "siteDocuments",
+            "description": ""
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<h1>Habitat Restoration - Works Progress and Follow-up</h1><h4>Use this form to record either:<ol><li>the progress of primary habitat restoration work conducted over a period of months or years within a single work area, or</li><li>follow-up (secondary) treatments conducted after primary work has been completed.</li></ol> <p>It is a companion form to the Combined Site and Work Details survey. The work sites entered in this form must first be entered in the Site and Work Details survey. Site names and locations (polygons) remain consistent between the two forms.</h4>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "GENERAL",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "source": "dataEnteredBy",
+                                "preLabel": "Name of the person entering the data",
+                                "type": "text"
+                              },
+                              {
+                                "source": "recordedBy",
+                                "preLabel": "Name of the entity responsible for the data",
+                                "readOnly": true,
+                                "noEdit": true,
+                                "type": "text"
+                              },
+                              {
+                                "source": "recordDateCreated",
+                                "preLabel": "Record date",
+                                "type": "date"
+                              },
+                              {
+                                "source": "recordType",
+                                "preLabel": "Are you recording work progress or follow-up?",
+                                "type": "selectOne"
+                              },
+                              {
+                                "source": "reportingPeriodDurationInMonths",
+                                "preLabel": "Length of progress reporting period (mth)",
+                                "type": "number"
+                              },
+                              {
+                                "source": "progressMonitoringPeriodEndDate",
+                                "preLabel": "End date of progress monitoring/reporting period",
+                                "type": "date"
+                              },
+                              {
+                                "source": "restorationProgram",
+                                "preLabel": "Restoration program this reporting period",
+                                "type": "text"
+                              },
+                              {
+                                "source": "totalCashExpenditureForReportingPeriodInAud",
+                                "preLabel": "Cash funds spent this reporting period",
+                                "type": "number"
+                              },
+                              {
+                                "source": "totalInKindForReportingPeriodInAud",
+                                "preLabel": "Value of in-kind contributions this reporting period",
+                                "type": "number"
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "SITE NAME AND LOCATION",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "source": "<font style='color:blue; font-size:0.9em;'><b><i>A Combined Site and Work Details form for the work site must be completed prior to entering data in this form. The Site Name will then appear in the ‘Select a location’ drop-down list. Select the site name and the location of the restoration activity will be displayed on the map.</i></b></font>",
+                                        "type": "literal"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "includeNotes": false,
+                                        "orientation": "vertical",
+                                        "autoLocalitySearch": true,
+                                        "readonly": true,
+                                        "includeSource": false,
+                                        "includeAccuracy": false,
+                                        "hideSiteSelection": false,
+                                        "hideMyLocation": false,
+                                        "source": "location",
+                                        "type": "geoMap",
+                                        "includeLocality": false
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "class": ""
+                      }
+                    ]
+                  },
+                  {
+                    "type": "row",
+                    "items": [
+                      {
+                        "boxed": true,
+                        "title": "SITE ASSOCIATED INFORMATION",
+                        "type": "section",
+                        "items": [
+                          {
+                            "type": "row",
+                            "items": [
+                              {
+                                "type": "col",
+                                "items": [
+                                  {
+                                    "source": "localGovernmentArea",
+                                    "preLabel": "Local government area",
+                                    "type": "text"
+                                  },
+                                  {
+                                    "source": "nearestPopulationCentre",
+                                    "preLabel": "Nearest town or city",
+                                    "type": "text"
+                                  },
+                                  {
+                                    "source": "sitePhoto",
+                                    "preLabel": "Photo(s) of site",
+                                    "type": "image"
+                                  },
+                                  {
+                                    "source": "sitePhotoDeclaration",
+                                    "preLabel": "I declare that all people identifiable in images attached to this record have given consent to being included in these images.",
+                                    "type": "selectOne"
+                                  },
+                                  {
+                                    "source": "siteDocuments",
+                                    "preLabel": "Document(s) associated with the site",
+                                    "type": "document"
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": ""
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "DESCRIPTION OF WORK CONDUCTED DURING THE REPORTING PERIOD",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "source": "revegetationMethod",
+                                "preLabel": "Primary method used to restore the site.",
+                                "type": "selectOne"
+                              }
+                            ]
+                          },
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "source": "totalAreaOfRestorationWorkInHectares",
+                                "preLabel": "Total area of restoration work (ha)",
+                                "type": "number"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "boxed": true,
+                                        "title": "Planting / Seeding",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "source": "restorationAreaPreparedInHectares",
+                                                    "preLabel": "Area prepared for planting or seeding (ha)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "restorationAreaPlantedInHectares",
+                                                    "preLabel": "Area planted (ha)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "numberOfTubestockPlanted",
+                                                    "preLabel": "Number of tube stock planted",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "targetSpeciesAcquisitionSuccessful",
+                                                    "preLabel": "Were you able to obtain the plant species you were targeting?",
+                                                    "type": "selectOne"
+                                                  },
+                                                  {
+                                                    "source": "plantingStockQuality",
+                                                    "preLabel": "Quality of plants on receipt",
+                                                    "type": "selectOne"
+                                                  },
+                                                  {
+                                                    "source": "causeOfPoorStockQuality",
+                                                    "preLabel": "Cause of poor plant quality",
+                                                    "type": "selectOne"
+                                                  },
+                                                  {
+                                                    "source": "numberOfSpeciesPropagated",
+                                                    "preLabel": "Number species propagated by the project",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "restorationAreaSeededInHectares",
+                                                    "preLabel": "Area seeded (ha)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "amountOfSeedSownInKilograms",
+                                                    "preLabel": "Amount of seed sown (kg)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "infillPlantingOrSeedingAreaInHectares",
+                                                    "preLabel": "Area of infill planting or seeding (ha)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "replacementPlantingOrSeedingAreaInHectares",
+                                                    "preLabel": "Area of replacement planting or seeding (ha)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "causeOfReplacementWork",
+                                                    "preLabel": "Cause of replacement work",
+                                                    "type": "selectOne"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "title": "Please list the numbers of each species planted during this activity and any additional information that you can that is relevant:",
+                                                    "source": "planting",
+                                                    "columns": [
+                                                      {
+                                                        "title": "Species planted/sown",
+                                                        "source": "species",
+                                                        "width": "50%",
+                                                        "type": "speciesSelect"
+                                                      },
+                                                      {
+                                                        "title": "Structural Layer",
+                                                        "source": "structuralLayer",
+                                                        "width": "15%",
+                                                        "type": "selectOne"
+                                                      },
+                                                      {
+                                                        "title": "No. Planted:",
+                                                        "source": "numberPlanted",
+                                                        "width": "10%",
+                                                        "type": "number"
+                                                      },
+                                                      {
+                                                        "title": "Establishment reason",
+                                                        "source": "establishmentReason",
+                                                        "width": "20%",
+                                                        "type": "selectOne"
+                                                      },
+                                                      {
+                                                        "title": "No. of plants unknown",
+                                                        "source": "numberPlantedUnknown",
+                                                        "width": "5%",
+                                                        "type": "boolean"
+                                                      }
+                                                    ],
+                                                    "userAddedRows": true,
+                                                    "type": "table",
+                                                    "allowRowDelete": true,
+                                                    "allowHeaderWrap": true,
+                                                    "disableTableUpload": false
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "boxed": true,
+                                        "title": "Assisted Regeneration",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "source": "assistedRegenerationAreaInHectares",
+                                                    "preLabel": "Area of assisted regeneration work (ha)",
+                                                    "type": "number"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      },
+                                      {
+                                        "boxed": true,
+                                        "title": "Fencing",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "source": "newAreaProtectedByFenceInHectares",
+                                                    "preLabel": "Area newly protected by fencing (ha)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "lengthOfNewFencingInMetres",
+                                                    "preLabel": "Length of new fencing installed (m)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "lengthOfExistingFencingMaintainedInMetres",
+                                                    "preLabel": "Length of existing fence maintained, repaired or replaced (m)",
+                                                    "type": "number"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "boxed": true,
+                                        "title": "Management",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "source": "fertilizerTypeUsed",
+                                                    "preLabel": "Type of fertiliser applied",
+                                                    "type": "selectOne"
+                                                  },
+                                                  {
+                                                    "source": "weedSuppressantUsed",
+                                                    "preLabel": "Type of mulch/weed suppressant applied",
+                                                    "type": "selectOne"
+                                                  },
+                                                  {
+                                                    "source": "wateringFrequency",
+                                                    "preLabel": "Watering frequency",
+                                                    "type": "selectOne"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "boxed": true,
+                                        "title": "Fire",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "type": "row",
+                                                    "items": [
+                                                      {
+                                                        "source": "areaTreatedWithFireInHectares",
+                                                        "preLabel": "Area treated with fire (ha)",
+                                                        "type": "number"
+                                                      },
+                                                      {
+                                                        "source": "numberOfBurnsConducted",
+                                                        "preLabel": "Number of burns conducted",
+                                                        "type": "number"
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "boxed": true,
+                                        "title": "Weed Control",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "source": "areaOfWeedControlInHectares",
+                                                    "preLabel": "Area of weed control conducted (ha)",
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "source": "frequencyOfWeedControl",
+                                                    "preLabel": "Frequency of follow-up weed control",
+                                                    "type": "selectOne"
+                                                  },
+                                                  {
+                                                    "source": "weedSpeciesTreatedList",
+                                                    "columns": [
+                                                      {
+                                                        "source": "weedSpeciesTreated",
+                                                        "title": "Priority weed species treated",
+                                                        "type": "speciesSelect"
+                                                      }
+                                                    ],
+                                                    "userAddedRows": true,
+                                                    "type": "table",
+                                                    "allowRowDelete": true,
+                                                    "allowHeaderWrap": true,
+                                                    "disableTableUpload": true
+                                                  },
+                                                  {
+                                                    "source": "weedTreatmentMethods",
+                                                    "preLabel": "Weed treatment methods",
+                                                    "type": "selectMany"
+                                                  },
+                                                  {
+                                                    "source": "herbicideUsed",
+                                                    "preLabel": "Type of herbicide used",
+                                                    "type": "selectMany"
+                                                  },
+                                                  {
+                                                    "source": "weedControlRemarks",
+                                                    "preLabel": "Weed control comments",
+                                                    "type": "textarea"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "boxed": true,
+                                        "title": "Vertebrate Pest Control",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "type": "row",
+                                                    "items": [
+                                                      {
+                                                        "type": "col",
+                                                        "items": [
+                                                          {
+                                                            "source": "vertebratePestsTargeted",
+                                                            "preLabel": "Vertebrate pests targeted",
+                                                            "type": "selectMany"
+                                                          },
+                                                          {
+                                                            "source": "vertebratePestControlMethods",
+                                                            "preLabel": "Type of vertebrate pest control",
+                                                            "type": "selectMany"
+                                                          },
+                                                          {
+                                                            "source": "numberOfVertebratePestsEliminated",
+                                                            "preLabel": "Number of vertebrate pests eliminated",
+                                                            "type": "number"
+                                                          },
+                                                          {
+                                                            "source": "vertebratePestControlRemarks",
+                                                            "preLabel": "Vertebrate pest control comments",
+                                                            "type": "textarea"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "type": "col",
+                                    "items": [
+                                      {
+                                        "boxed": true,
+                                        "title": "Erosion Control",
+                                        "type": "section",
+                                        "items": [
+                                          {
+                                            "type": "row",
+                                            "items": [
+                                              {
+                                                "type": "col",
+                                                "items": [
+                                                  {
+                                                    "type": "row",
+                                                    "items": [
+                                                      {
+                                                        "type": "col",
+                                                        "items": [
+                                                          {
+                                                            "source": "erosionAreaStabilisedInHectares",
+                                                            "preLabel": "Area stabilised for erosion (ha)",
+                                                            "type": "number"
+                                                          },
+                                                          {
+                                                            "source": "erosionLengthStabilisedInMetres",
+                                                            "preLabel": "Length stabilised for erosion (m) (for linear sites)",
+                                                            "type": "number"
+                                                          },
+                                                          {
+                                                            "source": "erosionControlMethods",
+                                                            "preLabel": "Method(s) used to stabilise for erosion",
+                                                            "type": "selectMany"
+                                                          }
+                                                        ]
+                                                      }
+                                                    ]
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "class": ""
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "class": ""
+                  }
+                ]
+              }
+            ],
+            "class": ""
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "title": "TO BE COMPLETED AT THE END OF FINAL REPORTING PERIOD",
+                    "type": "section",
+                    "items": [
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "Connectivity",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "source": "plannedObjectiveHabitatConnectivity",
+                                            "preLabel": "Was habitat connectivity an aim of the project?",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "existingVegetationConnected",
+                                            "preLabel": "Has the work connected existing vegetation?",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "reducedDistanceToRemnantVegetationAchievedInMetres",
+                                            "preLabel": "Reduction in distance to nearest remnant (m)",
+                                            "type": "number"
+                                          },
+                                          {
+                                            "source": "areaOfRemnantVegetationLinkedInHectares",
+                                            "preLabel": "Area of pre-existing vegetation linked (ha)",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "widthOfConnectingWorkInMetres",
+                                            "preLabel": "Width of connecting work (m)",
+                                            "type": "number"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          },
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "boxed": true,
+                                "title": "Restoration Work",
+                                "type": "section",
+                                "items": [
+                                  {
+                                    "type": "row",
+                                    "items": [
+                                      {
+                                        "type": "col",
+                                        "items": [
+                                          {
+                                            "source": "finalAreaOfRestorationWorkInHectares",
+                                            "preLabel": "Final area of restoration work (ha)",
+                                            "type": "number"
+                                          },
+                                          {
+                                            "source": "achievedOutcomeAnomaly",
+                                            "preLabel": "Did the final area of restoration work differ to that planned and funded?",
+                                            "type": "selectOne"
+                                          },
+                                          {
+                                            "source": "achievedOutcomeAnomalyReason",
+                                            "preLabel": "Cause of change in area of final work site",
+                                            "type": "selectMany"
+                                          },
+                                          {
+                                            "source": "achievedOutcomeAnomalyRemarks",
+                                            "preLabel": "Cause of change in area comments",
+                                            "type": "textarea"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "class": ""
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "row",
+                        "items": [
+                          {
+                            "type": "col",
+                            "items": [
+                              {
+                                "type": "row",
+                                "items": [
+                                  {
+                                    "source": "numberOfConservationAgreementsEstablished",
+                                    "preLabel": "Number of conservation agreements established",
+                                    "type": "number"
+                                  },
+                                  {
+                                    "source": "eventRemarks",
+                                    "preLabel": "General comments",
+                                    "type": "textarea"
+                                  }
+                                ]
+                              }
+                            ],
+                            "class": "output-section"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Habitat Restoration - Work Progress and follow-up"
+      },
+      "modelName": null,
+      "templateName": "Habitat Restoration - Work Progress and follow-up",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Habitat Restoration - Work Progress and follow-up",
+      "description": null
+    }
+  ],
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "lastUpdatedUserId": "35",
+  "description": "Template developed for NSW habitat restoration sector to record the implementation progress of habitat restoration work and/or to details of follow-up site visits to areas where habitat restoration has been undertaken previously. Can be used for similar activities in other jurisdictions.",
+  "formVersion": 1
+}
