@@ -468,7 +468,7 @@ function OfflineViewModel(config) {
             MAP_LOAD_TIMEOUT = 1000, // 1 seconds
             MAX_ZOOM=20,
             MIN_ZOOM= 10,
-            MAX_SITES_DOWNLOADABLE = 30;
+            MIN_SITES_FOR_SELECTION = 1;
         var sites = pa.sites || [], zoom = 15, mapZoomedInIndicator, tileLoadedPromise, cancelTimer,
             selectedSites = [],
             callback = function () {
@@ -490,7 +490,7 @@ function OfflineViewModel(config) {
             return aName.localeCompare(bName)
         });
 
-        if (sites.length > MAX_SITES_DOWNLOADABLE) {
+        if (sites.length >= MIN_SITES_FOR_SELECTION) {
             var selectionModel = new SiteSelectionViewModel(sites);
             var modal = Biocollect.Modals.showModal({
                 viewModel: selectionModel,
