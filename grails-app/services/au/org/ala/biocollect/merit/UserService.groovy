@@ -52,12 +52,18 @@ class UserService {
      * Intended for background/async work outside the normal request filter chain.
      */
     void withUser(UserDetails user, Closure closure) {
+        UserDetails previousUser = backgroundUser.get()
         try {
             backgroundUser.set(user)
             closure()
         }
         finally {
-            backgroundUser.remove()
+            if (previousUser != null) {
+                backgroundUser.set(previousUser)
+            }
+            else {
+                backgroundUser.remove()
+            }
         }
     }
 
