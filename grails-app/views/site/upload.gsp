@@ -242,28 +242,33 @@
             }
         });
 
+        self.progressText('Uploaded 0 of '+payload.sites.length+' sites');
+        Biocollect.Bootstrap5.showModal('#uploadProgress', {backdrop:'static'});
+
         $.ajax({
                url: fcConfig.saveSitesUrl,
                type: 'POST',
                contentType: 'application/json',
                data: JSON.stringify(payload),
                success: function (data) {
-                    // Site creation runs asynchronously; completion is tracked via showProgress.
+                    // Site creation runs asynchronously; only poll after the POST has
+                    // acknowledged and initialized session progress for this upload.
                     if (data && data.message == "error") {
                         self.progressText(data.error || "Error uploading the sites, please try again later");
                         setTimeout(function() {
                             Biocollect.Bootstrap5.hideModal('#uploadProgress');
                         }, 3000);
+                        return;
                     }
+                    setTimeout(self.showProgress, 2000);
                },
                error: function () {
-                   Biocollect.Bootstrap5.hideModal('#uploadProgress');
-                   alert('There was a problem uploading sites.');
+                   self.progressText('There was a problem uploading sites.');
+                   setTimeout(function() {
+                       Biocollect.Bootstrap5.hideModal('#uploadProgress');
+                   }, 3000);
                }
           });
-          self.progressText('Uploaded 0 of '+payload.sites.length+' sites');
-          Biocollect.Bootstrap5.showModal('#uploadProgress', {backdrop:'static'});
-          setTimeout(self.showProgress, 2000);
     };
 
     self.showProgress = function() {
