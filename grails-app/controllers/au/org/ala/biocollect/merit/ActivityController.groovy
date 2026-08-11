@@ -551,6 +551,8 @@ class ActivityController {
                 return DateUtil.isCellDateFormatted(cell) ? cell.dateCellValue : cell.numericCellValue
             case CellType.BOOLEAN:
                 return cell.booleanCellValue
+            case CellType.STRING:
+                return cell.stringCellValue?.trim()
             case CellType.BLANK:
                 return null
             case CellType.ERROR:
