@@ -200,7 +200,9 @@ describe("PwaIndexSpec", function (){
                                 },
                                 fitBounds: function () {
                                 },
-                                invalidateSize: function (){}
+                                invalidateSize: function (){},
+                                setZoom: function () {
+                                }
                             };
                         },
                         addLayer: function () {
@@ -216,7 +218,23 @@ describe("PwaIndexSpec", function (){
                         },
                         registerListener: function () {
                         },
+                        removeListener: function () {
+                        },
+                        setGeoJSON: function () {
+                            return { options: {} };
+                        },
+                        clearLayers: function () {
+                        }
                     }
+                }
+            };
+            window.Biocollect = window.Biocollect || {};
+            window.Biocollect.Modals = {
+                showModal: function (options) {
+                    // Site selection now appears for any sites (>= 1). Resolve immediately
+                    // so stage-progression tests are not blocked waiting on the modal.
+                    options.viewModel.cancel();
+                    return $.Deferred().resolve().promise();
                 }
             };
             window.fcConfig = {

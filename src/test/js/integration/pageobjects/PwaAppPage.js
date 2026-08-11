@@ -88,6 +88,18 @@ class PwaAppPage extends ReloadablePage {
         return $('#confirmDownloadModal');
     }
 
+    get siteSelectionModalTitle() {
+        return $('h3*=Choose sites to download');
+    }
+
+    get siteSelectionCheckboxes() {
+        return $$('.modal .form-check-input');
+    }
+
+    get siteSelectionDownloadBtn() {
+        return $('.modal-footer .btn-primary-dark');
+    }
+
     get recordsCloseBtn() {
         return $('#recordsClose');
     }
@@ -147,6 +159,7 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async openUserMenu() {
+        await this.avatarTrigger.waitForClickable({ timeout: 10000 });
         await this.avatarTrigger.click();
 
         try {
@@ -163,6 +176,14 @@ class PwaAppPage extends ReloadablePage {
 
         if (await this.atSignIn()) {
             return;
+        }
+
+        // A leftover fullscreen download/edit modal intercepts the avatar click.
+        try {
+            await this.closeModal();
+        }
+        catch (error) {
+            console.log('Could not close modal before logout:', error && error.message);
         }
 
         await this.openUserMenu();
@@ -270,10 +291,62 @@ class PwaAppPage extends ReloadablePage {
         }
     }
 
+    /**
+     * Offline download now prompts for site selection whenever a survey has
+     * at least one site. Confirm that dialog inside the PWA iframe so the
+     * download can finish and raise download-complete.
+     */
+    async confirmSiteSelectionForDownload() {
+        const frame = this.pwaFrame;
+        if (!(await frame.isExisting())) {
+            return false;
+        }
+
+        await browser.switchFrame(frame);
+        try {
+            const title = this.siteSelectionModalTitle;
+            if (!(await title.isExisting()) || !(await title.isDisplayed())) {
+                return false;
+            }
+
+            console.log('Confirming offline site selection...');
+            const checkboxes = await this.siteSelectionCheckboxes;
+            for (const checkbox of checkboxes) {
+                if (await checkbox.isDisplayed() && !(await checkbox.isSelected())) {
+                    await checkbox.click();
+                }
+            }
+
+            const downloadBtn = this.siteSelectionDownloadBtn;
+            await downloadBtn.waitForEnabled({ timeout: 10000 });
+            await downloadBtn.click();
+            await title.waitForDisplayed({ timeout: 10000, reverse: true });
+            return true;
+        }
+        finally {
+            await this.switchToTopFrame();
+        }
+    }
+
     async downloadComplete() {
-        let btn = this.modalConfirmationButton
-        await browser.waitUntil(() => btn.isClickable(), {
+        let btn = this.modalConfirmationButton;
+        let siteSelectionHandled = false;
+
+        await browser.waitUntil(async () => {
+            if (!siteSelectionHandled) {
+                try {
+                    siteSelectionHandled = await this.confirmSiteSelectionForDownload();
+                }
+                catch (error) {
+                    await this.switchToTopFrame();
+                    console.log('Site selection check failed:', error && error.message);
+                }
+            }
+
+            return await btn.isClickable();
+        }, {
             timeout: 5 * 60 * 1000,
+            interval: 1000,
             timeoutMsg: 'Timed out waiting for survey download confirmation'
         });
         await btn.click();
