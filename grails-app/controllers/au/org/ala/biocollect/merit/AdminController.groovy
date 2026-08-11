@@ -113,15 +113,46 @@ class AdminController {
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def settings() {
         def settings = []
-
         def grailsStuff = []
-        def config = grailsApplication.config.flatten()
-        for ( e in config ) {
-            def value = e.value instanceof Closure ? '[Closure]' : e.value?.toString()
-            if(e.key.startsWith("grails.")){
-                grailsStuff << [key: e.key, value: value, comment: '']
+
+        // Traverse config recursively to preserve Closures as executable objects
+        def flattenConfig
+        flattenConfig = { Object source, String prefix = '' ->
+            Map<String, Object> result = [:]
+
+            if (source instanceof Map) {
+                source.each { k, v ->
+                    String newKey = prefix ? "${prefix}.${k}" : k.toString()
+                    if (v instanceof Map && !(v instanceof Closure)) {
+                        result.putAll(flattenConfig(v, newKey))
+                    } else {
+                        result[newKey] = v
+                    }
+                }
+            }
+            return result
+        }
+
+        Map<String, Object> flatConfig = flattenConfig(grailsApplication.config)
+
+        flatConfig.each { key, val ->
+            def value
+            if (val instanceof Closure) {
+                try {
+                    // Execute closure with current configuration context
+                    value = val.call(grailsApplication.config)?.toString()
+                } catch (Exception ignored) {
+                    value = '[Closure]'
+                }
             } else {
-                settings << [key: e.key, value: value, comment: '']
+                value = val?.toString()
+            }
+
+            def item = [key: key, value: value, comment: '']
+            if (key.startsWith("grails.")) {
+                grailsStuff << item
+            } else {
+                settings << item
             }
         }
 
