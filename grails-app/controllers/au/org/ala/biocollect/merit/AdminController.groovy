@@ -117,10 +117,11 @@ class AdminController {
         def grailsStuff = []
         def config = grailsApplication.config.flatten()
         for ( e in config ) {
+            def value = e.value instanceof Closure ? '[Closure]' : e.value?.toString()
             if(e.key.startsWith("grails.")){
-                grailsStuff << [key: e.key, value: e.value, comment: '']
+                grailsStuff << [key: e.key, value: value, comment: '']
             } else {
-                settings << [key: e.key, value: e.value, comment: '']
+                settings << [key: e.key, value: value, comment: '']
             }
         }
 
