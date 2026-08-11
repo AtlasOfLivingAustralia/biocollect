@@ -291,6 +291,8 @@
                     document.location.href = "${params.returnTo}";
                 }, 1000);
             }
+        }).fail(function() {
+            setTimeout(self.showProgress, 2000);
         });
     }
 
