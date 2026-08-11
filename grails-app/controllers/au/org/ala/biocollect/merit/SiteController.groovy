@@ -396,7 +396,7 @@ class SiteController {
         def siteData = request.JSON
         // Process asynchronously so reverse proxies / load balancers do not time out the
         // initial request when many sites are created. Progress is polled via siteUploadProgress.
-        Map progress = [total: siteData.sites.size(), uploaded: 0].asSynchronized()
+        Map progress = new java.util.concurrent.ConcurrentHashMap([total: siteData.sites.size(), uploaded: 0, finished: false])
         session.uploadProgress = progress
         UserDetails user = userService.getUser()
         task {
