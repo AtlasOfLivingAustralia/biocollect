@@ -382,20 +382,26 @@
                   {
                     "columns": [
                       {
-                        "width": "25%",
+                        "width": "20%",
                         "title": "Day",
                         "type": "text",
                         "noEdit": true,
                         "source": "day"
                       },
                       {
-                        "width": "25%",
+                        "width": "20%",
+                        "source": "species",
+                        "title": "Species",
+                        "type": "speciesSelect"
+                      },
+                      {
+                        "width": "20%",
                         "title": "Date",
                         "type": "date",
                         "source": "eventDate"
                       },
                       {
-                        "width": "25%",
+                        "width": "20%",
                         "title": "Total time spent looking each day",
                         "type": "number",
                         "source": "timeSearching",
@@ -404,7 +410,7 @@
                         }
                       },
                       {
-                        "width": "25%",
+                        "width": "20%",
                         "title": "Max number of quendas seen on that day",
                         "type": "number",
                         "source": "individualCount"
