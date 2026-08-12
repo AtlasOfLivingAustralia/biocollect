@@ -5,6 +5,7 @@ import au.org.ala.biocollect.swagger.model.SiteCreateUpdateResponse
 import au.org.ala.plugins.openapi.Path
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
+import au.org.ala.web.UserDetails
 import grails.converters.JSON
 import grails.web.servlet.mvc.GrailsParameterMap
 import io.swagger.v3.oas.annotations.Operation
@@ -20,6 +21,7 @@ import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.ContentType
 
+import static grails.async.Promises.task
 import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
@@ -392,31 +394,33 @@ class SiteController {
 
     def createSitesFromShapefile() {
         def siteData = request.JSON
-        def progress = [total: siteData.sites.size(), uploaded: 0]
-        String error
-        try {
-            session.uploadProgress = progress
-            for (int i = 0; i < siteData?.sites?.size(); i++) {
-                Map site = siteData.sites[i]
-                error = siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, site.id, site.externalId, site.name, site.description ?: 'No description supplied', siteData.projectId, true)
-                if (!error) {
-                    progress.uploaded = progress.uploaded + 1
-                } else {
-                    break
+        // Process asynchronously so reverse proxies / load balancers do not time out the
+        // initial request when many sites are created. Progress is polled via siteUploadProgress.
+        Map progress = new java.util.concurrent.ConcurrentHashMap([total: siteData.sites.size(), uploaded: 0, finished: false])
+        session.uploadProgress = progress
+        UserDetails user = userService.getUser()
+        task {
+            try {
+                userService.withUser(user) {
+                    while (progress.uploaded < progress.total) {
+                        Map site = siteData.sites[progress.uploaded]
+                        String error = siteService.createSiteFromUploadedShapefile(siteData.shapeFileId, site.id, site.externalId, site.name, site.description ?: 'No description supplied', siteData.projectId, true)
+                        if (error) {
+                            progress.error = error
+                            break
+                        }
+                        progress.uploaded = progress.uploaded + 1
+                    }
                 }
+            } catch (Exception ex) {
+                progress.error = "Error uploading sites, please try again later"
+                log.error(progress.error, ex)
+            } finally {
+                progress.finished = true
             }
-        } catch (Exception ex) {
-            error = "Error uploading sites, please try again later"
-            log.error(error + ex)
         }
 
-        if (!error) {
-            progress.finished = true
-            render(text: [message: 'success', progress: progress] as JSON, contentType: APPLICATION_JSON)
-        } else {
-            progress.finished = false
-            render(text: [message: 'error', progress: progress, error: error] as JSON, contentType: APPLICATION_JSON)
-        }
+        render(text: [message: 'success', progress: progress] as JSON, contentType: APPLICATION_JSON)
     }
 
     def siteUploadProgress() {

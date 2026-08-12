@@ -13,6 +13,12 @@ class UserService {
     static String USER_NAME_HEADER_FIELD = "userName"
     static String AUTH_KEY_HEADER_FIELD = "authKey"
 
+    /**
+     * Used by background tasks that need to call services requiring a user in context
+     * (e.g. WebService user headers) outside of an HTTP request.
+     */
+    private static ThreadLocal<UserDetails> backgroundUser = new ThreadLocal<UserDetails>()
+
     String getAuditBaseUrl () {
         return grailsApplication.config.getProperty('ecodata.service.url') + '/audit'
     }
@@ -34,7 +40,31 @@ class UserService {
     }
 
     UserDetails getUser() {
-        userInfoService.getCurrentUser()
+        def user = backgroundUser.get()
+        if (!user) {
+            user = userInfoService.getCurrentUser()
+        }
+        return user
+    }
+
+    /**
+     * Runs the supplied closure with the given user available via {@link #getUser()} on the current thread.
+     * Intended for background/async work outside the normal request filter chain.
+     */
+    void withUser(UserDetails user, Closure closure) {
+        UserDetails previousUser = backgroundUser.get()
+        try {
+            backgroundUser.set(user)
+            closure()
+        }
+        finally {
+            if (previousUser != null) {
+                backgroundUser.set(previousUser)
+            }
+            else {
+                backgroundUser.remove()
+            }
+        }
     }
 
     /**
