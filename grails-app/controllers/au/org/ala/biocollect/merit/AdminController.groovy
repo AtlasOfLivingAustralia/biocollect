@@ -115,13 +115,17 @@ class AdminController {
         def settings = []
         def grailsStuff = []
 
-        // Traverse config recursively to preserve Closures as executable objects
+        // Traverse config recursively to preserve Closures as executable objects.
+        // Grails 7 PropertySourcesConfig is Iterable over Map.Entry, so two-arg
+        // each { k, v -> } fails; iterate entrySet and unpack key/value instead.
         def flattenConfig
         flattenConfig = { Object source, String prefix = '' ->
             Map<String, Object> result = [:]
 
             if (source instanceof Map) {
-                source.each { k, v ->
+                source.entrySet().each { entry ->
+                    def k = entry.key
+                    def v = entry.value
                     String newKey = prefix ? "${prefix}.${k}" : k.toString()
                     if (v instanceof Map && !(v instanceof Closure)) {
                         result.putAll(flattenConfig(v, newKey))
@@ -234,12 +238,14 @@ class AdminController {
                 }
                 flash.message = "Configuration reloaded."
                 String res = "<ul>"
-                grailsApplication.config.each { key, value ->
+                grailsApplication.config.entrySet().each { entry ->
+                    def key = entry.key
+                    def value = entry.value
                     if (value instanceof Map) {
                         res += "<p>" + key + "</p>"
                         res += "<ul>"
-                        value.each { k1, v1 ->
-                            res += "<li>" + k1 + " = " + v1 + "</li>"
+                        value.entrySet().each { nested ->
+                            res += "<li>" + nested.key + " = " + nested.value + "</li>"
                         }
                         res += "</ul>"
                     }
