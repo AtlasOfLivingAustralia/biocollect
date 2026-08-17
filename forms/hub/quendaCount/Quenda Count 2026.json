@@ -1,11 +1,11 @@
 {
-  "id": "5f3f4c6fc2dc7eba0f10c8a3",
-  "dateCreated": "2020-08-21T04:24:15Z",
+  "id": "6a7e75c4b6a30562d2fc9629",
+  "dateCreated": "2026-08-14T01:56:20Z",
   "minOptionalSectionsCompleted": 1,
   "supportsSites": false,
   "tags": [],
-  "lastUpdated": "2026-08-05T02:48:22Z",
-  "createdUserId": "82292",
+  "lastUpdated": "2026-08-17T06:46:51Z",
+  "createdUserId": "129333",
   "embargoMultimedia": false,
   "external": false,
   "activationDate": null,
@@ -18,7 +18,6 @@
     {
       "collapsedByDefault": false,
       "template": {
-        "modelName": "quendaCount2026",
         "dataModel": [
           {
             "dataType": "text",
@@ -83,8 +82,8 @@
             "name": "patchyMissingFur"
           },
           {
-              "dataType": "text",
-              "name": "additionalComments"
+            "dataType": "text",
+            "name": "additionalComments"
           },
           {
             "dataType": "list",
@@ -125,12 +124,18 @@
               {
                 "deadQuendaCount": 0,
                 "causeOfDeath": "Other"
-              },
-              {
-                "deadQuendaCount": 0,
-                "causeOfDeath": "Total"
               }
             ]
+          },
+          {
+            "computed": {
+              "expression": "sum(deadQuendaTable, \"deadQuendaCount\")"
+            },
+            "name": "totalDeadQuendaCount",
+            "dataType": "number",
+            "readOnly": true,
+            "noEdit": true,
+            "decimalPlaces": 0
           },
           {
             "defaultAccuracy": 10,
@@ -189,7 +194,8 @@
                 "name": "individualCount",
                 "dwcAttribute": "individualCount",
                 "dataType": "number",
-                "validate": "required"
+                "validate": "required",
+                "defaultValue": ""
               }
             ],
             "defaultRows": [
@@ -197,41 +203,30 @@
                 "day": "1",
                 "eventDate": "",
                 "timeSearching": "",
-                "species": {
-                  "name": "Isoodon obesulus",
-                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:219c139b-029f-4fbe-aa69-09e420013341",
-                  "scientificName": "Isodon obesulus",
-                  "commonName": "Quenda"
-                },
-                "individualCount": 0
+                "species": null,
+                "individualCount": ""
               },
               {
                 "day": "2",
                 "eventDate": "",
                 "timeSearching": "",
-                "species": {
-                  "name": "Isoodon obesulus",
-                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:219c139b-029f-4fbe-aa69-09e420013341",
-                  "scientificName": "Isodon obesulus",
-                  "commonName": "Quenda"
-                },
-                "individualCount": 0
+                "species": null,
+                "individualCount": ""
               },
               {
                 "day": "3",
                 "eventDate": "",
                 "timeSearching": "",
-                "species": {
-                  "name": "Isoodon obesulus",
-                  "guid": "urn:lsid:biodiversity.org.au:afd.taxon:219c139b-029f-4fbe-aa69-09e420013341",
-                  "scientificName": "Isodon obesulus",
-                  "commonName": "Quenda"
-                },
-                "individualCount": 0
+                "species": null,
+                "individualCount": ""
               }
             ]
           }
         ],
+        "modelName": "quendaCount2026",
+        "title": "Quenda Count 2026",
+        "record": "true",
+        "excludeAbsenceRecord": true,
         "viewModel": [
           {
             "type": "row",
@@ -298,17 +293,35 @@
                             "source": "additionalComments"
                           },
                           {
-                            "allowHeaderWrap": "true",
+                            "footer": {
+                              "rows": [
+                                {
+                                  "columns": [
+                                    {
+                                      "width": "60%",
+                                      "source": "<div style='text-align:right; font-weight:bold; padding-right:10px;'>Total:</div>",
+                                      "type": "literal"
+                                    },
+                                    {
+                                      "width": "40%",
+                                      "noEdit": true,
+                                      "source": "totalDeadQuendaCount",
+                                      "type": "number"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
                             "columns": [
                               {
-                                "width": "70%",
+                                "width": "60%",
                                 "noEdit": true,
                                 "source": "causeOfDeath",
                                 "title": "If you have seen any dead quenda, please indicate what you believe to be the cause of death?",
                                 "type": "text"
                               },
                               {
-                                "width": "30%",
+                                "width": "40%",
                                 "source": "deadQuendaCount",
                                 "title": "Count",
                                 "type": "number"
@@ -392,7 +405,7 @@
                         "width": "20%",
                         "source": "species",
                         "title": "Species",
-                        "type": "speciesSelect"
+                        "type": "autocomplete"
                       },
                       {
                         "width": "20%",
@@ -425,8 +438,7 @@
               }
             ]
           }
-        ],
-        "title": "Quenda Count 2026"
+        ]
       },
       "modelName": null,
       "templateName": "quendaCount2026",
@@ -441,7 +453,7 @@
   "type": "Assessment",
   "category": "Assessment & monitoring",
   "status": "active",
-  "lastUpdatedUserId": "82292",
+  "lastUpdatedUserId": "129333",
   "description": null,
   "formVersion": 1
 }
