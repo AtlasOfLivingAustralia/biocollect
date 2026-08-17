@@ -19,9 +19,9 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
             layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
+            serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
             viewProjectUrl: "${createLink(controller: 'project', action: 'index')}",
             updateProjectUrl: "${createLink(controller: 'project', action: 'ajaxUpdate')}",
             documentUpdateUrl: '${g.createLink(controller: "proxy", action: "documentUpdate")}',
@@ -40,10 +40,10 @@
             submitReportUrl: '${g.createLink(action: 'ajaxSubmitReport', id: "${organisation.organisationId}")}',
             approveReportUrl: '${g.createLink(action: 'ajaxApproveReport', id: "${organisation.organisationId}")}',
             spatialService: '${createLink(controller: 'proxy', action: 'feature')}',
-            spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
+            spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
             rejectReportUrl: '${g.createLink(action: 'ajaxRejectReport', id: "${organisation.organisationId}")}',
             hubDefaultSortBy : "${hubConfig?.templateConfiguration?.homePage?.projectFinderConfig?.defaultSort}",
-            defaultSearchRadiusMetersForPoint: "${grailsApplication.config.defaultSearchRadiusMetersForPoint ?: "100"}",
+            defaultSearchRadiusMetersForPoint: "${grailsApplication.config.getProperty('defaultSearchRadiusMetersForPoint') ?: "100"}",
             returnTo: '${g.createLink(action: 'index', id: "${organisation.organisationId}")}',
             projects : <fc:modelAsJavascript model="${organisation.projects}"/>,
             projectListUrl: "${raw(createLink(controller: 'project', action: 'search', params: [initiator: 'biocollect']))}",
@@ -53,12 +53,12 @@
             organisationName : "${organisation.name}",
             showAllProjects: true,
             meritProjectLogo:"${asset.assetPath(src: 'merit_project_logo.jpg')}",
-            meritProjectUrl: "${grailsApplication.config.merit.project.url}",
+            meritProjectUrl: "${grailsApplication.config.getProperty('merit.project.url')}",
             pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
             searchProjectActivitiesUrl: "${createLink(controller: 'bioActivity', action: 'searchProjectActivities')}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
-            bieUrl: "${grailsApplication.config.bie.baseURL}",
-            bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
+            bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+            bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             worksActivityEditUrl: "${createLink(controller: 'activity', action: 'enterData')}",
@@ -73,10 +73,10 @@
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
             hideWorldWideBtn: true,
-            flimit: ${grailsApplication.config.facets.flimit},
+            flimit: ${grailsApplication.config.getProperty('facets.flimit')},
             occurrenceUrl: "",
             spatialUrl: "",
-            paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.content.defaultOverriddenLabels)}',
+            paginationMessage: '${hubConfig.getTextForShowingProjects(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}',
             absenceIconUrl:"${asset.assetPath(src: 'triangle.png')}",
             mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
             </g:applyCodec>
@@ -87,7 +87,7 @@
     <g:render template="/shared/conditionalLazyLoad"/>
     <asset:stylesheet src="project-finder-manifest.css"/>
     <asset:javascript src="org-index-manifest.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 
 <body>

@@ -12,14 +12,14 @@
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        baseUrl: "${grailsApplication.config.grails.serverURL}",
-        spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-        spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-        spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
-        sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-        sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+        baseUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
+        spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+        spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+        spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
+        sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+        sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
         excelOutputTemplateUrl: "${createLink(controller: 'proxy', action:'excelOutputTemplate')}",
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
         </g:applyCodec>
@@ -30,7 +30,7 @@
     <asset:javascript src="common.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="siteDisplay.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 <body>
 <div id="wrapper" class="container-fluid">
@@ -272,19 +272,19 @@
                             <tr>
                                 <td width="10%">1</td>
                                 <td width="45%">
-                                    <a target="_blank" href="${grailsApplication.config.grails.serverURL}/search/downloadSummaryData<fc:formatParams params="${params}"/>view=json">JSON</a>
+                                    <a target="_blank" href="${grailsApplication.config.getProperty('grails.serverURL')}/search/downloadSummaryData<fc:formatParams params="${params}"/>view=json">JSON</a>
                                 </td>
                                 <td width="45%">
-                                    <a target="_blank" href="${grailsApplication.config.grails.serverURL}/search/downloadAllData<fc:formatParams params="${params}"/>&view=json">JSON</a>
+                                    <a target="_blank" href="${grailsApplication.config.getProperty('grails.serverURL')}/search/downloadAllData<fc:formatParams params="${params}"/>&view=json">JSON</a>
                                 </td>
                              </tr>
                             <tr>
                                 <td width="10%">2</td>
                                 <td width="45%">
-                                    <a target="_blank" href="${grailsApplication.config.grails.serverURL}/search/downloadSummaryData<fc:formatParams params="${params}"/>&view=xlsx">XLSX</a>
+                                    <a target="_blank" href="${grailsApplication.config.getProperty('grails.serverURL')}/search/downloadSummaryData<fc:formatParams params="${params}"/>&view=xlsx">XLSX</a>
                                 </td>
                                 <td width="45%">
-                                    <a target="_blank" href="${grailsApplication.config.grails.serverURL}/search/downloadAllData<fc:formatParams params="${params}"/>&view=xlsx">XLSX</a>
+                                    <a target="_blank" href="${grailsApplication.config.getProperty('grails.serverURL')}/search/downloadAllData<fc:formatParams params="${params}"/>&view=xlsx">XLSX</a>
                                 </td>
                             </tr>
                             </tbody>
@@ -588,7 +588,7 @@
         });
         
         $(".clearFacet").on('click',function(e){
-       	 window.location.href ="${grailsApplication.config.grails.serverURL}";
+       	 window.location.href ="${grailsApplication.config.getProperty('grails.serverURL')}";
         });
         
         $(".facetSearch").on('click',function(e){

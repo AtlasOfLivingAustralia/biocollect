@@ -1,32 +1,29 @@
-apply plugin:"maven-publish"
+apply plugin: 'maven-publish'
+
 publishing {
     repositories {
         maven {
-            name 'Nexus'
-            url "https://nexus.ala.org.au/content/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}"
+            name = 'Nexus'
+            url = uri("https://nexus.ala.org.au/content/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}")
             credentials {
                 username = System.getenv('TRAVIS_DEPLOY_USERNAME')
                 password = System.getenv('TRAVIS_DEPLOY_PASSWORD')
             }
         }
     }
+
     publications {
         mavenJar(MavenPublication) {
-
-            pom.withXml {
-                def pomNode = asNode()
-                pomNode.dependencyManagement.replaceNode {}
-
-                // simply remove dependencies without a version
-                // version-less dependencies are handled with dependencyManagement
-                // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
-                pomNode.dependencies.dependency.findAll {
-                    it.version.text().isEmpty()
-                }.each {
-                    it.replaceNode {}
-                }
+            artifact tasks.named('bootJar')
+            pom {
+                // Explicit jar packaging (Maven default); avoids a pom-only publication.
+                packaging = 'jar'
             }
-            artifact bootJar
         }
     }
+}
+
+// Module metadata describes component variants, not a fat executable. Disable it for this publication.
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
 }

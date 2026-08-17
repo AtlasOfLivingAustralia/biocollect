@@ -16,18 +16,18 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
             layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
+            serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteListUrl: "${createLink(controller: 'site', action: 'list')}",
             addStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxAddToFavourites')}",
             removeStarSiteUrl: "${createLink(controller: 'site', action: 'ajaxRemoveFromFavourites')}",
-            spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-            spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-            spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
-            sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-            sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+            spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+            spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+            spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
+            sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+            sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
             poiGalleryUrl: "${createLink(controller: 'site', action: 'getImages')}",
             imagesForPoiUrl: "${createLink(controller: 'site', action: 'getPoiImages')}",
             imageLeafletViewer: '${createLink(controller: 'resource', action: 'imageviewer', absolute: true)}',
@@ -46,9 +46,9 @@
             recordListUrl: "${createLink(controller: 'record', action: 'ajaxList')}",
             recordDeleteUrl: "${createLink(controller: 'record', action: 'delete')}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
-            bieUrl: "${grailsApplication.config.bie.baseURL}",
-            bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
-            speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+            bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+            bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
+            speciesPage: "${grailsApplication.config.getProperty('bie.baseURL')}/species/",
             mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />
             </g:applyCodec>
         },
@@ -59,7 +59,7 @@
     <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 
 <body>
@@ -96,12 +96,12 @@
                         class="fas fa-pencil-alt"></i> <g:message code="site.details.editSystematic"/></g:link>
             </g:if>
             <g:if test="${site?.extent?.geometry?.pid}">
-                <a href="${grailsApplication.config.spatial.layersUrl}/shape/shp/${site.extent.geometry.pid}"
+                <a href="${grailsApplication.config.getProperty('spatial.layersUrl')}/shape/shp/${site.extent.geometry.pid}"
                    class="btn btn-sm btn-dark">
                     <i class="fas fa-download"></i>
                     <g:message code="site.details.downloadShp"/>
                 </a>
-                <a href="${grailsApplication.config.spatial.baseURL}/?pid=${site.extent.geometry.pid}"
+                <a href="${grailsApplication.config.getProperty('spatial.baseURL')}/?pid=${site.extent.geometry.pid}"
                    class="btn btn-sm btn-dark"><i class="fa fa-map"></i> <g:message
                         code="site.details.viewInSpatialPortal"/></a>
             </g:if>

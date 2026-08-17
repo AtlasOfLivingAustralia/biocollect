@@ -40,7 +40,7 @@
             </tbody>
         </table>
 
-        <h2>Grails properties</h2>
+        <h2 class="mt-4">Grails properties</h2>
         <table class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>

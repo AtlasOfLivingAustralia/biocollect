@@ -16,11 +16,11 @@ class ConfigService {
     def computeConfig() {
 
 
-        if (grailsApplication.config.loggerLevel){
-            log.info('Reset Logger Level to ' + grailsApplication.config.loggerLevel.toString().toUpperCase() )
+        if (grailsApplication.config.getProperty('loggerLevel')){
+            log.info('Reset Logger Level to ' + grailsApplication.config.getProperty('loggerLevel').toString().toUpperCase() )
             ch.qos.logback.classic.Logger logger =
                     (ch.qos.logback.classic.Logger)LoggerFactory.getLogger("au.org.ala.biocollect");
-            logger.setLevel( Level.valueOf(grailsApplication.config.loggerLevel.toString().toUpperCase()))
+            logger.setLevel( Level.valueOf(grailsApplication.config.getProperty('loggerLevel').toString().toUpperCase()))
         }
 
 
@@ -31,29 +31,29 @@ class ConfigService {
         def googleMapApiKey = grailsApplication.config.getProperty("google.maps.apiKey")
         if (googleMapApiKey){
             grailsApplication.config.google.maps.url =  grailsApplication.config["google.maps.base"] + googleMapApiKey
-            log.debug('Google Map URL:' + grailsApplication.config.google.maps.url)
+            log.debug('Google Map URL:' + grailsApplication.config.getProperty('google.maps.url'))
         }else
             throw new Exception('You.Need.To.Add.A.Config.Property.Named.google.maps.apiKey')
 
         def ecodataBaseUrl = grailsApplication.config.getProperty("ecodata.baseURL")
         if (ecodataBaseUrl){
             grailsApplication.config.ecodata.service.url = ecodataBaseUrl + '/ws'
-            log.debug('Ecodata service URL:' + grailsApplication.config.ecodata.service.url)
+            log.debug('Ecodata service URL:' + grailsApplication.config.getProperty('ecodata.service.url'))
         }else
             throw new Exception('You need to define ecodata base URL')
 
         def meritBaseUrl = grailsApplication.config.getProperty("merit.baseURL")
         if (meritBaseUrl){
             grailsApplication.config.merit.project.url = meritBaseUrl + '/project/index'
-            log.debug('Merit project URL:' + grailsApplication.config.merit.project.url)
+            log.debug('Merit project URL:' + grailsApplication.config.getProperty('merit.project.url'))
         }else
             throw new Exception('You need to define ecodata base URL!')
         //It is used by redirect and others,
-        if (grailsApplication.config.server.serverURL){
+        if (grailsApplication.config.getProperty('server.serverURL')){
             //Need to be confirmed if it is used by redirect and others,
-            grailsApplication.config.grails.serverURL = grailsApplication.config.server.serverURL
-            grailsApplication.config.upload.images.url = grailsApplication.config.grails.serverURL + '/image?id='
-            grailsApplication.config.upload.file.url = grailsApplication.config.grails.serverURL + '/file?id='
+            grailsApplication.config.grails.serverURL = grailsApplication.config.getProperty('server.serverURL')
+            grailsApplication.config.upload.images.url = grailsApplication.config.getProperty('grails.serverURL') + '/image?id='
+            grailsApplication.config.upload.file.url = grailsApplication.config.getProperty('grails.serverURL') + '/file?id='
 
         }else
             throw new Exception('You need to define server.serverURL!')

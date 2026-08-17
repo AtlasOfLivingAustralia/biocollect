@@ -20,10 +20,10 @@
                 <div class="nav flex-md-column nav-pills" role="tablist">
                     <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'users')}" title="Users" />
                     <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'audit')}" title="Audit" />
-                    <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.adminRole) || fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole)}">
+                    <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.adminRole')) || fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole'))}">
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'staticPages')}" title="Static pages" />
                     </g:if>
-                    <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole)}">
+                    <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole'))}">
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'tools')}" title="Tools" />
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action: 'settings')}" title="Settings" />
                         <fc:breadcrumbItem href="${createLink(controller: 'admin', action:'manageHubs')}" title="Manage Hubs"/>

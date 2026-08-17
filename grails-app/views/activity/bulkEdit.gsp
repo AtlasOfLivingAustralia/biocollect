@@ -15,10 +15,10 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         organisationViewUrl: "${createLink(controller: 'organisation', action: 'index', id: organisation.organisationId)}",
-        serverUrl: "${grailsApplication.config.grails.serverURL}",
+        serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
         saveUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}/",
@@ -72,7 +72,7 @@
     </style>
     <g:set var="thisPage" value="${raw(g.createLink(absolute: true, action: 'report', params: params))}"/>
     <g:set var="loginUrl"
-           value="${grailsApplication.config.security.cas.loginUrl ?: 'https://auth.ala.org.au/cas/login'}?service=${thisPage.encodeAsURL()}"/>
+           value="${grailsApplication.config.getProperty('security.cas.loginUrl') ?: 'https://auth.ala.org.au/cas/login'}?service=${thisPage.encodeAsURL()}"/>
 </head>
 
 <body>

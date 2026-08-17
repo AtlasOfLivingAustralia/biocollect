@@ -1,6 +1,6 @@
 <div id="charts" class="my-4 my-md-5">
     <content tag="bannertitle">
-        ${hubConfig.getTextForCharts(grailsApplication.config.content.defaultOverriddenLabels)}
+        ${hubConfig.getTextForCharts(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}
     </content>
 
     <div class="container-fluid" id="chartId">

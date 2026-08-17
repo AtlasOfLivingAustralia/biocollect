@@ -19,9 +19,9 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        serverUrl: "${grailsApplication.config.grails.serverURL}",
+        serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
         activityDeleteUrl: "${createLink(controller: 'activity', action: 'ajaxDelete')}",
         projectViewUrl: "${createLink(controller: 'project', action: 'index')}/",
@@ -31,8 +31,8 @@
         commentListUrl:"${commentUrl}",
         updateCommentUrl:"${commentUrl}",
         deleteCommentUrl:"${commentUrl}",
-        bieUrl: "${grailsApplication.config.bie.baseURL}",
-        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
+        bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+        bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
         surveyName: "${metaModel.name}",
         noImageUrl: '${asset.assetPath(src: "font-awesome/5.15.4/svgs/regular/image.svg")}',
         speciesConfig: ${raw(fc.modelAsJavascript(model: speciesConfig))},
@@ -54,7 +54,7 @@
     <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="forms-manifest.js"/>
     <asset:javascript src="meritActivity.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
     <g:set var="pActivity" value="${[commentsAllowed: false]}"/>
 </head>
 
@@ -64,7 +64,7 @@
         <g:if test="${editInMerit}">
             <div class="alert alert-danger">
                 <strong>Note:</strong> This activity can only be edited in the <a
-                    href="${g.createLink(action: 'edit', id: activity.activityId, base: grailsApplication.config.merit.url)}"
+                    href="${g.createLink(action: 'edit', id: activity.activityId, base: grailsApplication.config.getProperty('merit.url'))}"
                     target="_merit">MERIT system</a>
             </div>
         </g:if>

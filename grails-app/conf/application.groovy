@@ -83,14 +83,6 @@ environments {
                 ecodata.baseURL = 'http://localhost:8080'
                 ecodata.service.url = 'http://localhost:8080/ws'
                 pdfgen.baseURL = "http://localhost:${wiremock.port}/"
-                grails.cache.config = {
-                        diskStore {
-                                path '/tmp'
-                        }
-                        defaultCache {
-                                overflowToDisk false
-                        }
-                }
                 spatial.baseUrl = "http://localhost:${wiremock.port}"
                 spatial.baseURL = "http://localhost:${wiremock.port}"
                 spatial.geoserverUrl= spatial.baseUrl + "/geoserver"

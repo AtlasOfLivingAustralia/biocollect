@@ -428,7 +428,7 @@ class TemplateTagLib {
                     fq = "&fq=alau_user_id:${userService.getCurrentUserId()}";
                 }
 
-                url = grailsApplication.config.biocache.baseURL + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364)' + fq
+                url = grailsApplication.config.getProperty('biocache.baseURL') + '/occurrences/search?q=*:*&fq=(data_resource_uid:dr364)' + fq
                 break;
             case 'recordSighting':
                 url = "${createLink(uri: link.href)}"

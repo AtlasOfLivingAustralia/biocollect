@@ -26,14 +26,14 @@
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
-        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
+        geocodeUrl: "${grailsApplication.config.getProperty('google.geocode.url')}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         <g:if test="${project}">
             pageUrl : "${createLink(controller:'site', action:'createForProject', params:[projectId:project.projectId,checkForState:true])}",
@@ -60,7 +60,7 @@
     <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="sites-manifest.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 <body>
     <div class="container-fluid validationEngineContainer" id="validation-container">

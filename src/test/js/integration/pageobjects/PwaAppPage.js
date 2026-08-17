@@ -365,6 +365,17 @@ class PwaAppPage extends ReloadablePage {
         await this.recordsCloseBtn.click();
     }
 
+    async closeDrawerIfOpen() {
+        const drawer = this.rightDrawer;
+        if (!await drawer.isExisting() || !await drawer.isDisplayed()) {
+            return;
+        }
+
+        await this.recordsCloseBtn.waitForClickable({ timeout: 10000 });
+        await this.recordsCloseBtn.click();
+        await drawer.waitForDisplayed({ timeout: 10000, reverse: true });
+    }
+
     async closeModal() {
         await this.switchToTopFrame();
         let modal = this.modalCloseBtn;
@@ -579,10 +590,30 @@ class PwaAppPage extends ReloadablePage {
         return (await this.nthPublishedRecord).length;
     }
 
-    async waitForUnpublishedCount(count, timeout = 10000) {
+    async waitForUnpublishedCount(count, timeout = 10000, refresh = false) {
+        let lastRefresh = Date.now();
+
         await browser.waitUntil(async () => {
-            return (await this.unpublishedCount()) === count;
-        }, { timeout, timeoutMsg: `Expected ${count} unpublished records` });
+            if ((await this.unpublishedCount()) === count) {
+                return true;
+            }
+
+            if (refresh && Date.now() - lastRefresh >= 5000) {
+                lastRefresh = Date.now();
+                try {
+                    const refreshButton = this.refreshUnpublishedBtn;
+                    if (await refreshButton.isExisting() && await refreshButton.isClickable()) {
+                        await refreshButton.click();
+                    }
+                }
+                catch {
+                    // The records list re-renders while an upload completes.  Retry
+                    // with a fresh button reference on the next polling interval.
+                }
+            }
+
+            return false;
+        }, { timeout, interval: 1000, timeoutMsg: `Expected ${count} unpublished records` });
     }
 
     async waitForInvalidNthUnpublishedRecord(number = 0, expected = true, timeout = 10000) {

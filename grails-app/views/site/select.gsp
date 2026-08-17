@@ -11,19 +11,19 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
             layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
+            serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
             siteDeleteUrl: "${createLink(controller: 'site', action: 'ajaxDelete')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
             activityEditUrl: "${createLink(controller: 'activity', action: 'edit')}",
             activityCreateUrl: "${createLink(controller: 'activity', action: 'create')}",
-            spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-            spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-            spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
-            sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
+            spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+            spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+            spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
+            sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
             mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
-            sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}"
+            sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}"
             </g:applyCodec>
         },
         returnTo = "${params.returnTo}";
@@ -32,7 +32,7 @@
     <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="leaflet-manifest.js"/>
     <asset:javascript src="siteSelection.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 
 <body>
@@ -143,8 +143,8 @@
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
             wmsFeatureUrl: "${createLink(controller: 'proxy', action: 'feature')}",
-            wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}",
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            wmsLayerUrl: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
+            spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
             updateSitesUrl: "${createLink(controller: 'site', action: 'ajaxUpdateProjects')}",
             returnTo: "${params.returnTo}",
             siteQueryUrl: "${createLink(controller: 'site', action: 'search')}?query="

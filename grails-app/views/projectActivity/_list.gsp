@@ -149,7 +149,7 @@
                         </g:if>
 
                     </g:if>
-                    <g:if test="${grailsApplication.config.aekosEnabled}">
+                    <g:if test="${grailsApplication.config.getProperty('aekosEnabled', Boolean)}">
                         <!-- ko if: transients.isAekosData -->
                         <a href="#" class="btn btn-dark btn-sm" data-bind="
                                                             click: showAekosDetails,
@@ -312,7 +312,7 @@
                         </div>
 
                         <div class="col-12 col-md-7">
-                            <g:each in="${grailsApplication.config.methodType}" var="type">
+                            <g:each in="${grailsApplication.config.getProperty('methodType', List)}" var="type">
                                 <!-- ko if: methodType() === '${type}' -->
                                 <div><g:message code="facets.methodType.${type}"/></div>
                                 <!-- /ko -->
@@ -461,7 +461,7 @@
                         </div>
 
                         <div class="col-12 col-md-7">
-                            <g:each in="${grailsApplication.config.dataQualityAssuranceMethods}"
+                            <g:each in="${grailsApplication.config.getProperty('dataQualityAssuranceMethods', List)}"
                                     var="dqMethod">
                                 <!-- ko if: dataQualityAssuranceMethods().indexOf('${dqMethod}') > -1 -->
                                 <div>

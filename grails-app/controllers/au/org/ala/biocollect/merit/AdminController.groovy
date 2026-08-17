@@ -2,9 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
-import org.grails.plugin.cache.GrailsCacheManager
-
-//import grails.plugin.cache.CacheEvict
+import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CacheEvict
 import grails.util.Environment
 import grails.util.GrailsNameUtils
@@ -33,7 +31,7 @@ class AdminController {
     UserService userService
     grails.core.GrailsApplication grailsApplication
     def roleService
-    GrailsCacheManager grailsCacheManager
+    CacheManager grailsCacheManager
 
     def index() {}
 
@@ -115,14 +113,50 @@ class AdminController {
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def settings() {
         def settings = []
-
         def grailsStuff = []
-        def config = grailsApplication.config.flatten()
-        for ( e in config ) {
-            if(e.key.startsWith("grails.")){
-                grailsStuff << [key: e.key, value: e.value, comment: '']
+
+        // Traverse config recursively to preserve Closures as executable objects.
+        // Grails 7 PropertySourcesConfig is Iterable over Map.Entry, so two-arg
+        // each { k, v -> } fails; iterate entrySet and unpack key/value instead.
+        def flattenConfig
+        flattenConfig = { Object source, String prefix = '' ->
+            Map<String, Object> result = [:]
+
+            if (source instanceof Map) {
+                source.entrySet().each { entry ->
+                    def k = entry.key
+                    def v = entry.value
+                    String newKey = prefix ? "${prefix}.${k}" : k.toString()
+                    if (v instanceof Map && !(v instanceof Closure)) {
+                        result.putAll(flattenConfig(v, newKey))
+                    } else {
+                        result[newKey] = v
+                    }
+                }
+            }
+            return result
+        }
+
+        Map<String, Object> flatConfig = flattenConfig(grailsApplication.config)
+
+        flatConfig.each { key, val ->
+            def value
+            if (val instanceof Closure) {
+                try {
+                    // Execute closure with current configuration context
+                    value = val.call(grailsApplication.config)?.toString()
+                } catch (Exception ignored) {
+                    value = '[Closure]'
+                }
             } else {
-                settings << [key: e.key, value: e.value, comment: '']
+                value = val?.toString()
+            }
+
+            def item = [key: key, value: value, comment: '']
+            if (key.startsWith("grails.")) {
+                grailsStuff << item
+            } else {
+                settings << item
             }
         }
 
@@ -180,7 +214,7 @@ class AdminController {
     def reloadConfig = {
         // reload system config
         def resolver = new PathMatchingResourcePatternResolver()
-        def resource = resolver.getResource(grailsApplication.config.reloadable.cfgs[0])
+        def resource = resolver.getResource(grailsApplication.config.getProperty('reloadable.cfgs', List)?.getAt(0))
         if (!resource) {
             def warning = "No external config to reload. grailsApplication.config.grails.config.locations is empty."
             println warning
@@ -204,12 +238,14 @@ class AdminController {
                 }
                 flash.message = "Configuration reloaded."
                 String res = "<ul>"
-                grailsApplication.config.each { key, value ->
+                grailsApplication.config.entrySet().each { entry ->
+                    def key = entry.key
+                    def value = entry.value
                     if (value instanceof Map) {
                         res += "<p>" + key + "</p>"
                         res += "<ul>"
-                        value.each { k1, v1 ->
-                            res += "<li>" + k1 + " = " + v1 + "</li>"
+                        value.entrySet().each { nested ->
+                            res += "<li>" + nested.key + " = " + nested.value + "</li>"
                         }
                         res += "</ul>"
                     }
@@ -220,7 +256,7 @@ class AdminController {
                 render res + "</ul>"
             }
             catch (FileNotFoundException fnf) {
-                def error = "No external config to reload configuration. Looking for ${grailsApplication.config.grails.config.locations[0]}"
+                def error = "No external config to reload configuration. Looking for ${grailsApplication.config.getProperty('grails.config.locations', List)?.getAt(0)}"
                 log.error error
                 flash.message = error
                 render error
@@ -518,7 +554,7 @@ class AdminController {
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def syncSpeciesWithBie(){
         //It's a async task..
-        webService.get("${grailsApplication.config.ecodata.service.url}/admin/initiateSpeciesRematch")
+        webService.get("${grailsApplication.config.getProperty('ecodata.service.url')}/admin/initiateSpeciesRematch")
         render text: [message:'Species rematch initiated.'] as JSON, contentType: 'application/json'
     }
 

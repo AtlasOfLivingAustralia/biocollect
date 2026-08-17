@@ -5,8 +5,9 @@ import grails.web.mapping.LinkGenerator
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.springframework.context.MessageSource
 
-import javax.servlet.http.HttpServletRequest
-import javax.xml.bind.DatatypeConverter
+import jakarta.servlet.http.HttpServletRequest
+
+import javax.xml.datatype.DatatypeFactory
 import java.text.SimpleDateFormat
 
 class CommonService {
@@ -31,7 +32,9 @@ class CommonService {
 
     def simpleDateLocalTime(String dateStr) {
         if (!dateStr) { return '' }
-        def cal = DatatypeConverter.parseDateTime(dateStr)
+        // javax.xml.datatype is part of the JDK and parses ISO 8601 (xsd:dateTime) like
+        // the removed javax.xml.bind.DatatypeConverter.parseDateTime did.
+        def cal = DatatypeFactory.newInstance().newXMLGregorianCalendar(dateStr).toGregorianCalendar()
         def date = cal.getTime()
         new SimpleDateFormat("dd/MM/yy").format(date)
     }

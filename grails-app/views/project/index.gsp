@@ -13,9 +13,9 @@
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        serverUrl: "${grailsApplication.config.grails.serverURL}",
+        serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         projectUpdateUrl: "${createLink(action: 'ajaxUpdate', id: project.projectId)}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectEditUrl:"${createLink(action:'edit', id:project.projectId)}",
@@ -24,8 +24,8 @@
         siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
         siteEditUrl: "${createLink(controller: 'site', action: 'edit')}",
         removeSiteUrl: "${createLink(controller: 'site', action: '')}",
-        bieUrl: "${grailsApplication.config.bie.baseURL}",
-        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
+        bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+        bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
         activityBulkDeleteUrl: "${createLink(controller: 'bioActivity', action: 'bulkDelete')}",
         activityBulkEmbargoUrl: "${createLink(controller: 'bioActivity', action: 'bulkEmbargo')}",
         activityBulkReleaseUrl: "${createLink(controller: 'bioActivity', action: 'bulkRelease')}",
@@ -43,11 +43,11 @@
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",
         projectMembersUrl: "${createLink(controller: 'project', action: 'getMembersForProjectId')}",
-        spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-        spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-        spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
-        sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-        sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+        spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+        spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+        spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
+        sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+        sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         documentUpdateUrl: "${g.createLink(controller:"proxy", action:"documentUpdate")}",
         documentDeleteUrl: "${g.createLink(controller:"proxy", action:"deleteDocument")}",
@@ -64,11 +64,11 @@
         createBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'create', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
         editBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'edit', params:[projectId:project.projectId, returnTo:createLink(controller: 'project', action: 'index', id: project.projectId)]))}",
         deleteBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId]))}",
-        flimit: ${grailsApplication.config.facets.flimit},
-        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}" />,
-        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}" />,
+        flimit: ${grailsApplication.config.getProperty('facets.flimit')},
+        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.baseLayers', List)}" />,
+        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.overlays', List)}" />,
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
-        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/1.6.0/dist/images')}"
         </g:applyCodec>
         },
         here = window.location.href;
@@ -87,13 +87,13 @@
     <![endif]-->
     <asset:javascript src="common.js"/>
     <asset:javascript src="projects-manifest.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 <body>
 <div class="container-fluid">
     <g:if test="${!user?.isEditor}">
         <div class="alert alert-info">
-            This project is funded by a federal government programme and can only be edited in the <a href="${g.createLink(id:project.projectId, base:grailsApplication.config.merit.url)}">MERIT system</a>
+            This project is funded by a federal government programme and can only be edited in the <a href="${g.createLink(id:project.projectId, base:grailsApplication.config.getProperty('merit.url'))}">MERIT system</a>
         </div>
     </g:if>
 
@@ -256,7 +256,7 @@
                 <div class="row-fluid">
                     <div class="span2 large-space-before">
                         <ul id="adminNav" class="nav nav-tabs nav-stacked ">
-                            <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
+                            <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole')) || fc.userInRole(role: grailsApplication.config.getProperty('security.cas.adminRole'))}">
                                 <li ${activeClass}><a href="#settings" id="settings-tab" data-bs-toggle="tab"><i class="icon-chevron-right"></i> Project settings</a></li>
                                 <g:set var="activeClass" value=""/>
                             </g:if>
@@ -272,7 +272,7 @@
                     <div class="span10">
                         <div class="pill-content">
                             <g:set var="activeClass" value="active"/>
-                            <g:if test="${fc.userInRole(role: grailsApplication.config.security.cas.alaAdminRole) || fc.userInRole(role: grailsApplication.config.security.cas.adminRole)}">
+                            <g:if test="${fc.userInRole(role: grailsApplication.config.getProperty('security.cas.alaAdminRole')) || fc.userInRole(role: grailsApplication.config.getProperty('security.cas.adminRole'))}">
                                 <!-- PROJECT SETTINGS -->
                                 <div id="settings" class="pill-pane ${activeClass}">
                                     <g:render template="editOrDeleteProject"/>
@@ -402,7 +402,7 @@
                         highlightOnHover:true,
                         features:[],
                         featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                        wmsServer: "${grailsApplication.config.spatial.geoserverUrl}"
+                        wmsServer: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}"
                     };
 
                     var baseLayerConfig = Biocollect.MapUtilities.getALAMapBaseLayerOptions(fcConfig.mapLayersConfig.baseLayers);

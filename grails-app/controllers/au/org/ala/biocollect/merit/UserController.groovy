@@ -148,7 +148,7 @@ class UserController {
     def viewPermissionsForUserId() {
         String userId = params.userId
 
-        if (userService.getUser() && (userService.userInRole(grailsApplication.config.security.cas.alaAdminRole) || userService.userInRole(grailsApplication.config.security.cas.officerRole)) && userId) {
+        if (userService.getUser() && (userService.userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole')) || userService.userInRole(grailsApplication.config.getProperty('security.cas.officerRole'))) && userId) {
             render userService.getProjectsForUserId(userId) as JSON
         } else if (!userId) {
             render status:400, text: 'Required params not provided: userId, role, projectId'

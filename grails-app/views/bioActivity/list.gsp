@@ -18,9 +18,9 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
             layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-            serverUrl: "${grailsApplication.config.grails.serverURL}",
+            serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
             activityUpdateUrl: "${createLink(controller: 'activity', action: 'ajaxUpdate')}",
             activityViewUrl: "${createLink(controller: 'bioActivity', action: 'index')}",
             activityEditUrl: "${createLink(controller: 'bioActivity', action: 'edit')}",
@@ -37,9 +37,9 @@
             getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping', params: wsParameters))}",
             projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
             siteViewUrl: "${createLink(controller: 'site', action: 'index')}",
-            bieUrl: "${grailsApplication.config.bie.baseURL}",
-            bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
-            speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+            bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+            bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
+            speciesPage: "${grailsApplication.config.getProperty('bie.baseURL')}/species/",
             view: "${view}",
             projectLinkPrefix: "${createLink(controller: 'project')}/",
             recordImageListUrl: '${createLink(controller: "project", action: "listRecordImages")}',
@@ -48,7 +48,7 @@
             projectId: "${projectId}",
             projectActivityId: "${projectActivityId}",
             spotterId: ${spotterId?:'undefined'},
-            flimit: ${grailsApplication.config.facets.flimit?:10},
+            flimit: ${grailsApplication.config.getProperty('facets.flimit')?:10},
             hideProjectAndSurvey: ${hubConfig.content?.hideProjectAndSurvey?:false},
             occurrenceUrl: "${raw(occurrenceUrl)}",
             spatialUrl: "${spatialUrl}",
@@ -69,7 +69,7 @@
     <asset:javascript src="facets.js"/>
     <asset:javascript src="chartjsManager.js"/>
     <asset:javascript src="projects.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 <body>
 <content tag="bannertitle">

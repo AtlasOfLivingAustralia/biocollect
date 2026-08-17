@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'adopt'
@@ -37,7 +37,7 @@ jobs:
       - run: pnpm ci
 
       - name: Validate Gradle wrapper
-        uses: gradle/actions/wrapper-validation@v3
+        uses: gradle/actions/wrapper-validation@v6
 
       - name: Install and start elasticsearch
         run: |
@@ -55,7 +55,7 @@ jobs:
           sudo chmod o+xw /data/fieldcapture/cache
 
       - name: Install and start mongodb
-        uses: supercharge/mongodb-github-action@1.7.0
+        uses: supercharge/mongodb-github-action@1.12.1
         with:
           mongodb-version: '5.0'
 
@@ -69,34 +69,35 @@ jobs:
 
       - name: Read the biocollect version from the gradle.properties file
         id: read_property
-        uses: christian-draeger/read-properties@1.1.0
+        uses: christian-draeger/read-properties@1.1.1
         with:
           path: './gradle.properties'
           properties: 'biocollectVersion'
 
       - name: Get the package id for the version read from the properties file
-        uses: castlabs/get-package-version-id-action@v2.0
+        uses: castlabs/get-package-version-id-action@v2.2
         id: versions
         with:
           version:  ${{steps.read_property.outputs.biocollectVersion}}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete the github package with the id we just retrieved (all SNAPSHOT versions are considered part of the same package)
-        uses: actions/delete-package-versions@v2
+        uses: actions/delete-package-versions@v5
         if: ${{ steps.versions.outputs.ids != '' }}
         with:
           package-version-ids: "${{ steps.versions.outputs.ids }}"
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
       - name: build biocollect before running js unit test to compile dependent js templates
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: _Events
+        run: ./gradlew _Events
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run javascript unit tests
-        run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadless
+        run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadlessCI
 
       - name: Run BioCollect functional tests
         run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev /tmp/biocollect-pwa
@@ -106,22 +107,18 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Archive log directory
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: ${{ failure() }}
         with:
           path: ./logs
 
       - name: Clean to remove clover instrumentation
-        uses: gradle/gradle-build-action@v2.4.2
         if: ${{ success() }}
-        with:
-          arguments: clean
+        run: ./gradlew clean
 
       - name: Publish the JAR to the repository
-        uses: gradle/gradle-build-action@v2.4.2
         if: ${{ success() }}
-        with:
-          arguments: publish
+        run: ./gradlew publish
         env:
           TRAVIS_DEPLOY_USERNAME: ${{secrets.DEPLOY_USERNAME}}
           TRAVIS_DEPLOY_PASSWORD: ${{secrets.DEPLOY_PASSWORD}}

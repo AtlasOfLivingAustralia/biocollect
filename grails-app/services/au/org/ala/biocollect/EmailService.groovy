@@ -13,12 +13,12 @@ class EmailService {
     def grailsApplication
 
     def sendEmail(String subjectLine, String body, Collection recipients, Collection ccList = [], String replyAddress = null, String senderEmail = null, Collection bccList = []) {
-        replyAddress = replyAddress ?: grailsApplication.config.biocollect.system.email.address
-        String sender = (senderEmail ?: grailsApplication.config.biocollect.system.email.sender) ?: replyAddress
+        replyAddress = replyAddress ?: grailsApplication.config.getProperty('biocollect.system.email.address')
+        String sender = (senderEmail ?: grailsApplication.config.getProperty('biocollect.system.email.sender')) ?: replyAddress
 
             try {
             // This is to prevent spamming real users while testing.
-            String emailFilter = grailsApplication.config.emailFilter
+            String emailFilter = grailsApplication.config.getProperty('emailFilter')
             if (emailFilter) {
                 if (!ccList instanceof Collection) {
                     ccList = [ccList]

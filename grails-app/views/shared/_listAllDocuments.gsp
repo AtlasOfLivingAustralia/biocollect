@@ -4,9 +4,9 @@
         <div class="row mb-2">
             <div class="col-sm-6 col-lg-3">
                 <div class="input-group search-resources">
-                    <label id="lblSearchResources" for="searchResources" class="visually-hidden">Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</label>
+                    <label id="lblSearchResources" for="searchResources" class="visually-hidden">Search ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</label>
                     <input class="form-control" id="searchResources" type="text" data-bind="value:searchDoc, hasFocus: searchHasFocus, valueUpdate:'keyup'"
-                           placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}..." aria-describedby="lblSearchResources"/>
+                           placeholder="Search ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}..." aria-label="Search ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}..." aria-describedby="lblSearchResources"/>
                     <button id="search" class="btn btn-primary-dark" data-bind="click: refreshPage(0)" type="button">
                         <i class="fas fa-search"></i>
                     </button>
@@ -40,7 +40,7 @@
                 <div class="border-top border-bottom border-dark py-3">
                     <div class="row">
                         <div class="col-9">
-                            <h6 class="m-0">Found <!-- ko text:pagination.totalResults --> <!-- /ko --> ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h6>
+                            <h6 class="m-0">Found <!-- ko text:pagination.totalResults --> <!-- /ko --> ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h6>
                         </div>
                         <div class="col-3">
                             <g:if test="${fc.userIsLoggedIn()}">
@@ -59,7 +59,7 @@
 
                 <div class="search-results">
                     <!-- ko if: allDocuments().length == 0 -->
-                    <h4 class="text-center">No ${hubConfig.getTextForResources(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
+                    <h4 class="text-center">No ${hubConfig.getTextForResources(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h4>
 
                     <!-- /ko -->
                     <!-- ko foreach: { data: allDocuments, afterAdd: showListItem, beforeRemove: hideListItem } -->

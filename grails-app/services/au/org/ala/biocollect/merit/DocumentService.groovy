@@ -68,7 +68,7 @@ class DocumentService {
         def result
         if (!document.documentId) {
             document.remove('url')
-            def file = new File(grailsApplication.config.upload.images.path, document.filename)
+            def file = new File(grailsApplication.config.getProperty('upload.images.path'), document.filename)
             // Create a new document, supplying the file that was uploaded to the ImageController.
             result = createDocument(document, document.contentType, new FileInputStream(file))
             if (org.springframework.http.HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
@@ -90,7 +90,7 @@ class DocumentService {
     }
 
     Map search(Map params) {
-        def url = "${grailsApplication.config.ecodata.baseURL}/ws/document/search"
+        def url = "${grailsApplication.config.getProperty('ecodata.baseURL')}/ws/document/search"
         def resp = webService.doPost(url, params)
         if (resp && !resp.error) {
             return resp.resp

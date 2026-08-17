@@ -6,25 +6,25 @@ class OutputService {
     DocumentService documentService
 
     def list() {
-        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/output/')
+        def resp = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/output/')
         resp.list
     }
 
     def get(id) {
-        def record = webService.getJson(grailsApplication.config.ecodata.service.url + '/output/' + id)
+        def record = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/output/' + id)
         record
     }
 
     def update(id, body) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/output/' + id, body)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/output/' + id, body)
     }
 
     def delete(id) {
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/output/' + id)
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/output/' + id)
     }
 
     List getOutputForActivity(String activityId){
-        webService.getJson(grailsApplication.config.ecodata.service.url + "/output?activityId=${activityId}")
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + "/output?activityId=${activityId}")
     }
 
     /**
@@ -33,6 +33,6 @@ class OutputService {
      * @return output species identifier.
      */
     def getOutputSpeciesId() {
-        webService.getJson(grailsApplication.config.ecodata.service.url + "/output/getOutputSpeciesUUID")
+        webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + "/output/getOutputSpeciesUUID")
     }
 }

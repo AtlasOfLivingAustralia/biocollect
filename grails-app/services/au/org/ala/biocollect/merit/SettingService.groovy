@@ -11,10 +11,9 @@ import grails.util.Environment
 import groovy.text.GStringTemplateEngine
 import org.apache.commons.io.FileUtils
 import org.grails.web.servlet.mvc.GrailsWebRequest
-import org.springframework.scheduling.annotation.Async
 import org.springframework.web.context.request.RequestAttributes
 
-import static groovyx.gpars.GParsPool.withPool
+import static grails.async.Promises.task
 
 //import grails.plugin.cache.Cacheable
 
@@ -25,7 +24,6 @@ class SettingService {
     private static final String HUB_CACHE_KEY_SUFFIX = '_hub'
     public static final String HUB_CONFIG_ATTRIBUTE_NAME = 'hubConfig'
     public static final String LAST_ACCESSED_HUB = 'recentHub'
-    private static final int THREAD_COUNT = 4
 
     public static void setHubConfig(HubSettings hubSettings) {
         localHubConfig.set(hubSettings)
@@ -40,55 +38,77 @@ class SettingService {
         return localHubConfig.get()
     }
 
-    def webService, cacheService, cookieService
+    def webService, cacheService
     def grailsApplication
 
-    def initService () {
-//        temp directory to copy files
-        String targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}"
-        File target = new File(targetDir)
-        // clean styles created previously
-        FileUtils.deleteDirectory(target)
-        FileUtils.forceMkdir(target)
-        // load resource from classpath when code is run in production environment
-        String sourceDir
+    /** Replacement for the discontinued grails-cookie plugin's cookieService.getCookie. */
+    static String getCookieValue(String name) {
+        GrailsWebRequest webRequest = GrailsWebRequest.lookup()
+        webRequest?.currentRequest?.cookies?.find { it.name == name }?.value
+    }
 
-        switch (Environment.current) {
-            case Environment.PRODUCTION:
-                sourceDir = "/data/${grailsApplication.config.bootstrap5.copyFromDir}"
-                targetDir = "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}"
-                break
-            case Environment.TEST:
-            case Environment.DEVELOPMENT:
-                sourceDir = "/data/${grailsApplication.config.bootstrap5.copyFromDir}"
-                targetDir = "${grailsApplication.config.temp.dir}"
-                break
+    /** Replacement for the discontinued grails-cookie plugin's cookieService.setCookie. */
+    private static void setCookieValue(String name, String value, int maxAge, String path) {
+        GrailsWebRequest webRequest = GrailsWebRequest.lookup()
+        if (webRequest?.currentResponse != null && value != null) {
+            jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(name, value)
+            cookie.maxAge = maxAge
+            cookie.path = path
+            webRequest.currentResponse.addCookie(cookie)
         }
+    }
 
-        URL resource = getClass().getResource(sourceDir)
-        target = new File(targetDir)
+    def initService () {
+        String copyFromDir = grailsApplication.config.getProperty('bootstrap5.copyFromDir')
+        File extractedResourceDir = new File(grailsApplication.config.getProperty('temp.dir'), copyFromDir)
+
+        // clean styles created previously
+        FileUtils.deleteDirectory(extractedResourceDir)
+        FileUtils.forceMkdir(extractedResourceDir)
+
+        URL resource = getClass().getResource("/data/${copyFromDir}")
+        if (resource == null) {
+            throw new IllegalStateException("Bootstrap resource /data/${copyFromDir} was not found")
+        }
+        File target = copyDestinationForResource(resource, extractedResourceDir)
 
         // copy bootstrap5 directory
-        au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)
+        if (!au.org.ala.biocollect.FileUtils.copyResourcesRecursively(resource, target)) {
+            throw new IllegalStateException("Unable to copy Bootstrap resources from ${resource} to ${target}")
+        }
 
-        // resolve bootstrap 4 scss file from temp directory.
-        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}", true)
-        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolver)
+        // Put the local Bootstrap resolvers before the classpath resolvers.  Sass resolves
+        // every import through this list, and scanning the executable jar first makes each
+        // hub compilation prohibitively expensive in production.
+        def scssFileSystemAssetResolver = new FileSystemAssetResolver('tempSCSSDir', "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}", true)
+        AssetPipelineConfigHolder.resolvers.add(0, scssFileSystemAssetResolver)
 
-        // resolve bootstrap 4 scss file from temp directory.
-        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.temp.dir}/${grailsApplication.config.bootstrap5.copyFromDir}/scss", true)
-        AssetPipelineConfigHolder.resolvers.add(scssFileSystemAssetResolverChild)
+        def scssFileSystemAssetResolverChild = new FileSystemAssetResolver('tempSCSSDirChild', "${grailsApplication.config.getProperty('temp.dir')}/${grailsApplication.config.getProperty('bootstrap5.copyFromDir')}/scss", true)
+        AssetPipelineConfigHolder.resolvers.add(0, scssFileSystemAssetResolverChild)
 
         switch (Environment.current) {
             case Environment.DEVELOPMENT:
             case Environment.TEST:
-                // do nothing
                 break
             case Environment.PRODUCTION:
             default:
-                generateStyleSheetForHubs()
+                // Generate styles off the bootstrap and servlet threads. The generation
+                // method deliberately processes one hub at a time.
+                task {
+                    try {
+                        generateStyleSheetForHubs()
+                    } catch (Exception e) {
+                        log.error("Error generating hub stylesheets", e)
+                    }
+                }
                 break
         }
+    }
+
+    static File copyDestinationForResource(URL resource, File extractedResourceDir) {
+        // File resources retain their root directory when copied, while jar resources
+        // copy only the root directory's contents.
+        resource.protocol == 'file' ? extractedResourceDir.parentFile : extractedResourceDir
     }
 
     /**
@@ -102,7 +122,7 @@ class SettingService {
     def loadHubConfig(hub) {
         def defaultHub = grailsApplication.config.getProperty('app.default.hub', String, 'default')
         if (!hub) {
-            hub = cookieService.getCookie(LAST_ACCESSED_HUB)
+            hub = getCookieValue(LAST_ACCESSED_HUB)
             hub = hub ?: defaultHub
         }
         else {
@@ -125,7 +145,7 @@ class SettingService {
             settings = new HubSettings(
                     title:'Default',
                     skin:'bs5',
-                    urlPath:grailsApplication.config.app.default.hub?:'default',
+                    urlPath:grailsApplication.config.getProperty('app.default.hub')?:'default',
                     availableFacets: ['isExternal','status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','mainThemeFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','otherFacet', 'gerSubRegionFacet','electFacet'],
                     adminFacets: ['electFacet'],
                     availableMapFacets: ['status', 'organisationFacet','associatedProgramFacet','associatedSubProgramFacet','stateFacet','nrmFacet','lgaFacet','mvgFacet','ibraFacet','imcra4_pbFacet','electFacet']
@@ -135,7 +155,7 @@ class SettingService {
         // Do not set cookie value to default hub since it overwrites genuine hub selection when calls are made with default hub.
         // This usually happens when calls are made without hub parameter like downloading images.
         if (settings?.urlPath != defaultHub)
-            cookieService.setCookie(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */, '/')
+            setCookieValue(LAST_ACCESSED_HUB, settings?.urlPath, -1 /* -1 means the cookie expires when the browser is closed */, '/')
         GrailsWebRequest.lookup().params.hub = settings?.urlPath
         SettingService.setHubConfig(settings)
     }
@@ -177,7 +197,7 @@ class SettingService {
     }
 
     private def get(key) {
-        String url = grailsApplication.config.ecodata.service.url + "/setting/ajaxGetSettingTextForKey?key=${key}"
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + "/setting/ajaxGetSettingTextForKey?key=${key}"
         def res = cacheService.get(key,{ webService.getJson(url) })
         return res?.settingText?:""
     }
@@ -191,7 +211,7 @@ class SettingService {
 
     private def set(key, settings) {
         cacheService.clear(key)
-        String url = grailsApplication.config.ecodata.service.url + "/setting/ajaxSetSettingText/${key}"
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + "/setting/ajaxSetSettingText/${key}"
         webService.doPost(url, [settingText: settings, key: key])
     }
 
@@ -228,7 +248,7 @@ class SettingService {
     HubSettings getHubSettings(String urlPath) {
 
         cacheService.get(hubCacheKey(urlPath), {
-            String url = grailsApplication.config.ecodata.service.url + '/hub/findByUrlPath/' + urlPath
+            String url = grailsApplication.config.getProperty('ecodata.service.url') + '/hub/findByUrlPath/' + urlPath
             Map json = webService.getJson(url)
             json.hubId ? new HubSettings(new HashMap(json)) : null
         })
@@ -238,20 +258,20 @@ class SettingService {
         cacheService.clear(HUB_LIST_CACHE_KEY)
         cacheService.clear(hubCacheKey(settings.urlPath))
 
-        String url = grailsApplication.config.ecodata.service.url+'/hub/'+(settings.hubId?:'')
+        String url = grailsApplication.config.getProperty('ecodata.service.url')+'/hub/'+(settings.hubId?:'')
         webService.doPost(url, settings)
     }
 
     List listHubs() {
         cacheService.get(HUB_LIST_CACHE_KEY, {
-            String url = grailsApplication.config.ecodata.service.url+'/hub/'
+            String url = grailsApplication.config.getProperty('ecodata.service.url')+'/hub/'
             Map resp = webService.getJson(url, null, false)
             resp.list ?: []
         })
     }
 
     List listPWAHubs() {
-        String url = grailsApplication.config.ecodata.service.url+'/hub/findPWAHubs'
+        String url = grailsApplication.config.getProperty('ecodata.service.url')+'/hub/findPWAHubs'
         Map resp = webService.getJson(url, null, false)
 
         resp.list ?: []
@@ -298,21 +318,17 @@ class SettingService {
         item?.breadCrumbs
     }
 
-    @Async
     void generateStyleSheetForHubs() {
-        List hubs = listHubs()
-        withPool(THREAD_COUNT) {
-            hubs?.eachParallel {  hubMap ->
-                HubSettings hub = new HubSettings(new HashMap(hubMap))
-                generateStyleSheetForHub(hub)
-            }
+        listHubs()?.each { hubMap ->
+            HubSettings hub = new HubSettings(new HashMap(hubMap))
+            generateStyleSheetForHub(hub)
         }
     }
 
-    Map generateStyleSheetForHub(HubSettings hub) {
-        String scssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${grailsApplication.config.bootstrap5.themeExtension}"
-        String scssFileURI = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap5.themeDirectory}${File.separator}${scssFileName}"
-        String themeDir = "${grailsApplication.config.temp.dir}${grailsApplication.config.bootstrap5.themeDirectory}"
+    synchronized Map generateStyleSheetForHub(HubSettings hub) {
+        String scssFileName = "${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${grailsApplication.config.getProperty('bootstrap5.themeExtension')}"
+        String scssFileURI = "${grailsApplication.config.getProperty('temp.dir')}${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}${File.separator}${scssFileName}"
+        String themeDir = "${grailsApplication.config.getProperty('temp.dir')}${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}"
         SassAssetFile input = new SassAssetFile(inputStreamSource: { new ByteArrayInputStream(new File(scssFileURI).bytes) }, path: scssFileURI )
         String output
 
@@ -322,8 +338,8 @@ class SettingService {
             Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
             String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss"
 
-            String cssFileURI = "${grailsApplication.config.bootstrap5.themeDirectory}${File.separator}${grailsApplication.config.bootstrap5.themeFileName}.${urlPath}.${lastUpdated}"
-            String cssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${urlPath}.${lastUpdated}.css"
+            String cssFileURI = "${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}${File.separator}${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${urlPath}.${lastUpdated}"
+            String cssFileName = "${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${urlPath}.${lastUpdated}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()){
@@ -376,7 +392,7 @@ class SettingService {
                 }
             }
         } else {
-            String cssFileName = "${grailsApplication.config.bootstrap5.themeFileName}.${hub.urlPath}.css"
+            String cssFileName = "${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${hub.urlPath}.css"
             String cssFileFullPath = "${themeDir}${File.separator}${cssFileName}"
 
             if(!new File(cssFileFullPath).exists()) {
@@ -404,7 +420,7 @@ class SettingService {
 
     String processScssContent(String contentScss, SassAssetFile input, String cssFileFullPath) {
         String output
-        SassProcessor processor = new SassProcessor()
+        SassProcessor processor = new SassProcessor(null)
         output = processor.process(contentScss, input)
         def minifyCssProcessor = new CssMinifyPostProcessor()
         try {

@@ -14,7 +14,7 @@
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
         projectUpdateUrl: "${createLink(action:'ajaxUpdate')}",
         organisationCreateUrl: "${createLink(controller: 'organisation', action: 'create')}",
@@ -22,21 +22,21 @@
         organisationSearchUrl: "${createLink(controller: 'organisation', action: 'search')}",
         // organisationSearchUrl: "${createLink(controller: 'organisation', action: 'searchMyOrg')}",
         spatialService: '${createLink(controller:'proxy',action:'feature')}',
-        geocodeUrl: "${grailsApplication.config.google.geocode.url}",
+        geocodeUrl: "${grailsApplication.config.getProperty('google.geocode.url')}",
         imageLocation:"${asset.assetPath(src:'')}",
         siteMetaDataUrl: "${createLink(controller:'site', action:'locationMetadataForPoint')}",
         returnTo: "${createLink(controller: 'project', action: 'index', id: project?.projectId)}",
         scienceTypes: <fc:modelAsJavascript model="${scienceTypes}"/>,
-        lowerCaseScienceType: <fc:modelAsJavascript model="${grailsApplication.config.biocollect.scienceType.collect{ it?.toLowerCase() }}" />,
+        lowerCaseScienceType: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('biocollect.scienceType', List)?.collect{ it?.toLowerCase() }}" />,
         ecoScienceTypes: <fc:modelAsJavascript model="${ecoScienceTypes}"/>,
-        lowerCaseEcoScienceType: <fc:modelAsJavascript model="${grailsApplication.config.biocollect.ecoScienceType.collect{ it?.toLowerCase() }}" />,
+        lowerCaseEcoScienceType: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('biocollect.ecoScienceType', List)?.collect{ it?.toLowerCase() }}" />,
         countriesUrl: "${createLink(controller: 'project', action: 'getCountries')}",
         uNRegionsUrl: "${createLink(controller: 'project', action: 'getUNRegions')}",
         dataCollectionWhiteListUrl: "${createLink(controller: 'project', action: 'getDataCollectionWhiteList')}",
-        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}"/>,
-        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}"/>,
+        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.baseLayers', List)}"/>,
+        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.overlays', List)}"/>,
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
-        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/1.6.0/dist/images')}"
         </g:applyCodec>
         },
         here = window.location.href;
@@ -46,7 +46,7 @@
     <asset:javascript src="common-bs5.js"/>
     <asset:javascript src="organisation.js"/>
     <asset:javascript src="projects-manifest.js"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 
 <body>

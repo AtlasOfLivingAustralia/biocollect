@@ -20,8 +20,8 @@ import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.ContentType
 
-import static javax.servlet.http.HttpServletResponse.SC_CONFLICT
-import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
+import static jakarta.servlet.http.HttpServletResponse.SC_CONFLICT
+import static jakarta.servlet.http.HttpServletResponse.SC_NO_CONTENT
 
 @SSO
 class SiteController {

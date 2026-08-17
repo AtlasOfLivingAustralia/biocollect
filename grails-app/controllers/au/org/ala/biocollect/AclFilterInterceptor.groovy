@@ -51,7 +51,7 @@ class AclFilterInterceptor {
             }
         }
 
-        if(userService.userInRole(grailsApplication.config.security.cas.alaAdminRole)){
+        if(userService.userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole'))){
             params.userIsAlaAdmin = true
         } else {
             params.userIsAlaAdmin = false
@@ -75,22 +75,22 @@ class AclFilterInterceptor {
 
             switch (accessLevel) {
                 case 'alaAdmin':
-                    if (!userService.userInRole(grailsApplication.config.security.cas.alaAdminRole)) {
+                    if (!userService.userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole'))) {
                         errorMsg = "Access denied: User does not have <b>alaAdmin</b> permission"
                     }
                     break
                 case 'siteAdmin':
-                    if (!(userService.userInRole(grailsApplication.config.security.cas.alaAdminRole) || userService.userInRole(grailsApplication.config.security.cas.adminRole))) {
+                    if (!(userService.userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole')) || userService.userInRole(grailsApplication.config.getProperty('security.cas.adminRole')))) {
                         errorMsg = "Access denied: User does not have <b>admin</b> permission"
                     }
                     break
                 case 'siteReadOnly':
-                    if (!(userService.userInRole(grailsApplication.config.security.cas.alaAdminRole) || userService.userInRole(grailsApplication.config.security.cas.adminRole) || userService.userInRole(grailsApplication.config.security.cas.readOnlyOfficerRole))) {
+                    if (!(userService.userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole')) || userService.userInRole(grailsApplication.config.getProperty('security.cas.adminRole')) || userService.userInRole(grailsApplication.config.getProperty('security.cas.readOnlyOfficerRole')))) {
                         errorMsg = "Access denied: User does not have <b>admin</b> permission"
                     }
                     break
                 case 'officer':
-                    if (!(userService.userInRole(grailsApplication.config.security.cas.alaAdminRole) || userService.userInRole(grailsApplication.config.security.cas.adminRole) || userService.userInRole(grailsApplication.config.security.cas.officerRole))) {
+                    if (!(userService.userInRole(grailsApplication.config.getProperty('security.cas.alaAdminRole')) || userService.userInRole(grailsApplication.config.getProperty('security.cas.adminRole')) || userService.userInRole(grailsApplication.config.getProperty('security.cas.officerRole')))) {
                         errorMsg = "Access denied: User does not have <b>admin</b> permission"
                     }
                     break

@@ -19,17 +19,17 @@ class DownloadController {
             render "A download ID is required"
         } else {
             String fileExtension = params.fileExtension ?: 'zip'
-            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/search/downloadProjectDataFile/${params.id}?fileExtension=${fileExtension}")
+            webService.proxyGetRequest(response, "${grailsApplication.config.getProperty('ecodata.service.url')}/search/downloadProjectDataFile/${params.id}?fileExtension=${fileExtension}")
             return null
         }
     }
 
     def file() {
         if (params.id) {
-            webService.proxyGetRequest(response, "${grailsApplication.config.ecodata.service.url}/document/${params.id}/file")
+            webService.proxyGetRequest(response, "${grailsApplication.config.getProperty('ecodata.service.url')}/document/${params.id}/file")
             return null
         } else if (params.filename) {
-            String path = grailsApplication.config.upload.images.path
+            String path = grailsApplication.config.getProperty('upload.images.path')
             File file = new File(FileUtils.fullPath(params.filename, path))
             if (file.exists()) {
                 response.setHeader('Content-Disposition', "Attachment;Filename=\"${params.filename}\"")
@@ -57,7 +57,7 @@ class DownloadController {
             String filename = FilenameUtils.getName(params.filename)
             String hub = FilenameUtils.getName(params?.hubDir ?: params.hub)
             String model = FilenameUtils.getName(params.model)
-            String path = "${grailsApplication.config.app.file.script.path}${File.separator}${hub}${File.separator}${model}${File.separator}${filename}"
+            String path = "${grailsApplication.config.getProperty('app.file.script.path')}${File.separator}${hub}${File.separator}${model}${File.separator}${filename}"
             log.debug("Script path: " + path)
 
             if (filename != params.filename || hub != (params?.hubDir ?: params.hub) || model != params.model || FilenameUtils.normalize(path) != path) {
@@ -66,7 +66,7 @@ class DownloadController {
             }
 
             def extension = FilenameUtils.getExtension(filename)?.toLowerCase()
-            if (extension && !grailsApplication.config.script.read.extensions.list.contains(extension)){
+            if (extension && !grailsApplication.config.getProperty('script.read.extensions.list', List, []).contains(extension)){
                 response.status = 404
                 return
             }

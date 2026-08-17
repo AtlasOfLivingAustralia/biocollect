@@ -4,7 +4,7 @@ import au.org.ala.biocollect.merit.SpeciesService
 import grails.converters.JSON
 import org.apache.http.HttpStatus
 
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletResponse
 
 class SpeciesController {
 

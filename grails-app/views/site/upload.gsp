@@ -12,12 +12,12 @@
     <asset:script type="text/javascript">
         var fcConfig = {
                 <g:applyCodec encodeAs="none">
-                serverUrl: "${grailsApplication.config.grails.serverURL}",
-                spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-                spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-                spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
-                sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-                sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+                serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
+                spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+                spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+                spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
+                sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+                sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
                 saveSitesUrl: "${createLink(action: 'createSitesFromShapefile')}",
                 siteUploadProgressUrl: "${createLink(action: 'siteUploadProgress')}"
                 </g:applyCodec>

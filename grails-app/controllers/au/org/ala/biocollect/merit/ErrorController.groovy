@@ -4,7 +4,7 @@ import grails.converters.JSON
 
 class ErrorController {
 
-    def settingService, cookieService
+    def settingService
     def response404() {
         try {
             loadRecentHub()
@@ -44,7 +44,7 @@ class ErrorController {
      * case of a 404 error, the hub may not be available for the current request).
      */
     private void loadRecentHub() {
-        def hub = cookieService.getCookie(SettingService.LAST_ACCESSED_HUB)
+        def hub = request.cookies?.find { it.name == SettingService.LAST_ACCESSED_HUB }?.value
         settingService.loadHubConfig(hub)
     }
 }

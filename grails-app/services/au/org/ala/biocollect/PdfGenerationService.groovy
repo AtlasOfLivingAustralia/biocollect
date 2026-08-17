@@ -4,8 +4,8 @@ import au.org.ala.biocollect.merit.CommonService
 import au.org.ala.biocollect.merit.WebService
 import grails.core.GrailsApplication
 
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 /**
  * Interacts with the ALA pdfgen service to produce a PDF version of an HTML page.
@@ -56,7 +56,7 @@ class PdfGenerationService {
             pdfGenParams.options += ' -O landscape'
         }
 
-        String url = grailsApplication.config.pdfgen.baseURL + PDFGEN_PATH + commonService.buildUrlParamsFromMap(pdfGenParams)
+        String url = grailsApplication.config.getProperty('pdfgen.baseURL') + PDFGEN_PATH + commonService.buildUrlParamsFromMap(pdfGenParams)
         Map result
         try {
             result = webService.proxyGetRequest(response, url, false, TIMEOUT)

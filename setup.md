@@ -1,11 +1,11 @@
 [Back](README.md)
 
-**How to setup Bioollect grails 3 in Intellij**
+**How to setup BioCollect in IntelliJ**
 
-*  Clone biocollect grails 3 project into a directory.
+*  Clone the biocollect project into a directory.
 ![Image](media/image1.png)
 
-* Checkout the branch which contain the latest grails3 code.
+* Checkout the branch you want to work on (e.g. `develop`).
 ![](media/image2.png)
 
 * In Intellij, click Open and navigate to the biocollect folder then
@@ -14,8 +14,11 @@
 ![](media/image4.png)
 
 * The first time when you open the project, you need to Import Project
-  from Gradle. As the biocollect project comes with Gradle wrapper,
-  keep the default setting and click OK.
+  from Gradle. The biocollect project comes with the Gradle wrapper
+  (Gradle 8.14.4), so keep the default setting and click OK. Make sure
+  the project SDK is set to JDK 17 - both the Gradle JVM
+  (Settings > Build, Execution, Deployment > Build Tools > Gradle) and
+  the Project SDK must be Java 17.
 ![](media/image5.png)
 
 * Once the project opens, wait for Intellij to configure the build.
@@ -23,8 +26,8 @@
 ![](media/image6.png)
 ![](media/image7.png)
 
-* Before running biocollect grails 3, make sure that the following
-  properties file exist in
+* Before running biocollect, make sure that the following
+  properties file exists at
   /data/biocollect/config/biocollect-config.properties (or as indicated in application.yml)
 ![](media/image8.png)
 
@@ -36,28 +39,34 @@
   The security.cas.appServerName and server.serverURL as well if needed.
 
 
-**How to modify plugins in a grails 3 project**
+**Working with the in-place plugin projects**
 
-* To modify a plugin project for biocollect, for eg: ala-map-plugin,
-  first git clone ala-map-plugin in the same folder where biocollect
-  is. Checkout branch where latest grails3 code is.
-![](media/image10.png)
+BioCollect builds against local copies of its two main plugins by default
+(`inplace=true` in `gradle.properties`). The conditional includes already
+exist in `settings.gradle` - no build file edits are required.
 
-* In biocollect project, modify settings.gradle and add the following:
-![](media/image11.png)
+* Clone [ecodata-client-plugin](https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin)
+  and [ala-map-plugin](https://github.com/AtlasOfLivingAustralia/ala-map-plugin)
+  into the same parent folder as the biocollect project, and check out the
+  branch matching the biocollect branch you are working on.
 
-* In biocollect project, modify the build.gradle file to set inplace =
-  true, then add the inplace plugin
-![](media/image12.png)
+* Re-import / refresh the Gradle project in IntelliJ. Both plugin projects
+  will appear as subprojects of the biocollect multi-project build, and
+  changes to them are picked up by the running application.
 
-* Make sure dependencies does not include the ala-map-plugin as we have
-  inplace plugin project which is part of the build.
-![](media/image13.png)
+* Run the application with:
 
+```
+./gradlew :bootRun -Dgrails.run.active=true
+```
 
-* Once the build.gradle is modified, rebuild biocollect project. Once
-  the project has a successful build, you should now see
-  ala-map-plugin project as well.
-![](media/image14.png)
+  Note the leading colon - it is required in the multi-project build.
+
+* To build against the published plugin artifacts instead (no sibling
+  clones required), opt out of the in-place build:
+
+```
+./gradlew bootRun -Pinplace=false
+```
 
 [Back](README.md)

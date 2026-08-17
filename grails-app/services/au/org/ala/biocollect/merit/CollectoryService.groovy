@@ -25,7 +25,7 @@ class CollectoryService {
     List licence() {
         List collectoryNames = cacheService.get('collectory-licence-names', {
             try {
-                def url = "${grailsApplication.config.collectory.service.url}/licence/"
+                def url = "${grailsApplication.config.getProperty('collectory.service.url')}/licence/"
                 def result = webService.getJson(url)
                 if (result instanceof List) {
                     return result

@@ -26,9 +26,9 @@
         intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
         featuresService: "${createLink(controller: 'proxy', action: 'features')}",
         featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-        spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+        spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
         layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
-        serverUrl: "${grailsApplication.config.grails.serverURL}",
+        serverUrl: "${grailsApplication.config.getProperty('grails.serverURL')}",
         homePagePath: "${createLink(controller: 'home', action: 'index')}",
         projectIndexUrl: "${createLink(controller: 'project', action: 'index')}",
         projectUpdateUrl:"${createLink(action:'ajaxUpdate', id:project.projectId)}",
@@ -49,7 +49,7 @@
         activityListUrl : "${raw(createLink(controller: 'bioActivity', action: 'ajaxListForProject', params: [id:project.projectId]))}",
         activiyCountUrl: "${createLink(controller: 'bioActivity', action: 'getProjectActivityCount')}",
         sitesWithDataForProjectActivity: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProjectActivity')}",
-        speciesPage: "${grailsApplication.config.bie.baseURL}/species/",
+        speciesPage: "${grailsApplication.config.getProperty('bie.baseURL')}/species/",
         searchProjectActivitiesUrl: "${raw(createLink(controller: 'bioActivity', action: 'searchProjectActivities',params: [projectId:project.projectId]))}",
         downloadProjectDataUrl: "${raw(createLink(controller: 'bioActivity', action: 'downloadProjectData',params: [projectId:project.projectId]))}",
         getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping'))}",
@@ -60,13 +60,13 @@
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",
         projectMembersUrl: "${createLink(controller: 'project', action: 'getMembersForProjectId')}",
-        spatialBaseUrl: "${grailsApplication.config.spatial.baseURL}",
-        spatialWmsCacheUrl: "${grailsApplication.config.spatial.wms.cache.url}",
-        spatialWmsUrl: "${grailsApplication.config.spatial.wms.url}",
+        spatialBaseUrl: "${grailsApplication.config.getProperty('spatial.baseURL')}",
+        spatialWmsCacheUrl: "${grailsApplication.config.getProperty('spatial.wms.cache.url')}",
+        spatialWmsUrl: "${grailsApplication.config.getProperty('spatial.wms.url')}",
         wmsFeaturesUrl: "${createLink(controller: 'proxy', action: 'feature')}?featureId=", //"http://devt.ala.org.au:8087/biocollect/proxy/feature?featureId=",
-        wmsLayerUrl: "${grailsApplication.config.spatial.geoserverUrl}/wms/reflect?",
-        sldPolgonDefaultUrl: "${grailsApplication.config.sld.polgon.default.url}",
-        sldPolgonHighlightUrl: "${grailsApplication.config.sld.polgon.highlight.url}",
+        wmsLayerUrl: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}/wms/reflect?",
+        sldPolgonDefaultUrl: "${grailsApplication.config.getProperty('sld.polgon.default.url')}",
+        sldPolgonHighlightUrl: "${grailsApplication.config.getProperty('sld.polgon.highlight.url')}",
         organisationLinkBaseUrl: "${createLink(controller: 'organisation', action: 'index')}",
         projectActivityCreateUrl: "${raw(createLink(controller: 'projectActivity', action: 'ajaxCreate', params: [projectId:project.projectId]))}",
         projectActivityUpdateUrl: "${createLink(controller: 'projectActivity', action: 'ajaxUpdate')}",
@@ -82,8 +82,8 @@
         speciesSearchUrl: "${createLink(controller: 'search', action: 'species')}",
         searchBieUrl: "${raw(createLink(controller: 'project', action: 'searchSpecies', params: [id: project.projectId, limit: 10]))}",
         imageUploadUrl: "${createLink(controller: 'image', action: 'upload')}",
-        bieUrl: "${grailsApplication.config.bie.baseURL}",
-        bieWsUrl: "${grailsApplication.config.bieWs.baseURL}",
+        bieUrl: "${grailsApplication.config.getProperty('bie.baseURL')}",
+        bieWsUrl: "${grailsApplication.config.getProperty('bieWs.baseURL')}",
         documentUpdateUrl: "${createLink(controller:"proxy", action:"documentUpdate")}",
         methoddocumentUpdateUrl: "${raw(createLink(controller:"image", action:"upload", params:[role: "methodDoc"]))}",
         documentDownloadUrl: "${createLink(controller: 'document', action: 'allDocumentsSearch', params: [format: 'zip'])}",
@@ -113,9 +113,9 @@
         deleteBlogEntryUrl: "${raw(createLink(controller: 'blog', action:'delete', params:[projectId:project.projectId]))}",
         downloadTemplateFormUrl: "${createLink(controller: 'proxy', action: 'excelOutputTemplate')}",
         bulkImportUrl: "${createLink(uri: "/${hubConfig.urlPath}/bulkImport/create", params: [projectId: project.projectId])}",
-        flimit: ${grailsApplication.config.facets.flimit},
+        flimit: ${grailsApplication.config.getProperty('facets.flimit')},
         commonKeysUrl: "${createLink(controller: 'search', action: 'getCommonKeys')}",
-        defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.lists.commonFields}"/>,
+        defaultCommonFields: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('lists.commonFields', List)}"/>,
         occurrenceUrl: "${raw(occurrenceUrl)}",
         spatialUrl: "${spatialUrl}",
         getMembersForProjectIdPaginatedUrl: "${createLink(controller: 'project', action: 'getMembersForProjectIdPaginated')}",
@@ -126,8 +126,8 @@
         projectTestNotificationUrl: "${raw(createLink(controller: 'project', action: 'sendTestEmail', params: [id: project.projectId]))}",
         opportunisticDisplayName: "<g:message code="facets.methodType.opportunistic"/>",
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}"/>,
-        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}" />,
-        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}" />,
+        allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.baseLayers', List)}" />,
+        allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.overlays', List)}" />,
         surveyMethods: <fc:modelAsJavascript model="${projectActivityService.getSurveyMethods()}"/>,
         pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
         </g:applyCodec>
@@ -151,7 +151,7 @@
     <asset:javascript src="common-bs5.js" asset-defer="true"/>
     <asset:javascript src="project-activity-manifest.js" asset-defer="true"/>
     <asset:javascript src="projects-manifest.js" asset-defer="true"/>
-    <script src="${grailsApplication.config.google.maps.url}" async defer></script>
+    <script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 </head>
 <body>
 

@@ -21,44 +21,41 @@ describe("BiocollectUtilsSpec", function () {
             }
         });
 
-        it('should resolve the promise when save operation is successful', async function (done) {
+        it('should resolve the promise when save operation is successful', async function () {
             // Mock the window.entities.saveDocument function to return a resolved promise
             spyOn(window.entities, 'saveDocument').and.returnValue(Promise.resolve({data: 1}));
-            await biocollect.utils.saveDocument(mockResult).then(function (result) {
-                expect(result.data).toBe(1);
-                done();
-            })
+            var result = await biocollect.utils.saveDocument(mockResult);
+            expect(result.data).toBe(1);
         });
 
-        it('should reject the promise when save operation fails', async function (done) {
+        it('should reject the promise when save operation fails', async function () {
             // Mock the window.entities.saveDocument function to return a rejected promise
             spyOn(window.entities, 'saveDocument').and.returnValue(Promise.reject('Save failed'));
-            biocollect.utils.saveDocument(mockResult).then(function (result) {
-            }, function (error) {
+            try {
+                await biocollect.utils.saveDocument(mockResult);
+                fail('Expected saveDocument to reject');
+            } catch (error) {
                 expect(error.error).toBe('Save failed');
-                done();
-            });
+            }
         });
 
-        it('should reject the promise when window.entities is not defined', function (done) {
+        it('should reject the promise when window.entities is not defined', async function () {
             // Undefine window.entities
             window.entities = undefined;
-            biocollect.utils.saveDocument(mockResult).then(function (result) {
-            }, function (error) {
+            try {
+                await biocollect.utils.saveDocument(mockResult);
+                fail('Expected saveDocument to reject');
+            } catch (error) {
                 expect(error).toBeUndefined();
-                done();
-            });
+            }
         });
 
-        it('should reject the promise when createDocument fails', async function (done) {
+        it('should reject the promise when createDocument fails', function () {
             // Mock createDocument to throw an error
             spyOn(biocollect.utils, 'createDocument').and.throwError('Document creation error');
-            try {
+            expect(function () {
                 biocollect.utils.saveDocument(mockResult);
-            } catch (error) {
-                expect(error.message).toBe('Document creation error');
-                done();
-            }
+            }).toThrowError('Document creation error');
         });
     });
 

@@ -9,7 +9,7 @@
                     <div class="col-11">
                         <button class="btn btn-link w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section1" aria-expanded="true" aria-controls="cs-about-section1">
                             <h2 class="p-0 mb-0 text-center">
-                                ${hubConfig.getTextForAboutTheProject(grailsApplication.config.content.defaultOverriddenLabels)}
+                                ${hubConfig.getTextForAboutTheProject(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}
                                 <g:if test="${fc.userIsAlaOrFcAdmin()}">
                                     <g:render template="statusBadge"/>
                                 </g:if>
@@ -21,11 +21,11 @@
             <div class="accordion-collapse collapse show" id="cs-about-section1">
                 <div class="accordion-body">
                     <!-- ko if: aim -->
-                    <h3>${hubConfig.getTextForAim(grailsApplication.config.content.defaultOverriddenLabels)}</h3>
+                    <h3>${hubConfig.getTextForAim(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h3>
                     <p data-bind="text:aim"></p>
                     <!-- /ko -->
                     <!-- ko if: description -->
-                    <h3>${hubConfig.getTextForDescription(grailsApplication.config.content.defaultOverriddenLabels)}</h3>
+                    <h3>${hubConfig.getTextForDescription(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h3>
                     <p data-bind="html:description.markdownToHtml()"></p>
                     <!-- /ko -->
 
@@ -48,7 +48,7 @@
                         <div class="col-11">
                             <button class="btn btn-link w-100 text-start p-0" type="button" data-bs-toggle="collapse" data-bs-target="#cs-about-section4" aria-expanded="false" aria-controls="cs-about-section4">
                                 <h2 class="p-0 mb-0 text-center">
-                                    ${hubConfig.getTextForProjectArea(grailsApplication.config.content.defaultOverriddenLabels)}</h2>
+                                    ${hubConfig.getTextForProjectArea(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h2>
                             </button>
                         </div>
                     </div>
@@ -77,7 +77,7 @@
                                 <g:message code="project.display.involved" />
                             </h2>
                             <h2 class="p-0 mb-0 text-center" data-bind="visible:projectType() != 'survey'">
-                                ${hubConfig.getTextForProjectInformation(grailsApplication.config.content.defaultOverriddenLabels)}
+                                ${hubConfig.getTextForProjectInformation(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}
                             </h2>
                         </button>
 
@@ -117,13 +117,13 @@
                                 </g:if>
                             <!-- ko if:associatedProgram -->
                                 <div class="col-12">
-                                    <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
+                                    <h4 class="text-small-heading">${hubConfig.getTextForProgramName(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h4>
                                     <p data-bind="text:associatedProgram"></p>
                                 </div>
                                 <!-- /ko -->
                                 <!-- ko if:associatedSubProgram -->
                                 <div class="col-12">
-                                    <h4 class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.content.defaultOverriddenLabels)}</h4>
+                                    <h4 class="text-small-heading">${hubConfig.getTextForSubprogramName(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}</h4>
                                     <span data-bind="text:associatedSubProgram"></span>
                                 </div>
                                 <!-- /ko -->
@@ -170,11 +170,11 @@
                             <!-- ko if: getInvolved -->
                             <h4 class="text-small-heading" data-bind="visible:projectType() == 'survey'"><g:message code="project.display.involved" /></h4>
                             <h4 class="text-small-heading" data-bind="visible:projectType() != 'survey'">
-                                ${hubConfig.getTextForProjectInformation(grailsApplication.config.content.defaultOverriddenLabels)}
+                                ${hubConfig.getTextForProjectInformation(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}
                             </h4>
                             <p data-bind="html:getInvolved.markdownToHtml()"></p>
                             <!-- /ko -->
-                            <g:set var="externalId" value="${hubConfig.getTextForExternalId(grailsApplication.config.content.defaultOverriddenLabels)}"/>
+                            <g:set var="externalId" value="${hubConfig.getTextForExternalId(grailsApplication.config.getProperty('content.defaultOverriddenLabels', List))}"/>
                             <!-- ko if:externalId -->
                                 <h4 class="text-small-heading">
                                     <g:if test="${externalId}">

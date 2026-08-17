@@ -110,7 +110,7 @@
             self.activityType = ko.observable("${activity.type}");
             self.deleteAll = function () {
                 document.location.href = "${raw(createLink(action:'delete',id:output.outputId,
-                    params:[returnTo:grailsApplication.config.grails.serverURL + '/' + returnTo]))}";
+                    params:[returnTo:grailsApplication.config.getProperty('grails.serverURL') + '/' + returnTo]))}";
             };
             self.data = {};
             self.transients = {};

@@ -47,7 +47,7 @@ class MapService {
      */
     def getMapLayersConfig(Map project, Map projectActivity) {
         Map mapConfig = [baseLayers: [], overlays: []],
-            defaultMapConfig = grailsApplication.config.map
+            defaultMapConfig = grailsApplication.config.getProperty('map', Map)
 
         HubSettings hub = SettingService.getHubConfig()
 
@@ -97,7 +97,7 @@ class MapService {
     List addOverlayDefaultSettings(List overlays) {
         List propertiesToCopy = ['display', 'bounds']
             overlays?.each { overlay ->
-            def defaultOverlayValue = grailsApplication.config.map.overlays?.find { it.alaId == overlay.alaId }
+            def defaultOverlayValue = grailsApplication.config.getProperty('map.overlays', List)?.find { it.alaId == overlay.alaId }
                 if (defaultOverlayValue) {
                     propertiesToCopy.each { overlay[it] = defaultOverlayValue[it] }
                 }

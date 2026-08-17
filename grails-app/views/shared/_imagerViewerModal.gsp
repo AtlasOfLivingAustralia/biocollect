@@ -5,7 +5,7 @@
         var showViewer = function(imageId) {
             var selector = '.fancybox-inner';
             $(selector).css('overflow', 'hidden');
-            imgvwr.viewImage(selector, imageId, {imageServiceBaseUrl: '${grailsApplication.config.grails.serverURL+'/proxy'}', initialZoom:-1});
+            imgvwr.viewImage(selector, imageId, {imageServiceBaseUrl: '${grailsApplication.config.getProperty('grails.serverURL')+'/proxy'}', initialZoom:-1});
         }
 
 

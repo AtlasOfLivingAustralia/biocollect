@@ -59,12 +59,12 @@ class ProjectService {
     def list(brief = false, citizenScienceOnly = false) {
         def params = brief ? '?brief=true' : ''
         if (citizenScienceOnly) params += (brief ? '&' : '?') + 'citizenScienceOnly=true'
-        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + params, 30000)
+        def resp = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/project/' + params, 30000)
         resp.list
     }
 
     def listMyProjects(userId) {
-        def resp = webService.getJson(grailsApplication.config.ecodata.service.url + '/permissions/getAllProjectsForUserId?id=' + userId, 30000)
+        def resp = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/permissions/getAllProjectsForUserId?id=' + userId, 30000)
         resp
     }
 
@@ -74,7 +74,7 @@ class ProjectService {
         params += "view=${levelOfDetail?:PRIVATE_SITES_REMOVED}&"
         params += "includeDeleted=${includeDeleted}&"
         params += version ? "version=${version}" : ''
-        def project  = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/' + id + params);
+        def project  = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/project/' + id + params);
         return project;
 
     }
@@ -220,7 +220,7 @@ class ProjectService {
         def activities = props.remove('selectedActivities')
 
         // create a project in ecodata
-        if (!result) result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/', props)
+        if (!result) result = webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/project/', props)
 
         String subject
         String body
@@ -240,7 +240,7 @@ class ProjectService {
         }
 
         searchService.clearCachedProjectsInHubs()
-        emailService.sendEmail(subject, body, ["${grailsApplication.config.biocollect.support.email.address}"])
+        emailService.sendEmail(subject, body, ["${grailsApplication.config.getProperty('biocollect.support.email.address')}"])
 
         result
     }
@@ -256,13 +256,13 @@ class ProjectService {
             result.detail = ''
         }
 
-        if (!result) result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + id, body)
+        if (!result) result = webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/project/' + id, body)
 
         if (!skipEmailNotification) {
             String projectName = get(id, "brief")?.name
             String subject = "Project ${projectName ?: id} was updated by ${userService.currentUserDisplayName}"
             String emailBody = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has updated project ${projectName ?: id}"
-            emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
+            emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.getProperty('biocollect.support.email.address')}"])
         }
 
         result
@@ -276,7 +276,7 @@ class ProjectService {
      */
     Map updateProjectPlan(String projectId, Map projectPlan) {
         projectPlan.custom.details.lastUpdatedBy = userService.user.userId
-        Map result = webService.doPost(grailsApplication.config.ecodata.service.url + '/project/' + projectId, projectPlan)
+        Map result = webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/project/' + projectId, projectPlan)
         if (result.statusCode == 200 && result.resp) {
             result.resp.lastUpdatedByDisplayName = userService.currentUserDisplayName
         }
@@ -289,12 +289,12 @@ class ProjectService {
      * @return the returned status
      */
     def delete(id) {
-        def response = webService.doDelete(grailsApplication.config.ecodata.service.url + '/project/' + id)
+        def response = webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/project/' + id)
 
         String projectName = get(id, "brief")?.name
         String subject = "Project ${projectName ?: id} was deleted by ${userService.currentUserDisplayName}"
         String emailBody = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has deleted project ${projectName ?: id}"
-        emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
+        emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.getProperty('biocollect.support.email.address')}"])
 
         response
     }
@@ -307,9 +307,9 @@ class ProjectService {
     def destroy(id) {
         String subject = "Project ${id} was hard-deleted by ${userService.currentUserDisplayName}"
         String emailBody = "User ${userService.currentUserId} (${userService.currentUserDisplayName}) has hard-deleted project ${id}"
-        emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.biocollect.support.email.address}"])
+        emailService.sendEmail(subject, emailBody, ["${grailsApplication.config.getProperty('biocollect.support.email.address')}"])
 
-        webService.doDelete(grailsApplication.config.ecodata.service.url + '/project/' + id + '?destroy=true')
+        webService.doDelete(grailsApplication.config.getProperty('ecodata.service.url') + '/project/' + id + '?destroy=true')
     }
 
     /**
@@ -319,7 +319,7 @@ class ProjectService {
      * @return TODO document this structure.
      */
     def summary(String id) {
-        def scores = webService.getJson(grailsApplication.config.ecodata.service.url + '/project/projectMetrics/' + id)
+        def scores = webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/project/projectMetrics/' + id)
 
         def scoresWithTargetsByOutput = [:]
         def scoresWithoutTargetsByOutputs = [:]
@@ -332,7 +332,7 @@ class ProjectService {
     }
 
     def search(params) {
-        webService.doPost(grailsApplication.config.ecodata.service.url + '/project/search', params)
+        webService.doPost(grailsApplication.config.getProperty('ecodata.service.url') + '/project/search', params)
     }
 
     /**
@@ -343,7 +343,7 @@ class ProjectService {
      */
     def getMembersForProjectId(projectId, List roles = null) {
         def role = roles?.join("&role=")
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProject/${projectId}?${role ? 'role=' + role : ''}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getMembersForProject/${projectId}?${role ? 'role=' + role : ''}"
         webService.getJson(url)
     }
 
@@ -355,12 +355,12 @@ class ProjectService {
      * @return
      */
     def isUserMemberOfProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserMemberOfProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserMemberOfProject?projectId=${projectId}&userId=${userId}"
         webService.getJson(url)?.access // either will be true or false
     }
 
     def getMembersForProjectPerPage(projectId, pageStart, pageSize) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/getMembersForProjectPerPage?projectId=${projectId}&offset=${pageStart}&max=${pageSize}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/getMembersForProjectPerPage?projectId=${projectId}&offset=${pageStart}&max=${pageSize}"
         webService.getJson(url)
     }
 
@@ -379,7 +379,7 @@ class ProjectService {
         if (userService.userIsSiteAdmin()) {
             userIsAdmin = true
         } else {
-            def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserAdminForProject?projectId=${projectId}&userId=${userId}"
+            def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserAdminForProject?projectId=${projectId}&userId=${userId}"
             userIsAdmin = webService.getJson(url)?.userIsAdmin  // either will be true or false
         }
 
@@ -394,7 +394,7 @@ class ProjectService {
      * @return
      */
     def isUserCaseManagerForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserCaseManagerForProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserCaseManagerForProject?projectId=${projectId}&userId=${userId}"
         webService.getJson(url)?.userIsCaseManager // either will be true or false
     }
 
@@ -406,7 +406,7 @@ class ProjectService {
      * @return
      */
     def isUserModeratorForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserModeratorForProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserModeratorForProject?projectId=${projectId}&userId=${userId}"
         webService.getJson(url)?.userIsModerator // either will be true or false
     }
 
@@ -507,7 +507,7 @@ class ProjectService {
             isAdmin = true
         }
 
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProjects"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/canUserEditProjects"
         Map params = [projectIds:projectId,userId:userId]
         response = webService.postMultipart(url, params, new ByteArrayInputStream(new byte[0]), "application/octet-stream", "empty.file")
 
@@ -546,7 +546,7 @@ class ProjectService {
         if (userService.userIsSiteAdmin()) {
             userCanEdit = true
         } else {
-            String url = grailsApplication.config.ecodata.service.url + "/permissions/canUserEditProject?projectId=${activity?.projectId}&userId=${userId}"
+            String url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/canUserEditProject?projectId=${activity?.projectId}&userId=${userId}"
             boolean userIsProjectEditor = webService.getJson(url)?.userIsEditor ?: false
             if (userIsProjectEditor || (activity?.userId == userId)) {
                 userCanEdit = true
@@ -579,7 +579,7 @@ class ProjectService {
       * @return
       */
     def isUserEditorForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserEditorForProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserEditorForProject?projectId=${projectId}&userId=${userId}"
         webService.getJson(url)?.userIsEditor // either will be true or false
     }
 
@@ -591,7 +591,7 @@ class ProjectService {
   * @return
   */
     def isUserParticipantForProject(userId, projectId) {
-        def url = grailsApplication.config.ecodata.service.url + "/permissions/isUserParticipantForProject?projectId=${projectId}&userId=${userId}"
+        def url = grailsApplication.config.getProperty('ecodata.service.url') + "/permissions/isUserParticipantForProject?projectId=${projectId}&userId=${userId}"
         webService.getJson(url)?.userIsParticipant // either will be true or false
     }
 
@@ -689,7 +689,7 @@ class ProjectService {
         payload.type = 'image';
         payload.role = ['surveyImage']
         def params = version ? "?version=${version}" : ''
-        String url = grailsApplication.config.ecodata.service.url + '/document/listImages' + params
+        String url = grailsApplication.config.getProperty('ecodata.service.url') + '/document/listImages' + params
         response = webService.doPost(url, payload)
         if(response.resp){
             return response.resp;
@@ -709,7 +709,7 @@ class ProjectService {
      * @throws Exception
      */
     Map importSciStarterProjects() throws SocketTimeoutException, Exception{
-        String url = "${grailsApplication.config.ecodata.service.url}/project/importProjectsFromSciStarter";
+        String url = "${grailsApplication.config.getProperty('ecodata.service.url')}/project/importProjectsFromSciStarter";
         Map response = webService.doPostWithParams(url, [:]);
         if(response.resp && response.resp.created != null){
             return response.resp
@@ -728,7 +728,7 @@ class ProjectService {
      */
     List getScienceTypes(){
         cacheService.get("project-sciencetypes", {
-            def url = grailsApplication.config.ecodata.service.url + '/project/getScienceTypes'
+            def url = grailsApplication.config.getProperty('ecodata.service.url') + '/project/getScienceTypes'
             webService.getJson(url)
         })
     }
@@ -739,7 +739,7 @@ class ProjectService {
      */
     List getEcoScienceTypes(){
         cacheService.get("project-ecosciencetypes", {
-            def url = grailsApplication.config.ecodata.service.url + '/project/getEcoScienceTypes'
+            def url = grailsApplication.config.getProperty('ecodata.service.url') + '/project/getEcoScienceTypes'
             webService.getJson(url)
         })
     }
@@ -749,7 +749,7 @@ class ProjectService {
      */
     List getUNRegions(){
         cacheService.get("UNRegions", {
-            String url =  grailsApplication.config.ecodata.service.url + '/project/getUNRegions'
+            String url =  grailsApplication.config.getProperty('ecodata.service.url') + '/project/getUNRegions'
             webService.getJson(url)
         })
     }
@@ -759,7 +759,7 @@ class ProjectService {
      */
     List getCountries(){
         cacheService.get("AllCountries", {
-            String url =  grailsApplication.config.ecodata.service.url + '/project/getCountries'
+            String url =  grailsApplication.config.getProperty('ecodata.service.url') + '/project/getCountries'
             webService.getJson(url)
         })
     }
@@ -769,7 +769,7 @@ class ProjectService {
      */
     List getDataCollectionWhiteList(){
         cacheService.get("data-collection-whitelist", {
-            String url =  grailsApplication.config.ecodata.service.url + '/project/getDataCollectionWhiteList'
+            String url =  grailsApplication.config.getProperty('ecodata.service.url') + '/project/getDataCollectionWhiteList'
             webService.getJson(url)
         })
     }
@@ -971,7 +971,7 @@ class ProjectService {
 
         // All species is the default setting when field is not configured.
         if(!speciesFieldConfig){
-            speciesFieldConfig = grailsApplication.config.speciesConfiguration.default
+            speciesFieldConfig = grailsApplication.config.getProperty('speciesConfiguration.default', Map)
         }
 
         return speciesFieldConfig
@@ -1013,7 +1013,7 @@ class ProjectService {
      */
     String getOccurrenceUrl(Map project, String view, String spotterId = null){
         if(project.dataResourceId){
-            String url = grailsApplication.config.biocache.baseURL + "/occurrences/search?q=*:*&"
+            String url = grailsApplication.config.getProperty('biocache.baseURL') + "/occurrences/search?q=*:*&"
             String query = getQueryStringForALASystems(view, project, spotterId)
 
             "${url}${query?:''}"
@@ -1029,7 +1029,7 @@ class ProjectService {
      */
     String getSpatialUrl(Map project, String view, String spotterId = null){
         if(project.dataResourceId){
-            String url = grailsApplication.config.spatial.baseURL
+            String url = grailsApplication.config.getProperty('spatial.baseURL')
             String query = getQueryStringForALASystems(view, project, spotterId)
 
             "${url}?${query?:''}"
@@ -1066,7 +1066,7 @@ class ProjectService {
 
     List getDefaultFacets(){
         cacheService.get('default-facets-for-project-finder', {
-            webService.getJson(grailsApplication.config.ecodata.service.url + '/project/getDefaultFacets')
+            webService.getJson(grailsApplication.config.getProperty('ecodata.service.url') + '/project/getDefaultFacets')
         })
     }
 

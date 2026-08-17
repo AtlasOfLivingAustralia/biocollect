@@ -62,7 +62,7 @@
             <!-- /ko -->
 
             <button class="btn btn-dark fileinput-button"
-                  data-url="${grailsApplication.config.grails.serverURL}/image/upload"
+                  data-url="${grailsApplication.config.getProperty('grails.serverURL')}/image/upload"
                   data-role="blogImage"
                   data-owner-type="blogEntryId"
                   data-owner-id="${blogEntry?.blogEntryId}"

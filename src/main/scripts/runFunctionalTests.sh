@@ -99,7 +99,7 @@ done
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
-start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
+start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew :bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
 
 # check that ecodata is running
 while ! nc -z localhost 8080; do
@@ -110,7 +110,7 @@ done
 
 cd $BIOCOLLECT_DIR
 echo "Starting biocollect from `pwd`"
-start_background biocollect env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087
+start_background biocollect env GRADLE_OPTS="-Xmx1g" ./gradlew :bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087
 # check that biocollect is running
 while ! nc -z localhost 8087; do
   echo "Waiting for biocollect to start on port 8087..."

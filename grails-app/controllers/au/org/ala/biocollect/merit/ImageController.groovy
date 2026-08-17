@@ -126,14 +126,14 @@ class ImageController {
      */
     def uploadNew() {
         if (request.respondsTo('getFile')) {
-            def url = grailsApplication.config.images.baseURL + 'ws/uploadImage'
+            def url = grailsApplication.config.getProperty('images.baseURL') + 'ws/uploadImage'
 
             def params = [synchronousThumbnail:'true']
             MultipartFile file = request.getFile('files')
 
             def result = webService.postMultipart(url, params, file, 'image')
             if (HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
-                def detailsUrl = "${grailsApplication.config.images.baseURL}ws/getImageInfo?id=${result.content.imageId}"
+                def detailsUrl = "${grailsApplication.config.getProperty('images.baseURL')}ws/getImageInfo?id=${result.content.imageId}"
                 def imageDetails = webService.getJson(detailsUrl)
                 def thumbnailUrl = imageDetails.imageUrl.replace("/original", "/thumbnail")
 
@@ -143,7 +143,7 @@ class ImageController {
                         id           : result.content.imageId,
                         url          : imageDetails.imageUrl,
                         thumbnail_url: thumbnailUrl,
-                        delete_url   : grailsApplication.config.grails.serverURL + '/image/delete?id='+result.content.imageId,
+                        delete_url   : grailsApplication.config.getProperty('grails.serverURL') + '/image/delete?id='+result.content.imageId,
                         delete_type  : 'DELETE']
                 result = [files: [md]]
             }
@@ -222,7 +222,7 @@ class ImageController {
             if (file?.size) {  // will only have size if a file was selected
                 String filename = file.getOriginalFilename().replaceAll(' ', '_')
                 String ext = FilenameUtils.getExtension(filename)
-                String path = grailsApplication.config.upload.images.path
+                String path = grailsApplication.config.getProperty('upload.images.path')
                 filename = FileUtils.nextUniqueFileName(FilenameUtils.getBaseName(filename) + '.' + ext, path)
 
                 def thumbFilename
@@ -230,7 +230,7 @@ class ImageController {
                     thumbFilename = FilenameUtils.removeExtension(filename) + "-thumb." + ext
                 }
 
-                def colDir = new File(grailsApplication.config.upload.images.path as String)
+                def colDir = new File(grailsApplication.config.getProperty('upload.images.path') as String)
                 colDir.mkdirs()
                 File f = new File(FileUtils.fullPath(filename, path))
                 //println "saving ${filename} to ${f.absoluteFile}"
@@ -262,9 +262,9 @@ class ImageController {
                         decimalLongitude: doubleToString(exifMd.decLng),
                         verbatimLatitude: exifMd.latitude,
                         verbatimLongitude: exifMd.longitude,
-                        url: FileUtils.encodeUrl(grailsApplication.config.upload.images.url, filename),
-                        thumbnail_url: thumbFilename ? FileUtils.encodeUrl(grailsApplication.config.upload.images.url, thumbFilename): null,
-                        delete_url: FileUtils.encodeUrl(grailsApplication.config.grails.serverURL+"/image/delete?filename=", filename),
+                        url: FileUtils.encodeUrl(grailsApplication.config.getProperty('upload.images.url'), filename),
+                        thumbnail_url: thumbFilename ? FileUtils.encodeUrl(grailsApplication.config.getProperty('upload.images.url'), thumbFilename): null,
+                        delete_url: FileUtils.encodeUrl(grailsApplication.config.getProperty('grails.serverURL')+"/image/delete?filename=", filename),
                         delete_type: 'DELETE',
                         attribution: ''
                 ]
@@ -301,7 +301,7 @@ class ImageController {
             return
         }
 
-        String path = grailsApplication.config.upload.images.path
+        String path = grailsApplication.config.getProperty('upload.images.path')
         File f = new File(FileUtils.fullPath(filename, path))
 
         if (!f.exists()) {

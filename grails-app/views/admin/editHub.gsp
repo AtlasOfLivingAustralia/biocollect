@@ -9,7 +9,7 @@
             intersectService: "${createLink(controller: 'proxy', action: 'intersect')}",
             featuresService: "${createLink(controller: 'proxy', action: 'features')}",
             featureService: "${createLink(controller: 'proxy', action: 'feature')}",
-            spatialWms: "${grailsApplication.config.spatial.geoserverUrl}",
+            spatialWms: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}",
             layersStyle: "${createLink(controller: 'regions', action: 'layersStyle')}",
             listHubsUrl:"${createLink(controller: 'admin', action: 'listHubs')}",
             getHubUrl:"${createLink(controller: 'admin', action: 'loadHubSettings')}",
@@ -18,9 +18,9 @@
             listDynamicFacetsUrl: "${createLink(controller: 'bioActivity', action: 'getFacets')}",
             listDataColumnsUrl: "${createLink(controller: 'bioActivity', action: 'getDataColumns')}",
             defaultOverriddenLabelsURL: "${createLink(controller: 'hub', action: 'defaultOverriddenLabels')}",
-            allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.map.baseLayers}"/>,
-            allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.map.overlays}"/>,
-            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/0.7.7/dist/images')}"
+            allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.baseLayers', List)}"/>,
+            allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.overlays', List)}"/>,
+            leafletAssetURL: "${assetPath(src: 'webjars/leaflet/1.6.0/dist/images')}"
             </g:applyCodec>
         };
     </asset:script>
@@ -39,7 +39,7 @@
 <asset:javascript src="cors/jquery.xdr-transport.js"/>
 <asset:javascript src="document.js"/>
 <asset:javascript src="hubs.js"/>
-<script src="${grailsApplication.config.google.maps.url}" async defer></script>
+<script src="${grailsApplication.config.getProperty('google.maps.url')}" async defer></script>
 <content tag="pageTitle">Manage Hubs</content>
 
 <div class="alert alert-dismissible alert-info">
