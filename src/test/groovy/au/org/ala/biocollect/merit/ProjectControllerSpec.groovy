@@ -31,7 +31,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
     def vocabServiceStub = Stub(VocabService)
     def documentServiceStub = Stub(DocumentService)
     def settingServiceStub = Stub(SettingService)
-    def collectoryServiceStub = Stub(CollectoryService)
     def projectActivityServiceStub = Stub(ProjectActivityService)
 
     void setup() {
@@ -49,7 +48,6 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.vocabService = vocabServiceStub
         controller.documentService = documentServiceStub
         controller.settingService = settingServiceStub
-        controller.collectoryService = collectoryServiceStub
         controller.projectActivityService = projectActivityServiceStub
         auditServiceStub.getAuditMessagesForProject(_) >> []
         metadataServiceStub.activitiesModel() >> [activities: []]

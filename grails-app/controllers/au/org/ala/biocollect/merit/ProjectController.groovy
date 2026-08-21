@@ -58,7 +58,6 @@ class ProjectController {
     MessageSource messageSource
     VocabService vocabService
     FormSpeciesFieldParserService formSpeciesFieldParserService
-    CollectoryService collectoryService
     PdfGenerationService pdfGenerationService
     UtilService utilService
     UserInfoService userInfoService
@@ -233,9 +232,8 @@ class ProjectController {
             String occurrenceUrl = projectService.getOccurrenceUrl(project, view)
             String spatialUrl = projectService.getSpatialUrl(project, view, params.spotterId)
             Boolean isProjectContributingDataToALA = projectService.isProjectContributingDataToALA(project)
-            def licences = collectoryService.licence()
             end = System.currentTimeMillis()
-            log.debug("Collectory fetch time (ms) = " + (end - start) )
+            log.debug("project metadata time (ms) = " + (end - start) )
             start = System.currentTimeMillis()
             def model = [project: project,
                 projectId: project.projectId,
@@ -255,8 +253,7 @@ class ProjectController {
                 projectSite: project.projectSite,
                 occurrenceUrl: occurrenceUrl,
                 spatialUrl: spatialUrl,
-                isProjectContributingDataToALA: isProjectContributingDataToALA,
-                licences: licences
+                isProjectContributingDataToALA: isProjectContributingDataToALA
             ]
             end = System.currentTimeMillis()
             log.debug("model create time (ms) = " + (end - start) )

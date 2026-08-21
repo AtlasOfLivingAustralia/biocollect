@@ -1,3 +1,4 @@
+<g:set var="licenseService" bean="licenseService"/>
 <span data-bind="visible: transients.showAddSpeciesLists">
     <button type="button" class="close margin-right-10 margin-top-10"
             data-bind="click: transients.toggleShowAddSpeciesLists">&times;</button>
@@ -20,7 +21,12 @@
             <div class="col-4">
                 <label>Licence</label>
                 <select class="form-select" data-validation-engine="validate[required]"
-                        data-bind="options: transients.allowedLicences, optionsText:'label', optionsValue:'value', value: newSpeciesLists.licence, optionsCaption: 'Please select'"></select>
+                        data-bind="value: newSpeciesLists.licence">
+                    <option value="">Please select</option>
+                    <g:each in="${licenseService.speciesListLicences()}" var="licence">
+                        <option value="${licence.speciesListValue}">${licence.name}</option>
+                    </g:each>
+                </select>
             </div>
         </div>
 

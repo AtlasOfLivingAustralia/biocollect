@@ -1126,7 +1126,16 @@
 
                         <p class="mt-3"><g:message code="project.details.termsOfUseAgreement.help"/></p>
 
-                        <p><img src="${asset.assetPath(src: 'cc.png')}" alt="Creative Commons Attribution 3.0"></p>
+                        <p>
+                            <a href="${message(code: 'project.details.creativeCommons.helpUrl')}" target="_blank" rel="noopener noreferrer">
+                                <img src="${asset.assetPath(src: 'cc.png')}" alt="Creative Commons Attribution 4.0 International">
+                            </a>
+                        </p>
+                        <p>
+                            <a href="${message(code: 'project.details.creativeCommons.helpUrl')}" target="_blank" rel="noopener noreferrer">
+                                <g:message code="project.details.creativeCommons.helpLink"/>
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>

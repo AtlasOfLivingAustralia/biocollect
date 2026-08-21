@@ -1,3 +1,4 @@
+<g:set var="licenseService" bean="licenseService"/>
 <g:render template="/aekosSubmission/aekosWorkflowModal"/>
 <!-- ko stopBinding: true -->
 <div class="container-fluid" id="pActivitiesList">
@@ -420,11 +421,10 @@
                         </div>
 
                         <div class="col-12 col-md-7">
-                            <g:each in="${licences}">
-                                <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a
-                                        href="${it.url}" target="_blank"><img
-                                            src="${asset.assetPath(src: "licence/${it.logo}")} ">&nbsp;&nbsp;${it.name}
-                                </a></span>
+                            <g:each in="${licenseService.licences()}" var="licence">
+                                <span data-bind="visible: dataSharingLicense() == '${licence.url}'">
+                                    <g:render template="/projectActivity/ccLicenceMark" model="[licence: licence, label: licence.name]"/>
+                                </span>
                             </g:each>
                         </div>
                     </div>

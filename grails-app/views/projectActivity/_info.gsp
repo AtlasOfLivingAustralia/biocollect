@@ -1,3 +1,4 @@
+<g:set var="licenseService" bean="licenseService"/>
 <div id="pActivityInfo">
 
     <!-- ko foreach: projectActivities -->
@@ -343,16 +344,20 @@
 
         <div class="col-12 col-md-8">
             <g:select id="dataSharingLicense" class="full-collapse-horizontal form-control" name="dateSharingLicence"
-                      from="${licences}"
-                      optionValue="name" data-bind="value:dataSharingLicense"
+                      from="${licenseService.surveyLicences()}"
+                      optionValue="name" data-bind="value: dataSharingLicense, valueAllowUnset: true"
                       noSelection="['': '-Please select the licence-']" optionKey="url"
                       data-validation-engine="validate[required]"/>
-            <g:each in="${licences}">
-                <label class="my-1" data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}"
-                                                                                                target="_blank"><img
-                            src="${asset.assetPath(src: "licence/${it.logo}")}">&nbsp;&nbsp;${it.description}</a>
+            <g:each in="${licenseService.licences()}" var="licence">
+                <label class="mt-3" data-bind="visible: dataSharingLicense() == '${licence.url}'">
+                    <g:render template="/projectActivity/ccLicenceMark" model="[licence: licence, label: licence.description]"/>
                 </label>
             </g:each>
+            <p class="form-text mt-1 mb-1">
+                <a href="${message(code: 'project.details.creativeCommons.helpUrl')}" target="_blank" rel="noopener noreferrer">
+                    <g:message code="project.details.creativeCommons.helpLink"/>
+                </a>
+            </p>
         </div>
     </div>
 

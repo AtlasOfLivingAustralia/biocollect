@@ -268,7 +268,7 @@ sighting:
   fields:
     excludes: ['errors','timeZoneOffset','eventDateNoTime','eventDateTime','class','log','constraints','$constraints']
 
-  licenses: ['Creative Commons Attribution','Creative Commons Attribution-Noncommercial','Creative Commons Attribution-Share Alike','Creative Commons Attribution-Noncommercial-Share Alike']
+  licenses: ['Creative Commons Attribution 4.0 International','Creative Commons Attribution-Share Alike 4.0 International','Creative Commons Attribution-Noncommercial 4.0 International','Creative Commons Attribution-Noncommercial-Share Alike 4.0 International']
 
 sortFields: ['scientificName','commonName','eventDate','dateCreated','lastUpdated','locality','multimedia']
 accuracyValues: [0,10,50,100,500,1000,5000,10000]

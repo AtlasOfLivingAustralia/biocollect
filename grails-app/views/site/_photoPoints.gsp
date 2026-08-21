@@ -1,3 +1,4 @@
+<g:set var="licenseService" bean="licenseService"/>
 <g:if test="${!printView}">
     <div data-bind="visible:!site">
         No site has been selected.  To add photos to this activity, select a site.
@@ -191,15 +192,14 @@
 
         <div class="control-group">
             <label class="control-label">Licence <i class="icon-question-sign"
-                                                                  data-bind="popover:{content:'Creative Commons Attribution (CC BY), Creative Commons-Noncommercial (CC BY-NC), Creative Commons Attribution-Share Alike (CC BY-SA), Creative Commons Attribution-Noncommercial-Share Alike (CC BY-NC-SA)', placement:'top'}">&nbsp;</i>:
+                                                                  data-bind="popover:{content:'${licenseService.photoPointHelpText().encodeAsJavaScript()}', placement:'top'}">&nbsp;</i>:
             </label>
 
             <div class="controls">
                 <select id="licence" data-bind="value:licence" class="form-select input-sm">
-                    <option>CC BY</option>
-                    <option>CC BY-NC</option>
-                    <option>CC BY-SA</option>
-                    <option>CC BY-NC-SA</option>
+                    <g:each in="${licenseService.photoPointLicences()}" var="licence">
+                        <option value="${licence.code}">${licence.description}</option>
+                    </g:each>
                 </select>
             </div>
         </div>

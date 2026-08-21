@@ -95,36 +95,6 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         {id: 'COMMON_TRAIT', name: 'Traits'},
         {id: 'TEST', name: 'Testing List'}
     ];
-    self.transients.allowedLicences = [
-        {
-            "value": "CC0",
-            "label": "Creative Commons Zero"
-        },
-        {
-            "value": "CC-BY",
-            "label": "Creative Commons By Attribution"
-        },
-        {
-            "value": "CC-BY-NC",
-            "label": "Creative Commons By Attribution-Noncommercial"
-        },
-        {
-            "value": "CC-BY-NC-ND",
-            "label": "Creative Commons By Attribution-Noncommercial-Noderivatives"
-        },
-        {
-            "value": "CC-BY-NC-SA",
-            "label": "Creative Commons By Attribution-Noncommercial-Sharealike"
-        },
-        {
-            "value": "CC-BY-ND",
-            "label": "Creative Commons By Attribution-Noderivatives"
-        },
-        {
-            "value": "CC-BY-SA",
-            "label": "Creative Commons By Attribution-Sharealike"
-        }
-    ]
 
     self.transients.showAddSpeciesLists = ko.observable(false);
     self.transients.showExistingSpeciesLists = ko.observable(false);

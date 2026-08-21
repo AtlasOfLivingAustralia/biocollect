@@ -309,3 +309,32 @@ select[name=project-list_length]{
     height: 16px;
 }
 /* end pwa mobile */
+
+/* Creative Commons licence marks (official icon SVGs, not 88x31 badges) */
+a.cc-licence-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    text-decoration: none;
+}
+
+a.cc-licence-mark .cc-licence-icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    max-width: none;
+    vertical-align: middle;
+}
+
+a.cc-licence-mark .cc-licence-label {
+    margin-left: 0.35rem;
+    text-decoration: underline;
+}
+
+a.cc-licence-mark:hover {
+    text-decoration: none;
+}
+
+a.cc-licence-mark:hover .cc-licence-label {
+    text-decoration: underline;
+}
+/* end Creative Commons licence marks */

@@ -3,6 +3,7 @@
 <g:set var="utilService" bean="utilService"></g:set>
 <g:set var="projectActivityService" bean="projectActivityService"></g:set>
 <g:set var="speciesListService" bean="speciesListService"></g:set>
+<g:set var="licenseService" bean="licenseService"></g:set>
 <g:if test="${speciesListService.checkListAPIVersion(speciesListService.LIST_VERSION_V1)}">
     <g:set var="speciesListServerURL" value="${grailsApplication.config.getProperty("lists.baseURL") + '/speciesListItem/list'}"></g:set>
 </g:if>
@@ -212,7 +213,7 @@
         var user = <fc:modelAsJavascript model="${user}"/>;
         var vocabList = <fc:modelAsJavascript model="${vocabList}" />;
         var projectArea = <fc:modelAsJavascript model="${projectSite?.extent?.geometry}"/>;
-        var licences = <fc:modelAsJavascript model="${licences}"/>;
+        var licences = <fc:modelAsJavascript model="${licenseService.surveyLicences()}"/>;
 
         var ViewModel = function() {
             var self = this;
