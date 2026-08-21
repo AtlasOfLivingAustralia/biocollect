@@ -4,7 +4,7 @@ import grails.converters.JSON
 import org.apache.commons.io.IOUtils
 import org.grails.web.json.JSONObject
 import org.grails.web.json.parser.JSONParser
-import au.org.ala.biocollect.merit.LicenseService
+import au.org.ala.biocollect.merit.LicenceService
 
 import java.text.SimpleDateFormat
 
@@ -16,7 +16,7 @@ class ImportService {
     def projectService
     def userService
     def activityService
-    LicenseService licenseService
+    LicenceService licenceService
 
     def importSightingsData(InputStream json, inputProjectId, inputType, inputName, inputActivityId) {
         BufferedReader br = new BufferedReader(new InputStreamReader(json, 'UTF-8'))
@@ -183,7 +183,7 @@ class ImportService {
         def sizeInBytes = String.format("%.2f KB", imageInfo.sizeInBytes / 1024.0)
         def dateTaken = imageInfo.dateTaken.replace(' ', 'T') + 'Z'
 
-        def formattedLicense = licenseService.codeForName(license)
+        def formattedLicense = licenceService.codeForName(license)
 
         def img = [
                 licence      : formattedLicense,

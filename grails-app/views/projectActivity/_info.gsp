@@ -1,4 +1,4 @@
-<g:set var="licenseService" bean="licenseService"/>
+<g:set var="licenceService" bean="licenceService"/>
 <div id="pActivityInfo">
 
     <!-- ko foreach: projectActivities -->
@@ -344,11 +344,11 @@
 
         <div class="col-12 col-md-8">
             <g:select id="dataSharingLicense" class="full-collapse-horizontal form-control" name="dateSharingLicence"
-                      from="${licenseService.surveyLicences()}"
+                      from="${licenceService.surveyLicences()}"
                       optionValue="name" data-bind="value: dataSharingLicense, valueAllowUnset: true"
                       noSelection="['': '-Please select the licence-']" optionKey="url"
                       data-validation-engine="validate[required]"/>
-            <g:each in="${licenseService.licences()}" var="licence">
+            <g:each in="${licenceService.licences()}" var="licence">
                 <label class="mt-3" data-bind="visible: dataSharingLicense() == '${licence.url}'">
                     <g:render template="/projectActivity/ccLicenceMark" model="[licence: licence, label: licence.description]"/>
                 </label>

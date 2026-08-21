@@ -1,4 +1,4 @@
-<g:set var="licenseService" bean="licenseService"/>
+<g:set var="licenceService" bean="licenceService"/>
 <g:render template="/aekosSubmission/aekosWorkflowModal"/>
 <!-- ko stopBinding: true -->
 <div class="container-fluid" id="pActivitiesList">
@@ -421,7 +421,7 @@
                         </div>
 
                         <div class="col-12 col-md-7">
-                            <g:each in="${licenseService.licences()}" var="licence">
+                            <g:each in="${licenceService.licences()}" var="licence">
                                 <span data-bind="visible: dataSharingLicense() == '${licence.url}'">
                                     <g:render template="/projectActivity/ccLicenceMark" model="[licence: licence, label: licence.name]"/>
                                 </span>

@@ -3,7 +3,7 @@ package au.org.ala.biocollect.merit
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
-class LicenseServiceSpec extends Specification implements ServiceUnitTest<LicenseService> {
+class LicenceServiceSpec extends Specification implements ServiceUnitTest<LicenceService> {
 
     void "should return current licences from most to least permissive"() {
         when:

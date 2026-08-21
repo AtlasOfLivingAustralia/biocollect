@@ -1,4 +1,4 @@
-<g:set var="licenseService" bean="licenseService"/>
+<g:set var="licenceService" bean="licenceService"/>
 <g:if test="${!printView}">
     <div data-bind="visible:!site">
         No site has been selected.  To add photos to this activity, select a site.
@@ -192,12 +192,12 @@
 
         <div class="control-group">
             <label class="control-label">Licence <i class="icon-question-sign"
-                                                                  data-bind="popover:{content:'${licenseService.photoPointHelpText().encodeAsJavaScript()}', placement:'top'}">&nbsp;</i>:
+                                                                  data-bind="popover:{content:'${licenceService.photoPointHelpText().encodeAsJavaScript()}', placement:'top'}">&nbsp;</i>:
             </label>
 
             <div class="controls">
                 <select id="licence" data-bind="value:licence" class="form-select input-sm">
-                    <g:each in="${licenseService.photoPointLicences()}" var="licence">
+                    <g:each in="${licenceService.photoPointLicences()}" var="licence">
                         <option value="${licence.code}">${licence.description}</option>
                     </g:each>
                 </select>

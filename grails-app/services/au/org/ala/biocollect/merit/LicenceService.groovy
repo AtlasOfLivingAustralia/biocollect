@@ -9,7 +9,7 @@ package au.org.ala.biocollect.merit
  * {@code icons} are the official CC icon SVG filenames (without extension)
  * from https://creativecommons.org/mission/downloads/
  */
-class LicenseService {
+class LicenceService {
 
     private static final List LICENCES = [
             licence(
