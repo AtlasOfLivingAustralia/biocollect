@@ -235,10 +235,9 @@ grails:
       params:
         exclude: ['password']
     cache:
+      enabled: true
       ehcache:
         ehcacheXmlLocation: classpath:biocollect-ehcache.xml
-
-
 
 spring:
   main:
