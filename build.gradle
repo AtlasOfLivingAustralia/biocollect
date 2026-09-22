@@ -74,6 +74,29 @@ configurations.configureEach {
 }
 
 dependencies {
+    components {
+        // cache-ehcache requests capability ehcache-jakarta. ala-ws-security requests
+        // org.ehcache:ehcache, which selects the non-Jakarta variant. Those variants share
+        // capabilities such as ehcache-api, so Gradle rejects the module. Move the module
+        // capability onto the Jakarta variants so every request resolves to one jar.
+        withModule('org.ehcache:ehcache') {
+            String ehcacheVersion = id.version
+            ['apiElements', 'runtimeElements'].each { variantName ->
+                withVariant(variantName) {
+                    withCapabilities {
+                        removeCapability('org.ehcache', 'ehcache')
+                    }
+                }
+            }
+            ['jakartaApiElements', 'jakartaRuntimeElements'].each { variantName ->
+                withVariant(variantName) {
+                    withCapabilities {
+                        addCapability('org.ehcache', 'ehcache', ehcacheVersion)
+                    }
+                }
+            }
+        }
+    }
     implementation "org.apache.grails:grails-databinding"
     implementation "org.apache.grails:grails-gsp"
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -95,14 +118,13 @@ dependencies {
     // Sitemesh 2 layout support moved out of grails-gsp into its own plugin in Grails 7
     implementation "org.apache.grails:grails-layout"
     implementation "org.apache.grails:grails-cache"
-    // JCache/Ehcache 3 wiring (replaces the discontinued cache-ehcache plugin).
-    // Configured via spring.cache.jcache.config in application.yml (biocollect-ehcache.xml).
-    implementation "org.springframework.boot:spring-boot-starter-cache"
-    implementation "javax.cache:cache-api:1.1.1"
-    implementation("org.ehcache:ehcache:3.10.8:jakarta") {
-        // the jakarta classifier jar must not drag in the javax JAXB stack from the default pom
-        exclude group: 'javax.xml.bind'
-        exclude group: 'org.glassfish.jaxb'
+    // Ehcache 3 via the Grails cache plugin. The plugin selects the ehcache-jakarta
+    // capability (JAXB only; JSR-107 stays javax.cache and is pulled transitively).
+    // Configured via grails.cache.ehcache.ehcacheXmlLocation (biocollect-ehcache.xml).
+    implementation("org.grails.plugins:cache-ehcache:5.0.0-RC1") {
+        // ehcache-jakarta metadata wants jaxb-runtime [3,3.1); Grails 7 uses JAXB 4
+        exclude group: 'org.glassfish.jaxb', module: 'jaxb-runtime'
+        exclude group: 'javax.xml.bind', module: 'jaxb-api'
     }
     runtimeOnly "jakarta.xml.bind:jakarta.xml.bind-api:4.0.2"
     runtimeOnly "org.glassfish.jaxb:jaxb-runtime:4.0.5"
