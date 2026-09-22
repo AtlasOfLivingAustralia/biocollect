@@ -135,6 +135,7 @@ security.oidc.allowUnsignedIdTokens= true
 
 security.jwt.enabled= true
 security.jwt.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
+security.jwt.requestWrapperFilterOrder= -155
 // security.jwt.fallbackToLegacyBehaviour= true
 
 webservice.jwt = true

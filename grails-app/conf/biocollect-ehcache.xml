@@ -1,6 +1,5 @@
 <config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-        xmlns='http://www.ehcache.org/v3'
-        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'>
+        xmlns='http://www.ehcache.org/v3'>
 
     <persistence directory="/data/biocollect/ehcache"/>
 
@@ -40,8 +39,8 @@
         </resources>
     </cache>
 
-    <!-- Caches below were previously created on demand by the grails cache-ehcache plugin.
-         The JCache provider requires them to be declared explicitly. -->
+    <!-- Declared explicitly so they keep a 1-day TTL and a real heap size.
+         The cache-ehcache plugin creates missing caches on demand at heap 10 with no expiry. -->
     <cache alias="homePageImages">
         <expiry>
             <ttl unit="days">1</ttl>

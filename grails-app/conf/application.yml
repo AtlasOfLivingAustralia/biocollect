@@ -234,15 +234,14 @@ grails:
     exceptionresolver:
       params:
         exclude: ['password']
-
-
+    cache:
+      enabled: true
+      ehcache:
+        ehcacheXmlLocation: classpath:biocollect-ehcache.xml
 
 spring:
   main:
     banner-mode: "off"
-  cache:
-    jcache:
-      config: classpath:biocollect-ehcache.xml
   groovy:
     template:
       check-template-location: false

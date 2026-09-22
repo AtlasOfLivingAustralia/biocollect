@@ -7,7 +7,7 @@ import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReader
 import com.opencsv.CSVReaderBuilder
 import grails.converters.JSON
-import org.springframework.cache.annotation.Cacheable
+import grails.plugin.cache.Cacheable
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
