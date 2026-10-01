@@ -5,7 +5,7 @@ import grails.converters.JSON
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.Period
-import org.springframework.cache.annotation.Cacheable
+import grails.plugin.cache.Cacheable
 
 
 class ReportService {

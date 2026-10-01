@@ -1,6 +1,5 @@
 <config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-        xmlns='http://www.ehcache.org/v3'
-        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'>
+        xmlns='http://www.ehcache.org/v3'>
 
     <persistence directory="/data/biocollect/ehcache"/>
 
@@ -40,8 +39,8 @@
         </resources>
     </cache>
 
-    <!-- Caches below were previously created on demand by the grails cache-ehcache plugin.
-         The JCache provider requires them to be declared explicitly. -->
+    <!-- Declared explicitly so they keep a 1-day TTL and a real heap size.
+         The cache-ehcache plugin creates missing caches on demand at heap 10 with no expiry. -->
     <cache alias="homePageImages">
         <expiry>
             <ttl unit="days">1</ttl>
@@ -61,6 +60,36 @@
     </cache>
 
     <cache alias="styleSheetCache">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+
+    <!-- CacheService responses (metadata, hubs, dashboards, lookups). One region,
+         keyed by the caller's cache key, so admin cache clear can see them. -->
+    <cache alias="serviceResponseCache">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">5000</heap>
+        </resources>
+    </cache>
+
+    <!-- Spring @Cacheable regions from images-client-plugin and ala-admin-plugin. -->
+    <cache alias="speciesListKvp">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">2000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="systemMessageCache">
         <expiry>
             <ttl unit="days">1</ttl>
         </expiry>

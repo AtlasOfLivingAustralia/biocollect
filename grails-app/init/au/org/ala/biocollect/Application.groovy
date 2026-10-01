@@ -6,9 +6,11 @@ import grails.boot.config.GrailsAutoConfiguration
 import grails.core.GrailsApplication
 import grails.util.Metadata
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Import(SpringCacheConfiguration)
 class Application extends GrailsAutoConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application)

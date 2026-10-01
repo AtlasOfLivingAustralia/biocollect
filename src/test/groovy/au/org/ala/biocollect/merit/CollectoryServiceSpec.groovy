@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import grails.plugin.cache.GrailsConcurrentMapCacheManager
 import grails.testing.services.ServiceUnitTest
 import spock.lang.Specification
 
@@ -51,7 +52,7 @@ class CollectoryServiceSpec extends Specification implements ServiceUnitTest<Col
     void "should return an empty list when the web service call fails"() {
         given:
         def oldCacheService = service.cacheService
-        service.cacheService = new CacheService()
+        service.cacheService = new CacheService(grailsCacheManager: new GrailsConcurrentMapCacheManager())
 
         when:
         def licences = service.licence()
