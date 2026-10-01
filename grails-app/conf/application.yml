@@ -240,6 +240,10 @@ grails:
         ehcacheXmlLocation: classpath:biocollect-ehcache.xml
 
 spring:
+  # Leave cache manager creation to the Grails Ehcache plugin. Boot would otherwise
+  # add a second manager because Caffeine and JSR-107 are on the classpath.
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
   main:
     banner-mode: "off"
   groovy:

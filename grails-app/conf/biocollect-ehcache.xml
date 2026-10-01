@@ -68,4 +68,34 @@
         </resources>
     </cache>
 
+    <!-- CacheService responses (metadata, hubs, dashboards, lookups). One region,
+         keyed by the caller's cache key, so admin cache clear can see them. -->
+    <cache alias="serviceResponseCache">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">5000</heap>
+        </resources>
+    </cache>
+
+    <!-- Spring @Cacheable regions from images-client-plugin and ala-admin-plugin. -->
+    <cache alias="speciesListKvp">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">2000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="systemMessageCache">
+        <expiry>
+            <ttl unit="days">1</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">200</heap>
+        </resources>
+    </cache>
+
 </config>

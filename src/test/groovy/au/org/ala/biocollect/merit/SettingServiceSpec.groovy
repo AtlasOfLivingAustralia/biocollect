@@ -2,6 +2,7 @@ package au.org.ala.biocollect.merit
 
 import asset.pipeline.AssetPipelineConfigHolder
 import au.org.ala.biocollect.merit.hub.HubSettings
+import grails.plugin.cache.GrailsConcurrentMapCacheManager
 import grails.testing.services.ServiceUnitTest
 import grails.testing.web.controllers.ControllerUnitTest
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -126,7 +127,7 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
     def "should not load invalid value to cookie"() {
         setup:
         grailsApplication.config.app.default.hub = "xyz"
-        service.cacheService = new CacheService()
+        service.cacheService = new CacheService(grailsCacheManager: new GrailsConcurrentMapCacheManager())
         service.webService = Mock(WebService)
 
         when:
