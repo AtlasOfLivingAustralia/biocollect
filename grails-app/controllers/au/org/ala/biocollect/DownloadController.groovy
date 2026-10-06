@@ -30,14 +30,17 @@ class DownloadController {
             return null
         } else if (params.filename) {
             String path = grailsApplication.config.upload.images.path
-            File file = new File(FileUtils.fullPath(params.filename, path))
-            if (file.exists()) {
-                response.setHeader('Content-Disposition', "Attachment;Filename=\"${params.filename}\"")
+            // Only bare file names located directly in the upload directory may be downloaded.
+            File file = FileUtils.resolveInDirectory(path, params.filename)
+            if (file?.isFile()) {
+                response.setHeader('Content-Disposition', "Attachment;Filename=\"${file.name}\"")
                 if (params.forceDownload?.toBoolean()) {
                     // set the content type to octet-stream to stop the browser from auto playing known types
                     response.setContentType('application/octet-stream')
                 }
-                response.outputStream << new FileInputStream(file)
+                file.withInputStream { InputStream is ->
+                    response.outputStream << is
+                }
                 response.outputStream.flush()
             } else {
                 response.status = 404
