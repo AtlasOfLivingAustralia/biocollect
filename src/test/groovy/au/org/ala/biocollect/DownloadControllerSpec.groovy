@@ -263,7 +263,6 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         where:
         filename << [
-                // the upload directory is <temp>/scripts/tempHub/tempModel, so <temp> is three levels up
                 '../../../privateFile.js',
                 '../../../config/privateFile2.js',
                 '..%2f..%2f..%2fprivateFile.js',
