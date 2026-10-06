@@ -251,6 +251,55 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         response.getHeader('Content-Disposition') == "Attachment;Filename=\"validFile.js\""
     }
 
+    void "Get File - using filename - path traversal is not permitted"(String filename) {
+        when:
+        params.filename = filename
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_NOT_FOUND
+        response.contentAsString == ''
+        response.getHeader('Content-Disposition') == null
+
+        where:
+        filename << [
+                // the upload directory is <temp>/scripts/tempHub/tempModel, so <temp> is three levels up
+                '../../../privateFile.js',
+                '../../../config/privateFile2.js',
+                '..%2f..%2f..%2fprivateFile.js',
+                '..\\..\\..\\privateFile.js',
+                '../../../../../../../../etc/passwd',
+                '/etc/passwd',
+                '.',
+                '..',
+                'sub/validFile.js',
+                "validFile.js\r\nSet-Cookie: a=b",
+                "validFile.js\u0000.png"
+        ]
+    }
+
+    void "Get File - using filename - absolute path to a private file is not permitted"() {
+        when:
+        params.filename = new File(temp, 'privateFile.js').absolutePath
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_NOT_FOUND
+        response.contentAsString == ''
+    }
+
+    void "Get File - using filename - a directory is not served"() {
+        setup:
+        new File(modelPath, 'aDirectory').mkdir()
+
+        when:
+        params.filename = 'aDirectory'
+        controller.file()
+
+        then:
+        response.status == HttpStatus.SC_NOT_FOUND
+    }
+
     void "Get File - using filename - valid file - force download"() {
         when:
         params.filename = 'validFile.js'

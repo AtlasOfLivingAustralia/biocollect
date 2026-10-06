@@ -11,6 +11,32 @@ class FileUtilsSpec extends Specification {
         testPath.mkdir()
     }
 
+    def "resolveInDirectory returns files located directly in the base directory"() {
+        expect:
+        FileUtils.resolveInDirectory(testPath, 'file.txt') == new File(testPath.canonicalFile, 'file.txt')
+        FileUtils.resolveInDirectory(testPath.absolutePath, 'file.txt') == new File(testPath.canonicalFile, 'file.txt')
+        FileUtils.resolveInDirectory(testPath, 'a b-1_2.tar.gz') == new File(testPath.canonicalFile, 'a b-1_2.tar.gz')
+    }
+
+    def "resolveInDirectory rejects names that could escape the base directory"(String filename) {
+        expect:
+        FileUtils.resolveInDirectory(testPath, filename) == null
+
+        where:
+        filename << [null, '', '.', '..', '../file.txt', '../../etc/passwd', '/etc/passwd', 'sub/file.txt',
+                     '..\\file.txt', "file.txt\u0000", "file\r\n.txt"]
+    }
+
+    def "resolveInDirectory rejects a symlink pointing outside of the base directory"() {
+        setup:
+        File outside = new File(temp, 'secret.txt')
+        outside.text = 'secret'
+        java.nio.file.Files.createSymbolicLink(new File(testPath, 'link.txt').toPath(), outside.toPath())
+
+        expect:
+        FileUtils.resolveInDirectory(testPath, 'link.txt') == null
+    }
+
     def "Copy recursively should copy file to target directory" () {
         given:
         URL resource = getClass().getResource("/data/test.scss")

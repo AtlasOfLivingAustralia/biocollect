@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils
 
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
+import java.util.regex.Pattern
 
 class FileUtils {
     /**
@@ -28,6 +29,52 @@ class FileUtils {
 
     static String fullPath(filename, path) {
         path + File.separator + filename
+    }
+
+    /**
+     * Safely resolves a client supplied file name against a base directory.
+     * Only bare file names are accepted - anything containing a path component (e.g. "../x", "/etc/passwd",
+     * "a/b", "..\\x"), control characters or null bytes is rejected
+     * @param baseDir the directory the file must reside in
+     * @param filename the untrusted file name
+     * @return the File within baseDir, or null if the file name is not acceptable. The file is not
+     * guaranteed to exist.
+     */
+    private static final Pattern WINDOWS_RESERVED = Pattern.compile('(?i)^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\\..*)?$')
+
+    static File resolveInDirectory(Object baseDir, Object filename) {
+        if (baseDir == null || filename == null) {
+            return null
+        }
+
+        String name = filename.toString()
+        if (!name || name == '.' || name == '..') {
+            return null
+        }
+
+        // Reject separators and DOS reserved device names
+        if (name.contains('/') || name.contains('\\') || WINDOWS_RESERVED.matcher(name).matches()) {
+            return null
+        }
+
+        // Reject ISO control characters
+        for (int i = 0; i < name.length(); i++) {
+            if (Character.isISOControl(name.charAt(i))) {
+                return null
+            }
+        }
+
+        try {
+            File base = new File(baseDir.toString()).canonicalFile
+            if (!base.exists() || !base.isDirectory()) {
+                return null
+            }
+
+            File candidate = new File(base, name).canonicalFile
+            return (candidate.parentFile == base) ? candidate : null
+        } catch (IOException | IllegalArgumentException ignored) {
+            return null
+        }
     }
 
     static def encodeUrl(prefix, filename) {

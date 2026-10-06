@@ -68,7 +68,12 @@ class DocumentService {
         def result
         if (!document.documentId) {
             document.remove('url')
-            def file = new File(grailsApplication.config.upload.images.path, document.filename)
+            // Make sure the filename can only refer to a file directly in the specified directory, no ../../file.config
+            File file = au.org.ala.biocollect.FileUtils.resolveInDirectory(grailsApplication.config.upload.images.path, document.filename)
+            if (!file) {
+                log.warn("Rejected staged document with invalid filename: ${document.filename}")
+                return [statusCode: org.springframework.http.HttpStatus.BAD_REQUEST.value(), error: 'Invalid filename', content: [:]]
+            }
             // Create a new document, supplying the file that was uploaded to the ImageController.
             result = createDocument(document, document.contentType, new FileInputStream(file))
             if (org.springframework.http.HttpStatus.resolve(result.statusCode as int).is2xxSuccessful()) {
