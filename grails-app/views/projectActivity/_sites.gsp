@@ -32,12 +32,8 @@
                     <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
                 <!-- ko if: surveySiteOption() == 'sitepick' && !isSiteConfigValid() -->
-                <div class="formError inline mt-2" >
-                    <div class="formErrorContent">
-                        <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --><br>
-                        <g:message code="projectActivity.locations.mandatory"/>
-                    </div>
-                </div>
+                <!-- ko template: {name: 'template-site-config-invalid'} -->
+                <!-- /ko -->
                 <!-- /ko -->
             </div>
 
@@ -67,12 +63,8 @@
                     <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
                 <!-- ko if: surveySiteOption() == 'sitecreate' && !isSiteConfigValid() -->
-                <div class="formError inline mt-2" >
-                    <div class="formErrorContent">
-                        <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
-                        <g:message code="projectActivity.locations.mandatory"/>
-                    </div>
-                </div>
+                <!-- ko template: {name: 'template-site-config-invalid'} -->
+                <!-- /ko -->
                 <!-- /ko -->
             </div>
 
@@ -102,13 +94,8 @@
                     <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                 </div>
                 <!-- ko if: surveySiteOption() == 'sitepickcreate' && !isSiteConfigValid() -->
-                <div class="formError inline mt-2" >
-                    <div class="formErrorContent">
-                        <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
-                        <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --> <br>
-                        <g:message code="projectActivity.locations.mandatory"/>
-                    </div>
-                </div>
+                <!-- ko template: {name: 'template-site-config-invalid'} -->
+                <!-- /ko -->
                 <!-- /ko -->
             </div>
 
@@ -261,18 +248,54 @@
     </div>
 </div>
 </script>
+<script id="template-site-config-invalid" type="text/html">
+<div class="alert alert-danger d-flex align-items-start mt-2 mb-0" role="alert">
+    <i class="fas fa-exclamation-circle me-2 mt-1" aria-hidden="true"></i>
+    <ul class="mb-0 ps-3">
+        <!-- ko if: ['sitecreate', 'sitepickcreate'].indexOf(surveySiteOption()) !== -1 && isUserSiteCreationConfigValid() -->
+        <li data-bind="text: isUserSiteCreationConfigValid()"></li>
+        <!-- /ko -->
+        <!-- ko if: ['sitepick', 'sitepickcreate'].indexOf(surveySiteOption()) !== -1 && isSiteSelectionConfigValid() -->
+        <li data-bind="text: isSiteSelectionConfigValid()"></li>
+        <!-- /ko -->
+        <li><g:message code="projectActivity.locations.mandatory"/></li>
+    </ul>
+</div>
+</script>
 <script id="template-site-add-to-project" type="text/html">
 <div class="row">
     <div class="col-12">
         <div class="mb-3 form-check">
-            <input class="form-check-input" type="checkbox" data-bind="checked: addCreatedSiteToListOfSelectedSites, disable: !!isUserSiteCreationConfigValid()"/>
-            <label class="form-check-label">
-                <g:message code="mapConfiguration.site.create.add.to.project"/>
+            <input class="form-check-input" type="radio" id="createdSiteReuseNone" name="createdSiteReuse" value="none"
+                   data-bind="checked: transients.createdSiteReuse, disable: !!isUserSiteCreationConfigValid()"/>
+            <label class="form-check-label" for="createdSiteReuseNone">
+                ${raw(message(code: 'mapConfiguration.createdSiteReuse.none'))}
+            </label>
+        </div>
+        <div class="mb-3 form-check">
+            <input class="form-check-input" type="radio" id="createdSiteReuseEditors" name="createdSiteReuse" value="editors"
+                   data-bind="checked: transients.createdSiteReuse, disable: !!isUserSiteCreationConfigValid()"/>
+            <label class="form-check-label" for="createdSiteReuseEditors">
+                ${raw(message(code: 'mapConfiguration.createdSiteReuse.editors'))}
+            </label>
+        </div>
+        <div class="mb-3 form-check">
+            <input class="form-check-input" type="radio" id="createdSiteReusePublic" name="createdSiteReuse" value="public"
+                   data-bind="checked: transients.createdSiteReuse, disable: !!isUserSiteCreationConfigValid()"/>
+            <label class="form-check-label" for="createdSiteReusePublic">
+                ${raw(message(code: 'mapConfiguration.createdSiteReuse.public'))}
             </label>
         </div>
 
-        <span class="form-text"><g:message
-                code="mapConfiguration.addCreatedSiteToListOfSelectedSites.help.text"/></span>
+        <!-- ko if: transients.createdSiteReuse() === 'none' -->
+        <p class="form-text mb-0"><g:message code="mapConfiguration.createdSiteReuse.help.none"/></p>
+        <!-- /ko -->
+        <!-- ko if: transients.createdSiteReuse() === 'editors' -->
+        <p class="form-text mb-0"><g:message code="mapConfiguration.createdSiteReuse.help.editors"/></p>
+        <!-- /ko -->
+        <!-- ko if: transients.createdSiteReuse() === 'public' -->
+        <p class="form-text mb-0"><g:message code="mapConfiguration.createdSiteReuse.help.public"/></p>
+        <!-- /ko -->
     </div>
 </div>
 </script>

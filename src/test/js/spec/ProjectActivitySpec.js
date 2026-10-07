@@ -119,7 +119,86 @@ describe("ProjectActivityViewModel Spec", function () {
         expect(pActivity.getNumberOfSitesForSurvey()).toEqual(0);
         expect(pActivity.allowPoints()).toEqual(false);
         expect(pActivity.allowPolygons()).toEqual(false);
-    })
+    });
+
+    it("created site reuse radio maps editor and public reuse", function () {
+        var pActivity = new ProjectActivity();
+        expect(pActivity.transients.createdSiteReuse()).toEqual('none');
+
+        pActivity.transients.createdSiteReuse('editors');
+        expect(pActivity.addCreatedSiteToListOfSelectedSites()).toEqual(true);
+        expect(pActivity.allowPublicReusableSites()).toEqual(false);
+
+        pActivity.transients.createdSiteReuse('public');
+        expect(pActivity.addCreatedSiteToListOfSelectedSites()).toEqual(true);
+        expect(pActivity.allowPublicReusableSites()).toEqual(true);
+        var sites = pActivity.asJS("sites");
+        expect(sites.addCreatedSiteToListOfSelectedSites).toEqual(true);
+        expect(sites.allowPublicReusableSites).toEqual(true);
+
+        pActivity.transients.createdSiteReuse('none');
+        expect(pActivity.addCreatedSiteToListOfSelectedSites()).toEqual(false);
+        expect(pActivity.allowPublicReusableSites()).toEqual(false);
+        expect(pActivity.transients.createdSiteReuse()).toEqual('none');
+    });
+
+    it("allowPublicReusableSites defaults to false and is saved with site configuration", function () {
+        var pActivity = new ProjectActivity();
+        expect(pActivity.allowPublicReusableSites()).toEqual(false);
+        expect(pActivity.asJS("sites").allowPublicReusableSites).toEqual(false);
+
+        var configured = new ProjectActivity({
+            pActivity: {
+                addCreatedSiteToListOfSelectedSites: true,
+                allowPublicReusableSites: true,
+                surveySiteOption: 'sitepickcreate'
+            }
+        });
+        expect(configured.allowPublicReusableSites()).toEqual(true);
+        var sites = configured.asJS("sites");
+        expect(sites.allowPublicReusableSites).toEqual(true);
+        expect(sites.addCreatedSiteToListOfSelectedSites).toEqual(true);
+    });
+
+    it("allowPublicReusableSites is cleared when reuse is turned off or the site option leaves pick and create", function () {
+        var params = {
+            sites: [{
+                siteId: 'ghh',
+                name: 'Test',
+                extent: {
+                    geometry: {
+                        ibra: ""
+                    }
+                }
+            }],
+            pActivity: {
+                sites: ['ghh'],
+                allowPoints: true,
+                allowPolygons: true,
+                surveySiteOption: 'sitepickcreate',
+                addCreatedSiteToListOfSelectedSites: true,
+                allowPublicReusableSites: true
+            }
+        };
+
+        var pActivity = new ProjectActivity(params);
+        expect(pActivity.allowPublicReusableSites()).toEqual(true);
+
+        pActivity.addCreatedSiteToListOfSelectedSites(false);
+        expect(pActivity.allowPublicReusableSites()).toEqual(false);
+
+        pActivity.addCreatedSiteToListOfSelectedSites(true);
+        pActivity.allowPublicReusableSites(true);
+        pActivity.surveySiteOption('sitecreate');
+        expect(pActivity.addCreatedSiteToListOfSelectedSites()).toEqual(false);
+        expect(pActivity.allowPublicReusableSites()).toEqual(false);
+
+        pActivity.surveySiteOption('sitepickcreate');
+        pActivity.addCreatedSiteToListOfSelectedSites(true);
+        pActivity.allowPublicReusableSites(true);
+        pActivity.surveySiteOption('sitepick');
+        expect(pActivity.allowPublicReusableSites()).toEqual(false);
+    });
 
     it("isSiteConfigValid should check if site configuration is valid", function () {
         var params = {
