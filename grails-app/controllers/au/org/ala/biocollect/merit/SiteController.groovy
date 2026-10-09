@@ -585,20 +585,20 @@ class SiteController {
                 if (isCreateSiteRequest) {
                     String projectId = postBody?.projectId
                     Boolean isAdmin = projectService.isUserAdminForProject(userId, projectId)
+                    def pActivity = postBody?.pActivityId ? projectActivityService.get(postBody.pActivityId) : null
+                    boolean allowPublicReusableSites = pActivity?.addCreatedSiteToListOfSelectedSites == true && pActivity?.allowPublicReusableSites == true
                     if (projectId && isAdmin) {
                         siteService.addSitesToSiteWhiteListInWorksProjects([siteId], [projectId], true);
+                    } else if (allowPublicReusableSites) {
+                        siteService.addSitesToSiteWhiteListInWorksProjects([siteId], [pActivity.projectId], true);
                     } else {
                         siteService.addSitesToSiteWhiteListInWorksProjects([siteId], values.projects)
                     }
 
-                    if (postBody?.pActivityId) {
-                        def pActivity = projectActivityService.get(postBody.pActivityId);
+                    if (pActivity && result?.status != 'error') {
+                        pActivity.sites.add(siteId)
 
-                        if (result?.status != 'error') {
-                            pActivity.sites.add(siteId)
-
-                            projectActivityService.update(postBody.pActivityId, pActivity)
-                        }
+                        projectActivityService.update(postBody.pActivityId, pActivity)
                     }
                 }
             } else {

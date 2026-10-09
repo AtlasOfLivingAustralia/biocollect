@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus
 
 class AclFilterInterceptor {
     int order = 3
-    def userService, projectService, roleService
+    def userService, projectService, projectActivityService, roleService
     UserInfoService userInfoService
 
     def roles = []
@@ -136,7 +136,7 @@ class AclFilterInterceptor {
                                     // Converting to list since JSONArray.join is adding Quotes in joined string
                                     // example - '"abc","cdf"'
                                     String projectIds = site.projects.toList().join(',')
-                                    if (!projectService.isUserEditorForProjects(userId, projectIds)) {
+                                    if (!projectService.isUserEditorForProjects(userId, projectIds) && !isPublicReusableSiteCreate(site)) {
                                         errorMsg = "Access denied: User is not an editor for all the projects this site is associated with."
                                     }
                                 } else {
@@ -202,6 +202,26 @@ class AclFilterInterceptor {
             params.userCanEditProject = false
         }
         true
+    }
+
+    /**
+     * Logged-in non-editors may create a reusable site when the survey allows it.
+     * The site must be new and associated only with that survey's project.
+     */
+    private boolean isPublicReusableSiteCreate(site) {
+        if (params.id) {
+            return false
+        }
+        String pActivityId = request.JSON?.pActivityId
+        if (!pActivityId || !site?.projects) {
+            return false
+        }
+        def pActivity = projectActivityService.get(pActivityId)
+        if (!pActivity?.addCreatedSiteToListOfSelectedSites || !pActivity?.allowPublicReusableSites || !pActivity?.projectId) {
+            return false
+        }
+        List projects = site.projects.toList()
+        projects.size() == 1 && projects[0]?.toString() == pActivity.projectId.toString()
     }
 
     boolean after() {

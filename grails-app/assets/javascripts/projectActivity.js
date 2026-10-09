@@ -23,6 +23,11 @@ var ProjectActivity = function (params) {
      */
     self.addCreatedSiteToListOfSelectedSites = ko.observable(pActivity.addCreatedSiteToListOfSelectedSites);
     /**
+     * When reuse is also enabled, logged-in users who are not project admins may create reusable sites.
+     * Off unless the survey has explicitly turned this on.
+     */
+    self.allowPublicReusableSites = ko.observable(!!pActivity.allowPublicReusableSites);
+    /**
      * selectFromSitesOnly removed
      * Use surveySiteOption = 'sitepick' instead.
      * Data to be migrated by a script.
@@ -211,6 +216,45 @@ var ProjectActivity = function (params) {
         }
     });
 
+    self.addCreatedSiteToListOfSelectedSites.subscribe(function (reuse) {
+        if (!reuse) {
+            self.allowPublicReusableSites(false);
+        }
+    });
+    if (!self.addCreatedSiteToListOfSelectedSites()) {
+        self.allowPublicReusableSites(false);
+    }
+
+    /**
+     * Radio for who may reuse a site created on the survey form.
+     * none: private sites only
+     * editors: project editors (addCreatedSiteToListOfSelectedSites)
+     * public: logged-in non-admins as well (also allowPublicReusableSites)
+     */
+    self.transients.createdSiteReuse = ko.pureComputed({
+        read: function () {
+            if (self.allowPublicReusableSites()) {
+                return 'public';
+            }
+            if (self.addCreatedSiteToListOfSelectedSites()) {
+                return 'editors';
+            }
+            return 'none';
+        },
+        write: function (value) {
+            if (value === 'public') {
+                self.addCreatedSiteToListOfSelectedSites(true);
+                self.allowPublicReusableSites(true);
+            } else if (value === 'editors') {
+                self.allowPublicReusableSites(false);
+                self.addCreatedSiteToListOfSelectedSites(true);
+            } else {
+                self.addCreatedSiteToListOfSelectedSites(false);
+                self.allowPublicReusableSites(false);
+            }
+        }
+    });
+
     self.clearSelectedSites = function() {
         $.each(self.sites(), function (index, site) {
             site.added(false);
@@ -218,6 +262,7 @@ var ProjectActivity = function (params) {
 
         // Must only be able to add user created site to  pre-determined list when pick & create option is selected.
         self.addCreatedSiteToListOfSelectedSites(false);
+        self.allowPublicReusableSites(false);
     };
 
     self.clearCreateSiteOptions = function() {
@@ -227,6 +272,7 @@ var ProjectActivity = function (params) {
 
         // Must only be able to add user created site to  pre-determined list when pick & create option is selected.
         self.addCreatedSiteToListOfSelectedSites(false);
+        self.allowPublicReusableSites(false);
     };
 
     self.previewUrl = ko.observable('');
@@ -710,7 +756,7 @@ var ProjectActivity = function (params) {
         else if (by == "info") {
             var ignore = self.ignore.concat(['current',
                 'access', 'species', 'sites', 'transients', 'endDate','visibility','pActivityFormName', 'restrictRecordToSites',
-                'addCreatedSiteToListOfSelectedSites', 'mapLayersConfig', 'project']);
+                'addCreatedSiteToListOfSelectedSites', 'allowPublicReusableSites', 'mapLayersConfig', 'project']);
             ignore = $.grep(ignore, function (item, i) {
                 return item != "documents";
             });
@@ -728,6 +774,7 @@ var ProjectActivity = function (params) {
             jsData.sites = sites;
             jsData.restrictRecordToSites = self.restrictRecordToSites();
             jsData.addCreatedSiteToListOfSelectedSites = self.addCreatedSiteToListOfSelectedSites();
+            jsData.allowPublicReusableSites = self.allowPublicReusableSites();
             jsData.mapLayersConfig = ko.toJS(self.mapLayersConfig);
             jsData.allowPolygons = self.allowPolygons();
             jsData.allowPoints = self.allowPoints();

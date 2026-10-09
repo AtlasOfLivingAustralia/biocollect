@@ -27,12 +27,8 @@
                         <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick"  data-bind="enable: surveySiteOption() === 'sitepick'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
                     <!-- ko if: surveySiteOption() == 'sitepick' && !isSiteConfigValid() -->
-                    <div class="formError inline mt-2" >
-                        <div class="formErrorContent">
-                            <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --><br>
-                            <g:message code="projectActivity.locations.mandatory"/>
-                        </div>
-                    </div>
+                    <!-- ko template: {name: 'template-site-config-invalid'} -->
+                    <!-- /ko -->
                     <!-- /ko -->
 
                 </div>
@@ -64,12 +60,8 @@
                         <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-create" data-bind="enable: surveySiteOption() === 'sitecreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
                     <!-- ko if: surveySiteOption() == 'sitecreate' && !isSiteConfigValid() -->
-                    <div class="formError inline mt-2" >
-                        <div class="formErrorContent">
-                            <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
-                            <g:message code="projectActivity.locations.mandatory"/>
-                        </div>
-                    </div>
+                    <!-- ko template: {name: 'template-site-config-invalid'} -->
+                    <!-- /ko -->
                     <!-- /ko -->
                 </div>
 
@@ -100,13 +92,8 @@
                         <button class="btn btn-dark btn-sm ms-3" data-bs-toggle="collapse" data-bs-target="#site-pick-create" data-bind="enable: surveySiteOption() === 'sitepickcreate'"><i class="fas fa-cog"></i> <g:message code="mapConfiguration.sites.configure"/> </button>
                     </div>
                     <!-- ko if: surveySiteOption() == 'sitepickcreate' && !isSiteConfigValid() -->
-                    <div class="formError inline mt-2" >
-                        <div class="formErrorContent">
-                            <!-- ko text: isUserSiteCreationConfigValid() --> <!-- /ko --> <br>
-                            <!-- ko text: isSiteSelectionConfigValid() --> <!-- /ko --> <br>
-                            <g:message code="projectActivity.locations.mandatory"/>
-                        </div>
-                    </div>
+                    <!-- ko template: {name: 'template-site-config-invalid'} -->
+                    <!-- /ko -->
                     <!-- /ko -->
                 </div>
 
@@ -262,6 +249,20 @@
             </div>
         </div>
     </div>
+</div>
+</script>
+<script id="template-site-config-invalid" type="text/html">
+<div class="alert alert-danger d-flex align-items-start mt-2 mb-0" role="alert">
+    <i class="fas fa-exclamation-circle me-2 mt-1" aria-hidden="true"></i>
+    <ul class="mb-0 ps-3">
+        <!-- ko if: ['sitecreate', 'sitepickcreate'].indexOf(surveySiteOption()) !== -1 && isUserSiteCreationConfigValid() -->
+        <li data-bind="text: isUserSiteCreationConfigValid()"></li>
+        <!-- /ko -->
+        <!-- ko if: ['sitepick', 'sitepickcreate'].indexOf(surveySiteOption()) !== -1 && isSiteSelectionConfigValid() -->
+        <li data-bind="text: isSiteSelectionConfigValid()"></li>
+        <!-- /ko -->
+        <li><g:message code="projectActivity.locations.mandatory"/></li>
+    </ul>
 </div>
 </script>
 <script id="template-site-add-to-project" type="text/html">
