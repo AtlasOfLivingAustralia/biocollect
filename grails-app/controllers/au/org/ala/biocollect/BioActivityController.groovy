@@ -31,6 +31,7 @@ import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
@@ -1601,7 +1602,7 @@ class BioActivityController {
         String pActivityId = params.pActivityId
         String type = params.type
         def file
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             file = request.getFile('data')
         }
 
@@ -1622,7 +1623,7 @@ class BioActivityController {
     def extractDataFromExcelTemplate() {
 
         def result
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('data')
             if (file) {
                 def data = metadataService.extractOutputDataFromExcelOutputTemplate(params, file)
@@ -1652,7 +1653,7 @@ class BioActivityController {
     def uploadFile() {
         String stagingDirPath = grailsApplication.config.getProperty('upload.path')
         Map result = [:]
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             MultipartFile multipartFile = request.getFile('files')
 
             if (multipartFile?.size) {  // will only have size if a file was selected

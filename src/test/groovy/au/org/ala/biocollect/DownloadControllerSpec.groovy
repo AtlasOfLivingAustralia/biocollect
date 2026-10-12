@@ -183,6 +183,8 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         response.text == "filename, hub or model is missing"
 
         when:
+        params.clear()
+        response.reset()
         params.hub = "tempHub"
         params.model = "tempModel"
         controller.getScriptFile()
@@ -192,6 +194,8 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         response.text == "filename, hub or model is missing"
 
         when:
+        params.clear()
+        response.reset()
         params.hub = "tempHub"
         params.filename = "validFile.js"
         controller.getScriptFile()

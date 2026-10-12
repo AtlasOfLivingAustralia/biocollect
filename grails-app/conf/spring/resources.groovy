@@ -1,3 +1,4 @@
+import au.org.ala.biocollect.ExternalMessageSourcePostProcessor
 import au.org.ala.biocollect.merit.hub.HubAwareLinkGenerator
 
 // Place your Spring DSL code here
@@ -6,4 +7,11 @@ beans = {
     // The assetProcessorService (registered by asset-pipeline's AutoConfiguration) is passed through so the
     // super constructor wires AssetProcessorService.grailsLinkGenerator = this, keeping <asset:*> tags working.
     grailsLinkGenerator(HubAwareLinkGenerator, grailsApplication.config.getProperty('server.serverURL', String, "http://localhost:8087/biocollect"), ref('assetProcessorService'))
+
+    externalMessageSourcePostProcessor(ExternalMessageSourcePostProcessor) {
+        basenames = [
+                "file:///var/opt/atlas/i18n/biocollect/messages",
+                "file:///opt/atlas/i18n/biocollect/messages"
+        ]
+    }
 }

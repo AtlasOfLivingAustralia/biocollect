@@ -10,16 +10,8 @@ import grails.util.Environment
 class BootStrap {
     def configService
     def settingService
-    def messageSource
 
     def init = { servletContext ->
-        messageSource.setBasenames(
-                "file:///var/opt/atlas/i18n/biocollect/messages",
-                "file:///opt/atlas/i18n/biocollect/messages",
-                "WEB-INF/grails-app/i18n/messages",
-                "classpath:messages"
-        )
-
         JSON.createNamedConfig("nullSafe", { cfg ->
             // net.sf.json (json-lib) is no longer a direct dependency (http-builder-helper was
             // removed); it may still arrive transitively via http-builder, so the marshaller is
