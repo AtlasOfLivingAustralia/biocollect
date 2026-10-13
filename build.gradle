@@ -37,8 +37,8 @@ if (Boolean.valueOf(enableClover)) {
 apply from: "${project.projectDir}/gradle/publish.gradle"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 repositories {

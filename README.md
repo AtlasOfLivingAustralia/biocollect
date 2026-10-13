@@ -20,7 +20,7 @@ New server side classes that are custom to BioCollect should be under the packag
 
 ### Technologies
   * Grails framework: 7.2.1
-  * Java 17
+  * Java 25
   * Groovy 4
   * Gradle 8.14.4 (via the Gradle wrapper, `./gradlew`)
   * Knockout JS
