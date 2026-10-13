@@ -18,11 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
-          java-version: '17'
-          distribution: 'adopt'
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Install nodejs
         uses: actions/setup-node@v6
@@ -100,7 +100,7 @@ jobs:
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadlessCI
 
       - name: Run BioCollect functional tests
-        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev /tmp/biocollect-pwa
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/grails7 /tmp/biocollect-pwa
         continue-on-error: false
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
