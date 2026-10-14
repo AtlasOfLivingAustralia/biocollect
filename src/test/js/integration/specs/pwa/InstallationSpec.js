@@ -37,6 +37,18 @@ describe("Application installation Spec", function () {
     var pa = 'pa_1', project = 'project_1', site = "ab9ec9af-241b-49f7-adcf-ca40e474d119",
         adminToolsPage, pwaAppPage, addBioActivityPage, homePage;
 
+    /**
+     * Ecodata's Grails 7 functional-test build does not run the search index flush
+     * job, so an uploaded activity stays invisible to record search until a full
+     * reindex. Reindex, then return to this survey's records.
+     */
+    async function reindexUploadedRecord() {
+        console.log('Reindexing so the uploaded record is searchable');
+        await adminToolsPage.reindex();
+        await pwaAppPage.open();
+        await pwaAppPage.viewProject(project);
+        await pwaAppPage.viewRecords(pa);
+    }
 
     beforeAll(async function () {
         adminToolsPage = new AdminToolsPage();
@@ -155,6 +167,8 @@ describe("Application installation Spec", function () {
         await pwaAppPage.waitForUnpublishedCount(0, 120000, true);
         expect(await pwaAppPage.unpublishedCount()).toBe(0);
 
+        await reindexUploadedRecord();
+
         console.log('Checking that the published record exists');
         await pwaAppPage.switchToPublishedTab();
         await pwaAppPage.refreshPublishedRecords();
@@ -209,6 +223,8 @@ describe("Application installation Spec", function () {
         await pwaAppPage.uploadNthUnpublishedRecord();
         await pwaAppPage.waitForUnpublishedCount(0, 120000, true);
         expect(await pwaAppPage.unpublishedCount()).toBe(0);
+
+        await reindexUploadedRecord();
 
         console.log('Checking that the published record exists');
         await pwaAppPage.switchToPublishedTab();
