@@ -35,7 +35,7 @@ class HubSettings extends JSONObject {
     }
 
     public boolean overridesHomePage() {
-        return !!optString('homePagePath', null)
+        return optString('homePagePath', null) as Boolean
     }
 
     /**
