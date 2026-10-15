@@ -167,7 +167,7 @@ dependencies {
 
     //ALA plugins
     implementation("au.org.ala.plugins.grails:images-client-plugin:2.0-SNAPSHOT") {
-        // ala-auth is provided by BioCollect directly (8.0.0-SNAPSHOT); avoid a duplicate.
+        // ala-auth is provided by BioCollect directly (8.1.0-SNAPSHOT); avoid a duplicate.
         // commons-httpclient is intentionally kept: the plugin's *WebService classes use it at runtime.
         exclude group: 'org.grails.plugins', module: 'ala-auth'
     }
