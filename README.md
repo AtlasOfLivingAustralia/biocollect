@@ -19,10 +19,10 @@ New server side classes that are custom to BioCollect should be under the packag
 ## General Information
 
 ### Technologies
-  * Grails framework: 7.2.1
+  * Grails framework: 8.0.0
   * Java 25
-  * Groovy 4
-  * Gradle 8.14.4 (via the Gradle wrapper, `./gradlew`)
+  * Groovy 5
+  * Gradle 9.8.0 (via the Gradle wrapper, `./gradlew`)
   * Knockout JS
   * jQuery
   * Bootstrap 5
@@ -31,24 +31,22 @@ New server side classes that are custom to BioCollect should be under the packag
 
 * This project requires you to run the [ecodata project](https://github.com/AtlasOfLivingAustralia/ecodata) on port `8080`.
 
-* An external configuration file is required at `/data/biocollect/config/biocollect-config.properties` (or as configured in `application.yml`). External configuration is built into Grails 7; no plugin is needed.
+* An external configuration file is required at `/data/biocollect/config/biocollect-config.properties` (or as configured in `application.yml`). External configuration is built into Grails; no plugin is needed.
 
 * [Use this guide to setup BioCollect in IntelliJ](setup.md)
 
 ### Running BioCollect
 
-Everything runs through the Gradle wrapper (the legacy Grails wrapper has been removed). With the plugin repositories cloned as siblings, run:
+Everything runs through the Gradle wrapper (the legacy Grails wrapper has been removed). `gradle.properties` sets `inplace=false`, so the default build uses the published plugin artifacts:
 
 ```
-./gradlew :bootRun -Dgrails.run.active=true
+./gradlew bootRun
 ```
 
-Note the leading colon before the `bootRun` task - this is required because with `inplace=true` (the default) Gradle is configured as a multi-project build. This mode supports hot-reloading of changes to the ecodata-client-plugin and ala-map-plugin.
-
-To build against the published plugin artifacts instead of the sibling repositories, opt out of the in-place build:
+To develop against sibling checkouts of ecodata-client-plugin and ala-map-plugin, enable the in-place build. The leading colon is required because Gradle is then a multi-project build:
 
 ```
-./gradlew bootRun -Pinplace=false
+./gradlew :bootRun -Pinplace=true
 ```
 
 BioCollect runs on port `8087` in development mode by default.
