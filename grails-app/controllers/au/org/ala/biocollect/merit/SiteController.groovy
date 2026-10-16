@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.apache.commons.lang.StringUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.ContentType
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 
 import static jakarta.servlet.http.HttpServletResponse.SC_CONFLICT
 import static jakarta.servlet.http.HttpServletResponse.SC_NO_CONTENT
@@ -358,7 +359,7 @@ class SiteController {
             redirect(url: params.returnTo)
         }
 
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def f = request.getFile('shapefile')
 
 

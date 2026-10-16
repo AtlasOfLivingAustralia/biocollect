@@ -1001,7 +1001,7 @@ class ProjectController {
             project.userIsProjectMember = userIsProjectMember
         }
 
-        if (params.download as boolean) {
+        if (params.download) {
             response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
             // This is returned to the browswer as a text response due to workaround the warning
             // displayed by IE8/9 when JSON is returned from an iframe submit.

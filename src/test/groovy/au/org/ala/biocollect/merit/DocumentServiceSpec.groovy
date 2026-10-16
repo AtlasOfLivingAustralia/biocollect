@@ -1,9 +1,12 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import grails.testing.spring.AutowiredTest
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.web.converters.marshaller.json.CollectionMarshaller
 import org.grails.web.converters.marshaller.json.MapMarshaller
+import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
 /**
  * Tests the document service.
@@ -29,7 +32,12 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         service.activityService = activityService
         service.searchService = searchService
         service.projectService = projectService
+        service.settingService = new SettingService()
         service.grailsApplication = grailsApplication
+    }
+
+    def cleanup() {
+        SettingService.clearHubConfig()
     }
 
 
@@ -193,9 +201,10 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         String projectId = document.projectId
         String searchInRole = "magazines"
         String query = "role:" + searchInRole + " AND projectId:" + projectId
-        List DOCUMENT_FILTER = ["className:au.org.ala.ecodata.Document"]
+        List DOCUMENT_FILTER = ["-role:mainImage", "-role:logo", "className:au.org.ala.ecodata.Document"]
         String hub = "nesp"
         String userId = 'u1'
+        SettingService.setHubConfig(new HubSettings([urlPath: hub]))
 
         Map params = [
                 offset:0,
@@ -209,18 +218,17 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         ]
 
         when:
-        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, searchInRole, sort, order, projectId, hub)
+        Map documents = service.allDocumentsSearch(new GrailsParameterMap([searchTerm: searchTerm, searchType: searchType, searchInRole: searchInRole, sort: sort, order: order, projectId: projectId], new MockHttpServletRequest()))
 
         then:
         1 * service.userService.userIsAlaAdmin() >> true
         1 * service.userService.getCurrentUserId() >> userId
-        1 * service.searchService.fulltextSearch(_,true) >> [documentId:'doc1', role:'magazines']
-        documents
+        1 * service.searchService.fulltextSearch(params, true) >> [documentId:'doc1', role:'magazines']
+        documents == [documentId:'doc1', role:'magazines']
     }
 
     def "retrieve hub documents when hub is passed"() {
         setup:
-        Map project = [projectId: 'proj1']
         List searchResults =[[_source:[projectId:'proj1', documentId:'doc2']]]
 
         String searchTerm = ""
@@ -230,8 +238,9 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         String projectId = ""
         String searchInRole = "magazines"
         String query = "role:" + searchInRole
-        List DOCUMENT_FILTER = ["publiclyViewable:true","className:au.org.ala.ecodata.Document"]
+        List DOCUMENT_FILTER = ["-role:mainImage", "-role:logo", "publiclyViewable:true", "className:au.org.ala.ecodata.Document"]
         String hub = "nesp"
+        SettingService.setHubConfig(new HubSettings([urlPath: hub]))
 
         Map params = [
                 offset:0,
@@ -246,11 +255,10 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         ]
 
         when:
-        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, searchInRole, sort, order, projectId, hub)
+        Map documents = service.allDocumentsSearch(new GrailsParameterMap([searchTerm: searchTerm, searchType: searchType, searchInRole: searchInRole, sort: sort, order: order, projectId: projectId], new MockHttpServletRequest()))
 
         then:
-        1 * service.projectService.get(project.projectId) >> project
-        1 * service.searchService.fulltextSearch(_,true) >> [hits:[hits:searchResults]]
-        documents
+        1 * service.searchService.fulltextSearch(params, true) >> [hits:[hits:searchResults]]
+        documents == [hits:[hits:searchResults]]
     }
 }

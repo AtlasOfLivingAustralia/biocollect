@@ -16,7 +16,7 @@ buildscript {
 }
 
 plugins {
-    id "com.gorylenko.gradle-git-properties" version "2.4.1"
+    id "com.gorylenko.gradle-git-properties" version "2.5.7"
 }
 
 version "$biocollectVersion"
@@ -36,8 +36,11 @@ if (Boolean.valueOf(enableClover)) {
 }
 apply from: "${project.projectDir}/gradle/publish.gradle"
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
 repositories {
     mavenLocal {
         // ~/.m2 has the ehcache pom without the jakarta classifier jar, which breaks
@@ -102,7 +105,6 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly "net.java.dev.jna:jna"
     developmentOnly "io.methvin:directory-watcher"
-    console "org.apache.grails:grails-console"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "org.springframework.boot:spring-boot-autoconfigure"
@@ -159,13 +161,13 @@ dependencies {
     runtimeOnly 'org.webjars:jquery:1.12.4'
     // dk.glasius:external-config removed: external configuration (grails.config.locations)
     // is built into Grails core as of Grails 7.0.
-    implementation 'org.grails.plugins:grails-mail:5.0.3'
+    implementation 'org.apache.grails:grails-mail'
     implementation "org.commonmark:commonmark:0.24.0"
     implementation "com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:20240325.1"
 
     //ALA plugins
     implementation("au.org.ala.plugins.grails:images-client-plugin:2.0-SNAPSHOT") {
-        // ala-auth is provided by BioCollect directly (8.0.0-SNAPSHOT); avoid a duplicate.
+        // ala-auth is provided by BioCollect directly (8.1.0-SNAPSHOT); avoid a duplicate.
         // commons-httpclient is intentionally kept: the plugin's *WebService classes use it at runtime.
         exclude group: 'org.grails.plugins', module: 'ala-auth'
     }
@@ -191,13 +193,13 @@ dependencies {
     implementation 'org.apache.groovy:groovy-dateutil'
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:6.0-SNAPSHOT"
-        implementation "org.grails.plugins:ecodata-client-plugin:10.0-SNAPSHOT"
+        implementation "org.grails.plugins:ecodata-client-plugin:11.0-SNAPSHOT"
     }
 
     testImplementation "org.pac4j:pac4j-jwt:5.4.3"
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.apache.grails:grails-testing-support-web"
-    testImplementation "org.apache.grails:grails-geb"
+    testImplementation testFixtures("org.apache.grails:grails-geb")
     testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:2.28.0"
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
@@ -223,7 +225,6 @@ bootRun {
 bootJar {
     enabled = true
     archiveClassifier = 'exec'
-    launchScript()
 }
 
 assets {
@@ -231,7 +232,7 @@ assets {
     minifyCss = true
     maxThreads = 4
     minifyOptions = [
-            languageMode  : 'ES6', //languageIn
+            languageMode  : 'ES2020', //languageIn; the PWA scripts use async functions (ES2017+)
 //            targetLanguage: 'ES5', // languageOut
             excludes: ['sw.js', '**/*.min.js', 'ckeditor/ckeditor5/**', '**/webjars/**']
     ]

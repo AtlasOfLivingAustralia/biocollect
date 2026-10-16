@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
 import org.grails.web.json.JSONArray
 import org.springframework.context.MessageSource
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 
 @SSO
 class ActivityController {
@@ -367,7 +368,7 @@ class ActivityController {
 
     /* Parse the xlsx output data and pass it back to the client. */
     def ajaxBulkUpload(){
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('templateFile')
             if (file) {
                 def activityType = params.type
@@ -421,7 +422,7 @@ class ActivityController {
     }
 
     def ajaxUpload() {
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('data')
             if (file) {
 

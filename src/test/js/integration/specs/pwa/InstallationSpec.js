@@ -37,7 +37,6 @@ describe("Application installation Spec", function () {
     var pa = 'pa_1', project = 'project_1', site = "ab9ec9af-241b-49f7-adcf-ca40e474d119",
         adminToolsPage, pwaAppPage, addBioActivityPage, homePage;
 
-
     beforeAll(async function () {
         adminToolsPage = new AdminToolsPage();
         homePage = new HomePage();

@@ -22,8 +22,12 @@ class AdminToolsPage extends ReloadablePage {
     async reindex() {
         console.log(`Opening ${this.url}`);
         await browser.url(this.url)
+        // Mark the page before clicking. The reindex request reloads this page when
+        // it finishes; without a marker, the reload check returns immediately and the
+        // suite moves on while indexing is still running.
+        await this.saveAtCheckTime();
         await this.reindexButton.click();
-        await this.hasBeenReloaded();
+        await this.hasBeenReloaded(120000);
     }
 
     async clearCache() {
