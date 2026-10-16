@@ -51,9 +51,11 @@
             "measurementType": "text",
             "validate": "required",
             "constraints": [
+              "1770 Cove",
               "Chinamens",
               "Fences beach",
               "Main beach",
+              "No Mans Cove",
               "Nth of 1770 HV",
               "North of Surf Club",
               "Workmans beach"
