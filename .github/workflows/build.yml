@@ -112,10 +112,6 @@ jobs:
         with:
           path: ./logs
 
-      - name: Clean to remove clover instrumentation
-        if: ${{ success() }}
-        run: ./gradlew clean
-
       - name: Publish the JAR to the repository
         if: ${{ success() }}
         run: ./gradlew publish

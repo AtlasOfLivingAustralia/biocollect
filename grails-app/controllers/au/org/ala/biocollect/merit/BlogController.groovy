@@ -1,9 +1,8 @@
 package au.org.ala.biocollect.merit
 
-import grails.converters.JSON
-
-import static org.apache.http.HttpStatus.SC_OK
 import au.org.ala.web.SSO
+import grails.converters.JSON
+import org.springframework.http.HttpStatus
 @SSO
 class BlogController {
 
@@ -50,12 +49,12 @@ class BlogController {
             result = documentService.saveStagedImageDocument(image)
 
             //response from update
-            if (result.statusCode == SC_OK) {
+            if (result.statusCode == HttpStatus.OK.value()) {
                 blogEntry.imageId = result.resp.documentId
             }
 
             //response from create
-            if (result.status == SC_OK) {
+            if (result.status == HttpStatus.OK.value()) {
                 blogEntry.imageId = result.content.documentId
             }
         }

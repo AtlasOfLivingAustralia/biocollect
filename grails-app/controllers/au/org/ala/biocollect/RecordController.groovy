@@ -1,10 +1,11 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.ActivityService
 import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 
 import static jakarta.servlet.http.HttpServletResponse.*
 
@@ -90,7 +91,7 @@ class RecordController {
             result = [status: 401, error: "Access denied: User has not been authenticated."]
         } else if (projectService.isUserAdminForProject(userId, record?.projectId) || activityService.isUserOwnerForActivity(userId, record?.activityId)) {
             def resp = recordService.delete(id)
-            if (resp == HttpStatus.SC_OK) {
+            if (resp == HttpStatus.OK.value()) {
                 result = [status: resp, text: 'deleted']
             } else {
                 response.status = resp

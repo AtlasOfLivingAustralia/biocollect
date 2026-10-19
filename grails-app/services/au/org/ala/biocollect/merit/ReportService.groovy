@@ -2,9 +2,9 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.Period
+import java.time.OffsetDateTime
+import java.time.Period
+import java.time.ZoneOffset
 import grails.plugin.cache.Cacheable
 
 
@@ -43,18 +43,18 @@ class ReportService {
 
         def project = projectService.get(projectId, 'all')
         log.info("Processing project "+project.name)
-        def period = Period.months(periodInMonths)
+        def period = Period.ofMonths(periodInMonths)
 
         def reports = (project.reports?:[]).sort{it.toDate}
 
-        DateTime startDate = DateUtils.parse(project.plannedStartDate).withZone(DateTimeZone.default)
-        DateTime endDate = DateUtils.parse(project.plannedEndDate).withZone(DateTimeZone.default)
+        OffsetDateTime startDate = DateUtils.parse(project.plannedStartDate).atZoneSameInstant(java.time.ZoneId.systemDefault()).toOffsetDateTime()
+        OffsetDateTime endDate = DateUtils.parse(project.plannedEndDate).atZoneSameInstant(java.time.ZoneId.systemDefault()).toOffsetDateTime()
 
-        DateTime periodStartDate = null
+        OffsetDateTime periodStartDate = null
         int stage = 1
         for (int i=reports.size()-1; i>=0; i--) {
             if (isSubmittedOrApproved(reports[i])) {
-                periodStartDate = DateUtils.parse(reports[i].toDate).withZone(DateTimeZone.default)
+                periodStartDate = DateUtils.parse(reports[i].toDate).atZoneSameInstant(java.time.ZoneId.systemDefault()).toOffsetDateTime()
                 stage = i+2 // Start at the stage after the submitted or approved one
                 break
             }
@@ -66,7 +66,7 @@ class ReportService {
 
         // The first period start date  (to be modified) should be aligned to the end date of the previous report or
         // the project start date if it is the first report.
-        DateTime reportFromDate = periodStartDate
+        OffsetDateTime reportFromDate = periodStartDate
 
         if (alignToCalendar) {
             periodStartDate = DateUtils.alignToPeriod(periodStartDate, period)
@@ -77,15 +77,15 @@ class ReportService {
             def periodEndDate = periodStartDate.plus(period)
 
             def report = [
-                    fromDate:DateUtils.format(reportFromDate.withZone(DateTimeZone.UTC)),
-                    toDate:DateUtils.format(periodEndDate.withZone(DateTimeZone.UTC)),
+                    fromDate:DateUtils.format(reportFromDate.withOffsetSameInstant(ZoneOffset.UTC)),
+                    toDate:DateUtils.format(periodEndDate.withOffsetSameInstant(ZoneOffset.UTC)),
                     type:'Activity',
                     projectId:projectId,
                     name:'Stage '+stage,
                     description:'Stage '+stage+' for '+project.name
             ]
             if (weekDaysToCompleteReport) {
-                report.dueDate = DateUtils.format(periodEndDate.plusDays(weekDaysToCompleteReport).withZone(DateTimeZone.UTC))
+                report.dueDate = DateUtils.format(periodEndDate.plusDays(weekDaysToCompleteReport).withOffsetSameInstant(ZoneOffset.UTC))
             }
 
             if (reports.size() >= stage) {
@@ -499,8 +499,8 @@ class ReportService {
             return [actions:[], actionStatus: [:], actionStatusByTheme: [:]]
         }
         String mostRecent = activities.max{it.plannedEndDate}.plannedEndDate
-        Period period = Period.months(6)
-        DateTime periodStart = DateUtils.alignToPeriod(DateUtils.parse(mostRecent), period)
+        Period period = Period.ofMonths(6)
+        OffsetDateTime periodStart = DateUtils.alignToPeriod(DateUtils.parse(mostRecent), period)
         activities = activities.findAll{DateUtils.parse(it.plannedEndDate).isAfter(periodStart)}
         String startDate = DateUtils.format(periodStart)
         String endDate = DateUtils.format(periodStart.plus(period))

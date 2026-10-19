@@ -6,9 +6,9 @@ import au.org.ala.biocollect.UtilService
 import au.org.ala.biocollect.merit.SpeciesService
 import grails.core.GrailsApplication
 import grails.web.servlet.mvc.GrailsParameterMap
-import org.joda.time.DateTime
-import org.joda.time.Period
-import org.joda.time.format.DateTimeFormat
+import java.time.OffsetDateTime
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 import jakarta.servlet.http.HttpServletResponse
 
@@ -297,14 +297,14 @@ class ActivityService {
         def start = activity.plannedStartDate
         def end = activity.plannedEndDate
 
-        DateTime startDate = DateUtils.parse(start)
-        DateTime endDate = DateUtils.parse(end).minusDays(1)
+        OffsetDateTime startDate = DateUtils.parse(start)
+        OffsetDateTime endDate = DateUtils.parse(end).minusDays(1)
 
-        Period period = new Period(startDate.toLocalDate(), endDate.toLocalDate())
+        Period period = Period.between(startDate.toLocalDate(), endDate.toLocalDate())
 
-        def description = DateTimeFormat.forPattern("MMM yyyy").print(endDate)
+        def description = DateTimeFormatter.ofPattern("MMM yyyy").format(endDate)
         if (period.months > 1) {
-            description = DateTimeFormat.forPattern("MMM").print(startDate) + ' - ' + description
+            description = DateTimeFormatter.ofPattern("MMM").format(startDate) + ' - ' + description
         }
         "${activity.type} (${description})"
 

@@ -1,5 +1,7 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.*
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.swagger.model.*
@@ -24,15 +26,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
-import org.apache.http.HttpStatus
-import org.apache.http.entity.ContentType
 import org.grails.web.converters.exceptions.ConverterException
 import org.grails.web.json.JSONArray
 import org.grails.web.json.JSONObject
 import org.springframework.context.MessageSource
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.support.MultipartResolutionDelegate
-import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
@@ -171,7 +170,7 @@ class BioActivityController {
             boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
             Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
 
-            if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == SC_OK) {
+            if (!userAlreadyInRole.statusCode || userAlreadyInRole.statusCode == HttpStatus.OK.value()) {
                 if (!projectEditor && pActivity.publicAccess && !userAlreadyInRole.inRole.toBoolean()) {
                     userService.addUserAsRoleToProject(userId, projectId, "projectParticipant")
                 }
@@ -267,17 +266,17 @@ class BioActivityController {
                     return
                 } else {
                     flash.message = "Project associated with project activity not found"
-                    render status: HttpStatus.SC_NOT_FOUND
+                    render status: HttpStatus.NOT_FOUND.value()
                     return
                 }
             } else {
                 flash.message = "Project Activity not found"
-                render status: HttpStatus.SC_NOT_FOUND
+                render status: HttpStatus.NOT_FOUND.value()
                 return
             }
         } else {
             flash.message = "Project Activity Id must be provided"
-            render status: HttpStatus.SC_BAD_REQUEST
+            render status: HttpStatus.BAD_REQUEST.value()
         }
     }
 
@@ -302,15 +301,15 @@ class BioActivityController {
                     render view: "pwaBioActivityCreateOrEditFragment", model: model
                     return
                 } else {
-                    render status: HttpStatus.SC_NOT_FOUND, text: [message: "Project associated with project activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
+                    render status: HttpStatus.NOT_FOUND.value(), text: [message: "Project associated with project activity not found"] as JSON, contentType: 'application/json'
                     return
                 }
             } else {
-                render status: HttpStatus.SC_NOT_FOUND, text: [message: "Project Activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
+                render status: HttpStatus.NOT_FOUND.value(), text: [message: "Project Activity not found"] as JSON, contentType: 'application/json'
                 return
             }
         } else {
-            render status: HttpStatus.SC_BAD_REQUEST, text: [message: "Project Activity Id must be provided"] as JSON, contentType: ContentType.APPLICATION_JSON
+            render status: HttpStatus.BAD_REQUEST.value(), text: [message: "Project Activity Id must be provided"] as JSON, contentType: 'application/json'
         }
     }
 
@@ -319,7 +318,7 @@ class BioActivityController {
         String userId = userService.getCurrentUserId()
         Map pActivity = projectActivityService.get(projectActivityId, "all")
         if (pActivity.error) {
-            render text: [message: "An error occurred when accessing project activity"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "An error occurred when accessing project activity"] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
             return
         }
 
@@ -327,14 +326,14 @@ class BioActivityController {
         String type = pActivity.pActivityFormName
         Map project = projectService.get(projectId)
         if(project.error) {
-            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
             return
         }
 
         if (activityId) {
             activity = activityService.get(activityId, params?.version, userId, true)
             if(activity.error) {
-                render text: [message: "An error occurred when accessing activity"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                render text: [message: "An error occurred when accessing activity"] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
                 return
             }
         } else {
@@ -343,7 +342,7 @@ class BioActivityController {
 
         Map userPermission = checkUserPermission(project, pActivity, activityId ? activity : null)
         if (!userPermission.authorized) {
-            render text: [message: userPermission.message] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+            render text: [message: userPermission.message] as JSON, status: HttpStatus.UNAUTHORIZED.value(), contentType: 'application/json'
             return
         }
 
@@ -354,7 +353,7 @@ class BioActivityController {
         model.projectName = project.name
         model.isUserAdminModeratorOrEditor = false
 
-        render text:  model as JSON, status: HttpStatus.SC_OK, contentType: ContentType.APPLICATION_JSON
+        render text:  model as JSON, status: HttpStatus.OK.value(), contentType: 'application/json'
     }
 
     @PreAuthorise(accessLevel = "loggedInUser")
@@ -363,7 +362,7 @@ class BioActivityController {
         def model = [:]
         def pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
         if(pActivity.error) {
-            render text: [message: "An error occurred when accessing project activity"] as JSON, contentType: ContentType.APPLICATION_JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR
+            render text: [message: "An error occurred when accessing project activity"] as JSON, contentType: 'application/json', status: HttpStatus.INTERNAL_SERVER_ERROR.value()
             return
         }
 
@@ -373,7 +372,7 @@ class BioActivityController {
         String type = pActivity.pActivityFormName
         Map project = projectService.get(projectId)
         if (project.error) {
-            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
             return
         }
 
@@ -388,7 +387,7 @@ class BioActivityController {
         def model = [:]
         def pActivity = projectActivityService.get(projectActivityId, "all", params?.version)
         if(pActivity.error) {
-            render text: [message: "An error occurred when accessing project activity"] as JSON, contentType: ContentType.APPLICATION_JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR
+            render text: [message: "An error occurred when accessing project activity"] as JSON, contentType: 'application/json', status: HttpStatus.INTERNAL_SERVER_ERROR.value()
             return
         }
 
@@ -398,7 +397,7 @@ class BioActivityController {
         String type = pActivity.pActivityFormName
         Map project = projectService.get(projectId)
         if (project.error) {
-            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "An error occurred when accessing project"] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
             return
         }
 
@@ -721,7 +720,7 @@ class BioActivityController {
             result = [status: 401, error: "Access denied: User has not been authenticated."]
         } else if (projectService.canUserModerateProjects(userId, activity?.projectId) || activityService.isUserOwnerForActivity(userId, activity?.activityId)) {
             def resp = activityService.delete(id)
-            if (resp == SC_OK) {
+            if (resp == HttpStatus.OK.value()) {
                 result = [status: resp, text: 'deleted']
             } else {
                 response.status = resp
@@ -743,7 +742,7 @@ class BioActivityController {
             Map resp = result?.resp
             render text: (resp as JSON), status: result.statusCode
         } else {
-            render (text: "Missing parameter 'ids'", status: HttpStatus.SC_BAD_REQUEST)
+            render (text: "Missing parameter 'ids'", status: HttpStatus.BAD_REQUEST.value())
         }
     }
 
@@ -755,7 +754,7 @@ class BioActivityController {
             Map resp = result?.resp
             render text: (resp as JSON), status: result.statusCode
         } else {
-            render (text: "Missing parameter 'ids'", status: HttpStatus.SC_BAD_REQUEST)
+            render (text: "Missing parameter 'ids'", status: HttpStatus.BAD_REQUEST.value())
         }
     }
 
@@ -767,7 +766,7 @@ class BioActivityController {
             Map resp = result?.resp
             render text: (resp as JSON), status: result.statusCode
         } else {
-            render (text: "Missing parameter 'ids'", status: HttpStatus.SC_BAD_REQUEST)
+            render (text: "Missing parameter 'ids'", status: HttpStatus.BAD_REQUEST.value())
         }
     }
 
@@ -818,7 +817,7 @@ class BioActivityController {
         String userId = userService.getCurrentUserId()
         def activity = activityService.get(id, params?.version, userId, true)
         if (activity.error) {
-            render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: [message: activity.error] as JSON, contentType: ContentType.APPLICATION_JSON
+            render status: HttpStatus.INTERNAL_SERVER_ERROR.value(), text: [message: activity.error] as JSON, contentType: 'application/json'
             return
         }
 
@@ -831,12 +830,12 @@ class BioActivityController {
         if (activity && pActivity) {
             if (embargoed && !userIsModerator && !userIsOwner && !userIsAlaAdmin) {
                 def payload = [message: "Access denied: You do not have permission to access the requested resource."]
-                render status: HttpStatus.SC_UNAUTHORIZED, text: payload as JSON, contentType: ContentType.APPLICATION_JSON
+                render status: HttpStatus.UNAUTHORIZED.value(), text: payload as JSON, contentType: 'application/json'
             } else {
-                render text: activity as JSON, contentType: ContentType.APPLICATION_JSON
+                render text: activity as JSON, contentType: 'application/json'
             }
         } else {
-            render status: HttpStatus.SC_NOT_FOUND, text: [message: "Activity not found"] as JSON, contentType: ContentType.APPLICATION_JSON
+            render status: HttpStatus.NOT_FOUND.value(), text: [message: "Activity not found"] as JSON, contentType: 'application/json'
         }
     }
 
@@ -995,10 +994,10 @@ class BioActivityController {
                         ]
                 )
             } else {
-                render view: '../error', status: SC_BAD_REQUEST, model : [errorMessage: "No user found for id - ${params.spotterId}"]
+                render view: '../error', status: HttpStatus.BAD_REQUEST.value(), model : [errorMessage: "No user found for id - ${params.spotterId}"]
             }
         } else {
-            render view: '../error', status: SC_BAD_REQUEST, model : [errorMessage: "Missing parameter - spotterId or projectActivityId"]
+            render view: '../error', status: HttpStatus.BAD_REQUEST.value(), model : [errorMessage: "Missing parameter - spotterId or projectActivityId"]
         }
     }
 
@@ -1619,7 +1618,7 @@ class BioActivityController {
             }
         }
         else {
-            respond([message: "Missing required parameters - pActivityId, type & data (excel file)"], status: SC_BAD_REQUEST)
+            respond([message: "Missing required parameters - pActivityId, type & data (excel file)"], status: HttpStatus.BAD_REQUEST.value())
         }
     }
 
@@ -1633,7 +1632,7 @@ class BioActivityController {
 
                 if (data && !data.error) {
                     activityService.lookupSpeciesInOutputData(params.pActivityId, params.type, params.listName, data.data)
-                    result = [status: SC_OK, data: data.data]
+                    result = [status: HttpStatus.OK.value(), data: data.data]
                 } else {
                     result = data
                 }
@@ -1644,8 +1643,8 @@ class BioActivityController {
                 render resultJson.toString()
             }
         } else {
-            response.status = SC_BAD_REQUEST
-            result = [status: SC_BAD_REQUEST, error: 'No file attachment found']
+            response.status = HttpStatus.BAD_REQUEST.value()
+            result = [status: HttpStatus.BAD_REQUEST.value(), error: 'No file attachment found']
             // iframe no longer supported
             response.setContentType('application/json')
             def resultJson = result as JSON
@@ -1922,24 +1921,24 @@ class BioActivityController {
         GrailsParameterMap queryParams = constructDefaultSearchParams(params)
 
         if (!userId) {
-            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.UNAUTHORIZED.value(), contentType: 'application/json'
         } else if (!queryParams.projectId) {
-            render text: [message: "No project associated with the activity."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "No project associated with the activity."] as JSON, status: HttpStatus.BAD_REQUEST.value(), contentType: 'application/json'
         } else if (projectService.canUserEditProject(userId, queryParams.projectId, false)) {
             Map project = projectService.get(queryParams.projectId)
             if (!project.dataResourceId) {
-                render text: [message: "Only data of ALA harvested projects can be accessed."] as JSON, status: HttpStatus.SC_BAD_REQUEST, contentType: ContentType.APPLICATION_JSON
+                render text: [message: "Only data of ALA harvested projects can be accessed."] as JSON, status: HttpStatus.BAD_REQUEST.value(), contentType: 'application/json'
             } else {
                 queryParams.id = project.dataResourceId
                 def result = activityService.listRecordsForDataResourceId(queryParams)
                 if (!result.error) {
-                    render text: result as JSON, contentType: ContentType.APPLICATION_JSON
+                    render text: result as JSON, contentType: 'application/json'
                 } else {
-                    render text: [message: "An error occurred while fetching data."] as JSON, status: result.statusCode, contentType: ContentType.APPLICATION_JSON
+                    render text: [message: "An error occurred while fetching data."] as JSON, status: result.statusCode, contentType: 'application/json'
                 }
             }
         } else {
-            render text: "Access denied: User not authorised.", status: HttpStatus.SC_UNAUTHORIZED
+            render text: "Access denied: User not authorised.", status: HttpStatus.UNAUTHORIZED.value()
         }
     }
 
@@ -1983,11 +1982,11 @@ class BioActivityController {
         String userId = userService.getCurrentUserId()
         Map project = projectService.get(projectId)
         if (!userId) {
-            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.UNAUTHORIZED.value(), contentType: 'application/json'
         } else if (!projectId) {
-            render text: "Project Id is required.", status: SC_BAD_REQUEST
+            render text: "Project Id is required.", status: HttpStatus.BAD_REQUEST.value()
         }else if (project.error) {
-            render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+            render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
         } else {
             if (projectService.canUserEditProject(userId, projectId, false)) {
                 try {
@@ -1996,10 +1995,10 @@ class BioActivityController {
                     return null
                 } catch (Exception e) {
                     log.error (e.message.toString(), e)
-                    render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                    render text: [message: "An error occurred when accessing project."] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
                 }
             } else {
-                render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.SC_UNAUTHORIZED, contentType: ContentType.APPLICATION_JSON
+                render text: [message: "Access denied: User not authorised."] as JSON, status: HttpStatus.UNAUTHORIZED.value(), contentType: 'application/json'
             }
         }
     }
@@ -2255,7 +2254,7 @@ class BioActivityController {
 
             forward(action: 'listRecordsForUser')
         } else {
-            render status: SC_BAD_REQUEST, text: "You need to provide user id"
+            render status: HttpStatus.BAD_REQUEST.value(), text: "You need to provide user id"
         }
     }
 

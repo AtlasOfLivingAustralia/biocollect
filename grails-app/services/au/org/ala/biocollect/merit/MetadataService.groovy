@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-import static org.apache.http.HttpStatus.*
 
 class MetadataService {
     static DateFormat ISO8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
@@ -280,7 +279,7 @@ class MetadataService {
             result = [status:data.statusCode, error:data.content ?: 'No data was found that matched the columns in this table, please check the template you used to upload the data. ']
         }
         else {
-            result = [status:SC_OK, data:data.content.data]
+            result = [status:HttpStatus.OK.value(), data:data.content.data]
         }
         result
     }

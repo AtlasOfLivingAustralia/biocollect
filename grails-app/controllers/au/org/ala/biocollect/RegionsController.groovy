@@ -1,11 +1,12 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.CacheService
 import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
 import grails.core.GrailsApplication
 import groovy.json.JsonSlurper
-import org.apache.http.HttpStatus
 
 class RegionsController {
 
@@ -42,7 +43,7 @@ class RegionsController {
 
             render text: result as JSON, contentType: "application/json", encoding: "UTF-8"
         } else {
-            render text: "Request method not supported.", contentType: "text/plain", encoding: "UTF-8", status: HttpStatus.SC_METHOD_NOT_ALLOWED
+            render text: "Request method not supported.", contentType: "text/plain", encoding: "UTF-8", status: HttpStatus.METHOD_NOT_ALLOWED.value()
             return
         }
     }

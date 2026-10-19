@@ -1,14 +1,14 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.PreAuthorise
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
 import au.org.ala.web.SSO
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 import org.grails.web.converters.exceptions.ConverterException
 
-import static org.apache.http.HttpStatus.*
 
 @PreAuthorise(accessLevel = 'hubAdmin')
 class BulkImportController {
@@ -39,7 +39,7 @@ class BulkImportController {
         if (!result.error) {
             render text: result?.resp as JSON, contentType: 'application/json'
         } else {
-            render text: getMessage(result), status: SC_INTERNAL_SERVER_ERROR, contentType: 'application/json'
+            render text: getMessage(result), status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
         }
     }
 
@@ -47,7 +47,7 @@ class BulkImportController {
     def create() {
         def json = request.JSON
         if (!json) {
-            render text: [status: "error", error: "Request missing JSON content"] as JSON, status: SC_BAD_REQUEST, contentType: 'application/json'
+            render text: [status: "error", error: "Request missing JSON content"] as JSON, status: HttpStatus.BAD_REQUEST.value(), contentType: 'application/json'
         } else {
             Map result = bulkImportService.create(json)
             if (!result.error) {
@@ -63,9 +63,9 @@ class BulkImportController {
     def update(String id) {
         def json = request.JSON
         if (!id) {
-            render text: [status: "error", error: "Missing id"] as JSON, status: SC_BAD_REQUEST, contentType: "application/json"
+            render text: [status: "error", error: "Missing id"] as JSON, status: HttpStatus.BAD_REQUEST.value(), contentType: "application/json"
         } else if (!json) {
-            render text: [status: "error", error: "Request missing JSON content"] as JSON, status: SC_BAD_REQUEST, contentType: "application/json"
+            render text: [status: "error", error: "Request missing JSON content"] as JSON, status: HttpStatus.BAD_REQUEST.value(), contentType: "application/json"
         } else {
             checkArguments(null, id)
             Map result = bulkImportService.update(json, id)
@@ -80,7 +80,7 @@ class BulkImportController {
     @PreAuthorise(accessLevel = 'admin', projectIdParam = "projectId", redirectController = "", redirectAction = "")
     def get(String id) {
         if (!id) {
-            render text: [status: "error", error: "Missing id"], status: SC_BAD_REQUEST, contentType: "application/json"
+            render text: [status: "error", error: "Missing id"], status: HttpStatus.BAD_REQUEST.value(), contentType: "application/json"
         } else {
             checkArguments(null, id)
             Map result = bulkImportService.get(id)
@@ -95,7 +95,7 @@ class BulkImportController {
     @PreAuthorise(accessLevel = 'admin', projectIdParam = "projectId", redirectController = "", redirectAction = "")
     def deleteActivitiesImported(String id) {
         if (!id) {
-            render text: [status: "error", error: "Missing bulk import id"], status: SC_BAD_REQUEST, contentType: "application/json"
+            render text: [status: "error", error: "Missing bulk import id"], status: HttpStatus.BAD_REQUEST.value(), contentType: "application/json"
         } else {
             checkArguments(null, id)
             Map result = bulkImportService.deleteActivitiesImported(id)
@@ -110,7 +110,7 @@ class BulkImportController {
     @PreAuthorise(accessLevel = 'admin', projectIdParam = "projectId", redirectController = "", redirectAction = "")
     def publishActivitiesImported(String id) {
         if (!id) {
-            render text: [status: "error", error: "Missing bulk import id"], status: SC_BAD_REQUEST, contentType: "application/json"
+            render text: [status: "error", error: "Missing bulk import id"], status: HttpStatus.BAD_REQUEST.value(), contentType: "application/json"
         } else {
             checkArguments(null, id)
             Map result = bulkImportService.publishActivitiesImported(id)
@@ -125,7 +125,7 @@ class BulkImportController {
     @PreAuthorise(accessLevel = 'admin', projectIdParam = "projectId", redirectController = "", redirectAction = "")
     def embargoActivitiesImported(String id) {
         if (!id) {
-            render text: [status: "error", error: "Missing bulk import id"], status: SC_BAD_REQUEST, contentType: "application/json"
+            render text: [status: "error", error: "Missing bulk import id"], status: HttpStatus.BAD_REQUEST.value(), contentType: "application/json"
         } else {
             checkArguments(null, id)
             Map result = bulkImportService.embargoActivitiesImported(id)
@@ -159,10 +159,10 @@ class BulkImportController {
                 model.bulkImportId = bulkImport.bulkImportId
                 render view: 'index', model: model
             } else {
-                response.setStatus(SC_NOT_FOUND)
+                response.setStatus(HttpStatus.NOT_FOUND.value())
             }
         } else {
-            render text: [message: "Missing required parameters - projectActivityId"] as JSON, status: HttpStatus.SC_BAD_REQUEST
+            render text: [message: "Missing required parameters - projectActivityId"] as JSON, status: HttpStatus.BAD_REQUEST.value()
         }
     }
 
@@ -179,10 +179,10 @@ class BulkImportController {
 
                 render view: 'index', model: model
             } else {
-                response.setStatus(SC_NOT_FOUND)
+                response.setStatus(HttpStatus.NOT_FOUND.value())
             }
         } else {
-            render text: [message: "Missing required parameters - projectActivityId"] as JSON, status: HttpStatus.SC_BAD_REQUEST
+            render text: [message: "Missing required parameters - projectActivityId"] as JSON, status: HttpStatus.BAD_REQUEST.value()
         }
     }
 

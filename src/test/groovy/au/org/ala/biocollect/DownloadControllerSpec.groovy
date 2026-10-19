@@ -1,8 +1,9 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.WebService
 import grails.testing.web.controllers.ControllerUnitTest
-import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 import java.nio.charset.StandardCharsets
@@ -65,7 +66,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         response.contentType == "text/javascript;charset=UTF-8"
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "If a file doesn't exist, a 404 will be returned"() {
@@ -76,7 +77,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.getScriptFile()
 
         then:
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     void "A file cannot be retrieved from outside the designated scripts directory"() {
@@ -88,7 +89,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     void "Tyring to read a file with extension which are not allowed to read"() {
@@ -100,7 +101,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     void "Test images"() {
@@ -112,7 +113,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         response.contentType == "image/png"
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "Test character encoding"() {
@@ -125,7 +126,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         then:
         response.contentType == "text/javascript;charset=UTF-8"
         response.characterEncoding == StandardCharsets.UTF_8.toString()
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "A file cannot be retrieved via hub property which is from outside the designated scripts directory"() {
@@ -137,7 +138,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     void "A file cannot be retrieved via model property which is from outside the designated scripts directory"() {
@@ -149,7 +150,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         new File("${scriptsPath}${File.separator}${params.hub}${File.separator}${params.model}", params.filename).exists()
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     def "Data can be downloaded for a created file if id and file extension is provided"(String inputFormat, String expectedOutputFormat) {
@@ -179,7 +180,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.getScriptFile()
 
         then:
-        response.status == HttpStatus.SC_BAD_REQUEST
+        response.status == HttpStatus.BAD_REQUEST.value()
         response.text == "filename, hub or model is missing"
 
         when:
@@ -190,7 +191,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.getScriptFile()
 
         then:
-        response.status == HttpStatus.SC_BAD_REQUEST
+        response.status == HttpStatus.BAD_REQUEST.value()
         response.text == "filename, hub or model is missing"
 
         when:
@@ -201,7 +202,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.getScriptFile()
 
         then:
-        response.status == HttpStatus.SC_BAD_REQUEST
+        response.status == HttpStatus.BAD_REQUEST.value()
         response.text == "filename, hub or model is missing"
     }
 
@@ -211,7 +212,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.downloadProjectDataFile()
 
         then:
-        response.status == HttpStatus.SC_BAD_REQUEST
+        response.status == HttpStatus.BAD_REQUEST.value()
         response.text == "A download ID is required"
     }
 
@@ -223,7 +224,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         1 * webServiceStub.proxyGetRequest(response, 'http://test/search/downloadProjectDataFile/1?fileExtension=zip')
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "Get File - using id"() {
@@ -233,7 +234,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
 
         then:
         1 * webServiceStub.proxyGetRequest(response, 'http://test/document/1/file')
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "Get File - using filename - invalid file"() {
@@ -242,7 +243,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.file()
 
         then:
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     void "Get File - using filename - valid file"() {
@@ -251,7 +252,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.file()
 
         then:
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
         response.getHeader('Content-Disposition') == "Attachment;Filename=\"validFile.js\""
     }
 
@@ -261,7 +262,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.file()
 
         then:
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
         response.contentAsString == ''
         response.getHeader('Content-Disposition') == null
 
@@ -287,7 +288,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.file()
 
         then:
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
         response.contentAsString == ''
     }
 
@@ -300,7 +301,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.file()
 
         then:
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     void "Get File - using filename - valid file - force download"() {
@@ -310,7 +311,7 @@ class DownloadControllerSpec extends Specification implements ControllerUnitTest
         controller.file()
 
         then:
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
         response.getHeader('Content-Disposition') == "Attachment;Filename=\"validFile.js\""
         response.contentType == "application/octet-stream"
     }

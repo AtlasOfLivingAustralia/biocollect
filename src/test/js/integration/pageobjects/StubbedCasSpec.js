@@ -1,4 +1,4 @@
-const jose = require('node-jose');
+const {importJWK, CompactSign} = require('jose');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const axios = require('axios');
@@ -364,25 +364,20 @@ class StubbedCasSpec {
 
     async createPrivateKey() {
         if (!this.privateKey) {
-            const keyStore = jose.JWK.createKeyStore();
-            this.privateKey = await keyStore.add(this.jwk, 'private', {kid: "localhost:8018"});
-            console.log("Private Key Created: ", this.privateKey);
+            this.privateKey = await importJWK(this.jwk, 'RS256');
         }
 
         return this.privateKey;
     }
 
     async signPayload(payload) {
-        await this.createPrivateKey();
-        let accessToken = await jose.JWS.createSign({
-            format: "compact",
-            fields: {
+        const key = await this.createPrivateKey();
+        const accessToken = await new CompactSign(new TextEncoder().encode(JSON.stringify(payload)))
+            .setProtectedHeader({
                 alg: 'RS256',
-                kid: "localhost:8018",
-            }
-        }, this.privateKey)
-            .update(JSON.stringify(payload))
-            .final();
+                kid: 'localhost:8018'
+            })
+            .sign(key);
         console.log("Access Token Created: ", accessToken);
         return accessToken;
     }
