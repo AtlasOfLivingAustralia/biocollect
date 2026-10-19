@@ -1,0 +1,554 @@
+{
+  "minOptionalSectionsCompleted": 1,
+  "supportsSites": false,
+  "tags": [],
+  "embargoMultimedia": false,
+  "external": false,
+  "activationDate": null,
+  "supportsPhotoPoints": false,
+  "name": "Red tailed Phascogale Nestbox Record",
+  "type": "Assessment",
+  "category": "Assessment & monitoring",
+  "status": "active",
+  "description": "Template for recording Red-tailed Phascogale nestbox details, monitoring observations and supporting information.",
+  "formVersion": 1,
+  "sections": [
+    {
+      "collapsedByDefault": false,
+      "template": {
+        "modelName": "Red tailed Phascogale Nestbox Record",
+        "record": true,
+        "dataModel": [
+          {
+            "dataType": "text",
+            "name": "landholderName",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "landholderName",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "landholderAddress",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "landholderAddress",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "landholderPhone",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "landholderPhone",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "landholderEmail",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "landholderEmail",
+            "measurementType": "text",
+            "validate": "required"
+          },
+          {
+            "dataType": "species",
+            "name": "species",
+            "dwcAttribute": "scientificName",
+            "description": "Species associated with the nestbox monitoring survey",
+            "noEdit": "true",
+            "validate": "required"
+          },
+          {
+            "dataType": "boolean",
+            "name": "noIdNumber",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "noIdNumber",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "text",
+            "name": "nestboxId",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestboxId",
+            "measurementType": "text",
+            "behaviour": [
+              {
+                "type": "enable",
+                "condition": "noIdNumber != true"
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "nestboxType",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestboxType",
+            "measurementType": "text",
+            "constraints": [
+              "Traditional wooden constructed box",
+              "Other"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "nestboxTypeOther",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestboxTypeOther",
+            "measurementType": "text",
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "\"Other\" == nestboxType"
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "nestboxCondition",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestboxCondition",
+            "measurementType": "text",
+            "constraints": [
+              "Good",
+              "Moderate",
+              "Poor",
+              "Needs replacement"
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "vegetationType",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "vegetationType",
+            "measurementType": "text",
+            "description": "(e.g. wandoo- she-oak open woodland, she-oak thicket)"
+          },
+          {
+            "dataType": "text",
+            "name": "vegetationDensity",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "vegetationDensity",
+            "measurementType": "text",
+            "constraints": [
+              "Very low",
+              "Low",
+              "Moderate",
+              "High",
+              "Very high"
+            ]
+          },
+          {
+            "defaultAccuracy": 50,
+            "hideMyLocation": false,
+            "columns": [
+              {
+                "dwcAttribute": "verbatimLatitude",
+                "source": "locationLatitude"
+              },
+              {
+                "dwcAttribute": "verbatimLongitude",
+                "source": "locationLongitude"
+              },
+              {
+                "source": "Locality"
+              },
+              {
+                "source": "Accuracy"
+              },
+              {
+                "source": "Notes"
+              },
+              {
+                "source": "Source"
+              }
+            ],
+            "dataType": "geoMap",
+            "name": "location",
+            "dwcAttribute": "verbatimCoordinates",
+            "hideSiteSelection": true,
+            "zoomToProjectArea": true,
+            "validate": "required"
+          },
+          {
+            "dataType": "date",
+            "name": "eventDate",
+            "dwcAttribute": "eventDate",
+            "indexName": "eventDate",
+            "description": "The date that the survey was undertaken",
+            "validate": "required,past[now]"
+          },
+          {
+            "dataType": "text",
+            "name": "recordedBy",
+            "dwcAttribute": "recordedBy",
+            "description": "The name of the person or group undertaking the survey",
+            "validate": "required"
+          },
+          {
+            "dataType": "text",
+            "name": "surveyorPhone",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "surveyorPhone",
+            "measurementType": "text",
+            "description": "if different from landholder listed"
+          },
+          {
+            "dataType": "boolean",
+            "name": "noEvidenceRedTailedPresent",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "noEvidenceRedTailedPresent",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "boolean",
+            "name": "nestingMaterialPresent",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "nestingMaterialPresent",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "boolean",
+            "name": "scatPresent",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "scatPresent",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "boolean",
+            "name": "animalPresent",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "animalPresent",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "number",
+            "name": "numberOfAnimals",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "integer",
+            "measurementUnitID": "numberOfAnimals",
+            "measurementType": "number",
+            "defaultValue": 1,
+            "validate": "integer,min[1]",
+            "decimalPlaces": 0,
+            "behaviour": [
+              {
+                "type": "enable",
+                "condition": "animalPresent == true"
+              }
+            ]
+          },
+          {
+            "dataType": "boolean",
+            "name": "boxUnusable",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "boxUnusable",
+            "measurementType": "boolean"
+          },
+          {
+            "dataType": "stringList",
+            "name": "boxUnusableReason",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "boxUnusableReason",
+            "measurementType": "stringList",
+            "constraints": [
+              "Beehive established",
+              "Other insect infestation",
+              "Box damaged",
+              "Other"
+            ],
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "boxUnusable == true"
+              }
+            ]
+          },
+          {
+            "dataType": "text",
+            "name": "boxUnusableOtherReason",
+            "dwcAttribute": "measurementValue",
+            "measurementUnit": "unitless",
+            "measurementUnitID": "boxUnusableOtherReason",
+            "measurementType": "text",
+            "behaviour": [
+              {
+                "type": "enable_and_clear",
+                "condition": "boxUnusable == true and (\"Other\" in boxUnusableReason)"
+              }
+            ]
+          },
+          {
+            "dataType": "image",
+            "name": "observationPhoto",
+            "dwcAttribute": "associatedMedia",
+            "description": "Attach optional photographs of the nestbox or observations"
+          },
+          {
+            "dataType": "text",
+            "name": "furtherInformation",
+            "dwcAttribute": "eventRemarks",
+            "description": "Further information about the nestbox survey"
+          }
+        ],
+        "viewModel": [
+          {
+            "type": "row",
+            "items": [
+              {
+                "source": "<font style='font-size:2em; font-weight:bolder; padding-left:20px;'>Red-tailed Phascogale Nestbox Record</font>",
+                "type": "literal"
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Landholder Details",
+                    "items": [
+                      {
+                        "preLabel": "Landholder name",
+                        "source": "landholderName",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Address",
+                        "source": "landholderAddress",
+                        "type": "textarea",
+                        "rows": 3
+                      },
+                      {
+                        "preLabel": "Contact phone",
+                        "source": "landholderPhone",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Contact email",
+                        "source": "landholderEmail",
+                        "type": "text"
+                      }
+                    ]
+                  },
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Nesting Box Details",
+                    "items": [
+                      {
+                        "preLabel": "Species name",
+                        "computed": null,
+                        "source": "species",
+                        "type": "autocomplete"
+                      },
+                      {
+                        "preLabel": "Nesting box ID",
+                        "source": "nestboxId",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "No ID number",
+                        "source": "noIdNumber",
+                        "type": "boolean"
+                      },
+                      {
+                        "preLabel": "Box type",
+                        "source": "nestboxType",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Other box type",
+                        "source": "nestboxTypeOther",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Condition",
+                        "source": "nestboxCondition",
+                        "type": "selectOne"
+                      },
+                      {
+                        "preLabel": "Vegetation type",
+                        "source": "vegetationType",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Vegetation density",
+                        "source": "vegetationDensity",
+                        "type": "selectOne"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Nest Location",
+                    "items": [
+                      {
+                        "includeNotes": false,
+                        "orientation": "vertical",
+                        "autoLocalitySearch": false,
+                        "readonly": false,
+                        "includeSource": false,
+                        "includeAccuracy": false,
+                        "source": "location",
+                        "type": "geoMap",
+                        "includeLocality": false
+                      }
+                    ]
+                  },
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Nesting Box Survey",
+                    "items": [
+                      {
+                        "preLabel": "Survey date",
+                        "source": "eventDate",
+                        "type": "date"
+                      },
+                      {
+                        "preLabel": "Surveyor name",
+                        "source": "recordedBy",
+                        "type": "text"
+                      },
+                      {
+                        "preLabel": "Contact phone number of surveyor",
+                        "source": "surveyorPhone",
+                        "type": "text"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "row",
+            "items": [
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Observations",
+                    "items": [
+                      {
+                        "source": "<strong>Evidence</strong>",
+                        "type": "literal"
+                      },
+                      {
+                        "preLabel": "No evidence of Red-tailed Phascogales present",
+                        "source": "noEvidenceRedTailedPresent",
+                        "type": "boolean"
+                      },
+                      {
+                        "preLabel": "Nesting material present",
+                        "source": "nestingMaterialPresent",
+                        "type": "boolean"
+                      },
+                      {
+                        "preLabel": "Scat present",
+                        "source": "scatPresent",
+                        "type": "boolean"
+                      },
+                      {
+                        "preLabel": "Animal present",
+                        "source": "animalPresent",
+                        "type": "boolean"
+                      },
+                      {
+                        "preLabel": "Number of animals",
+                        "source": "numberOfAnimals",
+                        "type": "number"
+                      },
+                      {
+                        "preLabel": "Nesting box unusable",
+                        "source": "boxUnusable",
+                        "type": "boolean"
+                      },
+                      {
+                        "preLabel": "Reason box is unusable",
+                        "source": "boxUnusableReason",
+                        "type": "select2Many"
+                      },
+                      {
+                        "preLabel": "Other reason (please specify)",
+                        "source": "boxUnusableOtherReason",
+                        "type": "text"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "col",
+                "items": [
+                  {
+                    "boxed": true,
+                    "type": "section",
+                    "title": "Further Information",
+                    "items": [
+                      {
+                        "type": "image",
+                        "source": "observationPhoto",
+                        "css": "img-responsive",
+                        "showMetadata": "false",
+                        "preLabel": "Attach photos",
+                        "displayOptions": {
+                          "showRemoveButtonWithImage": true
+                        }
+                      },
+                      {
+                        "preLabel": "Further information",
+                        "source": "furtherInformation",
+                        "type": "textarea",
+                        "rows": 6
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "title": "Red tailed Phascogale Nestbox Record"
+      },
+      "templateName": "Red tailed Phascogale Nestbox Record",
+      "optional": false,
+      "optionalQuestionText": null,
+      "title": null,
+      "collapsibleHeading": null,
+      "name": "Red tailed Phascogale Nestbox Record",
+      "description": "Template for recording Red-tailed Phascogale nestbox details, monitoring observations and supporting information."
+    }
+  ]
+}
