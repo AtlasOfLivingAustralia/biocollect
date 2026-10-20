@@ -46,6 +46,7 @@ class BioActivityController {
     UserService userService
     DocumentService documentService
     ActivityService activityService
+    BulkImportService bulkImportService
     CommonService commonService
     SearchService searchService
     MessageSource messageSource
@@ -885,10 +886,12 @@ class BioActivityController {
      */
     def bulkImport(String id) {
         Boolean userIsAdmin = userService.userIsAlaOrFcAdmin()
+        Map bulkImport = id ? bulkImportService.get(id) : [:]
         render(view: 'list',
                 model: [
                         view: 'bulkimport',
                         bulkImportId: id,
+                        projectId: bulkImport?.projectId,
                         contentURI: '/bioActivity/bulkimport',
                         user: userService.user,
                         title: messageSource.getMessage('bulkimport.title', [].toArray(), '', Locale.default),
