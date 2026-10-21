@@ -6,6 +6,7 @@ import asset.pipeline.jsass.SassAssetFile
 import asset.pipeline.jsass.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
 import au.org.ala.biocollect.merit.hub.HubSettings
+import grails.async.Promises
 import grails.converters.JSON
 import grails.util.Environment
 import groovy.text.GStringTemplateEngine
@@ -298,13 +299,17 @@ class SettingService {
         item?.breadCrumbs
     }
 
-    @Async
     void generateStyleSheetForHubs() {
         List hubs = listHubs()
-        withPool(THREAD_COUNT) {
-            hubs?.eachParallel {  hubMap ->
-                HubSettings hub = new HubSettings(new HashMap(hubMap))
-                generateStyleSheetForHub(hub)
+        log.info("Number of hubs found to generate style sheets: ${hubs?.size()}")
+        if (!hubs)
+            throw new IllegalStateException("No hubs found to generate style sheets.")
+        Promises.task {
+            withPool(THREAD_COUNT) {
+                hubs?.eachParallel {  hubMap ->
+                    HubSettings hub = new HubSettings(new HashMap(hubMap))
+                    generateStyleSheetForHub(hub)
+                }
             }
         }
     }
