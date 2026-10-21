@@ -81,7 +81,11 @@ cat /etc/hosts
 cd $BIOCOLLECT_DIR
 mkdir -p "$BIOCOLLECT_DIR/logs"
 echo "Starting wire mock"
-./gradlew startWireMock
+start_background wiremock ./gradlew startWireMock
+while ! nc -z localhost 8018; do
+  echo "Waiting for wiremock to start on port 8018..."
+  sleep 5
+done
 
 cd $PWA_LOCAL_DIR
 echo "Starting biocollect-pwa"
