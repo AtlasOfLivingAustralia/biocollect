@@ -209,7 +209,7 @@ class BulkImportController {
                 bulkImport = bulkImportService.get(bulkImportId)
             }
 
-            if (params.projectId && bulkImport.projectId != params.projectId) {
+            if (bulkImport.projectId != params.projectId) {
                 throw new IllegalArgumentException("Provided projectId is invalid")
             }
         }
