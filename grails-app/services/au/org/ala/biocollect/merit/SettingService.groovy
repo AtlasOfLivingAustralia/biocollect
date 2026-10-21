@@ -301,7 +301,7 @@ class SettingService {
 
     void generateStyleSheetForHubs() {
         List hubs = listHubs()
-        log.debug("Number of hubs found to generate style sheets: ${hubs?.size()}")
+        log.info("Number of hubs found to generate style sheets: ${hubs?.size()}")
         if (!hubs)
             throw new IllegalStateException("No hubs found to generate style sheets.")
         Promises.task {
