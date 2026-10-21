@@ -1,6 +1,7 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
+import org.grails.web.util.WebUtils
 
 class ErrorController {
 
@@ -17,26 +18,21 @@ class ErrorController {
     }
 
     def response500() {
+        def wrapper = request.getAttribute(WebUtils.EXCEPTION_ATTRIBUTE)
+        def exception = wrapper?.cause ?: wrapper
         try {
-            // handle IllegalArugmentException and send a JSON message back with 500 status code
-            if(request.exception?.cause?.hasProperty('target')){
-                def exception = request.exception?.cause?.target
-                if ((exception instanceof IllegalArgumentException) && (params.format == 'json')) {
-                    response.status = 500
-                    render([message: exception.message, status: 'error'] as JSON)
-                    return
-                } else {
-
-                    loadRecentHub()
-
-                    render view:'/error'
-                    return
-                }
+            if (exception instanceof IllegalArgumentException && params.format == 'json') {
+                response.status = 500
+                render([message: exception.message, status: 'error'] as JSON)
+                return
             }
+            loadRecentHub()
         }
         catch (Throwable ex) {
-            log.error("An error occurred when loading recent hub - ${ex.getMessage()}", ex)
+            log.error("An error occurred when loading recent hub - ${ex.message}", ex)
         }
+        response.status = 500
+        render view: '/error', model: [exception: wrapper]
     }
 
     /**
