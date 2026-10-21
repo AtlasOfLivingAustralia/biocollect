@@ -73,6 +73,7 @@ module.exports = function (config) {
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/typeahead/0.11.1/bloodhound.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/expr-eval/2.0.2/bundle.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/javascripts/forms.js',
+            'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/javascripts/uuid.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/javascripts/speciesModel.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/javascripts/forms.js',
             'grails-app/assets/javascripts/projectActivityInfo.js',
