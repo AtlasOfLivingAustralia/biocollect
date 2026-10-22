@@ -6,6 +6,7 @@ import asset.pipeline.jsass.SassAssetFile
 import asset.pipeline.jsass.SassProcessor
 import asset.pipeline.processors.CssMinifyPostProcessor
 import au.org.ala.biocollect.merit.hub.HubSettings
+import grails.async.Promises
 import grails.converters.JSON
 import grails.util.Environment
 import groovy.text.GStringTemplateEngine
@@ -24,6 +25,7 @@ class SettingService {
     private static final String HUB_CACHE_KEY_SUFFIX = '_hub'
     public static final String HUB_CONFIG_ATTRIBUTE_NAME = 'hubConfig'
     public static final String LAST_ACCESSED_HUB = 'recentHub'
+    private static final int THREAD_COUNT = 4
 
     public static void setHubConfig(HubSettings hubSettings) {
         localHubConfig.set(hubSettings)
@@ -92,15 +94,7 @@ class SettingService {
                 break
             case Environment.PRODUCTION:
             default:
-                // Generate styles off the bootstrap and servlet threads. The generation
-                // method deliberately processes one hub at a time.
-                task {
-                    try {
-                        generateStyleSheetForHubs()
-                    } catch (Exception e) {
-                        log.error("Error generating hub stylesheets", e)
-                    }
-                }
+                generateStyleSheetForHubs()
                 break
         }
     }
@@ -319,9 +313,17 @@ class SettingService {
     }
 
     void generateStyleSheetForHubs() {
-        listHubs()?.each { hubMap ->
-            HubSettings hub = new HubSettings(new HashMap(hubMap))
-            generateStyleSheetForHub(hub)
+        List hubs = listHubs()
+        log.info("Number of hubs found to generate style sheets: ${hubs?.size()}")
+        if (!hubs)
+            throw new IllegalStateException("No hubs found to generate style sheets.")
+        Promises.task {
+            withPool(THREAD_COUNT) {
+                hubs?.eachParallel {  hubMap ->
+                    HubSettings hub = new HubSettings(new HashMap(hubMap))
+                    generateStyleSheetForHub(hub)
+                }
+            }
         }
     }
 
