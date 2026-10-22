@@ -9,6 +9,7 @@ buildscript {
         classpath "org.apache.grails:grails-gradle-plugins:$grailsVersion"
         classpath "cloud.wondrify:asset-pipeline-gradle:$assetPipelineVersion"
         classpath "cloud.wondrify:sass-asset-pipeline:$assetPipelineVersion"
+        classpath "org.wiremock:wiremock-standalone:$wiremockVersion"
     }
 }
 
@@ -67,10 +68,6 @@ configurations.configureEach {
             details.because 'Groovy 4 coordinates moved to org.apache.groovy'
         }
     }
-}
-
-configurations {
-    wiremockStandalone
 }
 
 dependencies {
@@ -192,8 +189,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core"
     testImplementation "org.apache.grails:grails-testing-support-web"
     testImplementation testFixtures("org.apache.grails:grails-geb")
-    wiremockStandalone "org.wiremock:wiremock-standalone:3.13.2"
-    testImplementation "org.wiremock:wiremock-standalone:3.13.2"
+    testImplementation "org.wiremock:wiremock-standalone:$wiremockVersion"
     testImplementation "org.seleniumhq.selenium:selenium-remote-driver:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-api:$seleniumVersion"
     testImplementation "org.seleniumhq.selenium:selenium-support:$seleniumVersion"
@@ -297,13 +293,24 @@ tasks.withType(Test) {
     }
 }
 
-tasks.register('startWireMock', JavaExec) {
+tasks.register('startWireMock') {
     group = 'verification'
     description = 'Start WireMock standalone for functional tests'
-    classpath = configurations.wiremockStandalone
-    mainClass = 'wiremock.Run'
-    args '--port=8018',
-            '--global-response-templating',
-            '--local-response-templating',
-            "--root-dir=${project.projectDir}/src/integration-test/resources/wiremock"
+    def rootDir = "${project.projectDir}/src/integration-test/resources/wiremock"
+
+    doLast {
+        try {
+            new Socket('127.0.0.1', 8018).withCloseable { }
+            logger.lifecycle('WireMock is already listening on port 8018')
+            return
+        } catch (IOException ignored) {
+        }
+
+        // run() returns once Jetty is listening and leaves the server in this daemon.
+        // JavaExec would wait for the forked JVM, and Jetty never lets that JVM exit.
+        def runner = new com.github.tomakehurst.wiremock.standalone.WireMockServerRunner()
+        runner.run('--port=8018', '--global-response-templating', '--local-response-templating', "--root-dir=${rootDir}")
+        gradle.ext.wiremockRunner = runner
+        logger.lifecycle('WireMock is listening on port 8018')
+    }
 }
