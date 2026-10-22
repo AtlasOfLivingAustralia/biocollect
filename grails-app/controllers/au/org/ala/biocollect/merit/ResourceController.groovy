@@ -80,16 +80,24 @@ class ResourceController {
         URI current = start
         for (int hop = 0; hop < 20; hop++) {
             HttpRequest request = HttpRequest.newBuilder(current).GET().build()
-            HttpResponse<Void> response = httpClient.send(request, HttpResponse.BodyHandlers.discarding())
-            int code = response.statusCode()
-            if (!(code in [301, 302, 303, 307, 308])) {
-                return current
+            // ofInputStream returns once headers arrive. Closing without reading cancels the
+            // body, so a generated PDF is not downloaded just to learn its URL.
+            HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream())
+            InputStream body = response.body()
+            try {
+                int code = response.statusCode()
+                if (!(code in [301, 302, 303, 307, 308])) {
+                    return current
+                }
+                String next = response.headers().firstValue("location").orElse(null)
+                if (!next) {
+                    return current
+                }
+                current = current.resolve(next)
             }
-            String next = response.headers().firstValue("location").orElse(null)
-            if (!next) {
-                return current
+            finally {
+                body.close()
             }
-            current = current.resolve(next)
         }
         return current
     }

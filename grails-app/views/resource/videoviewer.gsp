@@ -11,8 +11,19 @@
     </style>
 </head>
 <body>
+<%
+    // application/ogg is a supported video type, but browsers skip playback when that
+    // value is the source type. Do not assume mp4 when the type is missing or unknown.
+    def declaredType = params.contentType?.toString()?.toLowerCase()?.trim()
+    def sourceType = declaredType == 'application/ogg' ? 'video/ogg' : (declaredType?.startsWith('video/') ? declaredType : null)
+%>
 <video controls preload="metadata">
-    <source src="${params.file}" type="${params.contentType ?: 'video/mp4'}"/>
+    <g:if test="${sourceType}">
+        <source src="${params.file}" type="${sourceType}"/>
+    </g:if>
+    <g:else>
+        <source src="${params.file}"/>
+    </g:else>
 </video>
 </body>
 </html>

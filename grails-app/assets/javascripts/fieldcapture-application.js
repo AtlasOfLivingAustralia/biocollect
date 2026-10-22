@@ -720,7 +720,7 @@ function Documents() {
             } else if (listContains(contentTypes.image, contentType)) {
                 val = fcConfig.imgViewer + '?file=' + encodeURIComponent(selectedDoc.url);
             } else if (listContains(contentTypes.video, contentType)) {
-                val = fcConfig.videoViewer + '?file=' + encodeURIComponent(selectedDoc.url);
+                val = fcConfig.videoViewer + '?file=' + encodeURIComponent(selectedDoc.url) + '&contentType=' + encodeURIComponent(contentType);
             } else if (listContains(contentTypes.audio, contentType)) {
                 val = fcConfig.audioViewer + '?file=' + encodeURIComponent(selectedDoc.url);
             } else {
