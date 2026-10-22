@@ -54,7 +54,9 @@ class ResourceController {
         try {
             URI base = new URI(grailsApplication.config.getProperty('pdfgen.baseURL').toString())
             String query = "docUrl=" + URLEncoder.encode(docUrl.toString(), StandardCharsets.UTF_8)
-            URI requestUri = new URI(base.scheme, base.userInfo, base.host, base.port, "/api/pdf", query, null)
+            // The component constructor quotes '%' again. query is already URL-encoded, so append it raw.
+            URI endpoint = new URI(base.scheme, base.userInfo, base.host, base.port, "/api/pdf", null, null)
+            URI requestUri = new URI(endpoint.toASCIIString() + "?" + query)
             log.debug("Sending file to be converted into pdf: GET ${requestUri}")
 
             URI location = followRedirects(httpClient, requestUri)
