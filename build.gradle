@@ -219,6 +219,7 @@ bootJar {
 assets {
     minifyJs = true
     minifyCss = true
+    enableSourceMaps = false
     maxThreads = 4
     minifyOptions = [
             languageMode  : 'STABLE', // languageIn; geoman uses ES2022 class fields. Output stays untranspiled.
