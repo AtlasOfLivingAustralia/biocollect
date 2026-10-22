@@ -4,7 +4,9 @@ import au.org.ala.biocollect.DateUtils
 import grails.converters.JSON
 import java.time.OffsetDateTime
 import java.time.Period
+import java.time.ZoneId
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import grails.plugin.cache.Cacheable
 
 
@@ -47,14 +49,16 @@ class ReportService {
 
         def reports = (project.reports?:[]).sort{it.toDate}
 
-        OffsetDateTime startDate = DateUtils.parse(project.plannedStartDate).atZoneSameInstant(java.time.ZoneId.systemDefault()).toOffsetDateTime()
-        OffsetDateTime endDate = DateUtils.parse(project.plannedEndDate).atZoneSameInstant(java.time.ZoneId.systemDefault()).toOffsetDateTime()
+        // Keep the system zone so month and day arithmetic follows daylight-saving rules.
+        // Convert to UTC only when the report dates are formatted.
+        ZonedDateTime startDate = DateUtils.parse(project.plannedStartDate).atZoneSameInstant(ZoneId.systemDefault())
+        ZonedDateTime endDate = DateUtils.parse(project.plannedEndDate).atZoneSameInstant(ZoneId.systemDefault())
 
-        OffsetDateTime periodStartDate = null
+        ZonedDateTime periodStartDate = null
         int stage = 1
         for (int i=reports.size()-1; i>=0; i--) {
             if (isSubmittedOrApproved(reports[i])) {
-                periodStartDate = DateUtils.parse(reports[i].toDate).atZoneSameInstant(java.time.ZoneId.systemDefault()).toOffsetDateTime()
+                periodStartDate = DateUtils.parse(reports[i].toDate).atZoneSameInstant(ZoneId.systemDefault())
                 stage = i+2 // Start at the stage after the submitted or approved one
                 break
             }
@@ -66,7 +70,7 @@ class ReportService {
 
         // The first period start date  (to be modified) should be aligned to the end date of the previous report or
         // the project start date if it is the first report.
-        OffsetDateTime reportFromDate = periodStartDate
+        ZonedDateTime reportFromDate = periodStartDate
 
         if (alignToCalendar) {
             periodStartDate = DateUtils.alignToPeriod(periodStartDate, period)
@@ -77,15 +81,15 @@ class ReportService {
             def periodEndDate = periodStartDate.plus(period)
 
             def report = [
-                    fromDate:DateUtils.format(reportFromDate.withOffsetSameInstant(ZoneOffset.UTC)),
-                    toDate:DateUtils.format(periodEndDate.withOffsetSameInstant(ZoneOffset.UTC)),
+                    fromDate:DateUtils.format(reportFromDate.withZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime()),
+                    toDate:DateUtils.format(periodEndDate.withZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime()),
                     type:'Activity',
                     projectId:projectId,
                     name:'Stage '+stage,
                     description:'Stage '+stage+' for '+project.name
             ]
             if (weekDaysToCompleteReport) {
-                report.dueDate = DateUtils.format(periodEndDate.plusDays(weekDaysToCompleteReport).withOffsetSameInstant(ZoneOffset.UTC))
+                report.dueDate = DateUtils.format(periodEndDate.plusDays(weekDaysToCompleteReport).withZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime())
             }
 
             if (reports.size() >= stage) {

@@ -74,10 +74,18 @@ class DateUtils {
     /**
      * Aligns the supplied date to the start of the calendar period it falls into.
      * For example, 03/1/2014 aligned to a 3 month period falls into January-March, so
-     * 01/01/2014 is returned.
+     * 01/01/2014 is returned. A fixed offset is retained.
      */
     static OffsetDateTime alignToPeriod(OffsetDateTime toAlign, Period period) {
-        OffsetDateTime periodStart = toAlign
+        return alignToPeriod(toAlign.toZonedDateTime(), period).toOffsetDateTime()
+    }
+
+    /**
+     * Aligns {@code toAlign} to the start of its calendar period and keeps {@code toAlign}'s zone,
+     * so later {@code plus(period)} calls follow that zone's daylight-saving rules.
+     */
+    static ZonedDateTime alignToPeriod(ZonedDateTime toAlign, Period period) {
+        ZonedDateTime periodStart = toAlign
                 .withMonth(1)
                 .withDayOfMonth(1)
                 .withHour(0)
@@ -85,8 +93,8 @@ class DateUtils {
                 .withSecond(0)
                 .withNano(0)
 
-        OffsetDateTime intervalStart = periodStart
-        OffsetDateTime intervalEnd = intervalStart.plus(period)
+        ZonedDateTime intervalStart = periodStart
+        ZonedDateTime intervalEnd = intervalStart.plus(period)
         while (!intervalEnd.isAfter(toAlign)) {
             intervalStart = intervalEnd
             intervalEnd = intervalStart.plus(period)

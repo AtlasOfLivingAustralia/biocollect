@@ -4,6 +4,7 @@ import au.org.ala.biocollect.DateUtils
 import spock.lang.Specification
 
 import java.time.Clock
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.Period
 import java.time.ZoneId
@@ -79,6 +80,23 @@ class DateUtilsSpec extends Specification {
         "2014-03-01T23:59:00Z" | 3      | 2014 | 1     | 1
         "2014-02-28T23:59:00Z" | 1      | 2014 | 2     | 1
         "2014-03-01T00:00:00Z" | 1      | 2014 | 3     | 1
+    }
+
+    def "zoned alignment keeps daylight-saving offsets through a six month period"() {
+        given:
+        ZoneId sydney = ZoneId.of('Australia/Sydney')
+        ZonedDateTime toAlign = ZonedDateTime.of(2024, 8, 15, 12, 0, 0, 0, sydney)
+
+        when:
+        ZonedDateTime result = DateUtils.alignToPeriod(toAlign, Period.ofMonths(6))
+        ZonedDateTime periodEnd = result.plus(Period.ofMonths(6))
+
+        then:
+        result.toLocalDateTime() == LocalDateTime.of(2024, 7, 1, 0, 0)
+        result.offset == ZoneOffset.ofHours(10)
+        periodEnd.toLocalDateTime() == LocalDateTime.of(2025, 1, 1, 0, 0)
+        periodEnd.offset == ZoneOffset.ofHours(11)
+        DateUtils.format(periodEnd.withZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime()) == '2024-12-31T13:00:00Z'
     }
 
     def "dates can be grouped"() {
