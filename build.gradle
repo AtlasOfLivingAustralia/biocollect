@@ -221,9 +221,13 @@ assets {
     minifyCss = true
     maxThreads = 4
     minifyOptions = [
-            languageMode  : 'ES2020', //languageIn; the PWA scripts use async functions (ES2017+)
+            languageMode  : 'STABLE', // languageIn; geoman uses ES2022 class fields. Output stays untranspiled.
 //            targetLanguage: 'ES5', // languageOut
-            excludes: ['sw.js', '**/*.min.js', 'ckeditor/ckeditor5/**', '**/webjars/**']
+            excludes: ['sw.js', '**/*.min.js', 'ckeditor/ckeditor5/**', '**/webjars/**',
+                       // Node ESM trees shipped inside ala-map-plugin. Closure cannot resolve their imports.
+                       '**/esm/**', '@turf/**', 'point-in-polygon-hao/**', 'polyclip-ts/**',
+                       'quickselect/**', 'rbush/**', 'robust-predicates/**', 'tinyqueue/**', 'tslib/**',
+                       'leaflet-control-geocoder/Control.Geocoder.modern.js']
     ]
 
     includes = []
