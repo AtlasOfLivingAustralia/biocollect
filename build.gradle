@@ -180,6 +180,12 @@ dependencies {
 
     implementation 'au.org.ala:ala-cas-client:4.0.0-SNAPSHOT'
     if (!Boolean.valueOf(inplace)) {
+        // runtimeClasspath extends assets, and asset-pipeline registers that
+        // configuration first. Non-transitive so only this jar moves ahead of
+        // images-client-plugin, whose leaflet/leaflet.js is Leaflet 0.7.3.
+        assets("org.grails.plugins:ala-map-plugin:6.0-SNAPSHOT") {
+            transitive = false
+        }
         implementation "org.grails.plugins:ala-map-plugin:6.0-SNAPSHOT"
         implementation "org.grails.plugins:ecodata-client-plugin:11.0-SNAPSHOT"
     }
