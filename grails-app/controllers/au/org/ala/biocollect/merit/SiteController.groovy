@@ -354,6 +354,19 @@ class SiteController {
         chain(action: 'index', id: id)
     }
 
+    def bulkCreate() {
+        if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
+            flash.message = "Access denied: User is not an editor or is not allowed to manage sites for projectId ${params.projectId}"
+            redirect(url: params.returnTo)
+            return
+        }
+
+        def project = projectService.get(params.projectId)
+        def allowedTypes = ['surveyArea', 'monitoringPoint', 'worksArea']
+        def siteType = allowedTypes.contains(params.siteType) ? params.siteType : 'surveyArea'
+        render view: 'bulkCreate', model: [project: project, returnTo: params.returnTo, siteType: siteType, pActivityId: params.pActivityId]
+    }
+
     def uploadShapeFile() {
         String returnTo = params.returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: params.projectId)
         if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {

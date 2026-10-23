@@ -81,7 +81,10 @@ function SiteSelectModel(config, projectId, currentProjectSites) {
 
     self.mapSite = function (site) {
         self.map.resetMap();
-        self.map.setGeoJSON(Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry));
+        var geoJson = Biocollect.MapUtilities.geoJsonForSite(site);
+        if (geoJson) {
+            self.map.setGeoJSON(geoJson);
+        }
     };
 
     self.cancel = function () {
