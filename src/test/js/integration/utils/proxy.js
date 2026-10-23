@@ -6,6 +6,22 @@ let block = ""
 const target_address = "http://localhost:8087"
 async function startServer(blockUrl="", port=8081) {
     const proxy = httpProxy.createProxyServer({});
+    proxy.on('error', (error, req, res) => {
+        console.log(`proxy error for ${req && req.url}: ${error.message}`);
+        if (res && res.writeHead && !res.headersSent) {
+            res.writeHead(502, { 'Content-Type': 'text/plain' });
+            res.end('Proxy error');
+        }
+    });
+    // The PWA (port 5173) frames BioCollect pages through this proxy. Spring Security
+    // sends X-Frame-Options: SAMEORIGIN, which Chrome reports as a connection refusal.
+    proxy.on('proxyRes', (proxyRes) => {
+        delete proxyRes.headers['x-frame-options'];
+        const csp = proxyRes.headers['content-security-policy'];
+        if (typeof csp === 'string' && /frame-ancestors/i.test(csp)) {
+            proxyRes.headers['content-security-policy'] = csp.replace(/frame-ancestors[^;]*/i, 'frame-ancestors *');
+        }
+    });
     server = http.createServer((req, res) => {
         // Example blacklist: Block localhost:8080
         if (block) {

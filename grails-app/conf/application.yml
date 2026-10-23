@@ -187,9 +187,6 @@ grails:
             maxsize: 1000
     controllers:
         defaultScope: singleton
-        upload:
-          maxFileSize: 26214400 #25Mb
-          maxRequestSize: 26214400 #25Mb
     converters:
         encoding: UTF-8
     views:
@@ -243,9 +240,13 @@ spring:
   # Leave cache manager creation to the Grails Ehcache plugin. Boot would otherwise
   # add a second manager because Caffeine and JSR-107 are on the classpath.
   autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration
+    exclude: org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration
   main:
     banner-mode: "off"
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
   groovy:
     template:
       check-template-location: false
@@ -295,7 +296,8 @@ management:
     jmx:
       exposure:
         exclude:
-    enabled-by-default: false
+    access:
+      default: none
 
 # bootstrap5 theme
 bootstrap5:

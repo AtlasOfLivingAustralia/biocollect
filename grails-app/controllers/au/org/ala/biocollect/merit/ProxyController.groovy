@@ -4,6 +4,7 @@ import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.ecodata.forms.SpeciesListService
 import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 import au.org.ala.web.SSO
 
 import jakarta.annotation.PostConstruct
@@ -99,7 +100,7 @@ class ProxyController {
     def documentUpdate(String id) {
 
         def url = grailsApplication.config.getProperty('ecodata.service.url') + "/document" + (id ? "/" + id : '')
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def f = request.getFile('files')
             def originalFilename = f.getOriginalFilename()
             if(originalFilename){

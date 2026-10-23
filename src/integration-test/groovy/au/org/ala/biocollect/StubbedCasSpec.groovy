@@ -2,6 +2,7 @@ package au.org.ala.biocollect
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
+import com.github.tomakehurst.wiremock.extension.responsetemplating.TemplateEngine
 import com.nimbusds.jose.jwk.RSAKey
 import geb.Browser
 import grails.converters.JSON
@@ -11,11 +12,6 @@ import org.openqa.selenium.StaleElementReferenceException
 import org.openqa.selenium.WebDriverException
 import org.pac4j.jwt.config.signature.RSASignatureConfiguration
 import org.pac4j.jwt.profile.JwtGenerator
-import wiremock.com.github.jknack.handlebars.EscapingStrategy
-import wiremock.com.github.jknack.handlebars.Handlebars
-import wiremock.com.github.jknack.handlebars.Helper
-import wiremock.com.github.jknack.handlebars.Options
-import wiremock.com.google.common.collect.ImmutableMap
 
 import java.security.KeyPair
 
@@ -75,20 +71,13 @@ class StubbedCasSpec extends BiocollectFunctionalTest {
     }
 
     private void startWireMock() {
-        Handlebars handlebars = new Handlebars()
-        handlebars.escapingStrategy = EscapingStrategy.NOOP
-
-        // This is done so we can use a custom handlebars with a NOOP escaping strategy - the default escapes HTML
-        // which breaks the redirect URL returned by the PDF generation stub.
-        Helper noop = new Helper() {
-            Object apply(Object context, Options options) throws IOException {
-                return context[0]
-            }
-        }
+        // HTML escaping breaks the PDF stub Location header (query docUrl). WireMock 3
+        // exposes that as TemplateEngine's escapingDisabled flag.
+        TemplateEngine templateEngine = new TemplateEngine([:], null, null, true, [])
         wireMockServer = new WireMockServer(options()
                 .port(testConfig.wiremock.port)
                 .usingFilesUnderDirectory(getMappingsPath())
-                .extensions(new ResponseTemplateTransformer(false, handlebars, ImmutableMap.of("noop", noop), null, null)))
+                .extensions(new ResponseTemplateTransformer(templateEngine, false, null, [])))
 
         wireMockServer.start()
     }

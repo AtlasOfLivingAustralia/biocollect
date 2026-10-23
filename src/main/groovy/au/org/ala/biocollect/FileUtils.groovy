@@ -1,7 +1,7 @@
 package au.org.ala.biocollect
 
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 
 import java.util.jar.JarEntry
 import java.util.jar.JarFile

@@ -1,4 +1,8 @@
 // leaflet
+// ala-map-plugin is on the assets classpath ahead of images-client-plugin, so
+// asset-pipeline registers its Leaflet 1.9.4 instead of Leaflet 0.7.3.
+// leaflet-geoman throws while the activity map is created if 0.7.3 is selected,
+// so the site select2 never appears.
 // require leaflet-0.7.7/leaflet.js
 
 // from image-client-plugin

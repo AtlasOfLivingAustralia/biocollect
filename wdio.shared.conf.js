@@ -33,7 +33,7 @@ const config = {
     ],
     // Patterns to exclude.
     exclude: [
-        './src/test/js/integration/specs/pwa/InstallationSpec.js'
+        // 'path/to/excluded/files'
     ],
     //
     // ============

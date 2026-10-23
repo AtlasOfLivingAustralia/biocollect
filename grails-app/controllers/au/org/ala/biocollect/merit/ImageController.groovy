@@ -26,9 +26,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.apache.commons.io.FilenameUtils
-import org.imgscalr.Scalr
+import net.coobird.thumbnailator.Thumbnails
 import org.springframework.http.HttpStatus
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -125,7 +126,7 @@ class ImageController {
      * @return
      */
     def uploadNew() {
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def url = grailsApplication.config.getProperty('images.baseURL') + 'ws/uploadImage'
 
             def params = [synchronousThumbnail:'true']
@@ -216,7 +217,7 @@ class ImageController {
         def user = userService.getCurrentUserId()
 
         def result = []
-        if (request.respondsTo('getFile') && user) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request) && user) {
             MultipartFile file = request.getFile('files')
 
             if (file?.size) {  // will only have size if a file was selected
@@ -240,7 +241,7 @@ class ImageController {
                 // thumbnail it if file is not for supporting method
                 if (!params.role) {
                     BufferedImage img = ImageIO.read(f)
-                    BufferedImage tn = Scalr.resize(img, 300, Scalr.OP_ANTIALIAS)
+                    BufferedImage tn = Thumbnails.of(img).size(300, 300).asBufferedImage()
                     File tnFile = new File(colDir, thumbFilename)
                     try {
                         def success = ImageIO.write(tn, ext, tnFile)

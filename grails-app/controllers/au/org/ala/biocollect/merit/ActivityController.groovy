@@ -1,11 +1,12 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
 import grails.converters.JSON
 import grails.core.GrailsApplication
-import org.apache.http.HttpStatus
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DataFormatter
@@ -17,6 +18,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
 import org.grails.web.json.JSONArray
 import org.springframework.context.MessageSource
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 
 @SSO
 class ActivityController {
@@ -332,7 +334,7 @@ class ActivityController {
             Map activity = activityService.get(id)
             respond(activity);
         } else {
-            render(text: "Must provide parameter id", status: HttpStatus.SC_BAD_REQUEST)
+            render(text: "Must provide parameter id", status: HttpStatus.BAD_REQUEST.value())
         }
     }
 
@@ -367,7 +369,7 @@ class ActivityController {
 
     /* Parse the xlsx output data and pass it back to the client. */
     def ajaxBulkUpload(){
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('templateFile')
             if (file) {
                 def activityType = params.type
@@ -421,7 +423,7 @@ class ActivityController {
     }
 
     def ajaxUpload() {
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('data')
             if (file) {
 

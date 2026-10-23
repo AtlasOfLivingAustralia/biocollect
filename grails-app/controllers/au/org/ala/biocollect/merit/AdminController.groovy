@@ -7,7 +7,7 @@ import grails.plugin.cache.CacheEvict
 import grails.util.Environment
 import grails.util.GrailsNameUtils
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
-import org.springframework.web.multipart.MultipartHttpServletRequest
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 import static grails.async.Promises.task
 import au.org.ala.web.SSO
 
@@ -81,7 +81,7 @@ class AdminController {
 
         def results
 
-        if (request instanceof MultipartHttpServletRequest) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('projectData')
             if (file) {
                 results = importService.importUserPermissionsCsv(file.inputStream)
@@ -289,7 +289,7 @@ class AdminController {
      */
     def importProjectData() {
 
-        if (request instanceof MultipartHttpServletRequest) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('projectData')
 
             if (file) {
@@ -326,7 +326,7 @@ class AdminController {
      * errors that were encountered.
      */
     def importPlanData() {
-        if (request instanceof MultipartHttpServletRequest) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('planData')
 
             if (file) {
@@ -529,7 +529,7 @@ class AdminController {
 
 
     def importSightingsData() {
-        if (request instanceof MultipartHttpServletRequest) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('sightingsData')
 
             if (file) {
