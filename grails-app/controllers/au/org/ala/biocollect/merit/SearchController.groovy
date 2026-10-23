@@ -2,7 +2,7 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.ecodata.forms.SpeciesListService
 import grails.converters.JSON
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.springframework.http.HttpStatus
 
 import jakarta.annotation.PostConstruct

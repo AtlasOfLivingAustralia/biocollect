@@ -32,7 +32,7 @@
             <div class="col-sm-3 title">Project start</div>
 
             <div class="col-sm-9"><g:formatDate format="dd MMM yyyy"
-                                             date="${au.org.ala.biocollect.DateUtils.parse(project.plannedStartDate).toDate()}"/></div>
+                                             date="${java.util.Date.from(au.org.ala.biocollect.DateUtils.parse(project.plannedStartDate).toInstant())}"/></div>
         </div>
 
         <g:if test="${project.plannedEndDate}">
@@ -40,7 +40,7 @@
                 <div class="col-sm-3 title">Project finish</div>
 
                 <div class="col-sm-9"><g:formatDate format="dd MMM yyyy"
-                                                 date="${au.org.ala.biocollect.DateUtils.parse(project.plannedEndDate).toDate()}"/></div>
+                                                 date="${java.util.Date.from(au.org.ala.biocollect.DateUtils.parse(project.plannedEndDate).toInstant())}"/></div>
             </div>
         </g:if>
     </div>

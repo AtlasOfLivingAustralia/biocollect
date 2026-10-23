@@ -1,10 +1,9 @@
 //= require js-iso8601/js-iso8601.min.js
-//= require underscore/underscore-1.8.3.min.js
+//= require underscore/underscore-1.13.7.min.js
 //= require amplify/amplify.min.js
 //= require bootstrap-datepicker/js/bootstrap-datepicker.js
 //= require bootbox/6.0.4/bootbox.min.js
-//= require knockout/3.4.0/knockout-3.4.0.js
-// = require knockout/3.4.0/knockout-3.4.0.debug.js
+//= require knockout/3.5.1/knockout-3.5.1.js
 //= require knockout.js/knockout.mapping-latest.js
 //= require jquery.validationEngine/jquery.validationEngine.js
 //= require jquery.validationEngine/jquery.validationEngine-en.js

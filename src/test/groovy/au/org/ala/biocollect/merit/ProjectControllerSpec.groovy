@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.OrganisationService
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.VocabService
@@ -7,11 +9,8 @@ import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.web.AuthService
 import au.org.ala.web.UserDetails
 import grails.testing.web.controllers.ControllerUnitTest
-import org.apache.http.HttpStatus
 import spock.lang.Specification
 
-import static org.apache.http.HttpStatus.SC_OK
-import static org.apache.http.HttpStatus.SC_REQUEST_TIMEOUT
 /**
  * Specification for the ProjectController
  */
@@ -153,7 +152,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.index(projectId)
 
         then:
-        response.status == HttpStatus.SC_MOVED_TEMPORARILY
+        response.status == HttpStatus.FOUND.value()
     }
 
     void "get project - merit project"() {
@@ -167,7 +166,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.index(projectId)
 
         then:
-        response.status == HttpStatus.SC_MOVED_TEMPORARILY
+        response.status == HttpStatus.FOUND.value()
     }
 
     void "get project - EcoScience project"() {
@@ -299,7 +298,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         request.json = '{"projectId":"abs"}'
         controller.listRecordImages()
         then:
-        response.status == SC_OK;
+        response.status == HttpStatus.OK.value();
         response.json.documents.size() == 1
         response.json.count == 1
         response.json.documents[0].documentId == '124'
@@ -323,7 +322,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         request.json = '{"projectId":"abs"}'
         controller.listRecordImages()
         then:
-        response.status == SC_REQUEST_TIMEOUT;
+        response.status == HttpStatus.REQUEST_TIMEOUT.value();
         response.text == 'timed out';
     }
 
@@ -375,7 +374,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         def result = controller.newProjectIntro(projectId)
 
         then:
-        response.status == SC_OK
+        response.status == HttpStatus.OK.value()
         result.project == project
         result.text == 'test'
     }
@@ -431,7 +430,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.ajaxUpdate(projectId)
 
         then:
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "On edit, return error when trying to publish a project with isExternal false and not having at least one published survey"() {
@@ -449,7 +448,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.ajaxUpdate(projectId)
 
         then:
-        response.status == HttpStatus.SC_BAD_REQUEST
+        response.status == HttpStatus.BAD_REQUEST.value()
         response.text == "At least one published survey should be there to publish a project."
     }
 
@@ -468,7 +467,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.ajaxUpdate(projectId)
 
         then:
-        response.status == HttpStatus.SC_BAD_REQUEST
+        response.status == HttpStatus.BAD_REQUEST.value()
         response.text == "At least one published survey should be there to publish a project."
     }
 
@@ -487,7 +486,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.ajaxUpdate(projectId)
 
         then:
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "On create, successfully create a project as draft when isExternal is true"() {
@@ -505,7 +504,7 @@ class ProjectControllerSpec extends Specification implements ControllerUnitTest<
         controller.ajaxUpdate(projectId)
 
         then:
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     private def stubProjectAdmin(userId, projectId) {

@@ -100,7 +100,7 @@ jobs:
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadlessCI
 
       - name: Run BioCollect functional tests
-        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/grails7 /tmp/biocollect-pwa
+        run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata feature/grails8 /tmp/biocollect-pwa
         continue-on-error: false
         env:
           GITHUB_ACTOR: ${{env.GITHUB_ACTOR}}
@@ -111,10 +111,6 @@ jobs:
         if: ${{ failure() }}
         with:
           path: ./logs
-
-      - name: Clean to remove clover instrumentation
-        if: ${{ success() }}
-        run: ./gradlew clean
 
       - name: Publish the JAR to the repository
         if: ${{ success() }}

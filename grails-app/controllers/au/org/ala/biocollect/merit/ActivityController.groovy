@@ -1,11 +1,12 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
 import grails.converters.JSON
 import grails.core.GrailsApplication
-import org.apache.http.HttpStatus
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DataFormatter
@@ -333,7 +334,7 @@ class ActivityController {
             Map activity = activityService.get(id)
             respond(activity);
         } else {
-            render(text: "Must provide parameter id", status: HttpStatus.SC_BAD_REQUEST)
+            render(text: "Must provide parameter id", status: HttpStatus.BAD_REQUEST.value())
         }
     }
 

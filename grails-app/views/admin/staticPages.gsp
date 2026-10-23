@@ -13,7 +13,6 @@
   - rights and limitations under the License.
   --}%
 
-<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <!doctype html>
 <html>
     <head>

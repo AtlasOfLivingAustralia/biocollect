@@ -146,6 +146,21 @@
 .preview {
     min-height: 600px;
 }
+
+/* Upload preview. A video's intrinsic width is a flex min-content size, so the
+   column grows and the player spills out of #preview. */
+.row > .col-sm-9:has(#preview.controls) {
+    min-width: 0;
+}
+#preview.controls video {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    min-width: 0;
+    object-fit: contain;
+}
 /* END project resources */
 
 /* dashboard */

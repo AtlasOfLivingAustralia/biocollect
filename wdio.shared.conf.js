@@ -34,8 +34,6 @@ const config = {
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
-        // PWA functional tests disabled for now
-        './src/test/js/integration/specs/pwa/**/*.js'
     ],
     //
     // ============

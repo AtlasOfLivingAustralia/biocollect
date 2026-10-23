@@ -4,6 +4,8 @@ import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.testing.spring.AutowiredTest
 import spock.lang.Specification
 import org.springframework.context.MessageSource
+
+import java.util.TimeZone
 /*
  * Copyright (C) 2022 Atlas of Living Australia
  * All Rights Reserved.
@@ -83,5 +85,35 @@ class ReportServiceSpec extends Specification implements AutowiredTest{
         1 * webServiceStub.doPost("/ws/search/genericReport", _) >> resp
         0 * messageSourceStub.getMessage(_, _, _, _) >> { code, args, defaultMessage, locale -> defaultMessage }
         result == [:]
+    }
+
+    void "a six month stage keeps Sydney midnight across daylight saving"() {
+        given:
+        TimeZone original = TimeZone.default
+        TimeZone.default = TimeZone.getTimeZone('Australia/Sydney')
+        service.projectService = Mock(ProjectService)
+        grailsApplication.config.ecodata.baseURL = 'http://ecodata'
+        Map project = [
+                projectId        : 'p1',
+                name             : 'Harbour survey',
+                plannedStartDate : '2024-07-01T00:00:00+10:00',
+                plannedEndDate   : '2025-01-01T00:00:00+11:00',
+                reports          : []
+        ]
+
+        when:
+        service.regenerateAllStageReportsForProject('p1', 6, false, 2)
+
+        then:
+        1 * service.projectService.get('p1', 'all') >> project
+        1 * webServiceStub.doPost('http://ecodata/ws/report/', { Map report ->
+            report.fromDate == '2024-06-30T14:00:00Z' &&
+                    report.toDate == '2024-12-31T13:00:00Z' &&
+                    report.dueDate == '2025-01-02T13:00:00Z' &&
+                    report.name == 'Stage 1'
+        })
+
+        cleanup:
+        TimeZone.default = original
     }
 }
