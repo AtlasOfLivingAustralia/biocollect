@@ -14,8 +14,8 @@
                             class="fa fa-plus"></i> Add new ${wordForSite}</button>
                     <button data-bind="click: $root.addExistingSite" type="button" class="btn btn-dark"><i
                             class="fa fa-plus"></i> Add existing ${wordForSite}</button>
-                    <button data-bind="click: $root.uploadShapefile" type="button" class="btn btn-dark"><i
-                            class="fa fa-upload"></i> Upload ${wordForSite}s from shapefile</button>
+                    <button data-bind="click: $root.bulkCreateSites" type="button" class="btn btn-dark"><i
+                            class="fa fa-upload"></i> Bulk load</button>
                     </span>
                 </div>
             </div>
@@ -25,13 +25,22 @@
 
     <div class="row"  data-bind="visible: sites.length > 0">
         <div class="col-sm-5">
+            <p class="text-muted">Tick a site to show or hide it on the map. The same selection is used for download and delete.</p>
             <g:if test="${canEditSites}">
                 <div class="row mb-3">
                     <div class="col-sm-12">
                         Actions:  <span class="btn-group">
                         <a data-bind="click: $root.addSite" class="btn btn-dark" title="Create a new site for your project"><i class="fa fa-plus"></i> New</a>
-                        <a data-bind="click: $root.uploadShapefile" type="button" class="btn btn-dark" title="Create sites for your project by uploading a shapefile"><i class="fa fa-upload"></i> Upload</a>
-                        <a data-bind="click: $root.downloadShapefile" type="button" class="btn btn-dark" title="Download your project sites in shapefile format"><i class="fa fa-download"></i> Download</a>
+                        <a data-bind="click: $root.bulkCreateSites" type="button" class="btn btn-dark" title="Draw or import many sites"><i class="fa fa-upload"></i> Bulk load</a>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" data-bind="enable: selectedSiteIds().length > 0" aria-expanded="false" title="Download the selected sites">
+                                <i class="fa fa-download"></i> Download
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" data-bind="click: function(data, event) { $root.downloadShapefile(); event.preventDefault(); }">Shapefile</a></li>
+                                <li><a class="dropdown-item" href="#" data-bind="click: function(data, event) { $root.downloadGeoJSON(); event.preventDefault(); }">GeoJSON</a></li>
+                            </ul>
+                        </div>
                         <button data-bind="click: $root.removeSelectedSites, enable:$root.selectedSiteIds().length > 0" type="button" class="btn btn-danger" title="Delete selected sites"><i class="far fa-trash-alt"></i> Delete</button>
                     </span>
                     </div>
@@ -42,7 +51,7 @@
             <table id="sites-table" class="sites-table table dataTable" width="100%">
                 <thead>
                 <tr>
-                        <th class="col-1"><g:if test="${canEditSites}"><input type="checkbox" id="select-all-sites"></g:if></th>
+                        <th class="col-1"><input type="checkbox" id="select-all-sites" data-bind="checked: selectAll" title="Show or hide the sites on this page"></th>
                         <th class="col-3"></th>
                     <th>Name</th>
                     <th>Updated</th>
@@ -52,7 +61,7 @@
                 </thead>
                 <tbody data-bind="foreach: sites">
                 <tr data-bind="click: $parent.selectDocument">
-                        <td class="col-1"><g:if test="${canEditSites}"><input type="checkbox" name="select-site" data-bind="checked:selected"></g:if></td>
+                        <td class="col-1"><input type="checkbox" name="select-site" data-bind="checked:selected"></td>
                         <td class="col-3">
                             <g:if test="${canEditSites}">
                                 <span class="btn-group">

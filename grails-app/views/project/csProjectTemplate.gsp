@@ -55,7 +55,7 @@
         getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping'))}",
         siteCreateUrl: "${raw(createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId]))}",
         siteSelectUrl: "${raw(createLink(controller: 'site', action: 'select', params:[projectId:project.projectId]))}&returnTo=${raw(createLink(controller: 'project', action: 'index', id: project.projectId))}",
-        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId]))}&returnTo=${raw(createLink(controller: 'project', action: 'index', id: project.projectId))}",
+        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'bulkCreate', params:[projectId:project.projectId, siteType:'surveyArea']))}&returnTo=${raw(createLink(controller: 'project', action: 'index', id: project.projectId))}",
         starProjectUrl: "${createLink(controller: 'project', action: 'starProject')}",
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",

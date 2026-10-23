@@ -8,6 +8,8 @@ import grails.testing.web.controllers.ControllerUnitTest
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import spock.lang.Specification
 
+import java.util.concurrent.TimeUnit
+
 class SettingServiceSpec extends Specification implements ControllerUnitTest, ServiceUnitTest<SettingService> {
     File temp, uploadPath
 
@@ -85,15 +87,12 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
         SettingService stylesheetService = Spy(SettingService)
 
         when:
-        stylesheetService.generateStyleSheetForHubs()
+        def promise = stylesheetService.generateStyleSheetForHubs()
+        promise.get(10, TimeUnit.SECONDS)
 
         then:
         1 * stylesheetService.listHubs() >> [[urlPath: "first"], [urlPath: "second"]]
-
-        then:
         1 * stylesheetService.generateStyleSheetForHub({ it.urlPath == "first" }) >> [status: 200]
-
-        then:
         1 * stylesheetService.generateStyleSheetForHub({ it.urlPath == "second" }) >> [status: 200]
     }
 

@@ -509,8 +509,12 @@ function OfflineViewModel(config) {
             for (var i = 0; i < selectedSites.length; i++) {
                 try {
                     var site = selectedSites[i],
-                        geoJson = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry),
-                        geoJsonLayer = alaMap.setGeoJSON(geoJson, {
+                        geoJson = Biocollect.MapUtilities.geoJsonForSite(site);
+                    if (!geoJson) {
+                        self.numberOfSiteTilesDownloaded(self.numberOfSiteTilesDownloaded() + 1);
+                        continue;
+                    }
+                    var geoJsonLayer = alaMap.setGeoJSON(geoJson, {
                             wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
                             wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl,
                             maxZoom: MAX_ZOOM

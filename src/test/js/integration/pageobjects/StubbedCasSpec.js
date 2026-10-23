@@ -451,24 +451,40 @@ class StubbedCasSpec {
      * @returns {Promise<void>}
      */
     async dropPin() {
-        // Select the marker draw button
-        const markerDraw = $('.leaflet-draw-draw-marker');
-        await markerDraw.waitForDisplayed({timeout: 30000});
+        const geomanMarker = $('.leaflet-pm-icon-marker');
+        const legacyMarker = $('.leaflet-draw-draw-marker');
+        await browser.waitUntil(async () => {
+            return (await geomanMarker.isDisplayed().catch(() => false)) ||
+                (await legacyMarker.isDisplayed().catch(() => false));
+        }, {
+            timeout: 30000,
+            timeoutMsg: 'Map marker draw control was not shown'
+        });
 
-        // Move to the marker button and click it
-        await markerDraw.moveTo();
+        const useGeoman = await geomanMarker.isDisplayed().catch(() => false);
+        const markerDraw = useGeoman ? geomanMarker : legacyMarker;
+        await markerDraw.scrollIntoView();
+        await markerDraw.waitForClickable({timeout: 10000});
         await markerDraw.click();
 
-        // Wait for the draw actions menu to appear
-        const drawActions = $('.leaflet-draw-actions'); // Get the first draw action
-        await drawActions.waitForDisplayed({timeout: 10000});
+        if (!useGeoman) {
+            const drawActions = $('.leaflet-draw-actions');
+            await drawActions.waitForDisplayed({timeout: 10000});
+        }
 
-        // click on the map pane to drop the pin
-        const mapPane = await $('.leaflet-map-pane');
-        await mapPane.moveTo();
-        await mapPane.click({x: 100, y: 100});
+        const map = $('.leaflet-container');
+        await map.waitForDisplayed({timeout: 10000});
+        const size = await map.getSize();
+        const location = await map.getLocation();
+        await browser.action('pointer')
+            .move({
+                x: Math.round(location.x + (size.width / 2)),
+                y: Math.round(location.y + (size.height / 2))
+            })
+            .down()
+            .up()
+            .perform();
 
-        // wait for the point to be added to dropdown
         const dropdown = $('.select2-selection__rendered');
         await dropdown.waitForDisplayed({timeout: 30000});
     }
