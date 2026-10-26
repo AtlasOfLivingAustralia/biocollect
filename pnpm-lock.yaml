@@ -27,8 +27,8 @@ importers:
         specifier: 9.27.2
         version: 9.27.2
       axios:
-        specifier: ^1.16.0
-        version: 1.18.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+        specifier: ^1.20.0
+        version: 1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
       chromedriver:
         specifier: 149.0.3
         version: 149.0.3(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
@@ -824,8 +824,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.18.1:
-    resolution: {integrity: sha512-3nTvFlvpn9Zu/RkHUqtc7/+al4UpRW5az71ap5zccp6e8RAYEzhMTecX8Dz1wWDYrPpUoB1HAQEGEAEvUr7S9g==}
+  axios@1.20.0:
+    resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
 
   b4a@1.8.1:
     resolution: {integrity: sha512-aiqre1Nr0B/6DgE2N5vwTc+2/oQZ4Wh1t4NznYY4E00y8LCt6NqdRv81so00oo27D8MVKTpUa/MwUUtBLXCoDw==}
@@ -3598,7 +3598,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.18.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
+  axios@1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@7.2.0))
       form-data: 4.0.6
@@ -3778,7 +3778,7 @@ snapshots:
     dependencies:
       '@testim/chrome-version': 1.1.4
       adm-zip: 0.5.18
-      axios: 1.18.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+      axios: 1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
       compare-versions: 6.1.1
       proxy-agent: 8.0.2(supports-color@7.2.0)
       proxy-from-env: 2.1.0
