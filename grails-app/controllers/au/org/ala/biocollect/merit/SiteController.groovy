@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.UtilService
 import au.org.ala.biocollect.swagger.model.SiteAjaxUpdate
 import au.org.ala.biocollect.swagger.model.SiteCreateUpdateResponse
 import au.org.ala.plugins.openapi.Path
@@ -30,6 +31,7 @@ class SiteController {
         searchService, importService, webService
 
     CommonService commonService
+    UtilService utilService
 
     static defaultAction = "index"
 
@@ -353,9 +355,11 @@ class SiteController {
     }
 
     def uploadShapeFile() {
+        String returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: params.projectId)
         if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
             flash.message = "Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}"
-            redirect(url: params.returnTo)
+            redirect(url: returnTo)
+            return
         }
 
         if (request.respondsTo('getFile')) {
@@ -382,11 +386,11 @@ class SiteController {
                 def message = 'There was an error uploading the shapefile.  Please send an email to support for further assistance.'
 
                 flash.message = "An error was encountered when processing the shapefile: ${message}"
-                render view: 'upload', model: [projectId: params.projectId, returnTo: params.returnTo]
+                render view: 'upload', model: [projectId: params.projectId, returnTo: returnTo]
             }
 
         } else {
-            render view: 'upload', model: [projectId: params.projectId, returnTo: params.returnTo]
+            render view: 'upload', model: [projectId: params.projectId, returnTo: returnTo]
         }
     }
 

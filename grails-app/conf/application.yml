@@ -17,6 +17,15 @@ app:
       userId: "X-ALA-userId"
       hostName: "X-ALA-hostname"
 
+sensitiveKeys:
+  - "secret"
+  - "password"
+  - "privateKey"
+  - "client-secret"
+  - "apiKey"
+  - "api-key"
+  - "api_key"
+
 #External URL
 aekosEnabled: false
 enableReporting: true
@@ -128,7 +137,7 @@ upload:
       path: "/data/${appName}/images/"
    path: "/data/${appName}/"
    extensions:
-      blacklist : ['exe','js','php','asp','aspx','com','bat']
+      blacklist : ['exe','js','php','asp','aspx','com','bat', 'jsp', 'cgi', 'pl', 'sh', 'py', 'rb', 'jar', 'war', 'class', 'dll', 'so']
 
 
 

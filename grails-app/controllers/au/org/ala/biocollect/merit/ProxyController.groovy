@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.UtilService
 import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.ecodata.forms.SpeciesListService
 import grails.converters.JSON
@@ -13,6 +14,7 @@ class ProxyController {
     def webService, commonService, projectService, ecpWebService
     SpeciesService speciesService
     SpeciesListService speciesListService
+    UtilService utilService
     private int cacheDuration
 
     @PostConstruct
@@ -104,12 +106,13 @@ class ProxyController {
             def originalFilename = f.getOriginalFilename()
             if(originalFilename){
                 def extension = FilenameUtils.getExtension(originalFilename)?.toLowerCase()
-                if (extension && !grailsApplication.config.upload.extensions.blacklist.contains(extension)){
+                if (utilService.isFileNameSafe(originalFilename)) {
                     def result =  webService.postMultipart(url, [document:params.document], f).content as JSON
                     // iframe submit no longer supported.
                     response.setContentType('application/json')
                     render result.toString();
                 } else {
+                    log.info("Unsafe filename detected: ${originalFilename}")
                     response.setStatus(400)
                     //flag error for extension
                     def error = [error: "Files with the extension '.${extension}' are not permitted.",

@@ -30,6 +30,7 @@ class AdminController {
     def documentService
     def projectActivityService
     def webService
+    def utilService
     UserService userService
     grails.core.GrailsApplication grailsApplication
     def roleService
@@ -114,26 +115,37 @@ class AdminController {
 
     @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
     def settings() {
+        List sensitiveKeys = grailsApplication.config.getProperty('sensitiveKeys', List, []).collect { it.toLowerCase() }
         def settings = []
 
         def grailsStuff = []
+        def javaStuff = []
         def config = grailsApplication.config.flatten()
         for ( e in config ) {
+            if (e.value instanceof Map) {
+                continue
+            }
+            String key = e.key.toLowerCase()
+            boolean isSensitive = sensitiveKeys.any { sensitiveKey -> key.contains(sensitiveKey) }
             if(e.key.startsWith("grails.")){
-                grailsStuff << [key: e.key, value: e.value, comment: '']
-            } else {
-                settings << [key: e.key, value: e.value, comment: '']
+                grailsStuff << (isSensitive ? [key: e.key, value: "********", comment: '']: [key: e.key, value: e.value, comment: ''])
+            }
+            else if (e.key.startsWith("java.")) {
+                javaStuff << (isSensitive ? [key: e.key, value: "********", comment: '']: [key: e.key, value: e.value, comment: ''])
+            }
+            else {
+                settings << (isSensitive ? [key: e.key, value: "********", comment: '']: [key: e.key, value: e.value, comment: ''])
             }
         }
 
-        [settings: settings, grailsStuff: grailsStuff]
+        [settings: settings, grailsStuff: grailsStuff, javaStuff: javaStuff]
     }
 
     @PreAuthorise(accessLevel = 'siteAdmin', redirectController = "admin")
     def editSettingText(String id) {
         def content
         def layout = params.layout?:"adminLayout"
-        def returnUrl = params.returnUrl?:g.createLink(controller:'admin', action:'staticPages', absolute: true )
+        def returnUrl = utilService.isRedirectSafe(params.returnUrl) ? params.returnUrl : g.createLink(controller:'admin', action:'staticPages', absolute: true )
         def returnAction = returnUrl.tokenize("/")[-1]
         def returnLabel = GrailsNameUtils.getScriptName(returnAction).replaceAll('-',' ').capitalize()
         SettingPageType type = SettingPageType.getForName(id)
@@ -159,7 +171,7 @@ class AdminController {
     def saveTextAreaSetting() {
         def text = params.textValue
         def settingKey = params.settingKey
-        def returnUrl = params.returnUrl?:g.createLink(controller:'admin', action:'settings', absolute: true )
+        def returnUrl = utilService.isRedirectSafe(params.returnUrl) ? params.returnUrl : g.createLink(controller:'admin', action:'settings', absolute: true )
 
         if (settingKey) {
             SettingPageType type = SettingPageType.getForKey(settingKey)
@@ -177,7 +189,8 @@ class AdminController {
         redirect(uri: returnUrl)
     }
 
-    def reloadConfig = {
+    @PreAuthorise(accessLevel = 'alaAdmin', redirectController = "admin")
+    def reloadConfig() {
         // reload system config
         def resolver = new PathMatchingResourcePatternResolver()
         def resource = resolver.getResource(grailsApplication.config.reloadable.cfgs[0])

@@ -556,6 +556,25 @@ class ProjectService {
     }
 
     /**
+     * Can user moderate bio collect activity
+     * @param userId the user to test.
+     * @param the activity to test.
+     */
+    def canUserModerateActivity(String userId, Map activity) {
+        boolean userCanModerate = false
+        if (userService.userIsSiteAdmin()) {
+            userCanModerate = true
+        } else {
+            String url = grailsApplication.config.ecodata.service.url + "/permissions/canUserModerateProjects?projectIds=${activity?.projectId}&userId=${userId}"
+            boolean userIsProjectModerator = webService.getJson(url)?.userCanModerate ?: false
+            if (userIsProjectModerator || (activity?.userId == userId)) {
+                userCanModerate = true
+            }
+        }
+        userCanModerate
+    }
+
+    /**
      * Does the current user have permission to view details of the requested projectId?
      * @param userId the user to test.
      * @param the project to test.

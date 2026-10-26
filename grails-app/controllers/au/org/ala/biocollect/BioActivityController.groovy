@@ -167,6 +167,9 @@ class BioActivityController {
         } else if (activity && !pActivity.publicAccess && !projectService.canUserEditActivity(userId, activity)) {
             response.status = 401
             result = [status: 401, error: "Access denied: User is not an owner of this activity ${activity?.activityId}"]
+        } else if (pActivity.publicAccess && id && !projectService.canUserModerateActivity(userId, activity)) {
+            response.status = 401
+            result = [status: 401, error: "Access denied: User is not an owner of this activity ${postBody.activityId}, or does not have the required permission to edit this activity"]
         } else {
             boolean projectEditor = projectService.canUserEditProject(userId, projectId, false)
             Map userAlreadyInRole = userService.isUserInRoleForProject(userId, projectId, "projectParticipant")
@@ -557,7 +560,7 @@ class BioActivityController {
             model.pActivity = pActivity
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.projectName = project.name
-            model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
+            model.returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', id: projectId)
             model.autocompleteUrl = "${request.contextPath}/search/searchSpecies?projectActivityId=${pActivity.projectActivityId}&limit=10"
             model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
             addOutputModel(model)
@@ -646,7 +649,7 @@ class BioActivityController {
             model.id = id
             model.speciesConfig = [surveyConfig: [speciesFields: pActivity?.speciesFields]]
             model.isUserAdminModeratorOrEditor = projectService.isUserAdminForProject(userId, projectId) || projectService.isUserModeratorForProject(userId, projectId) || projectService.isUserEditorForProject(userId, projectId)
-            model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
+            model.returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'bioActivity', action: 'index') + "/" + id
         } else {
             model.error = "Access denied: User is not an owner of this activity ${activity?.activityId}"
             if (!mobile)  {
@@ -803,7 +806,7 @@ class BioActivityController {
                 model.id = pActivity.projectActivityId
                 model.userIsProjectMember = userIsProjectMember
                 model.hasEditRights = userIsOwner || userIsModerator
-                model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: pActivity?.projectId)
+                model.returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: pActivity?.projectId)
                 params.mobile ? model.mobile = true : ''
 
                 model
@@ -1558,7 +1561,7 @@ class BioActivityController {
     }
 
     private Map activityModel(activity, projectId, mode = '', version = null) {
-        Map model = [activity: activity, returnTo: params.returnTo, mode: mode]
+        Map model = [activity: activity, returnTo: utilService.isRedirectSafe(params.returnTo) ? params.returnTo : null, mode: mode]
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view: 'brief', version: version]) : null
         model.project = projectId ? projectService.get(projectId, null, false, version) : null
         model.projectSite = model.project?.sites?.find { it.siteId == model.project.projectSiteId }
@@ -1661,6 +1664,12 @@ class BioActivityController {
 
             if (multipartFile?.size) {  // will only have size if a file was selected
                 String filename = multipartFile.getOriginalFilename().replaceAll(' ', '_')
+                if (!utilService.isFileNameSafe(multipartFile.getOriginalFilename())) {
+                    log.info("Unsafe filename detected: ${multipartFile.getOriginalFilename()}")
+                    render text: [status: SC_BAD_REQUEST, error: 'Cannot upload file with unsafe filename'] as JSON, status: SC_BAD_REQUEST
+                    return
+                }
+
                 String ext = FilenameUtils.getExtension(filename)
                 filename = FileUtils.nextUniqueFileName(FilenameUtils.getBaseName(filename) + '.' + ext, stagingDirPath)
 
@@ -2174,7 +2183,7 @@ class BioActivityController {
                 Map activity = [activityId: '', siteId: '', projectId: projectId, type: type]
                 model = activityModel(activity, projectId)
                 model.pActivity = pActivity
-                model.returnTo = params.returnTo ? params.returnTo : g.createLink(controller: 'project', id: projectId)
+                model.returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', id: projectId)
                 model.autocompleteUrl = "${request.contextPath}/search/searchSpecies?projectActivityId=${pActivity.projectActivityId}&limit=10"
 
                 addOutputModel(model)
