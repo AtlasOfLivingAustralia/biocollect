@@ -2,9 +2,12 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.web.AuthService
+import grails.core.GrailsApplication
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
+import org.apache.commons.io.FilenameUtils
 import org.apache.http.HttpStatus
 import org.apache.http.entity.mime.HttpMultipartMode
 import org.apache.http.entity.mime.MultipartEntity
@@ -15,9 +18,10 @@ import org.springframework.context.MessageSource
 import java.nio.charset.StandardCharsets
 
 class UtilService {
+    GrailsApplication grailsApplication
     AuthService authService
     MessageSource messageSource
-
+    EcpWebService ecpWebService
     /**
      * Post a HTTP multipart/form-data request to external web sites.
      * @param url the URL to forward to.
@@ -166,5 +170,42 @@ class UtilService {
         }
 
         result
+    }
+
+    /**
+     * Validate redirect URL.
+     * If returnTo is relative, then it is valid.
+     * If returnTo is absolute, then host name should be in the allowed list.
+     * @param returnTo
+     * @return
+     */
+    boolean isRedirectSafe(String returnTo) {
+        if (returnTo) {
+            try {
+                URI uri = new URI(returnTo)
+                if (uri.isAbsolute())
+                    return ['http', 'https'].contains(uri.scheme?.toLowerCase()) &&
+                            uri.host != null && ecpWebService.isValidDomain(uri.host)
+                return uri.rawAuthority == null && !returnTo.startsWith('//')
+            } catch (Exception ex) {
+                return false
+            }
+        }
+
+        return false
+    }
+
+    /**
+     * Check if the file name is safe to use for saving files on the server.
+     * @param fileName
+     * @return
+     */
+    boolean isFileNameSafe(String fileName) {
+        List blackList = grailsApplication.config.getProperty('upload.extensions.blacklist', List, [])?.collect { it.toLowerCase() }
+        def extension = FilenameUtils.getExtension(fileName)?.toLowerCase()
+        if (extension && !blackList.contains(extension))
+            return true
+
+        return false
     }
 }

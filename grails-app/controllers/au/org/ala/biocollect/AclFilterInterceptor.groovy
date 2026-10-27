@@ -11,6 +11,7 @@ class AclFilterInterceptor {
     int order = 3
     def userService, projectService, roleService
     UserInfoService userInfoService
+    UtilService utilService
 
     def roles = []
 
@@ -152,7 +153,7 @@ class AclFilterInterceptor {
 
             if (errorMsg) {
                 flash.message = errorMsg
-                if (params.returnTo) {
+                if (utilService.isRedirectSafe(params.returnTo)) {
                     redirect(url: params.returnTo)
                 } else if (projectId && pa.redirectController() && pa.redirectAction()){
                     redirect(controller: pa.redirectController(), action: pa.redirectAction(), id: projectId)
