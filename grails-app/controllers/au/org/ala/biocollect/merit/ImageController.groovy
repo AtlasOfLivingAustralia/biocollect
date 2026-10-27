@@ -31,7 +31,6 @@ import net.coobird.thumbnailator.Thumbnails
 import org.springframework.http.HttpStatus
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.support.MultipartResolutionDelegate
-import static org.apache.http.HttpStatus.SC_BAD_REQUEST
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -137,7 +136,7 @@ class ImageController {
             if (!utilService.isFileNameSafe(file.getOriginalFilename())) {
                 log.info("Unsafe filename detected: ${file.getOriginalFilename()}")
                 response.addHeader('Content-Type','application/json')
-                render text: [status: SC_BAD_REQUEST, error: 'Cannot upload file with unsafe filename'] as JSON, status: SC_BAD_REQUEST
+                render text: [status: HttpStatus.BAD_REQUEST.value(), error: 'Cannot upload file with unsafe filename'] as JSON, status: HttpStatus.BAD_REQUEST.value()
                 return
             }
 
@@ -233,7 +232,7 @@ class ImageController {
                 if (!utilService.isFileNameSafe(file.getOriginalFilename())) {
                     log.info("Unsafe filename detected: ${file.getOriginalFilename()}")
                     response.addHeader('Content-Type','application/json')
-                    render text: [status: SC_BAD_REQUEST, error: 'Cannot upload file with unsafe filename'] as JSON, status: SC_BAD_REQUEST
+                    render text: [status: HttpStatus.BAD_REQUEST.value(), error: 'Cannot upload file with unsafe filename'] as JSON, status: HttpStatus.BAD_REQUEST.value()
                     return
                 }
 
