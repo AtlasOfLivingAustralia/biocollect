@@ -9,8 +9,9 @@ class UtilServiceSpec extends Specification implements ServiceUnitTest<UtilServi
     EcpWebService ecpWebService = Mock(EcpWebService)
 
     void setup() {
-        service.FILE_BLACKLIST = ['exe', 'bat', 'cmd']
         service.ecpWebService = ecpWebService
+        grailsApplication.config.upload.extensions.blacklist = ['exe', 'cmd', 'bat']
+        service.grailsApplication = grailsApplication
     }
 
     void "returns true when file extension is not blacklisted"() {
@@ -46,6 +47,30 @@ class UtilServiceSpec extends Specification implements ServiceUnitTest<UtilServi
     void "returns true for relative redirect URL"() {
         expect:
         service.isRedirectSafe('/project/123')
+    }
+
+    void "returns false for URL without scheme"() {
+        given:
+        ecpWebService.isValidDomain('attacker.invalid') >> false
+
+        expect:
+        !service.isRedirectSafe('//attacker.invalid/path')
+    }
+
+    void "returns false for scheme other than http or https"() {
+        given:
+        ecpWebService.isValidDomain('allowed.example') >> true
+
+        expect:
+        !service.isRedirectSafe('ftp://allowed.example/path')
+    }
+
+    void "returns false for Javascript URL in allowed list"() {
+        given:
+        ecpWebService.isValidDomain('allowed.example') >> true
+
+        expect:
+        !service.isRedirectSafe('javascript://allowed.example/%0Aalert(1)')
     }
 
     void "returns true for absolute redirect URL when domain is valid"() {

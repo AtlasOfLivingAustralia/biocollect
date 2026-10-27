@@ -22,9 +22,6 @@ class UtilService {
     AuthService authService
     MessageSource messageSource
     EcpWebService ecpWebService
-
-    List FILE_BLACKLIST
-
     /**
      * Post a HTTP multipart/form-data request to external web sites.
      * @param url the URL to forward to.
@@ -187,9 +184,9 @@ class UtilService {
             try {
                 URI uri = new URI(returnTo)
                 if (uri.isAbsolute())
-                    return ecpWebService.isValidDomain(uri.host)
-                else
-                    return true
+                    return ['http', 'https'].contains(uri.scheme?.toLowerCase()) &&
+                            uri.host != null && ecpWebService.isValidDomain(uri.host)
+                return uri.rawAuthority == null && !returnTo.startsWith('//')
             } catch (Exception ex) {
                 return false
             }
@@ -204,12 +201,9 @@ class UtilService {
      * @return
      */
     boolean isFileNameSafe(String fileName) {
-        if (!FILE_BLACKLIST) {
-            FILE_BLACKLIST = grailsApplication.config.getProperty('upload.extensions.blacklist', List, [])?.collect { it.toLowerCase() }
-        }
-
+        List blackList = grailsApplication.config.getProperty('upload.extensions.blacklist', List, [])?.collect { it.toLowerCase() }
         def extension = FilenameUtils.getExtension(fileName)?.toLowerCase()
-        if (extension && !FILE_BLACKLIST.contains(extension))
+        if (extension && !blackList.contains(extension))
             return true
 
         return false

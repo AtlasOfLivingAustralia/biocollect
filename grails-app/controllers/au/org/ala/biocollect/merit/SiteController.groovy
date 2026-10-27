@@ -355,7 +355,7 @@ class SiteController {
     }
 
     def uploadShapeFile() {
-        String returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: params.projectId)
+        String returnTo = params.returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: params.projectId)
         if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
             flash.message = "Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}"
             redirect(url: returnTo)
