@@ -131,7 +131,6 @@ security.oidc.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
 security.oidc.clientId= "changeMe"
 security.oidc.secret= "changeMe"
 security.oidc.scope= "openid profile email roles user_defined ala"
-security.oidc.allowUnsignedIdTokens= true
 
 security.jwt.enabled= true
 security.jwt.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"

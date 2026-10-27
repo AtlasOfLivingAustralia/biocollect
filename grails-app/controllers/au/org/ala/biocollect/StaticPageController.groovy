@@ -10,6 +10,7 @@ import au.org.ala.web.SSO
 class StaticPageController {
     SettingService settingService
     UserService userService
+    UtilService utilService
     @NoSSO
     def index() {
         String page = params.page;
@@ -25,7 +26,7 @@ class StaticPageController {
     def edit(){
         String content
         String page = params.page
-        String returnUrl = params.returnUrl ?: g.createLink(controller: 'staticPage', action: 'index', absolute: true, params: [page: page])
+        String returnUrl = utilService.isRedirectSafe(params.returnUrl) ? params.returnUrl : g.createLink(controller: 'staticPage', action: 'index', absolute: true, params: [page: page])
 
 
         if (page) {
@@ -49,7 +50,7 @@ class StaticPageController {
     def saveTextAreaSetting() {
         String text = params.textValue
         String settingKey = params.settingKey
-        String returnUrl = params.returnUrl ?: g.createLink(controller: 'staticPage', action: 'index', absolute: true, params: [page: settingKey])
+        String returnUrl = utilService.isRedirectSafe(params.returnUrl) ? params.returnUrl : g.createLink(controller: 'staticPage', action: 'index', absolute: true, params: [page: settingKey])
 
         if (!userService.doesUserHaveHubRole("admin")) {
             flash.errorMessage = "You do not have correct permissions to perform this action"
