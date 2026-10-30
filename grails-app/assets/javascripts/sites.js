@@ -206,12 +206,14 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         pointOfInterest.geometry().decimalLatitude.subscribe(self.renderPointsOfInterest);
         pointOfInterest.geometry().decimalLongitude.subscribe(self.renderPointsOfInterest);
 
-        pointOfInterest.marker = ALA.MapUtils.createMarker(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude, pointOfInterest.name, {
-            icon: pointOfInterestIcon,
-            draggable: true
-        });
-        pointOfInterest.marker.on("dragend", pointOfInterest.dragEvent);
-        pointOfInterestMarkers.addLayer(pointOfInterest.marker);
+        if (Biocollect.MapUtilities.isValidLatLng(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude)) {
+            pointOfInterest.marker = ALA.MapUtils.createMarker(poi.geometry.decimalLatitude, poi.geometry.decimalLongitude, pointOfInterest.name, {
+                icon: pointOfInterestIcon,
+                draggable: true
+            });
+            pointOfInterest.marker.on("dragend", pointOfInterest.dragEvent);
+            pointOfInterestMarkers.addLayer(pointOfInterest.marker);
+        }
 
         self.pointsOfInterest.push(pointOfInterest);
     }
@@ -220,6 +222,10 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         pointOfInterestMarkers.clearLayers();
 
         self.pointsOfInterest().forEach(function (pointOfInterest) {
+            if (!Biocollect.MapUtilities.isValidLatLng(pointOfInterest.geometry().decimalLatitude(), pointOfInterest.geometry().decimalLongitude())) {
+                return;
+            }
+
             var marker  = ALA.MapUtils.createMarker(
                 pointOfInterest.geometry().decimalLatitude(),
                 pointOfInterest.geometry().decimalLongitude(),
@@ -259,11 +265,23 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
             js.visibility = self.originalVisibility;
         }
 
-        if (self.geometryDirty && js.extent && js.extent.geometry) {
+        if (js.extent && js.extent.geometry) {
             var geomObs = self.site().extent().geometry();
-            ['nrm', 'state', 'lga', 'locality', 'mvg', 'mvs', 'uncertainty', 'precision', 'datum'].forEach(function (name) {
+            if (self.geometryDirty) {
+                ['nrm', 'state', 'lga', 'locality', 'mvg', 'mvs'].forEach(function (name) {
+                    var value = geomObs[name] && geomObs[name]();
+                    if (value && !js.extent.geometry[name]) {
+                        js.extent.geometry[name] = value;
+                    }
+                });
+            }
+
+            // These are edited in the form, so they must be saved even when the geometry itself is unchanged.
+            ['uncertainty', 'precision', 'datum'].forEach(function (name) {
                 var value = geomObs[name] && geomObs[name]();
-                if (value && !js.extent.geometry[name]) {
+                if (value === '' || value == null) {
+                    delete js.extent.geometry[name];
+                } else {
                     js.extent.geometry[name] = value;
                 }
             });
@@ -419,19 +437,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
                 var pid = pidFromLayer(layer);
                 if (pid && !knownPids[pid]) {
                     knownPids[pid] = true;
-                    features.push({
-                        type: 'Feature',
-                        geometry: {type: 'Polygon', coordinates: []},
-                        properties: {
-                            type: 'pid',
-                            pid: pid,
-                            name: layer.options.name,
-                            fid: layer.options.fid,
-                            fieldname: layer.options.fieldname || layer.options.layerName,
-                            bbox: layer.options.bbox,
-                            area_km: layer.options.area_km
-                        }
-                    });
+                    features.push(Biocollect.MapUtilities.pidFeatureFromLayer(layer, pid));
                 }
             });
         }
@@ -569,7 +575,7 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
 
     function updateSiteMarkerPosition() {
         var geometry = self.site().extent().geometry();
-        if (!(geometry.decimalLatitude() && geometry.decimalLongitude()) || !self.showPointAttributes()) {
+        if (!Biocollect.MapUtilities.isValidLatLng(geometry.decimalLatitude(), geometry.decimalLongitude()) || !self.showPointAttributes()) {
             return;
         }
         geometry.coordinates([Number(geometry.decimalLongitude()), Number(geometry.decimalLatitude())]);
@@ -846,7 +852,7 @@ var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId,
                 copy.properties = copy.properties || {};
                 copy.properties.siteId = site.siteId;
                 copy.properties.id = site.siteId;
-                copy.properties.popupContent = site.name;
+                copy.properties.popupContent = escapeHtml(site.name);
                 features.push(copy);
             });
         });
@@ -878,7 +884,7 @@ var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId,
 
     self.addMarker = function(lat, lng, name) {
         var layer = ensurePoiLayer();
-        if (!layer) {
+        if (!layer || !Biocollect.MapUtilities.isValidLatLng(lat, lng)) {
             return;
         }
         var marker = L.marker([lat, lng], {icon: poiIcon, draggable: false});
@@ -1091,10 +1097,8 @@ var BulkCreateSiteViewModel = function (config) {
         if (coordinates == null) {
             return false;
         }
-        if (typeof coordinates[0] === 'number') {
-            return coordinates.length >= 2;
-        }
-        return coordinates.length > 0;
+        var hasCoordinates = typeof coordinates[0] === 'number' ? coordinates.length >= 2 : coordinates.length > 0;
+        return hasCoordinates && (typeof turf === 'undefined' || ALA.MapUtils.validateGeoJSON(feature));
     }
 
     function DraftSite(tempSiteId, name, features) {
@@ -1144,19 +1148,12 @@ var BulkCreateSiteViewModel = function (config) {
                 var pid = pidOf(layer);
                 props.type = 'pid';
                 props.pid = pid;
-                features.push({
-                    type: 'Feature',
-                    geometry: {type: 'Polygon', coordinates: []},
-                    properties: {
-                        type: 'pid',
-                        pid: pid,
-                        name: props.name || (layer.options && layer.options.name),
-                        tempSiteId: props.tempSiteId,
-                        fid: layer.options && layer.options.fid,
-                        fieldname: layer.options && (layer.options.fieldname || layer.options.layerName),
-                        bbox: layer.options && layer.options.bbox
-                    }
-                });
+                var pidFeature = Biocollect.MapUtilities.pidFeatureFromLayer(layer, pid);
+                pidFeature.properties.tempSiteId = props.tempSiteId;
+                if (props.name) {
+                    pidFeature.properties.name = props.name;
+                }
+                features.push(pidFeature);
                 return;
             }
             var geo = layer.toGeoJSON();

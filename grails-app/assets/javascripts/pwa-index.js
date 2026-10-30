@@ -561,11 +561,14 @@ function OfflineViewModel(config) {
                         }
                     })
                     alaMap.clearLayers();
+                    alaMap.clearMarkers();
                     self.numberOfSiteTilesDownloaded(self.numberOfSiteTilesDownloaded() + 1);
                     bounds = null;
                 }
                 catch (e) {
                     console.log("Error downloading site " + selectedSites[i].siteId + " " + selectedSites[i].name);
+                    alaMap.clearLayers();
+                    alaMap.clearMarkers();
                 }
             }
 

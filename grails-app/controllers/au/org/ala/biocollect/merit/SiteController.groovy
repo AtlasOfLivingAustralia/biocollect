@@ -221,14 +221,26 @@ class SiteController {
             render status: 403, text: "Access denied: User does not have permission to edit sites for project: ${id}"
             return
         }
-        def status = siteService.deleteSitesFromProject(id)
-        if (status < 400) {
-            def result = [status: 'deleted']
-            render result as JSON
-        } else {
-            def result = [status: status]
-            render result as JSON
+        List<String> siteIds = request.JSON?.siteIds?.collect { it as String }
+        if (!siteIds) {
+            render status: 400, text: 'The siteIds parameter is mandatory'
+            return
         }
+
+        Set<String> projectSiteIds = projectService.get(id, 'all')?.sites?.collect { it.siteId as String } as Set
+        List<String> warnings = []
+        siteIds.each { String siteId ->
+            if (!projectSiteIds?.contains(siteId)) {
+                warnings << "Site ${siteId} does not belong to project ${id}".toString()
+            } else {
+                def result = removeSiteFromProject(siteId, id)
+                if (result.statusCode >= 400) {
+                    warnings << "Site ${siteId}: ${result.error ?: result.message}".toString()
+                }
+            }
+        }
+
+        render([status: 'deleted', warnings: warnings] as JSON)
     }
 
     def ajaxDeleteSiteFromProject(String id) {
@@ -243,25 +255,27 @@ class SiteController {
             return
         }
 
-        def result
-        if (siteService.canRemoveProjectFromSite(siteId, projectId)) {
-            def site = siteService.get(siteId, [raw: 'true'])
-            def projects = site.projects
-            projects.remove(projectId)
-            siteService.update(siteId, [projects: projects])
+        def result = removeSiteFromProject(siteId, projectId)
+        render text: result as JSON, status: result.statusCode
+    }
 
-            // is site zombie i.e. not associated with a project? Delete if yes.
-            if (siteService.canDeleteSite(siteId)) {
-                def statusCode = siteService.delete(siteId)
-                result = [statusCode: statusCode, message: "Deleted site!"]
-            } else {
-                result = [statusCode: HttpStatus.OK.value(), message: "Updated site!"]
-            }
-        } else {
-            result = [error: "Cannot delete site as it is associated with entities.", statusCode: HttpStatus.FORBIDDEN.value()]
+    private Map removeSiteFromProject(String siteId, String projectId) {
+        if (!siteService.canRemoveProjectFromSite(siteId, projectId)) {
+            return [error: "Cannot delete site as it is associated with entities.", statusCode: HttpStatus.FORBIDDEN.value()]
         }
 
-        render text: result as JSON, status: result.statusCode
+        def site = siteService.get(siteId, [raw: 'true'])
+        def projects = site.projects
+        projects.remove(projectId)
+        siteService.update(siteId, [projects: projects])
+
+        // is site zombie i.e. not associated with a project? Delete if yes.
+        if (siteService.canDeleteSite(siteId)) {
+            def statusCode = siteService.delete(siteId)
+            return [statusCode: statusCode, message: "Deleted site!"]
+        }
+
+        return [statusCode: HttpStatus.OK.value(), message: "Updated site!"]
     }
 
     def ajaxDelete(String id) {
@@ -355,16 +369,17 @@ class SiteController {
     }
 
     def bulkCreate() {
+        String returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: params.projectId)
         if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
             flash.message = "Access denied: User is not an editor or is not allowed to manage sites for projectId ${params.projectId}"
-            redirect(url: params.returnTo)
+            redirect(url: returnTo)
             return
         }
 
         def project = projectService.get(params.projectId)
         def allowedTypes = ['surveyArea', 'monitoringPoint', 'worksArea']
         def siteType = allowedTypes.contains(params.siteType) ? params.siteType : 'surveyArea'
-        render view: 'bulkCreate', model: [project: project, returnTo: params.returnTo, siteType: siteType, pActivityId: params.pActivityId]
+        render view: 'bulkCreate', model: [project: project, returnTo: returnTo, siteType: siteType, pActivityId: params.pActivityId]
     }
 
     def uploadShapeFile() {
@@ -626,7 +641,7 @@ class SiteController {
 
 
         if (result.status == 'error') {
-            render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
+            render status: HttpStatus.INTERNAL_SERVER_ERROR.value(), text: "${result.message}"
         } else {
             render status: HttpStatus.OK.value(), text: result as JSON, contentType: "application/json"
         }

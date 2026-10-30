@@ -349,5 +349,52 @@ describe("MapUtilities unit test", function () {
         expect(multi.features[1].properties.pid).toBe('abc');
     });
 
+    it("sitePayloadForSave clears stored features when a multi-geometry site drops to one or none", function () {
+        var point = function (lng, lat) {
+            return {type: 'Feature', geometry: {type: 'Point', coordinates: [lng, lat]}, properties: {}};
+        };
+        var stored = Biocollect.MapUtilities.sitePayloadForSave({extent: {source: 'none'}, poi: []}, [point(149, -35), point(150, -36)], [], true);
+        var multiSite = {extent: stored.extent, features: stored.features, poi: []};
+
+        var toOne = Biocollect.MapUtilities.sitePayloadForSave(multiSite, [point(149, -35)], [], true);
+        expect(toOne.features).toEqual([]);
+        expect(toOne.extent.geometry.type).toBe('Point');
+
+        var toNone = Biocollect.MapUtilities.sitePayloadForSave(multiSite, [], [], true);
+        expect(toNone.features).toEqual([]);
+        expect(toNone.extent).toEqual({source: 'none'});
+
+        var untouched = Biocollect.MapUtilities.sitePayloadForSave(multiSite, [point(149, -35), point(150, -36)], [], false);
+        expect(untouched.features).toBeUndefined();
+    });
+
+    it("isValidLatLng accepts zero and rejects blank, non-numeric and out-of-range values", function () {
+        expect(Biocollect.MapUtilities.isValidLatLng(0, 0)).toBe(true);
+        expect(Biocollect.MapUtilities.isValidLatLng('-35.3', '149.1')).toBe(true);
+        expect(Biocollect.MapUtilities.isValidLatLng('', '149.1')).toBe(false);
+        expect(Biocollect.MapUtilities.isValidLatLng(undefined, undefined)).toBe(false);
+        expect(Biocollect.MapUtilities.isValidLatLng('abc', 10)).toBe(false);
+        expect(Biocollect.MapUtilities.isValidLatLng(91, 10)).toBe(false);
+        expect(Biocollect.MapUtilities.isValidLatLng(10, -181)).toBe(false);
+    });
+
+    it("pidFeatureFromLayer uses the retrieved geometry and metadata, falling back to layer options", function () {
+        var retrieved = Biocollect.MapUtilities.pidFeatureFromLayer({
+            options: {name: 'Fallback'},
+            toGeoJSON: function () {
+                return {
+                    type: 'Feature',
+                    properties: {name: 'Park', fid: 'cl1', area_km: 12},
+                    geometry: {type: 'Polygon', coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]]}
+                };
+            }
+        }, '123');
+        expect(retrieved.geometry.coordinates[0].length).toBe(4);
+        expect(retrieved.properties).toEqual({type: 'pid', pid: '123', name: 'Park', fid: 'cl1', area_km: 12});
+
+        var pending = Biocollect.MapUtilities.pidFeatureFromLayer({options: {name: 'Fallback'}}, '123');
+        expect(pending.geometry.coordinates).toEqual([]);
+        expect(pending.properties).toEqual({type: 'pid', pid: '123', name: 'Fallback'});
+    });
 
 });

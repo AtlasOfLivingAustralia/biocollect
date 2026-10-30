@@ -593,6 +593,35 @@ Biocollect.MapUtilities = {
         };
     },
 
+    /** True when both values are finite, in-range coordinates. Zero is valid; blank values are not. */
+    isValidLatLng: function (lat, lng) {
+        var latitude = parseFloat(lat), longitude = parseFloat(lng);
+        return isFinite(latitude) && isFinite(longitude) && Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180;
+    },
+
+    /**
+     * Feature for a known-shape (pid) WMS layer. The layer has a geometry and metadata only after ALA.Map has
+     * retrieved it, so the layer options are the fallback until then.
+     */
+    pidFeatureFromLayer: function (layer, pid) {
+        var options = layer.options || {};
+        var retrieved = typeof layer.toGeoJSON === 'function' ? layer.toGeoJSON() : null;
+        var meta = (retrieved && retrieved.properties) || {};
+        return {
+            type: 'Feature',
+            geometry: retrieved && retrieved.geometry ? retrieved.geometry : {type: 'Polygon', coordinates: []},
+            properties: bcDefined({
+                type: 'pid',
+                pid: pid,
+                name: meta.name || options.name,
+                fid: meta.fid || options.fid,
+                fieldname: meta.fieldname || options.fieldname || options.layerName,
+                bbox: meta.bbox || options.bbox,
+                area_km: meta.area_km != null ? meta.area_km : options.area_km
+            })
+        };
+    },
+
     featuresMatchSite: function (site, mapFeatures) {
         var stored = bcFeaturesFromSite(site);
         var current = (mapFeatures || []).map(bcPrepareSpecialFeature).filter(function (feature) {
@@ -611,7 +640,7 @@ Biocollect.MapUtilities = {
 
     /**
      * Geometry section of a site save. Unchanged geometry omits features and returns the original extent.
-     * site.features is included only when the site now has more than one geometry.
+     * site.features is included only when the site now has more than one geometry, or as [] to clear stored features.
      * geometryDirty false forces the original extent even if the map GeoJSON cannot represent a pid.
      */
     sitePayloadForSave: function (originalSite, mapFeatures, poi, geometryDirty) {
@@ -625,6 +654,14 @@ Biocollect.MapUtilities = {
         }).map(bcPrepareSpecialFeature);
         var unchanged = geometryDirty === false || Biocollect.MapUtilities.featuresMatchSite(original, current);
 
+        // An omitted features array leaves the stored one in place, so it has to be sent empty.
+        function clearStoredFeatures(payload) {
+            if (original.features && original.features.length) {
+                payload.features = [];
+            }
+            return payload;
+        }
+
         if (unchanged) {
             var unchangedPayload = {
                 extent: originalExtent,
@@ -634,17 +671,17 @@ Biocollect.MapUtilities = {
         }
 
         if (!current.length) {
-            return {
+            return clearStoredFeatures({
                 extent: {source: 'none'},
                 poi: currentPoi
-            };
+            });
         }
 
         if (current.length === 1) {
-            return {
+            return clearStoredFeatures({
                 extent: bcExtentFromSingleFeature(current[0], original),
                 poi: currentPoi
-            };
+            });
         }
 
         var bounds = bcBoundsOfFeatures(current);
