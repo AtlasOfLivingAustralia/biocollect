@@ -92,11 +92,8 @@
             activityLevelData.siteMap = new ALA.Map("activitySiteMap", mapOptions);
 
             if (mapFeatures && mapFeatures.features && mapFeatures.features.length > 0) {
-                if (mapFeatures.features[0].pid) {
-                    activityLevelData.siteMap.addWmsLayer(mapFeatures.features[0].pid);
-                } else {
-                    var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
-                    var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                var geoJson = Biocollect.MapUtilities.geoJsonFromMapFeatures(mapFeatures);
+                if (geoJson) {
                     activityLevelData.siteMap.setGeoJSON(geoJson);
                 }
             } else if (activityLevelData.pActivity.sites.length == 1) {

@@ -308,11 +308,8 @@
 
                     viewModel.siteMap = new ALA.Map("activitySiteMap", mapOptions);
 
-                    if (mapFeatures.features[0].pid) {
-                        viewModel.siteMap.addWmsLayer(mapFeatures.features[0].pid);
-                    } else {
-                        var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
-                        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                    var geoJson = Biocollect.MapUtilities.geoJsonFromMapFeatures(mapFeatures);
+                    if (geoJson) {
                         viewModel.siteMap.setGeoJSON(geoJson);
                     }
                 }

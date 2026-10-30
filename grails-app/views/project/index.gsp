@@ -38,7 +38,8 @@
         activityViewUrl: "${createLink(controller: 'activity', action: 'index')}",
         siteCreateUrl: "${raw(createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId]))}",
         siteSelectUrl: "${raw(createLink(controller: 'site', action: 'select', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
-        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'bulkCreate', params:[projectId:project.projectId, siteType:'surveyArea']))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        shapefileDownloadUrl: "${createLink(controller:'project', action:'downloadShapefile', id:project.projectId)}",
         starProjectUrl: "${createLink(controller: 'project', action: 'starProject')}",
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",
@@ -396,27 +397,32 @@
                 amplify.store('project-tab-state', tab);
                 // only init map when the tab is first shown
                 if (tab === '#site' && map === undefined) {
-                    var mapOptions = {
-                        zoomToBounds:true,
-                        zoomLimit:16,
-                        highlightOnHover:true,
-                        features:[],
-                        featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                        wmsServer: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}"
-                    };
-
-                    var baseLayerConfig = Biocollect.MapUtilities.getALAMapBaseLayerOptions(fcConfig.mapLayersConfig.baseLayers);
+                    if (fcConfig.leafletAssetURL && window.L && L.Icon && L.Icon.Default) {
+                        L.Icon.Default.imagePath = fcConfig.leafletAssetURL;
+                    }
+                    var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+                    var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
                     map = new ALA.Map("map", {
-                        baseLayer: baseLayerConfig.baseLayer,
-                        otherLayers: baseLayerConfig.otherLayers
+                        autoZIndex: false,
+                        preserveZIndex: true,
+                        addLayersControlHeading: true,
+                        drawControl: false,
+                        showReset: false,
+                        zoomToObject: false,
+                        maxZoom: 20,
+                        baseLayer: baseLayersAndOverlays.baseLayer,
+                        otherLayers: baseLayersAndOverlays.otherLayers,
+                        overlays: baseLayersAndOverlays.overlays,
+                        overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                        wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                        wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
                     });
                     var mapFeatures = <fc:modelAsJavascript model="${mapFeatures}"/>;
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false});
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
 
-                    // set trigger for site reverse geocoding
                     sitesViewModel.triggerGeocoding();
-                    sitesViewModel.displaySites();
+                    sitesViewModel.displayAllSites();
                 }
                 if (tab === '#plan' && !planTabInitialised) {
                     $.event.trigger({type:'planTabShown'});

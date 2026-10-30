@@ -1,5 +1,345 @@
 var Biocollect = Biocollect || {};
 
+(function () {
+
+    function bcCloneJson(value) {
+        if (value === undefined) {
+            return undefined;
+        }
+        return JSON.parse(JSON.stringify(value));
+    }
+
+    function bcFeatureProperties(feature) {
+        return (feature && feature.properties) || {};
+    }
+
+    function bcFeatureGeometry(feature) {
+        if (!feature) {
+            return {};
+        }
+        return feature.geometry || feature;
+    }
+
+    /**
+     * Canonical kind used to decide whether a save can keep the stored extent.
+     * Circle and pid are identified from properties, because neither is plain GeoJSON.
+     */
+    function bcFeatureKind(feature) {
+        if (!feature) {
+            return '';
+        }
+        var props = bcFeatureProperties(feature);
+        var geom = bcFeatureGeometry(feature);
+        var geomType = geom.type || '';
+        var propType = props.type || '';
+        if (props.pid || String(propType).toLowerCase() === 'pid' || String(geomType).toLowerCase() === 'pid') {
+            return 'pid';
+        }
+        if (props.point_type === 'Circle' || propType === 'Circle' || String(propType).toLowerCase() === 'circle' ||
+            geomType === 'Circle' || String(geomType).toLowerCase() === 'circle') {
+            return 'Circle';
+        }
+        var canonical = {
+            point: 'Point',
+            polygon: 'Polygon',
+            linestring: 'LineString',
+            multipoint: 'MultiPoint',
+            multipolygon: 'MultiPolygon',
+            multilinestring: 'MultiLineString',
+            geometrycollection: 'GeometryCollection'
+        };
+        return canonical[String(geomType || propType).toLowerCase()] || (geomType || propType);
+    }
+
+    function bcCoordsClose(a, b, tolerance) {
+        tolerance = tolerance || 1e-5;
+        if (a === b) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        if (typeof a === 'number' || typeof b === 'number' || (typeof a === 'string' && a !== '' && !isNaN(a))) {
+            var na = Number(a), nb = Number(b);
+            return !isNaN(na) && !isNaN(nb) && Math.abs(na - nb) <= tolerance;
+        }
+        if (Object.prototype.toString.call(a) === '[object Array]' && Object.prototype.toString.call(b) === '[object Array]') {
+            if (a.length !== b.length) {
+                return false;
+            }
+            for (var i = 0; i < a.length; i++) {
+                if (!bcCoordsClose(a[i], b[i], tolerance)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    function bcWalkCoords(node, visit) {
+        if (!node || Object.prototype.toString.call(node) !== '[object Array]') {
+            return;
+        }
+        if (node.length >= 2 && (typeof node[0] === 'number' || typeof node[0] === 'string') && !isNaN(node[0]) &&
+            (typeof node[1] === 'number' || typeof node[1] === 'string') && !isNaN(node[1]) &&
+            (node.length === 2 || typeof node[2] === 'number')) {
+            visit([Number(node[0]), Number(node[1])]);
+            return;
+        }
+        for (var i = 0; i < node.length; i++) {
+            bcWalkCoords(node[i], visit);
+        }
+    }
+
+    function bcLngLat(feature) {
+        var geom = bcFeatureGeometry(feature);
+        var coords = geom.coordinates;
+        if (coords && (typeof coords[0] === 'number' || typeof coords[0] === 'string') && !isNaN(coords[0]) &&
+            coords.length >= 2 && (typeof coords[1] === 'number' || typeof coords[1] === 'string')) {
+            return [Number(coords[0]), Number(coords[1])];
+        }
+        if (geom.decimalLongitude != null && geom.decimalLatitude != null && geom.decimalLongitude !== '' && geom.decimalLatitude !== '') {
+            return [Number(geom.decimalLongitude), Number(geom.decimalLatitude)];
+        }
+        var points = [];
+        bcWalkCoords(coords, function (point) { points.push(point); });
+        if (!points.length) {
+            return null;
+        }
+        var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        points.forEach(function (point) {
+            minX = Math.min(minX, point[0]);
+            maxX = Math.max(maxX, point[0]);
+            minY = Math.min(minY, point[1]);
+            maxY = Math.max(maxY, point[1]);
+        });
+        return [(minX + maxX) / 2, (minY + maxY) / 2];
+    }
+
+    function bcBoundsOfFeatures(features) {
+        var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity, any = false;
+        (features || []).forEach(function (feature) {
+            var kind = bcFeatureKind(feature);
+            var centre = bcLngLat(feature);
+            if (kind === 'Circle' && centre) {
+                var radius = Number(bcFeatureProperties(feature).radius || bcFeatureGeometry(feature).radius || 0);
+                var lat = centre[1];
+                var dLat = radius / 111320;
+                var cos = Math.cos(lat * Math.PI / 180);
+                var dLng = cos ? radius / (111320 * cos) : dLat;
+                minX = Math.min(minX, centre[0] - dLng);
+                maxX = Math.max(maxX, centre[0] + dLng);
+                minY = Math.min(minY, centre[1] - dLat);
+                maxY = Math.max(maxY, centre[1] + dLat);
+                any = true;
+                return;
+            }
+            bcWalkCoords(bcFeatureGeometry(feature).coordinates, function (point) {
+                any = true;
+                minX = Math.min(minX, point[0]);
+                maxX = Math.max(maxX, point[0]);
+                minY = Math.min(minY, point[1]);
+                maxY = Math.max(maxY, point[1]);
+            });
+            if (!any && centre) {
+                any = true;
+                minX = Math.min(minX, centre[0]);
+                maxX = Math.max(maxX, centre[0]);
+                minY = Math.min(minY, centre[1]);
+                maxY = Math.max(maxY, centre[1]);
+            }
+        });
+        if (!any) {
+            return null;
+        }
+        return {west: minX, south: minY, east: maxX, north: maxY};
+    }
+
+    function bcRingFromBounds(bounds) {
+        if (!bounds) {
+            return null;
+        }
+        return [[
+            [bounds.west, bounds.south],
+            [bounds.west, bounds.north],
+            [bounds.east, bounds.north],
+            [bounds.east, bounds.south],
+            [bounds.west, bounds.south]
+        ]];
+    }
+
+    function bcDefined(target) {
+        var copy = {};
+        Object.keys(target || {}).forEach(function (key) {
+            if (target[key] !== undefined && target[key] !== null && target[key] !== '') {
+                copy[key] = target[key];
+            }
+        });
+        return copy;
+    }
+
+    function bcAreaKmSq(featureOrCollection) {
+        if (typeof ALA !== 'undefined' && ALA.MapUtils && typeof ALA.MapUtils.calculateAreaKmSq === 'function') {
+            try {
+                var area = ALA.MapUtils.calculateAreaKmSq(featureOrCollection);
+                if (area || area === 0) {
+                    return area;
+                }
+            } catch (e) {
+                // Fall through to the circle calculation below.
+            }
+        }
+        var features = featureOrCollection && featureOrCollection.type === 'FeatureCollection' ? featureOrCollection.features : [featureOrCollection];
+        var total = 0, any = false;
+        (features || []).forEach(function (feature) {
+            if (bcFeatureKind(feature) === 'Circle') {
+                var radius = Number(bcFeatureProperties(feature).radius || 0);
+                total += (Math.PI * radius * radius) / 1000000;
+                any = true;
+            }
+        });
+        return any ? total : null;
+    }
+
+    function bcPrepareSpecialFeature(feature) {
+        if (!feature || feature.type !== 'Feature') {
+            return feature;
+        }
+        var copy = bcCloneJson(feature);
+        copy.properties = copy.properties || {};
+        var kind = bcFeatureKind(copy);
+        if (kind === 'Circle') {
+            var centre = bcLngLat(copy);
+            copy.properties.type = 'Circle';
+            copy.properties.point_type = 'Circle';
+            if (copy.properties.radius == null && copy.geometry) {
+                copy.properties.radius = copy.geometry.radius;
+            }
+            copy.geometry = {type: 'Point', coordinates: centre};
+        } else if (kind === 'pid') {
+            copy.properties.type = 'pid';
+            if (!copy.properties.pid && copy.geometry) {
+                copy.properties.pid = copy.geometry.pid;
+            }
+        }
+        return copy;
+    }
+
+    function bcFeaturesFromSite(site) {
+        if (!site) {
+            return [];
+        }
+        if (site.features && site.features.length) {
+            return site.features.map(function (feature) {
+                return bcPrepareSpecialFeature(feature.type === 'Feature' ? feature : Biocollect.MapUtilities.featureToValidGeoJson(feature));
+            }).filter(Boolean);
+        }
+        var source = site.extent && site.extent.source ? String(site.extent.source).toLowerCase() : '';
+        if (!site.extent || !site.extent.geometry || source === 'none') {
+            return [];
+        }
+        var feature = Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry);
+        return feature ? [bcPrepareSpecialFeature(feature)] : [];
+    }
+
+    function bcSameFeature(a, b) {
+        var kindA = bcFeatureKind(a), kindB = bcFeatureKind(b);
+        if (!kindA || kindA !== kindB) {
+            return false;
+        }
+        if (kindA === 'pid') {
+            return String(bcFeatureProperties(a).pid || '') === String(bcFeatureProperties(b).pid || '');
+        }
+        if (kindA === 'Circle') {
+            var radiusA = Number(bcFeatureProperties(a).radius);
+            var radiusB = Number(bcFeatureProperties(b).radius);
+            return Math.abs(radiusA - radiusB) <= 0.05 && bcCoordsClose(bcLngLat(a), bcLngLat(b));
+        }
+        return bcCoordsClose(bcFeatureGeometry(a).coordinates, bcFeatureGeometry(b).coordinates);
+    }
+
+    function bcPoiSignature(poi) {
+        return (poi || []).map(function (item) {
+            var geometry = item.geometry || {};
+            return {
+                poiId: item.poiId || '',
+                name: item.name || '',
+                type: item.type || '',
+                description: item.description || '',
+                lat: geometry.decimalLatitude == null ? null : Number(geometry.decimalLatitude),
+                lng: geometry.decimalLongitude == null ? null : Number(geometry.decimalLongitude),
+                bearing: geometry.bearing == null || geometry.bearing === '' ? null : Number(geometry.bearing)
+            };
+        });
+    }
+
+    function bcExtentFromSingleFeature(feature, original) {
+        var kind = bcFeatureKind(feature);
+        var props = bcFeatureProperties(feature);
+        var centre = bcLngLat(feature);
+        var originalSource = original && original.extent && original.extent.source ? String(original.extent.source).toLowerCase() : '';
+        var geometry;
+
+        if (kind === 'pid') {
+            geometry = bcDefined({
+                type: 'pid',
+                pid: props.pid,
+                name: props.name,
+                fid: props.fid,
+                layerName: props.fieldname || props.layerName,
+                bbox: props.bbox,
+                areaKmSq: props.area_km,
+                centre: centre
+            });
+            return {source: 'pid', geometry: geometry};
+        }
+
+        if (kind === 'Circle') {
+            geometry = bcDefined({
+                type: 'Circle',
+                radius: props.radius,
+                coordinates: centre,
+                centre: centre,
+                areaKmSq: bcAreaKmSq(feature)
+            });
+            return {source: 'drawn', geometry: geometry};
+        }
+
+        if (kind === 'Point') {
+            geometry = bcDefined({
+                type: 'Point',
+                decimalLatitude: centre ? centre[1] : null,
+                decimalLongitude: centre ? centre[0] : null,
+                coordinates: centre,
+                centre: centre,
+                datum: 'WGS84'
+            });
+            return {source: originalSource === 'drawn' ? 'drawn' : 'point', geometry: geometry};
+        }
+
+        var geom = bcFeatureGeometry(feature);
+        geometry = bcDefined({
+            type: geom.type,
+            coordinates: geom.coordinates,
+            centre: centre,
+            areaKmSq: bcAreaKmSq(feature)
+        });
+        return {source: 'drawn', geometry: geometry};
+    }
+
+    function bcStoredFeature(feature) {
+        var copy = bcPrepareSpecialFeature(feature);
+        copy.properties = copy.properties || {};
+        if (bcFeatureKind(copy) === 'Circle') {
+            copy.properties.type = 'Circle';
+            copy.properties.point_type = 'Circle';
+        } else if (bcFeatureKind(copy) === 'pid') {
+            copy.properties.type = 'pid';
+        }
+        return copy;
+    }
+
 Biocollect.MapUtilities = {
     /**
      * Converts a 'feature' object from Ecodata into valid GeoJSON that can be handled by the ALA.Map.
@@ -8,15 +348,32 @@ Biocollect.MapUtilities = {
      * @returns {{type: string, geometry: {}, properties: {}}}
      */
     featureToValidGeoJson: function(feature) {
+        if (!feature || !feature.type) {
+            return null;
+        }
+
+        if (feature.type === 'Feature' || feature.type === 'FeatureCollection') {
+            if (feature.type === 'FeatureCollection') {
+                return {
+                    type: 'FeatureCollection',
+                    features: (feature.features || []).map(function (child) {
+                        return Biocollect.MapUtilities.featureToValidGeoJson(child);
+                    }).filter(Boolean)
+                };
+            }
+            return bcPrepareSpecialFeature(bcCloneJson(feature));
+        }
+
         var geoJson = {
             type: "Feature",
             geometry: {},
             properties: {}
         };
+        var featureType = String(feature.type).toLowerCase();
 
-        if (feature.type.toLowerCase() == 'pid') {
+        if (featureType === 'pid') {
             if (feature.aream2 == 0 || feature.areaKmSq == 0){
-                geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
+                geoJson.geometry.type = 'Point';
                 if (feature.coordinates) {
                     geoJson.geometry.coordinates = feature.coordinates;
                 }
@@ -24,28 +381,45 @@ Biocollect.MapUtilities = {
                     geoJson.geometry.coordinates = feature.centre;
                 }
             }else{
-                geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
+                geoJson.geometry.type = 'Polygon';
                 geoJson.geometry.coordinates = feature.coordinates || [];
             }
             geoJson.properties.pid = feature.pid;
-        } else if (feature.type.toLowerCase() == "circle") {
-            geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-            geoJson.geometry.coordinates = feature.coordinates;
-            geoJson.properties.point_type = ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE;
+            geoJson.properties.type = 'pid';
+            if (feature.name) {
+                geoJson.properties.name = feature.name;
+            }
+            if (feature.fid) {
+                geoJson.properties.fid = feature.fid;
+            }
+            if (feature.layerName) {
+                geoJson.properties.fieldname = feature.layerName;
+            }
+            if (feature.bbox) {
+                geoJson.properties.bbox = feature.bbox;
+            }
+        } else if (featureType === "circle") {
+            geoJson.geometry.type = 'Point';
+            geoJson.geometry.coordinates = feature.coordinates || feature.centre;
+            geoJson.properties.type = 'Circle';
+            geoJson.properties.point_type = 'Circle';
             geoJson.properties.radius = feature.radius;
-        } else if (feature.type.toLowerCase() == "point") {
-            geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POINT_TYPE;
-            geoJson.geometry.coordinates = feature.coordinates;
-        } else if (feature.type.toLowerCase() == "polygon") {
-            geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.POLYGON_TYPE;
+        } else if (featureType === "point") {
+            geoJson.geometry.type = 'Point';
+            geoJson.geometry.coordinates = feature.coordinates || (feature.decimalLongitude != null && feature.decimalLatitude != null ? [Number(feature.decimalLongitude), Number(feature.decimalLatitude)] : feature.centre);
+        } else if (featureType === "polygon") {
+            geoJson.geometry.type = 'Polygon';
             geoJson.geometry.coordinates = feature.coordinates;
             geoJson.properties.radius = feature.radius;
-        } else if (feature.type.toLowerCase() == "linestring") {
-            geoJson.geometry.type = ALA.MapConstants.DRAW_TYPE.LINE_TYPE;
+        } else if (featureType === "linestring") {
+            geoJson.geometry.type = 'LineString';
+            geoJson.geometry.coordinates = feature.coordinates;
+        } else if (featureType === "multipolygon" || featureType === "multilinestring" || featureType === "multipoint") {
+            geoJson.geometry.type = bcFeatureKind(feature);
             geoJson.geometry.coordinates = feature.coordinates;
         }
 
-        return geoJson;
+        return geoJson.geometry.type ? geoJson : null;
     },
 
     /**
@@ -101,7 +475,28 @@ Biocollect.MapUtilities = {
     constructGeoIndexObject: function(site) {
         var geoIndex = {};
 
-        if (site && site.extent && site.extent && site.extent.geometry) {
+        if (site && site.features && site.features.length) {
+            return {
+                type: 'GeometryCollection',
+                geometries: site.features.map(function (feature) {
+                    var geometry = (feature && feature.geometry) || {};
+                    var properties = (feature && feature.properties) || {};
+                    if (properties.type === 'Circle' || properties.point_type === 'Circle' || geometry.type === 'Circle') {
+                        return {
+                            type: 'Circle',
+                            coordinates: geometry.coordinates,
+                            radius: properties.radius || geometry.radius
+                        };
+                    }
+                    return {
+                        type: geometry.type,
+                        coordinates: geometry.coordinates
+                    };
+                })
+            };
+        }
+
+        if (site && site.extent && site.extent.geometry) {
             var geometry = site.extent.geometry;
 
             if (geometry.type == "Point") {
@@ -120,10 +515,192 @@ Biocollect.MapUtilities = {
                     type: "Polygon",
                     coordinates: geometry.type == "pid" ? [ALA.MapUtils.bboxToPointArray(geometry.bbox, true)] : geometry.coordinates
                 };
+            } else if (geometry.type == "LineString" || geometry.type == "MultiPolygon" || geometry.type == "MultiLineString" || geometry.type == "MultiPoint") {
+                geoIndex = {
+                    type: geometry.type,
+                    coordinates: geometry.coordinates
+                };
             }
         }
 
         return geoIndex;
+    },
+
+    /**
+     * GeoJSON for a stored site. Uses site.features when that array is present, otherwise the extent.
+     * The result is for the map only and is not written back unless the user changes the geometry.
+     */
+    geoJsonForSite: function (site) {
+        if (!site) {
+            return null;
+        }
+        if (site.features && site.features.length) {
+            return Biocollect.MapUtilities.geoJsonFromMapFeatures({features: site.features});
+        }
+        var source = site.extent && site.extent.source ? String(site.extent.source).toLowerCase() : '';
+        if (site.extent && site.extent.geometry && source !== 'none') {
+            return Biocollect.MapUtilities.featureToValidGeoJson(site.extent.geometry);
+        }
+        return null;
+    },
+
+    geoJsonFromMapFeatures: function (mapFeatures) {
+        if (!mapFeatures || !mapFeatures.features || !mapFeatures.features.length) {
+            return null;
+        }
+        var flat = [];
+        mapFeatures.features.forEach(function (feature) {
+            var converted = Biocollect.MapUtilities.featureToValidGeoJson(feature);
+            if (!converted) {
+                return;
+            }
+            if (converted.type === 'FeatureCollection') {
+                flat = flat.concat(converted.features || []);
+            } else {
+                flat.push(converted);
+            }
+        });
+        if (!flat.length) {
+            return null;
+        }
+        if (flat.length === 1) {
+            return flat[0];
+        }
+        return {type: 'FeatureCollection', features: flat};
+    },
+
+    featuresForSite: function (site) {
+        var geoJson = Biocollect.MapUtilities.geoJsonForSite(site);
+        if (!geoJson) {
+            return [];
+        }
+        if (geoJson.type === 'FeatureCollection') {
+            return geoJson.features || [];
+        }
+        return [geoJson];
+    },
+
+    describeFeature: function (feature) {
+        var kind = bcFeatureKind(feature);
+        var radius = bcFeatureProperties(feature).radius;
+        if (radius == null && bcFeatureGeometry(feature).radius != null) {
+            radius = bcFeatureGeometry(feature).radius;
+        }
+        return {
+            type: kind,
+            radius: kind === 'Circle' ? radius : null,
+            areaKmSq: bcAreaKmSq(feature)
+        };
+    },
+
+    /** True when both values are finite, in-range coordinates. Zero is valid; blank values are not. */
+    isValidLatLng: function (lat, lng) {
+        var latitude = parseFloat(lat), longitude = parseFloat(lng);
+        return isFinite(latitude) && isFinite(longitude) && Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180;
+    },
+
+    /**
+     * Feature for a known-shape (pid) WMS layer. The layer has a geometry and metadata only after ALA.Map has
+     * retrieved it, so the layer options are the fallback until then.
+     */
+    pidFeatureFromLayer: function (layer, pid) {
+        var options = layer.options || {};
+        var retrieved = typeof layer.toGeoJSON === 'function' ? layer.toGeoJSON() : null;
+        var meta = (retrieved && retrieved.properties) || {};
+        return {
+            type: 'Feature',
+            geometry: retrieved && retrieved.geometry ? retrieved.geometry : {type: 'Polygon', coordinates: []},
+            properties: bcDefined({
+                type: 'pid',
+                pid: pid,
+                name: meta.name || options.name,
+                fid: meta.fid || options.fid,
+                fieldname: meta.fieldname || options.fieldname || options.layerName,
+                bbox: meta.bbox || options.bbox,
+                area_km: meta.area_km != null ? meta.area_km : options.area_km
+            })
+        };
+    },
+
+    featuresMatchSite: function (site, mapFeatures) {
+        var stored = bcFeaturesFromSite(site);
+        var current = (mapFeatures || []).map(bcPrepareSpecialFeature).filter(function (feature) {
+            return feature && bcFeatureKind(feature) && bcFeatureProperties(feature).type !== 'poi';
+        });
+        if (stored.length !== current.length) {
+            return false;
+        }
+        for (var i = 0; i < stored.length; i++) {
+            if (!bcSameFeature(stored[i], current[i])) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    /**
+     * Geometry section of a site save. Unchanged geometry omits features and returns the original extent.
+     * site.features is included only when the site now has more than one geometry, or as [] to clear stored features.
+     * geometryDirty false forces the original extent even if the map GeoJSON cannot represent a pid.
+     */
+    sitePayloadForSave: function (originalSite, mapFeatures, poi, geometryDirty) {
+        var original = originalSite || {};
+        var originalExtent = original.extent ? bcCloneJson(original.extent) : {source: 'none'};
+        var originalPoi = original.poi ? bcCloneJson(original.poi) : [];
+        var currentPoi = poi === undefined ? originalPoi : poi;
+        var poiUnchanged = JSON.stringify(bcPoiSignature(currentPoi)) === JSON.stringify(bcPoiSignature(originalPoi));
+        var current = (mapFeatures || []).filter(function (feature) {
+            return feature && bcFeatureProperties(feature).type !== 'poi';
+        }).map(bcPrepareSpecialFeature);
+        var unchanged = geometryDirty === false || Biocollect.MapUtilities.featuresMatchSite(original, current);
+
+        // An omitted features array leaves the stored one in place, so it has to be sent empty.
+        function clearStoredFeatures(payload) {
+            if (original.features && original.features.length) {
+                payload.features = [];
+            }
+            return payload;
+        }
+
+        if (unchanged) {
+            var unchangedPayload = {
+                extent: originalExtent,
+                poi: poiUnchanged ? originalPoi : currentPoi
+            };
+            return unchangedPayload;
+        }
+
+        if (!current.length) {
+            return clearStoredFeatures({
+                extent: {source: 'none'},
+                poi: currentPoi
+            });
+        }
+
+        if (current.length === 1) {
+            return clearStoredFeatures({
+                extent: bcExtentFromSingleFeature(current[0], original),
+                poi: currentPoi
+            });
+        }
+
+        var bounds = bcBoundsOfFeatures(current);
+        var centre = bounds ? [(bounds.west + bounds.east) / 2, (bounds.south + bounds.north) / 2] : null;
+        var summary = {
+            type: 'Polygon',
+            coordinates: bcRingFromBounds(bounds),
+            centre: centre,
+            areaKmSq: bcAreaKmSq({type: 'FeatureCollection', features: current})
+        };
+        if (centre) {
+            summary.decimalLongitude = centre[0];
+            summary.decimalLatitude = centre[1];
+        }
+        return {
+            extent: {source: 'drawn', geometry: bcDefined(summary)},
+            features: current.map(bcStoredFeature),
+            poi: currentPoi
+        };
     },
 
     /**
@@ -507,3 +1084,5 @@ Biocollect.MapUtilities = {
         return false;
     }
 };
+
+})();

@@ -41,6 +41,24 @@
 
             window.activityLevelData = new ActivityLevelData();
 
+            // activityLevelData.mobile tells the form map to hide drawing tools.
+            // A survey that lets the recorder create a point still needs the marker
+            // control, which Geoman renders as .leaflet-pm-icon-marker.
+            if (window.EnmapifyUtils && !EnmapifyUtils._biocollectPwaPointDraw) {
+                var originalGetMapOptions = EnmapifyUtils.getMapOptions;
+                EnmapifyUtils.getMapOptions = function (levelData, readonly, allowPolygons, allowPoints, allowLine, surveySiteOption) {
+                    var options = originalGetMapOptions.apply(EnmapifyUtils, arguments);
+                    var canCreatePoint = !readonly && allowPoints &&
+                        (surveySiteOption === 'sitecreate' || surveySiteOption === 'sitepickcreate');
+                    if (levelData && levelData.mobile && canCreatePoint) {
+                        options.marker = true;
+                        options.edit = true;
+                    }
+                    return options;
+                };
+                EnmapifyUtils._biocollectPwaPointDraw = true;
+            }
+
             $(function() {
                 if (window.viewModel)
                     return;
@@ -135,7 +153,6 @@
                 outputModelConfig = _.extend(fcConfig, outputModelConfig);
 
                 if(metaModel.supportsSites) {
-                    var mapFeatures = mapFeatures;
                     var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
                     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
                     var mapOptions = {
@@ -159,11 +176,8 @@
                     activityLevelData.siteMap = new ALA.Map("activitySiteMap", mapOptions);
 
                     if (mapFeatures && mapFeatures.features && mapFeatures.features.length > 0) {
-                        if (mapFeatures.features[0].pid) {
-                            activityLevelData.siteMap.addWmsLayer(mapFeatures.features[0].pid);
-                        } else {
-                            var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
-                            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                        var geoJson = Biocollect.MapUtilities.geoJsonFromMapFeatures(mapFeatures);
+                        if (geoJson) {
                             activityLevelData.siteMap.setGeoJSON(geoJson);
                         }
                     } else if (activityLevelData.pActivity.sites.length == 1) {
