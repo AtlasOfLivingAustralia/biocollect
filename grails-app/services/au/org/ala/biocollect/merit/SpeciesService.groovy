@@ -155,14 +155,14 @@ class SpeciesService {
         }
 
         def encodedQuery = URLEncoder.encode(searchTerm ?: '', "UTF-8")
-        String url = "${grailsApplication.config.getProperty('bieWs.baseURL')}/ws"
+        String url = "${grailsApplication.config.getProperty('bieWs.baseURL')}"
          if (fq) {
             String encodedFacetQuery = URLEncoder.encode(fq, 'UTF-8')
             url += "/search.json?q=${encodedQuery}&fq=${encodedFacetQuery}&pageSize=${limit}"
         }
         else {
             def encodedFq = URLEncoder.encode(fq ?: '', "UTF-8")
-            url += "/search/auto.jsonp?q=${encodedQuery}&limit=${limit}&idxType=TAXON"
+            url += "/search/auto.json?q=${encodedQuery}&limit=${limit}&idxType=TAXON"
 
         }
         webService.getJson(url)
