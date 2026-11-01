@@ -600,7 +600,8 @@ Biocollect.MapUtilities = {
 
     /** True when both values are finite, in-range coordinates. Zero is valid; blank values are not. */
     isValidLatLng: function (lat, lng) {
-        var latitude = parseFloat(lat), longitude = parseFloat(lng);
+        var latitude = (typeof lat === 'number' || (typeof lat === 'string' && lat.trim() !== '')) ? Number(lat) : NaN;
+        var longitude = (typeof lng === 'number' || (typeof lng === 'string' && lng.trim() !== '')) ? Number(lng) : NaN;
         return isFinite(latitude) && isFinite(longitude) && Math.abs(latitude) <= 90 && Math.abs(longitude) <= 180;
     },
 
