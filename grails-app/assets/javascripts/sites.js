@@ -486,6 +486,13 @@ var SiteViewModel = function (mapContainerId, site, mapOptions) {
         var described = Biocollect.MapUtilities.describeFeature(feature);
         var kind = described.type;
         var centre = feature.geometry && feature.geometry.coordinates && typeof feature.geometry.coordinates[0] === 'number' ? feature.geometry.coordinates : null;
+        if (!centre) {
+            var bounds = self.map.getBounds();
+            if (bounds && bounds.isValid()) {
+                var boundsCentre = bounds.getCenter();
+                centre = [boundsCentre.lng, boundsCentre.lat];
+            }
+        }
         self.site().extent().geometry().type(kind === 'Circle' ? 'Circle' : kind);
         self.site().extent().geometry().radius(described.radius);
         self.site().extent().geometry().areaKmSq(described.areaKmSq);
