@@ -783,7 +783,12 @@ var SitesViewModel =  function(sites, map, mapFeatures, isUserEditor, projectId,
                 self.displayedSites.push(self.sites[indicies[i]]);
             }
         }
-        self.selectAll(true);
+        self.displayedSites().forEach(function (site) {
+            if (!site.selectionInitialised) {
+                site.selectionInitialised = true;
+                site.selected(true);
+            }
+        });
         self.displaySites();
         previousIndicies.splice(0, previousIndicies.length);
         Array.prototype.push.apply(previousIndicies, indicies);
