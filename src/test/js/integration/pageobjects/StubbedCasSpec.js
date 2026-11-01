@@ -474,16 +474,7 @@ class StubbedCasSpec {
 
         const map = $('.leaflet-container');
         await map.waitForDisplayed({timeout: 10000});
-        const size = await map.getSize();
-        const location = await map.getLocation();
-        await browser.action('pointer')
-            .move({
-                x: Math.round(location.x + (size.width / 2)),
-                y: Math.round(location.y + (size.height / 2))
-            })
-            .down()
-            .up()
-            .perform();
+        await map.click();
 
         const dropdown = $('.select2-selection__rendered');
         await dropdown.waitForDisplayed({timeout: 30000});
