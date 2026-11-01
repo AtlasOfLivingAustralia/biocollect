@@ -361,7 +361,12 @@ Biocollect.MapUtilities = {
                     }).filter(Boolean)
                 };
             }
-            return bcPrepareSpecialFeature(bcCloneJson(feature));
+            var convertedFeature = bcPrepareSpecialFeature(bcCloneJson(feature));
+            if (convertedFeature.properties) {
+                delete convertedFeature.properties.popupContent;
+                delete convertedFeature.properties.tooltipContent;
+            }
+            return convertedFeature;
         }
 
         var geoJson = {
