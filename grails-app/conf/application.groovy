@@ -37,6 +37,8 @@ environments {
                 loggerLevel = "DEBUG"
                 auth.baseURL = "https://auth-test.ala.org.au"
                 app.default.hub='ala'
+                // The PWA dev server frames the /pwa pages
+                app.embedding.allowedOrigins = ['http://localhost:5173']
         }
 
         test {
