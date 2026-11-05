@@ -1,0 +1,64 @@
+hub_name	associatedProgram	associatedSubProgram	projectSiteId	projectType	organisationId	organisationUrl	organisationLogo	projectName	aim	description	plannedStartDate	plannedEndDate	ecoScienceType	isExternal	status	manager	countries	uNRegions	banner_image	projectUrl	associatedOrgs	contactEmail	keywords	termsOfUseAgreement	embeddedVideo	embeddedVideoTitle
+nesp-northern	NESP - Northern Australia Hub			Ecological or biological survey / assessment (not citizen science)				Applying knowledge of river flow–ecology links	"Understanding the links between river flows and healthy ecosystems is critical to determining how much water is needed to maintain cultural, economic and social goods and services.  This project is supporting water planning in Western Australia, the Northern Territory and Queensland."	"<div class=""panel panel-default"">
+												<div class=""panel-heading"" role=""tab"" id=""heading0"">
+													<h4 class=""panel-title"">
+														<a role=""button"" data-toggle=""collapse"" data-parent=""#accordion"" href=""#collapse0"" aria-expanded=""false"" aria-controls=""collapse0"" class=""collapsed"">
+														Northern Australian rivers support valuable ecosystem and ecosystem services <i class=""fa fa-plus-square-o"" style=""float: right;""></i>
+														</a>
+													</h4>
+												</div>
+
+												<div id=""collapse0"" class=""panel-collapse collapse"" role=""tabpanel"" aria-labelledby=""heading0"" aria-expanded=""false"" style=""height: 145px;"">
+													<div class=""panel-body"">
+													<p>River flows support healthy ecosystems that provide a wealth of economic, social and cultural goods and services such as fisheries, recreation and tourism attractions, bush tucker, clean water, fertile floodplains and more. Understanding the links between river flows and healthy ecosystems is therefore critical to determining how much water is needed to maintain these goods and services. In places where these links are unknown, water planners need to infer relationships from similar places until enough local field data is collected and analysed.</p>
+													</div>
+												</div>
+											</div>
+																	  										  					<div class=""panel panel-default"">
+												<div class=""panel-heading"" role=""tab"" id=""heading1"">
+													<h4 class=""panel-title"">
+														<a role=""button"" data-toggle=""collapse"" data-parent=""#accordion"" href=""#collapse1"" aria-expanded=""false"" aria-controls=""collapse1"" class=""collapsed"">
+														We need to confidently transfer knowledge of flow–ecology links to data-poor places <i class=""fa fa-plus-square-o"" style=""float: right;""></i>
+														</a>
+													</h4>
+												</div>
+
+												<div id=""collapse1"" class=""panel-collapse collapse "" role=""tabpanel"" aria-labelledby=""heading1"" aria-expanded=""false"">
+													<div class=""panel-body"">
+													<p>Our current environmental flow research is examining the ecological responses to changes to flow in WA’s Fitzroy River, NT’s Daly River and rivers in Qld’s southern Gulf of Carpentaria, and builds on previous work in these catchments. To maximise the usefulness of this work, we need to evaluate how transferable research findings are to other locations and scales, and identify the key considerations when applying this knowledge. Understanding the inferential strength of flow–ecology links and their transferability to other locations is key to water planning, and to assess the river flow-related impacts of development proposals and climate change in catchments with limited field data.</p>
+<p><strong>This project is supporting water planning in Western Australia, the Northern Territory and Queensland, and national water policy, by:</strong></p>
+<ul>
+<li>synthesising findings from research on links between river flow and river ecology in northern Australia</li>
+<li>evaluating the transferability of environmental flow research from the Fitzroy River (WA), Daly River (NT) and rivers in the southern Gulf of Carpentaria (Qld) to other northern catchments and regions</li>
+<li>increasing transparency for water allocation decisions based on flow–ecology relationships inferred from elsewhere in the north</li>
+<li>presenting findings in formats suited to water planners and managers.</li>
+</ul>
+<p><strong>Project activities</strong></p>
+<ul>
+<li>Characterise and synthesise studies of flow–ecology responses in northern Australia in terms of factors such as the type, scope and scale of each response, and its geographic location</li>
+<li>Provide information to facilitate the transfer of flow–ecology responses. This includes considerations around geographical variations in river and wetland characteristics such as hydrology, floodplain inundation, geomorphology, topography and disturbance</li>
+<li>Analyse this data to generate maps, conceptual models and other products that evaluate and communicate the transferability of key flow–ecology responses</li>
+<li>Identify challenges and opportunities for transferring knowledge of flow–ecology responses.</li>
+</ul>
+<p><strong>Anticipated outputs</strong></p>
+<ul>
+<li>Synthesis report with guiding principles for water managers</li>
+</ul>
+													</div>
+												</div>
+											</div>
+																	  										  					<div class=""panel panel-default"">
+												<div class=""panel-heading"" role=""tab"" id=""heading2"">
+													<h4 class=""panel-title"">
+														<a role=""button"" data-toggle=""collapse"" data-parent=""#accordion"" href=""#collapse2"" aria-expanded=""false"" aria-controls=""collapse2"" class=""collapsed"">
+														This project draws on research from the Fitzroy, Daly and Queensland Gulf catchments <i class=""fa fa-plus-square-o"" style=""float: right;""></i>
+														</a>
+													</h4>
+												</div>
+
+												<div id=""collapse2"" class=""panel-collapse collapse "" role=""tabpanel"" aria-labelledby=""heading2"" aria-expanded=""false"">
+													<div class=""panel-body"">
+													<p><img loading=""lazy"" class=""wp-image-5016"" src=""https://www.nespnorthern.edu.au/wp-content/uploads/2018/06/e-flow-synthesis-map-1024x546.jpg"" alt=""e-flow map"" width=""100%"" height=""auto"" srcset=""https://www.nespnorthern.edu.au/wp-content/uploads/2018/06/e-flow-synthesis-map-1024x546.jpg 1024w, https://www.nespnorthern.edu.au/wp-content/uploads/2018/06/e-flow-synthesis-map-150x80.jpg 150w, https://www.nespnorthern.edu.au/wp-content/uploads/2018/06/e-flow-synthesis-map-300x160.jpg 300w, https://www.nespnorthern.edu.au/wp-content/uploads/2018/06/e-flow-synthesis-map-768x410.jpg 768w, https://www.nespnorthern.edu.au/wp-content/uploads/2018/06/e-flow-synthesis-map.jpg 1044w"" sizes=""(max-width: 1024px) 100vw, 1024px""></p>
+													</div>
+												</div>
+											</div>"	1/7/16	30/6/21		TRUE	Current	"Mark Kennard, Ben Stewart-Koster, Alison King, Dave Crook, Christopher Ndehedehe, Samantha Setterfield, Ryan Burrows, Stuart Bunn"	Australia	Oceania	https://www.nespnorthern.edu.au/wp-content/uploads/2018/06/IMG_5974-800x500.jpg	https://www.nespnorthern.edu.au/projects/nesp/eflow-synthesis/	"Griffith University, Charles Darwin University, University of Western Australia, Queensland State Government, Northern Territory Government, Government of Western Australia"	m.kennard@griffith.edu.au	"environmental flows, rivers & waterholes"	TRUE		
