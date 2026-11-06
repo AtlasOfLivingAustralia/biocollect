@@ -309,15 +309,18 @@ class SiteService {
      */
     def getMapFeatures(site) {
         def featuresMap = [zoomToBounds: true, zoomLimit: 15, highlightOnHover: true, features: []]
-        switch (site.extent?.source?.toLowerCase()) {
+        // A stored features array is the geometry to draw. An empty list is not a geometry change.
+        if (site?.features) {
+            featuresMap.features.addAll(site.features)
+            return featuresMap
+        }
+        switch (site?.extent?.source?.toLowerCase()) {
             case 'point':
-                featuresMap.features << site.extent.geometry
-                break
             case 'pid':
-                featuresMap.features << site.extent.geometry
-                break
             case 'drawn':
-                featuresMap.features << site.extent.geometry
+                if (site?.extent?.geometry) {
+                    featuresMap.features << site.extent.geometry
+                }
                 break
             default:
                 featuresMap = [:]

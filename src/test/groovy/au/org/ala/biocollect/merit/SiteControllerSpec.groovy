@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.UtilService
 import org.springframework.http.HttpStatus
 
 
@@ -142,5 +143,73 @@ class SiteControllerSpec extends Specification implements ControllerUnitTest<Sit
         response.json.progress.uploaded == 0
         response.json.progress.finished == false
         response.json.error == "Error uploading sites, please try again later"
+    }
+
+    void "ajaxDeleteSitesFromProject only removes the posted sites that belong to the project"() {
+        given:
+        ProjectService projectService = Mock(ProjectService)
+        SiteService sites = Mock(SiteService)
+        controller.projectService = projectService
+        controller.siteService = sites
+        request.JSON = [siteIds: ['s1', 'other']]
+
+        when:
+        controller.ajaxDeleteSitesFromProject('p1')
+
+        then:
+        1 * projectService.canUserEditSitesForProject('1', 'p1') >> true
+        1 * projectService.get('p1', 'all') >> [sites: [[siteId: 's1'], [siteId: 's2']]]
+        1 * sites.canRemoveProjectFromSite('s1', 'p1') >> true
+        1 * sites.get('s1', [raw: 'true']) >> [projects: ['p1']]
+        1 * sites.update('s1', [projects: []])
+        1 * sites.canDeleteSite('s1') >> false
+        0 * sites.canRemoveProjectFromSite('s2', _)
+        response.json.warnings.size() == 1
+    }
+
+    void "ajaxDeleteSitesFromProject rejects a request without siteIds"() {
+        given:
+        ProjectService projectService = Stub(ProjectService)
+        controller.projectService = projectService
+        projectService.canUserEditSitesForProject('1', 'p1') >> true
+        request.JSON = [:]
+
+        when:
+        controller.ajaxDeleteSitesFromProject('p1')
+
+        then:
+        response.status == HttpStatus.BAD_REQUEST.value()
+    }
+
+    void "bulkCreate does not redirect to an unsafe returnTo"() {
+        given:
+        ProjectService projectService = Stub(ProjectService)
+        UtilService utilService = Stub(UtilService)
+        controller.projectService = projectService
+        controller.utilService = utilService
+        projectService.canUserEditSitesForProject('1', 'p1') >> false
+        utilService.isRedirectSafe('javascript:alert(1)') >> false
+        params.projectId = 'p1'
+        params.returnTo = 'javascript:alert(1)'
+
+        when:
+        controller.bulkCreate()
+
+        then:
+        response.redirectedUrl
+        !response.redirectedUrl.contains('javascript')
+    }
+
+    void "ajaxUpdate responds with a 500 when the site cannot be saved"() {
+        given:
+        request.JSON = [site: [name: 'Site', visibility: 'private']]
+        siteService.updateRaw(_, _, '1') >> [status: 'error', message: 'boom']
+
+        when:
+        controller.ajaxUpdate(null)
+
+        then:
+        response.status == HttpStatus.INTERNAL_SERVER_ERROR.value()
+        response.text == 'boom'
     }
 }

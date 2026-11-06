@@ -108,14 +108,14 @@ Biocollect.SiteDisplay = function() {
 
         if (projectId && projectName) {
             html += "<div><i class='icon-home'></i> <a href='" +
-                projectLinkPrefix + projectId + "'>" + projectName + "</a></div>";
+                _.escape(projectLinkPrefix + projectId) + "'>" + _.escape(projectName) + "</a></div>";
         }
 
         if (orgName !== undefined && orgName != '') {
-            html += "<div><i class='icon-user'></i> Org name: " + orgName + "</div>";
+            html += "<div><i class='icon-user'></i> Org name: " + _.escape(orgName) + "</div>";
         }
 
-        html += "<div><i class='icon-map-marker'></i> Site: <a href='" + siteLinkPrefix + siteId + "'>" + siteName + "</a></div>";
+        html += "<div><i class='icon-map-marker'></i> Site: <a href='" + _.escape(siteLinkPrefix + siteId) + "'>" + _.escape(siteName) + "</a></div>";
         return html;
     }
 };

@@ -6,6 +6,21 @@
     <div class="col-12 col-md-5">
         <div class="border border-secondary mt-3 p-3" data-bind="visible: showPointAttributes(), template: { name: 'point'}"></div>
 
+        <div class="border border-secondary mt-3 p-3" data-bind="visible: geometrySummaries().length">
+            <h4>Geometries</h4>
+            <ul class="list-unstyled mb-0" data-bind="foreach: geometrySummaries">
+                <li>
+                    <span data-bind="text: type"></span>
+                    <!-- ko if: radius -->
+                    <span> — radius <span data-bind="text: radius"></span> m</span>
+                    <!-- /ko -->
+                    <!-- ko if: areaLabel -->
+                    <span> — <span data-bind="html: areaLabel"></span></span>
+                    <!-- /ko -->
+                </li>
+            </ul>
+        </div>
+
         <div class="border border-secondary mt-3 p-3" data-bind="visible: site().extent().geometry().type">
             <div data-bind="if: transients.loadingGazette()"><span class="fa fa-spin fa-spinner"></span></div>
 
@@ -288,7 +303,11 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
             context : "${site?.context}",
             type : "${site?.type}",
             extent: <fc:modelAsJavascript model="${site?.extent ?: 'null'}" />,
+            features: <fc:modelAsJavascript model="${site?.features ?: '[]'}" />,
             poi: <fc:modelAsJavascript model="${site?.poi ?: '[]'}" />,
+            <g:if test="${site?.visibility}">
+            visibility: "${site.visibility.encodeAsJavaScript()}",
+            </g:if>
             area : "${site?.area}",
             description : "${site?.description?.encodeAsJavaScript()}",
             notes : "${site?.notes?.encodeAsJavaScript()}",
@@ -305,11 +324,15 @@ function initSiteViewModel(allowPointsOfInterest, edit) {
     var map = siteViewModel.map;
 
     <g:if  test="${project?.projectSite?.extent?.geometry}">
-        var source = "${project.projectSite.extent.source}"
-        var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
-        var geometry = Biocollect.MapUtilities.featureToValidGeoJson(projectArea);
-        if(source != 'none'){
-            map.setGeoJSON(geometry);
+        var siteAlreadyHasGeometry = savedSiteData.extent && savedSiteData.extent.geometry && savedSiteData.extent.source != 'none';
+        var siteAlreadyHasFeatures = savedSiteData.features && savedSiteData.features.length;
+        if (!siteAlreadyHasGeometry && !siteAlreadyHasFeatures) {
+            var source = "${project.projectSite.extent.source}"
+            var projectArea = <fc:modelAsJavascript model="${project.projectSite.extent.geometry}"/>;
+            var geometry = Biocollect.MapUtilities.featureToValidGeoJson(projectArea);
+            if(source != 'none' && geometry){
+                map.setGeoJSON(geometry);
+            }
         }
     </g:if>
 

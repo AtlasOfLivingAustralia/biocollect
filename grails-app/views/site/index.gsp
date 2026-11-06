@@ -402,10 +402,10 @@
             var smallMap = new ALA.Map("smallMap", mapOptions);
 
 
-            if(mapFeatures.features === undefined || mapFeatures.features.length == 0){
+            var geoJson = Biocollect.MapUtilities.geoJsonFromMapFeatures(mapFeatures);
+            if(!geoJson){
                 $('#siteNotDefined').show();
             } else {
-                var geoJson = Biocollect.MapUtilities.featureToValidGeoJson(mapFeatures.features[0]);
                 smallMap.setGeoJSON(geoJson);
             }
 

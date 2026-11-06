@@ -46,7 +46,7 @@
         getRecordsForMapping: "${raw(createLink(controller: 'bioActivity', action: 'getProjectActivitiesRecordsForMapping'))}",
         siteCreateUrl: "${raw(createLink(controller: 'site', action: 'createForProject', params: [projectId:project.projectId]))}",
         siteSelectUrl: "${raw(createLink(controller: 'site', action: 'select', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
-        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'uploadShapeFile', params:[projectId:project.projectId]))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
+        siteUploadUrl: "${raw(createLink(controller: 'site', action: 'bulkCreate', params:[projectId:project.projectId, siteType:'worksArea']))}&returnTo=${createLink(controller: 'project', action: 'index', id: project.projectId)}",
         starProjectUrl: "${createLink(controller: 'project', action: 'starProject')}",
         addUserRoleUrl: "${createLink(controller: 'user', action: 'addUserAsRoleToProject')}",
         removeUserWithRoleUrl: "${createLink(controller: 'user', action: 'removeUserWithRole')}",
@@ -127,6 +127,7 @@
         allBaseLayers: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.baseLayers', List)}"/>,
         allOverlays: <fc:modelAsJavascript model="${grailsApplication.config.getProperty('map.overlays', List)}"/>,
         mapLayersConfig: <fc:modelAsJavascript model="${mapService.getMapLayersConfig(project, null)}" />,
+        leafletAssetURL: "${assetPath(src: 'webjars/leaflet/1.6.0/dist/images')}",
         sitesWithDataForProject: "${createLink(controller: 'bioActivity', action: 'getSitesWithDataForProject')}",
         pwaAppProjectUrl: "${grailsApplication.config.getProperty('pwa.appUrl')}/project/",
         </g:applyCodec>
@@ -227,23 +228,29 @@
                 var tab = e.currentTarget.hash;
                 // only init map when the tab is first shown
                 if (tab === '#site' && map === undefined) {
-                    var mapOptions = {
-                        zoomToBounds:true,
-                        zoomLimit:16,
-                        highlightOnHover:true,
-                        features:[],
-                        featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                        wmsServer: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}"
-                    };
-
-                    map = init_map_with_features({
-                            mapContainer: "map",
-                            scrollwheel: false,
-                            featureService: "${createLink(controller: 'proxy', action:'feature')}",
-                            wmsServer: "${grailsApplication.config.getProperty('spatial.geoserverUrl')}"
-                        },
-                        mapOptions
-                    );
+                    if (fcConfig.leafletAssetURL && window.L && L.Icon && L.Icon.Default) {
+                        L.Icon.Default.imagePath = fcConfig.leafletAssetURL;
+                    }
+                    var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+                    var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+                    map = new ALA.Map("map", {
+                        autoZIndex: false,
+                        preserveZIndex: true,
+                        addLayersControlHeading: true,
+                        drawControl: false,
+                        showReset: false,
+                        useMyLocation: false,
+                        allowSearchLocationByAddress: false,
+                        allowSearchRegionByAddress: false,
+                        zoomToObject: false,
+                        maxZoom: 20,
+                        baseLayer: baseLayersAndOverlays.baseLayer,
+                        otherLayers: baseLayersAndOverlays.otherLayers,
+                        overlays: baseLayersAndOverlays.overlays,
+                        overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                        wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                        wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
+                    });
                     var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
                     var sitesViewModel = new SitesViewModel(project.sites, map, mapFeatures, ${user?.isEditor?:false}, project.projectId, project.mapConfiguration.defaultZoomArea);
                     ko.applyBindings(sitesViewModel, document.getElementById('sitesList'));
@@ -307,11 +314,6 @@
                             var rowIdx = table.cell(this).index().row;
                             sitesViewModel.unHighlightSite(rowIdx);
                         });
-                    $('#select-all-sites').on('change',function() {
-                        var checkbox = this;
-                        // This lets knockout update the bindings correctly.
-                        $('#sites-table tbody tr :checkbox').trigger('click');
-                    });
                     sitesViewModel.sitesFiltered(visibleIndicies());
 
                     $('#site-photo-points a').on('click',function(e) {

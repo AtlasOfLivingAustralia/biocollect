@@ -88,4 +88,71 @@ class SiteServiceSpec extends Specification implements AutowiredTest{
         response.isPointInsideProjectArea == true
         response.address == null
     }
+
+    def "getMapFeatures draws stored features when present, otherwise the extent"() {
+        given:
+        def pointCoordinates = [149.1, -35.3]
+        def pointGeometry = [type: 'Point', decimalLatitude: -35.3, decimalLongitude: 149.1, coordinates: pointCoordinates]
+        def circleGeometry = [type: 'Circle', radius: 25, coordinates: pointCoordinates]
+        def ring = [[0, 0], [1, 0], [1, 1], [0, 0]]
+        def polygonGeometry = [type: 'Polygon', coordinates: [ring]]
+        def lineCoordinates = [[149, -35], [150, -36]]
+        def lineGeometry = [type: 'LineString', coordinates: lineCoordinates]
+        def pidGeometry = [type: 'pid', pid: 'cl123', name: 'Park']
+        def storedFeature = [type: 'Feature', geometry: [type: 'Point', coordinates: [1, 2]], properties: [type: 'Point']]
+        def storedFeatures = [storedFeature]
+
+        when:
+        def point = service.getMapFeatures([extent: [source: 'point', geometry: pointGeometry]])
+
+        then:
+        point.features.size() == 1
+        point.features[0].type == 'Point'
+        point.features[0].coordinates == pointCoordinates
+
+        when:
+        def circle = service.getMapFeatures([extent: [source: 'drawn', geometry: circleGeometry]])
+
+        then:
+        circle.features[0].type == 'Circle'
+        circle.features[0].radius == 25
+        circle.features[0].coordinates == pointCoordinates
+
+        when:
+        def polygon = service.getMapFeatures([extent: [source: 'drawn', geometry: polygonGeometry]])
+
+        then:
+        polygon.features[0].type == 'Polygon'
+        polygon.features[0].coordinates == [ring]
+
+        when:
+        def line = service.getMapFeatures([extent: [source: 'drawn', geometry: lineGeometry]])
+
+        then:
+        line.features[0].type == 'LineString'
+        line.features[0].coordinates == lineCoordinates
+
+        when:
+        def pid = service.getMapFeatures([extent: [source: 'pid', geometry: pidGeometry]])
+
+        then:
+        pid.features.size() == 1
+        pid.features[0].type == 'pid'
+        pid.features[0].pid == 'cl123'
+        pid.features[0].coordinates == null
+
+        when:
+        def empty = service.getMapFeatures([extent: [source: 'none']])
+
+        then:
+        empty == [:]
+
+        when:
+        def withFeatures = service.getMapFeatures([features: storedFeatures, extent: [source: 'drawn', geometry: polygonGeometry]])
+
+        then:
+        withFeatures.zoomToBounds == true
+        withFeatures.features == storedFeatures
+        withFeatures.features.size() == 1
+    }
 }

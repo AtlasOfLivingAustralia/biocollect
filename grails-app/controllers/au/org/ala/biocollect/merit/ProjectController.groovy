@@ -1491,8 +1491,11 @@ class ProjectController {
 
     @PreAuthorise(accessLevel = 'admin', redirectController ='home', redirectAction = 'index')
     def downloadShapefile(String id) {
-
-        def url = grailsApplication.config.getProperty('ecodata.baseURL') + "/ws/project/${id}.shp"
+        String format = params.format?.toString()?.equalsIgnoreCase('geojson') ? 'geojson' : 'shp'
+        String url = grailsApplication.config.getProperty('ecodata.baseURL') + "/ws/project/${id}.${format}"
+        if (params.siteIds) {
+            url += '?siteIds=' + java.net.URLEncoder.encode(params.siteIds.toString(), 'UTF-8')
+        }
         def resp = webService.proxyGetRequest(response, url, true, 960000)
         if (resp.status != 200) {
             render view:'/error', model:[error:resp.error]

@@ -117,7 +117,7 @@
             if ($('#validation-container').validationEngine('validate')) {
                 var json = siteViewModel.toJS();
                 //validate  if extent.geometry.pid, then update extent.source to pid, extent.geometry.type to pid
-                if (json.extent.geometry.pid){
+                if (json.extent && json.extent.geometry && json.extent.geometry.pid && !(json.features && json.features.length)){
                     json.extent.source = 'pid';
                     json.extent.geometry.type = 'pid'
                 }

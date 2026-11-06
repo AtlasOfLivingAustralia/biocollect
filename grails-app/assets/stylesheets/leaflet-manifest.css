@@ -7,7 +7,8 @@
 *= require leaflet/Control.FullScreen
 
 * from ala-map-plugin
-*= require ala-map.css
+* ala-map.css bundles Font Awesome 4, whose .fa rule breaks the FA 5 v4-shims glyphs from base-bs5.css (fullscreen icon)
+*= require ala-map-no-fa.css
 * require Leaflet.draw-0.4.2/leaflet.draw
 * require Leaflet.Coordinates-0.1.5/Leaflet.Coordinates-0.1.5
 * require Leaflet.Coordinates-0.1.5/Leaflet.Coordinates-0.1.5.ie
