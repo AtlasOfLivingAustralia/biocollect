@@ -49,6 +49,7 @@ const config = {
             }
         }
     }
+    autoXvfb: false,
 }
 
 module.exports = { config };
