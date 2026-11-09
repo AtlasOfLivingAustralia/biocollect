@@ -24,6 +24,11 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+    // Allow non-GET requests, including image uploads,
+    // to bypass the service worker.
+    if (e.request.method !== 'GET') {
+        return;
+    }
     console.log('Service Worker: Fetching');
     e.respondWith(
         fetch(e.request)
