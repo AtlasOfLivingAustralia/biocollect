@@ -101,6 +101,10 @@ echo "Starting ecodata from `pwd`"
 ls -la
 start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew :bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
 
+# Display ecodata startup logs in GitHub Actions
+tail -n +1 -F "$BIOCOLLECT_DIR/logs/ecodata.log" &
+BACKGROUND_PIDS+=($!)
+
 # check that ecodata is running
 while ! nc -z localhost 8080; do
   echo "Waiting for ecodata to start on port 8080..."
