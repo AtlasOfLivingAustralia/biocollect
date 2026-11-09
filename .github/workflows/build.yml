@@ -99,6 +99,15 @@ jobs:
       - name: Run javascript unit tests
         run: node_modules/karma/bin/karma start karma.conf.js --single-run --browsers ChromeHeadlessCI
 
+      - name: Pre-download ecodata Gradle 7.6.2
+        run: |
+          curl --fail --location --retry 5 --retry-delay 10 \
+            --connect-timeout 30 --max-time 300 \
+            -o /tmp/gradle-7.6.2-bin.zip \
+            https://services.gradle.org/distributions/gradle-7.6.2-bin.zip
+
+          unzip -t /tmp/gradle-7.6.2-bin.zip
+
       - name: Run BioCollect functional tests
         run: ./src/main/scripts/runFunctionalTests.sh chromeHeadless /tmp/ecodata dev /tmp/biocollect-pwa
         continue-on-error: false
