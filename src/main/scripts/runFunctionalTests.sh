@@ -99,6 +99,13 @@ done
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
+# Use the Gradle distribution already downloaded by GitHub Actions
+if [ -f /tmp/gradle-7.6.2-bin.zip ]; then
+    echo "Using locally downloaded Gradle 7.6.2"
+    sed -i \
+      's|^distributionUrl=.*|distributionUrl=file:///tmp/gradle-7.6.2-bin.zip|' \
+      gradle/wrapper/gradle-wrapper.properties
+fi
 start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew :bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
 
 # Display ecodata startup logs in GitHub Actions
