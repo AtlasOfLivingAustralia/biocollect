@@ -310,7 +310,7 @@ describe("PwaIndexSpec", function (){
             initViewModel();
             viewModel.bounds(L.latLngBounds(L.latLng(-33, 150), L.latLng(-34, 151)));
             expect(viewModel.isBoundsWithinMaxArea()).toBe(false);
-            expect(Number.parseInt(viewModel.areaInKmOfBounds().toString())).toBe(8615);
+            expect(Number.parseInt(viewModel.areaInKmOfBounds().toString())).toBe(8596);
             viewModel.bounds(L.latLngBounds(L.latLng(-35.301817150253676, 149.12043571472168), L.latLng(-35.336693572690436, 149.08198356628418)));
             expect(viewModel.isBoundsWithinMaxArea()).toBe(true);
             expect(Number.parseInt(viewModel.areaInKmOfBounds().toString())).toBe(12);

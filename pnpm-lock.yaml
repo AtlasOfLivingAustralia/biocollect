@@ -66,8 +66,8 @@ importers:
         specifier: ^0.0.8
         version: 0.0.8(karma@6.4.4(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))
       leaflet:
-        specifier: 0.7.7
-        version: 0.7.7
+        specifier: 1.9.4
+        version: 1.9.4
       node-jose:
         specifier: 2.2.0
         version: 2.2.0
@@ -1845,8 +1845,8 @@ packages:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
     engines: {node: '>= 0.6.3'}
 
-  leaflet@0.7.7:
-    resolution: {integrity: sha512-H1lR7J5VxhvQJQHlW2UywtxO63zilLrnwVsDvjKeyfntffj63Ml94gCk9YPYWBkiQgxisdiA8aJ30Zoou4VhEA==}
+  leaflet@1.9.4:
+    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
 
   lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
@@ -4792,7 +4792,7 @@ snapshots:
     dependencies:
       readable-stream: 2.3.8
 
-  leaflet@0.7.7: {}
+  leaflet@1.9.4: {}
 
   lie@3.3.0:
     dependencies:
