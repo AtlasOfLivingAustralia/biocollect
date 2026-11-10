@@ -457,25 +457,22 @@ class StubbedCasSpec {
      */
     async dropPin() {
         // Select the marker draw button
-        const markerDraw = $('.leaflet-draw-draw-marker');
+        const markerDraw = $('[title="Draw Marker"]');
         await markerDraw.waitForDisplayed({timeout: 30000});
 
-        // Move to the marker button and click it
+        const map = markerDraw.$('./ancestor::div[contains(@class, "leaflet-container")]');
+        await map.moveTo();
         await markerDraw.moveTo();
         await markerDraw.click();
 
-        // Wait for the draw actions menu to appear
-        const drawActions = $('.leaflet-draw-actions'); // Get the first draw action
-        await drawActions.waitForDisplayed({timeout: 10000});
+        await $('.action-cancel').waitForDisplayed({timeout: 10000});
+        await map.click({x: 100, y: 100});
 
-        // click on the map pane to drop the pin
-        const mapPane = await $('.leaflet-map-pane');
-        await mapPane.moveTo();
-        await mapPane.click({x: 100, y: 100});
-
-        // wait for the point to be added to dropdown
-        const dropdown = $('.select2-selection__rendered');
-        await dropdown.waitForDisplayed({timeout: 30000});
+        const dropdown = $('#siteLocation + .select2 .select2-selection__rendered');
+        await browser.waitUntil(async () => (await dropdown.getText()).includes('The Point you created.'), {
+            timeout: 30000,
+            timeoutMsg: 'The drawn point was not selected'
+        });
     }
 }
 

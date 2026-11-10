@@ -135,7 +135,6 @@
                 outputModelConfig = _.extend(fcConfig, outputModelConfig);
 
                 if(metaModel.supportsSites) {
-                    var mapFeatures = mapFeatures;
                     var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
                     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
                     var mapOptions = {
@@ -159,13 +158,7 @@
                     activityLevelData.siteMap = new ALA.Map("activitySiteMap", mapOptions);
 
                     if (mapFeatures && mapFeatures.features && mapFeatures.features.length > 0) {
-                        if (mapFeatures.features[0].pid) {
-                            activityLevelData.siteMap.addWmsLayer(mapFeatures.features[0].pid);
-                        } else {
-                            var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
-                            var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
-                            activityLevelData.siteMap.setGeoJSON(geoJson);
-                        }
+                        Biocollect.MapUtilities.setSiteMapFeature(activityLevelData.siteMap, mapFeatures.features[0]);
                     } else if (activityLevelData.pActivity.sites.length == 1) {
                         viewModel.siteId(activityLevelData.pActivity.sites[0].siteId);
                     } else if (activityLevelData.projectSite && activityLevelData.projectSite.extent) {
