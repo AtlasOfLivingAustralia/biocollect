@@ -9,6 +9,8 @@ const config = {
          // ],
         maxInstances: 1,
         maxInstancesPerCapability: 1,
+        // Headless Chrome does not need xvfb-run, which can break worker IPC on Linux.
+        autoXvfb: false,
         // services: ['devtools'],
         capabilities: [{
             maxInstances: 1,
