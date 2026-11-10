@@ -154,7 +154,7 @@ class AdminController {
                 value = val?.toString()
             }
 
-            boolean isSensitive = sensitiveKeys.any { sensitiveKey -> key.contains(sensitiveKey) }
+            boolean isSensitive = sensitiveKeys.any { sensitiveKey -> key.toLowerCase().contains(sensitiveKey) }
             if(key.startsWith("grails.")){
                 grailsStuff << (isSensitive ? [key: key, value: "********", comment: '']: [key: key, value: value, comment: ''])
             }
