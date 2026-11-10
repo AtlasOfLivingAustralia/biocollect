@@ -1,5 +1,15 @@
 var Biocollect = Biocollect || {};
 
+(function () {
+    var getCircleBounds = L.Circle.prototype.getBounds;
+    L.Circle.include({
+        getBounds: function () {
+            // shortcut: unattached circle bounds are approximate; remove when the map plugin attaches them before fitting.
+            return this._map ? getCircleBounds.call(this) : this.getLatLng().toBounds(this.getRadius() * 2);
+        }
+    });
+})();
+
 Biocollect.MapUtilities = {
     /**
      * Converts a 'feature' object from Ecodata into valid GeoJSON that can be handled by the ALA.Map.
@@ -46,6 +56,17 @@ Biocollect.MapUtilities = {
         }
 
         return geoJson;
+    },
+
+    setSiteMapFeature: function(map, feature) {
+        if (feature.type && feature.type.toLowerCase() === 'circle') {
+            map.setGeoJSON(this.featureToValidGeoJson(feature));
+        } else if (feature.pid) {
+            map.addWmsLayer(feature.pid);
+        } else {
+            var geometry = _.pick(feature, "type", "coordinates");
+            map.setGeoJSON(ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry));
+        }
     },
 
     /**

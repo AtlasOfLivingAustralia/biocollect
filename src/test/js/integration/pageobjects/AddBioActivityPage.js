@@ -25,15 +25,44 @@ class AddBioActivityPage extends ReloadablePage {
     }
 
     async setSite(site) {
-        // Select2 hides the original select element and creates its own UI
-        // We need to click on the Select2 container, not the hidden select element
-        const select2Container = $('.select2-selection');
-        await select2Container.waitForDisplayed({ timeout: 5000 });
-        await select2Container.scrollIntoView();
-        await browser.pause(500);
-        await select2Container.click();
-        await $('.select2-results__options').waitForDisplayed({ timeout: 5000 });
-        await $('.select2-results__option').click();
+        await this.addSiteInput.waitForExist({ timeout: 30000 });
+        console.log('Form diagnostics', await browser.execute(() => ({
+            supportsSites: window.metaModel?.supportsSites,
+            sites: window.pActivity?.sites,
+            siteSelect: document.querySelector('#siteLocation')?.outerHTML,
+            loading: document.querySelector('.fa-spinner')?.offsetParent !== null,
+            siteMap: document.querySelector('#activitySiteMap')?.outerHTML
+        })));
+
+        let siteName;
+        await browser.waitUntil(async () => {
+            siteName = await browser.execute((siteId) => {
+                const select = document.getElementById('siteLocation');
+                const model = select && ko.dataFor(select);
+                return model?.data?.locationSitesArray?.().find(item => item.siteId === siteId)?.name;
+            }, site);
+            return !!siteName;
+        }, { timeout: 30000, timeoutMsg: `Site ${site} did not load` });
+
+        const selection = $('#siteLocation + .select2 .select2-selection');
+        await selection.scrollIntoView();
+        await selection.waitForClickable({ timeout: 30000 });
+        await selection.click();
+        await $('.select2-container--open .select2-search__field').setValue(siteName);
+
+        let option;
+        await browser.waitUntil(async () => {
+            option = await browser.execute((siteId) => {
+                return Array.from(document.querySelectorAll('.select2-results__option'))
+                    .find(element => jQuery.data(element, 'data')?.id === siteId) || null;
+            }, site);
+            return !!option;
+        }, { timeout: 30000, timeoutMsg: `Site ${site} was not available in the picker` });
+        await $(option).click();
+        await browser.waitUntil(async () => await this.addSiteInput.getValue() === site, {
+            timeout: 30000,
+            timeoutMsg: `Site ${site} was not selected`
+        });
     }
 
     async setDate(date) {
