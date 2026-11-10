@@ -134,8 +134,16 @@ pnpm ci
 
 echo "Installing chromedriver matching system Chrome"
 DETECT_CHROMEDRIVER_VERSION=true pnpm rebuild chromedriver
+
 export CHROMEDRIVER_PATH="$(node -p "require('chromedriver').path")"
 echo "Using chromedriver at ${CHROMEDRIVER_PATH}"
+
+# Diagnose browser and driver versions in GitHub Actions
+echo "Chrome version:"
+google-chrome --version
+
+echo "ChromeDriver version:"
+"$CHROMEDRIVER_PATH" --version
 
 echo "Running functional tests"
 export DISABLE_FUNCTIONAL_TEST_CAPTURE=1
