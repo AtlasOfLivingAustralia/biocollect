@@ -18,6 +18,11 @@
 
 /* end todo */
 
+.leaflet-bar .fa.fa-arrows-alt::before {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
 /* bs5 layout */
 #banner.no-image {
     height: 250px;
