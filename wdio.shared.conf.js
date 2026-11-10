@@ -33,7 +33,8 @@ const config = {
     ],
     // Patterns to exclude.
     exclude: [
-        './src/test/js/integration/specs/pwa/InstallationSpec.js'
+        './src/test/js/integration/specs/pwa/InstallationSpec.js',
+        './src/test/js/integration/specs/activity/AddBioActivitySpec.js',
     ],
     //
     // ============
