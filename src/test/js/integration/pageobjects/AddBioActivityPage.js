@@ -33,7 +33,6 @@ class AddBioActivityPage extends ReloadablePage {
             loading: document.querySelector('.fa-spinner')?.offsetParent !== null,
             siteMap: document.querySelector('#activitySiteMap')?.outerHTML
         })));
-        console.log('Browser logs', await browser.getLogs('browser'));
 
         let siteName;
         await browser.waitUntil(async () => {
