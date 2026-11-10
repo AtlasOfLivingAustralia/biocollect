@@ -283,9 +283,9 @@
                 ko.applyBindings(new CommentListViewModel(),document.getElementById('commentOutput'));
             </g:if>
             <g:if test="${metaModel?.supportsSites?.toBoolean()}">
-                var mapFeatures = $.parseJSON('${mapFeatures?.encodeAsJavaScript()}');
+                var mapFeatures = <fc:modelAsJavascript model="${mapFeatures}"/>;
 
-                if (mapFeatures && mapFeatures.features) {
+                if (mapFeatures && mapFeatures.features && mapFeatures.features.length > 0) {
                     var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
                     var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
                     var mapOptions = {
@@ -307,14 +307,7 @@
                     }
 
                     viewModel.siteMap = new ALA.Map("activitySiteMap", mapOptions);
-
-                    if (mapFeatures.features[0].pid) {
-                        viewModel.siteMap.addWmsLayer(mapFeatures.features[0].pid);
-                    } else {
-                        var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
-                        var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
-                        viewModel.siteMap.setGeoJSON(geoJson);
-                    }
+                    Biocollect.MapUtilities.setSiteMapFeature(viewModel.siteMap, mapFeatures.features[0]);
                 }
             </g:if>
     });

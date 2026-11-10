@@ -6,6 +6,7 @@ import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.web.AuthService
 import groovy.json.JsonSlurper
 import grails.core.GrailsApplication
+import org.apache.commons.io.FilenameUtils
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpStatus
 
