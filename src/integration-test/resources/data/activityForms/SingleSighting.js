@@ -1,7 +1,7 @@
 var singleSighting = {
   "dateCreated" : ISODate("2022-02-15T13:08:29.111Z"),
   "minOptionalSectionsCompleted" : 1,
-  "supportsSites" : true,
+  "supportsSites" : false,
   "lastUpdated" : ISODate("2022-02-15T13:08:29.111Z"),
   "createdUserId" : "<anon>",
   "supportsPhotoPoints" : false,

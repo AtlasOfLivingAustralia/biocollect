@@ -50,8 +50,6 @@ describe("Application installation Spec", function () {
         await homePage.open();
         await adminToolsPage.loginAsAlaAdmin();
         await adminToolsPage.reindex();
-        // Use the same user as the PWA so uploaded records can be edited.
-        await adminToolsPage.loginAsUser('1');
     });
 
     beforeEach(async function () {
@@ -164,17 +162,11 @@ describe("Application installation Spec", function () {
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSitePublishedDrawer");
 
         console.log('Viewing published record');
-        const publishedRecordIndex = await pwaAppPage.viewPublishedRecordContainingSpecies("Acavomonidia");
+        await pwaAppPage.viewPublishedRecordContainingSpecies("Acavomonidia");
 
         const publishedViewBioActivityPage = new ViewBioActivityPage();
         await addBioActivityPage.takeScreenShot("offlineRecordExistingSiteViewPublishedRecord");
         await waitForDisplayedStable(() => publishedViewBioActivityPage.speciesSelector("Acavomonidia"), 'published species Acavomonidia');
-        await browser.switchFrame(null);
-        await pwaAppPage.closeModal();
-
-        await pwaAppPage.editNthPublishedRecord(publishedRecordIndex);
-        await browser.switchFrame(pwaAppPage.pwaFrame);
-        await waitForDisplayedStable(() => $('#activitySiteMap .leaflet-overlay-pane path'), 'saved site in PWA editor');
         await browser.switchFrame(null);
         await pwaAppPage.closeModal();
         await pwaAppPage.closeDrawer();

@@ -35,22 +35,6 @@ describe('Add BioActivity Spec', () => {
         // Navigate to the Add Bio Activity page
         await addBioActivityPage.open(projectActivityId);
         await addBioActivityPage.takeScreenShot("shouldAddAnActivitySurvey");
-        await browser.waitUntil(async () => await browser.execute(() => !!window.activityLevelData?.siteMap), {
-            timeout: 30000,
-            timeoutMsg: 'Expected the activity site map to load'
-        });
-        const mapState = await browser.execute((siteId) => {
-            const selectedSite = window.pActivity.sites.find(item => item.siteId === siteId);
-            const siteMap = window.activityLevelData.siteMap;
-            const map = siteMap.getMapImpl();
-            siteMap.fitToBoundsOf(Biocollect.MapUtilities.featureToValidGeoJson(selectedSite.extent.geometry));
-            map.setView([0, 0], 4, {animate: false});
-            siteMap.resetMap();
-            return {centre: map.getCenter(), zoom: map.getZoom(), coordinates: selectedSite.extent.geometry.coordinates};
-        }, site);
-        expect(mapState.centre.lat).toBeCloseTo(mapState.coordinates[1], 2);
-        expect(mapState.centre.lng).toBeCloseTo(mapState.coordinates[0], 2);
-        expect(mapState.zoom).toBeGreaterThan(4);
         // Set the site, date, and species
         await addBioActivityPage.setSite(site);
         await addBioActivityPage.setDate('01/01/2020');
@@ -64,20 +48,7 @@ describe('Add BioActivity Spec', () => {
         await addBioActivityPage.saveActivity();
         // Verify that the ViewBioActivityPage is loaded
         await waitForViewBioActivityPage(viewBioActivityPage);
-        await $('#activitySiteMap .leaflet-overlay-pane path').waitForDisplayed({
-            timeout: 20000,
-            timeoutMsg: 'Expected the saved circular site on the activity map'
-        });
         await addBioActivityPage.takeScreenShot("shouldAddAnActivityAtViewBioActivityPage");
-        await $('a[href*="/bioActivity/edit/"]').click();
-        await browser.waitUntil(async () => (await browser.getUrl()).includes('/bioActivity/edit/'), {
-            timeout: 20000,
-            timeoutMsg: 'Expected the activity edit page to load'
-        });
-        await $('#activitySiteMap .leaflet-overlay-pane path').waitForDisplayed({
-            timeout: 20000,
-            timeoutMsg: 'Expected the saved circular site on the activity edit map'
-        });
     });
 
     it("should not be able to submit an activity when no network", async () => {

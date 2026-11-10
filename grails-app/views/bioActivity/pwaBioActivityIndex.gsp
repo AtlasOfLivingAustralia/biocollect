@@ -103,6 +103,7 @@
                 metaModel = metadata.metaModel || null;
                 var speciesConfig = metadata.speciesConfig;
                 outputModels = metadata.outputModels;
+                var mapFeatures = metadata.mapFeatures;
                 var mobile = true;
                 var activityId = activity.activityId;
                 var projectId = activity.projectId;
@@ -192,6 +193,39 @@
                     );
 
                     ko.applyBindings(viewModel);
+                    if (metaModel.supportsSites) {
+                        if (mapFeatures && mapFeatures.features) {
+                            var overlayLayersMapControlConfig = Biocollect.MapUtilities.getOverlayConfig();
+                            var baseLayersAndOverlays = Biocollect.MapUtilities.getBaseLayerAndOverlayFromMapConfiguration(fcConfig.mapLayersConfig);
+                            var mapOptions = {
+                                autoZIndex: false,
+                                preserveZIndex: true,
+                                drawControl: false,
+                                showReset: false,
+                                draggableMarkers: false,
+                                useMyLocation: false,
+                                allowSearchLocationByAddress: false,
+                                allowSearchRegionByAddress: false,
+                                addLayersControlHeading: true,
+                                baseLayer: baseLayersAndOverlays.baseLayer,
+                                otherLayers: baseLayersAndOverlays.otherLayers,
+                                overlays: baseLayersAndOverlays.overlays,
+                                overlayLayersSelectedByDefault: baseLayersAndOverlays.overlayLayersSelectedByDefault,
+                                wmsFeatureUrl: overlayLayersMapControlConfig.wmsFeatureUrl,
+                                wmsLayerUrl: overlayLayersMapControlConfig.wmsLayerUrl
+                            }
+
+                            viewModel.siteMap = new ALA.Map("activitySiteMap", mapOptions);
+
+                            if (mapFeatures.features[0].pid) {
+                                viewModel.siteMap.addWmsLayer(mapFeatures.features[0].pid);
+                            } else {
+                                var geometry = _.pick(mapFeatures.features[0], "type", "coordinates");
+                                var geoJson = ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol(geometry);
+                                viewModel.siteMap.setGeoJSON(geoJson);
+                            }
+                        }
+                    }
 
                     for (var index in metaModel.outputs) {
                         var outputName = metaModel.outputs[index];
