@@ -91,7 +91,7 @@ jobs:
       - name: build biocollect before running js unit test to compile dependent js templates
         uses: gradle/gradle-build-action@v2.4.2
         with:
-          arguments: _Events
+          arguments: _Events --info --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
