@@ -48,7 +48,7 @@ const config = {
                 "jwt-scopes": "ala/internal users/read ala/attrs ecodata/read_test ecodata/write_test"
             }
         }
-    }
+    },
     autoXvfb: false,
 }
 
