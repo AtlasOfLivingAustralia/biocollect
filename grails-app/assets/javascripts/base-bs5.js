@@ -1,6 +1,6 @@
 //= require html5/html5.js
-//= require jquery/3.4.1/jquery-3.4.1.min.js
-// = require jquery/3.4.1/jquery-3.4.1.js
+//= require jquery/3.7.1/jquery-3.7.1.min.js
+// = require jquery/3.7.1/jquery-3.7.1.js
 //= require jquery.cookie/jquery.cookie.js
 //jquery ui
 //= require jquery-ui/1.13.0/jquery-ui.js

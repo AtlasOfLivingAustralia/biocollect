@@ -15,13 +15,97 @@
  * Created by Temi on 17/1/20.
  */
 describe("MapUtilities unit test", function () {
+    var originalALA;
+
     beforeAll(function () {
+        originalALA = window.ALA;
+        window.ALA = {MapConstants: {DRAW_TYPE: {
+            POINT_TYPE: 'Point',
+            CIRCLE_TYPE: 'Circle',
+            POLYGON_TYPE: 'Polygon',
+            LINE_TYPE: 'LineString'
+        }}};
         window.fcConfig = {
             imageLocation: '/'
         }
     });
     afterAll(function () {
+        if (originalALA === undefined) {
+            delete window.ALA;
+        } else {
+            window.ALA = originalALA;
+        }
         delete window.fcConfig;
+    });
+
+    it("calculates bounds for a circle before it is added to a map", function () {
+        var centre = L.latLng(-35.2153316684663, 148.88671875);
+        var radius = 7993.38666198557;
+        var bounds = L.circle(centre, {radius: radius}).getBounds();
+
+        expect(bounds.contains(centre)).toBeTrue();
+        expect(Math.abs(centre.distanceTo(L.latLng(bounds.getNorth(), centre.lng)) - radius)).toBeLessThan(30);
+        expect(Math.abs(centre.distanceTo(L.latLng(centre.lat, bounds.getEast())) - radius)).toBeLessThan(30);
+    });
+
+    it("preserves circle bounds after the circle is added to a map", function () {
+        var element = document.createElement('div');
+        element.style.width = '500px';
+        element.style.height = '500px';
+        document.body.appendChild(element);
+
+        var centre = L.latLng(-35.2153316684663, 148.88671875);
+        var radius = 7993.38666198557;
+        var map = L.map(element).setView(centre, 10);
+        var bounds = L.circle(centre, {radius: radius}).addTo(map).getBounds();
+
+        expect(bounds.contains(centre)).toBeTrue();
+        expect(Math.abs(centre.distanceTo(L.latLng(bounds.getNorth(), centre.lng)) - radius)).toBeLessThan(30);
+        expect(Math.abs(centre.distanceTo(L.latLng(centre.lat, bounds.getEast())) - radius)).toBeLessThan(30);
+        map.remove();
+        element.remove();
+    });
+
+    it("renders a circular site as a circle even when it has a pid", function () {
+        var map = jasmine.createSpyObj('map', ['addWmsLayer', 'setGeoJSON']);
+        var feature = {type: 'Circle', coordinates: [148.88671875, -35.2153316684663], radius: 8000, pid: 9121748};
+
+        Biocollect.MapUtilities.setSiteMapFeature(map, feature);
+
+        expect(map.addWmsLayer).not.toHaveBeenCalled();
+        expect(map.setGeoJSON).toHaveBeenCalledWith({
+            type: 'Feature',
+            geometry: {type: ALA.MapConstants.DRAW_TYPE.POINT_TYPE, coordinates: feature.coordinates},
+            properties: {point_type: ALA.MapConstants.DRAW_TYPE.CIRCLE_TYPE, radius: feature.radius}
+        });
+    });
+
+    it("renders a pid site using its WMS layer", function () {
+        var map = jasmine.createSpyObj('map', ['addWmsLayer', 'setGeoJSON']);
+
+        Biocollect.MapUtilities.setSiteMapFeature(map, {type: 'PID', pid: 'region-1'});
+
+        expect(map.addWmsLayer).toHaveBeenCalledWith('region-1');
+        expect(map.setGeoJSON).not.toHaveBeenCalled();
+
+        Biocollect.MapUtilities.setSiteMapFeature(map, {pid: 'legacy-region'});
+        expect(map.addWmsLayer).toHaveBeenCalledWith('legacy-region');
+
+        Biocollect.MapUtilities.setSiteMapFeature(map, {type: 'Polygon', pid: 'polygon-region'});
+        expect(map.addWmsLayer).toHaveBeenCalledWith('polygon-region');
+    });
+
+    it("preserves other GeoJSON geometries when rendering a site", function () {
+        var map = jasmine.createSpyObj('map', ['addWmsLayer', 'setGeoJSON']);
+        var coordinates = [[[[148, -35], [149, -35], [149, -36], [148, -35]]]];
+        var wrapped = {type: 'FeatureCollection'};
+        ALA.MapUtils = {wrapGeometryInGeoJSONFeatureCol: jasmine.createSpy().and.returnValue(wrapped)};
+
+        Biocollect.MapUtilities.setSiteMapFeature(map, {type: 'MultiPolygon', coordinates: coordinates, name: 'site'});
+
+        expect(ALA.MapUtils.wrapGeometryInGeoJSONFeatureCol).toHaveBeenCalledWith({type: 'MultiPolygon', coordinates: coordinates});
+        expect(map.setGeoJSON).toHaveBeenCalledWith(wrapped);
+        expect(map.addWmsLayer).not.toHaveBeenCalled();
     });
 
     it("getBaseLayer should return layer instance for passed code", function () {

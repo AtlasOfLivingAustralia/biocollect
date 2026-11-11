@@ -131,11 +131,12 @@ security.oidc.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
 security.oidc.clientId= "changeMe"
 security.oidc.secret= "changeMe"
 security.oidc.scope= "openid profile email roles user_defined ala"
-security.oidc.allowUnsignedIdTokens= true
 
 security.jwt.enabled= true
 security.jwt.discoveryUri= "${auth.baseURL}/cas/oidc/.well-known"
-security.jwt.requestWrapperFilterOrder= -155
+// After the ala-auth chain (GrailsWebRequestFilter.order - 7 through - 2) and
+// before GrailsWebRequestFilter. A fixed -155 shares its order with the optional login filter.
+security.jwt.requestWrapperFilterOrder= org.grails.web.config.http.GrailsFilters.GRAILS_WEB_REQUEST_FILTER.order - 1
 // security.jwt.fallbackToLegacyBehaviour= true
 
 webservice.jwt = true

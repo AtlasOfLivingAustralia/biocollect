@@ -1,9 +1,10 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.WebService
 import grails.testing.web.controllers.ControllerUnitTest
-import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 class DocumentControllerSpec extends Specification implements ControllerUnitTest<DocumentController> {
@@ -57,7 +58,7 @@ class DocumentControllerSpec extends Specification implements ControllerUnitTest
         1 * documentService.search([filepath:"path", filename:"file.txt"]) >> [count: 0, documents:[]]
         0 * documentService._
         0 * webService._
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     def "The document controller will return an error if the user cannot view the document associated with the path requested for a download"() {
@@ -72,7 +73,7 @@ class DocumentControllerSpec extends Specification implements ControllerUnitTest
         1 * documentService.search([filepath:"path", filename:"file.txt"]) >> [count: 1, documents:[document]]
         1 * documentService.canView(document) >> false
         0 * webService._
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     def "The DocumentController encodes filenames used in URLs as required"() {

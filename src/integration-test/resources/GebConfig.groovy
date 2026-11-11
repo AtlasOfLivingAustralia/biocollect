@@ -10,9 +10,8 @@ import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.firefox.FirefoxDriver
 //import org.openqa.selenium.phantomjs.PhantomJSDriver
 
-if (!System.getProperty("webdriver.chrome.driver")) {
-    System.setProperty("webdriver.chrome.driver", "node_modules/chromedriver/bin/chromedriver")
-}
+// Do not set webdriver.chrome.driver. Selenium Manager (Selenium 4.6+) resolves a
+// ChromeDriver that matches the installed Chrome. A missing node_modules path blocks that.
 driver = { new ChromeDriver() }
 baseUrl = 'http://localhost:8087/'
 atCheckWaiting = true
@@ -54,9 +53,6 @@ environments {
 
     chromeHeadless {
 
-        if (!System.getProperty("webdriver.chrome.driver")) {
-            System.setProperty("webdriver.chrome.driver", "node_modules/chromedriver/bin/chromedriver")
-        }
         driver = {
             ChromeOptions o = new ChromeOptions()
             o.addArguments('headless')

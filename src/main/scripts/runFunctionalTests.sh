@@ -18,6 +18,21 @@ start_background() {
     BACKGROUND_PIDS+=($!)
 }
 
+wait_for_port() {
+    local name=$1
+    local port=$2
+    local pid=$3
+    while ! nc -z localhost "$port"; do
+        if ! kill -0 "$pid" 2>/dev/null; then
+            echo "$name exited before listening on port $port"
+            tail -n 80 "$BIOCOLLECT_DIR/logs/${name}.log" || true
+            exit 1
+        fi
+        echo "Waiting for $name to start on port $port..."
+        sleep 5
+    done
+}
+
 GEB_ENV=$1
 if [ -z $GEB_ENV ]; then
     GEB_ENV=chromeHeadless
@@ -89,42 +104,24 @@ echo "Starting biocollect-pwa"
 echo "Installing PWA pnpm dependencies"
 pnpm ci
 start_background pwa pnpm run:functionaltest
-# check that pwa app is running
-while ! nc -z localhost 5173; do
-  echo "Waiting for pwa app to start on port 5173..."
-  sleep 5
-done
+wait_for_port pwa 5173 $!
 
 
 cd $ECODATA_LOCAL_DIR
 echo "Starting ecodata from `pwd`"
 ls -la
 start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew :bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
-
-# check that ecodata is running
-while ! nc -z localhost 8080; do
-  echo "Waiting for ecodata to start on port 8080..."
-  sleep 5
-done
+wait_for_port ecodata 8080 $!
 
 
 cd $BIOCOLLECT_DIR
 echo "Starting biocollect from `pwd`"
 start_background biocollect env GRADLE_OPTS="-Xmx1g" ./gradlew :bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=test -Dgrails.server.port.http=8087
-# check that biocollect is running
-while ! nc -z localhost 8087; do
-  echo "Waiting for biocollect to start on port 8087..."
-  sleep 5
-done
+wait_for_port biocollect 8087 $!
 chmod u+x src/main/scripts/loadFunctionalTestData.sh
 
 echo "Installing BioCollect pnpm dependencies"
 pnpm ci
-
-echo "Installing chromedriver matching system Chrome"
-DETECT_CHROMEDRIVER_VERSION=true pnpm rebuild chromedriver
-export CHROMEDRIVER_PATH="$(node -p "require('chromedriver').path")"
-echo "Using chromedriver at ${CHROMEDRIVER_PATH}"
 
 echo "Running functional tests"
 export DISABLE_FUNCTIONAL_TEST_CAPTURE=1

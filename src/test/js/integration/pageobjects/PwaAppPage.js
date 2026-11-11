@@ -228,7 +228,7 @@ class PwaAppPage extends ReloadablePage {
     async scrollIntoViewAndWaitForDisplayed(getElement, timeout = 30000) {
         await browser.waitUntil(async () => {
             const element = await getElement();
-            if (!await element.isExisting()) {
+            if (!element || !await element.isExisting()) {
                 return false;
             }
 
@@ -492,6 +492,7 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async viewNthPublishedRecord(number = 0) {
+        await this.scrollIntoViewAndWaitForDisplayed(async () => (await this.viewPublishedRecordBtn)[number]);
         let buttons = await this.viewPublishedRecordBtn;
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();
@@ -499,9 +500,11 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async viewPublishedRecordContainingSpecies(speciesName, timeout = 60000) {
+        let matchedIndex;
         await browser.waitUntil(async () => {
             const buttons = await this.viewPublishedRecordBtn;
             for (let i = 0; i < buttons.length; i++) {
+                await this.scrollIntoViewAndWaitForDisplayed(async () => (await this.viewPublishedRecordBtn)[i]);
                 const currentButtons = await this.viewPublishedRecordBtn;
                 await currentButtons[i].waitForClickable({ timeout: 10000 });
                 await currentButtons[i].click();
@@ -510,6 +513,7 @@ class PwaAppPage extends ReloadablePage {
 
                 try {
                     await $(`span=${speciesName}`).waitForExist({ timeout: 5000 });
+                    matchedIndex = i;
                     return true;
                 }
                 catch {
@@ -523,6 +527,16 @@ class PwaAppPage extends ReloadablePage {
             await this.refreshPublishedRecords();
             return false;
         }, { timeout, interval: 1000, timeoutMsg: `Expected a published record containing species ${speciesName}` });
+        return matchedIndex;
+    }
+
+    async editNthPublishedRecord(number = 0) {
+        const getButton = async () => (await this.nthPublishedRecord)[number]?.$('[data-testid="edit-published-record"]');
+        await this.scrollIntoViewAndWaitForDisplayed(getButton);
+        const button = await getButton();
+        await button.waitForClickable({ timeout: 10000 });
+        await button.click();
+        await this.modalCloseBtn.waitForExist({ timeout: 10000 });
     }
 
     async refreshPublishedRecords() {
@@ -531,6 +545,7 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async viewNthUnpublishedRecord(number = 0) {
+        await this.scrollIntoViewAndWaitForDisplayed(async () => (await this.viewUnpublishedRecordBtn)[number]);
         let buttons = await this.viewUnpublishedRecordBtn;
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();
@@ -538,6 +553,7 @@ class PwaAppPage extends ReloadablePage {
     }
 
     async editNthUnpublishedRecord(number = 0) {
+        await this.scrollIntoViewAndWaitForDisplayed(async () => (await this.editUnpublishedRecordBtn)[number]);
         let buttons = await this.editUnpublishedRecordBtn;
         await buttons[number].waitForClickable({ timeout: 10000 });
         await buttons[number].click();

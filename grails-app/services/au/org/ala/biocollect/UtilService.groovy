@@ -2,22 +2,25 @@ package au.org.ala.biocollect
 
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.hub.HubSettings
+import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.web.AuthService
-import groovyx.net.http.HTTPBuilder
-import groovyx.net.http.Method
-import org.apache.http.HttpStatus
-import org.apache.http.entity.mime.HttpMultipartMode
-import org.apache.http.entity.mime.MultipartEntity
-import org.apache.http.entity.mime.content.FileBody
-import org.apache.http.entity.mime.content.StringBody
+import groovy.json.JsonSlurper
+import grails.core.GrailsApplication
+import org.apache.commons.io.FilenameUtils
 import org.springframework.context.MessageSource
+import org.springframework.http.HttpStatus
 
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 class UtilService {
+    GrailsApplication grailsApplication
     AuthService authService
     MessageSource messageSource
-
+    EcpWebService ecpWebService
     /**
      * Post a HTTP multipart/form-data request to external web sites.
      * @param url the URL to forward to.
@@ -28,55 +31,87 @@ class UtilService {
     def postMultipart(url, Map params, List<Map> inputStreamListMap, String authenticationKey = null) {
 
         def result = [:]
-
+        File bodyFile = null
 
         try {
-            HTTPBuilder builder = new HTTPBuilder(url)
-            builder.request(Method.POST) { request ->
-                requestContentType: 'multipart/form-data'
-                MultipartEntity content = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE)
-
-                inputStreamListMap.each {
-                    Map contentInfo = it.contentInfo
-                    if (it.contentIn && contentInfo.contentType == "application/zip") {
-                        //   content.addPart(contentInfo.contentName, new ByteArrayBody(it.contentIn, contentInfo.contentType, contentInfo.contentName + ".zip"))
-                        content.addPart(contentInfo.contentName, new FileBody(it.contentIn, contentInfo.contentType))
-                    } else if (it.contentIn && contentInfo.contentType == "application/json") {
-                        content.addPart(contentInfo.contentName, new StringBody(it.contentIn, contentInfo.contentType, StandardCharsets.UTF_8))
+            String boundary = "----BioCollect" + UUID.randomUUID().toString().replace('-', '')
+            bodyFile = File.createTempFile("aekos-multipart", ".bin")
+            bodyFile.withOutputStream { OutputStream out ->
+                inputStreamListMap.each { part ->
+                    Map contentInfo = part.contentInfo
+                    if (part.contentIn && contentInfo.contentType == "application/zip") {
+                        File file = part.contentIn as File
+                        writeMultipartFile(out, boundary, contentInfo.contentName as String, contentInfo.contentType as String, file)
+                    } else if (part.contentIn && contentInfo.contentType == "application/json") {
+                        writeMultipartText(out, boundary, contentInfo.contentName as String, "application/json; charset=UTF-8", part.contentIn.toString())
                     }
                 }
                 params.each { key, value ->
                     if (value) {
-                        content.addPart(key, new StringBody(value.toString()))
+                        writeMultipartText(out, boundary, key.toString(), "text/plain; charset=UTF-8", value.toString())
                     }
                 }
-
-                if (authenticationKey) {
-                    def encoded = authenticationKey.bytes.encodeBase64().toString()
-                    headers["Authorization"] = "Basic " + encoded
-                }
-
-                request.setEntity(content)
-
-                response.success = { resp, message ->
-                    result.status = resp.status
-                    result.content = message
-                }
-
-                response.failure = { resp, message ->
-                    result.status = resp.status
-                    result.content = "Error submitting to ${url}. Shared code: " + message?.sharedErrorCode ?: '' + " Shared message: " + message?.message ?: ""
-                }
+                out.write("--${boundary}--\r\n".getBytes(StandardCharsets.UTF_8))
             }
 
+            HttpRequest.Builder requestBuilder = HttpRequest.newBuilder(URI.create(url.toString()))
+                    .header("Content-Type", "multipart/form-data; boundary=${boundary}")
+                    .POST(HttpRequest.BodyPublishers.ofFile(bodyFile.toPath()))
+            if (authenticationKey) {
+                String encoded = authenticationKey.getBytes(StandardCharsets.UTF_8).encodeBase64().toString()
+                requestBuilder.header("Authorization", "Basic " + encoded)
+            }
+
+            HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NORMAL).build()
+            HttpResponse<String> response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8))
+            result.status = response.statusCode()
+            def message = parseJsonOrText(response.body())
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                result.content = message
+            } else {
+                result.content = "Error submitting to ${url}. Shared code: " + message?.sharedErrorCode ?: '' + " Shared message: " + message?.message ?: ""
+            }
         } catch (Exception e) {
             e.printStackTrace()
             log.error("Failed sending request to ${url}", e)
-            result.status = HttpStatus.SC_INTERNAL_SERVER_ERROR
+            result.status = HttpStatus.INTERNAL_SERVER_ERROR.value()
             result.content = "Failed calling web service. ${e.getClass()} ${e.getMessage()} URL= ${url}."
+        } finally {
+            bodyFile?.delete()
         }
         log.info("Result of Submission to Aekos: " + result.toString())
         result
+    }
+
+    private static void writeMultipartText(OutputStream out, String boundary, String name, String contentType, String value) {
+        out.write("--${boundary}\r\n".getBytes(StandardCharsets.UTF_8))
+        out.write("Content-Disposition: form-data; name=\"${name}\"\r\n".getBytes(StandardCharsets.UTF_8))
+        out.write("Content-Type: ${contentType}\r\n\r\n".getBytes(StandardCharsets.UTF_8))
+        out.write(value.getBytes(StandardCharsets.UTF_8))
+        out.write("\r\n".getBytes(StandardCharsets.UTF_8))
+    }
+
+    private static void writeMultipartFile(OutputStream out, String boundary, String name, String contentType, File file) {
+        out.write("--${boundary}\r\n".getBytes(StandardCharsets.UTF_8))
+        out.write("Content-Disposition: form-data; name=\"${name}\"; filename=\"${file.name}\"\r\n".getBytes(StandardCharsets.UTF_8))
+        out.write("Content-Type: ${contentType}\r\n\r\n".getBytes(StandardCharsets.UTF_8))
+        Files.copy(file.toPath(), out)
+        out.write("\r\n".getBytes(StandardCharsets.UTF_8))
+    }
+
+    private static Object parseJsonOrText(String body) {
+        if (!body) {
+            return body
+        }
+        String trimmed = body.trim()
+        if (!(trimmed.startsWith("{") || trimmed.startsWith("["))) {
+            return body
+        }
+        try {
+            return new JsonSlurper().parseText(body)
+        } catch (Exception ignored) {
+            return body
+        }
     }
 
 
@@ -166,5 +201,42 @@ class UtilService {
         }
 
         result
+    }
+
+    /**
+     * Validate redirect URL.
+     * If returnTo is relative, then it is valid.
+     * If returnTo is absolute, then host name should be in the allowed list.
+     * @param returnTo
+     * @return
+     */
+    boolean isRedirectSafe(String returnTo) {
+        if (returnTo) {
+            try {
+                URI uri = new URI(returnTo)
+                if (uri.isAbsolute())
+                    return ['http', 'https'].contains(uri.scheme?.toLowerCase()) &&
+                            uri.host != null && ecpWebService.isValidDomain(uri.host)
+                return uri.rawAuthority == null && !returnTo.startsWith('//')
+            } catch (Exception ex) {
+                return false
+            }
+        }
+
+        return false
+    }
+
+    /**
+     * Check if the file name is safe to use for saving files on the server.
+     * @param fileName
+     * @return
+     */
+    boolean isFileNameSafe(String fileName) {
+        List blackList = grailsApplication.config.getProperty('upload.extensions.blacklist', List, [])?.collect { it.toLowerCase() }
+        def extension = FilenameUtils.getExtension(fileName)?.toLowerCase()
+        if (extension && !blackList.contains(extension))
+            return true
+
+        return false
     }
 }

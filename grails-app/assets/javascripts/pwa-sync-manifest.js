@@ -1,5 +1,5 @@
-//= require jquery/3.4.1/jquery-3.4.1.min.js
-//= require knockout/3.4.0/knockout-3.4.0.js
+//= require jquery/3.7.1/jquery-3.7.1.min.js
+//= require knockout/3.5.1/knockout-3.5.1.js
 //= require utils.js
 //= require dexiejs/dexie.js
 //= require entities.js

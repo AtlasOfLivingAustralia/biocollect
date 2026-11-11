@@ -1,5 +1,5 @@
 //= require base-bs5.js
-//= require knockout/3.4.0/knockout-3.4.0.js
+//= require knockout/3.5.1/knockout-3.5.1.js
 //= require knockout-custom-bindings.js
 //= require knockout-custom-extenders.js
 //= require bootbox/6.0.4/bootbox.min.js

@@ -70,6 +70,7 @@
             <h3 class="text-center text-danger card-title">Site Details</h3>
             <div class="output-block text-center">
                 <fc:select
+                        id="activitySiteLocation"
                         data-bind='options:transients.pActivitySites,optionsText:"name",optionsValue:"siteId",value:siteId,optionsCaption:"Choose a site..."'
                         printable="${printView}"/>
                 <m:map id="activitySiteMap" width="100%" height="512px"/>

@@ -113,7 +113,7 @@ class SettingServiceSpec extends Specification implements ControllerUnitTest, Se
         setup:
         def hub = new HubSettings([urlPath: 'abc', templateConfiguration: [styles: [primaryColor: 'black']],
                                    lastUpdated: "2021-01-01T00:00:00Z"])
-        Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
+        Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toInstant().toEpochMilli()
 
         when:
         service.generateStyleSheetForHub(hub)

@@ -1,4 +1,3 @@
-<%@ page import="groovy.time.TimeCategory" %>
 <div id="pActivityVisibility">
 
     <!-- ko foreach: projectActivities -->

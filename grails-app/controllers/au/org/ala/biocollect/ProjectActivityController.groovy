@@ -1,5 +1,7 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.ActivityService
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.FormSpeciesFieldParserService
@@ -8,7 +10,6 @@ import au.org.ala.biocollect.merit.ProjectService
 import au.org.ala.biocollect.merit.SpeciesService
 import au.org.ala.biocollect.merit.UserService
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 
 class ProjectActivityController {
     ProjectActivityService projectActivityService
@@ -56,7 +57,7 @@ class ProjectActivityController {
         } else {
             def documents = values.remove('documents')
             result = projectActivityService.update(id, values)
-            if ((!result.statusCode || result.statusCode == HttpStatus.SC_OK)) {
+            if ((!result.statusCode || result.statusCode == HttpStatus.OK.value())) {
                 //publish the project along with the survey
                 if (values.publishProject == "Yes") {
                     projectService.update(project?.projectId, [projLifecycleStatus: 'published'])
@@ -125,7 +126,7 @@ class ProjectActivityController {
             result = [status: 401, error: "Access denied: User is not an admin of this project - ${project?.projectId}"]
         } else {
             def resp = projectActivityService.delete(params.id)
-            if (resp == HttpStatus.SC_OK) {
+            if (resp == HttpStatus.OK.value()) {
                 result = [status: resp, text: 'deleted']
             } else {
                 response.status = resp
@@ -156,7 +157,7 @@ class ProjectActivityController {
         } else if (pActivity) {
             def code = activityService.deleteByProjectActivity(pActivity.projectActivityId)
             response.status = code
-            if (code == HttpStatus.SC_OK) {
+            if (code == HttpStatus.OK.value()) {
                 result = [status: code, message: "Successfully deleted data for project activity."]
             } else {
                 result = [status: code, error: "Error delete records for project activity ${pActivity.projectActivityId}"]

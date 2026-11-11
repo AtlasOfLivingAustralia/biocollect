@@ -30,12 +30,12 @@ class ReloadablePage extends StubbedCasSpec {
 
 
     /** Returns true if the page has been reloaded since the most recent "at" check */
-    async hasBeenReloaded() {
+    async hasBeenReloaded(timeout = browser.options.testConfig.waitforTimeout) {
         return browser.waitUntil(async() => {
                 return ! await this.getAtCheckTime();
             },
             {
-                timeout: browser.options.testConfig.waitforTimeout,
+                timeout: timeout,
                 timeoutMsg: "Page did not reload after reindexing"
         });
     }

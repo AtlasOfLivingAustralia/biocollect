@@ -16,9 +16,9 @@
 * The first time when you open the project, you need to Import Project
   from Gradle. The biocollect project comes with the Gradle wrapper
   (Gradle 8.14.4), so keep the default setting and click OK. Make sure
-  the project SDK is set to JDK 17 - both the Gradle JVM
+  the project SDK is set to JDK 25 - both the Gradle JVM
   (Settings > Build, Execution, Deployment > Build Tools > Gradle) and
-  the Project SDK must be Java 17.
+  the Project SDK must be Java 25.
 ![](media/image5.png)
 
 * Once the project opens, wait for Intellij to configure the build.

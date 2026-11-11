@@ -1,13 +1,12 @@
 package au.org.ala.biocollect.merit
 
 import grails.converters.JSON
-
-import static org.apache.http.HttpStatus.SC_OK
+import org.springframework.http.HttpStatus
 
 class BaseController {
 
     def handle (resp) {
-        if (resp.statusCode != SC_OK) {
+        if (resp.statusCode != HttpStatus.OK.value()) {
             log.debug "Response status ${resp.statusCode} returned from operation"
             response.status = resp.statusCode
             response.sendError(resp.statusCode, resp.error ?: "")

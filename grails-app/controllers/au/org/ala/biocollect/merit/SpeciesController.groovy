@@ -1,8 +1,9 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.SpeciesService
 import grails.converters.JSON
-import org.apache.http.HttpStatus
 
 import jakarta.servlet.http.HttpServletResponse
 
@@ -53,30 +54,30 @@ class SpeciesController {
         force = force ?: false
         Map result = speciesService.constructSpeciesFiles(force)
         if (result.success) {
-            render text: result as JSON, status: HttpStatus.SC_OK, contentType: org.apache.http.entity.ContentType.APPLICATION_JSON
+            render text: result as JSON, status: HttpStatus.OK.value(), contentType: 'application/json'
         }
         else {
-            render text: result as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: org.apache.http.entity.ContentType.APPLICATION_JSON
+            render text: result as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
         }
     }
 
     def speciesDownload (Integer page) {
         File file = new File("${grailsApplication.config.getProperty('speciesCatalog.dir')}/${page}.json")
         if (file.exists()) {
-            render text: file.text, status: HttpStatus.SC_OK, contentType: org.apache.http.entity.ContentType.APPLICATION_JSON
+            render text: file.text, status: HttpStatus.OK.value(), contentType: 'application/json'
         }
         else {
-            render text: [message: "Species file not found"] as JSON, status: HttpStatus.SC_NOT_FOUND, contentType: org.apache.http.entity.ContentType.APPLICATION_JSON
+            render text: [message: "Species file not found"] as JSON, status: HttpStatus.NOT_FOUND.value(), contentType: 'application/json'
         }
     }
 
     def totalSpecies () {
         File file = new File("${grailsApplication.config.getProperty('speciesCatalog.dir')}/${grailsApplication.config.getProperty('speciesCatalog.totalFileName')}")
         if (file.exists()) {
-            render text: file.text, status: HttpStatus.SC_OK, contentType: org.apache.http.entity.ContentType.APPLICATION_JSON
+            render text: file.text, status: HttpStatus.OK.value(), contentType: 'application/json'
         }
         else {
-            render text: [message: "Total file not found"] as JSON, status: HttpStatus.SC_NOT_FOUND, contentType: org.apache.http.entity.ContentType.APPLICATION_JSON
+            render text: [message: "Total file not found"] as JSON, status: HttpStatus.NOT_FOUND.value(), contentType: 'application/json'
         }
     }
 }

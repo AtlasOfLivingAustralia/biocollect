@@ -1,4 +1,3 @@
-<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <!doctype html>
 <html>
     <head>
@@ -65,6 +64,32 @@
                 </g:each>
             </tbody>
         </table>
+
+    <h2>Java properties</h2>
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Value</th>
+            <th>Comment</th>
+        </tr>
+        </thead>
+        <tbody>
+        <g:each var="setting" in="${javaStuff}">
+            <tr>
+                <td>
+                    ${setting.key}
+                </td>
+                <td>
+                    ${setting.value}
+                </td>
+                <td>
+                    ${setting.comment}
+                </td>
+            </tr>
+        </g:each>
+        </tbody>
+    </table>
 
     </body>
 </html>

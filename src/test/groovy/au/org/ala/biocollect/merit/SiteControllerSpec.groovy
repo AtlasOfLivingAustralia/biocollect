@@ -1,9 +1,10 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 
 import grails.testing.web.controllers.ControllerUnitTest
 import grails.web.servlet.mvc.GrailsParameterMap
-import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 class SiteControllerSpec extends Specification implements ControllerUnitTest<SiteController> {
@@ -26,7 +27,7 @@ class SiteControllerSpec extends Specification implements ControllerUnitTest<Sit
         when:
         controller.getImages();
         then:
-        response.status == HttpStatus.SC_BAD_REQUEST
+        response.status == HttpStatus.BAD_REQUEST.value()
     }
 
     void "getImages: when no image is returned"() {
@@ -37,7 +38,7 @@ class SiteControllerSpec extends Specification implements ControllerUnitTest<Sit
         when:
         controller.getImages();
         then:
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
         response.json.size() == 0
     }
 
@@ -51,7 +52,7 @@ class SiteControllerSpec extends Specification implements ControllerUnitTest<Sit
         when:
         controller.getImages();
         then:
-        response.status == HttpStatus.SC_REQUEST_TIMEOUT
+        response.status == HttpStatus.REQUEST_TIMEOUT.value()
         response.text.contains('Timed out!')
     }
 
@@ -67,7 +68,7 @@ class SiteControllerSpec extends Specification implements ControllerUnitTest<Sit
         when:
         controller.getImages();
         then:
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
         response.json.size() == 1
         response.json[0].poi[0].docs.documents.size() == 1
     }

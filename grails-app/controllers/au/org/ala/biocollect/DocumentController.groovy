@@ -1,12 +1,13 @@
 package au.org.ala.biocollect
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.merit.DocumentService
 import au.org.ala.biocollect.merit.SettingService
 import au.org.ala.biocollect.merit.UserService
 import au.org.ala.biocollect.merit.WebService
 import grails.converters.JSON
 import grails.core.GrailsApplication
-import org.apache.http.HttpStatus
 import org.springframework.web.util.UriComponents
 import org.springframework.web.util.UriComponentsBuilder
 import org.springframework.web.util.UriUtils
@@ -25,16 +26,16 @@ class DocumentController {
 
     def get(String id) {
         if (!id) {
-            render text: [message: "Document not found"] as JSON, status: HttpStatus.SC_NOT_FOUND
+            render text: [message: "Document not found"] as JSON, status: HttpStatus.NOT_FOUND.value()
             return
         }
 
         def document = documentService.get(id)
         if (!document.error) {
-            render text: document as JSON, status: HttpStatus.SC_OK
+            render text: document as JSON, status: HttpStatus.OK.value()
         }
         else {
-            render text: [message: "Document error"] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR
+            render text: [message: "Document error"] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value()
             return
         }
     }
@@ -96,7 +97,7 @@ class DocumentController {
                 }
             }
         }
-        response.status = HttpStatus.SC_NOT_FOUND
+        response.status = HttpStatus.NOT_FOUND.value()
     }
 
     protected String buildDownloadUrl(String path, String filename) {

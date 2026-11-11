@@ -1,11 +1,13 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.ProjectActivityService
+import au.org.ala.biocollect.UtilService
 import au.org.ala.web.NoSSO
 import au.org.ala.web.SSO
 import grails.converters.JSON
 import grails.core.GrailsApplication
-import org.apache.http.HttpStatus
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DataFormatter
@@ -17,6 +19,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.util.CellReference
 import org.grails.web.json.JSONArray
 import org.springframework.context.MessageSource
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 
 @SSO
 class ActivityController {
@@ -32,13 +35,16 @@ class ActivityController {
     DocumentService documentService
     ProjectActivityService projectActivityService
     MessageSource messageSource
+    UtilService utilService
 
 
     static ignore = ['action','controller','id']
 
     private Map activityModel(activity, projectId) {
+        String returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller:'project', id:projectId)
+
         // pass the activity
-        def model = [activity: activity, returnTo: params.returnTo, projectStages:projectStages()]
+        def model = [activity: activity, returnTo: returnTo, projectStages:projectStages()]
 
         // the site
         model.site = model.activity?.siteId ? siteService.get(model.activity.siteId, [view:'brief']) : null
@@ -332,14 +338,14 @@ class ActivityController {
             Map activity = activityService.get(id)
             respond(activity);
         } else {
-            render(text: "Must provide parameter id", status: HttpStatus.SC_BAD_REQUEST)
+            render(text: "Must provide parameter id", status: HttpStatus.BAD_REQUEST.value())
         }
     }
 
     def delete(String id) {
         log.debug "deleting ${id}"
         def respCode = activityService.delete(id)
-        if (params.returnTo) {
+        if (utilService.isRedirectSafe(params.returnTo)) {
             redirect(url: params.returnTo)
         } else {
             redirect(controller: 'home')
@@ -367,7 +373,7 @@ class ActivityController {
 
     /* Parse the xlsx output data and pass it back to the client. */
     def ajaxBulkUpload(){
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('templateFile')
             if (file) {
                 def activityType = params.type
@@ -421,7 +427,7 @@ class ActivityController {
     }
 
     def ajaxUpload() {
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def file = request.getFile('data')
             if (file) {
 

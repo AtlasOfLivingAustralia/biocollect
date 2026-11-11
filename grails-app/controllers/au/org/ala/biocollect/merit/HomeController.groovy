@@ -2,7 +2,7 @@ package au.org.ala.biocollect.merit
 
 
 import grails.converters.JSON
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import au.org.ala.web.SSO
 
 class HomeController {

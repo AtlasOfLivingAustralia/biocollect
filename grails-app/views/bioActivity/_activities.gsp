@@ -647,7 +647,7 @@
 <!-- /ko -->
 
 <asset:stylesheet src="activities.css"/>
-<asset:javascript src="chartjs/chart.min.js"/>
+<asset:javascript src="chartjs/chartV3_8.min.js"/>
 <asset:script type="text/javascript">
     var activitiesAndRecordsViewModel, alaMap, results;
     function initialiseData(view) {

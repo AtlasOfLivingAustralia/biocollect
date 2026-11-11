@@ -41,9 +41,9 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'grails-app/assets/vendor/knockout/3.4.0/knockout-3.4.0.js',
+            'grails-app/assets/vendor/knockout/3.5.1/knockout-3.5.1.js',
             'grails-app/assets/vendor/knockout.js/knockout.mapping-latest.js',
-            'grails-app/assets/vendor/underscore/underscore-1.8.3.min.js',
+            'grails-app/assets/vendor/underscore/underscore-1.13.7.min.js',
             'grails-app/assets/vendor/bootstrap/5.3.8/js/bootstrap.bundle.min.js',
             'grails-app/assets/vendor/bootbox/6.0.4/bootbox.min.js',
             'node_modules/jasmine-ajax/lib/mock-ajax.js',
@@ -64,7 +64,7 @@ module.exports = function (config) {
             'grails-app/assets/javascripts/pwa-index.js',
             'src/test/js/PwaSyncFixture.js',
             'grails-app/assets/javascripts/pwa-sync.js',
-            'node_modules/leaflet/dist/leaflet.js',
+            'grails-app/assets/vendor/leaflet/1.6.0/leaflet.js',
             'grails-app/assets/vendor/leaflet-plugins-2.0.0/layer/tile/Google.js',
             'grails-app/assets/javascripts/MapUtilities.js',
             'https://cdn.jsdelivr.net/gh/AtlasOfLivingAustralia/ecodata-client-plugin/grails-app/assets/vendor/expr-eval/2.0.2/bundle.js',

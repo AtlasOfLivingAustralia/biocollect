@@ -337,7 +337,7 @@ class SettingService {
         if (hub && hub.templateConfiguration?.styles ) {
             Map styles = hub.templateConfiguration?.styles
             String urlPath = hub.urlPath
-            Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toDate().getTime()
+            Long lastUpdated = au.org.ala.biocollect.DateUtils.parse(hub.lastUpdated).toInstant().toEpochMilli()
             String scssFileFullPath =  "${themeDir}${File.separator}${scssFileName}.${urlPath}.${lastUpdated}.scss"
 
             String cssFileURI = "${grailsApplication.config.getProperty('bootstrap5.themeDirectory')}${File.separator}${grailsApplication.config.getProperty('bootstrap5.themeFileName')}.${urlPath}.${lastUpdated}"

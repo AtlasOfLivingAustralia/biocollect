@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+import au.org.ala.biocollect.UtilService
 import au.org.ala.biocollect.swagger.model.SiteAjaxUpdate
 import au.org.ala.biocollect.swagger.model.SiteCreateUpdateResponse
 import au.org.ala.plugins.openapi.Path
@@ -16,9 +18,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import org.apache.commons.lang.StringUtils
-import org.apache.http.HttpStatus
-import org.apache.http.entity.ContentType
+import org.apache.commons.lang3.StringUtils
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 
 import static jakarta.servlet.http.HttpServletResponse.SC_CONFLICT
 import static jakarta.servlet.http.HttpServletResponse.SC_NO_CONTENT
@@ -30,6 +31,7 @@ class SiteController {
         searchService, importService, webService
 
     CommonService commonService
+    UtilService utilService
 
     static defaultAction = "index"
 
@@ -117,10 +119,10 @@ class SiteController {
             switch (params.format) {
                 case 'json':
                     if (site.statusCode) {
-                        render text: [message: "Site not found."] as JSON, status: site.statusCode, contentType: ContentType.APPLICATION_JSON
+                        render text: [message: "Site not found."] as JSON, status: site.statusCode, contentType: 'application/json'
                     }
                     else {
-                        render text: [message: "An error occurred while getting site."] as JSON, status: HttpStatus.SC_INTERNAL_SERVER_ERROR, contentType: ContentType.APPLICATION_JSON
+                        render text: [message: "An error occurred while getting site."] as JSON, status: HttpStatus.INTERNAL_SERVER_ERROR.value(), contentType: 'application/json'
                     }
                     break
                 default:
@@ -163,7 +165,7 @@ class SiteController {
             // 1. site is not assoicated with an acitivity(s)
             if (!userService.userIsAlaAdmin()) {
                 return { status:
-                HttpStatus.SC_UNAUTHORIZED;
+                HttpStatus.UNAUTHORIZED.value();
                     text: "Access denied: User not authorised to delete" } as JSON
 
             }
@@ -179,12 +181,12 @@ class SiteController {
             log.error(sTimeout.message, sTimeout)
             return { text: 'Webserive call timed out';
                 status:
-                HttpStatus.SC_REQUEST_TIMEOUT } as JSON;
+                HttpStatus.REQUEST_TIMEOUT.value() } as JSON;
         } catch (Exception e) {
             log.error(e.message, e)
             return { text: 'Internal server error';
                 status:
-                HttpStatus.SC_INTERNAL_SERVER_ERROR } as JSON;
+                HttpStatus.INTERNAL_SERVER_ERROR.value() } as JSON;
         }
     }
 
@@ -253,10 +255,10 @@ class SiteController {
                 def statusCode = siteService.delete(siteId)
                 result = [statusCode: statusCode, message: "Deleted site!"]
             } else {
-                result = [statusCode: HttpStatus.SC_OK, message: "Updated site!"]
+                result = [statusCode: HttpStatus.OK.value(), message: "Updated site!"]
             }
         } else {
-            result = [error: "Cannot delete site as it is associated with entities.", statusCode: HttpStatus.SC_FORBIDDEN]
+            result = [error: "Cannot delete site as it is associated with entities.", statusCode: HttpStatus.FORBIDDEN.value()]
         }
 
         render text: result as JSON, status: result.statusCode
@@ -268,10 +270,10 @@ class SiteController {
             // rule ala admin can only delete a site on condition,
             // 1. site is not assoicated with an acitivity(s)
             if (!userService.userIsAlaAdmin()) {
-                render status: HttpStatus.SC_UNAUTHORIZED, text: "Access denied: User not authorised to delete"
+                render status: HttpStatus.UNAUTHORIZED.value(), text: "Access denied: User not authorised to delete"
                 return
             } else if (siteService.isSiteAssociatedWithProject(id) || siteService.isSiteAssociatedWithActivity(id)) {
-                render status: HttpStatus.SC_BAD_REQUEST, text: "Site ${id} has projects or activities associated with it. The site cannot be deleted."
+                render status: HttpStatus.BAD_REQUEST.value(), text: "Site ${id} has projects or activities associated with it. The site cannot be deleted."
                 return
             }
 
@@ -285,10 +287,10 @@ class SiteController {
             }
         } catch (SocketTimeoutException sTimeout) {
             log.error(sTimeout.message, sTimeout)
-            render(text: 'Webserive call timed out', status: HttpStatus.SC_REQUEST_TIMEOUT);
+            render(text: 'Webserive call timed out', status: HttpStatus.REQUEST_TIMEOUT.value());
         } catch (Exception e) {
             log.error(e.message, e)
-            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            render(text: 'Internal server error', status: HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
@@ -301,11 +303,11 @@ class SiteController {
                 render result as JSON
             } else {
                 def result = [status: response.statusCode]
-                render(text: response.error, status: HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                render(text: response.error, status: HttpStatus.INTERNAL_SERVER_ERROR.value())
             }
         } catch (Exception e) {
             log.error(e.message, e)
-            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            render(text: 'Internal server error', status: HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
@@ -317,11 +319,11 @@ class SiteController {
                 def result = [status: 'removed']
                 render result as JSON
             } else {
-                render(text: response.error, status: HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                render(text: response.error, status: HttpStatus.INTERNAL_SERVER_ERROR.value())
             }
         } catch (Exception e) {
             log.error(e.message, e)
-            render(text: 'Internal server error', status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            render(text: 'Internal server error', status: HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
@@ -353,12 +355,14 @@ class SiteController {
     }
 
     def uploadShapeFile() {
+        String returnTo = params.returnTo = utilService.isRedirectSafe(params.returnTo) ? params.returnTo : g.createLink(controller: 'project', action: 'index', id: params.projectId)
         if (!projectService.canUserEditSitesForProject(userService.getCurrentUserId(), params.projectId)) {
             flash.message = "Access denied: User is not en editor or is not allowed to manage sites for projectId ${params.projectId}"
-            redirect(url: params.returnTo)
+            redirect(url: returnTo)
+            return
         }
 
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def f = request.getFile('shapefile')
 
 
@@ -382,11 +386,11 @@ class SiteController {
                 def message = 'There was an error uploading the shapefile.  Please send an email to support for further assistance.'
 
                 flash.message = "An error was encountered when processing the shapefile: ${message}"
-                render view: 'upload', model: [projectId: params.projectId, returnTo: params.returnTo]
+                render view: 'upload', model: [projectId: params.projectId, returnTo: returnTo]
             }
 
         } else {
-            render view: 'upload', model: [projectId: params.projectId, returnTo: params.returnTo]
+            render view: 'upload', model: [projectId: params.projectId, returnTo: returnTo]
         }
     }
 
@@ -611,7 +615,7 @@ class SiteController {
         if (result.status == 'error') {
             render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${result.message}"
         } else {
-            render status: HttpStatus.SC_OK, text: result as JSON, contentType: "application/json"
+            render status: HttpStatus.OK.value(), text: result as JSON, contentType: "application/json"
         }
     }
 
@@ -753,12 +757,12 @@ class SiteController {
                 results = siteService.getImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')
             } catch (SocketTimeoutException sTimeout) {
-                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+                render(text: sTimeout.message, status: HttpStatus.REQUEST_TIMEOUT.value());
             } catch (Exception e) {
-                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                render(text: e.message, status: HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         } else {
-            render(status: HttpStatus.SC_BAD_REQUEST, text: 'Parameter id not found')
+            render(status: HttpStatus.BAD_REQUEST.value(), text: 'Parameter id not found')
         }
     }
 
@@ -778,12 +782,12 @@ class SiteController {
                 results = siteService.getPoiImages(mParams)
                 render(text: results as JSON, contentType: 'application/json')
             } catch (SocketTimeoutException sTimeout) {
-                render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+                render(text: sTimeout.message, status: HttpStatus.REQUEST_TIMEOUT.value());
             } catch (Exception e) {
-                render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                render(text: e.message, status: HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         } else {
-            render(status: HttpStatus.SC_BAD_REQUEST, text: 'Parameters siteId or poiId not found')
+            render(status: HttpStatus.BAD_REQUEST.value(), text: 'Parameters siteId or poiId not found')
         }
     }
 
@@ -906,9 +910,9 @@ class SiteController {
 
             render([sites: sites, facets: facets, total: searchResult.hits?.total ?: 0] as JSON)
         } catch (SocketTimeoutException sTimeout) {
-            render(text: sTimeout.message, status: HttpStatus.SC_REQUEST_TIMEOUT);
+            render(text: sTimeout.message, status: HttpStatus.REQUEST_TIMEOUT.value());
         } catch (Exception e) {
-            render(text: e.message, status: HttpStatus.SC_INTERNAL_SERVER_ERROR);
+            render(text: e.message, status: HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
@@ -918,7 +922,7 @@ class SiteController {
             Map result = siteService.checkPointInsideProjectAreaAndAddress(lat, lng, projectId)
             render(text: result as JSON, contentType: 'application/json')
         } else {
-            render(text: "Parameter(s) missing. The following parameters are requied - lat, lng and projectId", status: HttpStatus.SC_BAD_REQUEST);
+            render(text: "Parameter(s) missing. The following parameters are requied - lat, lng and projectId", status: HttpStatus.BAD_REQUEST.value());
         }
     }
 

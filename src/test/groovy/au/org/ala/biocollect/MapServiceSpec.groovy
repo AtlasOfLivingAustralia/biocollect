@@ -120,7 +120,8 @@ class MapServiceSpec extends Specification implements AutowiredTest{
         ]
 
         service.userService = userService
-        service.grailsApplication = [config: [
+        service.grailsApplication = grailsApplication
+        config.merge([
                 map: [
                         baseLayers: [
                                 [
@@ -154,7 +155,7 @@ class MapServiceSpec extends Specification implements AutowiredTest{
                                 ]
                         ]
                 ]
-        ]]
+        ])
     }
 
     def cleanup() {

@@ -28,7 +28,6 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import java.nio.charset.StandardCharsets
 
-import static org.apache.http.HttpHeaders.ACCEPT
 /**
  * Helper class for invoking ecodata (and other Atlas) web services.
  */
@@ -172,7 +171,7 @@ class WebService {
         try {
             conn = configureConnection(url, includeUserId, timeout)
 
-            conn.setRequestProperty(ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            conn.setRequestProperty("Accept", MediaType.APPLICATION_JSON_VALUE)
             def json = responseText(conn)
             def result = JSON.parse(json)
             return result

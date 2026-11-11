@@ -1,62 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <title>Video Player</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-    <!-- Chang URLs to wherever Video.js files will be hosted -->
-    <link href="${asset.assetPath(src: 'video-js/4.12.11/video-js.css')}" rel="stylesheet" type="text/css">
-    <!-- video.js must be in the <head> for older IEs to work. -->
-    <script src="${asset.assetPath(src: 'video-js/4.12.11/video.js')}"></script>
-
-    <!-- Unless using the CDN hosted version, update the URL to the Flash SWF -->
-    <script>
-        videojs.options.flash.swf = "${asset.assetPath(src: 'video-js/4.12.11/video-js.swf')}";
-    </script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-    body {
-        padding: 0;
-        margin: 0;
-        display: flex;
-        align-items: center;
-    }
-    html, body {
-        height: 100%;
-    }
-
-    .container {
-        height: auto;
-        margin: auto;
-        width: 100%;
-    }
-    .video-js, .vjs-tech {
-        position: relative !important;
-        width: 100% !important;
-        height: auto !important;
-    }
-    .vjs-poster {
-        position: absolute !important;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-    }
+        html, body { height: 100%; margin: 0; background: #000; }
+        body { display: flex; align-items: center; }
+        video { width: 100%; max-height: 100%; }
     </style>
 </head>
 <body>
-<div class="container">
-<video id="video" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="none"
-       %{--poster="http://video-js.zencoder.com/oceans-clip.png"--}%
-       data-setup="{}">
-    <source src="${params.file}" type='${params.contentType}' />
-    %{--TODO - Multiple video types--}%
-    %{--<source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />--}%
-    %{--<source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />--}%
-    %{--<track kind="captions" src="demo.captions.vtt" srclang="en" label="English"></track><!-- Tracks need an ending tag thanks to IE9 -->--}%
-    %{--<track kind="subtitles" src="demo.captions.vtt" srclang="en" label="English"></track><!-- Tracks need an ending tag thanks to IE9 -->--}%
-    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+<%
+    // application/ogg is a supported video type, but browsers skip playback when that
+    // value is the source type. Do not assume mp4 when the type is missing or unknown.
+    def declaredType = params.contentType?.toString()?.toLowerCase()?.trim()
+    def sourceType = declaredType == 'application/ogg' ? 'video/ogg' : (declaredType?.startsWith('video/') ? declaredType : null)
+%>
+<video controls preload="metadata">
+    <g:if test="${sourceType}">
+        <source src="${params.file}" type="${sourceType}"/>
+    </g:if>
+    <g:else>
+        <source src="${params.file}"/>
+    </g:else>
 </video>
-</div>
 </body>
 </html>

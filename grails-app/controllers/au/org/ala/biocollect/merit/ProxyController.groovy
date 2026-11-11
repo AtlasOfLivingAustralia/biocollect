@@ -1,9 +1,11 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.UtilService
 import au.org.ala.ecodata.forms.EcpWebService
 import au.org.ala.ecodata.forms.SpeciesListService
 import grails.converters.JSON
 import org.apache.commons.io.FilenameUtils
+import org.springframework.web.multipart.support.MultipartResolutionDelegate
 import au.org.ala.web.SSO
 
 import jakarta.annotation.PostConstruct
@@ -13,6 +15,7 @@ class ProxyController {
     def webService, commonService, projectService, ecpWebService
     SpeciesService speciesService
     SpeciesListService speciesListService
+    UtilService utilService
     private int cacheDuration
 
     @PostConstruct
@@ -99,17 +102,18 @@ class ProxyController {
     def documentUpdate(String id) {
 
         def url = grailsApplication.config.getProperty('ecodata.service.url') + "/document" + (id ? "/" + id : '')
-        if (request.respondsTo('getFile')) {
+        if (MultipartResolutionDelegate.isMultipartRequest(request)) {
             def f = request.getFile('files')
             def originalFilename = f.getOriginalFilename()
             if(originalFilename){
                 def extension = FilenameUtils.getExtension(originalFilename)?.toLowerCase()
-                if (extension && !grailsApplication.config.getProperty('upload.extensions.blacklist', List, []).contains(extension)){
+                if (utilService.isFileNameSafe(originalFilename)) {
                     def result =  webService.postMultipart(url, [document:params.document], f).content as JSON
                     // iframe submit no longer supported.
                     response.setContentType('application/json')
                     render result.toString();
                 } else {
+                    log.info("Unsafe filename detected: ${originalFilename}")
                     response.setStatus(400)
                     //flag error for extension
                     def error = [error: "Files with the extension '.${extension}' are not permitted.",

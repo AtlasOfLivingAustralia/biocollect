@@ -1,7 +1,8 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 import grails.testing.web.controllers.ControllerUnitTest
-import org.apache.http.HttpStatus
 import spock.lang.Specification
 
 class ImageControllerSpec extends Specification implements ControllerUnitTest<ImageController> {
@@ -32,7 +33,7 @@ class ImageControllerSpec extends Specification implements ControllerUnitTest<Im
 
         then:
         response.contentType == "image/png"
-        response.status == HttpStatus.SC_OK
+        response.status == HttpStatus.OK.value()
     }
 
     void "If a file doesn't exist, a 404 will be returned"() {
@@ -41,7 +42,7 @@ class ImageControllerSpec extends Specification implements ControllerUnitTest<Im
         controller.get()
 
         then:
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 
     void "A file cannot be retrieved from outside the designated uploads directory"() {
@@ -51,6 +52,6 @@ class ImageControllerSpec extends Specification implements ControllerUnitTest<Im
 
         then:
         new File(uploadPath, params.id).exists()
-        response.status == HttpStatus.SC_NOT_FOUND
+        response.status == HttpStatus.NOT_FOUND.value()
     }
 }

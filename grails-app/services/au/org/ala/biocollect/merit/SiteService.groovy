@@ -2,16 +2,16 @@ package au.org.ala.biocollect.merit
 
 import au.org.ala.biocollect.GeometryUtils
 import au.org.ala.biocollect.ProjectActivityService
-import com.vividsolutions.jts.geom.Geometry
-import com.vividsolutions.jts.geom.Point
-import com.vividsolutions.jts.io.WKTReader
 import grails.converters.JSON
 import grails.web.mapping.LinkGenerator
 import grails.web.servlet.mvc.GrailsParameterMap
+import org.geotools.api.feature.simple.SimpleFeature
 import org.geotools.kml.KMLConfiguration
-import org.geotools.referencing.wkt.Parser
+import org.geotools.xsd.Parser
 import org.grails.web.json.JSONArray
-import org.opengis.feature.simple.SimpleFeature
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.Point
+import org.locationtech.jts.io.WKTReader
 
 class SiteService {
 

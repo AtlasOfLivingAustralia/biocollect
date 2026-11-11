@@ -2,7 +2,7 @@ package au.org.ala.biocollect.projectresult
 
 import grails.testing.spring.AutowiredTest
 import grails.web.servlet.mvc.GrailsParameterMap
-import org.joda.time.DateTime
+import java.time.OffsetDateTime
 import spock.lang.Specification
 
 /*
@@ -50,10 +50,10 @@ class SeedSpec extends Specification implements AutowiredTest{
                                    organisationName : 'org1',
                                    scienceType      : ['a'],
                                    ecoScienceType   : ['b'],
-                                   plannedStartDate : new DateTime().minus(1),
+                                   plannedStartDate : OffsetDateTime.now().minusNanos(1_000_000),
                                    imageUrl         : 'a',
                                    urlWeb           : "http://abc.com",
-                                   plannedStartDate : new DateTime().minus(1),
+                                   plannedStartDate : OffsetDateTime.now().minusNanos(1_000_000),
                                    plannedEndDate   : new Date(),
                                    projectType      : 'g',
                                    isMERIT          : false,

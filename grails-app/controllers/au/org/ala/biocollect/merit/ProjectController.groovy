@@ -1,5 +1,7 @@
 package au.org.ala.biocollect.merit
 
+import org.springframework.http.HttpStatus
+
 import au.org.ala.biocollect.*
 import au.org.ala.biocollect.merit.hub.HubSettings
 import au.org.ala.biocollect.projectresult.Builder
@@ -24,13 +26,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
-import org.apache.http.HttpStatus
-import org.joda.time.DateTime
+import java.time.OffsetDateTime
 import org.springframework.context.MessageSource
 
 import java.text.SimpleDateFormat
 
-import static org.apache.http.HttpStatus.*
 
 @SecurityScheme(name = "auth",
         type = SecuritySchemeType.HTTP,
@@ -133,7 +133,7 @@ class ProjectController {
             def project = projectService.get(id)
             if (project && !project.error) {
                 if (project.isMERIT || (project.projLifecycleStatus == UNPUBLISHED)) {
-                    render text: [message: "You are not authorised"] as JSON, status: HttpStatus.SC_FORBIDDEN, contentType: "application/json"
+                    render text: [message: "You are not authorised"] as JSON, status: HttpStatus.FORBIDDEN.value(), contentType: "application/json"
                 } else {
                     String userId = userService.getCurrentUserId()
                     boolean userIsAlaAdmin = userService.userIsAlaOrFcAdmin()
@@ -141,13 +141,13 @@ class ProjectController {
                     def map = new LinkedHashMap(project)
                     map.userIsProjectMember = userIsProjectMember
 
-                    render map as JSON, contentType: "application/json", status: HttpStatus.SC_OK
+                    render map as JSON, contentType: "application/json", status: HttpStatus.OK.value()
                 }
             } else {
-                render text: [message: "Project not found"] as JSON, status: HttpStatus.SC_NOT_FOUND, contentType: "application/json"
+                render text: [message: "Project not found"] as JSON, status: HttpStatus.NOT_FOUND.value(), contentType: "application/json"
             }
         } else {
-            render text: [message: "Project not found"] as JSON, status: HttpStatus.SC_NOT_FOUND, contentType: "application/json"
+            render text: [message: "Project not found"] as JSON, status: HttpStatus.NOT_FOUND.value(), contentType: "application/json"
         }
     }
 
@@ -248,7 +248,7 @@ class ProjectController {
                 metrics: project.projectType == ProjectService.PROJECT_TYPE_WORKS ? projectService.summary(id): [],
                 outputTargetMetadata:  metadataService.getOutputTargetScores(),
                 programs: programs,
-                today:DateUtils.format(new DateTime()),
+                today:DateUtils.format(OffsetDateTime.now()),
                 themes:metadataService.getThemesForProject(project),
                 projectContent:content.model,
                 hideBackButton: true,
@@ -647,7 +647,7 @@ class ProjectController {
             //check whether an internal project (projects using BioCollect to collect data) can be published
             if (values.projLifecycleStatus != null) {
                 if ((values.projLifecycleStatus == 'published') && (values.isExternal == false) && !hasPublishedProjectActivities) {
-                    render status: HttpStatus.SC_BAD_REQUEST, text: "At least one published survey should be there to publish a project."
+                    render status: HttpStatus.BAD_REQUEST.value(), text: "At least one published survey should be there to publish a project."
                     return
                 }
             }
@@ -657,12 +657,12 @@ class ProjectController {
         if (projectSite) {
             siteResult = siteService.updateRaw(values.projectSiteId, projectSite)
             if (siteResult.status == 'error'){
-                render status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: "${siteResult.message}"
+                render status: HttpStatus.INTERNAL_SERVER_ERROR.value(), text: "${siteResult.message}"
                 return
             }
             else if (siteResult.status != 'updated') values["projectSiteId"] = siteResult.id
         } else if (project?.sites?.isEmpty()) {
-            render status: HttpStatus.SC_BAD_REQUEST, text: "No project site is defined."
+            render status: HttpStatus.BAD_REQUEST.value(), text: "No project site is defined."
             return
         }
 
@@ -735,7 +735,7 @@ class ProjectController {
     @PreAuthorise(accessLevel = 'admin')
     def delete(String id) {
         def resp = projectService.delete(id)
-        if(resp == HttpStatus.SC_OK){
+        if(resp == HttpStatus.OK.value()){
             flash.message = 'Successfully deleted'
             render status:resp, text: flash.message
         } else {
@@ -1001,7 +1001,7 @@ class ProjectController {
             project.userIsProjectMember = userIsProjectMember
         }
 
-        if (params.download as boolean) {
+        if (params.download) {
             response.setHeader("Content-Disposition","attachment; filename=\"projects.json\"");
             // This is returned to the browswer as a text response due to workaround the warning
             // displayed by IE8/9 when JSON is returned from an iframe submit.
@@ -1342,14 +1342,14 @@ class ProjectController {
                 asJson results
 
             } else {
-                response.sendError(SC_FORBIDDEN, 'Permission denied')
+                response.sendError(HttpStatus.FORBIDDEN.value(), 'Permission denied')
             }
         } else if (adminUserId) {
-            response.sendError(SC_BAD_REQUEST, 'Required params not provided: id')
+            response.sendError(HttpStatus.BAD_REQUEST.value(), 'Required params not provided: id')
         } else if (projectId) {
-            response.sendError(SC_FORBIDDEN, 'User not logged-in or does not have permission')
+            response.sendError(HttpStatus.FORBIDDEN.value(), 'User not logged-in or does not have permission')
         } else {
-            response.sendError(SC_INTERNAL_SERVER_ERROR, 'Unexpected error')
+            response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 'Unexpected error')
         }
     }
 
@@ -1383,7 +1383,7 @@ class ProjectController {
             skin = SettingService.getHubConfig().skin
             render view: '/admin/auditMessageDetails', model: [message: results?.message, compare: compare?.message, userDetails: userDetails.user, layoutContent: skin, backToProject: true]
         } else {
-            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
+            response.sendError(HttpStatus.FORBIDDEN.value(), 'You are not authorized to view this page')
         }
     }
 
@@ -1402,7 +1402,7 @@ class ProjectController {
             def results = auditService.getAuditMessagesForProjectPerPage(projectId,start,size,sort,orderBy,q)
             def data = []
             results.data.each{ msg ->
-                if (!version || DateUtils.parse(msg.date).millis < version) {
+                if (!version || DateUtils.parse(msg.date).toInstant().toEpochMilli() < version) {
                     msg['date'] = DateUtils.displayFormatWithTime(msg['date']);
                     data << msg
                 }
@@ -1411,7 +1411,7 @@ class ProjectController {
             results.data = data
             asJson results;
         } else {
-            response.sendError(SC_FORBIDDEN, 'You are not authorized to view this page')
+            response.sendError(HttpStatus.FORBIDDEN.value(), 'You are not authorized to view this page')
         }
     }
 
@@ -1440,9 +1440,9 @@ class ProjectController {
             documentService.addLicenceDescription(result.documents);
             render contentType: 'application/json', text: result as JSON
         } catch (SocketTimeoutException sTimeout){
-            render(status: SC_REQUEST_TIMEOUT, text: sTimeout.message)
+            render(status: HttpStatus.REQUEST_TIMEOUT.value(), text: sTimeout.message)
         } catch( Exception e){
-            render(status: SC_INTERNAL_SERVER_ERROR, text: e.message)
+            render(status: HttpStatus.INTERNAL_SERVER_ERROR.value(), text: e.message)
         }
     }
 
@@ -1548,15 +1548,15 @@ class ProjectController {
                 if (recipients && subject && body) {
                     def result = projectService.sendEmailNotificationToMembers(subject, body, recipients, id)
                     if (result.success) {
-                        render ( status: HttpStatus.SC_OK, text: result.message )
+                        render ( status: HttpStatus.OK.value(), text: result.message )
                     } else {
-                        render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                        render ( status: HttpStatus.INTERNAL_SERVER_ERROR.value(), text: result.message )
                     }
                 } else {
-                    render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
+                    render ( status: HttpStatus.BAD_REQUEST.value(), text: "Missing parameters in payload - subject, recipients,  body" )
                 }
             } else {
-                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
+                render ( status: HttpStatus.BAD_REQUEST.value(), text: "Missing parameter - id" )
             }
         }
     }
@@ -1572,15 +1572,15 @@ class ProjectController {
                 if (subject && body) {
                     def result = projectService.sendTestEmail(subject, body)
                     if (result.success) {
-                        render ( status: HttpStatus.SC_OK, text: result.message )
+                        render ( status: HttpStatus.OK.value(), text: result.message )
                     } else {
-                        render ( status: HttpStatus.SC_INTERNAL_SERVER_ERROR, text: result.message )
+                        render ( status: HttpStatus.INTERNAL_SERVER_ERROR.value(), text: result.message )
                     }
                 } else {
-                    render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameters in payload - subject, recipients,  body" )
+                    render ( status: HttpStatus.BAD_REQUEST.value(), text: "Missing parameters in payload - subject, recipients,  body" )
                 }
             } else {
-                render ( status: HttpStatus.SC_BAD_REQUEST, text: "Missing parameter - id" )
+                render ( status: HttpStatus.BAD_REQUEST.value(), text: "Missing parameter - id" )
             }
         }
     }
@@ -1598,7 +1598,7 @@ class ProjectController {
             render view:'projectSummaryReport', model:model
         }
         else {
-            render status:HttpStatus.SC_UNAUTHORIZED
+            render status:HttpStatus.UNAUTHORIZED.value()
         }
     }
 
