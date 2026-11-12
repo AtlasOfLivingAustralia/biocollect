@@ -91,24 +91,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Check Maven repository connectivity
-        run: |
-          for url in \
-            "https://repo.grails.org/grails/core/org/springframework/boot/spring-boot-dependencies/2.7.18/spring-boot-dependencies-2.7.18.pom" \
-            "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot-dependencies/2.7.18/spring-boot-dependencies-2.7.18.pom" \
-            "https://nexus.ala.org.au/content/groups/public/org/springframework/boot/spring-boot-dependencies/2.7.18/spring-boot-dependencies-2.7.18.pom" \
-            "https://repo.osgeo.org/repository/release/"
-          do
-            echo "Checking: $url"
-            curl -L -sS -o /dev/null \
-              --connect-timeout 10 \
-              --max-time 30 \
-              -w 'HTTP %{http_code}, total %{time_total}s\n' \
-              "$url" || true
-          done
-
       - name: build biocollect before running js unit test to compile dependent js templates
-        run: ./gradlew _Events --info --stacktrace
+        run: ./gradlew _Events
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

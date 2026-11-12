@@ -99,26 +99,6 @@ done
 cd "$ECODATA_LOCAL_DIR"
 echo "Starting ecodata from $(pwd)"
 
-# CI workaround: use ALA Nexus instead of unreachable OSGeo
-python3 - <<'PY'
-from pathlib import Path
-
-build_file = Path("build.gradle")
-content = build_file.read_text()
-
-old = '''    maven { url "https://repo.osgeo.org/repository/release/" }
-    maven { url "https://repo.grails.org/grails/core" }
-    maven { url "https://nexus.ala.org.au/content/groups/public/" }'''
-
-new = '''    maven { url "https://nexus.ala.org.au/content/groups/public/" }
-    maven { url "https://repo.grails.org/grails/core" }'''
-
-if old not in content:
-    raise SystemExit("ERROR: Expected ecodata repository configuration not found")
-
-build_file.write_text(content.replace(old, new, 1))
-PY
-
 start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
 
 # Check that ecodata starts successfully

@@ -46,9 +46,6 @@ repositories {
 
     maven { url "https://nexus.ala.org.au/content/groups/public/" }
 
-    // OSGeo temporarily disabled because it is unreachable
-    // maven { url "https://repo.osgeo.org/repository/release/" }
-
     maven { url "https://repo.grails.org/grails/core" }
 
     maven {
@@ -60,6 +57,8 @@ repositories {
     }
 
     mavenCentral()
+
+    maven { url "https://repo.osgeo.org/repository/release/" }
 }
 
 configurations {
