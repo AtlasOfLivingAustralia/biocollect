@@ -43,18 +43,22 @@ sourceCompatibility = '11'
 targetCompatibility = '17'
 repositories {
     mavenLocal()
-    //for missing jai_core.jar
-    //maven { url "https://mvnrepository.com" }
-    maven { url "https://repo.osgeo.org/repository/release/" }
+
+    maven { url "https://nexus.ala.org.au/content/groups/public/" }
+
     maven { url "https://repo.grails.org/grails/core" }
-    maven { url = uri("https://maven.pkg.github.com/atlasoflivingaustralia/ecodata-client-plugin")
+
+    maven {
+        url = uri("https://maven.pkg.github.com/atlasoflivingaustralia/ecodata-client-plugin")
         credentials {
             username = project.findProperty("gpr.user") ?: System.getenv('GITHUB_ACTOR')
             password = project.findProperty("gpr.token") ?: System.getenv('GITHUB_TOKEN')
         }
     }
-    maven { url "https://nexus.ala.org.au/content/groups/public/" }
+
     mavenCentral()
+
+    maven { url "https://repo.osgeo.org/repository/release/" }
 }
 
 configurations {
