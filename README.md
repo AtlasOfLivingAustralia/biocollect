@@ -49,7 +49,9 @@ Note the leading colon before the bootRun task - this is required as when inplac
 
 ### Survey licences
 
-Survey data-sharing licences use the ecodata-client-plugin catalogue. Set `licences.file` in the external configuration to override it; see the [plugin licence documentation](https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin/blob/dev/README.md#licences). Selections are stored as catalogue URLs when available, otherwise as their values. Existing unlisted licences are retained.
+Survey data-sharing licences use ecodata-client-plugin's Collectory-backed catalogue and shared selection view model. Existing survey URLs and image licences are preserved; unknown values remain selectable with a warning. New surveys default to CC-BY 4.0 unless configured otherwise; unrecognised configured defaults are retained with a warning rather than replaced.
+
+See the [plugin licence documentation](https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin/blob/dev/README.md#licences).
 
 ### Running Javascript automatic tests
 * Executing the tests requires node.js
@@ -59,3 +61,4 @@ Survey data-sharing licences use the ecodata-client-plugin catalogue. Set `licen
   npm install
 ```
 * After that you can run the test directly from Intellij by right-clicking on the `karma.conf.js` file.
+* Karma loads the licence helper from the plugin's `dev` branch via CDN, so plugin changes must be published there before running these tests.

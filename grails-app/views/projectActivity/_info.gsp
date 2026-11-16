@@ -343,13 +343,14 @@
 
         <div class="col-12 col-md-8">
             <select id="dataSharingLicense" class="full-collapse-horizontal form-control" name="dateSharingLicence"
-                    data-bind="options: transients.licenceOptions, optionsText: ecodataLicences.shortNameFor, optionsValue: 'url', value: dataSharingLicense, valueAllowUnset: true, optionsCaption: '-Please select the licence-'"
+                    data-bind="options: transients.licence.options, optionsText: 'acronym', optionsValue: 'url', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: '-Please select the licence-'"
                     data-validation-engine="validate[required]"></select>
             <p class="form-text my-1">
-                <a data-bind="visible: transients.licenceUrl, attr: {href: transients.licenceUrl}, text: transients.licenceDescription"
+                <a data-bind="visible: transients.licence.url, attr: {href: transients.licence.url}, text: transients.licence.description"
                    target="_blank" rel="noopener noreferrer"></a>
-                <span data-bind="visible: !transients.licenceUrl(), text: transients.licenceDescription"></span>
+                <span data-bind="visible: !transients.licence.url(), text: transients.licence.description"></span>
             </p>
+            <p class="text-warning" role="status" data-bind="visible: transients.licence.warning, text: transients.licence.warning"></p>
         </div>
     </div>
 

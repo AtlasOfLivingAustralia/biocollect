@@ -45,25 +45,9 @@ var ProjectActivity = function (params) {
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense || "");
-    self.transients.licenceOptions = ko.pureComputed(function () {
-        var selected = self.dataSharingLicense();
-        var currentLicence = ecodataLicences.find(selected);
-        var options = ecodataLicences.options().map(function (licence) {
-            return $.extend({}, licence, {url: licence === currentLicence ? selected : (licence.url || licence.value)});
-        });
-        if (selected && !currentLicence) {
-            options.push({value: selected, url: selected});
-        }
-        return options;
-    });
-    self.transients.licenceDescription = ko.pureComputed(function () {
-        return ecodataLicences.descriptionFor(self.dataSharingLicense());
-    });
-    self.transients.licenceUrl = ko.pureComputed(function () {
-        var selected = self.dataSharingLicense();
-        return ecodataLicences.urlFor(selected) || (!ecodataLicences.find(selected) && /^https?:\/\//i.test(selected) ? selected : '');
-    });
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ||
+        (!pActivity.projectActivityId ? ecodataLicences.defaultValue('url') : '') || '');
+    self.transients.licence = new LicenceViewModel(self.dataSharingLicense, 'url');
     self.publishProject = ko.observable("Yes");
     self.spatialAccuracy = ko.observable(pActivity.spatialAccuracy || "");
     self.speciesIdentification = ko.observable(pActivity.speciesIdentification || "");

@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 import grails.converters.JSON
+import java.util.concurrent.TimeUnit
 /**
  * Handles caching of service responses (after transforming).
  * Uses passed closures to handle service requests - so remains independent
@@ -22,7 +23,7 @@ class CacheService {
      */
     def get(String key, Closure source, int maxAgeInDays = 1) {
         def cached = cache[key]
-        if (cached && cached.resp && !(new Date().after(cached.time + maxAgeInDays))) {
+        if (cached && cached.resp && System.currentTimeMillis() <= cached.time.time + TimeUnit.DAYS.toMillis(maxAgeInDays)) {
             return cached.resp
         }
         //log.debug "retrieving " + key
