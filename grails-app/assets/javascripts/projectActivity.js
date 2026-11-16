@@ -46,6 +46,24 @@ var ProjectActivity = function (params) {
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
     self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense || "");
+    self.transients.licenceOptions = ko.pureComputed(function () {
+        var selected = self.dataSharingLicense();
+        var currentLicence = ecodataLicences.find(selected);
+        var options = ecodataLicences.options().map(function (licence) {
+            return $.extend({}, licence, {url: licence === currentLicence ? selected : (licence.url || licence.value)});
+        });
+        if (selected && !currentLicence) {
+            options.push({value: selected, url: selected});
+        }
+        return options;
+    });
+    self.transients.licenceDescription = ko.pureComputed(function () {
+        return ecodataLicences.descriptionFor(self.dataSharingLicense());
+    });
+    self.transients.licenceUrl = ko.pureComputed(function () {
+        var selected = self.dataSharingLicense();
+        return ecodataLicences.urlFor(selected) || (!ecodataLicences.find(selected) && /^https?:\/\//i.test(selected) ? selected : '');
+    });
     self.publishProject = ko.observable("Yes");
     self.spatialAccuracy = ko.observable(pActivity.spatialAccuracy || "");
     self.speciesIdentification = ko.observable(pActivity.speciesIdentification || "");
@@ -559,13 +577,6 @@ var ProjectActivity = function (params) {
 
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
-
-    self.displaySelectedLicence = ko.computed(function(){
-          return _.where(self.transients.alaSupportedLicences,{url:self.dataSharingLicense()});
-
-    });
-
-
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {

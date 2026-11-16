@@ -420,12 +420,9 @@
                         </div>
 
                         <div class="col-12 col-md-7">
-                            <g:each in="${licences}">
-                                <span data-bind="visible: dataSharingLicense() == '${it.url}'"><a
-                                        href="${it.url}" target="_blank"><img
-                                            src="${asset.assetPath(src: "licence/${it.logo}")} ">&nbsp;&nbsp;${it.name}
-                                </a></span>
-                            </g:each>
+                            <a data-bind="visible: transients.licenceUrl, attr: {href: transients.licenceUrl}, text: transients.licenceDescription"
+                               target="_blank" rel="noopener noreferrer"></a>
+                            <span data-bind="visible: !transients.licenceUrl(), text: transients.licenceDescription"></span>
                         </div>
                     </div>
                     <!-- /ko -->

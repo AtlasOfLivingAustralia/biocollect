@@ -47,6 +47,9 @@ Run BioCollect with additional parameters:
 
 Note the leading colon before the bootRun task - this is required as when inplace=true gradle is configured in a multi-project build configuration.
 
+### Survey licences
+
+Survey data-sharing licences use the ecodata-client-plugin catalogue. Set `licences.file` in the external configuration to override it; see the [plugin licence documentation](https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin/blob/dev/README.md#licences). Selections are stored as catalogue URLs when available, otherwise as their values. Existing unlisted licences are retained.
 
 ### Running Javascript automatic tests
 * Executing the tests requires node.js

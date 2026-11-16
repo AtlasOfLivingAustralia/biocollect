@@ -177,6 +177,95 @@ describe("ProjectActivityViewModel Spec", function () {
         expect(pActivity.isSiteConfigValid()).toEqual(true);
     })
 
+    describe("data sharing licences", function () {
+        var originalOptions, choices, select;
+
+        beforeEach(function () {
+            originalOptions = ecodataLicences.options();
+            choices = [
+                {value: "CC BY 4.0", shortName: "CC BY 4.0", name: "Attribution", url: "https://example.org/by/4.0/", aliases: ["CC BY"]},
+                {value: "Local", shortName: "Local", name: "Local licence"}
+            ];
+            ecodataLicences.options(choices);
+            select = document.createElement("select");
+            select.setAttribute("data-bind", "options: transients.licenceOptions, optionsText: ecodataLicences.shortNameFor, optionsValue: 'url', value: dataSharingLicense, valueAllowUnset: true, optionsCaption: '-Please select the licence-'");
+            document.body.appendChild(select);
+        });
+
+        afterEach(function () {
+            ko.cleanNode(select);
+            select.remove();
+            ecodataLicences.options(originalOptions);
+        });
+
+        it("selects catalogue licences by URL or value and excludes UI fields from saves", function () {
+            var activity = new ProjectActivity({pActivity: {dataSharingLicense: choices[0].url}});
+            ko.applyBindings(activity, select);
+
+            expect(select.value).toBe(choices[0].url);
+            expect(Array.from(select.options).map(function (option) { return option.text; }))
+                .toEqual(["-Please select the licence-", "CC BY 4.0", "Local"]);
+            expect(activity.transients.licenceDescription()).toBe("Attribution");
+
+            select.value = "Local";
+            select.dispatchEvent(new Event("change"));
+            expect(activity.dataSharingLicense()).toBe("Local");
+            expect(activity.transients.licenceUrl()).toBe("");
+            var saved = activity.asJS("info");
+            expect(saved.dataSharingLicense).toBe("Local");
+            expect(saved.transients).toBeUndefined();
+        });
+
+        it("preserves an unlisted historic URL until another licence is selected", function () {
+            var legacy = "https://creativecommons.org/licenses/by-nc/2.5/";
+            var activity = new ProjectActivity({pActivity: {dataSharingLicense: legacy}});
+            ko.applyBindings(activity, select);
+
+            expect(select.value).toBe(legacy);
+            expect(activity.dataSharingLicense()).toBe(legacy);
+            expect(activity.transients.licenceUrl()).toBe(legacy);
+            expect(activity.asJS("info").dataSharingLicense).toBe(legacy);
+
+            select.value = choices[0].url;
+            select.dispatchEvent(new Event("change"));
+            expect(activity.dataSharingLicense()).toBe(choices[0].url);
+            expect(activity.transients.licenceOptions().length).toBe(choices.length);
+        });
+
+        it("keeps aliases unchanged and does not link unsafe unlisted values", function () {
+            var activity = new ProjectActivity({pActivity: {dataSharingLicense: "CC BY"}});
+            ko.applyBindings(activity, select);
+            expect(select.value).toBe("CC BY");
+            expect(activity.dataSharingLicense()).toBe("CC BY");
+            expect(activity.transients.licenceUrl()).toBe(choices[0].url);
+            expect(select.options.length).toBe(choices.length + 1);
+
+            activity.dataSharingLicense(choices[0].value);
+            expect(select.value).toBe(choices[0].value);
+            expect(select.options.length).toBe(choices.length + 1);
+
+            activity.dataSharingLicense("javascript:alert(1)");
+            expect(select.value).toBe("javascript:alert(1)");
+            expect(activity.transients.licenceUrl()).toBe("");
+        });
+
+        it("does not link a configured value when its URL is omitted", function () {
+            var value = "https://example.org/licence-code";
+            ecodataLicences.options([{value: value, name: "Code-only licence"}]);
+            var activity = new ProjectActivity({pActivity: {dataSharingLicense: value}});
+            ko.applyBindings(activity, select);
+            expect(select.value).toBe(value);
+            expect(activity.transients.licenceUrl()).toBe("");
+        });
+
+        it("keeps the selection prompt for a new survey", function () {
+            var activity = new ProjectActivity();
+            ko.applyBindings(activity, select);
+            expect(select.selectedOptions[0].text).toBe("-Please select the licence-");
+            expect(activity.dataSharingLicense()).toBe("");
+        });
+    });
+
 });
 
 describe("pActivityInfo Spec", function () {
