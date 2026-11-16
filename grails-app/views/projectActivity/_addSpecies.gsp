@@ -18,9 +18,15 @@
                         data-bind="options: transients.allowedListTypes, optionsText:'name', optionsValue:'id', value: newSpeciesLists.listType, optionsCaption: 'Please select'"></select>
             </div>
             <div class="col-4">
-                <label>Licence</label>
-                <select class="form-select" data-validation-engine="validate[required]"
-                        data-bind="options: transients.allowedLicences, optionsText:'label', optionsValue:'value', value: newSpeciesLists.licence, optionsCaption: 'Please select'"></select>
+                <label for="speciesListLicence">Licence</label>
+                <select id="speciesListLicence" class="form-select" data-validation-engine="validate[required]"
+                        data-bind="options: newSpeciesLists.transients.licence.options, optionsText: 'acronym', optionsValue: 'acronym', value: newSpeciesLists.transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'"></select>
+                <p class="form-text my-1">
+                    <a data-bind="visible: newSpeciesLists.transients.licence.url, attr: {href: newSpeciesLists.transients.licence.url}, text: newSpeciesLists.transients.licence.description"
+                       target="_blank" rel="noopener noreferrer"></a>
+                    <span data-bind="visible: !newSpeciesLists.transients.licence.url(), text: newSpeciesLists.transients.licence.description"></span>
+                </p>
+                <p class="text-warning" role="status" data-bind="visible: newSpeciesLists.transients.licence.warning, text: newSpeciesLists.transients.licence.warning"></p>
             </div>
         </div>
 

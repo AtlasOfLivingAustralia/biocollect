@@ -47,9 +47,9 @@ Run BioCollect with additional parameters:
 
 Note the leading colon before the bootRun task - this is required as when inplace=true gradle is configured in a multi-project build configuration.
 
-### Survey licences
+### Licences
 
-Survey data-sharing licences use ecodata-client-plugin's Collectory-backed catalogue and shared selection view model. Existing survey URLs and image licences are preserved; unknown values remain selectable with a warning. New surveys default to CC-BY 4.0 unless configured otherwise; unrecognised configured defaults are retained with a warning rather than replaced.
+Survey data-sharing, document, photo-point image and new species-list licence selectors use ecodata-client-plugin's Collectory-backed catalogue, configured allowlist and shared selection view model. Existing values are preserved; historical or unknown values remain selectable with a warning. New records default to CC-BY 4.0 unless configured otherwise; unrecognised configured defaults are retained rather than replaced.
 
 See the [plugin licence documentation](https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin/blob/dev/README.md#licences).
 

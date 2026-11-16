@@ -51,6 +51,7 @@ module.exports = function (config) {
             'grails-app/assets/vendor/wmd/showdown.js',
             'grails-app/assets/vendor/wmd/wmd.js',
             'grails-app/assets/javascripts/document.js',
+            'grails-app/assets/javascripts/photoPoint.js',
             'grails-app/assets/vendor/fuse/fuse.min.js',
             'grails-app/assets/javascripts/fieldcapture-application.js',
             'grails-app/assets/javascripts/EmailViewModel.js',
