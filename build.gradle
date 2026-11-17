@@ -237,6 +237,25 @@ task _Events {
     }
 }
 
+tasks.register('prepareKarmaAssets', Sync) {
+    if (Boolean.valueOf(inplace)) {
+        dependsOn ':ecodata-client-plugin:jar'
+    }
+    from {
+        def plugin = configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.find {
+            it.moduleVersion.id.group == 'org.grails.plugins' && it.name == 'ecodata-client-plugin'
+        }
+        if (!plugin) {
+            throw new GradleException('ecodata-client-plugin was not found on the runtime classpath')
+        }
+        zipTree(plugin.file)
+    }
+    include 'META-INF/assets/**'
+    eachFile { details -> details.path = details.path.substring('META-INF/assets/'.length()) }
+    includeEmptyDirs = false
+    into layout.buildDirectory.dir('karma-plugin-assets')
+}
+
 // the tasks used here for dependsOn may be incomplete/incorrect
 assetCompile.dependsOn(_Events)
 compileGroovy.dependsOn(_Events)

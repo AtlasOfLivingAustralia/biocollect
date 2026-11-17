@@ -8,6 +8,7 @@ import spock.lang.Specification
 class CacheServiceSpec extends Specification implements ServiceUnitTest<CacheService> {
     def cleanup() {
         service.clear()
+        grailsApplication.config.licences.allowlist = null
     }
 
     void "the host cache supports repeated plugin catalogue lookups"() {
@@ -17,6 +18,7 @@ class CacheServiceSpec extends Specification implements ServiceUnitTest<CacheSer
                 ecpWebService: webService, cacheService: service)
         Map licence = [name: 'Attribution', acronym: 'CC-BY 4.0 (Int)',
                 url: LicenceService.DEFAULT_LICENCE, imageUrl: '', version: '4.0']
+        grailsApplication.config.licences.allowlist = [licence.url]
 
         when:
         licenceService.init()

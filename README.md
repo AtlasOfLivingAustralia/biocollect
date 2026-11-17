@@ -60,5 +60,8 @@ See the [plugin licence documentation](https://github.com/AtlasOfLivingAustralia
 ```
   npm install
 ```
+* Before running Karma, prepare the compiled templates and JavaScript assets from the configured plugin dependency:
+```
+  ./gradlew _Events prepareKarmaAssets
+```
 * After that you can run the test directly from Intellij by right-clicking on the `karma.conf.js` file.
-* Karma loads the licence helper from the plugin's `dev` branch via CDN, so plugin changes must be published there before running these tests.

@@ -264,7 +264,7 @@ describe("ProjectActivityViewModel Spec", function () {
             expect(select.value).toBe(value);
             expect(select.selectedOptions[0].text).toBe(choices[1].name);
             expect(activity.transients.licence.description()).toContain("3.0 (Aus)");
-            expect(activity.transients.licence.warning()).toContain("not in the allowlist");
+            expect(activity.transients.licence.warning()).toContain("no longer supported");
             expect(activity.asJS("info").dataSharingLicense).toBe(value);
             select.value = choices[0].url;
             select.dispatchEvent(new Event("change"));
@@ -298,7 +298,7 @@ describe("ProjectActivityViewModel Spec", function () {
             var activity = new ProjectActivity();
             ko.applyBindings(activity, select);
             expect(select.selectedOptions[0].text).toBe(choices[1].name);
-            expect(activity.transients.licence.warning()).toContain("not in the allowlist");
+            expect(activity.transients.licence.warning()).toContain("no longer supported");
             expect(activity.asJS("info").dataSharingLicense).toBe(choices[1].url);
         });
     });
