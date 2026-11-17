@@ -31,7 +31,7 @@ describe("AllDocListViewModel Spec", function () {
             fixture.setAttribute("data-ecodata-default-licence", choices[1].url);
             document.body.appendChild(fixture);
             select = document.createElement("select");
-            select.setAttribute("data-bind", "options: transients.licence.options, optionsText: 'acronym', optionsValue: 'acronym', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'");
+            select.setAttribute("data-bind", "options: transients.licence.options, optionsText: 'name', optionsValue: 'acronym', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'");
             fixture.appendChild(select);
         });
 

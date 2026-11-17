@@ -94,11 +94,12 @@
 
                         <div class="col-sm-9">
                             <select class="form-select" id="documentLicense"
-                                    data-bind="options: transients.licence.options, optionsText: 'acronym', optionsValue: 'acronym', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'"></select>
+                                    data-bind="options: transients.licence.options, optionsText: 'name', optionsValue: 'acronym', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'"></select>
                             <p class="form-text my-1">
-                                <a data-bind="visible: transients.licence.url, attr: {href: transients.licence.url}, text: transients.licence.description"
-                                   target="_blank" rel="noopener noreferrer"></a>
+                                <a data-bind="visible: transients.licence.url, attr: {href: transients.licence.url}" class="me-2"
+                                   target="_blank" rel="noopener noreferrer"><span data-bind="text: transients.licence.acronym"></span> <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
                                 <span data-bind="visible: !transients.licence.url(), text: transients.licence.description"></span>
+                                <a href="${message(code: 'project.details.creativeCommons.helpUrl', default: 'https://creativecommons.org/cc-licenses/')}" target="_blank" rel="noopener noreferrer">About CC licences <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
                             </p>
                             <p class="text-warning" role="status" data-bind="visible: transients.licence.warning, text: transients.licence.warning"></p>
                         </div>

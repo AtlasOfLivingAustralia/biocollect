@@ -192,7 +192,7 @@ describe("ProjectActivityViewModel Spec", function () {
             ecodataLicences.catalogue(choices);
             ecodataLicences.defaultLicence(choices[0].url);
             select = document.createElement("select");
-            select.setAttribute("data-bind", "options: transients.licence.options, optionsText: 'acronym', optionsValue: 'url', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: '-Please select the licence-'");
+            select.setAttribute("data-bind", "options: transients.licence.options, optionsText: 'name', optionsValue: 'url', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: '-Please select the licence-'");
             document.body.appendChild(select);
         });
 
@@ -210,7 +210,7 @@ describe("ProjectActivityViewModel Spec", function () {
 
             expect(select.value).toBe(choices[0].url);
             expect(Array.from(select.options).map(function (option) { return option.text; }))
-                .toEqual(["-Please select the licence-", "CC-BY 4.0 (Int)", "CC-BY-NC 3.0 (Aus)"]);
+                .toEqual(["-Please select the licence-", choices[0].name, choices[1].name]);
             expect(activity.transients.licence.description()).toBe("Attribution (CC-BY 4.0 (Int))");
 
             select.value = choices[1].url;
@@ -262,7 +262,7 @@ describe("ProjectActivityViewModel Spec", function () {
             var activity = new ProjectActivity({pActivity: {dataSharingLicense: value}});
             ko.applyBindings(activity, select);
             expect(select.value).toBe(value);
-            expect(select.selectedOptions[0].text).toBe("CC-BY-NC 3.0 (Aus)");
+            expect(select.selectedOptions[0].text).toBe(choices[1].name);
             expect(activity.transients.licence.description()).toContain("3.0 (Aus)");
             expect(activity.transients.licence.warning()).toContain("not in the allowlist");
             expect(activity.asJS("info").dataSharingLicense).toBe(value);
@@ -297,7 +297,7 @@ describe("ProjectActivityViewModel Spec", function () {
             ecodataLicences.defaultLicence(choices[1].url);
             var activity = new ProjectActivity();
             ko.applyBindings(activity, select);
-            expect(select.selectedOptions[0].text).toBe(choices[1].acronym);
+            expect(select.selectedOptions[0].text).toBe(choices[1].name);
             expect(activity.transients.licence.warning()).toContain("not in the allowlist");
             expect(activity.asJS("info").dataSharingLicense).toBe(choices[1].url);
         });

@@ -20,11 +20,12 @@
             <div class="col-4">
                 <label for="speciesListLicence">Licence</label>
                 <select id="speciesListLicence" class="form-select" data-validation-engine="validate[required]"
-                        data-bind="options: newSpeciesLists.transients.licence.options, optionsText: 'acronym', optionsValue: 'acronym', value: newSpeciesLists.transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'"></select>
+                        data-bind="options: newSpeciesLists.transients.licence.options, optionsText: 'name', optionsValue: 'acronym', value: newSpeciesLists.transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'"></select>
                 <p class="form-text my-1">
-                    <a data-bind="visible: newSpeciesLists.transients.licence.url, attr: {href: newSpeciesLists.transients.licence.url}, text: newSpeciesLists.transients.licence.description"
-                       target="_blank" rel="noopener noreferrer"></a>
+                    <a data-bind="visible: newSpeciesLists.transients.licence.url, attr: {href: newSpeciesLists.transients.licence.url}" class="me-2"
+                       target="_blank" rel="noopener noreferrer"><span data-bind="text: newSpeciesLists.transients.licence.acronym"></span> <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
                     <span data-bind="visible: !newSpeciesLists.transients.licence.url(), text: newSpeciesLists.transients.licence.description"></span>
+                    <a href="${message(code: 'project.details.creativeCommons.helpUrl', default: 'https://creativecommons.org/cc-licenses/')}" target="_blank" rel="noopener noreferrer">About CC licences <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
                 </p>
                 <p class="text-warning" role="status" data-bind="visible: newSpeciesLists.transients.licence.warning, text: newSpeciesLists.transients.licence.warning"></p>
             </div>
