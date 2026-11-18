@@ -21,7 +21,6 @@ class CacheServiceSpec extends Specification implements ServiceUnitTest<CacheSer
         grailsApplication.config.licences.allowlist = [licence.url]
 
         when:
-        licenceService.init()
         def first = licenceService.licences
         def defaultLicence = licenceService.defaultLicence
 
