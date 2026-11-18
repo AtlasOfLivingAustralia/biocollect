@@ -37,6 +37,7 @@
 //= require facets.js
 
 // image-gallery
+//= require licences.js
 //= require images.js
 //= require image-gallery.js
 

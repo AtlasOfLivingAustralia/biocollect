@@ -155,6 +155,7 @@ var PhotoPoint = function(site, photoPoint, activityId, existingPhotos) {
                 siteId:site.siteId,
                 activityId:activityId,
                 name:site.name+' - '+photoPoint.name(),
+                licence:ko.unwrap(f[i].licence),
                 type:'image'
 
             };
@@ -224,6 +225,8 @@ var Photo = function(data) {
     data.clientId = data.documentId || 'new-photo-'+this.clientId++;
     data.role = 'photoPoint';
     var result = new DocumentViewModel(data);
+    result.licence = ko.observable(data.licence || (!data.documentId ? ecodataLicences.defaultValue() : data.licence));
+    result.transients.licence = new LicenceViewModel(result.licence);
     result.dateTaken = ko.observable(data.dateTaken).extend({simpleDate:false});
     result.formattedSize = formatBytes(data.filesize);
 
