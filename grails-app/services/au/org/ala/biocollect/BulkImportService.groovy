@@ -44,7 +44,7 @@ class BulkImportService {
         Boolean success
         List activityIds = getBulkImportActivities( bulkImportId )
 
-        // delete activities
+        // publish activities
         success = activityService.batchedBulkRelease(activityIds)
         [success: success]
     }
@@ -53,7 +53,7 @@ class BulkImportService {
         Boolean success
         List activityIds = getBulkImportActivities( bulkImportId )
 
-        // delete activities
+        // embargo activities
         success = activityService.batchedBulkEmbargo(activityIds)
         [success: success]
     }
