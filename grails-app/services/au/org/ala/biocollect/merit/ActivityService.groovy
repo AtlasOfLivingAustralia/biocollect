@@ -3,7 +3,6 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.UtilService
-import au.org.ala.biocollect.merit.SpeciesService
 import grails.core.GrailsApplication
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
@@ -167,7 +166,7 @@ class ActivityService {
     def bulkEmbargo(List ids) {
         if (ids) {
             String params = "id=" + ids.join('&id=')
-            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: true])
+            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: true, verificationStatus: "not approved"])
         }
     }
 
@@ -194,7 +193,7 @@ class ActivityService {
     def bulkRelease(List ids) {
         if (ids) {
             String params = "id=" + ids.join('&id=')
-            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false])
+            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false, verificationStatus: "approved"])
         }
     }
 

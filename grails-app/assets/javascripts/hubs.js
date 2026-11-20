@@ -634,6 +634,7 @@ var LinkViewModel = function (config) {
     self.displayName = ko.observable(config.displayName || '');
     self.contentType = ko.observable(config.contentType || 'static');
     self.href = ko.observable(config.href || '');
+    self.target = ko.observable(config.target || '_self');
     self.role = ko.observable(config.role || '');
     self.introductoryText = ko.observable(config.introductoryText || '');
     self.launchModal = function () {

@@ -76,6 +76,7 @@ class TemplateTagLib {
             Map link = attrs.config
             String classes = attrs?.classes ?: ""
             String activeClass = attrs?.activeClass ?: "current-menu-item"
+            String target = link.target ?: "_self"
             Boolean bs5 = Boolean.parseBoolean(attrs.bs5  ?: "false")
             if (link.role && !userService.doesUserHaveHubRole(link.role)) {
                 return
@@ -89,11 +90,11 @@ class TemplateTagLib {
                 case 'external':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a title=\"${link.displayName}\" href=\"${url}\" class=\"do-not-mark-external nav-link\">${link.displayName}</a>";
+                        out << "<a title=\"${link.displayName}\" href=\"${url}\" target=\"${target}\" class=\"do-not-mark-external nav-link\">${link.displayName}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\" class=\"do-not-mark-external\">${link.displayName}</a>";
+                        out << "<a href=\"${url}\" target=\"${target}\" class=\"do-not-mark-external\">${link.displayName}</a>";
                         out << "</li>";
                     }
                     break;
@@ -105,11 +106,11 @@ class TemplateTagLib {
                 case 'content':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName}\" href=\"${url}\">${link.displayName}</a>";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName}\" href=\"${url}\" target=\"${target}\">${link.displayName}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\">${link.displayName}</a>";
+                        out << "<a href=\"${url}\" target=\"${target}\">${link.displayName}</a>";
                         out << "</li>";
                     }
                     break;
@@ -129,12 +130,12 @@ class TemplateTagLib {
                     if(userService.userIsAlaAdmin()){
                         if (bs5) {
                             out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                            out << "<a class=\"nav-link\" title=\"${link.displayName?:'Admin'}\" href=\"${url}\">${link.displayName?:'Admin'}</a>";
+                            out << "<a class=\"nav-link\" title=\"${link.displayName?:'Admin'}\" href=\"${url}\" target=\"${target}\">${link.displayName?:'Admin'}</a>";
                             out << "</li>";
 
                         } else {
                             out << "<li class=\"main-menu ${classes}\">";
-                            out << "<a href=\"${url}\">${link.displayName?:'Admin'}</a>";
+                            out << "<a href=\"${url}\" target=\"${target}\">${link.displayName?:'Admin'}</a>";
                             out << "</li>";
                         }
                     }
@@ -142,23 +143,23 @@ class TemplateTagLib {
                 case 'allrecords':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'All Records'}\" href=\"${url}\">${link.displayName?:'All Records'}</a>";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'All Records'}\" href=\"${url}\" target=\"${target}\">${link.displayName?:'All Records'}</a>";
                         out << "</li>";
 
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\">${link.displayName?:'All Records'}</a>";
+                        out << "<a href=\"${url}\" target=\"${target}\">${link.displayName?:'All Records'}</a>";
                         out << "</li>";
                     }
                     break;
                 case 'home':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Home'}\" href=\"${url}\">${link.displayName?:'Home'}</a>";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Home'}\" href=\"${url}\" target=\"${target}\">${link.displayName?:'Home'}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\">${link.displayName?:'Home'}</a>";
+                        out << "<a href=\"${url}\" target=\"${target}\">${link.displayName?:'Home'}</a>";
                         out << "</li>";
                     }
                     break;
@@ -200,44 +201,44 @@ class TemplateTagLib {
                 case 'newproject':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'New project'}\" href=\"${url}\">${link.displayName?:'New project'}</a>";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'New project'}\" href=\"${url}\" target=\"${target}\">${link.displayName?:'New project'}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\">${link.displayName?:'New project'}</a>";
+                        out << "<a href=\"${url}\" target=\"${target}\">${link.displayName?:'New project'}</a>";
                         out << "</li>";
                     }
                     break;
                 case 'sites':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Sites'}\" href=\"${url}\">${link.displayName?:'Sites'}</a>";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Sites'}\" href=\"${url}\" target=\"${target}\">${link.displayName?:'Sites'}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\">${link.displayName?:'Sites'}</a>";
+                        out << "<a href=\"${url}\" target=\"${target}\">${link.displayName?:'Sites'}</a>";
                         out << "</li>";
                     }
                     break;
                 case 'resources':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Resources'}\" href=\"${url}\">${link.displayName?:'Resources'}</a>";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Resources'}\" href=\"${url}\" target=\"${target}\">${link.displayName?:'Resources'}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${url}\">${link.displayName?:'Resources'}</a>";
+                        out << "<a href=\"${url}\" target=\"${target}\">${link.displayName?:'Resources'}</a>";
                         out << "</li>";
                     }
                     break;
                 case 'biocacheexplorer':
                     if (bs5) {
                         out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Occurrence explorer'}\" href=\"${url}\">${link.displayName?:'Occurrence explorer'}</a>";
+                        out << "<a class=\"nav-link\" title=\"${link.displayName?:'Occurrence explorer'}\" href=\"${url}\" target=\"${target}\">${link.displayName?:'Occurrence explorer'}</a>";
                         out << "</li>";
                     } else {
                         out << "<li class=\"main-menu ${classes}\">";
-                        out << "<a href=\"${ url }\">${link.displayName?:'Occurrence explorer'}</a>";
+                        out << "<a href=\"${ url }\" target=\"${target}\">${link.displayName?:'Occurrence explorer'}</a>";
                         out << "</li>";
                     }
                     break;
@@ -261,7 +262,7 @@ class TemplateTagLib {
                     break;
                 case 'charts':
                     out << "<li itemscope=\"itemscope\" itemtype=\"https://www.schema.org/SiteNavigationElement\" class=\"menu-item nav-item ${classes}\">";
-                    out << "<a class=\"nav-link\" title=\"${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}\" href=\"${url}\">${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}</a>";
+                    out << "<a class=\"nav-link\" title=\"${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}\" href=\"${url}\" target=\"${target}\">${link.displayName?:messageSource.getMessage('hub.chart.title', null, '', Locale.default)}</a>";
                     out << "</li>";
             }
         }

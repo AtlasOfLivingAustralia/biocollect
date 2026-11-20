@@ -214,6 +214,7 @@
                                     <th>Display name</th>
                                     <th>Content type</th>
                                     <th>Href value</th>
+                                    <th>Open in</th>
                                     <th>Introductory text</th>
                                     <th>Role</th>
                                     <th>Action</th>
@@ -225,6 +226,7 @@
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -272,6 +274,7 @@
                                     <th>Display name</th>
                                     <th>Content type</th>
                                     <th>Href value</th>
+                                    <th>Open in</th>
                                     <th>Role</th>
                                     <th>Action</th>
                                 </tr>
@@ -282,6 +285,7 @@
                                 <!-- /ko -->
                                 <!-- /ko -->
                                 <tr>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -549,6 +553,7 @@
                         <th>Display name</th>
                         <th>Content type</th>
                         <th>Href value</th>
+                        <th>Open in</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -558,6 +563,7 @@
                     <!-- /ko -->
                     <!-- /ko -->
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -830,6 +836,12 @@
         <td>
             <input class="form-control" type="text" data-bind="value: link.href"/>
         </td>
+        <td>
+            <select class="form-select" data-bind="value: link.target">
+                <option value="_self">Same tab</option>
+                <option value="_blank">New tab</option>
+            </select>
+        </td>
         <!-- ko if: enableIntroText -->
         <td>
         <!-- ko ifnot: ['external', 'nolink', 'login', 'biocacheexplorer'].indexOf(link.contentType()) > -1 -->
@@ -880,6 +892,7 @@
                     <th>Display name</th>
                     <th>Content type</th>
                     <th>Href value</th>
+                    <th>Open in</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -889,6 +902,7 @@
                 <!-- /ko -->
                 <!-- /ko -->
                 <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -1258,6 +1272,7 @@
                             <th>Display name</th>
                             <th>Content type</th>
                             <th>Href value</th>
+                            <th>Open in</th>
                             <th>Role</th>
                             <th>Action</th>
                         </tr>
@@ -1268,6 +1283,7 @@
                         <!-- /ko -->
                         <!-- /ko -->
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
