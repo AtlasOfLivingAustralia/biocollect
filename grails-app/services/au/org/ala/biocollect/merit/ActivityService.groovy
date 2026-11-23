@@ -166,7 +166,7 @@ class ActivityService {
     def bulkEmbargo(List ids) {
         if (ids) {
             String params = "id=" + ids.join('&id=')
-            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: true, verificationStatus: "not approved"])
+            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: true])
         }
     }
 
@@ -193,18 +193,25 @@ class ActivityService {
     def bulkRelease(List ids) {
         if (ids) {
             String params = "id=" + ids.join('&id=')
+            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false])
+        }
+    }
+
+    def bulkPublish(List ids) {
+        if (ids) {
+            String params = "id=" + ids.join('&id=')
             webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false, verificationStatus: "approved"])
         }
     }
 
-    boolean batchedBulkRelease (List activityIds) {
+    boolean batchedBulkPublish(List activityIds) {
         int offset = 0
         boolean success = true
         while (offset < activityIds.size()) {
             int end = offset + BATCH_SIZE
             end = end <= activityIds.size() ? end : activityIds.size()
             List ids = activityIds.subList(offset, end)
-            Map result = bulkRelease(ids)
+            Map result = bulkPublish(ids)
             if (result.resp) {
                 success &= true
             } else {

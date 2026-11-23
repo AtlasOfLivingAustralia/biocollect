@@ -45,7 +45,7 @@ class BulkImportService {
         List activityIds = getBulkImportActivities( bulkImportId )
 
         // publish activities
-        success = activityService.batchedBulkRelease(activityIds)
+        success = activityService.batchedBulkPublish(activityIds)
         [success: success]
     }
 

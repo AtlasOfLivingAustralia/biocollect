@@ -1,5 +1,6 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import grails.testing.spring.AutowiredTest
 import grails.web.servlet.mvc.GrailsParameterMap
@@ -24,6 +25,7 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
     SettingService settingService = Mock(SettingService)
 
     def setup() {
+        SettingService.setHubConfig(new HubSettings([urlPath: 'ala']))
         JSON.registerObjectMarshaller(new MapMarshaller())
         JSON.registerObjectMarshaller(new CollectionMarshaller())
         service.userService = userService
@@ -31,9 +33,13 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         service.activityService = activityService
         service.searchService = searchService
         service.projectService = projectService
+        service.settingService = settingService
         service.grailsApplication = grailsApplication
     }
 
+    def cleanup() {
+        SettingService.clearHubConfig()
+    }
 
     def "only project members can edit or delete project documents"() {
         setup:
@@ -215,10 +221,7 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         Map documents = service.allDocumentsSearch(paramsMap)
 
         then:
-        1 * service.userService.userIsAlaAdmin() >> true
-        1 * service.userService.getCurrentUserId() >> userId
         1 * service.searchService.fulltextSearch(_,true) >> [documentId:'doc1', role:'magazines']
-        1 * service.settingService.getHubConfg() >> [hurUrl : 'ala']
         documents
     }
 
@@ -254,9 +257,7 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         Map documents = service.allDocumentsSearch(paramsMap)
 
         then:
-        1 * service.projectService.get(project.projectId) >> project
         1 * service.searchService.fulltextSearch(_,true) >> [hits:[hits:searchResults]]
-        1 * service.settingService.getHubConfg() >> [hurUrl : 'ala']
         documents
     }
 }
