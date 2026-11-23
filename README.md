@@ -47,6 +47,11 @@ Run BioCollect with additional parameters:
 
 Note the leading colon before the bootRun task - this is required as when inplace=true gradle is configured in a multi-project build configuration.
 
+### Licences
+
+Survey data-sharing, document, photo-point image and new species-list licence selectors use ecodata-client-plugin's Collectory-backed catalogue, configured allowlist and shared selection view model. Existing values are preserved; historical or unknown values remain selectable with a warning. New records default to CC-BY 4.0 unless configured otherwise; unrecognised configured defaults are retained rather than replaced.
+
+See the [plugin licence documentation](https://github.com/AtlasOfLivingAustralia/ecodata-client-plugin/blob/dev/README.md#licences).
 
 ### Running Javascript automatic tests
 * Executing the tests requires node.js
@@ -54,5 +59,9 @@ Note the leading colon before the bootRun task - this is required as when inplac
 * To install the test dependencies, run the following command in the repo root folder:
 ```
   npm install
+```
+* Before running Karma, prepare the compiled templates and JavaScript assets from the configured plugin dependency:
+```
+  ./gradlew _Events prepareKarmaAssets
 ```
 * After that you can run the test directly from Intellij by right-clicking on the `karma.conf.js` file.

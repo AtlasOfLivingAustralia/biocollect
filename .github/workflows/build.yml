@@ -88,10 +88,10 @@ jobs:
           package-version-ids: "${{ steps.versions.outputs.ids }}"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: build biocollect before running js unit test to compile dependent js templates
+      - name: Prepare JavaScript unit test assets
         uses: gradle/gradle-build-action@v2.4.2
         with:
-          arguments: _Events
+          arguments: _Events prepareKarmaAssets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

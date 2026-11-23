@@ -1,3 +1,4 @@
+//= require licences.js
 /**
  * Created by mol109 on 27/1/17.
  */
@@ -95,37 +96,6 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
         {id: 'COMMON_TRAIT', name: 'Traits'},
         {id: 'TEST', name: 'Testing List'}
     ];
-    self.transients.allowedLicences = [
-        {
-            "value": "CC0",
-            "label": "Creative Commons Zero"
-        },
-        {
-            "value": "CC-BY",
-            "label": "Creative Commons By Attribution"
-        },
-        {
-            "value": "CC-BY-NC",
-            "label": "Creative Commons By Attribution-Noncommercial"
-        },
-        {
-            "value": "CC-BY-NC-ND",
-            "label": "Creative Commons By Attribution-Noncommercial-Noderivatives"
-        },
-        {
-            "value": "CC-BY-NC-SA",
-            "label": "Creative Commons By Attribution-Noncommercial-Sharealike"
-        },
-        {
-            "value": "CC-BY-ND",
-            "label": "Creative Commons By Attribution-Noderivatives"
-        },
-        {
-            "value": "CC-BY-SA",
-            "label": "Creative Commons By Attribution-Sharealike"
-        }
-    ]
-
     self.transients.showAddSpeciesLists = ko.observable(false);
     self.transients.showExistingSpeciesLists = ko.observable(false);
 
@@ -308,12 +278,13 @@ var SpeciesConstraintViewModel = function (o, fieldName) {
 var NewSpeciesListViewModel = function (o) {
     var self = this;
     if (!o) o = {};
+    ecodataLicences.load();
 
     self.listName = ko.observable(o.listName);
     self.dataResourceUid = ko.observable(o.dataResourceUid);
     self.description = ko.observable(o.description);
     self.listType = ko.observable(o.listType);
-    self.licence = ko.observable(o.licence);
+    self.licence = ko.observable(o.licence || ecodataLicences.defaultValue());
     self.allSpecies = ko.observableArray();
 
     self.inputSpeciesViewModel = new SpeciesViewModel({}, fcConfig);
@@ -340,6 +311,7 @@ var NewSpeciesListViewModel = function (o) {
     };
 
     self.transients = {};
+    self.transients.licence = new LicenceViewModel(self.licence);
     self.transients.url = ko.observable(fcConfig.speciesListsServerUrl + "/" + o.dataResourceUid);
 
 };

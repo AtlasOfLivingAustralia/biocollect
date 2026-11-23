@@ -45,7 +45,9 @@ var ProjectActivity = function (params) {
     self.pActivityFormName = ko.observable(pActivity.pActivityFormName);
     self.usageGuide = ko.observable(pActivity.usageGuide || "");
     self.relatedDatasets = ko.observableArray (pActivity.relatedDatasets || []);
-    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense || "");
+    self.dataSharingLicense = ko.observable(pActivity.dataSharingLicense ||
+        (!pActivity.projectActivityId ? ecodataLicences.defaultValue('url') : '') || '');
+    self.transients.licence = new LicenceViewModel(self.dataSharingLicense, 'url');
     self.publishProject = ko.observable("Yes");
     self.spatialAccuracy = ko.observable(pActivity.spatialAccuracy || "");
     self.speciesIdentification = ko.observable(pActivity.speciesIdentification || "");
@@ -559,13 +561,6 @@ var ProjectActivity = function (params) {
 
     self.visibility = new SurveyVisibilityViewModel(pActivity.visibility);
     self.alert = new AlertViewModel(pActivity.alert);
-
-    self.displaySelectedLicence = ko.computed(function(){
-          return _.where(self.transients.alaSupportedLicences,{url:self.dataSharingLicense()});
-
-    });
-
-
 
     self.transients = self.transients || {};
     self.transients.warning = ko.computed(function () {
