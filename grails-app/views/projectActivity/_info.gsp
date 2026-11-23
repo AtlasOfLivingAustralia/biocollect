@@ -349,7 +349,6 @@
                 <a data-bind="visible: transients.licence.url, attr: {href: transients.licence.url}" class="me-2"
                    target="_blank" rel="noopener noreferrer"><span data-bind="text: transients.licence.acronym"></span> <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
                 <span data-bind="visible: !transients.licence.url(), text: transients.licence.description"></span>
-                <a href="${message(code: 'project.details.creativeCommons.helpUrl', default: 'https://creativecommons.org/cc-licenses/')}" target="_blank" rel="noopener noreferrer">About CC licences <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
             </p>
             <p class="text-warning" role="status" data-bind="visible: transients.licence.warning, text: transients.licence.warning"></p>
         </div>
