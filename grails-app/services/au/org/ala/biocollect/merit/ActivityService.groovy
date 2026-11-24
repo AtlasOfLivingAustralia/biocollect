@@ -3,7 +3,6 @@ package au.org.ala.biocollect.merit
 import au.org.ala.biocollect.DateUtils
 import au.org.ala.biocollect.ProjectActivityService
 import au.org.ala.biocollect.UtilService
-import au.org.ala.biocollect.merit.SpeciesService
 import grails.core.GrailsApplication
 import grails.web.servlet.mvc.GrailsParameterMap
 import org.joda.time.DateTime
@@ -198,14 +197,21 @@ class ActivityService {
         }
     }
 
-    boolean batchedBulkRelease (List activityIds) {
+    def bulkPublish(List ids) {
+        if (ids) {
+            String params = "id=" + ids.join('&id=')
+            webService.doPost(grailsApplication.config.ecodata.service.url + "/activities/?${params}", [embargoed: false, verificationStatus: "approved"])
+        }
+    }
+
+    boolean batchedBulkPublish(List activityIds) {
         int offset = 0
         boolean success = true
         while (offset < activityIds.size()) {
             int end = offset + BATCH_SIZE
             end = end <= activityIds.size() ? end : activityIds.size()
             List ids = activityIds.subList(offset, end)
-            Map result = bulkRelease(ids)
+            Map result = bulkPublish(ids)
             if (result.resp) {
                 success &= true
             } else {

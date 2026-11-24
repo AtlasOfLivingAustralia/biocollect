@@ -49,7 +49,7 @@ const config = {
             }
         }
     },
-    autoXvfb: false,
+    autoXvfb: false
 }
 
 module.exports = { config };

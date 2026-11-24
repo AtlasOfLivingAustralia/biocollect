@@ -1,7 +1,9 @@
 package au.org.ala.biocollect.merit
 
+import au.org.ala.biocollect.merit.hub.HubSettings
 import grails.converters.JSON
 import grails.testing.spring.AutowiredTest
+import grails.web.servlet.mvc.GrailsParameterMap
 import org.grails.web.converters.marshaller.json.CollectionMarshaller
 import org.grails.web.converters.marshaller.json.MapMarshaller
 import spock.lang.Specification
@@ -20,8 +22,10 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
     ActivityService activityService = Mock(ActivityService)
     SearchService searchService = Mock(SearchService)
     ProjectService projectService = Mock(ProjectService)
+    SettingService settingService = Mock(SettingService)
 
     def setup() {
+        SettingService.setHubConfig(new HubSettings([urlPath: 'ala']))
         JSON.registerObjectMarshaller(new MapMarshaller())
         JSON.registerObjectMarshaller(new CollectionMarshaller())
         service.userService = userService
@@ -29,9 +33,13 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
         service.activityService = activityService
         service.searchService = searchService
         service.projectService = projectService
+        service.settingService = settingService
         service.grailsApplication = grailsApplication
     }
 
+    def cleanup() {
+        SettingService.clearHubConfig()
+    }
 
     def "only project members can edit or delete project documents"() {
         setup:
@@ -207,13 +215,12 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
                 type:searchType,
                 searchInRole: searchInRole
         ]
+        GrailsParameterMap paramsMap = new GrailsParameterMap(params, null)
 
         when:
-        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, searchInRole, sort, order, projectId, hub)
+        Map documents = service.allDocumentsSearch(paramsMap)
 
         then:
-        1 * service.userService.userIsAlaAdmin() >> true
-        1 * service.userService.getCurrentUserId() >> userId
         1 * service.searchService.fulltextSearch(_,true) >> [documentId:'doc1', role:'magazines']
         documents
     }
@@ -244,12 +251,12 @@ class DocumentServiceSpec extends Specification implements AutowiredTest {
                 type:searchType,
                 searchInRole: searchInRole
         ]
+        GrailsParameterMap paramsMap = new GrailsParameterMap(params, null)
 
         when:
-        Map documents = service.allDocumentsSearch(0, 100, searchTerm, searchType, searchInRole, sort, order, projectId, hub)
+        Map documents = service.allDocumentsSearch(paramsMap)
 
         then:
-        1 * service.projectService.get(project.projectId) >> project
         1 * service.searchService.fulltextSearch(_,true) >> [hits:[hits:searchResults]]
         documents
     }
