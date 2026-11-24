@@ -155,6 +155,8 @@
 </head>
 <body>
 
+<md:licences/>
+
 <bc:koLoading>
     <div class="container-fluid">
         <g:render template="/shared/backToSearchResults"/>
@@ -198,6 +200,8 @@
 
 <asset:script type="text/javascript">
     $(function() {
+        ecodataLicences.load();
+
         // set project tab selection if a 'tab' parameter is set
         var projectTab = getUrlParameterValue('tab');
         if(projectTab && (typeof projectTab == 'string')){
@@ -212,7 +216,6 @@
         var user = <fc:modelAsJavascript model="${user}"/>;
         var vocabList = <fc:modelAsJavascript model="${vocabList}" />;
         var projectArea = <fc:modelAsJavascript model="${projectSite?.extent?.geometry}"/>;
-        var licences = <fc:modelAsJavascript model="${licences}"/>;
 
         var ViewModel = function() {
             var self = this;
@@ -235,7 +238,6 @@
         params.project = projectViewModel;
         params.vocabList = vocabList;
         params.projectArea = projectArea;
-        params.licences = licences;
 
         <g:if test="${!project.isExternal}">
             var pActivitiesVM = new ProjectActivitiesViewModel(params, projectViewModel);

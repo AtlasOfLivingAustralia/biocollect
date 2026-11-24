@@ -1125,8 +1125,6 @@
                         </div>
 
                         <p class="mt-3"><g:message code="project.details.termsOfUseAgreement.help"/></p>
-
-                        <p><img src="${asset.assetPath(src: 'cc.png')}" alt="Creative Commons Attribution 3.0"></p>
                     </div>
                 </div>
             </div>

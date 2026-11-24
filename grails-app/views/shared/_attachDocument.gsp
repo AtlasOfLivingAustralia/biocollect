@@ -1,3 +1,4 @@
+<md:licences/>
 <!-- ko stopBinding: true -->
 <g:set var="modalId" value="${ modalId?:'attachDocument' }"/>
 <div id="${modalId}" class="modal fade">
@@ -89,10 +90,17 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label class="col-form-label col-sm-3" for="documentLicense">License</label>
+                        <label class="col-form-label col-sm-3" for="documentLicense">Licence</label>
 
                         <div class="col-sm-9">
-                            <input class="form-control" id="documentLicense" type="text" data-bind="value:license"/>
+                            <select class="form-select" id="documentLicense"
+                                    data-bind="options: transients.licence.options, optionsText: 'name', optionsValue: 'acronym', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'"></select>
+                            <p class="form-text my-1">
+                                <a data-bind="visible: transients.licence.url, attr: {href: transients.licence.url}" class="me-2"
+                                   target="_blank" rel="noopener noreferrer"><span data-bind="text: transients.licence.acronym"></span> <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
+                                <span data-bind="visible: !transients.licence.url(), text: transients.licence.description"></span>
+                            </p>
+                            <p class="text-warning" role="status" data-bind="visible: transients.licence.warning, text: transients.licence.warning"></p>
                         </div>
                     </div>
 

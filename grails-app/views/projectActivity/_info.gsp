@@ -342,17 +342,15 @@
         </label>
 
         <div class="col-12 col-md-8">
-            <g:select id="dataSharingLicense" class="full-collapse-horizontal form-control" name="dateSharingLicence"
-                      from="${licences}"
-                      optionValue="name" data-bind="value:dataSharingLicense"
-                      noSelection="['': '-Please select the licence-']" optionKey="url"
-                      data-validation-engine="validate[required]"/>
-            <g:each in="${licences}">
-                <label class="my-1" data-bind="visible: dataSharingLicense() == '${it.url}'"><a href="${it.url}"
-                                                                                                target="_blank"><img
-                            src="${asset.assetPath(src: "licence/${it.logo}")}">&nbsp;&nbsp;${it.description}</a>
-                </label>
-            </g:each>
+            <select id="dataSharingLicense" class="full-collapse-horizontal form-control" name="dateSharingLicence"
+                    data-bind="options: transients.licence.options, optionsText: 'name', optionsValue: 'url', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: '-Please select the licence-'"
+                    data-validation-engine="validate[required]"></select>
+            <p class="form-text my-1">
+                <a data-bind="visible: transients.licence.url, attr: {href: transients.licence.url}" class="me-2"
+                   target="_blank" rel="noopener noreferrer"><span data-bind="text: transients.licence.acronym"></span> <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
+                <span data-bind="visible: !transients.licence.url(), text: transients.licence.description"></span>
+            </p>
+            <p class="text-warning" role="status" data-bind="visible: transients.licence.warning, text: transients.licence.warning"></p>
         </div>
     </div>
 
