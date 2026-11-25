@@ -310,7 +310,7 @@ ko.bindingHandlers.imageUpload = {
                         dateTaken: f.isoDate,
                         staged: true,
                         attribution: f.attribution,
-                        licence: f.licence
+                        licence: f.licence || ImageViewModel.licenceFromSurvey(config.context || bindingContext)
                     };
 
                     target.push(new ImageViewModel(data));
@@ -370,6 +370,7 @@ ko.bindingHandlers.imageUpload = {
         function addToViewModel(result) {
             var viewModel;
             biocollect.utils.addObjectURL(result.data);
+            result.data.licence = result.data.licence || ImageViewModel.licenceFromSurvey(config.context || bindingContext);
             viewModel = new ImageViewModel(result.data, true);
             target.push(viewModel);
             complete(true);

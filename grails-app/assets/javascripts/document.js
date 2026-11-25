@@ -1,4 +1,5 @@
 //= require fieldcapture-application.js
+//= require licences.js
 /**
  * A view model to capture metadata about a document and manage progress / feedback as a file is uploaded.
  *
@@ -12,6 +13,7 @@
  */
 function DocumentViewModel (doc, owner, settings) {
     var self = this;
+    ecodataLicences.load();
 
     var defaults = {
         //Information is the default option.
@@ -65,7 +67,7 @@ function DocumentViewModel (doc, owner, settings) {
     };
     this.status = ko.observable(doc.status || 'active');
     this.attribution = ko.observable(doc ? doc.attribution : '');
-    this.license = ko.observable(doc ? doc.license : '');
+    this.license = ko.observable(doc.license || (!doc.documentId && doc.role !== 'photoPoint' ? ecodataLicences.defaultValue() : doc.license));
     this.type = ko.observable(doc.type);
     this.role = ko.observable(doc.role);
     this.roles = this.settings.roles;
@@ -87,6 +89,7 @@ function DocumentViewModel (doc, owner, settings) {
     this.externalUrl = ko.observable(doc.externalUrl);
 
     self.transients = {};
+    self.transients.licence = new LicenceViewModel(self.license);
     self.transients.dateCreated = "";
     self.transients.lastUpdated = "";
 
@@ -263,7 +266,7 @@ function DocumentViewModel (doc, owner, settings) {
     };
 
     this.modelForSaving = function() {
-        return ko.mapping.toJS(self, {'ignore':['embeddedVideoVisible','iframe','helper', 'progress', 'hasPreview', 'error', 'fileLabel', 'file', 'complete', 'fileButtonText', 'roles', 'settings', 'thirdPartyConsentDeclarationRequired', 'saveEnabled', 'saveHelp', 'fileReady']});
+        return ko.mapping.toJS(self, {'ignore':['transients', 'embeddedVideoVisible','iframe','helper', 'progress', 'hasPreview', 'error', 'fileLabel', 'file', 'complete', 'fileButtonText', 'roles', 'settings', 'thirdPartyConsentDeclarationRequired', 'saveEnabled', 'saveHelp', 'fileReady']});
     };
 
 }

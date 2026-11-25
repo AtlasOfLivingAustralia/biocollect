@@ -163,7 +163,7 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-dateutil:2.5.0'
     if (!Boolean.valueOf(inplace)) {
         implementation "org.grails.plugins:ala-map-plugin:3.0.1"
-        implementation "org.grails.plugins:ecodata-client-plugin:9.2"
+        implementation "org.grails.plugins:ecodata-client-plugin:9.4-SNAPSHOT"
     }
 
     testCompileOnly "org.grails:grails-test-mixins:3.3.0"
@@ -239,6 +239,25 @@ task _Events {
         println "${project.projectDir}/_events.groovy"
         new GroovyScriptEngine(["${project.projectDir}"] as String[]).run("_events.groovy", new Binding(['projectDir': project.projectDir]))
     }
+}
+
+tasks.register('prepareKarmaAssets', Sync) {
+    if (Boolean.valueOf(inplace)) {
+        dependsOn ':ecodata-client-plugin:jar'
+    }
+    from {
+        def plugin = configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.find {
+            it.moduleVersion.id.group == 'org.grails.plugins' && it.name == 'ecodata-client-plugin'
+        }
+        if (!plugin) {
+            throw new GradleException('ecodata-client-plugin was not found on the runtime classpath')
+        }
+        zipTree(plugin.file)
+    }
+    include 'META-INF/assets/**'
+    eachFile { details -> details.path = details.path.substring('META-INF/assets/'.length()) }
+    includeEmptyDirs = false
+    into layout.buildDirectory.dir('karma-plugin-assets')
 }
 
 // the tasks used here for dependsOn may be incomplete/incorrect

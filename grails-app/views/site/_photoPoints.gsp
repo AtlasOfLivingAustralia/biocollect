@@ -1,3 +1,4 @@
+<md:licences/>
 <g:if test="${!printView}">
     <div data-bind="visible:!site">
         No site has been selected.  To add photos to this activity, select a site.
@@ -190,17 +191,18 @@
         </div>
 
         <div class="control-group">
-            <label class="control-label">Licence <i class="icon-question-sign"
-                                                                  data-bind="popover:{content:'Creative Commons Attribution (CC BY), Creative Commons-Noncommercial (CC BY-NC), Creative Commons Attribution-Share Alike (CC BY-SA), Creative Commons Attribution-Noncommercial-Share Alike (CC BY-NC-SA)', placement:'top'}">&nbsp;</i>:
+            <label class="control-label" for="licence">Licence <i class="icon-question-sign"
+                                                                  data-bind="popover:{content:'The licence tells others how they may use this image.', placement:'top'}">&nbsp;</i>:
             </label>
 
             <div class="controls">
-                <select id="licence" data-bind="value:licence" class="form-select input-sm">
-                    <option>CC BY</option>
-                    <option>CC BY-NC</option>
-                    <option>CC BY-SA</option>
-                    <option>CC BY-NC-SA</option>
-                </select>
+                <select id="licence" data-bind="options: transients.licence.options, optionsText: 'name', optionsValue: 'acronym', value: transients.licence.selection, valueAllowUnset: true, optionsCaption: 'Please select'" class="form-select input-sm"></select>
+                <p class="form-text my-1">
+                    <a data-bind="visible: transients.licence.url, attr: {href: transients.licence.url}" class="me-2"
+                       target="_blank" rel="noopener noreferrer"><span data-bind="text: transients.licence.acronym"></span> <i class="fas fa-external-link-alt fa-sm" aria-hidden="true"></i></a>
+                    <span data-bind="visible: !transients.licence.url(), text: transients.licence.description"></span>
+                </p>
+                <p class="text-warning" role="status" data-bind="visible: transients.licence.warning, text: transients.licence.warning"></p>
             </div>
         </div>
 
@@ -238,7 +240,7 @@
     </div>
 
     <div class="control-group">
-        <label class="control-label">License : <span data-bind="text:license"></span></label>
+        <label class="control-label">Licence : <span data-bind="text:transients.licence.description"></span></label>
     </div>
 
     <div class="control-group">
