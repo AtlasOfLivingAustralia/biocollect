@@ -96,16 +96,30 @@ while ! nc -z localhost 5173; do
 done
 
 
-cd $ECODATA_LOCAL_DIR
-echo "Starting ecodata from `pwd`"
-ls -la
+cd "$ECODATA_LOCAL_DIR"
+echo "Starting ecodata from $(pwd)"
+
 start_background ecodata env GRADLE_OPTS="-Xmx1g" ./gradlew bootRun "-Dorg.gradle.jvmargs=-Xmx1g" -Dgrails.env=meritfunctionaltest
 
-# check that ecodata is running
-while ! nc -z localhost 8080; do
-  echo "Waiting for ecodata to start on port 8080..."
+# Check that ecodata starts successfully
+ECODATA_MAX_ATTEMPTS=60
+ecodata_attempt=0
+
+until nc -z localhost 8080; do
+  ecodata_attempt=$((ecodata_attempt + 1))
+
+  if [ "$ecodata_attempt" -ge "$ECODATA_MAX_ATTEMPTS" ]; then
+    echo "ERROR: Ecodata failed to start on port 8080."
+    echo "Last 100 lines of ecodata.log:"
+    tail -n 100 "$BIOCOLLECT_DIR/logs/ecodata.log"
+    exit 1
+  fi
+
+  echo "Waiting for ecodata to start on port 8080... ($ecodata_attempt/$ECODATA_MAX_ATTEMPTS)"
   sleep 5
 done
+
+echo "Ecodata is running on port 8080."
 
 
 cd $BIOCOLLECT_DIR
